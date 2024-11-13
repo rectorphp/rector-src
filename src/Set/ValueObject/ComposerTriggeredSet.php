@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Set\ValueObject;
 
+use Composer\Semver\Semver;
 use Rector\Composer\ValueObject\InstalledPackage;
 use Rector\Set\Contract\SetInterface;
 use Webmozart\Assert\Assert;
@@ -49,7 +50,7 @@ final readonly class ComposerTriggeredSet implements SetInterface
                 continue;
             }
 
-            return version_compare($installedPackage->getVersion(), $this->version) !== -1;
+            return Semver::satisfies($installedPackage->getVersion(), '^' . $this->version);
         }
 
         return false;

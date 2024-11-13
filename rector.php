@@ -5,10 +5,10 @@ declare(strict_types=1);
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
-use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
 return RectorConfig::configure()
+    ->withComposerBased(twig: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
@@ -20,10 +20,9 @@ return RectorConfig::configure()
         earlyReturn: true,
         naming: true,
         rectorPreset: true,
-        // @experimental 2024-06
-        // twig: true,
         phpunitCodeQuality: true
     )
+    ->withComposerBased(phpunit: true)
     ->withPhpSets()
     ->withPaths([
         __DIR__ . '/bin',
@@ -41,9 +40,7 @@ return RectorConfig::configure()
         StringClassNameToClassConstantRector::class,
         __DIR__ . '/bin/validate-phpstan-version.php',
         // tests
-        '*/Fixture/*',
         '*/Fixture*',
-        '*/Source/*',
         '*/Source*',
         '*/Expected/*',
 
@@ -55,6 +52,4 @@ return RectorConfig::configure()
             __DIR__ . '/src/Configuration/RectorConfigBuilder.php',
             __DIR__ . '/src/Console/Notifier.php',
         ],
-
-        RemoveUnusedPrivatePropertyRector::class => [__DIR__ . '/src/Configuration/RectorConfigBuilder.php'],
     ]);

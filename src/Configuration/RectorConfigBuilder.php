@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem;
 use Rector\Bridge\SetProviderCollector;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
@@ -165,11 +166,8 @@ final class RectorConfigBuilder
 
     public function __invoke(RectorConfig $rectorConfig): void
     {
-        // @experimental 2024-06
         if ($this->setGroups !== []) {
-            $setProviderCollector = $rectorConfig->make(SetProviderCollector::class);
-            $setManager = new SetManager($setProviderCollector);
-
+            $setManager = new SetManager(new SetProviderCollector(), new InstalledPackageResolver(getcwd()));
             $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
         }
 
@@ -704,79 +702,48 @@ final class RectorConfigBuilder
         bool $doctrineCodeQuality = false,
         bool $symfonyCodeQuality = false,
         bool $symfonyConfigs = false,
-        // composer based
-        bool $twig = false,
-        bool $phpunit = false,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
-        if ($deadCode) {
-            $this->sets[] = SetList::DEAD_CODE;
+        $setMap = [
+            $deadCode => SetList::DEAD_CODE,
+            $codeQuality => SetList::CODE_QUALITY,
+            $codingStyle => SetList::CODING_STYLE,
+            $typeDeclarations => SetList::TYPE_DECLARATION,
+            $privatization => SetList::PRIVATIZATION,
+            $naming => SetList::NAMING,
+            $instanceOf => SetList::INSTANCEOF,
+            $earlyReturn => SetList::EARLY_RETURN,
+            $strictBooleans => SetList::STRICT_BOOLEANS,
+            $carbon => SetList::CARBON,
+            $rectorPreset => SetList::RECTOR_PRESET,
+            $phpunitCodeQuality => PHPUnitSetList::PHPUNIT_CODE_QUALITY,
+            $doctrineCodeQuality => DoctrineSetList::DOCTRINE_CODE_QUALITY,
+            $symfonyCodeQuality => SymfonySetList::SYMFONY_CODE_QUALITY,
+            $symfonyConfigs => SymfonySetList::CONFIGS,
+        ];
+
+        foreach ($setMap as $isEnabled => $setPath) {
+            if ($isEnabled) {
+                $this->sets[] = $setPath;
+            }
         }
 
-        if ($codeQuality) {
-            $this->sets[] = SetList::CODE_QUALITY;
-        }
+        return $this;
+    }
 
-        if ($codingStyle) {
-            $this->sets[] = SetList::CODING_STYLE;
-        }
+    public function withComposerBased(bool $twig = false, bool $doctrine = false, bool $phpunit = false): self
+    {
+        $setMap = [
+            $twig => SetGroup::TWIG,
+            $doctrine => SetGroup::DOCTRINE,
+            $phpunit => SetGroup::PHPUNIT,
+        ];
 
-        if ($typeDeclarations) {
-            $this->sets[] = SetList::TYPE_DECLARATION;
-        }
-
-        if ($privatization) {
-            $this->sets[] = SetList::PRIVATIZATION;
-        }
-
-        if ($naming) {
-            $this->sets[] = SetList::NAMING;
-        }
-
-        if ($instanceOf) {
-            $this->sets[] = SetList::INSTANCEOF;
-        }
-
-        if ($earlyReturn) {
-            $this->sets[] = SetList::EARLY_RETURN;
-        }
-
-        if ($strictBooleans) {
-            $this->sets[] = SetList::STRICT_BOOLEANS;
-        }
-
-        if ($carbon) {
-            $this->sets[] = SetList::CARBON;
-        }
-
-        if ($rectorPreset) {
-            $this->sets[] = SetList::RECTOR_PRESET;
-        }
-
-        if ($phpunitCodeQuality) {
-            $this->sets[] = PHPUnitSetList::PHPUNIT_CODE_QUALITY;
-        }
-
-        if ($doctrineCodeQuality) {
-            $this->sets[] = DoctrineSetList::DOCTRINE_CODE_QUALITY;
-        }
-
-        if ($symfonyCodeQuality) {
-            $this->sets[] = SymfonySetList::SYMFONY_CODE_QUALITY;
-        }
-
-        if ($symfonyConfigs) {
-            $this->sets[] = SymfonySetList::CONFIGS;
-        }
-
-        // @experimental 2024-06
-        if ($twig) {
-            $this->setGroups[] = SetGroup::TWIG;
-        }
-
-        if ($phpunit) {
-            $this->setGroups[] = SetGroup::PHPUNIT;
+        foreach ($setMap as $isEnabled => $setPath) {
+            if ($isEnabled) {
+                $this->setGroups[] = $setPath;
+            }
         }
 
         return $this;

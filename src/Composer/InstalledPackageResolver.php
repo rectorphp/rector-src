@@ -16,42 +16,59 @@ use Webmozart\Assert\Assert;
 final class InstalledPackageResolver
 {
     /**
-     * @var array<string, InstalledPackage[]>
+     * @var InstalledPackage[]
      */
     private array $resolvedInstalledPackages = [];
+
+    public function __construct(
+        private readonly ?string $projectDirectory = null
+    ) {
+        // fallback to root project directory
+        if ($projectDirectory === null) {
+            $projectDirectory = getcwd();
+        }
+
+        Assert::directory($projectDirectory);
+    }
 
     /**
      * @return InstalledPackage[]
      */
-    public function resolve(string $projectDirectory): array
+    public function resolve(): array
     {
         // cache
-        if (isset($this->resolvedInstalledPackages[$projectDirectory])) {
-            return $this->resolvedInstalledPackages[$projectDirectory];
+        if ($this->resolvedInstalledPackages !== []) {
+            return $this->resolvedInstalledPackages;
         }
 
-        Assert::directory($projectDirectory);
-
-        $installedPackagesFilePath = $projectDirectory . '/vendor/composer/installed.json';
+        $installedPackagesFilePath = $this->projectDirectory . '/vendor/composer/installed.json';
         if (! file_exists($installedPackagesFilePath)) {
             throw new ShouldNotHappenException(
-                'The installed package json not found. Make sure you run `composer update` and "vendor/composer/installed.json" file exists'
+                'The installed package json not found. Make sure you run `composer update` and the "vendor/composer/installed.json" file exists'
             );
         }
 
         $installedPackageFileContents = FileSystem::read($installedPackagesFilePath);
         $installedPackagesFilePath = Json::decode($installedPackageFileContents, true);
 
+        $installedPackages = $this->createInstalledPackages($installedPackagesFilePath['packages']);
+
+        $this->resolvedInstalledPackages = $installedPackages;
+
+        return $installedPackages;
+    }
+
+    /**
+     * @param mixed[] $packages
+     * @return InstalledPackage[]
+     */
+    private function createInstalledPackages(array $packages): array
+    {
         $installedPackages = [];
 
-        foreach ($installedPackagesFilePath['packages'] as $installedPackage) {
-            $installedPackages[] = new InstalledPackage(
-                $installedPackage['name'],
-                $installedPackage['version_normalized']
-            );
+        foreach ($packages as $package) {
+            $installedPackages[] = new InstalledPackage($package['name'], $package['version_normalized']);
         }
-
-        $this->resolvedInstalledPackages[$projectDirectory] = $installedPackages;
 
         return $installedPackages;
     }
