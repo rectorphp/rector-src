@@ -127,13 +127,7 @@ EOF
 
         // show debug info
         if ($configuration->isDebug()) {
-            if (SimpleParameterProvider::hasParameter(Option::COMPOSER_BASED_SETS)) {
-                $composerBasedSets = SimpleParameterProvider::provideArrayParameter(Option::COMPOSER_BASED_SETS);
-                if ($composerBasedSets !== []) {
-                    $this->symfonyStyle->title('Sets loaded based on composer.json');
-                    $this->symfonyStyle->listing($composerBasedSets);
-                }
-            }
+            $this->reportLoadedComposerBasedSets();
         }
 
         // MAIN PHASE
@@ -195,5 +189,20 @@ EOF
         }
 
         return ExitCode::SUCCESS;
+    }
+
+    private function reportLoadedComposerBasedSets(): void
+    {
+        if (! SimpleParameterProvider::hasParameter(Option::COMPOSER_BASED_SETS)) {
+            return;
+        }
+
+        $composerBasedSets = SimpleParameterProvider::provideArrayParameter(Option::COMPOSER_BASED_SETS);
+        if ($composerBasedSets === []) {
+            return;
+        }
+
+        $this->symfonyStyle->writeln('[info] Sets loaded based on installed packages:');
+        $this->symfonyStyle->listing($composerBasedSets);
     }
 }
