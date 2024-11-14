@@ -15,6 +15,7 @@ use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
 use Rector\Config\RegisteredService;
 use Rector\Configuration\Levels\LevelRulesResolver;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Notifier;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
@@ -169,6 +170,8 @@ final class RectorConfigBuilder
         if ($this->setGroups !== []) {
             $setManager = new SetManager(new SetProviderCollector(), new InstalledPackageResolver(getcwd()));
             $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
+
+            SimpleParameterProvider::addParameter(Option::COMPOSER_BASED_SETS, $this->groupLoadedSets);
         }
 
         // merge sets together

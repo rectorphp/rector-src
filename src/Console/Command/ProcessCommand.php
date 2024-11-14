@@ -11,6 +11,7 @@ use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\ExitCode;
 use Rector\Console\Output\OutputFormatterCollector;
 use Rector\Console\ProcessConfigureDecorator;
@@ -126,8 +127,13 @@ EOF
 
         // show debug info
         if ($configuration->isDebug()) {
-            dump($configuration);
-            die;
+            if (SimpleParameterProvider::hasParameter(Option::COMPOSER_BASED_SETS)) {
+                $composerBasedSets = SimpleParameterProvider::provideArrayParameter(Option::COMPOSER_BASED_SETS);
+                if ($composerBasedSets !== []) {
+                    $this->symfonyStyle->title('Sets loaded based on composer.json');
+                    $this->symfonyStyle->listing($composerBasedSets);
+                }
+            }
         }
 
         // MAIN PHASE
