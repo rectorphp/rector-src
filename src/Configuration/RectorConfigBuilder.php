@@ -509,6 +509,7 @@ final class RectorConfigBuilder
         bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
         $this->isWithPhpSetsUsed = true;
+        $this->withPhpPolyfill();
 
         $pickedArguments = array_filter(func_get_args());
         if ($pickedArguments !== []) {
