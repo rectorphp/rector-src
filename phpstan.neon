@@ -1,6 +1,7 @@
-includes:
-    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
-    - vendor/symplify/phpstan-rules/config/rector-rules.neon
+# to be enabled later once rector upgraded to use phpstan v2
+#includes:
+#    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
+#    - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 parameters:
     level: 8
@@ -34,11 +35,12 @@ parameters:
         - '*tests/*/Source*'
 
     # https://github.com/rectorphp/type-perfect/
-    type_perfect:
-        no_mixed: true
-        null_over_false: true
-        narrow_param: true
-        narrow_return: true
+# to be enabled later once rector upgraded to use phpstan v2
+#    type_perfect:
+#        no_mixed: true
+#        null_over_false: true
+#        narrow_param: true
+#        narrow_return: true
 
     ignoreErrors:
         -
