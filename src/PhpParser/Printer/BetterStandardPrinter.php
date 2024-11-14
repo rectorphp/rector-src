@@ -152,10 +152,10 @@ final class BetterStandardPrinter extends Standard
         return $ret;
     }
 
-    protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction): string
+    protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string
     {
         if (! $arrowFunction->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
-            return parent::pExpr_ArrowFunction($arrowFunction);
+            return parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
         }
 
         $expr = $arrowFunction->expr;
@@ -164,7 +164,7 @@ final class BetterStandardPrinter extends Standard
         $comments = $expr->getAttribute(AttributeKey::COMMENTS) ?? [];
 
         if ($comments === []) {
-            return parent::pExpr_ArrowFunction($arrowFunction);
+            return parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
         }
 
         $indent = $this->resolveIndentSpaces();
