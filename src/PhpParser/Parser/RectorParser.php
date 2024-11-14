@@ -8,12 +8,13 @@ use PhpParser\Lexer;
 use PhpParser\Node\Stmt;
 use PHPStan\Parser\Parser;
 use Rector\PhpParser\ValueObject\StmtsAndTokens;
+use Rector\Util\Reflection\PrivatesAccessor;
 
 final readonly class RectorParser
 {
     public function __construct(
-        private Lexer $lexer,
         private Parser $parser,
+        private PrivatesAccessor $privatesAccessor
     ) {
     }
 
@@ -38,7 +39,9 @@ final readonly class RectorParser
     public function parseFileContentToStmtsAndTokens(string $fileContent): StmtsAndTokens
     {
         $stmts = $this->parser->parseString($fileContent);
-        $tokens = $this->lexer->getTokens();
+
+        $innerParser = $this->privatesAccessor->getPrivateProperty($this->parser, 'parser');
+        $tokens = $innerParser->getTokens();
 
         return new StmtsAndTokens($stmts, $tokens);
     }
