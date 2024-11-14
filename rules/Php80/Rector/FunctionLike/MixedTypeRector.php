@@ -15,6 +15,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -26,9 +27,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php80\Rector\FunctionLike\MixedTypeRector\MixedTypeRectorTest
+ * @deprecated Instead blindly filling `mixed` type, use "typeDeclarations" set with explicit types.
  */
-final class MixedTypeRector extends AbstractRector implements MinPhpVersionInterface
+final class MixedTypeRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedInterface
 {
     private bool $hasChanged = false;
 
