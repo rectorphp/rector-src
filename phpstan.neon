@@ -293,10 +293,6 @@ parameters:
                  - src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
                  - rules/Privatization/NodeManipulator/VisibilityManipulator.php
 
-        # more advanced usage, but not always working
-        # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110
-        - '#Doing instanceof PHPStan\\Type\\.+ is error\-prone and deprecated#'
-
         # allowed internally only
         -
             message: '#Fetching (deprecated )?class constant (.*?) of (deprecated )?class (Rector\\Set\\ValueObject\\DowngradeLevelSetList|Rector\\Symfony\\Set\\(.*?))#'
