@@ -29,7 +29,7 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\TemplatePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\UnionTypeNodePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocParser\ArrayItemClassNameDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
-use Rector\BetterPhpDocParser\PhpDocParser\BetterTypeParser;
+//use Rector\BetterPhpDocParser\PhpDocParser\BetterTypeParser;
 use Rector\BetterPhpDocParser\PhpDocParser\ConstExprClassNameDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
@@ -425,7 +425,7 @@ final class LazyContainerFactory
                 'indexes' => true,
             ]);
 
-        $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
+        //        $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
 
         $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$rectors')

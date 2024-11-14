@@ -124,6 +124,12 @@ EOF
             return ExitCode::FAILURE;
         }
 
+        // show debug info
+        if ($configuration->isDebug()) {
+            dump($configuration);
+            die;
+        }
+
         // MAIN PHASE
         // 2. run Rector
         $processResult = $this->applicationFileProcessor->run($configuration, $input);
