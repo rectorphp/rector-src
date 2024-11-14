@@ -128,13 +128,18 @@ final class BetterStandardPrinter extends Standard
         return $this->pStmts($fileWithoutNamespace->stmts, false);
     }
 
-    protected function p(Node $node, $parentFormatPreserved = false): string
+    protected function p(
+        Node $node,
+        int $precedence = self::MAX_PRECEDENCE,
+        int $lhsPrecedence = self::MAX_PRECEDENCE,
+        bool $parentFormatPreserved = false
+    ): string
     {
         while ($node instanceof AlwaysRememberedExpr) {
             $node = $node->getExpr();
         }
 
-        $content = parent::p($node, $parentFormatPreserved);
+        $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
             ? ('(' . $content . ')')
