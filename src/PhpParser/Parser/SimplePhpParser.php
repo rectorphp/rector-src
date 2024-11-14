@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PhpParser\PhpVersion;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
 use Throwable;
 
@@ -22,7 +23,7 @@ final readonly class SimplePhpParser
     public function __construct()
     {
         $parserFactory = new ParserFactory();
-        $this->phpParser = $parserFactory->create(ParserFactory::ONLY_PHP7);
+        $this->phpParser = $parserFactory->createForVersion(PhpVersion::fromString('7.0'));
 
         $this->nodeTraverser = new NodeTraverser();
         $this->nodeTraverser->addVisitor(new AssignedToNodeVisitor());
