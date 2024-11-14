@@ -669,7 +669,10 @@ final class LazyContainerFactory
 
         $rectorConfig->singleton(
             ParserConfig::class,
-            static fn (Container $container): ParserConfig => new ParserConfig([])
+            static fn (Container $container): ParserConfig => new ParserConfig([
+                'lines' => true,
+                'indexes' => true,
+            ])
         );
 
         return $rectorConfig;
