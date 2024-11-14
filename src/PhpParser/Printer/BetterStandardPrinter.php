@@ -388,15 +388,15 @@ final class BetterStandardPrinter extends Standard
         return Strings::replace($declareString, '#\s+#');
     }
 
-    protected function pExpr_Ternary(Ternary $ternary): string
+    protected function pExpr_Ternary(Ternary $ternary, int $precedence, int $lhsPrecedence): string
     {
         $kind = $ternary->getAttribute(AttributeKey::KIND);
         if ($kind === 'wrapped_with_brackets') {
-            $pExprTernary = parent::pExpr_Ternary($ternary);
+            $pExprTernary = parent::pExpr_Ternary($ternary, $precedence, $lhsPrecedence);
             return '(' . $pExprTernary . ')';
         }
 
-        return parent::pExpr_Ternary($ternary);
+        return parent::pExpr_Ternary($ternary, $precedence, $lhsPrecedence);
     }
 
     protected function pScalar_EncapsedStringPart(EncapsedStringPart $encapsedStringPart): string
