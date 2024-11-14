@@ -301,7 +301,7 @@ final class BetterStandardPrinter extends Standard
      * Do not add "()" on Expressions
      * @see https://github.com/rectorphp/rector/pull/401#discussion_r181487199
      */
-    protected function pExpr_Yield(Yield_ $yield): string
+    protected function pExpr_Yield(Yield_ $yield, int $precedence, int $lhsPrecedence): string
     {
         if (! $yield->value instanceof Expr) {
             return 'yield';
