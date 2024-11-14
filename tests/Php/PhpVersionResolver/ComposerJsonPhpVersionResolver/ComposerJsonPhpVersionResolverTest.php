@@ -26,5 +26,6 @@ final class ComposerJsonPhpVersionResolverTest extends AbstractLazyTestCase
         yield [__DIR__ . '/Fixture/some_composer.json', 70300];
         yield [__DIR__ . '/Fixture/some_composer_with_platform.json', 70400];
         yield [__DIR__ . '/Fixture/no_php_definition_composer_json.json', null];
+        yield [__DIR__ . '/Fixture/some_composer_with_64bit-php.json', 80100];
     }
 }
