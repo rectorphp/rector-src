@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="ChangeLogRepository")
  * @ORM\HasLifecycleCallbacks
  */
-
 class ChangeLog
 {
 }
