@@ -14,6 +14,7 @@ use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\FileProcessor;
@@ -665,6 +666,11 @@ final class LazyContainerFactory
         $rectorConfig->when(PhpDocNodeMapper::class)
             ->needs('$phpDocNodeVisitors')
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
+
+        $rectorConfig->singleton(
+            ParserConfig::class,
+            static fn (Container $container): ParserConfig => new ParserConfig([])
+        );
 
         return $rectorConfig;
     }
