@@ -125,7 +125,7 @@
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/php-parser-5-latest/patches/nikic-php-parser-lib-phpparser-node-stmt-do-php.patch",
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/php-parser-5-latest/patches/nikic-php-parser-lib-phpparser-node-stmt-catch-php.patch",
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/php-parser-5-latest/patches/nikic-php-parser-lib-phpparser-node-stmt-trycatch-php.patch",
-                "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-stmt-for-php.patch",
+                "https://raw.githubusercontent.com/rectorphp/vendor-patches/php-parser-5-latest/patches/nikic-php-parser-lib-phpparser-node-stmt-for-php.patch",
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-stmt-classmethod-php.patch",
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-stmt-else-php.patch",
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-stmt-while-php.patch",
