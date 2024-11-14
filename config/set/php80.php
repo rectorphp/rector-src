@@ -43,9 +43,9 @@ return static function (RectorConfig $rectorConfig): void {
         SetStateToStaticRector::class,
         FinalPrivateToPrivateVisibilityRector::class,
         AddParamBasedOnParentClassMethodRector::class,
-        MixedTypeRector::class,
         ClassOnThisVariableObjectRector::class,
         ConsistentImplodeRector::class,
+        OptionalParametersAfterRequiredRector::class,
     ]);
 
     $rectorConfig
@@ -90,7 +90,6 @@ return static function (RectorConfig $rectorConfig): void {
             'pg_result' => 'pg_fetch_result',
             'pg_setclientencoding' => 'pg_set_client_encoding',
         ]);
-    $rectorConfig->rule(OptionalParametersAfterRequiredRector::class);
 
     $rectorConfig
         ->ruleWithConfiguration(FunctionArgumentDefaultValueReplacerRector::class, [
