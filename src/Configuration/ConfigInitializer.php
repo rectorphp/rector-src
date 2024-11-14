@@ -39,7 +39,6 @@ final readonly class ConfigInitializer
         }
 
         $configContents = FileSystem::read(__DIR__ . '/../../templates/rector.php.dist');
-
         $configContents = $this->replacePathsContents($configContents, $projectDirectory);
 
         FileSystem::write($commonRectorConfigPath, $configContents, null);
