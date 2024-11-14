@@ -280,7 +280,6 @@ require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExp
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprTrueNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstFetchNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/DoctrineConstExprStringNode.php';
-require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/QuoteAwareConstExprStringNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/NodeTraverser.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/NodeVisitor/CloningVisitor.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/PhpDoc/AssertTagMethodValueNode.php';
@@ -346,6 +345,7 @@ require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/PhpDocParser.ph
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/StringUnescaper.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/TokenIterator.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/TypeParser.php';
+require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/ParserConfig.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Printer/DiffElem.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Printer/Differ.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Printer/Printer.php';
