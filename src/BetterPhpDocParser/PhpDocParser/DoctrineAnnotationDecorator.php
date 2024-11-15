@@ -205,8 +205,9 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             // prepare for doctrine value node migration
             if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
                 $startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
+                $arguments = '(' . implode(', ', $phpDocChildNode->value->annotation->arguments) . ')';
 
-                $phpDocChildNode->value = new GenericTagValueNode((string) $phpDocChildNode->value);
+                $phpDocChildNode = new PhpDocTagNode($phpDocChildNode->name, new GenericTagValueNode($arguments));
                 $phpDocChildNode->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
             }
 
