@@ -88,11 +88,11 @@ final readonly class AddNeverReturnType
 
     private function hasNeverNodesOrNeverFuncCalls(ClassMethod|Function_|Closure $node): bool
     {
-        $hasNeverNodes = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+        $hasNeverNodes = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
             $node,
             fn (Node $subNode): bool => $subNode instanceof Expression && $subNode->expr instanceof Throw_
         );
-        if ($hasNeverNodes instanceof Node) {
+        if ($hasNeverNodes) {
             return true;
         }
 
