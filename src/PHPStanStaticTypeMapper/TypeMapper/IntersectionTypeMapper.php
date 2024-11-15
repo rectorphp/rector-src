@@ -54,28 +54,28 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
             '',
             function (AstNode $astNode): int|IdentifierTypeNode {
                 if ($astNode instanceof UnionTypeNode) {
-                    return PhpDoc\PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($astNode instanceof ArrayShapeItemNode) {
-                    return PhpDoc\PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $astNode instanceof IdentifierTypeNode) {
-                    return PhpDoc\PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 $type = $this->scalarStringToTypeMapper->mapScalarStringToType($astNode->name);
                 if ($type->isScalar()->yes()) {
-                    return PhpDoc\PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($type->isArray()->yes()) {
-                    return PhpDoc\PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($type instanceof MixedType && $type->isExplicitMixed()) {
-                    return PhpDoc\PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 $astNode->name = '\\' . ltrim($astNode->name, '\\');
