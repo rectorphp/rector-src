@@ -12,7 +12,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
 use PHPStan\Analyser\Scope;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;

@@ -20,7 +20,6 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Static_;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\While_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -48,7 +47,6 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
         Echo_::class,
         Return_::class,
         Expression::class,
-        Throw_::class,
         If_::class,
         While_::class,
         Switch_::class,

@@ -8,7 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Nop;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeTraverser;
 use Rector\Rector\AbstractRector;
@@ -86,11 +87,11 @@ CODE_SAMPLE
         }
 
         $onlyCatchStmt = $onlyCatch->stmts[0];
-        if (! $onlyCatchStmt instanceof Throw_) {
+        if (! ($onlyCatchStmt instanceof Expression && $onlyCatchStmt->expr instanceof Throw_)) {
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($onlyCatch->var, $onlyCatchStmt->expr)) {
+        if (! $this->nodeComparator->areNodesEqual($onlyCatch->var, $onlyCatchStmt->expr->expr)) {
             return null;
         }
 
