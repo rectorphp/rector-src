@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
+use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
@@ -202,7 +203,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             }
 
             // prepare for doctrine value node migration
-            if ($phpDocChildNode->value instanceof \PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode) {
+            if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
                 $startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
 
                 $phpDocChildNode->value = new GenericTagValueNode((string) $phpDocChildNode->value);
