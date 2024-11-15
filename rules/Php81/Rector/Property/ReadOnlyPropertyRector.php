@@ -150,7 +150,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($property->type === null) {
+        if (!$property->type instanceof Node) {
             return null;
         }
 
@@ -209,7 +209,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return null;
         }
 

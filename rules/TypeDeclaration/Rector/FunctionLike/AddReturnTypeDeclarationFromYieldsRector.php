@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
@@ -138,12 +139,12 @@ CODE_SAMPLE
         ) use (&$yieldNodes): ?int {
             // skip anonymous class and inner function
             if ($node instanceof Class_) {
-                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             // skip nested scope
             if ($node instanceof FunctionLike) {
-                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Stmt && ! $node instanceof Expression) {

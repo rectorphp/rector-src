@@ -129,7 +129,7 @@ CODE_SAMPLE
 
     private function creteStrictTypesDeclare(): Declare_
     {
-        $declareDeclare = new DeclareItem(new Identifier('strict_types'), new LNumber(1));
-        return new Declare_([$declareDeclare]);
+        $declareItem = new DeclareItem(new Identifier('strict_types'), new LNumber(1));
+        return new Declare_([$declareItem]);
     }
 }

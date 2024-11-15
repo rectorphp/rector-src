@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -122,7 +123,7 @@ final readonly class SilentVoidResolver
             $node->stmts,
             static function (Node $subNode) use (&$isFoundLoopControl) {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($subNode instanceof Break_ || $subNode instanceof Continue_ || $subNode instanceof Goto_) {

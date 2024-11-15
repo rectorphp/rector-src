@@ -144,7 +144,7 @@ CODE_SAMPLE
     private function shouldSkipParam(Param $param, ClassMethod $classMethod): bool
     {
         // already has type, skip
-        if ($param->type !== null) {
+        if ($param->type instanceof Node) {
             return true;
         }
 

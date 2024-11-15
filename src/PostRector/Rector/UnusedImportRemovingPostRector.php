@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use PhpParser\NodeVisitor;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
@@ -14,7 +15,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use PhpParser\NodeTraverser;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -94,7 +94,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             &$names
         ): int|null|Name {
             if ($node instanceof Use_) {
-                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $node instanceof Name) {

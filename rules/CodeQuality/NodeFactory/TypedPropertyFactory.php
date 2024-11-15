@@ -28,10 +28,10 @@ final readonly class TypedPropertyFactory
         Class_ $class,
         string $propertyName
     ): Property {
-        $propertyProperty = new PropertyItem($propertyName);
+        $propertyItem = new PropertyItem($propertyName);
         $propertyTypeNode = $this->createPropertyTypeNode($propertyTagValueNode, $class);
 
-        return new Property(Class_::MODIFIER_PRIVATE, [$propertyProperty], [], $propertyTypeNode);
+        return new Property(Class_::MODIFIER_PRIVATE, [$propertyItem], [], $propertyTypeNode);
     }
 
     public function createPropertyTypeNode(

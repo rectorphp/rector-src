@@ -181,8 +181,8 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($functionReflection->getVariants() as $parametersAcceptorWithPhpDoc) {
-            if (! $parametersAcceptorWithPhpDoc->getNativeReturnType()->isBoolean()->yes()) {
+        foreach ($functionReflection->getVariants() as $variant) {
+            if (! $variant->getNativeReturnType()->isBoolean()->yes()) {
                 return false;
             }
         }

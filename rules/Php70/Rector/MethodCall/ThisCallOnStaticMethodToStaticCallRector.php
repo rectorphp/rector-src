@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php70\Rector\MethodCall;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -11,7 +12,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\Enum\ObjectReference;
@@ -123,7 +123,7 @@ CODE_SAMPLE
             $classReflection
         ): null|StaticCall|int {
             if ($subNode instanceof Encapsed) {
-                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $subNode instanceof MethodCall) {

@@ -200,7 +200,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $property->type === null;
+        return !$property->type instanceof Node;
     }
 
     private function isInPropertyPromotedParams(Class_ $class, PropertyFetch|StaticPropertyFetch $propertyFetch): bool

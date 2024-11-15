@@ -91,7 +91,7 @@ CODE_SAMPLE
                 default => null,
             };
 
-            if ($type === null) {
+            if (!$type instanceof Node) {
                 continue;
             }
 
@@ -147,14 +147,14 @@ CODE_SAMPLE
             }
 
             // int positions shouldn't have names
-            if ($arg->name !== null) {
+            if ($arg->name instanceof Identifier) {
                 return;
             }
         } else {
             $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
                 $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
             ): bool {
-                if ($arg->name === null) {
+                if (!$arg->name instanceof Identifier) {
                     return false;
                 }
 
@@ -190,7 +190,7 @@ CODE_SAMPLE
         $newParameterType = $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType();
 
         // already set → no change
-        if ($param->type !== null) {
+        if ($param->type instanceof Node) {
             $currentParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
             if ($this->typeComparator->areTypesEqual($currentParamType, $newParameterType)) {
                 return;

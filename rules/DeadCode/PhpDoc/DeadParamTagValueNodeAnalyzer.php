@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
+use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
@@ -42,7 +43,7 @@ final readonly class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return false;
         }
 

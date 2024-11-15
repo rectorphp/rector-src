@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeAnalyzer;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
@@ -57,7 +58,7 @@ final readonly class ParamAnalyzer
 
             // skip nested anonymous class
             if ($node instanceof Class_ || $node instanceof Function_) {
-                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $param->var)) {
@@ -98,7 +99,7 @@ final readonly class ParamAnalyzer
             return false;
         }
 
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return false;
         }
 

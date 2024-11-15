@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php71\Rector\Assign;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -93,7 +94,7 @@ CODE_SAMPLE
             $node->stmts,
             function (Node $subNode) use (&$hasChanged, $node): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($subNode instanceof Assign) {

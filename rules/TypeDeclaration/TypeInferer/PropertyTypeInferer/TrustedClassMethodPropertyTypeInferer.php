@@ -131,7 +131,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
 
     private function resolveParamTypeToPHPStanType(Param $param): Type
     {
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return new MixedType();
         }
 
@@ -199,7 +199,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
 
     private function resolveFullyQualifiedOrAliasedObjectType(Param $param): ?Type
     {
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return null;
         }
 
@@ -235,7 +235,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
         Property $property,
         Class_ $class
     ): Type {
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return new MixedType();
         }
 

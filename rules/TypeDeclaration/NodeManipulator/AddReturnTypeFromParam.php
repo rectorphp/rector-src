@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeManipulator;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -88,7 +89,7 @@ final readonly class AddReturnTypeFromParam
             // skip scope nesting
             if ($node instanceof Class_ || $node instanceof FunctionLike) {
                 $return = null;
-                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $node instanceof Return_) {
@@ -121,7 +122,7 @@ final readonly class AddReturnTypeFromParam
         ): int|null {
             // skip scope nesting
             if ($node instanceof Class_ || $node instanceof FunctionLike) {
-                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof AssignRef && $this->nodeNameResolver->isName($node->expr, $paramName)) {

@@ -165,7 +165,7 @@ CODE_SAMPLE
      */
     private function getDestructedVariableName(array $usedVariableNames, String_ $string): string
     {
-        $desiredVariableName = (string) $string->value;
+        $desiredVariableName = $string->value;
 
         if (in_array($desiredVariableName, $usedVariableNames, true) === false) {
             return $desiredVariableName;

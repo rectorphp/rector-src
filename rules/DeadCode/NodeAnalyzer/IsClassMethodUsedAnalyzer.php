@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
@@ -110,10 +110,6 @@ final readonly class IsClassMethodUsedAnalyzer
             return false;
         }
 
-        if (! $array->items[1] instanceof ArrayItem) {
-            return false;
-        }
-
         $value = $this->valueResolver->getValue($array->items[1]->value);
 
         if (! is_string($value)) {
@@ -198,7 +194,7 @@ final readonly class IsClassMethodUsedAnalyzer
                 (array) $classMethod->stmts,
                 function (Node $subNode) use ($className, $classMethodName, &$callMethod): ?int {
                     if ($subNode instanceof Class_ || $subNode instanceof Function_) {
-                        return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                     }
 
                     if ($subNode instanceof MethodCall

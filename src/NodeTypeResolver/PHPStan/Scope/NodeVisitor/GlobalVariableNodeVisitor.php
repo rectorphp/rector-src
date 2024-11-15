@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Global_;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -67,7 +67,7 @@ final class GlobalVariableNodeVisitor extends NodeVisitorAbstract implements Sco
             $stmt,
             static function (Node $subNode) use ($globalVariableNames): int|null|Variable {
                 if ($subNode instanceof Class_) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $subNode instanceof Variable) {

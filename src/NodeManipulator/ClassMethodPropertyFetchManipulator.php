@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeManipulator;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -44,7 +45,7 @@ final readonly class ClassMethodPropertyFetchManipulator
             (array) $classMethod->stmts,
             function (Node $node) use ($propertyName, &$assignedParamName): ?int {
                 if ($node instanceof Class_) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $node instanceof Assign) {
@@ -104,7 +105,7 @@ final readonly class ClassMethodPropertyFetchManipulator
             (array) $classMethod->stmts,
             function (Node $node) use ($propertyName, &$assignExprs, $paramNames): ?int {
                 if ($node instanceof Class_) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $node instanceof Assign) {

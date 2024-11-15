@@ -62,7 +62,7 @@ final class CarbonCallFactory
             }
 
             // If we fallback to a parse we want to include tomorrow/today/yesterday etc
-            if ($currentCall->name instanceof Identifier && $currentCall->name->name != 'now') {
+            if ($currentCall->name instanceof Identifier && $currentCall->name->name !== 'now') {
                 $rest .= ' ' . $currentCall->name->name;
             }
 

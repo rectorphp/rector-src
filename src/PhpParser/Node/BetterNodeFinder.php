@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -172,7 +173,7 @@ final readonly class BetterNodeFinder
             (array) $functionLike->stmts,
             static function (Node $subNode) use ($types, &$isFoundNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 foreach ($types as $type) {
@@ -200,7 +201,7 @@ final readonly class BetterNodeFinder
             (array) $functionLike->stmts,
             function (Node $subNode) use (&$returns): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($subNode instanceof Yield_ || $subNode instanceof YieldFrom) {
@@ -248,7 +249,7 @@ final readonly class BetterNodeFinder
             $nodes,
             static function (Node $subNode) use ($types, &$foundNodes): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 foreach ($types as $type) {
@@ -307,7 +308,7 @@ final readonly class BetterNodeFinder
                         return NodeTraverser::STOP_TRAVERSAL;
                     }
 
-                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $foundNode instanceof $subNode) {

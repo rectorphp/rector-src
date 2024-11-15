@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Parser;
 
-use PhpParser\Lexer;
 use PhpParser\Node\Stmt;
 use PHPStan\Parser\Parser;
 use Rector\PhpParser\ValueObject\StmtsAndTokens;

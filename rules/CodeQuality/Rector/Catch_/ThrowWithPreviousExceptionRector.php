@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Catch_;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
@@ -13,7 +14,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Catch_;
-use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
@@ -177,7 +177,7 @@ CODE_SAMPLE
         $new->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
         // nothing more to add
-        return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
     }
 
     private function resolveExceptionArgumentPosition(Name $exceptionName): ?int
@@ -200,11 +200,11 @@ CODE_SAMPLE
         }
 
         $extendedMethodReflection = $classReflection->getConstructor();
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::combineAcceptors(
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
 
-        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $position => $parameterReflectionWithPhpDoc) {
+        foreach ($extendedParametersAcceptor->getParameters() as $position => $parameterReflectionWithPhpDoc) {
             $parameterType = $parameterReflectionWithPhpDoc->getType();
             $className = ClassNameFromObjectTypeResolver::resolve($parameterReflectionWithPhpDoc->getType());
 

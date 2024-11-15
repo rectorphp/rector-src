@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Rector;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -158,7 +159,7 @@ CODE_SAMPLE;
 
             if (! in_array(
                 $refactoredNode,
-                [\PhpParser\NodeVisitor::DONT_TRAVERSE_CHILDREN, \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
+                [NodeVisitor::DONT_TRAVERSE_CHILDREN, NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
                 true
             )) {
                 // notify this rule changing code

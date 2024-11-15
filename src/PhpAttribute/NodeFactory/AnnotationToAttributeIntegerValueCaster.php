@@ -103,10 +103,10 @@ final readonly class AnnotationToAttributeIntegerValueCaster
     {
         $extendedMethodReflection = $classReflection->getConstructor();
 
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::combineAcceptors(
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
 
-        return $parametersAcceptorWithPhpDocs->getParameters();
+        return $extendedParametersAcceptor->getParameters();
     }
 }

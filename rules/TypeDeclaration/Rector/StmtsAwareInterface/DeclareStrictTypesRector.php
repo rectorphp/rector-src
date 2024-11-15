@@ -94,8 +94,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $declareDeclare = new DeclareItem(new Identifier('strict_types'), new LNumber(1));
-        $strictTypesDeclare = new Declare_([$declareDeclare]);
+        $declareItem = new DeclareItem(new Identifier('strict_types'), new LNumber(1));
+        $strictTypesDeclare = new Declare_([$declareItem]);
 
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);

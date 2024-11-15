@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php70\Rector\Break_;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\FunctionLike;
@@ -95,7 +96,7 @@ CODE_SAMPLE
                 $node->cases,
                 static function (Node $subNode): ?int {
                     if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction)) {
-                        return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                     }
 
                     if (! $subNode instanceof Break_) {

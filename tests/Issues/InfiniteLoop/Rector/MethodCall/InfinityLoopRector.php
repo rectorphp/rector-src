@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Issues\InfiniteLoop\Rector\MethodCall;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\NodeTraverser;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,7 +30,7 @@ final class InfinityLoopRector extends AbstractRector
     public function refactor(Node $node): Assign|null|int
     {
         if ($node instanceof Assign) {
-            return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         if (! $this->isName($node->name, 'modify')) {

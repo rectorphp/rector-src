@@ -17,7 +17,7 @@ final readonly class PropertyRename
         private string $currentName,
         private ClassLike $classLike,
         private string $classLikeName,
-        private PropertyItem $propertyProperty
+        private PropertyItem $propertyItem
     ) {
         // name must be valid
         RectorAssert::propertyName($currentName);
@@ -61,6 +61,6 @@ final readonly class PropertyRename
 
     public function getPropertyProperty(): PropertyItem
     {
-        return $this->propertyProperty;
+        return $this->propertyItem;
     }
 }

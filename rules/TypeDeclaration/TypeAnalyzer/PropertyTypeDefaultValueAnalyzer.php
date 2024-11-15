@@ -16,14 +16,14 @@ final readonly class PropertyTypeDefaultValueAnalyzer
     ) {
     }
 
-    public function doesConflictWithDefaultValue(PropertyItem $propertyProperty, Type $propertyType): bool
+    public function doesConflictWithDefaultValue(PropertyItem $propertyItem, Type $propertyType): bool
     {
-        if (! $propertyProperty->default instanceof Expr) {
+        if (! $propertyItem->default instanceof Expr) {
             return false;
         }
 
         // the defaults can be in conflict
-        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($propertyProperty->default);
+        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($propertyItem->default);
         if ($defaultType->isArray()->yes() && $propertyType->isArray()->yes()) {
             return false;
         }
