@@ -7,7 +7,7 @@ namespace Rector\VendorLocker\NodeVendorLocker;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\FunctionVariantWithPhpDocs;
+use PHPStan\Reflection\ExtendedFunctionVariant;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\MixedType;
 use Rector\FileSystem\FilePathHelper;
@@ -68,7 +68,7 @@ final readonly class ClassMethodReturnTypeOverrideGuard
             $classMethod,
             $scope
         );
-        if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs && ! $parametersAcceptor->getNativeReturnType() instanceof MixedType) {
+        if ($parametersAcceptor instanceof ExtendedFunctionVariant && ! $parametersAcceptor->getNativeReturnType() instanceof MixedType) {
             return false;
         }
 

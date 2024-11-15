@@ -6,7 +6,7 @@ namespace Rector\VendorLocker\NodeVendorLocker;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\FunctionVariantWithPhpDocs;
+use PHPStan\Reflection\ExtendedFunctionVariant;
 use PHPStan\Type\MixedType;
 use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -60,7 +60,7 @@ final readonly class ClassMethodReturnVendorLockResolver
 
             $parentClassMethodReflection = $ancestorClassReflections->getNativeMethod($methodName);
             $parametersAcceptor = $parentClassMethodReflection->getVariants()[0];
-            if (! $parametersAcceptor instanceof FunctionVariantWithPhpDocs) {
+            if (! $parametersAcceptor instanceof ExtendedFunctionVariant) {
                 continue;
             }
 
