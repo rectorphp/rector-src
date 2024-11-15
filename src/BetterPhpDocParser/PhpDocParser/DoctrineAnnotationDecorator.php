@@ -201,6 +201,11 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 continue;
             }
 
+            // prepare for doctrine value node migration
+            // if ($phpDocChildNode->value instanceof \PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode) {
+
+            // }
+
             if (! $phpDocChildNode->value instanceof GenericTagValueNode) {
                 $this->processDescriptionAsSpacelessPhpDoctagNode(
                     $phpDocNode,
