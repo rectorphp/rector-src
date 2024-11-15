@@ -202,9 +202,12 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             }
 
             // prepare for doctrine value node migration
-            // if ($phpDocChildNode->value instanceof \PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode) {
+            if ($phpDocChildNode->value instanceof \PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode) {
+                $startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
 
-            // }
+                $phpDocChildNode->value = new GenericTagValueNode((string) $phpDocChildNode->value);
+                $phpDocChildNode->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
+            }
 
             if (! $phpDocChildNode->value instanceof GenericTagValueNode) {
                 $this->processDescriptionAsSpacelessPhpDoctagNode(
