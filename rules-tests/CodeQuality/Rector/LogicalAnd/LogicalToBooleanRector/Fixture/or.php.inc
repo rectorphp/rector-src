@@ -12,7 +12,7 @@ if (false or true) {
 -----
 <?php
 
-if (($f = false) || true) {
+if ($f = false || true) {
     return $f;
 }
 
