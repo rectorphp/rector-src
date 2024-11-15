@@ -10,7 +10,7 @@ use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Type\ArrayType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
@@ -42,12 +42,14 @@ final class PhpDocTypeMapperTest extends AbstractLazyTestCase
     }
 
     /**
-     * @return Iterator<class-string<ArrayType>[]|ArrayShapeNode[]>
+     * @return Iterator<(class-string<ConstantArrayType>[] | ArrayShapeNode[])>
      */
     public static function provideData(): Iterator
     {
-        $arrayShapeNode = new ArrayShapeNode([new ArrayShapeItemNode(null, true, new IdentifierTypeNode('string'))]);
+        $arrayShapeNode = ArrayShapeNode::createSealed([
+            new ArrayShapeItemNode(null, true, new IdentifierTypeNode('string')),
+        ]);
 
-        yield [$arrayShapeNode, ArrayType::class];
+        yield [$arrayShapeNode, ConstantArrayType::class];
     }
 }
