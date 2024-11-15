@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
@@ -141,14 +142,14 @@ CODE_SAMPLE
         }
 
         $arrayStaticType = $this->getType($expr);
-        if (! $arrayStaticType instanceof ArrayType) {
+        if (! $arrayStaticType->isArray()->yes()) {
             return true;
         }
 
         return ! $this->isArrayKeyTypeAllowed($arrayStaticType);
     }
 
-    private function isArrayKeyTypeAllowed(ArrayType $arrayType): bool
+    private function isArrayKeyTypeAllowed(ArrayType|ConstantArrayType $arrayType): bool
     {
         if ($arrayType->getKeyType()->isInteger()->yes()) {
             return true;
