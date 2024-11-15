@@ -6,7 +6,7 @@ namespace Rector\Tests\PhpParser\Node;
 
 use Iterator;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;

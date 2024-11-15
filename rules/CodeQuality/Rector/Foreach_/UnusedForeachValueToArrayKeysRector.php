@@ -7,7 +7,7 @@ namespace Rector\CodeQuality\Rector\Foreach_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
