@@ -163,13 +163,13 @@ final readonly class FileProcessor
             }
 
             // handle space before <?php
-            $ltrimNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
-            $ltrimOriginalFileContent = Strings::replace(
+            $strippedNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            $strippedOriginalFileContent = Strings::replace(
                 $originalFileContent,
                 self::OPEN_TAG_SPACED_REGEX,
                 '<?php'
             );
-            if ($ltrimOriginalFileContent === $ltrimNewContent) {
+            if ($strippedOriginalFileContent === $strippedNewContent) {
                 return;
             }
         }
