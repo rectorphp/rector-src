@@ -19,10 +19,8 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
@@ -181,12 +179,12 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $this->pPrefixOp(
-            Expr\ArrowFunction::class,
+            ArrowFunction::class,
             $this->pAttrGroups($arrowFunction->attrGroups, true)
             . $this->pStatic($arrowFunction->static)
             . 'fn' . ($arrowFunction->byRef ? '&' : '')
             . '(' . $this->pMaybeMultiline($arrowFunction->params, $this->phpVersion->supportsTrailingCommaInParamList()) . ')'
-            . (null !== $arrowFunction->returnType ? ': ' . $this->p($arrowFunction->returnType) : '')
+            . ($arrowFunction->returnType instanceof Node ? ': ' . $this->p($arrowFunction->returnType) : '')
             . ' => '
             . $text
             . $indent,
@@ -235,21 +233,20 @@ final class BetterStandardPrinter extends Standard
     /**
      * @param mixed[] $nodes
      * @param mixed[] $origNodes
-     * @param int|null $fixup
      */
     protected function pArray(
-        array $nodes,
+        array  $nodes,
         array $origNodes,
         int &$pos,
         int $indentAdjustment,
-        string $parentNodeType,
+        string $parentNodeClass,
         string $subNodeName,
-        $fixup
+        ?int $fixup
     ): ?string {
         // reindex positions for printer
         $nodes = array_values($nodes);
 
-        $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
+        $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeClass, $subNodeName, $fixup);
         if ($content === null) {
             return $content;
         }
@@ -301,7 +298,7 @@ final class BetterStandardPrinter extends Standard
             return $closureContent;
         }
 
-        return str_replace(' use(', ' use (', (string) $closureContent);
+        return str_replace(' use(', ' use (', $closureContent);
     }
 
     /**
@@ -404,12 +401,6 @@ final class BetterStandardPrinter extends Standard
         }
 
         return parent::pExpr_Ternary($ternary, $precedence, $lhsPrecedence);
-    }
-
-    protected function pScalar_EncapsedStringPart(EncapsedStringPart $encapsedStringPart): string
-    {
-        // parent throws exception, but we need to compare string
-        return '`' . $encapsedStringPart->value . '`';
     }
 
     protected function pCommaSeparated(array $nodes): string
