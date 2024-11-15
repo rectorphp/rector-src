@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -100,7 +101,7 @@ CODE_SAMPLE
             }
 
             // special case of nested array items
-            if ($stmt->valueVar instanceof Array_) {
+            if ($stmt->valueVar instanceof List_) {
                 $valueArray = $this->refactorArrayForeachValue($stmt->valueVar, $stmt);
                 if ($valueArray instanceof Array_) {
                     $stmt->valueVar = $valueArray;
@@ -146,7 +147,7 @@ CODE_SAMPLE
     /**
      * @param int[] $removedKeys
      */
-    private function isArrayItemsRemovalWithoutChangingOrder(Array_ $array, array $removedKeys): bool
+    private function isArrayItemsRemovalWithoutChangingOrder(List_ $array, array $removedKeys): bool
     {
         $hasRemovingStarted = false;
 
@@ -162,7 +163,7 @@ CODE_SAMPLE
         return true;
     }
 
-    private function refactorArrayForeachValue(Array_ $array, Foreach_ $foreach): ?Array_
+    private function refactorArrayForeachValue(List_ $array, Foreach_ $foreach): ?List_
     {
         // only last items can be removed, without changing the order
         $removedKeys = [];
