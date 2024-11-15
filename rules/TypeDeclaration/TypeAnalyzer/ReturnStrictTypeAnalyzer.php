@@ -23,7 +23,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\Native\NativeMethodReflection;
-use PHPStan\Reflection\ParametersAcceptorWithPhpDocs;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
@@ -66,12 +65,7 @@ final readonly class ReturnStrictTypeAnalyzer
                 $returnNode = $this->resolveMethodCallReturnNode($returnedExpr);
             } elseif ($returnedExpr instanceof ClassConstFetch) {
                 $returnNode = $this->resolveConstFetchReturnNode($returnedExpr, $scope);
-            } elseif (
-                $returnedExpr instanceof Array_
-                || $returnedExpr instanceof String_
-                || $returnedExpr instanceof LNumber
-                || $returnedExpr instanceof DNumber
-            ) {
+            } elseif ($returnedExpr instanceof Array_ || $returnedExpr instanceof String_ || $returnedExpr instanceof LNumber || $returnedExpr instanceof DNumber) {
                 $returnNode = $this->resolveLiteralReturnNode($returnedExpr, $scope);
             } else {
                 return [];
@@ -125,11 +119,9 @@ final readonly class ReturnStrictTypeAnalyzer
 
         if ($methodReflection instanceof NativeFunctionReflection || $methodReflection instanceof NativeMethodReflection) {
             $returnType = $parametersAcceptorWithPhpDocs->getReturnType();
-        } elseif ($parametersAcceptorWithPhpDocs instanceof ParametersAcceptorWithPhpDocs) {
+        } else {
             // native return type is needed, as docblock can be false
             $returnType = $parametersAcceptorWithPhpDocs->getNativeReturnType();
-        } else {
-            $returnType = $parametersAcceptorWithPhpDocs->getReturnType();
         }
 
         if ($returnType instanceof MixedType) {
