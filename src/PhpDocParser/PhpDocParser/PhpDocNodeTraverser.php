@@ -137,7 +137,7 @@ final class PhpDocNodeTraverser
                         } elseif ($return === self::STOP_TRAVERSAL) {
                             $this->stopTraversal = true;
                         } elseif ($return === self::NODE_REMOVE) {
-                            $subNode = null;
+                            unset($subNode);
                             continue 2;
                         } else {
                             throw new InvalidTraverseException(
