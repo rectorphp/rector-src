@@ -71,6 +71,17 @@ return [
             // comment out
             str_replace('\\' . $prefix . '\trigger_deprecation(', '// \trigger_deprecation(', $content),
 
+        // make external rules easier to write without enforing getRuleDefinition()
+        // as they are not designed for open-sourcing
+        static function (string $filePath, string $prefix, string $content): string {
+            if (!\str_ends_with($filePath, 'vendor/symplify/rule-doc-generator-contracts/src/Contract/DocumentedRuleInterface.php')) {
+                return $content;
+            }
+
+            // comment out
+            return str_replace('public function getRuleDefinition', '// public function getRuleDefinition', $content);
+        },
+
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'src/Application/VersionResolver.php')) {
                 return $content;
