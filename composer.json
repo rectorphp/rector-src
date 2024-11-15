@@ -104,7 +104,7 @@
         ],
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
-        "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify --memory-limit=512M",
+        "phpstan": "vendor/bin/phpstan analyse --ansi --memory-limit=512M",
         "docs": "vendor/bin/rule-doc-generator validate rules",
         "rector": "bin/rector process --ansi",
         "preload": "php build/build-preload.php .",
