@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeFactory;
 
-use PhpParser\Node\Stmt\Class_;
+use PhpParser\Modifiers;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\PropertyItem;
 use PHPStan\Type\Type;
@@ -29,7 +29,7 @@ final readonly class MissingPropertiesFactory
                 continue;
             }
 
-            $property = new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty($propertyName)]);
+            $property = new Property(Modifiers::PUBLIC, [new PropertyItem($propertyName)]);
             $this->propertyTypeDecorator->decorateProperty($property, $propertyType);
 
             $newProperties[] = $property;
