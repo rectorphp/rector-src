@@ -99,7 +99,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            if (in_array($oldTokens[$i], ['{', ':'], true)) {
+            if (in_array((string) $oldTokens[$i], ['{', ':'], true)) {
                 // all good
                 return true;
             }
