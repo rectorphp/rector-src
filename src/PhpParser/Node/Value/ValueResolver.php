@@ -12,10 +12,12 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\MagicConst\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\ConstantType;
 use Rector\Enum\ObjectReference;
@@ -155,6 +157,13 @@ final class ValueResolver
             $constExprEvaluator = $this->getConstExprEvaluator();
             return $constExprEvaluator->evaluateDirectly($expr);
         } catch (ConstExprEvaluationException|TypeError) {
+        }
+
+        if ($expr instanceof Class_) {
+            $type = $this->nodeTypeResolver->getNativeType($expr);
+            if ($type instanceof ConstantStringType) {
+                return $type->getValue();
+            }
         }
 
         return null;
