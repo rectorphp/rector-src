@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan;
 
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\ConstantType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
@@ -42,7 +41,7 @@ final class TypeHasher
             return $this->resolveUniqueTypeWithClassNameHash($type);
         }
 
-        if ($type instanceof ConstantType) {
+        if ($type->isConstantValue()->yes()) {
             return $type::class;
         }
 
