@@ -96,7 +96,7 @@ final readonly class UseImportNameMatcher
         }
 
         $shortName = $originalUseUseNode->alias instanceof Identifier ? $originalUseUseNode->alias->name : $originalUseUseNode->name->getLast();
-        $shortNamePattern = preg_quote((string) $shortName, '#');
+        $shortNamePattern = preg_quote($shortName, '#');
         $pattern = sprintf(self::SHORT_NAME_REGEX, $shortNamePattern);
         return StringUtils::isMatch($tag, $pattern);
     }

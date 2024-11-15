@@ -184,7 +184,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             : $useItem->name->toString();
 
         if (! $isCaseSensitive) {
-            $comparedName = strtolower((string) $comparedName);
+            $comparedName = strtolower($comparedName);
         }
 
         if (in_array($comparedName, $names, true)) {
