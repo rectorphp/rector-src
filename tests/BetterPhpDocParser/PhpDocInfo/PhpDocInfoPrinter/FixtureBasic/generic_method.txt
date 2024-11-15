@@ -1,0 +1,1 @@
+/** @method T foo<T of int>(T $bar) */
