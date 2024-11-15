@@ -51,7 +51,7 @@ final class ComposerJsonPhpVersionResolver
 
         $projectComposerJson = JsonFileSystem::readFilePath($composerJson);
 
-        // give this one a priority, as more generic one
+        // give this one a priority, as more generic one. see https://github.com/composer/composer/issues/7914
         $requirePhpVersion = $projectComposerJson['require']['php'] ?? $projectComposerJson['require']['php-64bit'] ?? null;
         if ($requirePhpVersion !== null) {
             self::$cachedPhpVersions[$composerJson] = self::createIntVersionFromComposerVersion($requirePhpVersion);
