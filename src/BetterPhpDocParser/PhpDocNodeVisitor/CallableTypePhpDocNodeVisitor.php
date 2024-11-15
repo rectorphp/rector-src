@@ -31,7 +31,8 @@ final class CallableTypePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor impl
         $spacingAwareCallableTypeNode = new SpacingAwareCallableTypeNode(
             $node->identifier,
             $node->parameters,
-            $node->returnType
+            $node->returnType,
+            []
         );
 
         $this->attributeMirrorer->mirror($node, $spacingAwareCallableTypeNode);
