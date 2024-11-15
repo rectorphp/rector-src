@@ -33,11 +33,6 @@ final class TerminatedNodeAnalyzer
     /**
      * @var array<class-string<Node>>
      */
-    private const TERMINATED_NODES = [Return_::class];
-
-    /**
-     * @var array<class-string<Node>>
-     */
     private const TERMINABLE_NODES = [Return_::class, Break_::class, Continue_::class];
 
     /**
