@@ -155,7 +155,7 @@ CODE_SAMPLE
         $node->returnType = new Identifier('array');
 
         // add more precise array type if suitable
-        if ($returnType instanceof ArrayType && $this->shouldAddReturnArrayDocType($returnType)) {
+        if ($returnType->isArray()->yes() && $this->shouldAddReturnArrayDocType($returnType)) {
             $this->changeReturnType($node, $returnType);
         }
 
@@ -174,7 +174,7 @@ CODE_SAMPLE
         );
     }
 
-    private function changeReturnType(ClassMethod|Function_|Closure $node, ArrayType $arrayType): void
+    private function changeReturnType(ClassMethod|Function_|Closure $node, ArrayType|\PHPStan\Type\Constant\ConstantArrayType $arrayType): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
@@ -263,7 +263,7 @@ CODE_SAMPLE
         return $variables;
     }
 
-    private function shouldAddReturnArrayDocType(ArrayType $arrayType): bool
+    private function shouldAddReturnArrayDocType(ArrayType|\PHPStan\Type\Constant\ConstantArrayType $arrayType): bool
     {
         if ($arrayType instanceof ConstantArrayType) {
             if ($arrayType->getItemType() instanceof NeverType) {
