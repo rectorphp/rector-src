@@ -9,11 +9,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\Throw_;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\ValueObject\CondAndExpr;
@@ -74,7 +74,7 @@ final readonly class MatchSwitchAnalyzer
             return false;
         }
 
-        return ! $nextStmt instanceof Throw_;
+        return ! ($nextStmt instanceof Expression && $nextStmt->expr instanceof Throw_);
     }
 
     /**

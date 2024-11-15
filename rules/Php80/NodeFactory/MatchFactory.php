@@ -38,7 +38,7 @@ final readonly class MatchFactory
         if (! $this->matchSwitchAnalyzer->hasCondsAndExprDefaultValue($condAndExprs)) {
             // 1. is followed by throws stmts?
             if ($nextStmt instanceof Expression && $nextStmt->expr instanceof Throw_) {
-                $throw = new Throw_($nextStmt->expr);
+                $throw = $nextStmt->expr;
                 $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN);
 
                 $shouldRemoteNextStmt = true;
