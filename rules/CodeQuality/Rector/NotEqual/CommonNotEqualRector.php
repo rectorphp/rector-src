@@ -76,11 +76,8 @@ CODE_SAMPLE
 
         for ($i = $tokenStartPos; $i < $tokenEndPos; ++$i) {
             $token = $this->file->getOldTokens()[$i];
-            if (! isset($token[1])) {
-                continue;
-            }
 
-            if ($token[1] === '<>') {
+            if ((string) $token === '<>') {
                 return true;
             }
         }
