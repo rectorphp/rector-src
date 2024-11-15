@@ -423,13 +423,13 @@ final class BetterStandardPrinter extends Standard
      * Invoke re-print even if only raw value was changed.
      * That allows PHPStan to use int strict types, while changing the value with literal "_"
      */
-    protected function pScalar_Int(Int_ $node): string
+    protected function pScalar_Int(Int_ $int): string
     {
-        if ($this->shouldPrintNewRawValue($node)) {
-            return (string) $node->getAttribute(AttributeKey::RAW_VALUE);
+        if ($this->shouldPrintNewRawValue($int)) {
+            return (string) $int->getAttribute(AttributeKey::RAW_VALUE);
         }
 
-        return parent::pScalar_Int($node);
+        return parent::pScalar_Int($int);
     }
 
     protected function pExpr_MethodCall(MethodCall $methodCall): string
