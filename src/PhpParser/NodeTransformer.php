@@ -75,10 +75,6 @@ final class NodeTransformer
         $yields = [];
 
         foreach ($array->items as $arrayItem) {
-            if (! $arrayItem instanceof ArrayItem) {
-                continue;
-            }
-
             $yield = new Yield_($arrayItem->value, $arrayItem->key);
             $expression = new Expression($yield);
 
