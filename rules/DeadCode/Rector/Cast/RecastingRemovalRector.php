@@ -103,6 +103,14 @@ CODE_SAMPLE
         }
 
         if ($nodeType instanceof ConstantArrayType && $nodeClass === Array_::class) {
+            if ($this->shouldSkip($node->expr)) {
+                return null;
+            }
+
+            if ($this->shouldSkipCall($node->expr)) {
+                return null;
+            }
+
             return $node->expr;
         }
 
