@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
+use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
-use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Nop;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -129,7 +129,7 @@ CODE_SAMPLE
 
     private function creteStrictTypesDeclare(): Declare_
     {
-        $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
+        $declareDeclare = new DeclareItem(new Identifier('strict_types'), new LNumber(1));
         return new Declare_([$declareDeclare]);
     }
 }
