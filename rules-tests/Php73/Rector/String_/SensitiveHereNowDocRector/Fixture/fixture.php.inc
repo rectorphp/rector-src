@@ -29,19 +29,19 @@ namespace Rector\Tests\Php73\Rector\String_\SensitiveHereNowDocRector\Fixture;
 function sensitiveHereNowDoc()
 {
     $value = <<<PHP_WRAP
-    PHP_2
-PHP_WRAP;
+        PHP_2
+    PHP_WRAP;
 
     $value = <<<PHP_WRAP_1
-    PHP_WRAP_2
-PHP_WRAP_1;
+        PHP_WRAP_2
+    PHP_WRAP_1;
 
 // examples from RFC
     $value = <<<END_WRAP
-a
-b
-ENDING
-END_WRAP;
+    a
+    b
+    ENDING
+    END_WRAP;
 }
 
 ?>
