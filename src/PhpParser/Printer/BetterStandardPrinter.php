@@ -185,7 +185,7 @@ final class BetterStandardPrinter extends Standard
             . 'fn' . ($arrowFunction->byRef ? '&' : '')
             . '(' . $this->pMaybeMultiline($arrowFunction->params, $this->phpVersion->supportsTrailingCommaInParamList()) . ')'
             . ($arrowFunction->returnType instanceof Node ? ': ' . $this->p($arrowFunction->returnType) : '')
-            . ' => '
+            . ' =>'
             . $text
             . $indent,
             $arrowFunction->expr, $precedence, $lhsPrecedence);
