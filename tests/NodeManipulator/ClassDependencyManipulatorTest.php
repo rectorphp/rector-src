@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeManipulator;
 
+use PhpParser\Modifiers;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
@@ -12,6 +13,8 @@ use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\PropertyItem;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Type\ObjectType;
 use Rector\NodeManipulator\ClassDependencyManipulator;
@@ -30,9 +33,20 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
         $this->printerStandard = new Standard();
     }
 
+    private function setNamespacedName(Class_ $class): void
+    {
+        $nameResolver = new NameResolver();
+        $nodeTraverser = new NodeTraverser();
+
+        $nodeTraverser->addVisitor($nameResolver);
+        $nodeTraverser->traverse([$class]);
+    }
+
     public function testEmptyClass(): void
     {
         $someClass = new Class_(new Identifier('EmptyClass'));
+
+        $this->setNamespacedName($someClass);
 
         $this->addSingleDependency($someClass);
         $this->asssertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_empty_class.php.inc');
@@ -41,6 +55,9 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     public function testSingleMethod(): void
     {
         $someClass = new Class_(new Identifier('SingleMethodClass'));
+
+        $this->setNamespacedName($someClass);
+
         $someClass->stmts[] = new ClassMethod('firstMethod');
 
         $this->addSingleDependency($someClass);
@@ -51,7 +68,10 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     public function testWithProperty(): void
     {
         $someClass = new Class_(new Identifier('ClassWithSingleProperty'));
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PRIVATE, [new PropertyItem('someProperty')]);
+
+        $this->setNamespacedName($someClass);
+
+        $someClass->stmts[] = new Property(Modifiers::PRIVATE, [new PropertyItem('someProperty')]);
 
         $this->addSingleDependency($someClass);
 
@@ -62,7 +82,10 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     public function testWithMethodAndProperty(): void
     {
         $someClass = new Class_(new Identifier('ClassWithMethodAndProperty'));
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PRIVATE, [new PropertyItem('someProperty')]);
+
+        $this->setNamespacedName($someClass);
+
+        $someClass->stmts[] = new Property(Modifiers::PRIVATE, [new PropertyItem('someProperty')]);
         $someClass->stmts[] = new ClassMethod(new Identifier('someMethod'));
 
         $this->addSingleDependency($someClass);
@@ -73,9 +96,12 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     public function testConstantProperties(): void
     {
         $someClass = new Class_(new Identifier('ConstantProperties'));
+
+        $this->setNamespacedName($someClass);
+
         $someClass->stmts[] = new ClassConst([new Const_('SOME_CONST', new String_('value'))]);
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PUBLIC, [new PropertyItem('someProperty')]);
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PUBLIC, [new PropertyItem('anotherProperty')]);
+        $someClass->stmts[] = new Property(Modifiers::PUBLIC, [new PropertyItem('someProperty')]);
+        $someClass->stmts[] = new Property(Modifiers::PUBLIC, [new PropertyItem('anotherProperty')]);
 
         $this->addSingleDependency($someClass);
 
