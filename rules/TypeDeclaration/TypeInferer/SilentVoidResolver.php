@@ -31,7 +31,6 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
-use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
