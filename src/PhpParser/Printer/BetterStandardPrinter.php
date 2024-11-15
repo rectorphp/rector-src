@@ -180,15 +180,17 @@ final class BetterStandardPrinter extends Standard
             $text .= $commentText . "\n";
         }
 
-        return $this->pAttrGroups($arrowFunction->attrGroups, true)
-            . ($arrowFunction->static ? 'static ' : '')
+        return $this->pPrefixOp(
+            Expr\ArrowFunction::class,
+            $this->pAttrGroups($arrowFunction->attrGroups, true)
+            . $this->pStatic($arrowFunction->static)
             . 'fn' . ($arrowFunction->byRef ? '&' : '')
-            . '(' . $this->pCommaSeparated($arrowFunction->params) . ')'
-            . ($arrowFunction->returnType instanceof Node ? ': ' . $this->p($arrowFunction->returnType) : '')
-            . ' =>'
+            . '(' . $this->pMaybeMultiline($arrowFunction->params, $this->phpVersion->supportsTrailingCommaInParamList()) . ')'
+            . (null !== $arrowFunction->returnType ? ': ' . $this->p($arrowFunction->returnType) : '')
+            . ' => '
             . $text
-            . $indent
-            . $this->p($arrowFunction->expr);
+            . $indent,
+            $arrowFunction->expr, $precedence, $lhsPrecedence);
     }
 
     /**
