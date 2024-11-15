@@ -157,15 +157,15 @@ final readonly class FileProcessor
              * Handle new line or space before <?php or InlineHTML node wiped on print format preserving
              * On very first content level
              */
-            $ltrimOriginalFileContent = ltrim($file->getOriginalFileContent());
-            if ($ltrimOriginalFileContent === $newContent) {
+            $originalFileContent = $file->getOriginalFileContent();
+            if ($originalFileContent === $newContent) {
                 return;
             }
 
             // handle space before <?php
             $ltrimNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             $ltrimOriginalFileContent = Strings::replace(
-                $ltrimOriginalFileContent,
+                $originalFileContent,
                 self::OPEN_TAG_SPACED_REGEX,
                 '<?php'
             );
