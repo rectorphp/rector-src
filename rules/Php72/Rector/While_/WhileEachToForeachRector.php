@@ -114,7 +114,7 @@ CODE_SAMPLE
             $isTrailingCommaLast = true;
         }
 
-        $foreach = new Foreach_($foreachedExpr, $arrayItem, [
+        $foreach = new Foreach_($foreachedExpr, $arrayItem->value, [
             'stmts' => $node->stmts,
         ]);
 
