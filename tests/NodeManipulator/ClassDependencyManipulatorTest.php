@@ -51,7 +51,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     public function testWithProperty(): void
     {
         $someClass = new Class_(new Identifier('ClassWithSingleProperty'));
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PRIVATE, [new PropertyProperty('someProperty')]);
+        $someClass->stmts[] = new Property(Class_::MODIFIER_PRIVATE, [new PropertyItem('someProperty')]);
 
         $this->addSingleDependency($someClass);
 
@@ -62,7 +62,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     public function testWithMethodAndProperty(): void
     {
         $someClass = new Class_(new Identifier('ClassWithMethodAndProperty'));
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PRIVATE, [new PropertyProperty('someProperty')]);
+        $someClass->stmts[] = new Property(Class_::MODIFIER_PRIVATE, [new PropertyItem('someProperty')]);
         $someClass->stmts[] = new ClassMethod(new Identifier('someMethod'));
 
         $this->addSingleDependency($someClass);
@@ -74,8 +74,8 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     {
         $someClass = new Class_(new Identifier('ConstantProperties'));
         $someClass->stmts[] = new ClassConst([new Const_('SOME_CONST', new String_('value'))]);
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty('someProperty')]);
-        $someClass->stmts[] = new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty('anotherProperty')]);
+        $someClass->stmts[] = new Property(Class_::MODIFIER_PUBLIC, [new PropertyItem('someProperty')]);
+        $someClass->stmts[] = new Property(Class_::MODIFIER_PUBLIC, [new PropertyItem('anotherProperty')]);
 
         $this->addSingleDependency($someClass);
 
