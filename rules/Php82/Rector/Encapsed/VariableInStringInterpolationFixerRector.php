@@ -64,11 +64,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! is_array($oldTokens[$startTokenPos])) {
-                continue;
-            }
-
-            if ($oldTokens[$startTokenPos][1] !== '${') {
+            if ((string) $oldTokens[$startTokenPos] !== '${') {
                 continue;
             }
 
