@@ -154,6 +154,14 @@ CODE_SAMPLE
                 continue;
             }
 
+            foreach ($match->arms as $arm) {
+                if ($arm->conds === null) {
+                    continue;
+                }
+
+                $arm->conds = array_values($arm->conds);
+            }
+
             $node->stmts[$key] = $isReturn ? new Return_($match) : new Expression($match);
             $this->mirrorComments($node->stmts[$key], $stmt);
             $hasChanged = true;
