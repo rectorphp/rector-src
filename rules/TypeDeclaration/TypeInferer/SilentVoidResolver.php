@@ -128,7 +128,7 @@ final readonly class SilentVoidResolver
 
                 if ($subNode instanceof Break_ || $subNode instanceof Continue_ || $subNode instanceof Goto_) {
                     $isFoundLoopControl = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
             }
         );
