@@ -40,7 +40,7 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
     /**
      * @param ArrayItemNode $arrayItemNode
      */
-    public function map($arrayItemNode): Expr
+    public function map($arrayItemNode): ArrayItem
     {
         $valueExpr = $this->annotationToAttributeMapper->map($arrayItemNode->value);
 

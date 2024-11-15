@@ -33,6 +33,10 @@ final class NamedArgsFactory
         $args = [];
 
         foreach ($values as $key => $argValue) {
+            if ($argValue instanceof ArrayItem) {
+                $argValue = $argValue->value;
+            }
+
             $expr = BuilderHelpers::normalizeValue($argValue);
 
             $this->normalizeArrayWithConstFetchKey($expr);
