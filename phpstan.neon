@@ -303,5 +303,9 @@ parameters:
         # marker interface to be used ad-hoc
         - '#Interface "Rector\\Configuration\\Deprecation\\Contract\\DeprecatedInterface" has only single implementer#'
 
+        # more advanced usage, but not always working
+        # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110
+        - '#Doing instanceof PHPStan\\Type\\.+ is error\-prone and deprecated#'
+
         # deprecated
         - '#Register "Rector\\Php80\\Rector\\FunctionLike\\MixedTypeRector" service to "php80\.php" config set#'
