@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -225,7 +225,7 @@ CODE_SAMPLE;
      * @return ($node is Node\Param ? string :
      *  ($node is ClassMethod ? string :
      *  ($node is Property ? string :
-     *  ($node is PropertyProperty ? string :
+     *  ($node is PropertyItem ? string :
      *  ($node is Trait_ ? string :
      *  ($node is Interface_ ? string :
      *  ($node is Const_ ? string :

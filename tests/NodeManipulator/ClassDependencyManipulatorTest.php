@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Type\ObjectType;
 use Rector\NodeManipulator\ClassDependencyManipulator;

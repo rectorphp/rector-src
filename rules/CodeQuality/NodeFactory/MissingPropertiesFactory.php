@@ -6,7 +6,7 @@ namespace Rector\CodeQuality\NodeFactory;
 
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use PHPStan\Type\Type;
 
 final readonly class MissingPropertiesFactory

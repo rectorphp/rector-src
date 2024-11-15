@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -16,7 +16,7 @@ final readonly class PropertyTypeDefaultValueAnalyzer
     ) {
     }
 
-    public function doesConflictWithDefaultValue(PropertyProperty $propertyProperty, Type $propertyType): bool
+    public function doesConflictWithDefaultValue(PropertyItem $propertyProperty, Type $propertyType): bool
     {
         if (! $propertyProperty->default instanceof Expr) {
             return false;

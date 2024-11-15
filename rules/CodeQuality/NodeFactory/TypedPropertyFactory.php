@@ -11,7 +11,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PropertyTagValueNode;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -28,7 +28,7 @@ final readonly class TypedPropertyFactory
         Class_ $class,
         string $propertyName
     ): Property {
-        $propertyProperty = new PropertyProperty($propertyName);
+        $propertyProperty = new PropertyItem($propertyName);
         $propertyTypeNode = $this->createPropertyTypeNode($propertyTagValueNode, $class);
 
         return new Property(Class_::MODIFIER_PRIVATE, [$propertyProperty], [], $propertyTypeNode);
