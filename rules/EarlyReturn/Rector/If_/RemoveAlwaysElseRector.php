@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -173,7 +173,7 @@ CODE_SAMPLE
         }
 
         return ! ($lastStmt instanceof Return_
-            || $lastStmt instanceof Throw_
+            || (($lastStmt instanceof Expression || $lastStmt instanceof Return_) && $lastStmt->expr instanceof Throw_)
             || $lastStmt instanceof Continue_
             || ($lastStmt instanceof Expression && $lastStmt->expr instanceof Exit_));
     }
