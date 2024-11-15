@@ -19,6 +19,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -211,7 +212,7 @@ final readonly class PHPStanNodeScopeResolver
             if ($node instanceof Foreach_) {
                 // decorate value as well
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                if ($node->valueVar instanceof Array_) {
+                if ($node->valueVar instanceof List_) {
                     $this->processArray($node->valueVar, $mutatingScope);
                 }
 
@@ -353,7 +354,7 @@ final readonly class PHPStanNodeScopeResolver
         $assign->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
-    private function processArray(Array_ $array, MutatingScope $mutatingScope): void
+    private function processArray(List_|Array_ $array, MutatingScope $mutatingScope): void
     {
         foreach ($array->items as $arrayItem) {
             if ($arrayItem instanceof ArrayItem) {
