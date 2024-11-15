@@ -131,7 +131,7 @@ CODE_SAMPLE
             &$isParamAccessedArrayDimFetch,
         ): int|null {
             if ($node instanceof Class_ || $node instanceof FunctionLike) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($this->shouldStop($node, $param, $paramName)) {

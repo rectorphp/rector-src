@@ -116,7 +116,7 @@ CODE_SAMPLE
             &$hasChanged
         ): int|null|Return_ {
             if ($node instanceof Class_ || $node instanceof Function_ || $node instanceof Closure) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Return_ && ! $node->expr instanceof Expr) {

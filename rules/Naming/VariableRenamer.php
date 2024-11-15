@@ -58,7 +58,7 @@ final readonly class VariableRenamer
             ): int|null|Variable {
                 // skip param names
                 if ($node instanceof Param) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($assign instanceof Assign && $node === $assign) {

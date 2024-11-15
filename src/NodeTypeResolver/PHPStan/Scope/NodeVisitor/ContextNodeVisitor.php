@@ -154,7 +154,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             $stmts,
             static function (Node $subNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($subNode instanceof If_ || $subNode instanceof Break_) {

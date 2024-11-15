@@ -112,7 +112,7 @@ CODE_SAMPLE
         // keep allowed string as condition
         if ($node instanceof FuncCall) {
             if ($this->isName($node, 'is_a')) {
-                return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CHILDREN;
             }
 
             return null;

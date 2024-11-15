@@ -94,7 +94,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             &$names
         ): int|null|Name {
             if ($node instanceof Use_) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $node instanceof Name) {

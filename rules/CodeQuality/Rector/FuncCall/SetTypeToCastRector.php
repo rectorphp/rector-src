@@ -111,7 +111,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+            return \PhpParser\NodeVisitor::DONT_TRAVERSE_CHILDREN;
         }
 
         if ($node instanceof Expression) {

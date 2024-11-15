@@ -123,7 +123,7 @@ CODE_SAMPLE
             $classReflection
         ): null|StaticCall|int {
             if ($subNode instanceof Encapsed) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $subNode instanceof MethodCall) {

@@ -40,7 +40,7 @@ final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements ScopeR
             $stmts,
             static function (Node $node): int|null|Node {
                 if ($node instanceof Class_ || $node instanceof FunctionLike) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $node instanceof Return_) {

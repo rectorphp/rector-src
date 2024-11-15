@@ -147,7 +147,7 @@ CODE_SAMPLE
         ): int|null {
             // skip nested class and function nodes
             if ($node instanceof FunctionLike || $node instanceof Class_) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Assign && $node->var instanceof Variable && $this->isName($node->var, $paramName)) {

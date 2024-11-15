@@ -57,7 +57,7 @@ final readonly class ParamAnalyzer
 
             // skip nested anonymous class
             if ($node instanceof Class_ || $node instanceof Function_) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $param->var)) {

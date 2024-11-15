@@ -92,7 +92,7 @@ CODE_SAMPLE
     public function refactor(Node $node): int|null|StaticCall|MethodCall
     {
         if ($node instanceof Property || $node instanceof ClassConst) {
-            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         $scope = ScopeFetcher::fetch($node);

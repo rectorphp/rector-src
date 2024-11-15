@@ -67,7 +67,7 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Sco
             $stmt,
             static function (Node $subNode) use ($staticVariableNames): int|null|Variable {
                 if ($subNode instanceof Class_) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $subNode instanceof Variable) {

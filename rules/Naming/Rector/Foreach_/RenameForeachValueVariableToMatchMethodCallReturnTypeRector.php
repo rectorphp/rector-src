@@ -99,7 +99,7 @@ CODE_SAMPLE
             $node->stmts,
             function (Node $subNode) use ($node, &$hasRenamed): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Closure || $subNode instanceof Function_) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $subNode instanceof Foreach_) {

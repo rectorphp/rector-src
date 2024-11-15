@@ -154,7 +154,7 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode): ?int {
             if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $subNode instanceof Return_) {

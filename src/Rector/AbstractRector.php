@@ -158,7 +158,7 @@ CODE_SAMPLE;
 
             if (! in_array(
                 $refactoredNode,
-                [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
+                [\PhpParser\NodeVisitor::DONT_TRAVERSE_CHILDREN, \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
                 true
             )) {
                 // notify this rule changing code

@@ -41,7 +41,7 @@ final readonly class PropertyFetchAssignManipulator
             function (Node $node) use ($propertyName, &$count): ?int {
                 // skip anonymous classes and inner function
                 if ($node instanceof Class_ || $node instanceof Function_) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $node instanceof Assign && ! $node instanceof AssignOp) {

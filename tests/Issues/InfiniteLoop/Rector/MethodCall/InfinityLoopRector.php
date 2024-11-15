@@ -30,7 +30,7 @@ final class InfinityLoopRector extends AbstractRector
     public function refactor(Node $node): Assign|null|int
     {
         if ($node instanceof Assign) {
-            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            return \PhpParser\NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         if (! $this->isName($node->name, 'modify')) {
