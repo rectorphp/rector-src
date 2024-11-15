@@ -39,3 +39,39 @@ final class SimpleRector extends AbstractRector
     }
 }
 ```
+
+
+### 2. `AbstractRector` get focused on code, the `getRuleDefinition()` is no longer required
+
+Core rules need documentation, so people can read their feature and [search through](https://getrector.com/find-rule) them. Yet for writing custom rules and local rules, its not necessary. People often filled it empty, just to make Rector happy.
+
+This is no longer needed. Now The `getRuleDefinition()` method has been removed:
+
+```diff
+ use Rector\Rector\AbstractRector;
+-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+
+ final class SimpleRector extends AbstractRector
+ {
+-    public function getRuleDefinition(): RuleDefinition
+-    {
+-        return new RuleDefinition('// @todo fill the description', [
+-            new CodeSample(
+-                <<<'CODE_SAMPLE'
+-// @todo fill code before
+-CODE_SAMPLE
+-                ,
+-                <<<'CODE_SAMPLE'
+-// @todo fill code after
+-CODE_SAMPLE
+-            ),
+-        ]);
+-    }
+
+     // valuable code here
+ }
+```
+
+If you need description yourself to understand rule after many months, use the common place for documentation - docblock above class.
+
