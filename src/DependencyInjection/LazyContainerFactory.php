@@ -130,6 +130,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ClassStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ClosureTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeForParameterMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\ConstantArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\FloatTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\GenericClassStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasMethodTypeMapper;
@@ -266,6 +267,7 @@ final class LazyContainerFactory
         AccessoryNonEmptyStringTypeMapper::class,
         AccessoryNonFalsyStringTypeMapper::class,
         AccessoryNumericStringTypeMapper::class,
+        ConstantArrayTypeMapper::class,
         ArrayTypeMapper::class,
         BooleanTypeMapper::class,
         CallableTypeMapper::class,
