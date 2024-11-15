@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\ValueObject;
 
-use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\UseItem;
 
 final readonly class UseAliasMetadata
 {
     public function __construct(
         private string $shortAttributeName,
         private string $useImportName,
-        private UseUse $useUse
+        private UseItem $useItem
     ) {
     }
 
@@ -25,8 +25,8 @@ final readonly class UseAliasMetadata
         return $this->useImportName;
     }
 
-    public function getUseUse(): UseUse
+    public function getUseUse(): UseItem
     {
-        return $this->useUse;
+        return $this->useItem;
     }
 }

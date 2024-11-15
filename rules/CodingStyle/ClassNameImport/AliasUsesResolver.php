@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use PhpParser\Node\UseItem;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final readonly class AliasUsesResolver
@@ -52,14 +52,14 @@ final readonly class AliasUsesResolver
         /** @param Use_::TYPE_* $useType */
         $this->useImportsTraverser->traverserStmts($stmts, static function (
             int $useType,
-            UseUse $useUse,
+            UseItem $useItem,
             string $name
         ) use (&$aliasedUses): void {
             if ($useType !== Use_::TYPE_NORMAL) {
                 return;
             }
 
-            if (! $useUse->alias instanceof Identifier) {
+            if (! $useItem->alias instanceof Identifier) {
                 return;
             }
 

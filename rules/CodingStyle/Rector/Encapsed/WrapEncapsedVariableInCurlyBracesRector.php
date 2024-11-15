@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Encapsed;
 
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\Encapsed;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -42,11 +42,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Encapsed::class];
+        return [InterpolatedString::class];
     }
 
     /**
-     * @param Encapsed $node
+     * @param InterpolatedString $node
      */
     public function refactor(Node $node): ?Node
     {

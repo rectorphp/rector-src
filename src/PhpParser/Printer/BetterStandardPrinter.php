@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Printer;
 
+use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\Int_;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;
@@ -18,8 +20,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -275,13 +275,13 @@ final class BetterStandardPrinter extends Standard
     /**
      * Emulates 1_000 in PHP 7.3- version
      */
-    protected function pScalar_DNumber(DNumber $dNumber): string
+    protected function pScalar_DNumber(Float_ $float): string
     {
-        if ($this->shouldPrintNewRawValue($dNumber)) {
-            return (string) $dNumber->getAttribute(AttributeKey::RAW_VALUE);
+        if ($this->shouldPrintNewRawValue($float)) {
+            return (string) $float->getAttribute(AttributeKey::RAW_VALUE);
         }
 
-        return parent::pScalar_DNumber($dNumber);
+        return parent::pScalar_DNumber($float);
     }
 
     /**
@@ -423,13 +423,13 @@ final class BetterStandardPrinter extends Standard
      * Invoke re-print even if only raw value was changed.
      * That allows PHPStan to use int strict types, while changing the value with literal "_"
      */
-    protected function pScalar_LNumber(LNumber $lNumber): string|int
+    protected function pScalar_LNumber(Int_ $int): string|int
     {
-        if ($this->shouldPrintNewRawValue($lNumber)) {
-            return (string) $lNumber->getAttribute(AttributeKey::RAW_VALUE);
+        if ($this->shouldPrintNewRawValue($int)) {
+            return (string) $int->getAttribute(AttributeKey::RAW_VALUE);
         }
 
-        return parent::pScalar_LNumber($lNumber);
+        return parent::pScalar_LNumber($int);
     }
 
     protected function pExpr_MethodCall(MethodCall $methodCall): string
@@ -486,7 +486,7 @@ final class BetterStandardPrinter extends Standard
         return SimpleParameterProvider::provideStringParameter(Option::INDENT_CHAR, ' ');
     }
 
-    private function shouldPrintNewRawValue(LNumber|DNumber $lNumber): bool
+    private function shouldPrintNewRawValue(Int_|Float_ $lNumber): bool
     {
         return $lNumber->getAttribute(AttributeKey::REPRINT_RAW_VALUE) === true;
     }

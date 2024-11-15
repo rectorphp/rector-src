@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Encapsed;
 
+use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\InterpolatedStringPart;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -13,8 +15,6 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\Type;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
@@ -109,11 +109,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Encapsed::class];
+        return [InterpolatedString::class];
     }
 
     /**
-     * @param Encapsed $node
+     * @param InterpolatedString $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -125,7 +125,7 @@ CODE_SAMPLE
         $this->argumentVariables = [];
 
         foreach ($node->parts as $part) {
-            if ($part instanceof EncapsedStringPart) {
+            if ($part instanceof InterpolatedStringPart) {
                 $this->collectEncapsedStringPart($part);
             } else {
                 $this->collectExpr($part);
@@ -135,14 +135,14 @@ CODE_SAMPLE
         return $this->createSprintfFuncCallOrConcat($this->sprintfFormat, $this->argumentVariables);
     }
 
-    private function shouldSkip(Encapsed $encapsed): bool
+    private function shouldSkip(InterpolatedString $interpolatedString): bool
     {
-        return $encapsed->hasAttribute(AttributeKey::DOC_LABEL);
+        return $interpolatedString->hasAttribute(AttributeKey::DOC_LABEL);
     }
 
-    private function collectEncapsedStringPart(EncapsedStringPart $encapsedStringPart): void
+    private function collectEncapsedStringPart(InterpolatedStringPart $interpolatedStringPart): void
     {
-        $stringValue = $encapsedStringPart->value;
+        $stringValue = $interpolatedStringPart->value;
         if ($stringValue === "\n") {
             $this->argumentVariables[] = new ConstFetch(new Name('PHP_EOL'));
             $this->sprintfFormat .= '%s';

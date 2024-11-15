@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeManipulator;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Scalar\LNumber;
 use PHPStan\Type\NeverType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -88,7 +88,7 @@ final readonly class CountManipulator
 
     private function isNumber(Expr $expr, int $value): bool
     {
-        if (! $expr instanceof LNumber) {
+        if (! $expr instanceof Int_) {
             return false;
         }
 

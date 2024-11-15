@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\FuncCall;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -92,13 +92,13 @@ CODE_SAMPLE
     {
         $roundFuncCall = $this->nodeFactory->createFuncCall(
             'round',
-            [$expr, new LNumber(2), new ConstFetch(new Name('PHP_ROUND_HALF_ODD'))]
+            [$expr, new Int_(2), new ConstFetch(new Name('PHP_ROUND_HALF_ODD'))]
         );
 
         $funcCall->name = new Name('number_format');
         $funcCall->args = [
             new Arg($roundFuncCall),
-            new Arg(new LNumber(2)),
+            new Arg(new Int_(2)),
             new Arg(new String_('.')),
             new Arg(new String_('')),
         ];

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\ValueObject;
 
-use PhpParser\Node\Stmt\Class_;
+use PhpParser\Modifiers;
 use PHPStan\Type\Type;
 
 final readonly class PropertyMetadata
@@ -12,7 +12,7 @@ final readonly class PropertyMetadata
     public function __construct(
         private string $name,
         private ?Type $type,
-        private int $flags = Class_::MODIFIER_PRIVATE,
+        private int $flags = Modifiers::PRIVATE,
     ) {
     }
 

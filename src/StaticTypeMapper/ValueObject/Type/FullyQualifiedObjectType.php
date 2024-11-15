@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
+use PhpParser\Node\UseItem;
 use Nette\Utils\Strings;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -52,9 +52,9 @@ final class FullyQualifiedObjectType extends ObjectType
     public function getUseNode(int $useType): Use_
     {
         $name = new Name($this->getClassName());
-        $useUse = new UseUse($name);
+        $useItem = new UseItem($name);
 
-        $use = new Use_([$useUse]);
+        $use = new Use_([$useItem]);
         $use->type = $useType;
 
         return $use;

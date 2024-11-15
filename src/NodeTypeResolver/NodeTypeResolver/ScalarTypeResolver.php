@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
+use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node;
 use PhpParser\Node\Scalar;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\EncapsedStringPart;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\Constant\ConstantFloatType;
@@ -35,7 +35,7 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
 
     public function resolve(Node $node): Type
     {
-        if ($node instanceof DNumber) {
+        if ($node instanceof Float_) {
             return new ConstantFloatType($node->value);
         }
 
@@ -43,7 +43,7 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
             return new ConstantStringType($node->value);
         }
 
-        if ($node instanceof LNumber) {
+        if ($node instanceof Int_) {
             return new ConstantIntegerType($node->value);
         }
 
@@ -51,11 +51,11 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
             return new ConstantStringType($node->getName());
         }
 
-        if ($node instanceof Encapsed) {
+        if ($node instanceof InterpolatedString) {
             return new StringType();
         }
 
-        if ($node instanceof EncapsedStringPart) {
+        if ($node instanceof InterpolatedStringPart) {
             return new ConstantStringType($node->value);
         }
 

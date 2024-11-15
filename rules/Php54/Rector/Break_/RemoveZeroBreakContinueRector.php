@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Php54\Rector\Break_;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Continue_;
 use PHPStan\Type\Constant\ConstantIntegerType;
@@ -89,7 +89,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->num instanceof LNumber) {
+        if ($node->num instanceof Int_) {
             $number = $this->valueResolver->getValue($node->num);
             if ($number > 1) {
                 return null;
@@ -122,7 +122,7 @@ CODE_SAMPLE
                 }
 
                 if ($staticType->getValue() > 0) {
-                    $stmt->num = new LNumber($staticType->getValue());
+                    $stmt->num = new Int_($staticType->getValue());
                     return $stmt;
                 }
             }

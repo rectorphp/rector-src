@@ -94,7 +94,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FuncCall|Expression|Assign|Expr\ArrayItem|Node\Arg $node
+     * @param FuncCall|Expression|Assign|ArrayItem|Node\Arg $node
      */
     public function refactor(Node $node): null|int|Expression|Assign|Cast
     {

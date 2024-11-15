@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\PHPStan;
 
+use PhpParser\Node\UseItem;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -212,16 +212,16 @@ final readonly class ObjectTypeSpecifier
     private function matchPartialNamespaceObjectType(
         string $prefix,
         ObjectType $objectType,
-        UseUse $useUse
+        UseItem $useItem
     ): ?ShortenedObjectType {
         // partial namespace
-        if (! \str_starts_with($objectType->getClassName(), $useUse->name->getLast() . '\\')) {
+        if (! \str_starts_with($objectType->getClassName(), $useItem->name->getLast() . '\\')) {
             return null;
         }
 
         $classNameWithoutLastUsePart = Strings::after($objectType->getClassName(), '\\', 1);
 
-        $connectedClassName = $prefix . $useUse->name->toString() . '\\' . $classNameWithoutLastUsePart;
+        $connectedClassName = $prefix . $useItem->name->toString() . '\\' . $classNameWithoutLastUsePart;
         if (! $this->reflectionProvider->hasClass($connectedClassName)) {
             return null;
         }
@@ -239,20 +239,20 @@ final readonly class ObjectTypeSpecifier
     private function matchClassWithLastUseImportPart(
         string $prefix,
         ObjectType $objectType,
-        UseUse $useUse
+        UseItem $useItem
     ): ?ObjectType {
-        if ($useUse->name->getLast() !== $objectType->getClassName()) {
+        if ($useItem->name->getLast() !== $objectType->getClassName()) {
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($prefix . $useUse->name->toString())) {
+        if (! $this->reflectionProvider->hasClass($prefix . $useItem->name->toString())) {
             return null;
         }
 
-        if ($objectType->getClassName() === $prefix . $useUse->name->toString()) {
+        if ($objectType->getClassName() === $prefix . $useItem->name->toString()) {
             return new FullyQualifiedObjectType($objectType->getClassName());
         }
 
-        return new ShortenedObjectType($objectType->getClassName(), $prefix . $useUse->name->toString());
+        return new ShortenedObjectType($objectType->getClassName(), $prefix . $useItem->name->toString());
     }
 }

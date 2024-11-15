@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php70\Rector\MethodCall;
 
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
@@ -122,7 +122,7 @@ CODE_SAMPLE
             $class,
             $classReflection
         ): null|StaticCall|int {
-            if ($subNode instanceof Encapsed) {
+            if ($subNode instanceof InterpolatedString) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 

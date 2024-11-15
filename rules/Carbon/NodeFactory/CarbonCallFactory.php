@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Carbon\NodeFactory;
 
+use PhpParser\Node\Scalar\Int_;
 use Nette\Utils\Strings;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 
 final class CarbonCallFactory
@@ -38,7 +38,7 @@ final class CarbonCallFactory
         while ($match = Strings::match($string->value, self::PLUS_MINUS_COUNT_REGEX)) {
             $methodCall = $this->createModifyMethodCall(
                 $carbonCall,
-                new LNumber((int) $match['count']),
+                new Int_((int) $match['count']),
                 $match['unit'],
                 $match['operator']
             );
@@ -85,7 +85,7 @@ final class CarbonCallFactory
 
     private function createModifyMethodCall(
         MethodCall|StaticCall $carbonCall,
-        LNumber $countLNumber,
+        Int_ $int,
         string $unit,
         string $operator
     ): ?MethodCall {
@@ -112,7 +112,7 @@ final class CarbonCallFactory
 
         $methodName = $operator . ucfirst($unit);
 
-        return new MethodCall($carbonCall, new Identifier($methodName), [new Arg($countLNumber)]);
+        return new MethodCall($carbonCall, new Identifier($methodName), [new Arg($int)]);
     }
 
     /**

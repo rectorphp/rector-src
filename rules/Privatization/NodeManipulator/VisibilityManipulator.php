@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\NodeManipulator;
 
+use PhpParser\Modifiers;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -39,7 +40,7 @@ final class VisibilityManipulator
             return;
         }
 
-        $node->flags -= Class_::MODIFIER_STATIC;
+        $node->flags -= Modifiers::STATIC;
     }
 
     /**
@@ -51,7 +52,7 @@ final class VisibilityManipulator
             return;
         }
 
-        $node->flags -= Class_::MODIFIER_ABSTRACT;
+        $node->flags -= Modifiers::ABSTRACT;
     }
 
     /**
@@ -71,7 +72,7 @@ final class VisibilityManipulator
             return;
         }
 
-        $node->flags -= Class_::MODIFIER_FINAL;
+        $node->flags -= Modifiers::FINAL;
     }
 
     public function changeNodeVisibility(ClassMethod | Property | ClassConst $node, int $visibility): void
@@ -111,7 +112,7 @@ final class VisibilityManipulator
      */
     public function removeFinal(Class_ | ClassConst $node): void
     {
-        $node->flags -= Class_::MODIFIER_FINAL;
+        $node->flags -= Modifiers::FINAL;
     }
 
     public function makeReadonly(Class_ | Property | Param $node): void
@@ -164,16 +165,16 @@ final class VisibilityManipulator
         }
 
         if ($node->isPublic()) {
-            $node->flags |= Class_::MODIFIER_PUBLIC;
-            $node->flags -= Class_::MODIFIER_PUBLIC;
+            $node->flags |= Modifiers::PUBLIC;
+            $node->flags -= Modifiers::PUBLIC;
         }
 
         if ($node->isProtected()) {
-            $node->flags -= Class_::MODIFIER_PROTECTED;
+            $node->flags -= Modifiers::PROTECTED;
         }
 
         if ($node->isPrivate()) {
-            $node->flags -= Class_::MODIFIER_PRIVATE;
+            $node->flags -= Modifiers::PRIVATE;
         }
     }
 

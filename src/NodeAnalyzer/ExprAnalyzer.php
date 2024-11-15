@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\NodeAnalyzer;
 
+use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
@@ -15,8 +17,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
@@ -71,7 +71,7 @@ final class ExprAnalyzer
 
         if ($expr instanceof Scalar) {
             // string interpolation is true, otherwise false
-            return $expr instanceof Encapsed;
+            return $expr instanceof InterpolatedString;
         }
 
         return ! $this->isAllowedConstFetchOrClassConstFetch($expr);
@@ -128,7 +128,7 @@ final class ExprAnalyzer
             return true;
         }
 
-        return $expr instanceof LNumber;
+        return $expr instanceof Int_;
     }
 
     private function isAllowedArrayValue(Expr $expr): bool

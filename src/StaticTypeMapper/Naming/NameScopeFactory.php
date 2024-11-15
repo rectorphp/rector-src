@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\Naming;
 
+use PhpParser\Node\UseItem;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\NameScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -53,7 +53,7 @@ final readonly class NameScopeFactory
         foreach ($useNodes as $useNode) {
             $prefix = $this->useImportsResolver->resolvePrefix($useNode);
             foreach ($useNode->uses as $useUse) {
-                /** @var UseUse $useUse */
+                /** @var UseItem $useUse */
                 $aliasName = $useUse->getAlias()
                     ->name;
 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Php52\Rector\Switch_;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
@@ -130,7 +130,7 @@ CODE_SAMPLE
                     return new Break_();
                 }
 
-                if ($subNode->num instanceof LNumber) {
+                if ($subNode->num instanceof Int_) {
                     $continueNumber = $this->valueResolver->getValue($subNode->num);
                     if ($continueNumber <= 1) {
                         $this->hasChanged = true;

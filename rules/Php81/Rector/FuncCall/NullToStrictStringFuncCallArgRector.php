@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\FuncCall;
 
+use PhpParser\Node\Scalar\InterpolatedString;
 use PHPStan\Reflection\Native\ExtendedNativeParameterReflection;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -13,7 +14,6 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -212,7 +212,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($argValue instanceof Encapsed) {
+        if ($argValue instanceof InterpolatedString) {
             return null;
         }
 

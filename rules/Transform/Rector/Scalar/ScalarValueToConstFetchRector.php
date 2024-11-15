@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Transform\Rector\Scalar;
 
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
@@ -41,7 +41,7 @@ $var = \SomeClass::FOOBAR_INT;
 SAMPLE
                 , [
                     new ScalarValueToConstFetch(
-                        new LNumber(10),
+                        new Int_(10),
                         new ClassConstFetch(new FullyQualified('SomeClass'), new Identifier('FOOBAR_INT')),
                     ),
                 ])]
@@ -50,11 +50,11 @@ SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [String_::class, DNumber::class, LNumber::class];
+        return [String_::class, Float_::class, Int_::class];
     }
 
     /**
-     * @param String_|DNumber|LNumber $node
+     * @param String_|Float_|Int_ $node
      */
     public function refactor(Node $node): ConstFetch|ClassConstFetch|null
     {

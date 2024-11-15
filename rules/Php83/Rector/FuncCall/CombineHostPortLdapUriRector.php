@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Php83\Rector\FuncCall;
 
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\EncapsedStringPart;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -75,10 +75,10 @@ CODE_SAMPLE
         $firstArg = $args[0]->value;
         $secondArg = $args[1]->value;
 
-        if ($firstArg instanceof String_ && $secondArg instanceof LNumber) {
+        if ($firstArg instanceof String_ && $secondArg instanceof Int_) {
             $args[0]->value = new String_($firstArg->value . ':' . $secondArg->value);
         } elseif ($this->exprAnalyzer->isDynamicExpr($firstArg) && $this->exprAnalyzer->isDynamicExpr($secondArg)) {
-            $args[0]->value = new Encapsed([$firstArg, new EncapsedStringPart(':'), $secondArg]);
+            $args[0]->value = new InterpolatedString([$firstArg, new InterpolatedStringPart(':'), $secondArg]);
         } else {
             return null;
         }

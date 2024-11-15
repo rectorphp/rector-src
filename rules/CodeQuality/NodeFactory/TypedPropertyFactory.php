@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeFactory;
 
+use PhpParser\Modifiers;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
@@ -31,7 +32,7 @@ final readonly class TypedPropertyFactory
         $propertyItem = new PropertyItem($propertyName);
         $propertyTypeNode = $this->createPropertyTypeNode($propertyTagValueNode, $class);
 
-        return new Property(Class_::MODIFIER_PRIVATE, [$propertyItem], [], $propertyTypeNode);
+        return new Property(Modifiers::PRIVATE, [$propertyItem], [], $propertyTypeNode);
     }
 
     public function createPropertyTypeNode(

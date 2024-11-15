@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node;
 use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
@@ -94,7 +94,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $declareItem = new DeclareItem(new Identifier('strict_types'), new LNumber(1));
+        $declareItem = new DeclareItem(new Identifier('strict_types'), new Int_(1));
         $strictTypesDeclare = new Declare_([$declareItem]);
 
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());

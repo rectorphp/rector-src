@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use PhpParser\Node\UseItem;
 use PhpParser\NodeVisitor;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
@@ -14,7 +15,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -177,14 +177,14 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @param string[] $names
      */
-    private function isUseImportUsed(UseUse $useUse, bool $isCaseSensitive, array $names, ?string $namespaceName): bool
+    private function isUseImportUsed(UseItem $useItem, bool $isCaseSensitive, array $names, ?string $namespaceName): bool
     {
-        $comparedName = $useUse->alias instanceof Identifier
-            ? $useUse->alias->toString()
-            : $useUse->name->toString();
+        $comparedName = $useItem->alias instanceof Identifier
+            ? $useItem->alias->toString()
+            : $useItem->name->toString();
 
         if (! $isCaseSensitive) {
-            $comparedName = strtolower($comparedName);
+            $comparedName = strtolower((string) $comparedName);
         }
 
         if (in_array($comparedName, $names, true)) {

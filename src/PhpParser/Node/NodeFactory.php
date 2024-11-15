@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
+use PhpParser\Modifiers;
 use PhpParser\Builder\Method;
 use PhpParser\Builder\Param as ParamBuilder;
 use PhpParser\Builder\Property as PropertyBuilder;
@@ -35,7 +36,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
@@ -283,7 +283,7 @@ final readonly class NodeFactory
 
         $param = $paramBuilder->getNode();
         $propertyFlags = $propertyMetadata->getFlags();
-        $param->flags = $propertyFlags !== 0 ? $propertyFlags : Class_::MODIFIER_PRIVATE;
+        $param->flags = $propertyFlags !== 0 ? $propertyFlags : Modifiers::PRIVATE;
 
         return $param;
     }

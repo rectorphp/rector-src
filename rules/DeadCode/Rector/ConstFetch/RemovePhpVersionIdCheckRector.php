@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ConstFetch;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
@@ -149,7 +149,7 @@ CODE_SAMPLE
     private function refactorSmallerLeft(Smaller $smaller): ?int
     {
         $value = $smaller->right;
-        if (! $value instanceof LNumber) {
+        if (! $value instanceof Int_) {
             return null;
         }
 
@@ -166,7 +166,7 @@ CODE_SAMPLE
     private function refactorSmallerRight(Smaller $smaller, If_ $if): null|array|int
     {
         $value = $smaller->left;
-        if (! $value instanceof LNumber) {
+        if (! $value instanceof Int_) {
             return null;
         }
 
@@ -187,7 +187,7 @@ CODE_SAMPLE
     private function refactorGreaterOrEqualLeft(GreaterOrEqual $greaterOrEqual, If_ $if): null|array|int
     {
         $value = $greaterOrEqual->right;
-        if (! $value instanceof LNumber) {
+        if (! $value instanceof Int_) {
             return null;
         }
 
@@ -205,7 +205,7 @@ CODE_SAMPLE
     private function refactorGreaterOrEqualRight(GreaterOrEqual $greaterOrEqual): ?int
     {
         $value = $greaterOrEqual->left;
-        if (! $value instanceof LNumber) {
+        if (! $value instanceof Int_) {
             return null;
         }
 
@@ -238,7 +238,7 @@ CODE_SAMPLE
     private function refactorGreaterLeft(Greater $greater, If_ $if): null|array|int
     {
         $value = $greater->right;
-        if (! $value instanceof LNumber) {
+        if (! $value instanceof Int_) {
             return null;
         }
 
@@ -256,7 +256,7 @@ CODE_SAMPLE
     private function refactorGreaterRight(Greater $greater): ?int
     {
         $value = $greater->left;
-        if (! $value instanceof LNumber) {
+        if (! $value instanceof Int_) {
             return null;
         }
 
