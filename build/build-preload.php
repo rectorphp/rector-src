@@ -76,6 +76,7 @@ CODE_SAMPLE;
         'TokenEmulator.php',
         'KeywordEmulator.php',
         'Comment.php',
+        'PrettyPrinter.php',
         'PrettyPrinterAbstract.php',
         'Parser.php',
         'ParserAbstract.php',

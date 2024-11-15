@@ -12,6 +12,7 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Lexer.ph
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/TokenEmulator.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/KeywordEmulator.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Comment.php';
+require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/PrettyPrinter.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/PrettyPrinterAbstract.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/ParserAbstract.php';
@@ -257,7 +258,6 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/P
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/Php8.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/ParserFactory.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/PhpVersion.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/PrettyPrinter.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/PrettyPrinter/Standard.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Token.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/compatibility_tokens.php';
