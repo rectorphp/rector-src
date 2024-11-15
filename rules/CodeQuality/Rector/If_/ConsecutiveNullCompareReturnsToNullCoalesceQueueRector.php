@@ -7,11 +7,11 @@ namespace Rector\CodeQuality\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
-use PhpParser\Node\Expr\Throw_ as ExprThrow_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeManipulator\IfManipulator;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -126,9 +126,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($stmt instanceof Throw_) {
+            if ($stmt instanceof Expression && $stmt->expr instanceof Throw_) {
                 unset($node->stmts[$key]);
-                $appendExpr = new ExprThrow_($stmt->expr);
+                $appendExpr = $stmt->expr;
 
                 continue;
             }
