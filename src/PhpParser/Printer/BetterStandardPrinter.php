@@ -155,6 +155,32 @@ final class BetterStandardPrinter extends Standard
         return $ret;
     }
 
+    /**
+     * Avoid unnecessary ( and ) parentheses, eg:
+     *
+     *        - $y = fn() => fn() => 1;
+     *        + $y = (fn() => fn() => 1);
+     */
+    protected function pPrefixOp(string $class, string $operatorString, Node $node, int $precedence, int $lhsPrecedence): string
+    {
+        $opPrecedence = $this->precedenceMap[$class][0];
+        $prefix = '';
+        $suffix = '';
+        if ($opPrecedence >= $lhsPrecedence) {
+            $lhsPrecedence = self::MAX_PRECEDENCE;
+        }
+
+        $printedArg = $this->p($node, $opPrecedence, $lhsPrecedence);
+        if (($operatorString === '+' && $printedArg[0] === '+') ||
+            ($operatorString === '-' && $printedArg[0] === '-')
+        ) {
+            // Avoid printing +(+$a) as ++$a and similar.
+            $printedArg = '(' . $printedArg . ')';
+        }
+
+        return $prefix . $operatorString . $printedArg . $suffix;
+    }
+
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string
     {
         if (! $arrowFunction->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
