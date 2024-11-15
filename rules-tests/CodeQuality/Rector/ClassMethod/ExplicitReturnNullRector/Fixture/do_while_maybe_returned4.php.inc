@@ -37,7 +37,7 @@ final class DoWhileMaybeReturned4
 		} while (++$i < 1);
 		execute:
 			echo 'test';
-   return null;
+            return null;
     }
 }
 
