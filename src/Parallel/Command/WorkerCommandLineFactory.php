@@ -114,6 +114,11 @@ final readonly class WorkerCommandLineFactory
             $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
         }
 
+        if ($input->getOption(Option::ONLY) !== null) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::ONLY;
+            $workerCommandArray[] = escapeshellarg($input->getOption(Option::ONLY));
+        }
+
         return implode(' ', $workerCommandArray);
     }
 

@@ -99,6 +99,11 @@ final class Option
     public const CLEAR_CACHE = 'clear-cache';
 
     /**
+     * @var string
+     */
+    public const ONLY = 'only';
+
+    /**
      * @internal Use @see \Rector\Config\RectorConfig::parallel() instead
      * @var string
      */

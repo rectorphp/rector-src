@@ -11,6 +11,7 @@ use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Configuration\ConfigurationFactory;
+use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Console\ProcessConfigureDecorator;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
@@ -44,7 +45,8 @@ final class WorkerCommand extends Command
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly MemoryLimiter $memoryLimiter,
-        private readonly ConfigurationFactory $configurationFactory
+        private readonly ConfigurationFactory $configurationFactory,
+        private readonly ConfigurationRuleFilter $configurationRuleFilter,
     ) {
         parent::__construct();
     }
@@ -63,6 +65,7 @@ final class WorkerCommand extends Command
     {
         $configuration = $this->configurationFactory->createFromInput($input);
         $this->memoryLimiter->adjust($configuration);
+        $this->configurationRuleFilter->setConfiguration($configuration);
 
         $streamSelectLoop = new StreamSelectLoop();
         $parallelIdentifier = $configuration->getParallelIdentifier();

@@ -10,6 +10,7 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\ConfigurationFactory;
+use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\ExitCode;
@@ -42,6 +43,7 @@ final class ProcessCommand extends Command
         private readonly ConfigurationFactory $configurationFactory,
         private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
         private readonly MissConfigurationReporter $missConfigurationReporter,
+        private ConfigurationRuleFilter $configurationRuleFilter,
     ) {
         parent::__construct();
     }
@@ -85,6 +87,7 @@ EOF
 
         $configuration = $this->configurationFactory->createFromInput($input);
         $this->memoryLimiter->adjust($configuration);
+        $this->configurationRuleFilter->setConfiguration($configuration);
 
         // disable console output in case of json output formatter
         if ($configuration->getOutputFormat() === JsonOutputFormatter::NAME) {
