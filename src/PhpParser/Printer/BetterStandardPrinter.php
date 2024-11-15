@@ -275,13 +275,13 @@ final class BetterStandardPrinter extends Standard
     /**
      * Emulates 1_000 in PHP 7.3- version
      */
-    protected function pScalar_DNumber(Float_ $float): string
+    protected function pScalar_Float(Float_ $float): string
     {
         if ($this->shouldPrintNewRawValue($float)) {
             return (string) $float->getAttribute(AttributeKey::RAW_VALUE);
         }
 
-        return parent::pScalar_DNumber($float);
+        return parent::pScalar_Float($float);
     }
 
     /**
@@ -423,13 +423,13 @@ final class BetterStandardPrinter extends Standard
      * Invoke re-print even if only raw value was changed.
      * That allows PHPStan to use int strict types, while changing the value with literal "_"
      */
-    protected function pScalar_LNumber(Int_ $int): string|int
+    protected function pScalar_Int(Int_ $node): string
     {
-        if ($this->shouldPrintNewRawValue($int)) {
-            return (string) $int->getAttribute(AttributeKey::RAW_VALUE);
+        if ($this->shouldPrintNewRawValue($node)) {
+            return (string) $node->getAttribute(AttributeKey::RAW_VALUE);
         }
 
-        return parent::pScalar_LNumber($int);
+        return parent::pScalar_Int($node);
     }
 
     protected function pExpr_MethodCall(MethodCall $methodCall): string
