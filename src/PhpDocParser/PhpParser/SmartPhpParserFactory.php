@@ -7,7 +7,6 @@ namespace Rector\PhpDocParser\PhpParser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
-use PhpParser\PhpVersion;
 use PHPStan\Parser\CachedParser;
 use PHPStan\Parser\SimpleParser;
 use PHPStan\Parser\VariadicFunctionsVisitor;
@@ -35,7 +34,7 @@ final class SmartPhpParserFactory
     private function createNativePhpParser(): Parser
     {
         $parserFactory = new ParserFactory();
-        return $parserFactory->createForVersion(PhpVersion::fromString('7.0'));
+        return $parserFactory->createForNewestSupportedVersion();
     }
 
     private function createPHPStanParser(Parser $parser): CachedParser
