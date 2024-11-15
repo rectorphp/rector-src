@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node\Value;
 
+use PHPStan\Type\Type;
 use PhpParser\ConstExprEvaluationException;
 use PhpParser\ConstExprEvaluator;
 use PhpParser\Node\Arg;
@@ -19,7 +20,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ConstantScalarType;
-use PHPStan\Type\ConstantType;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ConstFetchAnalyzer;
@@ -90,11 +90,7 @@ final class ValueResolver
         }
 
         $nodeStaticType = $this->nodeTypeResolver->getType($expr);
-        if ($nodeStaticType instanceof ConstantType) {
-            return $this->resolveConstantType($nodeStaticType);
-        }
-
-        return null;
+        return $this->resolveConstantType($nodeStaticType);
     }
 
     /**
@@ -318,7 +314,7 @@ final class ValueResolver
         return $parentClassName;
     }
 
-    private function resolveConstantType(ConstantType $constantType): mixed
+    private function resolveConstantType(Type $constantType): mixed
     {
         if ($constantType instanceof ConstantArrayType) {
             return $this->extractConstantArrayTypeValue($constantType);
