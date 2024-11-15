@@ -74,7 +74,10 @@ return [
         // make external rules easier to write without enforing getRuleDefinition()
         // as they are not designed for open-sourcing
         static function (string $filePath, string $prefix, string $content): string {
-            if (!\str_ends_with($filePath, 'vendor/symplify/rule-doc-generator-contracts/src/Contract/DocumentedRuleInterface.php')) {
+            if (! \str_ends_with(
+                $filePath,
+                'vendor/symplify/rule-doc-generator-contracts/src/Contract/DocumentedRuleInterface.php'
+            )) {
                 return $content;
             }
 

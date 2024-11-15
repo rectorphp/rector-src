@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocNodeVisitor;
 
+use PHPStan\PhpDocParser\Ast\Attribute;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
@@ -12,8 +13,6 @@ use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\DataProvider\CurrentTokenIteratorProvider;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\SpacingAwareTemplateTagValueNode;
-use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 
@@ -37,12 +36,13 @@ final class TemplatePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor implemen
 
         $betterTokenIterator = $this->currentTokenIteratorProvider->provide();
 
-        $startAndEnd = $node->getAttribute(PhpDocAttributeKey::START_AND_END);
-        if (! $startAndEnd instanceof StartAndEnd) {
+        $startIndex = $node->getAttribute(Attribute::START_INDEX);
+        $endIndex = $node->getAttribute(Attribute::END_INDEX);
+        if ($startIndex === null || $endIndex === null) {
             throw new ShouldNotHappenException();
         }
 
-        $prepositions = $this->resolvePreposition($betterTokenIterator, $startAndEnd);
+        $prepositions = $this->resolvePreposition($betterTokenIterator, $startIndex, $endIndex);
         $spacingAwareTemplateTagValueNode = new SpacingAwareTemplateTagValueNode(
             $node->name,
             $node->bound,
@@ -55,9 +55,12 @@ final class TemplatePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor implemen
         return $spacingAwareTemplateTagValueNode;
     }
 
-    private function resolvePreposition(BetterTokenIterator $betterTokenIterator, StartAndEnd $startAndEnd): string
-    {
-        $partialTokens = $betterTokenIterator->partialTokens($startAndEnd->getStart(), $startAndEnd->getEnd());
+    private function resolvePreposition(
+        BetterTokenIterator $betterTokenIterator,
+        int $startIndex,
+        int $endIndex
+    ): string {
+        $partialTokens = $betterTokenIterator->partialTokens($startIndex, $endIndex);
 
         foreach ($partialTokens as $partialToken) {
             if ($partialToken[1] !== Lexer::TOKEN_IDENTIFIER) {
