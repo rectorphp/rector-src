@@ -92,7 +92,7 @@ final readonly class AddNeverReturnType
             $node,
             fn (Node $subNode): bool => $subNode instanceof Expression && $subNode->expr instanceof Throw_
         );
-        if ($hasNeverNodes) {
+        if ($hasNeverNodes instanceof Node) {
             return true;
         }
 
