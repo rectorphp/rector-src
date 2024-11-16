@@ -188,6 +188,11 @@ final class BetterStandardPrinter extends Standard
      *    -  (1 + 2) ** (3 * 4);
      *    +  1 + 2 ** 3 * 4;
      *
+     *    or @todo:
+     *
+     *    -  (true || false) && 5 === 4;
+     *    +  true || false && 5 === 4;
+     *
      */
     protected function pInfixOp(
         string $class,
