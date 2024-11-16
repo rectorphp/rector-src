@@ -10,20 +10,21 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
-use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
+use Rector\ValueObject\Application\File;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\DeclareStrictTypesRectorTest
  */
-final class DeclareStrictTypesRector extends AbstractRector
+final class DeclareStrictTypesRector extends AbstractRector implements HTMLAverseRectorInterface
 {
     public function __construct(
         private readonly DeclareStrictTypeFinder $declareStrictTypeFinder
@@ -65,6 +66,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->startWithShebang($this->file)) {
+            return null;
+        }
+
         if ($nodes === []) {
             return null;
         }
@@ -76,10 +81,6 @@ CODE_SAMPLE
             $currentStmt = current($rootStmt->stmts);
 
             if (! $currentStmt instanceof Stmt) {
-                return null;
-            }
-
-            if ($currentStmt instanceof InlineHTML) {
                 return null;
             }
 
@@ -123,5 +124,10 @@ CODE_SAMPLE
     {
         // workaroudn, as Rector now only hooks to specific nodes, not arrays
         return null;
+    }
+
+    private function startWithShebang(File $file): bool
+    {
+        return str_starts_with($file->getFileContent(), '#!');
     }
 }

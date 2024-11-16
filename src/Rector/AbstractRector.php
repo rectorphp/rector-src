@@ -23,6 +23,7 @@ use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
@@ -125,6 +126,10 @@ CODE_SAMPLE;
             return null;
         }
 
+        if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->file->containsHTML()) {
+            return null;
+        }
+
         $filePath = $this->file->getFilePath();
         if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
             return null;
@@ -134,6 +139,7 @@ CODE_SAMPLE;
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
+
         $refactoredNode = $this->refactor($node);
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
