@@ -166,7 +166,7 @@ final class File
 
         $nodeFinder = new NodeFinder();
 
-        $this->containsHtml = (bool) $nodeFinder->findFirstInstanceOf($this->getOldStmts(), InlineHTML::class);
+        $this->containsHtml = (bool) $nodeFinder->findFirstInstanceOf($this->oldStmts, InlineHTML::class);
         return $this->containsHtml;
     }
 }
