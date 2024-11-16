@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
-use PhpParser\NodeTraverser;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -179,7 +178,7 @@ final readonly class BetterNodeFinder
                 foreach ($types as $type) {
                     if ($subNode instanceof $type) {
                         $isFoundNode = true;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
                 }
 
@@ -206,7 +205,7 @@ final readonly class BetterNodeFinder
 
                 if ($subNode instanceof Yield_ || $subNode instanceof YieldFrom) {
                     $returns = [];
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 if ($subNode instanceof Return_) {
@@ -305,7 +304,7 @@ final readonly class BetterNodeFinder
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     if ($foundNode instanceof $subNode && $subNode === $foundNode) {
                         $scopedNode = $subNode;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
 
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -320,7 +319,7 @@ final readonly class BetterNodeFinder
                 $scopedFoundNode = $this->findFirst($subNode, $filter);
                 if ($scopedFoundNode === $subNode) {
                     $scopedNode = $subNode;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 return null;

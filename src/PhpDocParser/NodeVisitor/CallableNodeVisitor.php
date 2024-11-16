@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpDocParser\NodeVisitor;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
@@ -68,7 +69,7 @@ final class CallableNodeVisitor extends NodeVisitorAbstract
     {
         if ($this->nodeIdToRemove !== null && $this->nodeIdToRemove === spl_object_id($node)) {
             $this->nodeIdToRemove = null;
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         if ($this->nodesToReturn === []) {

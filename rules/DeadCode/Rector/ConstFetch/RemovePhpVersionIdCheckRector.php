@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ConstFetch;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
@@ -13,7 +14,6 @@ use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\NodeTraverser;
 use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
@@ -154,7 +154,7 @@ CODE_SAMPLE
         }
 
         if ($this->phpVersion >= $value->value) {
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         return null;
@@ -175,7 +175,7 @@ CODE_SAMPLE
         }
 
         if ($if->stmts === []) {
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         return $if->stmts;
@@ -196,7 +196,7 @@ CODE_SAMPLE
         }
 
         if ($if->stmts === []) {
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         return $if->stmts;
@@ -210,7 +210,7 @@ CODE_SAMPLE
         }
 
         if ($this->phpVersion >= $value->value) {
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         return null;
@@ -247,7 +247,7 @@ CODE_SAMPLE
         }
 
         if ($if->stmts === []) {
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         return $if->stmts;
@@ -261,7 +261,7 @@ CODE_SAMPLE
         }
 
         if ($this->phpVersion >= $value->value) {
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         return null;

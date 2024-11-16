@@ -27,7 +27,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\NodeTraverser;
 use Rector\Rector\AbstractRector;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -138,7 +137,7 @@ CODE_SAMPLE
             if ($this->shouldStop($node, $param, $paramName)) {
                 // force set to false to avoid too early replaced
                 $isParamAccessedArrayDimFetch = false;
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if (! $node instanceof ArrayDimFetch) {
@@ -162,7 +161,7 @@ CODE_SAMPLE
             if ($variableType->isString()->yes()) {
                 // force set to false to avoid too early replaced
                 $isParamAccessedArrayDimFetch = false;
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             // skip integer in possibly string type as string can be accessed via int

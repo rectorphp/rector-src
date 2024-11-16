@@ -18,7 +18,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\NodeTraverser;
 use Rector\NodeManipulator\FuncCallManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -49,7 +48,7 @@ final readonly class ParamAnalyzer
             $param
         ): ?int {
             if ($isParamUsed) {
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if ($this->isUsedAsArg($node, $param)) {

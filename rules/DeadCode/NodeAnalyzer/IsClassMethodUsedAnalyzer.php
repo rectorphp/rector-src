@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Reflection\ClassReflection;
@@ -201,12 +200,12 @@ final readonly class IsClassMethodUsedAnalyzer
                         && $this->nodeNameResolver->isName($subNode->var, 'this')
                         && $this->nodeNameResolver->isName($subNode->name, $classMethodName)) {
                         $callMethod = $subNode;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
 
                     if ($this->isStaticCallMatch($subNode, $className, $classMethodName)) {
                         $callMethod = $subNode;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
 
                     return null;

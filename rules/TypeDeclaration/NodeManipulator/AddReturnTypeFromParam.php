@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
@@ -98,7 +97,7 @@ final readonly class AddReturnTypeFromParam
 
             if (! $node->expr instanceof Variable) {
                 $return = null;
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             $return = $node;
@@ -127,7 +126,7 @@ final readonly class AddReturnTypeFromParam
 
             if ($node instanceof AssignRef && $this->nodeNameResolver->isName($node->expr, $paramName)) {
                 $isParamModified = true;
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if (! $node instanceof Assign) {
@@ -143,7 +142,7 @@ final readonly class AddReturnTypeFromParam
             }
 
             $isParamModified = true;
-            return NodeTraverser::STOP_TRAVERSAL;
+            return NodeVisitor::STOP_TRAVERSAL;
         });
 
         return $isParamModified;

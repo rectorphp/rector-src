@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Guard;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Ternary;
@@ -11,7 +12,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\NodeTraverser;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -42,7 +42,7 @@ final readonly class ParamTypeAddGuard
                     $paramName
                 )) {
                     $isLegal = false;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 if ($subNode instanceof If_ && (bool) $this->betterNodeFinder->findFirst(
@@ -53,7 +53,7 @@ final readonly class ParamTypeAddGuard
                     )
                 )) {
                     $isLegal = false;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 if ($subNode instanceof Ternary && (bool) $this->betterNodeFinder->findFirst(
@@ -64,7 +64,7 @@ final readonly class ParamTypeAddGuard
                     )
                 )) {
                     $isLegal = false;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 return null;

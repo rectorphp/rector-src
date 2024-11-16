@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\AlreadyAssignDetector;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -17,7 +18,6 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeFinder;
-use PhpParser\NodeTraverser;
 use PHPStan\Type\ObjectType;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeDecorator\StatementDepthAttributeDecorator;
@@ -63,7 +63,7 @@ final readonly class ConstructorAssignDetector
             ) use ($propertyName, &$isAssignedInConstructor, $allowConditional): ?int {
                 if ($this->isIfElseAssign($node, $propertyName)) {
                     $isAssignedInConstructor = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 $expr = $this->matchAssignExprToPropertyName($node, $propertyName);
@@ -77,7 +77,7 @@ final readonly class ConstructorAssignDetector
                 // is merged in assign?
                 if ($this->isPropertyUsedInAssign($assign, $propertyName)) {
                     $isAssignedInConstructor = false;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 $isFirstLevelStatement = $assign->getAttribute(AttributeKey::IS_FIRST_LEVEL_STATEMENT);
@@ -86,7 +86,7 @@ final readonly class ConstructorAssignDetector
                 if ($isFirstLevelStatement !== true) {
                     if ($allowConditional) {
                         $isAssignedInConstructor = true;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
 
                     return null;
@@ -94,7 +94,7 @@ final readonly class ConstructorAssignDetector
 
                 $isAssignedInConstructor = true;
 
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             });
         }
 

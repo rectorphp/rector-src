@@ -52,7 +52,7 @@ A) Direct return null for no change:
 
 B) Remove the Node:
 
-    return NodeTraverser::REMOVE_NODE;
+    return \PhpParser\NodeVisitor::REMOVE_NODE;
 CODE_SAMPLE;
 
     protected NodeNameResolver $nodeNameResolver;
@@ -201,7 +201,7 @@ CODE_SAMPLE;
         if ($this->toBeRemovedNodeId === $objectId) {
             $this->toBeRemovedNodeId = null;
 
-            return NodeTraverser::REMOVE_NODE;
+            return NodeVisitor::REMOVE_NODE;
         }
 
         $resultNode = $this->nodesToReturn[$objectId] ?? $node;

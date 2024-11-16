@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeManipulator;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\FunctionLike;
-use PhpParser\NodeTraverser;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
@@ -44,7 +44,7 @@ final readonly class VariadicFunctionLikeDetector
 
                 $isVariadic = true;
 
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
         );
 
