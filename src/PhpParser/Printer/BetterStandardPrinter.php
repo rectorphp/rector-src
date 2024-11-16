@@ -14,6 +14,7 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
@@ -179,6 +180,45 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $prefix . $operatorString . $printedArg . $suffix;
+    }
+
+    /**
+     * Handle binary op require parentheses first, eg:
+     *
+     *    -  (1 + 2) ** (3 * 4);
+     *    +  1 + 2 ** 3 * 4;
+     *
+     */
+    protected function pInfixOp(
+        string $class,
+        Node $leftNode,
+        string $operatorString,
+        Node $rightNode,
+        int $precedence,
+        int $lhsPrecedence
+    ): string {
+        [$opPrecedence, $newPrecedenceLHS, $newPrecedenceRHS] = $this->precedenceMap[$class];
+        $prefix = '';
+        $suffix = '';
+        if ($opPrecedence >= $precedence) {
+            $prefix = '(';
+            $suffix = ')';
+            $lhsPrecedence = self::MAX_PRECEDENCE;
+        }
+
+        $leftPrint = $this->p($leftNode, $newPrecedenceLHS, $newPrecedenceLHS);
+
+        if ($leftNode instanceof BinaryOp) {
+            $leftPrint = '(' . trim($leftPrint, ')(') . ')';
+        }
+
+        $rightPrint = $this->p($rightNode, $newPrecedenceRHS, $lhsPrecedence);
+
+        if ($rightNode instanceof BinaryOp) {
+            $rightPrint = '(' . trim($rightPrint, ')(') . ')';
+        }
+
+        return $prefix . $leftPrint . $operatorString . $rightPrint . $suffix;
     }
 
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string
