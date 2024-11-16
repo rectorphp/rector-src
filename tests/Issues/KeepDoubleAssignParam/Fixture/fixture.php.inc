@@ -35,7 +35,7 @@ final class Fixture
 
     public function __construct($input)
     {
-        $this->items = !\is_array($input) ? [$input] : $input;
+        $this->items = ! \is_array($input) ? [$input] : $input;
 
         $this->items = $this->getItems();
     }
