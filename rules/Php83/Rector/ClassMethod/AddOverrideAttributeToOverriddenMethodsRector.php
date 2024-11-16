@@ -7,13 +7,22 @@ namespace Rector\Php83\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Throw_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
+use Rector\PhpParser\AstResolver;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -21,16 +30,24 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see https://wiki.php.net/rfc/marking_overriden_methods
+ *
  * @see \Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\AddOverrideAttributeToOverriddenMethodsRectorTest
  */
 final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const OVERRIDE_CLASS = 'Override';
+
     private bool $hasChanged = false;
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
+        private readonly AstResolver $astResolver,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -48,7 +65,7 @@ class ParentClass
     }
 }
 
-class ChildClass extends ParentClass
+final class ChildClass extends ParentClass
 {
     public function foo()
     {
@@ -64,7 +81,7 @@ class ParentClass
     }
 }
 
-class ChildClass extends ParentClass
+final class ChildClass extends ParentClass
 {
     #[\Override]
     public function foo()
@@ -102,13 +119,15 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        $parentClassReflections = [
-            ...$classReflection->getParents(),
-            ...$classReflection->getInterfaces(),
-            ...$classReflection->getTraits(),
-        ];
 
-        $this->processAddOverrideAttribute($node, $parentClassReflections);
+        $parentClassReflections = array_merge($classReflection->getParents(), $classReflection->getTraits());
+        if ($parentClassReflections === []) {
+            return null;
+        }
+
+        foreach ($node->getMethods() as $classMethod) {
+            $this->processAddOverrideAttribute($classMethod, $parentClassReflections);
+        }
 
         if (! $this->hasChanged) {
             return null;
@@ -125,47 +144,92 @@ CODE_SAMPLE
     /**
      * @param ClassReflection[] $parentClassReflections
      */
-    private function processAddOverrideAttribute(Class_ $class, array $parentClassReflections): void
+    private function processAddOverrideAttribute(ClassMethod $classMethod, array $parentClassReflections): void
     {
-        if ($parentClassReflections === []) {
+        if ($this->shouldSkipClassMethod($classMethod)) {
             return;
         }
 
-        foreach ($class->getMethods() as $classMethod) {
-            if ($classMethod->name->toString() === '__construct') {
+        /** @var string $classMethodName */
+        $classMethodName = $this->getName($classMethod->name);
+
+        // Private methods should be ignored
+        foreach ($parentClassReflections as $parentClassReflection) {
+            if (! $parentClassReflection->hasNativeMethod($classMethod->name->toString())) {
                 continue;
             }
 
-            if ($classMethod->isPrivate()) {
+            // ignore if it is a private method on the parent
+            if (! $parentClassReflection->hasNativeMethod($classMethodName)) {
                 continue;
             }
 
-            // ignore if it already uses the attribute
-            if ($this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, 'Override')) {
+            $parentMethod = $parentClassReflection->getNativeMethod($classMethodName);
+            if ($parentMethod->isPrivate()) {
                 continue;
             }
 
-            // Private methods should be ignored
-            foreach ($parentClassReflections as $parentClassReflection) {
-                if (! $parentClassReflection->hasNativeMethod($classMethod->name->toString())) {
-                    continue;
-                }
+            if ($this->shouldSkipParentClassMethod($parentClassReflection, $classMethod)) {
+                continue;
+            }
 
-                // ignore if it is a private method on the parent
-                $parentMethod = $parentClassReflection->getNativeMethod($classMethod->name->toString());
-                if ($parentMethod->isPrivate()) {
-                    continue;
-                }
+            $classMethod->attrGroups[] = new AttributeGroup([new Attribute(new FullyQualified(self::OVERRIDE_CLASS))]);
+            $this->hasChanged = true;
+            return;
+        }
+    }
 
-                if ($parentClassReflection->isTrait() && ! $parentMethod->isAbstract()) {
-                    continue;
-                }
+    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
+    {
+        if ($this->isName($classMethod->name, MethodName::CONSTRUCT)) {
+            return true;
+        }
 
-                $classMethod->attrGroups[] = new AttributeGroup([new Attribute(new FullyQualified('Override'))]);
-                $this->hasChanged = true;
+        if ($classMethod->isPrivate()) {
+            return true;
+        }
 
-                continue 2;
+        // ignore if it already uses the attribute
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, self::OVERRIDE_CLASS);
+    }
+
+    private function shouldSkipParentClassMethod(ClassReflection $parentClassReflection, ClassMethod $classMethod): bool
+    {
+        // parse parent method, if it has some contents or not
+        $parentClass = $this->astResolver->resolveClassFromClassReflection($parentClassReflection);
+        if (! $parentClass instanceof ClassLike) {
+            return true;
+        }
+
+        $parentClassMethod = $parentClass->getMethod($classMethod->name->toString());
+        if (! $parentClassMethod instanceof ClassMethod) {
+            return true;
+        }
+
+        if ($parentClassMethod->isAbstract()) {
+            return true;
+        }
+
+        // has any stmts?
+        if ($parentClassMethod->stmts === null || $parentClassMethod->stmts === []) {
+            return true;
+        }
+
+        if (count($parentClassMethod->stmts) === 1) {
+            /** @var Stmt $soleStmt */
+            $soleStmt = $parentClassMethod->stmts[0];
+            // most likely, return null; is interface to be designed to override
+            if ($soleStmt instanceof Return_ && $soleStmt->expr instanceof Expr && $this->valueResolver->isNull(
+                $soleStmt->expr
+            )) {
+                return true;
+            }
+
+            if ($soleStmt instanceof Throw_) {
+                return true;
             }
         }
+
+        return false;
     }
 }
