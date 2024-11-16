@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\FileSystem;
 
-use Nette\Utils\FileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\UnchangedFilesFilter;
-use Rector\Configuration\Option;
-use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\Skipper\PathSkipper;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Finder\Finder;
@@ -53,21 +50,6 @@ final readonly class FilesFinder
             $filteredFilePaths = array_filter($filteredFilePaths, $fileWithExtensionsFilter);
         }
 
-        $filteredFilePaths = array_filter(
-            $filteredFilePaths,
-            function (string $file): bool {
-                if ($this->isStartWithShortPHPTag(FileSystem::read($file))) {
-                    SimpleParameterProvider::addParameter(
-                        Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES,
-                        $this->filePathHelper->relativePath($file)
-                    );
-                    return false;
-                }
-
-                return true;
-            }
-        );
-
         // filtering files in directories collection
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
         $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
@@ -88,14 +70,6 @@ final readonly class FilesFinder
 
         $supportedFileExtensions = $configuration->getFileExtensions();
         return $this->findInDirectoriesAndFiles($paths, $supportedFileExtensions);
-    }
-
-    /**
-     * Exclude short "<?=" tags as lead to invalid changes
-     */
-    private function isStartWithShortPHPTag(string $fileContent): bool
-    {
-        return str_starts_with(ltrim($fileContent), '<?=');
     }
 
     /**
@@ -136,14 +110,6 @@ final readonly class FilesFinder
             }
 
             if ($this->pathSkipper->shouldSkip($path)) {
-                continue;
-            }
-
-            if ($this->isStartWithShortPHPTag($fileInfo->getContents())) {
-                SimpleParameterProvider::addParameter(
-                    Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES,
-                    $this->filePathHelper->relativePath($path)
-                );
                 continue;
             }
 

@@ -26,7 +26,7 @@ final class FilesFinderTest extends AbstractLazyTestCase
         $this->assertCount(1, $foundFiles);
 
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithShortEchoes'], ['php']);
-        $this->assertCount(0, $foundFiles);
+        $this->assertCount(1, $foundFiles);
     }
 
     #[DataProvider('alwaysReturnsAbsolutePathDataProvider')]

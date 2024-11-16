@@ -54,24 +54,4 @@ final readonly class MissConfigurationReporter
 
         sleep(3);
     }
-
-    public function reportStartWithShortOpenTag(): void
-    {
-        $files = SimpleParameterProvider::provideArrayParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES);
-        if ($files === []) {
-            return;
-        }
-
-        $suffix = count($files) > 1 ? 's were' : ' was';
-        $fileList = implode(PHP_EOL, $files);
-
-        $this->symfonyStyle->warning(sprintf(
-            'The following file%s skipped as starting with short open tag. Migrate to long open PHP tag first: %s%s',
-            $suffix,
-            PHP_EOL . PHP_EOL,
-            $fileList
-        ));
-
-        sleep(3);
-    }
 }
