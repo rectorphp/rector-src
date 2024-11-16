@@ -20,7 +20,6 @@ final readonly class FilesFinder
         private UnchangedFilesFilter $unchangedFilesFilter,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
         private PathSkipper $pathSkipper,
-        private FilePathHelper $filePathHelper,
         private ChangedFilesDetector $changedFilesDetector,
     ) {
     }
