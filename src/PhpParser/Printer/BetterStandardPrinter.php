@@ -208,13 +208,13 @@ final class BetterStandardPrinter extends Standard
 
         $leftPrint = $this->p($leftNode, $newPrecedenceLHS, $newPrecedenceLHS);
 
-        if ($leftNode instanceof BinaryOp && in_array($leftNode->getOperatorSigil(), ['-', '+'], true)) {
+        if ($leftNode instanceof BinaryOp && in_array($leftNode->getOperatorSigil(), ['-', '+', '*', '/', '**'], true)) {
             $leftPrint = '(' . trim($leftPrint, ')(') . ')';
         }
 
         $rightPrint = $this->p($rightNode, $newPrecedenceRHS, $lhsPrecedence);
 
-        if ($rightNode instanceof BinaryOp && in_array($rightNode->getOperatorSigil(), ['-', '+'], true)) {
+        if ($rightNode instanceof BinaryOp && in_array($rightNode->getOperatorSigil(), ['-', '+', '*', '/', '**'], true)) {
             $rightPrint = '(' . trim($rightPrint, ')(') . ')';
         }
 
