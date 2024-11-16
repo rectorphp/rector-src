@@ -6,9 +6,11 @@ class ExampleParentClass
 {
     public function foo()
     {
+        $value = 'non empty';
     }
 
     private function bar()
     {
+        $value = 'non empty';
     }
 }

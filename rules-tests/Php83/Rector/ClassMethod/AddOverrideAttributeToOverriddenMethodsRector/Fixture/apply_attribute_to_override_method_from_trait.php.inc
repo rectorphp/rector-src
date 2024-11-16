@@ -8,10 +8,6 @@ class ApplyAttributeToOverrideMethodFromTrait
 {
     use ExampleFromTrait;
 
-    public function foo()
-    {
-    }
-
     public function bar()
     {
     }
@@ -30,10 +26,6 @@ class ApplyAttributeToOverrideMethodFromTrait
     use ExampleFromTrait;
 
     #[\Override]
-    public function foo()
-    {
-    }
-
     public function bar()
     {
     }

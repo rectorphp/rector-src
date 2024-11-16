@@ -6,7 +6,8 @@ trait ExampleFromTrait
 {
     public abstract function foo();
 
-    public function bar() {
-
+    public function bar()
+    {
+        $value = 'non empty';
     }
 }
