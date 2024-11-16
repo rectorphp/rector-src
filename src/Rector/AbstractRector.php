@@ -34,6 +34,7 @@ use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
@@ -117,6 +118,11 @@ CODE_SAMPLE;
         $this->file = $file;
 
         return parent::beforeTraverse($nodes);
+    }
+
+    public function getRuleDefinition(): RuleDefinition
+    {
+        return new RuleDefinition('', []);
     }
 
     final public function enterNode(Node $node): int|Node|null
