@@ -6,6 +6,7 @@ namespace Rector\Rector;
 
 use PhpParser\NodeVisitor;
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Const_;
@@ -17,6 +18,7 @@ use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
+use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -34,6 +36,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
@@ -203,7 +206,19 @@ CODE_SAMPLE;
             return NodeTraverser::REMOVE_NODE;
         }
 
-        return $this->nodesToReturn[$objectId] ?? $node;
+        $resultNode = $this->nodesToReturn[$objectId] ?? $node;
+
+        if ($resultNode instanceof BinaryOp) {
+            if ($resultNode->left instanceof BinaryOp) {
+                $resultNode->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
+
+            if ($resultNode->right instanceof BinaryOp) {
+                $resultNode->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
+        }
+
+        return $resultNode;
     }
 
     protected function isName(Node $node, string $name): bool

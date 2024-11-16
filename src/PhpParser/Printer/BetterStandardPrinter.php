@@ -14,7 +14,6 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
@@ -154,76 +153,6 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $ret;
-    }
-
-    /**
-     * Avoid unnecessary ( and ) parentheses, eg:
-     *
-     *        - $y = fn() => fn() => 1;
-     *        + $y = (fn() => fn() => 1);
-     */
-    protected function pPrefixOp(string $class, string $operatorString, Node $node, int $precedence, int $lhsPrecedence): string
-    {
-        $opPrecedence = $this->precedenceMap[$class][0];
-        $prefix = '';
-        $suffix = '';
-        if ($opPrecedence >= $lhsPrecedence) {
-            $lhsPrecedence = self::MAX_PRECEDENCE;
-        }
-
-        $printedArg = $this->p($node, $opPrecedence, $lhsPrecedence);
-        if (($operatorString === '+' && $printedArg[0] === '+') ||
-            ($operatorString === '-' && $printedArg[0] === '-')
-        ) {
-            // Avoid printing +(+$a) as ++$a and similar.
-            $printedArg = '(' . $printedArg . ')';
-        }
-
-        return $prefix . $operatorString . $printedArg . $suffix;
-    }
-
-    /**
-     * Handle binary op require parentheses first, eg:
-     *
-     *    -  (1 + 2) ** (3 * 4);
-     *    +  1 + 2 ** 3 * 4;
-     *
-     *    or @todo:
-     *
-     *    -  (true || false) && 5 === 4;
-     *    +  true || false && 5 === 4;
-     *
-     */
-    protected function pInfixOp(
-        string $class,
-        Node $leftNode,
-        string $operatorString,
-        Node $rightNode,
-        int $precedence,
-        int $lhsPrecedence
-    ): string {
-        [$opPrecedence, $newPrecedenceLHS, $newPrecedenceRHS] = $this->precedenceMap[$class];
-        $prefix = '';
-        $suffix = '';
-        if ($opPrecedence >= $precedence) {
-            $prefix = '(';
-            $suffix = ')';
-            $lhsPrecedence = self::MAX_PRECEDENCE;
-        }
-
-        $leftPrint = $this->p($leftNode, $newPrecedenceLHS, $newPrecedenceLHS);
-
-        if ($leftNode instanceof BinaryOp && in_array($leftNode->getOperatorSigil(), ['-', '+', '*', '/', '**'], true)) {
-            $leftPrint = '(' . trim($leftPrint, ')(') . ')';
-        }
-
-        $rightPrint = $this->p($rightNode, $newPrecedenceRHS, $lhsPrecedence);
-
-        if ($rightNode instanceof BinaryOp && in_array($rightNode->getOperatorSigil(), ['-', '+', '*', '/', '**'], true)) {
-            $rightPrint = '(' . trim($rightPrint, ')(') . ')';
-        }
-
-        return $prefix . $leftPrint . $operatorString . $rightPrint . $suffix;
     }
 
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string
