@@ -162,13 +162,8 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         PhpDocNode $phpDocNode,
         PhpDocTextNode $phpDocTextNode,
         Node $currentPhpNode,
-        int $key,
-        bool $isDoctrine = true
+        int $key
     ): void {
-        if ($isDoctrine && str_starts_with($phpDocTextNode->text, '@ORM\\')) {
-            $phpDocTextNode->text = '@\Doctrine\ORM\Mapping\\' . ltrim($phpDocTextNode->text, '@ORM\\');
-        }
-
         $spacelessPhpDocTagNodes = $this->resolveFqnAnnotationSpacelessPhpDocTagNode(
             $phpDocTextNode,
             $currentPhpNode
@@ -199,7 +194,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
-                $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key, false);
+                $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
                 continue;
             }
 
@@ -207,13 +202,14 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 continue;
             }
 
+            // needs stable correct detection of full class name
             if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
-                $startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
-                $phpDocChildNode = new PhpDocTextNode((string) $phpDocChildNode);
-                $phpDocChildNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
-                $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
+                //$startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
+                //$phpDocChildNode = new PhpDocTextNode((string) $phpDocChildNode);
+                //$phpDocChildNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
+                //$this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
 
-                continue;
+                //continue;
             }
 
             if (! $phpDocChildNode->value instanceof GenericTagValueNode) {
