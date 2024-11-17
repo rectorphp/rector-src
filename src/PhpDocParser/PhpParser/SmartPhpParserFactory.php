@@ -7,7 +7,6 @@ namespace Rector\PhpDocParser\PhpParser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
-use PhpParser\PhpVersion;
 use PHPStan\Parser\CachedParser;
 use PHPStan\Parser\SimpleParser;
 use PHPStan\Parser\VariadicFunctionsVisitor;
@@ -32,15 +31,14 @@ final class SmartPhpParserFactory
         return new SmartPhpParser($cachedParser);
     }
 
-    public function createNativePhpParser(): Parser
+    private function createNativePhpParser(): Parser
     {
         $parserFactory = new ParserFactory();
-        return $parserFactory->createForVersion(PhpVersion::fromString('7.0'));
+        return $parserFactory->createForNewestSupportedVersion();
     }
 
-    public function createPHPStanParser(): CachedParser
+    private function createPHPStanParser(Parser $parser): CachedParser
     {
-        $parser = $this->createNativePhpParser();
         $nameResolver = new NameResolver();
         $variadicMethodsVisitor = new VariadicMethodsVisitor();
         $variadicFunctionsVisitor = new VariadicFunctionsVisitor();
@@ -48,15 +46,5 @@ final class SmartPhpParserFactory
         $simpleParser = new SimpleParser($parser, $nameResolver, $variadicMethodsVisitor, $variadicFunctionsVisitor);
 
         return new CachedParser($simpleParser, 1024);
-    }
-
-    public function createSimpleParser(): SimpleParser
-    {
-        $parser = $this->createNativePhpParser();
-        $nameResolver = new NameResolver();
-        $variadicMethodsVisitor = new VariadicMethodsVisitor();
-        $variadicFunctionsVisitor = new VariadicFunctionsVisitor();
-
-        return new SimpleParser($parser, $nameResolver, $variadicMethodsVisitor, $variadicFunctionsVisitor);
     }
 }

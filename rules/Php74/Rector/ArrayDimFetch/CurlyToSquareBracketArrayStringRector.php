@@ -77,8 +77,9 @@ CODE_SAMPLE
         $oldTokens = $file->getOldTokens();
         $endTokenPost = $arrayDimFetch->getEndTokenPos();
 
-        if (isset($oldTokens[$endTokenPost]) && (string) $oldTokens[$endTokenPost] === '}') {
-            return true;
+        if (isset($oldTokens[$endTokenPost]) && $oldTokens[$endTokenPost] === '}') {
+            $startTokenPost = $arrayDimFetch->getStartTokenPos();
+            return ! (isset($oldTokens[$startTokenPost][1]) && $oldTokens[$startTokenPost][1] === '${');
         }
 
         return false;

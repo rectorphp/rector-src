@@ -1,6 +1,17 @@
 # see original config.neon in phpstan.neon - https://github.com/phpstan/phpstan-src/blob/386eb913abb6ac05886c5642fd48b5d99db66a20/conf/config.neon#L1582
 # this file overrides definitions from the config above
 services:
+    defaultAnalysisParser:
+        factory: @pathRoutingParser
+        arguments!: []
+
+    cachedRectorParser:
+        class: PHPStan\Parser\CachedParser
+        arguments:
+            originalParser: @rectorParser
+            cachedNodesByStringCountMax: %cache.nodesByStringCountMax%
+        autowired: false
+
     pathRoutingParser:
         class: PHPStan\Parser\PathRoutingParser
         arguments:
@@ -9,40 +20,8 @@ services:
             php8Parser: @php8Parser
         autowired: false
 
-    - Rector\PhpDocParser\PhpParser\SmartPhpParserFactory
-
-    nativeParser:
-        class: PhpParser\Parser
-        factory: ['@Rector\PhpDocParser\PhpParser\SmartPhpParserFactory', 'createNativePhpParser']
-        autowired: no
-
-    phpstanParser:
-        class: PhpParser\Parser
-        factory: ['@Rector\PhpDocParser\PhpParser\SmartPhpParserFactory', 'createPHPStanParser']
-        autowired: no
-
-    -
-        class: PHPStan\Analyser\NodeScopeResolver
+    rectorParser:
+        class: PHPStan\Parser\RichParser
         arguments:
-            parser: @nativeParser
-            reflector: @nodeScopeResolverReflector
-            polluteScopeWithLoopInitialAssignments: %polluteScopeWithLoopInitialAssignments%
-            polluteScopeWithAlwaysIterableForeach: %polluteScopeWithAlwaysIterableForeach%
-            polluteScopeWithBlock: %polluteScopeWithBlock%
-            earlyTerminatingMethodCalls: %earlyTerminatingMethodCalls%
-            earlyTerminatingFunctionCalls: %earlyTerminatingFunctionCalls%
-            implicitThrows: %exceptions.implicitThrows%
-            treatPhpDocTypesAsCertain: %treatPhpDocTypesAsCertain%
-            universalObjectCratesClasses: %universalObjectCratesClasses%
-        autowired: false
-
-    defaultAnalysisParser:
-        factory: ['@Rector\PhpDocParser\PhpParser\SmartPhpParserFactory', 'createPHPStanParser']
-        arguments!: []
-
-    cachedRectorParser:
-        class: PHPStan\Parser\CachedParser
-        arguments:
-            originalParser: @phpstanParser
-            cachedNodesByStringCountMax: %cache.nodesByStringCountMax%
-        autowired: false
+            parser: @currentPhpVersionPhpParser
+        autowired: no

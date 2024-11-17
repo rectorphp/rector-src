@@ -16,7 +16,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
-use Rector\PhpDocParser\PhpParser\SmartPhpParserFactory;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -89,8 +88,7 @@ MESSAGE_ERROR;
      */
     public function createPHPStanParser(): Parser
     {
-        $smartPhpParserFactory = new SmartPhpParserFactory();
-        return $smartPhpParserFactory->createSimpleParser();
+        return $this->container->getService('currentPhpVersionRichParser');
     }
 
     /**
