@@ -24,7 +24,7 @@ class PropertyFetchInCondition2
 {
     public function run()
     {
-        if ($artzo_list !== [] && ($this->art->netzid > 0 && $artzo_list = $this->artzo_list)) {
+        if ($artzo_list !== [] && $this->art->netzid > 0 && $artzo_list = $this->artzo_list) {
             foreach ($artzo_list as $art) {
             }
         }
