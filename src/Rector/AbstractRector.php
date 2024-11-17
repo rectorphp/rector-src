@@ -6,7 +6,6 @@ namespace Rector\Rector;
 
 use PhpParser\NodeVisitor;
 use PhpParser\Node;
-use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Const_;
@@ -203,19 +202,7 @@ CODE_SAMPLE;
             return NodeVisitor::REMOVE_NODE;
         }
 
-        $resultNode = $this->nodesToReturn[$objectId] ?? $node;
-
-        if ($resultNode instanceof BinaryOp) {
-            if ($resultNode->left instanceof BinaryOp) {
-                $resultNode->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
-
-            if ($resultNode->right instanceof BinaryOp) {
-                $resultNode->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
-        }
-
-        return $resultNode;
+        return $this->nodesToReturn[$objectId] ?? $node;
     }
 
     protected function isName(Node $node, string $name): bool
