@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
@@ -86,6 +87,17 @@ CODE_SAMPLE
         }
 
         $node->cond->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+
+        $cond = $node->cond;
+
+        while ($cond instanceof BinaryOp) {
+            if (! $cond->right instanceof BinaryOp) {
+                $cond->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
+
+            $cond = $cond->right;
+        }
+
         $node->cond = new BooleanAnd($node->cond, $subIf->cond);
 
         $node->stmts = $subIf->stmts;
