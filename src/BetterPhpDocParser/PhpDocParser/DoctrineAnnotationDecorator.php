@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
-use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
+//use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
@@ -203,13 +203,15 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             }
 
             // prepare for doctrine value node migration
-            if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
-                $startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
-                $arguments = '(' . implode(', ', $phpDocChildNode->value->annotation->arguments) . ')';
+            //if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
+                //$startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
+                //$arguments = '(' . implode(', ', $phpDocChildNode->value->annotation->arguments) . ')';
 
-                $phpDocChildNode = new PhpDocTagNode($phpDocChildNode->name, new GenericTagValueNode($arguments));
-                $phpDocChildNode->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
-            }
+                //$phpDocChildNode = new PhpDocTagNode($phpDocChildNode->name, new GenericTagValueNode($arguments));
+                //$phpDocChildNode->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
+            //}
+
+            //dump($phpDocChildNode);
 
             if (! $phpDocChildNode->value instanceof GenericTagValueNode) {
                 $this->processDescriptionAsSpacelessPhpDoctagNode(
