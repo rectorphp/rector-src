@@ -14,7 +14,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeAnalyzer\ClassAnalyzer;
@@ -225,7 +226,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            if ($soleStmt instanceof Throw_) {
+            if ($soleStmt instanceof Expression && $soleStmt->expr instanceof Throw_) {
                 return true;
             }
         }
