@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
-//use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
@@ -164,6 +164,10 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         Node $currentPhpNode,
         int $key
     ): void {
+        if (str_starts_with($phpDocTextNode->text, '@ORM\\')) {
+            $phpDocTextNode->text = '@\Doctrine\ORM\Mapping\\' . ltrim($phpDocTextNode->text, '@ORM\\');
+        }
+
         $spacelessPhpDocTagNodes = $this->resolveFqnAnnotationSpacelessPhpDocTagNode(
             $phpDocTextNode,
             $currentPhpNode
@@ -202,16 +206,14 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 continue;
             }
 
-            // prepare for doctrine value node migration
-            //if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
-                //$startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
-                //$arguments = '(' . implode(', ', $phpDocChildNode->value->annotation->arguments) . ')';
+            if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
+                $startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
+                $phpDocChildNode = new PhpDocTextNode((string) $phpDocChildNode);
+                $phpDocChildNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
+                $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
 
-                //$phpDocChildNode = new PhpDocTagNode($phpDocChildNode->name, new GenericTagValueNode($arguments));
-                //$phpDocChildNode->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
-            //}
-
-            //dump($phpDocChildNode);
+                continue;
+            }
 
             if (! $phpDocChildNode->value instanceof GenericTagValueNode) {
                 $this->processDescriptionAsSpacelessPhpDoctagNode(

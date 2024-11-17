@@ -62,14 +62,6 @@ final class BetterPhpDocParser extends PhpDocParser
             // ConstExprParser
             $constExprParser,
         );
-
-        // disable native phpdoc-parser doctrine detection
-        // as parent::__construct() call toDoctrine()
-        $privatesAccessor->setPrivateProperty(
-            $this,
-            'doctrineConstantExprParser',
-            new ConstExprParser($parserConfig)
-        );
     }
 
     public function parseWithNode(BetterTokenIterator $betterTokenIterator, Node $node): PhpDocNode
