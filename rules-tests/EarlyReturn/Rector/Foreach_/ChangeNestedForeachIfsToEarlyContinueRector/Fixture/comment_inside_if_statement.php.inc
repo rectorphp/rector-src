@@ -35,7 +35,6 @@ class CommentInsideIfStatement
             if ($value !== 5) {
                 continue;
             }
-            // why am I doing this?
             if ($value !== 10) {
                 continue;
             }

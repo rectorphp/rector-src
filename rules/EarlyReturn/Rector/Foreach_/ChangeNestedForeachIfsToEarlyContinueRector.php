@@ -96,6 +96,10 @@ CODE_SAMPLE
             return null;
         }
 
+        foreach ($nestedIfsWithOnlyNonReturn as $nestedIf) {
+            $nestedIf->cond->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
+
         return $this->processNestedIfsWithNonBreaking($node, $nestedIfsWithOnlyNonReturn);
     }
 
