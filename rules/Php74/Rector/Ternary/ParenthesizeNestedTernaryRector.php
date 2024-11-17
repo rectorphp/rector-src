@@ -66,7 +66,7 @@ CODE_SAMPLE
             }
 
             // re-print with brackets
-            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $node->cond->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             return $node;
         }
 
