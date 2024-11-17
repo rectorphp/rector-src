@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
@@ -145,7 +144,7 @@ CODE_SAMPLE;
         $refactoredNode = $this->refactor($node);
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
-        if ($refactoredNode === NodeTraverser::REMOVE_NODE) {
+        if ($refactoredNode === NodeVisitor::REMOVE_NODE) {
             $this->toBeRemovedNodeId = spl_object_id($originalNode);
 
             // notify this rule changing code

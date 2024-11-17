@@ -9,7 +9,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 
 final class CallableNodeVisitor extends NodeVisitorAbstract
@@ -43,7 +42,7 @@ final class CallableNodeVisitor extends NodeVisitorAbstract
         /** @var int|Node|null|Node[] $newNode */
         $newNode = $callable($node);
 
-        if ($newNode === NodeTraverser::REMOVE_NODE) {
+        if ($newNode === NodeVisitor::REMOVE_NODE) {
             $this->nodeIdToRemove = spl_object_id($originalNode);
             return $originalNode;
         }
