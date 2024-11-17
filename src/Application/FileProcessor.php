@@ -111,9 +111,11 @@ final readonly class FileProcessor
     private function parseFileAndDecorateNodes(File $file): ?SystemError
     {
         try {
-            $this->parseFileNodes($file);
-        } catch (ParserErrorsException) {
-            $this->parseFileNodes($file, false);
+            try {
+                $this->parseFileNodes($file);
+            } catch (ParserErrorsException) {
+                $this->parseFileNodes($file, false);
+            }
         } catch (ShouldNotHappenException $shouldNotHappenException) {
             throw $shouldNotHappenException;
         } catch (AnalysedCodeException $analysedCodeException) {
