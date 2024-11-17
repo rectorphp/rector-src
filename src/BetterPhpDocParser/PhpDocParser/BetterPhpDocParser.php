@@ -61,19 +61,6 @@ final class BetterPhpDocParser extends PhpDocParser
             $typeParser,
             // ConstExprParser
             $constExprParser,
-            // requireWhitespaceBeforeDescription
-            false,
-            // preserveTypeAliasesWithInvalidTypes
-            false,
-            // usedAttributes
-            [
-                'lines' => true,
-                'indexes' => true,
-            ],
-            // parseDoctrineAnnotations
-            false,
-            // textBetweenTagsBelongsToDescription, default to false, exists since 1.23.0
-            true
         );
     }
 
