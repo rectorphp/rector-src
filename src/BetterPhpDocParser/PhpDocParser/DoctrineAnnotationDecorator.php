@@ -162,9 +162,10 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         PhpDocNode $phpDocNode,
         PhpDocTextNode $phpDocTextNode,
         Node $currentPhpNode,
-        int $key
+        int $key,
+        bool $isDoctrine = true
     ): void {
-        if (str_starts_with($phpDocTextNode->text, '@ORM\\')) {
+        if ($isDoctrine && str_starts_with($phpDocTextNode->text, '@ORM\\')) {
             $phpDocTextNode->text = '@\Doctrine\ORM\Mapping\\' . ltrim($phpDocTextNode->text, '@ORM\\');
         }
 
@@ -198,7 +199,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
-                $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
+                $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key, false);
                 continue;
             }
 
