@@ -22,7 +22,7 @@ class ReferencedButNotUsed
 {
     public function run()
     {
-        $callback = fn($b) => ++$b;
+        $callback = (fn($b) => ++$b);
     }
 }
 
