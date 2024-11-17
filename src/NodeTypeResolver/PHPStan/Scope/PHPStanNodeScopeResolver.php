@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use PHPStan\Parser\ParserErrorsException;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -329,7 +330,11 @@ final readonly class PHPStanNodeScopeResolver
     ): void {
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        } catch (ParserErrorsException) {
+            // nothing we can do as error parsing from deep internal PHPStan service with service injection we cannot reset
+            // in the middle of process
         } catch (ShouldNotHappenException) {
+            // internal PHPStan error
         }
     }
 
