@@ -12,6 +12,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\MagicConst\Class_;
 use PHPStan\Analyser\Scope;
@@ -54,7 +55,7 @@ final class ValueResolver
         return $this->getValue($expr) === $value;
     }
 
-    public function getValue(Arg|Expr $expr, bool $resolvedClassReference = false): mixed
+    public function getValue(Arg|Expr|InterpolatedStringPart $expr, bool $resolvedClassReference = false): mixed
     {
         if ($expr instanceof Arg) {
             $expr = $expr->value;
@@ -147,7 +148,7 @@ final class ValueResolver
         return true;
     }
 
-    private function resolveExprValueForConst(Expr $expr): mixed
+    private function resolveExprValueForConst(Expr|InterpolatedStringPart $expr): mixed
     {
         try {
             $constExprEvaluator = $this->getConstExprEvaluator();
@@ -160,6 +161,10 @@ final class ValueResolver
             if ($type instanceof ConstantStringType) {
                 return $type->getValue();
             }
+        }
+
+        if ($expr instanceof InterpolatedStringPart) {
+            return $expr->value;
         }
 
         return null;
