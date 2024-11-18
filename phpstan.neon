@@ -52,6 +52,12 @@ parameters:
         -
             identifier: phpstanApi.classConstant
 
+        -
+            identifier: method.alreadyNarrowedType
+            paths:
+                - tests
+                - rules-tests
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
