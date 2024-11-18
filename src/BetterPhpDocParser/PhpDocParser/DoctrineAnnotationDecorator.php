@@ -230,13 +230,18 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                     continue;
                 }
 
-                // todo: cover values
-                $genericTagValueNode = new GenericTagValueNode('');
+                $values  = implode(', ', $phpDocChildNode->value->annotation->arguments);
+
+                if ($values !== '') {
+                    $values = '(' . $values . ')';
+                }
+
+                $genericTagValueNode = new GenericTagValueNode($values);
                 $startAndEnd = $phpDocChildNode->getAttribute(PhpDocAttributeKey::START_AND_END);
                 $genericTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
 
                 $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
-                    $name,
+                    '@' . $name,
                     $genericTagValueNode,
                     $fullyQualifiedAnnotationClass,
                     $currentPhpNode
