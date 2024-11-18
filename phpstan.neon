@@ -49,6 +49,9 @@ parameters:
         -
             identifier: phpstanApi.class
 
+        -
+            identifier: phpstanApi.classConstant
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
