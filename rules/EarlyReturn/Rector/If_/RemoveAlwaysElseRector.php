@@ -173,7 +173,7 @@ CODE_SAMPLE
         }
 
         return ! ($lastStmt instanceof Return_
-            || (($lastStmt instanceof Expression || $lastStmt instanceof Return_) && $lastStmt->expr instanceof Throw_)
+            || ($lastStmt instanceof Expression && $lastStmt->expr instanceof Throw_)
             || $lastStmt instanceof Continue_
             || ($lastStmt instanceof Expression && $lastStmt->expr instanceof Exit_));
     }
