@@ -83,6 +83,10 @@ parameters:
         -
             identifier: phpstanApi.constructor
 
+        # follow parent signature
+        -
+            identifier: return.unusedType
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
