@@ -87,6 +87,10 @@ parameters:
         -
             identifier: return.unusedType
 
+        # enforce native type
+        -
+            identifier: varTag.nativeType
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
