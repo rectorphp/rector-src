@@ -74,18 +74,16 @@ final class AttributeArrayNameInliner
             }
 
             // matching top root array key
-            if ($arrayItem instanceof ArrayItem) {
-                if ($arrayItem->key instanceof Int_) {
-                    $newArgs[] = new Arg($arrayItem->value);
-                } elseif ($arrayItem->key instanceof String_) {
-                    $arrayItemString = $arrayItem->key;
-                    $newArgs[] = new Arg($arrayItem->value, false, false, [], new Identifier($arrayItemString->value));
-                } elseif (! $arrayItem->key instanceof Expr) {
-                    // silent key
-                    $newArgs[] = new Arg($arrayItem->value);
-                } else {
-                    throw new NotImplementedYetException(get_debug_type($arrayItem->key));
-                }
+            if ($arrayItem->key instanceof Int_) {
+                $newArgs[] = new Arg($arrayItem->value);
+            } elseif ($arrayItem->key instanceof String_) {
+                $arrayItemString = $arrayItem->key;
+                $newArgs[] = new Arg($arrayItem->value, false, false, [], new Identifier($arrayItemString->value));
+            } elseif (! $arrayItem->key instanceof Expr) {
+                // silent key
+                $newArgs[] = new Arg($arrayItem->value);
+            } else {
+                throw new NotImplementedYetException(get_debug_type($arrayItem->key));
             }
         }
 
