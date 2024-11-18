@@ -46,17 +46,33 @@ parameters:
         -
             identifier: missingType.generics
 
+        # phpstan class instance
         -
             identifier: phpstanApi.class
 
+        # phpstan class constant value
         -
             identifier: phpstanApi.classConstant
 
+        # webmozart assert
+        -
+            identifier: staticMethod.alreadyNarrowedType
+
+        # phpstan instanceof
+        -
+            identifier: phpstanApi.instanceofAssumption
+
+        # assert phpunit
         -
             identifier: method.alreadyNarrowedType
             paths:
                 - tests
                 - rules-tests
+
+        # runtime php id
+        -
+            identifier: greaterOrEqual.alwaysTrue
+            path: src/Util/FileHasher.php
 
         # is nested expr
         -
