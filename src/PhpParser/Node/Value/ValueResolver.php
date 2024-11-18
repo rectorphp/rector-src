@@ -206,7 +206,6 @@ final class ValueResolver
     {
         $keys = [];
         foreach ($constantArrayType->getKeyTypes() as $i => $keyType) {
-            /** @var ConstantScalarType $keyType */
             $keys[$i] = $keyType->getValue();
         }
 
