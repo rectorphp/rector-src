@@ -6,7 +6,6 @@ namespace Rector\CodeQuality\Rector\Foreach_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
@@ -103,12 +102,14 @@ CODE_SAMPLE
             // special case of nested array items
             if ($stmt->valueVar instanceof List_) {
                 $valueArray = $this->refactorArrayForeachValue($stmt->valueVar, $stmt);
-                if ($valueArray instanceof Array_) {
-                    $stmt->valueVar = $valueArray;
+                if (! $valueArray instanceof List_) {
+                    continue;
                 }
 
+                $stmt->valueVar = $valueArray;
+
                 // not sure what does this mean :)
-                if ($stmt->valueVar->items !== []) {
+                if ($valueArray->items !== []) {
                     continue;
                 }
 
