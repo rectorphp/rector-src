@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration;
 
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
@@ -43,7 +44,7 @@ final class TypeNormalizer
             return $type;
         }
 
-        if ($type instanceof UnionType) {
+        if ($type instanceof UnionType || $type instanceof IntersectionType) {
             return $type;
         }
 
