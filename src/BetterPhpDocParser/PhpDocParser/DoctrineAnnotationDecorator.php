@@ -223,7 +223,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
                 if ($type instanceof ShortenedObjectType || $type instanceof AliasedObjectType) {
                     $fullyQualifiedAnnotationClass = $type->getFullyQualifiedName();
-                } elseif ($type instanceof Objectype) {
+                } elseif ($type instanceof ObjectType) {
                     $fullyQualifiedAnnotationClass = $type->getClassName();
                 }
 
