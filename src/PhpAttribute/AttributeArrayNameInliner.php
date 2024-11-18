@@ -64,9 +64,17 @@ final class AttributeArrayNameInliner
         $newArgs = [];
 
         foreach ($args as $arg) {
+            if (! $arg->value instanceof Array_) {
+                continue;
+            }
+
+            $arrayItem = current($arg->value->items) ?: null;
+            if (! $arrayItem instanceof ArrayItem) {
+                continue;
+            }
+
             // matching top root array key
-            if ($arg->value instanceof ArrayItem) {
-                $arrayItem = $arg->value;
+            if ($arrayItem instanceof ArrayItem) {
                 if ($arrayItem->key instanceof Int_) {
                     $newArgs[] = new Arg($arrayItem->value);
                 } elseif ($arrayItem->key instanceof String_) {

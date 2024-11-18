@@ -36,11 +36,6 @@ parameters:
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
 
-        # to be resolved on doctrine detection
-        - src/PhpAttribute/AttributeArrayNameInliner.php
-        - src/PhpAttribute/NodeFactory/AnnotationToAttributeIntegerValueCaster.php
-
-
     # https://github.com/rectorphp/type-perfect/
 # to be enabled later once rector upgraded to use phpstan v2
 #    type_perfect:
