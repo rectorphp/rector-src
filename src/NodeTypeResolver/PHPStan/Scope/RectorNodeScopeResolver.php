@@ -17,11 +17,11 @@ final class RectorNodeScopeResolver
 {
     public static function processNodes(array $stmts, MutatingScope $mutatingScope): void
     {
-        $nodeTraverser = new SimpleCallableNodeTraverser();
+        $simpleCallableNodeTraverser = new SimpleCallableNodeTraverser();
 
-        $nodeTraverser->traverseNodesWithCallable(
+        $simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            function (Node $node) use ($mutatingScope) {
+            function (Node $node) use ($mutatingScope): void {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
         );
