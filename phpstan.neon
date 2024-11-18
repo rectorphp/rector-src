@@ -95,6 +95,12 @@ parameters:
         -
             identifier: deadCode.unreachable
 
+        -
+            identifier: argument.type
+
+        -
+            identifier: return.type
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
