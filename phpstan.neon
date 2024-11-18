@@ -46,6 +46,9 @@ parameters:
         -
             identifier: missingType.generics
 
+        -
+            identifier: phpstanApi.class
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
