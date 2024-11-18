@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PHPStan\Analyser\MutatingScope;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -15,6 +16,9 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
  */
 final class RectorNodeScopeResolver
 {
+    /**
+     * @param Stmt[] $stmts
+     */
     public static function processNodes(array $stmts, MutatingScope $mutatingScope): void
     {
         $simpleCallableNodeTraverser = new SimpleCallableNodeTraverser();
