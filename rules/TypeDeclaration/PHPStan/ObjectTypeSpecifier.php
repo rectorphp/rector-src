@@ -56,6 +56,11 @@ final readonly class ObjectTypeSpecifier
         }
 
         $className = ltrim($objectType->getClassName(), '\\');
+        if (str_starts_with($objectType->getClassName(), '\\')) {
+            return new FullyQualifiedObjectType($className);
+        }
+
+        $className = ltrim($objectType->getClassName(), '\\');
 
         if ($this->reflectionProvider->hasClass($className)) {
             return new FullyQualifiedObjectType($className);
