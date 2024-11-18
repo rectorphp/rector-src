@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\Objectype;
 use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
 use Nette\Utils\Strings;
 use PhpParser\Node;
@@ -22,6 +24,10 @@ use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\DoctrineAnnotation\SilentKeyMap;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
+use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
 use Rector\Util\StringUtils;
 use Webmozart\Assert\Assert;
 
@@ -55,7 +61,8 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         private ClassAnnotationMatcher $classAnnotationMatcher,
         private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
         private TokenIteratorFactory $tokenIteratorFactory,
-        private AttributeMirrorer $attributeMirrorer
+        private AttributeMirrorer $attributeMirrorer,
+        private ObjectTypeSpecifier $objectTypeSpecifier
     ) {
     }
 
@@ -204,12 +211,42 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
             // needs stable correct detection of full class name
             if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
-                //$startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
-                //$phpDocChildNode = new PhpDocTextNode((string) $phpDocChildNode);
-                //$phpDocChildNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
-                //$this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
+                $name = ltrim($phpDocChildNode->name, '@');
 
-                //continue;
+                $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType(
+                    $currentPhpNode,
+                    new ObjectType($name),
+                    $currentPhpNode->getAttribute(AttributeKey::SCOPE)
+                );
+
+                $fullyQualifiedAnnotationClass = null;
+
+                if ($type instanceof ShortenedObjectType || $type instanceof AliasedObjectType) {
+                    $fullyQualifiedAnnotationClass = $type->getFullyQualifiedName();
+                } elseif ($type instanceof Objectype) {
+                    $fullyQualifiedAnnotationClass = $type->getClassName();
+                }
+
+                if ($fullyQualifiedAnnotationClass === null) {
+                    continue;
+                }
+
+                // todo: cover values
+                $genericTagValueNode = new GenericTagValueNode('');
+                $startAndEnd = $phpDocChildNode->getAttribute(PhpDocAttributeKey::START_AND_END);
+                $genericTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
+
+                $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
+                    $name,
+                    $genericTagValueNode,
+                    $fullyQualifiedAnnotationClass,
+                    $currentPhpNode
+                );
+
+                $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+                $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
+
+                continue;
             }
 
             if (! $phpDocChildNode->value instanceof GenericTagValueNode) {
