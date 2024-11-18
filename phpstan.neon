@@ -101,6 +101,9 @@ parameters:
         -
             identifier: return.type
 
+        -
+            identifier: phpstanApi.varTagAssumption
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
