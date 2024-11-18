@@ -116,7 +116,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($funcCall->args === null) {
+        if ($funcCall->args === []) {
             return true;
         }
 
