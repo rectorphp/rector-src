@@ -161,7 +161,7 @@ CODE_SAMPLE
             return;
         }
 
-        $exprs = array_filter([$for->expr, $for->valueVar, $for->valueVar]);
+        $exprs = [$for->expr, $for->valueVar, $for->valueVar];
         $variables = $this->betterNodeFinder->findInstanceOf($exprs, Variable::class);
         foreach ($variables as $variable) {
             if ($this->stmtsManipulator->isVariableUsedInNextStmt(
