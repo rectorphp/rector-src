@@ -31,7 +31,7 @@ use Webmozart\Assert\Assert;
 final class RectorConfig extends Container
 {
     /**
-     * @var array<class-string<ConfigurableRectorInterface>, mixed[]>>
+     * @var array<class-string<ConfigurableRectorInterface>, mixed[]>
      */
     private array $ruleConfigurations = [];
 
