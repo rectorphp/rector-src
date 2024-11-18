@@ -339,3 +339,5 @@ parameters:
 
         # deprecated
         - '#Register "Rector\\Php80\\Rector\\FunctionLike\\MixedTypeRector" service to "php80\.php" config set#'
+
+        - '#::provideMinPhpVersion\(\) never returns \d+ so it can be removed from the return type#'
