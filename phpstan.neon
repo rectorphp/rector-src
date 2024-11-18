@@ -11,6 +11,8 @@ parameters:
     # requires exact closure types
     checkMissingCallableSignature: true
 
+    treatPhpDocTypesAsCertain: false
+
     paths:
         - rector.php
         - bin
