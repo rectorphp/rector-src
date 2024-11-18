@@ -76,6 +76,10 @@ parameters:
             identifier: greaterOrEqual.alwaysTrue
             path: src/Util/FileHasher.php
 
+        # unreliable on loop
+        -
+            identifier: instanceof.alwaysTrue
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
