@@ -43,6 +43,10 @@ final class TypeNormalizer
             return $type;
         }
 
+        if ($type instanceof UnionType) {
+            return $type;
+        }
+
         /** @var ArrayType|ConstantArrayType $type */
         if ($type instanceof ConstantArrayType && $arrayNesting === 1) {
             return $type;
