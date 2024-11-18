@@ -39,10 +39,11 @@ final class TypeNormalizer
      */
     public function normalizeArrayOfUnionToUnionArray(Type $type, int $arrayNesting = 1): Type
     {
-        if (! $type instanceof ArrayType) {
+        if (! $type->isArray()->yes()) {
             return $type;
         }
 
+        /** @var ArrayType|ConstantArrayType $type */
         if ($type instanceof ConstantArrayType && $arrayNesting === 1) {
             return $type;
         }
