@@ -101,7 +101,7 @@ final class File
     /**
      * @param Stmt[] $newStmts
      * @param Stmt[] $oldStmts
-     * @param array<int, array{int, string, int}|string> $oldTokens
+     * @param array<int, Token> $oldTokens
      */
     public function hydrateStmtsAndTokens(array $newStmts, array $oldStmts, array $oldTokens): void
     {
