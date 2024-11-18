@@ -33,8 +33,7 @@ function run($val1, $val2, $val3, $val4)
 {
     if (
     (
-        1 === $val1 || 1 === $val2 ||
-        1 === $val3 || 1 === $val4
+        1 === $val1 || (1 === $val2 || 1 === $val3) || 1 === $val4
     )
     ) {
         //code
@@ -42,8 +41,7 @@ function run($val1, $val2, $val3, $val4)
 
     if (
     (
-        1 === $val1 && 1 === $val2 &&
-        1 === $val3 && 1 === $val4
+        1 === $val1 && (1 === $val2 && 1 === $val3) && 1 === $val4
     )
     ) {
         //code

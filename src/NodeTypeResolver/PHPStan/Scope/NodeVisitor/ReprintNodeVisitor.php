@@ -15,23 +15,23 @@ final class ReprintNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 {
     public function enterNode(Node $node): ?Node
     {
-        if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+        if ($node->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
             return null;
         }
 
         if ($node instanceof BinaryOp) {
-            if ($node->left instanceof BinaryOp  && $node->left->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+            if ($node->left instanceof BinaryOp  && $node->left->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
                 $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
-            if ($node->right instanceof BinaryOp && $node->right->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+            if ($node->right instanceof BinaryOp && $node->right->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
                 $node->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
             return $node;
         }
 
-        if ($node instanceof BooleanNot && $node->expr instanceof BinaryOp && $node->expr->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+        if ($node instanceof BooleanNot && $node->expr instanceof BinaryOp && $node->expr->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
             $node->expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
