@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
+use PHPStan\Reflection\ExtendedParametersAcceptor;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node;
@@ -119,9 +120,11 @@ final readonly class ReturnStrictTypeAnalyzer
 
         if ($methodReflection instanceof NativeFunctionReflection || $methodReflection instanceof NativeMethodReflection) {
             $returnType = $parametersAcceptorWithPhpDocs->getReturnType();
-        } else {
+        } elseif ($parametersAcceptorWithPhpDocs instanceof ExtendedParametersAcceptor) {
             // native return type is needed, as docblock can be false
             $returnType = $parametersAcceptorWithPhpDocs->getNativeReturnType();
+        } else {
+            $returnType = $parametersAcceptorWithPhpDocs->getReturnType();
         }
 
         if ($returnType instanceof MixedType) {
