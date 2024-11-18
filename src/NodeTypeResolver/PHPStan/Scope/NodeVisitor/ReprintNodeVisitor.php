@@ -24,7 +24,7 @@ final class ReprintNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                 $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
-            if ($node->right instanceof BinaryOp && $node->left->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+            if ($node->right instanceof BinaryOp && $node->right->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
                 $node->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
