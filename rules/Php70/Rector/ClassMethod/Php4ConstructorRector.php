@@ -118,7 +118,7 @@ CODE_SAMPLE
         }
 
         if (count($classMethodStmts) === 1) {
-            $stmt = $psr4ConstructorMethod->stmts[0];
+            $stmt = $classMethodStmts[0];
             if (! $stmt instanceof Expression) {
                 return null;
             }
