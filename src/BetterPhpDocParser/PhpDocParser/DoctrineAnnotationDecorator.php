@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Objectype;
 use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
 use Nette\Utils\Strings;
 use PhpParser\Node;

@@ -41,8 +41,7 @@ final readonly class ObjectTypeSpecifier
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
         ObjectType $objectType,
-        Scope|null $scope,
-        bool $verifyClassExists = true
+        Scope|null $scope
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType | TemplateType {
         $uses = $this->useImportsResolver->resolve();
 
