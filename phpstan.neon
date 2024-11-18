@@ -91,6 +91,10 @@ parameters:
         -
             identifier: varTag.nativeType
 
+        # unreliable on runtime
+        -
+            identifier: deadCode.unreachable
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
