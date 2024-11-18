@@ -21,4 +21,6 @@ return $config
         __DIR__ . '/stubs',
         __DIR__ . '/tests',
         __DIR__ . '/rules-tests',
-    ], [ErrorType::UNKNOWN_CLASS]);
+    ], [ErrorType::UNKNOWN_CLASS])
+
+    ->disableExtensionsAnalysis();
