@@ -158,6 +158,10 @@ final readonly class ObjectTypeSpecifier
             return new AliasedObjectType($alias, $fullyQualifiedName);
         }
 
+        if (str_starts_with($className, $alias . '\\')) {
+            return new AliasedObjectType($alias, $fullyQualifiedName . ltrim($className, $alias));
+        }
+
         return null;
     }
 
