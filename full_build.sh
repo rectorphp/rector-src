@@ -2,7 +2,7 @@
 
 # usage:
 #
-#   export PHP72_BIN_PATH=/opt/local/bin/php72 && sh ./full_build.sh
+#   export PHP74_BIN_PATH=/opt/local/bin/php74 && sh ./full_build.sh
 
 # see https://stackoverflow.com/questions/66644233/how-to-propagate-colors-from-bash-script-to-github-action?noredirect=1#comment117811853_66644233
 export TERM=xterm-color
@@ -37,13 +37,13 @@ php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config r
 
 sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 
-# verify syntax valid in php 7.2
+# verify syntax valid in php 7.4
 composer global require php-parallel-lint/php-parallel-lint
 
 if test -z ${PHP72_BIN_PATH+y}; then
     ~/.config/composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/console/Debug/CliRequest.php
 else
-    echo "verify syntax valid in php 7.2 with specify PHP72_BIN_PATH env";
+    echo "verify syntax valid in php 7.4 with specify PHP74_BIN_PATH env";
     $PHP72_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/console/Debug/CliRequest.php
 fi
 
