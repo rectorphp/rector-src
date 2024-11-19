@@ -233,9 +233,6 @@ final readonly class ObjectTypeSpecifier
         $classNameWithoutLastUsePart = Strings::after($objectType->getClassName(), '\\', 1);
 
         $connectedClassName = $prefix . $useItem->name->toString() . '\\' . $classNameWithoutLastUsePart;
-        if (! $this->reflectionProvider->hasClass($connectedClassName)) {
-            return null;
-        }
 
         if ($objectType->getClassName() === $connectedClassName) {
             return null;
