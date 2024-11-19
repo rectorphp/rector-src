@@ -58,11 +58,6 @@ final class BetterStandardPrinter extends Standard
      */
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
-    /**
-     * @var int[]
-     */
-    private const HERENOW_DOC_KINDS = [String_::KIND_HEREDOC, String_::KIND_NOWDOC];
-
     public function __construct(
     ) {
         parent::__construct([
