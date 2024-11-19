@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -77,8 +78,6 @@ final readonly class PhpAttributeGroupFactory
         $args = $this->createArgsFromItems($values, '', $annotationToAttribute->getClassReferenceFields());
 
         $this->annotationToAttributeIntegerValueCaster->castAttributeTypes($annotationToAttribute, $args);
-
-        $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 
         $attributeName = $this->attributeNameFactory->create(
             $annotationToAttribute,
