@@ -20,6 +20,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -348,6 +349,15 @@ final class BetterStandardPrinter extends Standard
      */
     protected function pScalar_String(String_ $string): string
     {
+        if ($string->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
+            $content = parent::pScalar_String($string);
+
+            $lines = explode("\n", $content);
+            $trimmedLines = array_map('ltrim', $lines);
+
+            return implode("\n", $trimmedLines);
+        }
+
         $isRegularPattern = (bool) $string->getAttribute(AttributeKey::IS_REGULAR_PATTERN, false);
         if (! $isRegularPattern) {
             return parent::pScalar_String($string);
@@ -401,6 +411,20 @@ final class BetterStandardPrinter extends Standard
         }
 
         return parent::pExpr_Ternary($ternary, $precedence, $lhsPrecedence);
+    }
+
+    protected function pScalar_InterpolatedString(InterpolatedString $node): string
+    {
+        $content = parent::pScalar_InterpolatedString($node);
+
+        if ($node->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
+            $lines = explode("\n", $content);
+            $trimmedLines = array_map('ltrim', $lines);
+
+            return implode("\n", $trimmedLines);
+        }
+
+        return $content;
     }
 
     protected function pCommaSeparated(array $nodes): string
