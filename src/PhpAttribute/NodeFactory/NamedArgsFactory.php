@@ -33,7 +33,13 @@ final class NamedArgsFactory
         $args = [];
 
         foreach ($values as $key => $argValue) {
+            $name = null;
+
             if ($argValue instanceof ArrayItem) {
+                if ($argValue->key instanceof String_) {
+                    $name = new Identifier($argValue->key->value);
+                }
+
                 $argValue = $argValue->value;
             }
 
@@ -41,10 +47,8 @@ final class NamedArgsFactory
 
             $this->normalizeArrayWithConstFetchKey($expr);
 
-            $name = null;
-
             // for named arguments
-            if (is_string($key)) {
+            if ($name === null && is_string($key)) {
                 $name = new Identifier($key);
             }
 
