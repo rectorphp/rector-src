@@ -66,11 +66,11 @@ jobs:
             # 3. prefix classes
             -   run: sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 
-            # 4. lint the code for PHP 7.2 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
+            # 4. lint the code for PHP 7.4 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
             -
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 7.2
+                    php-version: 7.4
                     coverage: none
             -   run: composer global require php-parallel-lint/php-parallel-lint --ansi
             -   run: /home/runner/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/console/Debug/CliRequest.php
