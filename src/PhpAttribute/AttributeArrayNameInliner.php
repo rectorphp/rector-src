@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\String_;
 use Rector\Exception\NotImplementedYetException;
 use Webmozart\Assert\Assert;
@@ -65,6 +66,15 @@ final class AttributeArrayNameInliner
         $newArgs = [];
 
         foreach ($args as $arg) {
+            if ($arg->value instanceof String_ && is_numeric($arg->value->value)) {
+                // use equal over identical on purpose to verify if it is an integer
+                if ((float) $arg->value->value == (int) $arg->value->value) {
+                    $arg->value = new Int_((int) $arg->value->value);
+                } else {
+                    $arg->value = new Float_((float) $arg->value->value);
+                }
+            }
+
             if (! $arg->value instanceof Array_) {
                 continue;
             }
