@@ -20,6 +20,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php81\Enum\AttributeName;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
+use Rector\PhpAttribute\AttributeArrayNameInliner;
 
 /**
  * @see \Rector\Tests\PhpAttribute\Printer\PhpAttributeGroupFactoryTest
@@ -31,6 +32,7 @@ final readonly class PhpAttributeGroupFactory
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
         private AnnotationToAttributeIntegerValueCaster $annotationToAttributeIntegerValueCaster,
+        private AttributeArrayNameInliner $attributeArrayNameInliner
     ) {
     }
 
@@ -75,6 +77,8 @@ final readonly class PhpAttributeGroupFactory
         $args = $this->createArgsFromItems($values, '', $annotationToAttribute->getClassReferenceFields());
 
         $this->annotationToAttributeIntegerValueCaster->castAttributeTypes($annotationToAttribute, $args);
+
+        $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 
         $attributeName = $this->attributeNameFactory->create(
             $annotationToAttribute,

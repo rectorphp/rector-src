@@ -63,8 +63,6 @@ final class AttributeArrayNameInliner
     {
         Assert::allIsAOf($args, Arg::class);
 
-        $newArgs = [];
-
         foreach ($args as $arg) {
             if ($arg->value instanceof String_ && is_numeric($arg->value->value)) {
                 // use equal over identical on purpose to verify if it is an integer
@@ -74,34 +72,6 @@ final class AttributeArrayNameInliner
                     $arg->value = new Float_((float) $arg->value->value);
                 }
             }
-
-            if (! $arg->value instanceof Array_) {
-                continue;
-            }
-
-            $arrayItem = current($arg->value->items) ?: null;
-            if (! $arrayItem instanceof ArrayItem) {
-                continue;
-            }
-
-            // matching top root array key
-            if ($arrayItem->key instanceof Int_) {
-                $newArgs[] = new Arg($arrayItem->value);
-            } elseif ($arrayItem->key instanceof String_) {
-                $arrayItemString = $arrayItem->key;
-                $newArgs[] = new Arg($arrayItem->value, false, false, [], new Identifier($arrayItemString->value));
-            } elseif ($arrayItem->key instanceof ClassConstFetch) {
-                continue;
-            } elseif(! $arrayItem->key instanceof Expr) {
-                // silent key
-                $newArgs[] = new Arg($arrayItem->value);
-            } else {
-                throw new NotImplementedYetException(get_debug_type($arrayItem->key));
-            }
-        }
-
-        if ($newArgs !== []) {
-            return $newArgs;
         }
 
         return $args;

@@ -119,7 +119,9 @@ final readonly class PhpNestedAttributeGroupFactory
     private function createAttributeArgs(
         DoctrineAnnotationTagValueNode $nestedDoctrineAnnotationTagValueNode
     ): array {
-        return $this->createArgsFromItems($nestedDoctrineAnnotationTagValueNode->getValues());
+        $args = $this->createArgsFromItems($nestedDoctrineAnnotationTagValueNode->getValues());
+
+        return $this->attributeArrayNameInliner->inlineArrayToArgs($args);
     }
 
     /**
