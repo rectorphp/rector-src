@@ -216,7 +216,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             }
 
             // single quoted got invalid tag, keep process
-            if ($phpDocChildNode instanceof PhpDocTagNode && $phpDocChildNode->value instanceof InvalidTagValueNode) {
+            if ($phpDocChildNode->value instanceof InvalidTagValueNode) {
                 $name = ltrim($phpDocChildNode->name, '@');
 
                 $values  = $phpDocChildNode->value->value;
@@ -322,7 +322,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         }
     }
 
-    private function processDoctrine(Node $currentPhpNode, string $name, PhpDocTagNode $phpDocChildNode, PhpDocNode $phpDocNode, mixed $key, string $values): void
+    private function processDoctrine(Node $currentPhpNode, string $name, PhpDocTagNode $phpDocTagNode, PhpDocNode $phpDocNode, mixed $key, string $values): void
     {
         $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType(
             $currentPhpNode,
@@ -344,15 +344,11 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
         if ($values !== '') {
             $values = Strings::replace($values, self::STAR_COMMENT_REGEX);
-            if (str_starts_with($values, '(')) {
-                $values = str_replace("'", '"', $values);
-            } else {
-                $values = '(' . $values . ')';
-            }
+            $values = str_starts_with($values, '(') ? str_replace("'", '"', $values) : '(' . $values . ')';
         }
 
         $genericTagValueNode = new GenericTagValueNode($values);
-        $startAndEnd = $phpDocChildNode->getAttribute(PhpDocAttributeKey::START_AND_END);
+        $startAndEnd = $phpDocTagNode->getAttribute(PhpDocAttributeKey::START_AND_END);
         $genericTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
 
         $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
@@ -362,7 +358,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             $currentPhpNode
         );
 
-        $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+        $this->attributeMirrorer->mirror($phpDocTagNode, $spacelessPhpDocTagNode);
         $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
     }
 
