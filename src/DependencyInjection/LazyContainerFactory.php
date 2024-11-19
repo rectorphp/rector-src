@@ -226,7 +226,7 @@ final class LazyContainerFactory
      * @var array<class-string<ScopeResolverNodeVisitorInterface>>
      */
     private const SCOPE_RESOLVER_NODE_VISITOR_CLASSES = [
-        ArgNodeVisitor::class,
+        //        ArgNodeVisitor::class,
         AssignedToNodeVisitor::class,
         ByRefReturnNodeVisitor::class,
         ByRefVariableNodeVisitor::class,
