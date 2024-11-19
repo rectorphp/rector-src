@@ -56,6 +56,12 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
      */
     private const NEWLINE_ANNOTATION_FQCN_REGEX = '#\r?\n@\\\\#';
 
+    /**
+     * @var string
+     * @var https://regex101.com/r/3zXEh7/1
+     */
+    private const STAR_COMMENT_REGEX = '#^\s*\*#ms';
+
     public function __construct(
         private ClassAnnotationMatcher $classAnnotationMatcher,
         private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
@@ -233,6 +239,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 $values  = implode(', ', $phpDocChildNode->value->annotation->arguments);
 
                 if ($values !== '') {
+                    $values = Strings::replace($values, self::STAR_COMMENT_REGEX);
                     $values = '(' . $values . ')';
                 }
 
