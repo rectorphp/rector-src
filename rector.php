@@ -21,6 +21,7 @@ return RectorConfig::configure()
         rectorPreset: true,
         phpunitCodeQuality: true
     )
+    ->withAttributesSets()
     ->withComposerBased(phpunit: true)
     ->withPhpSets()
     ->withPaths([
