@@ -58,6 +58,11 @@ final class BetterStandardPrinter extends Standard
      */
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
+    /**
+     * @var int[]
+     */
+    private const HERENOW_DOC_KINDS = [String_::KIND_HEREDOC, String_::KIND_NOWDOC];
+
     public function __construct(
     ) {
         parent::__construct([
@@ -349,6 +354,15 @@ final class BetterStandardPrinter extends Standard
      */
     protected function pScalar_String(String_ $string): string
     {
+        if ($string->getAttribute(AttributeKey::DOC_INDENTATION) === '__REMOVED__') {
+            $content = parent::pScalar_String($string);
+
+            $lines = explode("\n", $content);
+            $trimmedLines = array_map('ltrim', $lines);
+
+            return implode("\n", $trimmedLines);
+        }
+
         $isRegularPattern = (bool) $string->getAttribute(AttributeKey::IS_REGULAR_PATTERN, false);
         if (! $isRegularPattern) {
             return parent::pScalar_String($string);
@@ -361,15 +375,6 @@ final class BetterStandardPrinter extends Standard
 
         if ($kind === String_::KIND_SINGLE_QUOTED) {
             return $this->wrapValueWith($string, "'");
-        }
-
-        if ($string->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
-            $content = parent::pScalar_String($string);
-
-            $lines = explode("\n", $content);
-            $trimmedLines = array_map('ltrim', $lines);
-
-            return implode("\n", $trimmedLines);
         }
 
         return parent::pScalar_String($string);
@@ -417,7 +422,7 @@ final class BetterStandardPrinter extends Standard
     {
         $content = parent::pScalar_InterpolatedString($interpolatedString);
 
-        if ($interpolatedString->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
+        if ($interpolatedString->getAttribute(AttributeKey::DOC_INDENTATION) === '__REMOVED__') {
             $lines = explode("\n", $content);
             $trimmedLines = array_map('ltrim', $lines);
 
