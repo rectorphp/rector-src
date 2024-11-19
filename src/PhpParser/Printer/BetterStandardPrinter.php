@@ -349,15 +349,6 @@ final class BetterStandardPrinter extends Standard
      */
     protected function pScalar_String(String_ $string): string
     {
-        if ($string->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
-            $content = parent::pScalar_String($string);
-
-            $lines = explode("\n", $content);
-            $trimmedLines = array_map('ltrim', $lines);
-
-            return implode("\n", $trimmedLines);
-        }
-
         $isRegularPattern = (bool) $string->getAttribute(AttributeKey::IS_REGULAR_PATTERN, false);
         if (! $isRegularPattern) {
             return parent::pScalar_String($string);
@@ -370,6 +361,15 @@ final class BetterStandardPrinter extends Standard
 
         if ($kind === String_::KIND_SINGLE_QUOTED) {
             return $this->wrapValueWith($string, "'");
+        }
+
+        if ($string->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
+            $content = parent::pScalar_String($string);
+
+            $lines = explode("\n", $content);
+            $trimmedLines = array_map('ltrim', $lines);
+
+            return implode("\n", $trimmedLines);
         }
 
         return parent::pScalar_String($string);
