@@ -447,6 +447,11 @@ final class RectorConfigBuilder
         bool $sensiolabs = false,
         bool $all = false
     ): self {
+        // if nothing is passed, enable all as convention in other method
+        if (func_get_args() === []) {
+            $all = true;
+        }
+
         if ($symfony || $all) {
             $this->sets[] = SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES;
         }
