@@ -116,6 +116,12 @@ final readonly class NodeFactory
      */
     public function createArgs(array $values): array
     {
+        foreach ($values as $key => $value) {
+            if ($value instanceof ArrayItem) {
+                $values[$key] = $value->value;
+            }
+        }
+
         return $this->builderFactory->args($values);
     }
 
