@@ -345,6 +345,10 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         if ($values !== '') {
             $values = Strings::replace($values, self::STAR_COMMENT_REGEX);
             $values = str_starts_with($values, '(') ? str_replace("'", '"', $values) : '(' . $values . ')';
+
+            if ($phpDocTagNode->value instanceof DoctrineTagValueNode && $phpDocTagNode->value->description !== '') {
+                $values .= $phpDocTagNode->value->description;
+            }
         }
 
         $genericTagValueNode = new GenericTagValueNode($values);
