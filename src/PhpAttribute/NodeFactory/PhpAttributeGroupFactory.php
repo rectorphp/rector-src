@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -21,7 +20,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php81\Enum\AttributeName;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
-use Rector\PhpAttribute\AttributeArrayNameInliner;
 
 /**
  * @see \Rector\Tests\PhpAttribute\Printer\PhpAttributeGroupFactoryTest
@@ -32,7 +30,6 @@ final readonly class PhpAttributeGroupFactory
         private AnnotationToAttributeMapper $annotationToAttributeMapper,
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
-        private AttributeArrayNameInliner $attributeArrayNameInliner,
         private AnnotationToAttributeIntegerValueCaster $annotationToAttributeIntegerValueCaster,
     ) {
     }
