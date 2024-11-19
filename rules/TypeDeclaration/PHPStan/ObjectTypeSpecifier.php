@@ -221,6 +221,10 @@ final readonly class ObjectTypeSpecifier
         ObjectType $objectType,
         UseItem $useItem
     ): ?ShortenedObjectType {
+        if ($objectType->getClassName() === $useItem->name->getLast()) {
+            return new ShortenedObjectType($objectType->getClassName(), $prefix . $useItem->name->toString());
+        }
+
         // partial namespace
         if (! \str_starts_with($objectType->getClassName(), $useItem->name->getLast() . '\\')) {
             return null;
