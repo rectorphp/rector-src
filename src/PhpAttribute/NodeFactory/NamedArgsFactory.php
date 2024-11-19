@@ -48,7 +48,7 @@ final class NamedArgsFactory
             $this->normalizeArrayWithConstFetchKey($expr);
 
             // for named arguments
-            if ($name === null && is_string($key)) {
+            if (!$name instanceof Identifier && is_string($key)) {
                 $name = new Identifier($key);
             }
 
