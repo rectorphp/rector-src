@@ -29,7 +29,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class TwoRoutesAfterGenericWithStringKeyNumeric
 {
     /**
-     * @OA\Property(type="array", '1'=@OA\Items(ref=@Model(type=TestItem::class)))
+     * @OA\Property(
+     *     type="array",
+     *     '1'=@OA\Items(ref=@Model(type=TestItem::class))
+     * )
      * @Route("/first", methods={"GET"})
      * @Route("/second", methods={"GET"})
      */
