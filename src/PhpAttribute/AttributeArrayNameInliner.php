@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use Rector\Exception\NotImplementedYetException;
@@ -79,7 +80,9 @@ final class AttributeArrayNameInliner
             } elseif ($arrayItem->key instanceof String_) {
                 $arrayItemString = $arrayItem->key;
                 $newArgs[] = new Arg($arrayItem->value, false, false, [], new Identifier($arrayItemString->value));
-            } elseif (! $arrayItem->key instanceof Expr) {
+            } elseif ($arrayItem->key instanceof ClassConstFetch) {
+                continue;
+            } elseif(! $arrayItem->key instanceof Expr) {
                 // silent key
                 $newArgs[] = new Arg($arrayItem->value);
             } else {

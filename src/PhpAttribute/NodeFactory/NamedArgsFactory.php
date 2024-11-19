@@ -45,8 +45,6 @@ final class NamedArgsFactory
 
             $expr = BuilderHelpers::normalizeValue($argValue);
 
-            $this->normalizeArrayWithConstFetchKey($expr);
-
             // for named arguments
             if (!$name instanceof Identifier && is_string($key)) {
                 $name = new Identifier($key);
@@ -76,37 +74,5 @@ final class NamedArgsFactory
         }
 
         $expr->setAttribute(AttributeKey::KIND, String_::KIND_DOUBLE_QUOTED);
-    }
-
-    private function normalizeArrayWithConstFetchKey(Expr $expr): void
-    {
-        if (! $expr instanceof Array_) {
-            return;
-        }
-
-        foreach ($expr->items as $arrayItem) {
-            if (! $arrayItem instanceof ArrayItem) {
-                continue;
-            }
-
-            if (! $arrayItem->key instanceof String_) {
-                continue;
-            }
-
-            $string = $arrayItem->key;
-
-            $match = Strings::match($string->value, self::CLASS_CONST_REGEX);
-            if ($match === null) {
-                continue;
-            }
-
-            /** @var string $class */
-            $class = $match['class'];
-
-            /** @var string $constant */
-            $constant = $match['constant'];
-
-            $arrayItem->key = new ClassConstFetch(new Name($class), $constant);
-        }
     }
 }
