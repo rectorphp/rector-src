@@ -6,14 +6,11 @@ namespace Rector\PhpAttribute;
 
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\ArrayItem;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\String_;
-use Rector\Exception\NotImplementedYetException;
 use Webmozart\Assert\Assert;
 
 final class AttributeArrayNameInliner
