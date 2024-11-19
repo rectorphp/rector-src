@@ -413,11 +413,11 @@ final class BetterStandardPrinter extends Standard
         return parent::pExpr_Ternary($ternary, $precedence, $lhsPrecedence);
     }
 
-    protected function pScalar_InterpolatedString(InterpolatedString $node): string
+    protected function pScalar_InterpolatedString(InterpolatedString $interpolatedString): string
     {
-        $content = parent::pScalar_InterpolatedString($node);
+        $content = parent::pScalar_InterpolatedString($interpolatedString);
 
-        if ($node->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
+        if ($interpolatedString->getAttribute(AttributeKey::DOC_INDENTATION) === '') {
             $lines = explode("\n", $content);
             $trimmedLines = array_map('ltrim', $lines);
 
