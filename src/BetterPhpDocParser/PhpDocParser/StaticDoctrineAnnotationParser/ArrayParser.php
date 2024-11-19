@@ -201,6 +201,15 @@ final readonly class ArrayParser
         }
 
         if ($key !== null) {
+            if (is_numeric($key)) {
+                // use equal over identical on purpose to verify if it is an integer
+                if ((float) $key == (int) $key) {
+                    $key = (int) $key;
+                } else {
+                    $key = (float) $key;
+                }
+            }
+
             return new ArrayItemNode($value, $key);
         }
 
