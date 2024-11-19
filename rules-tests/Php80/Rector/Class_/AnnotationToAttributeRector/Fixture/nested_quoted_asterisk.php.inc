@@ -25,11 +25,11 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
 #[GenericAnnotation('
-    key: value
-    another_key:
-        another_value/*:
-            schema: 100
-')]
+     key: value
+     another_key:
+         another_value/*:
+             schema: 100
+ ')]
 final class NestedQuote
 {
 }
