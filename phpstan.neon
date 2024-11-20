@@ -79,6 +79,7 @@ parameters:
         # unreliable on loop
         -
             identifier: instanceof.alwaysTrue
+            path: rules/CodingStyle/Rector/Assign/SplitDoubleAssignRector.php
 
         -
             identifier: phpstanApi.constructor
@@ -87,9 +88,12 @@ parameters:
         -
             identifier: varTag.nativeType
 
-        # unreliable on runtime
+        # on runtime check
         -
             identifier: deadCode.unreachable
+            paths:
+                - src/Console/Notifier.php
+                - src/Util/FileHasher.php
 
         -
             identifier: argument.type

@@ -15,7 +15,6 @@ use PhpParser\NodeFinder;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -157,11 +156,6 @@ CODE_SAMPLE
 
         $extendsTagValueNode = $extendsTagValuePhpDocNodes[0]->value;
         if (! $extendsTagValueNode instanceof ExtendsTagValueNode) {
-            return null;
-        }
-
-        // we look for generic type class
-        if (! $extendsTagValueNode->type instanceof GenericTypeNode) {
             return null;
         }
 
