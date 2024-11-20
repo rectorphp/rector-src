@@ -24,7 +24,7 @@ final readonly class MatchParamTypeExpectedNameResolver
     public function resolve(Param $param): ?string
     {
         // nothing to verify
-        if (!$param->type instanceof Node) {
+        if (! $param->type instanceof Node) {
             return null;
         }
 

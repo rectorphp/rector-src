@@ -32,7 +32,7 @@ final readonly class ChangedArgumentsDetector
 
     public function isTypeChanged(Param $param, ?Type $newType): bool
     {
-        if (!$param->type instanceof Node) {
+        if (! $param->type instanceof Node) {
             return false;
         }
 

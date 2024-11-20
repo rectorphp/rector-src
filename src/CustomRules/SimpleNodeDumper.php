@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CustomRules;
 
 use PhpParser\Modifiers;
-use PhpParser\Node\UseItem;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
@@ -14,6 +13,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\UseItem;
 
 /**
  * Inspired by @see \PhpParser\NodeDumper

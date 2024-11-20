@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Parser;
 
-use PhpParser\Node\Scalar\InterpolatedString;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use Rector\PhpParser\Node\Value\ValueResolver;

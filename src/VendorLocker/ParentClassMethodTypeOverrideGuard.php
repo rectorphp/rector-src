@@ -51,7 +51,7 @@ final readonly class ParentClassMethodTypeOverrideGuard
 
     public function shouldSkipReturnTypeChange(ClassMethod $classMethod, Type $parentType): bool
     {
-        if (!$classMethod->returnType instanceof Node) {
+        if (! $classMethod->returnType instanceof Node) {
             return false;
         }
 

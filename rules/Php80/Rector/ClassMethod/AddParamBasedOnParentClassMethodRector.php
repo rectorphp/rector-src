@@ -252,7 +252,7 @@ CODE_SAMPLE
 
     private function resolveParamType(Param $param): null|Identifier|Name|ComplexType
     {
-        if (!$param->type instanceof Node) {
+        if (! $param->type instanceof Node) {
             return null;
         }
 

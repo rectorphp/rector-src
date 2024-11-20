@@ -108,7 +108,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (!$parentParam->type instanceof Node) {
+            if (! $parentParam->type instanceof Node) {
                 continue;
             }
 

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
-use PhpParser\Node\UseItem;
-use PhpParser\NodeVisitor;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
@@ -15,6 +13,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\UseItem;
+use PhpParser\NodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -177,8 +177,12 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @param string[] $names
      */
-    private function isUseImportUsed(UseItem $useItem, bool $isCaseSensitive, array $names, ?string $namespaceName): bool
-    {
+    private function isUseImportUsed(
+        UseItem $useItem,
+        bool $isCaseSensitive,
+        array $names,
+        ?string $namespaceName
+    ): bool {
         $comparedName = $useItem->alias instanceof Identifier
             ? $useItem->alias->toString()
             : $useItem->name->toString();

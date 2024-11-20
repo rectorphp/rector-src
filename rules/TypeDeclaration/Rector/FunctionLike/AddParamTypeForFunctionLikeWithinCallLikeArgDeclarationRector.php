@@ -91,7 +91,7 @@ CODE_SAMPLE
                 default => null,
             };
 
-            if (!$type instanceof Node) {
+            if (! $type instanceof Node) {
                 continue;
             }
 
@@ -154,7 +154,7 @@ CODE_SAMPLE
             $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
                 $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
             ): bool {
-                if (!$arg->name instanceof Identifier) {
+                if (! $arg->name instanceof Identifier) {
                     return false;
                 }
 

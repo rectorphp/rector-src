@@ -228,7 +228,7 @@ CODE_SAMPLE
         $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
             $renameFunctionLikeParamWithinCallLikeArg
         ): bool {
-            if (!$arg->name instanceof Identifier) {
+            if (! $arg->name instanceof Identifier) {
                 return false;
             }
 

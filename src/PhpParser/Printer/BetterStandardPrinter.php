@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Printer;
 
-use PhpParser\Node\Scalar\Float_;
-use PhpParser\Node\Scalar\Int_;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;
@@ -20,6 +18,8 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Declare_;
@@ -105,13 +105,20 @@ final class BetterStandardPrinter extends Standard
         return $this->pStmts($fileWithoutNamespace->stmts);
     }
 
+    /**
+     * @api magic method in parent
+     */
+    public function pInterpolatedStringPart(InterpolatedStringPart $interpolatedStringPart): string
+    {
+        return $interpolatedStringPart->value;
+    }
+
     protected function p(
         Node $node,
         int $precedence = self::MAX_PRECEDENCE,
         int $lhsPrecedence = self::MAX_PRECEDENCE,
         bool $parentFormatPreserved = false
-    ): string
-    {
+    ): string {
         while ($node instanceof AlwaysRememberedExpr) {
             $node = $node->getExpr();
         }
@@ -162,12 +169,18 @@ final class BetterStandardPrinter extends Standard
             $this->pAttrGroups($arrowFunction->attrGroups, true)
             . $this->pStatic($arrowFunction->static)
             . 'fn' . ($arrowFunction->byRef ? '&' : '')
-            . '(' . $this->pMaybeMultiline($arrowFunction->params, $this->phpVersion->supportsTrailingCommaInParamList()) . ')'
+            . '(' . $this->pMaybeMultiline(
+                $arrowFunction->params,
+                $this->phpVersion->supportsTrailingCommaInParamList()
+            ) . ')'
             . ($arrowFunction->returnType instanceof Node ? ': ' . $this->p($arrowFunction->returnType) : '')
             . ' =>'
             . $text
             . $indent,
-            $arrowFunction->expr, $precedence, $lhsPrecedence);
+            $arrowFunction->expr,
+            $precedence,
+            $lhsPrecedence
+        );
     }
 
     /**
@@ -214,7 +227,7 @@ final class BetterStandardPrinter extends Standard
      * @param mixed[] $origNodes
      */
     protected function pArray(
-        array  $nodes,
+        array $nodes,
         array $origNodes,
         int &$pos,
         int $indentAdjustment,
@@ -436,14 +449,6 @@ final class BetterStandardPrinter extends Standard
             . ($param->variadic ? '...' : '')
             . $this->p($param->var)
             . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
-    }
-
-    /**
-     * @api magic method in parent
-     */
-    public function pInterpolatedStringPart(InterpolatedStringPart $interpolatedStringPart): string
-    {
-        return $interpolatedStringPart->value;
     }
 
     private function resolveIndentSpaces(): string

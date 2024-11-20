@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Carbon\NodeFactory;
 
-use PhpParser\Node\Scalar\Int_;
 use Nette\Utils\Strings;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 
 final class CarbonCallFactory

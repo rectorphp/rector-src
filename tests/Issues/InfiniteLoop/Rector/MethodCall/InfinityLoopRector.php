@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Issues\InfiniteLoop\Rector\MethodCall;
 
-use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\NodeVisitor;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

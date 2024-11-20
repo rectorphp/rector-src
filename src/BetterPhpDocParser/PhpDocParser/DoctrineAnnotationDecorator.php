@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
-use PHPStan\Type\ObjectType;
-use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PHPStan\PhpDocParser\Ast\PhpDoc\Doctrine\DoctrineTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\InvalidTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
@@ -16,6 +15,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\Attributes\AttributeMirrorer;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -219,7 +219,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             if ($phpDocChildNode->value instanceof InvalidTagValueNode) {
                 $name = ltrim($phpDocChildNode->name, '@');
 
-                $values  = $phpDocChildNode->value->value;
+                $values = $phpDocChildNode->value->value;
                 $this->processDoctrine($currentPhpNode, $name, $phpDocChildNode, $phpDocNode, $key, $values);
             }
 
@@ -227,7 +227,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
                 $name = ltrim($phpDocChildNode->name, '@');
 
-                $values  = implode(', ', $phpDocChildNode->value->annotation->arguments);
+                $values = implode(', ', $phpDocChildNode->value->annotation->arguments);
                 $this->processDoctrine($currentPhpNode, $name, $phpDocChildNode, $phpDocNode, $key, $values);
 
                 continue;
@@ -322,8 +322,14 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         }
     }
 
-    private function processDoctrine(Node $currentPhpNode, string $name, PhpDocTagNode $phpDocTagNode, PhpDocNode $phpDocNode, mixed $key, string $values): void
-    {
+    private function processDoctrine(
+        Node $currentPhpNode,
+        string $name,
+        PhpDocTagNode $phpDocTagNode,
+        PhpDocNode $phpDocNode,
+        mixed $key,
+        string $values
+    ): void {
         $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType(
             $currentPhpNode,
             new ObjectType($name),

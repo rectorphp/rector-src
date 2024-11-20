@@ -6,8 +6,8 @@ namespace Rector\PhpAttribute\NodeFactory;
 
 use PhpParser\BuilderHelpers;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -36,7 +36,7 @@ final class NamedArgsFactory
             $expr = BuilderHelpers::normalizeValue($argValue);
 
             // for named arguments
-            if (!$name instanceof Identifier && is_string($key)) {
+            if (! $name instanceof Identifier && is_string($key)) {
                 $name = new Identifier($key);
             }
 

@@ -37,8 +37,10 @@ final readonly class RectorParser
         return $this->parser->parseString($fileContent);
     }
 
-    public function parseFileContentToStmtsAndTokens(string $fileContent, bool $forNewestSupportedVersion = true): StmtsAndTokens
-    {
+    public function parseFileContentToStmtsAndTokens(
+        string $fileContent,
+        bool $forNewestSupportedVersion = true
+    ): StmtsAndTokens {
         if (! $forNewestSupportedVersion) {
             // don't directly change PHPStan Parser service
             // to avoid reuse on next file

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpAttribute;
 
-use PhpParser\Node\UseItem;
 use Iterator;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\UseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;

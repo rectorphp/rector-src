@@ -26,7 +26,7 @@ final readonly class DeadVarTagValueNodeAnalyzer
 
     public function isDead(VarTagValueNode $varTagValueNode, Property $property): bool
     {
-        if (!$property->type instanceof Node) {
+        if (! $property->type instanceof Node) {
             return false;
         }
 

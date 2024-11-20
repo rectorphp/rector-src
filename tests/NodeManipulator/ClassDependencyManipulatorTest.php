@@ -7,12 +7,12 @@ namespace Rector\Tests\NodeManipulator;
 use PhpParser\Modifiers;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\PropertyItem;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\PrettyPrinter\Standard;
@@ -31,15 +31,6 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     {
         $this->classDependencyManipulator = $this->make(ClassDependencyManipulator::class);
         $this->printerStandard = new Standard();
-    }
-
-    private function setNamespacedName(Class_ $class): void
-    {
-        $nameResolver = new NameResolver();
-        $nodeTraverser = new NodeTraverser();
-
-        $nodeTraverser->addVisitor($nameResolver);
-        $nodeTraverser->traverse([$class]);
     }
 
     public function testEmptyClass(): void
@@ -106,6 +97,15 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
         $this->addSingleDependency($someClass);
 
         $this->asssertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_class_const_property.php.inc');
+    }
+
+    private function setNamespacedName(Class_ $class): void
+    {
+        $nameResolver = new NameResolver();
+        $nodeTraverser = new NodeTraverser();
+
+        $nodeTraverser->addVisitor($nameResolver);
+        $nodeTraverser->traverse([$class]);
     }
 
     private function addSingleDependency(Class_ $class): void

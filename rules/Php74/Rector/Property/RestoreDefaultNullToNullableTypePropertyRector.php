@@ -95,7 +95,7 @@ CODE_SAMPLE
 
     private function shouldSkipProperty(Property $property, Class_ $class): bool
     {
-        if (!$property->type instanceof Node) {
+        if (! $property->type instanceof Node) {
             return true;
         }
 

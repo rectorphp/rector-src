@@ -43,7 +43,7 @@ final readonly class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        if (!$param->type instanceof Node) {
+        if (! $param->type instanceof Node) {
             return false;
         }
 

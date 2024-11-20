@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpAttribute\AnnotationToAttributeMapper;
 
-use PhpParser\Node\Scalar\Int_;
 use Iterator;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
