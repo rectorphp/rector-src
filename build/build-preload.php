@@ -76,6 +76,7 @@ CODE_SAMPLE;
         'TokenEmulator.php',
         'KeywordEmulator.php',
         'Comment.php',
+        'PrettyPrinter.php',
         'PrettyPrinterAbstract.php',
         'Parser.php',
         'ParserAbstract.php',
@@ -102,6 +103,21 @@ CODE_SAMPLE;
         'ConstExprNode.php',
         'PhpDocTagValueNode.php',
         'TypeNode.php',
+    ];
+
+    /**
+     * The classes are deprecated and moved under Node
+     *
+     * @var string[]
+     */
+    private const IN_USE_CLASS_FILES = [
+        'Node/Expr/ArrayItem.php',
+        'Node/Expr/ClosureUse.php',
+        'Node/Scalar/EncapsedStringPart.php',
+        'Node/Scalar/LNumber.php',
+        'Node/Stmt/DeclareDeclare.php',
+        'Node/Stmt/PropertyProperty.php',
+        'Node/Stmt/StaticVar.php',
     ];
 
     public function buildPreloadScript(string $buildDirectory, string $preloadFile): void
@@ -314,6 +330,17 @@ CODE_SAMPLE;
 
         // 2. put first-class usages first
         $fileInfos = $this->sortFileInfos($fileInfos);
+
+        foreach ($fileInfos as $key => $fileInfo) {
+            foreach (self::IN_USE_CLASS_FILES as $inUseClassFile) {
+                if (str_ends_with($fileInfo->getPathname(), $inUseClassFile)) {
+                    unset($fileInfos[$key]);
+                    continue 2;
+                }
+            }
+        }
+
+        $fileInfos = array_values($fileInfos);
 
         $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
         array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);

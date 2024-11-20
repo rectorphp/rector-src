@@ -13,7 +13,7 @@ use PHPStan\Type\MixedType;
  */
 final readonly class ArrayTypeComparator
 {
-    public function isSubtype(ArrayType $checkedType, ArrayType $mainType): bool
+    public function isSubtype(ArrayType|ConstantArrayType $checkedType, ArrayType|ConstantArrayType $mainType): bool
     {
         if (! $checkedType instanceof ConstantArrayType && ! $mainType instanceof ConstantArrayType) {
             return $mainType->isSuperTypeOf($checkedType)

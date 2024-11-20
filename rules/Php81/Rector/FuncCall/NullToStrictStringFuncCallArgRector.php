@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\FuncCall;
 
+use PhpParser\Node\Scalar\InterpolatedString;
+use PHPStan\Reflection\Native\ExtendedNativeParameterReflection;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -12,13 +14,11 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
-use PHPStan\Reflection\Native\NativeParameterWithPhpDocsReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
@@ -212,7 +212,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($argValue instanceof Encapsed) {
+        if ($argValue instanceof InterpolatedString) {
             return null;
         }
 
@@ -225,7 +225,7 @@ CODE_SAMPLE
         }
 
         $parameter = $parametersAcceptor->getParameters()[$position] ?? null;
-        if ($parameter instanceof NativeParameterWithPhpDocsReflection && $parameter->getType() instanceof UnionType) {
+        if ($parameter instanceof ExtendedNativeParameterReflection && $parameter->getType() instanceof UnionType) {
             $parameterType = $parameter->getType();
             if (! $this->isValidUnionType($parameterType)) {
                 return null;

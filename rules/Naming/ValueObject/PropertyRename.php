@@ -6,7 +6,7 @@ namespace Rector\Naming\ValueObject;
 
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use Rector\Validation\RectorAssert;
 
 final readonly class PropertyRename
@@ -17,7 +17,7 @@ final readonly class PropertyRename
         private string $currentName,
         private ClassLike $classLike,
         private string $classLikeName,
-        private PropertyProperty $propertyProperty
+        private PropertyItem $propertyItem
     ) {
         // name must be valid
         RectorAssert::propertyName($currentName);
@@ -59,8 +59,8 @@ final readonly class PropertyRename
         return $this->classLikeName;
     }
 
-    public function getPropertyProperty(): PropertyProperty
+    public function getPropertyProperty(): PropertyItem
     {
-        return $this->propertyProperty;
+        return $this->propertyItem;
     }
 }

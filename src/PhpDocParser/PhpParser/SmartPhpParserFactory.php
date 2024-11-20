@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\PhpDocParser\PhpParser;
 
-use PhpParser\Lexer\Emulative;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PHPStan\Parser\CachedParser;
 use PHPStan\Parser\SimpleParser;
+use PHPStan\Parser\VariadicFunctionsVisitor;
+use PHPStan\Parser\VariadicMethodsVisitor;
 
 /**
  * Based on PHPStan-based PHP-Parser best practices:
@@ -33,17 +34,16 @@ final class SmartPhpParserFactory
     private function createNativePhpParser(): Parser
     {
         $parserFactory = new ParserFactory();
-        $lexerEmulative = new Emulative([
-            'usedAttributes' => ['comments', 'startLine', 'endLine', 'startTokenPos', 'endTokenPos'],
-        ]);
-
-        return $parserFactory->create(ParserFactory::PREFER_PHP7, $lexerEmulative);
+        return $parserFactory->createForNewestSupportedVersion();
     }
 
     private function createPHPStanParser(Parser $parser): CachedParser
     {
         $nameResolver = new NameResolver();
-        $simpleParser = new SimpleParser($parser, $nameResolver);
+        $variadicMethodsVisitor = new VariadicMethodsVisitor();
+        $variadicFunctionsVisitor = new VariadicFunctionsVisitor();
+
+        $simpleParser = new SimpleParser($parser, $nameResolver, $variadicMethodsVisitor, $variadicFunctionsVisitor);
 
         return new CachedParser($simpleParser, 1024);
     }

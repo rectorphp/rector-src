@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\Transform\ValueObject;
 
+use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 
 final readonly class ScalarValueToConstFetch
 {
     public function __construct(
-        private DNumber|String_|LNumber $scalar,
+        private Float_|String_|Int_ $scalar,
         private ConstFetch|ClassConstFetch $constFetch
     ) {
     }
 
-    public function getScalar(): DNumber|String_|LNumber
+    public function getScalar(): Float_|String_|Int_
     {
         return $this->scalar;
     }

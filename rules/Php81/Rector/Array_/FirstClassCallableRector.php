@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\Array_;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -14,7 +15,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\VariadicPlaceholder;
-use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -92,7 +92,7 @@ CODE_SAMPLE
     public function refactor(Node $node): int|null|StaticCall|MethodCall
     {
         if ($node instanceof Property || $node instanceof ClassConst) {
-            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         $scope = ScopeFetcher::fetch($node);

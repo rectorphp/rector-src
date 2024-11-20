@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\Cast;
 
+use PHPStan\Type\Constant\ConstantArrayType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast;
@@ -99,6 +100,18 @@ CODE_SAMPLE
         $nodeType = $this->nodeTypeResolver->getNativeType($node->expr);
         if ($nodeType instanceof MixedType) {
             return null;
+        }
+
+        if ($nodeType instanceof ConstantArrayType && $nodeClass === Array_::class) {
+            if ($this->shouldSkip($node->expr)) {
+                return null;
+            }
+
+            if ($this->shouldSkipCall($node->expr)) {
+                return null;
+            }
+
+            return $node->expr;
         }
 
         $sameNodeType = self::CAST_CLASS_TO_NODE_TYPE[$nodeClass];

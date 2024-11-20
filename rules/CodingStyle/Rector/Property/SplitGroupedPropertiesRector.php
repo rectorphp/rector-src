@@ -6,7 +6,7 @@ namespace Rector\CodingStyle\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -70,7 +70,7 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var PropertyProperty $firstPropertyProperty */
+        /** @var PropertyItem $firstPropertyProperty */
         $firstPropertyProperty = array_shift($allProperties);
         $node->props = [$firstPropertyProperty];
 

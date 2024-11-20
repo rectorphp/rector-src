@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -12,7 +13,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
@@ -153,11 +153,11 @@ CODE_SAMPLE
                     }
 
                     $shouldSkip = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 });
 
                 if ($shouldSkip) {
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 return null;
@@ -230,7 +230,7 @@ CODE_SAMPLE
                 }
 
                 $isInsideStaticClassMethod = true;
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             });
 
             if ($isInsideStaticClassMethod) {

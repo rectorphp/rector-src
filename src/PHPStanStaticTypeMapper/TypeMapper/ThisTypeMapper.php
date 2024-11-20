@@ -32,7 +32,7 @@ final class ThisTypeMapper implements TypeMapperInterface
     /**
      * @param ThisType $type
      */
-    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
+    public function mapToPhpParserNode(Type $type, string $typeKind): Node
     {
         return new Name('self');
     }

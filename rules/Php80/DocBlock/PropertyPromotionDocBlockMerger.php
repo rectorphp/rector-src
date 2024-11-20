@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\DocBlock;
 
+use PhpParser\Node;
 use PhpParser\Comment;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -68,7 +69,7 @@ final readonly class PropertyPromotionDocBlockMerger
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $propertyPhpDocInfo);
 
         // make sure the docblock is useful
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             $varTagValueNode = $propertyPhpDocInfo->getVarTagValueNode();
             if (! $varTagValueNode instanceof VarTagValueNode) {
                 return;

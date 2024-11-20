@@ -22,7 +22,7 @@ final readonly class SimplePhpParser
     public function __construct()
     {
         $parserFactory = new ParserFactory();
-        $this->phpParser = $parserFactory->create(ParserFactory::ONLY_PHP7);
+        $this->phpParser = $parserFactory->createForNewestSupportedVersion();
 
         $this->nodeTraverser = new NodeTraverser();
         $this->nodeTraverser->addVisitor(new AssignedToNodeVisitor());

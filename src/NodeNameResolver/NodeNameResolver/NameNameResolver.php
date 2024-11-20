@@ -22,7 +22,7 @@ final class NameNameResolver implements NodeNameResolverInterface
     /**
      * @param Name $node
      */
-    public function resolve(Node $node, ?Scope $scope): ?string
+    public function resolve(Node $node, ?Scope $scope): string
     {
         return $node->toString();
     }

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Php52\Rector\Switch_;
 
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
@@ -19,7 +20,6 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
-use PhpParser\NodeTraverser;
 use PHPStan\Type\Constant\ConstantIntegerType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -113,12 +113,12 @@ CODE_SAMPLE
             $stmt,
             function (Node $subNode): null|int|Break_ {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 // continue is belong to loop
                 if ($subNode instanceof Foreach_ || $subNode instanceof While_ || $subNode instanceof Do_ || $subNode instanceof For_) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $subNode instanceof Continue_) {
@@ -130,7 +130,7 @@ CODE_SAMPLE
                     return new Break_();
                 }
 
-                if ($subNode->num instanceof LNumber) {
+                if ($subNode->num instanceof Int_) {
                     $continueNumber = $this->valueResolver->getValue($subNode->num);
                     if ($continueNumber <= 1) {
                         $this->hasChanged = true;

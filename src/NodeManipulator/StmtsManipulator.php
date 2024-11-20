@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -28,12 +30,17 @@ final readonly class StmtsManipulator
     /**
      * @param Stmt[] $stmts
      */
-    public function getUnwrappedLastStmt(array $stmts): ?Node
+    public function getUnwrappedLastStmt(array $stmts): null|Expr|Stmt
     {
+        if ($stmts === []) {
+            return null;
+        }
+
         $lastStmtKey = array_key_last($stmts);
         $lastStmt = $stmts[$lastStmtKey];
 
         if ($lastStmt instanceof Expression) {
+            $lastStmt->expr->setAttribute(AttributeKey::COMMENTS, $lastStmt->getAttribute(AttributeKey::COMMENTS));
             return $lastStmt->expr;
         }
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Php82\Rector\Encapsed;
 
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\Encapsed;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -42,11 +42,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Encapsed::class];
+        return [InterpolatedString::class];
     }
 
     /**
-     * @param Encapsed $node
+     * @param InterpolatedString $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -64,11 +64,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! is_array($oldTokens[$startTokenPos])) {
-                continue;
-            }
-
-            if ($oldTokens[$startTokenPos][1] !== '${') {
+            if ((string) $oldTokens[$startTokenPos] !== '${') {
                 continue;
             }
 

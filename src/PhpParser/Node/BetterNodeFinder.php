@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -16,7 +17,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
-use PhpParser\NodeTraverser;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -172,13 +172,13 @@ final readonly class BetterNodeFinder
             (array) $functionLike->stmts,
             static function (Node $subNode) use ($types, &$isFoundNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 foreach ($types as $type) {
                     if ($subNode instanceof $type) {
                         $isFoundNode = true;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
                 }
 
@@ -200,12 +200,12 @@ final readonly class BetterNodeFinder
             (array) $functionLike->stmts,
             function (Node $subNode) use (&$returns): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($subNode instanceof Yield_ || $subNode instanceof YieldFrom) {
                     $returns = [];
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 if ($subNode instanceof Return_) {
@@ -215,8 +215,6 @@ final readonly class BetterNodeFinder
                 return null;
             }
         );
-
-        Assert::allIsInstanceOf($returns, Return_::class);
 
         return $returns;
     }
@@ -248,7 +246,7 @@ final readonly class BetterNodeFinder
             $nodes,
             static function (Node $subNode) use ($types, &$foundNodes): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 foreach ($types as $type) {
@@ -304,10 +302,10 @@ final readonly class BetterNodeFinder
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     if ($foundNode instanceof $subNode && $subNode === $foundNode) {
                         $scopedNode = $subNode;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
 
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $foundNode instanceof $subNode) {
@@ -319,7 +317,7 @@ final readonly class BetterNodeFinder
                 $scopedFoundNode = $this->findFirst($subNode, $filter);
                 if ($scopedFoundNode === $subNode) {
                     $scopedNode = $subNode;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 return null;

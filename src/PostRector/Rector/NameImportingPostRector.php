@@ -27,13 +27,16 @@ final class NameImportingPostRector extends AbstractPostRector
     ) {
     }
 
-    public function beforeTraverse(array $nodes)
+    /**
+     * @return Stmt[]
+     */
+    public function beforeTraverse(array $nodes): array
     {
         $this->currentUses = $this->useImportsResolver->resolve();
         return $nodes;
     }
 
-    public function enterNode(Node $node): Node|int|null
+    public function enterNode(Node $node): Node|null
     {
         if (! $node instanceof FullyQualified) {
             return null;

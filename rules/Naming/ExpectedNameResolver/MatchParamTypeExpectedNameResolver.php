@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Naming\ExpectedNameResolver;
 
+use PhpParser\Node;
 use PhpParser\Node\Param;
 use PHPStan\Type\ObjectType;
 use Rector\Naming\Naming\PropertyNaming;
@@ -23,7 +24,7 @@ final readonly class MatchParamTypeExpectedNameResolver
     public function resolve(Param $param): ?string
     {
         // nothing to verify
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return null;
         }
 

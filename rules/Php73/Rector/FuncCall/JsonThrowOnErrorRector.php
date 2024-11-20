@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php73\Rector\FuncCall;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\LNumber;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -116,7 +116,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($funcCall->args === null) {
+        if ($funcCall->args === []) {
             return true;
         }
 
@@ -157,7 +157,7 @@ CODE_SAMPLE
         }
 
         if (! isset($funcCall->args[2])) {
-            $funcCall->args[2] = new Arg(new LNumber(512));
+            $funcCall->args[2] = new Arg(new Int_(512));
         }
 
         $this->hasChanged = true;

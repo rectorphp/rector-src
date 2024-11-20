@@ -6,7 +6,7 @@ namespace Rector\Php81\NodeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\NodeAnalyzer\ExprAnalyzer;

@@ -44,7 +44,7 @@ final class PhpDocNodeMapperTest extends AbstractLazyTestCase
     private function createParamDocNode(): PhpDocNode
     {
         $nullableTypeNode = new NullableTypeNode(new IdentifierTypeNode('string'));
-        $paramTagValueNode = new ParamTagValueNode($nullableTypeNode, true, 'name', '');
+        $paramTagValueNode = new ParamTagValueNode($nullableTypeNode, true, 'name', '', false);
 
         $children = [new PhpDocTagNode('@param', $paramTagValueNode)];
 

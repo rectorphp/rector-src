@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
+use PhpParser\Node\UseItem;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
@@ -35,9 +35,9 @@ final class AliasedObjectType extends ObjectType
     {
         $name = new Name($this->fullyQualifiedClass);
 
-        $useUse = new UseUse($name, $this->getClassName());
+        $useItem = new UseItem($name, $this->getClassName());
 
-        $use = new Use_([$useUse]);
+        $use = new Use_([$useItem]);
         $use->type = $useType;
 
         return $use;

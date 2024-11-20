@@ -17,6 +17,7 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
@@ -46,6 +47,7 @@ final class BetterPhpDocParser extends PhpDocParser
      * @param PhpDocNodeDecoratorInterface[] $phpDocNodeDecorators
      */
     public function __construct(
+        ParserConfig $parserConfig,
         TypeParser $typeParser,
         ConstExprParser $constExprParser,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
@@ -53,23 +55,12 @@ final class BetterPhpDocParser extends PhpDocParser
         private readonly PrivatesAccessor $privatesAccessor,
     ) {
         parent::__construct(
+            // ParserConfig
+            $parserConfig,
             // TypeParser
             $typeParser,
             // ConstExprParser
             $constExprParser,
-            // requireWhitespaceBeforeDescription
-            false,
-            // preserveTypeAliasesWithInvalidTypes
-            false,
-            // usedAttributes
-            [
-                'lines' => true,
-                'indexes' => true,
-            ],
-            // parseDoctrineAnnotations
-            false,
-            // textBetweenTagsBelongsToDescription, default to false, exists since 1.23.0
-            true
         );
     }
 

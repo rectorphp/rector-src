@@ -82,7 +82,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): Class_|int|null
+    public function refactor(Node $node): Class_|null
     {
         $className = $this->getName($node);
         if (! is_string($className)) {
@@ -118,7 +118,7 @@ CODE_SAMPLE
         }
 
         if (count($classMethodStmts) === 1) {
-            $stmt = $psr4ConstructorMethod->stmts[0];
+            $stmt = $classMethodStmts[0];
             if (! $stmt instanceof Expression) {
                 return null;
             }

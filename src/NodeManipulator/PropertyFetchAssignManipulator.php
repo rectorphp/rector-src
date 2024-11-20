@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeManipulator;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
@@ -11,7 +12,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\NodeTraverser;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -41,7 +41,7 @@ final readonly class PropertyFetchAssignManipulator
             function (Node $node) use ($propertyName, &$count): ?int {
                 // skip anonymous classes and inner function
                 if ($node instanceof Class_ || $node instanceof Function_) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $node instanceof Assign && ! $node instanceof AssignOp) {
@@ -55,7 +55,7 @@ final readonly class PropertyFetchAssignManipulator
                 ++$count;
 
                 if ($count === 2) {
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 return null;

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpParser\Node;
 
+use PhpParser\Node\Scalar\Int_;
 use Iterator;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PhpParser\Node\NodeFactory;
@@ -40,25 +40,25 @@ final class NodeFactoryTest extends AbstractLazyTestCase
      */
     public static function provideDataForArray(): Iterator
     {
-        $lNumber = new LNumber(1);
+        $int = new Int_(1);
         $string = new String_('a');
         $trueConstFetch = new ConstFetch(new Name('true'));
         $falseConstFetch = new ConstFetch(new Name('false'));
         $nullConstEtch = new ConstFetch(new Name('null'));
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($lNumber);
+        $array->items[] = new ArrayItem($int);
         yield [[1], $array];
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($lNumber, $string);
+        $array->items[] = new ArrayItem($int, $string);
         yield [[
             'a' => 1,
         ], $array];
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($lNumber);
-        yield [[$lNumber], $array];
+        $array->items[] = new ArrayItem($int);
+        yield [[$int], $array];
 
         $array = new Array_();
         $array->items[] = new ArrayItem($string);

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\ArrayItem;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
@@ -65,7 +65,7 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
                 continue;
             }
 
-            $valueExpr->key = new LNumber($arrayItemNodeKey);
+            $valueExpr->key = new Int_($arrayItemNodeKey);
             $arrayItems[] = $valueExpr;
         }
 

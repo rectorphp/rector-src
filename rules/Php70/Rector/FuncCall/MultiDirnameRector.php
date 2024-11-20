@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Php70\Rector\FuncCall;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Scalar\LNumber;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -66,7 +66,7 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
         }
 
         $node->args[0] = $lastFuncCallNode->args[0];
-        $node->args[1] = new Arg(new LNumber($this->nestingLevel));
+        $node->args[1] = new Arg(new Int_($this->nestingLevel));
 
         return $node;
     }
@@ -98,11 +98,11 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
 
         // dirname($path, <LEVEL>);
         if (count($args) === 2) {
-            if (! $args[1]->value instanceof LNumber) {
+            if (! $args[1]->value instanceof Int_) {
                 return null;
             }
 
-            /** @var LNumber $levelNumber */
+            /** @var Int_ $levelNumber */
             $levelNumber = $args[1]->value;
 
             $this->nestingLevel += $levelNumber->value;

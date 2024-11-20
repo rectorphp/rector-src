@@ -6,7 +6,7 @@ namespace Rector\NodeCollector\NodeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Scalar\MagicConst\Class_;
 use PhpParser\Node\Scalar\String_;
@@ -174,11 +174,11 @@ final readonly class ArrayCallableMethodMatcher
         }
 
         $extendedMethodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::combineAcceptors(
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
 
-        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflectionWithPhpDoc) {
+        foreach ($extendedParametersAcceptor->getParameters() as $parameterReflectionWithPhpDoc) {
             if (! $parameterReflectionWithPhpDoc->getDefaultValue() instanceof Type) {
                 return new MixedType();
             }

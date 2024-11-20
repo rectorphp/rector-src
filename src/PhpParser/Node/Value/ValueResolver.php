@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node\Value;
 
+use PHPStan\Type\Type;
 use PhpParser\ConstExprEvaluationException;
 use PhpParser\ConstExprEvaluator;
 use PhpParser\Node\Arg;
@@ -11,13 +12,15 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\MagicConst\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ConstantScalarType;
-use PHPStan\Type\ConstantType;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ConstFetchAnalyzer;
@@ -52,7 +55,7 @@ final class ValueResolver
         return $this->getValue($expr) === $value;
     }
 
-    public function getValue(Arg|Expr $expr, bool $resolvedClassReference = false): mixed
+    public function getValue(Arg|Expr|InterpolatedStringPart $expr, bool $resolvedClassReference = false): mixed
     {
         if ($expr instanceof Arg) {
             $expr = $expr->value;
@@ -88,11 +91,7 @@ final class ValueResolver
         }
 
         $nodeStaticType = $this->nodeTypeResolver->getType($expr);
-        if ($nodeStaticType instanceof ConstantType) {
-            return $this->resolveConstantType($nodeStaticType);
-        }
-
-        return null;
+        return $this->resolveConstantType($nodeStaticType);
     }
 
     /**
@@ -149,12 +148,23 @@ final class ValueResolver
         return true;
     }
 
-    private function resolveExprValueForConst(Expr $expr): mixed
+    private function resolveExprValueForConst(Expr|InterpolatedStringPart $expr): mixed
     {
         try {
             $constExprEvaluator = $this->getConstExprEvaluator();
             return $constExprEvaluator->evaluateDirectly($expr);
         } catch (ConstExprEvaluationException|TypeError) {
+        }
+
+        if ($expr instanceof Class_) {
+            $type = $this->nodeTypeResolver->getNativeType($expr);
+            if ($type instanceof ConstantStringType) {
+                return $type->getValue();
+            }
+        }
+
+        if ($expr instanceof InterpolatedStringPart) {
+            return $expr->value;
         }
 
         return null;
@@ -196,7 +206,6 @@ final class ValueResolver
     {
         $keys = [];
         foreach ($constantArrayType->getKeyTypes() as $i => $keyType) {
-            /** @var ConstantScalarType $keyType */
             $keys[$i] = $keyType->getValue();
         }
 
@@ -309,7 +318,7 @@ final class ValueResolver
         return $parentClassName;
     }
 
-    private function resolveConstantType(ConstantType $constantType): mixed
+    private function resolveConstantType(Type $constantType): mixed
     {
         if ($constantType instanceof ConstantArrayType) {
             return $this->extractConstantArrayTypeValue($constantType);

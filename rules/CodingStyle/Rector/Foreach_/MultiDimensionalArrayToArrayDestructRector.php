@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Foreach_;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeFinder;
-use PhpParser\NodeTraverser;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -128,7 +128,7 @@ CODE_SAMPLE
             if (! $dim instanceof String_) {
                 $createdDestructedVariables = [];
 
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             $destructedVariable = $this->getDestructedVariableName($usedVariableNames, $dim);
@@ -144,7 +144,7 @@ CODE_SAMPLE
      * Get all variable names which are used in the foreach tree. We need this so that we don't create array destructor
      * with variable name which is already used somewhere bellow
      *
-     * @return list<string>
+     * @return string[]
      */
     private function getUsedVariableNamesInForeachTree(Foreach_ $foreach): array
     {
@@ -165,7 +165,7 @@ CODE_SAMPLE
      */
     private function getDestructedVariableName(array $usedVariableNames, String_ $string): string
     {
-        $desiredVariableName = (string) $string->value;
+        $desiredVariableName = $string->value;
 
         if (in_array($desiredVariableName, $usedVariableNames, true) === false) {
             return $desiredVariableName;

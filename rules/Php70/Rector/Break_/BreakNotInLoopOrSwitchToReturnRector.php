@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php70\Rector\Break_;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\FunctionLike;
@@ -11,7 +12,6 @@ use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\NodeTraverser;
 use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -95,7 +95,7 @@ CODE_SAMPLE
                 $node->cases,
                 static function (Node $subNode): ?int {
                     if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction)) {
-                        return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                     }
 
                     if (! $subNode instanceof Break_) {
@@ -122,6 +122,6 @@ CODE_SAMPLE
             return new Return_();
         }
 
-        return NodeTraverser::REMOVE_NODE;
+        return NodeVisitor::REMOVE_NODE;
     }
 }

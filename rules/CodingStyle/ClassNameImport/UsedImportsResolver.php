@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use PhpParser\Node\UseItem;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\CodingStyle\ClassNameImport\ValueObject\UsedImports;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -46,12 +46,12 @@ final readonly class UsedImportsResolver
         /** @param Use_::TYPE_* $useType */
         $this->useImportsTraverser->traverserStmts($stmts, static function (
             int $useType,
-            UseUse $useUse,
+            UseItem $useItem,
             string $name
         ) use (&$usedImports, &$usedFunctionImports, &$usedConstImports): void {
             if ($useType === Use_::TYPE_NORMAL) {
-                if ($useUse->alias instanceof Identifier) {
-                    $usedImports[] = new AliasedObjectType($useUse->alias->toString(), $name);
+                if ($useItem->alias instanceof Identifier) {
+                    $usedImports[] = new AliasedObjectType($useItem->alias->toString(), $name);
                 } else {
                     $usedImports[] = new FullyQualifiedObjectType($name);
                 }

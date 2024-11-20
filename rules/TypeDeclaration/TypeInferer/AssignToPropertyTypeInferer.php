@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -13,7 +14,6 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\NodeTraverser;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -165,7 +165,7 @@ final readonly class AssignToPropertyTypeInferer
                 $assignVar = $node->var;
                 if (! $assignVar->name instanceof Identifier) {
                     $hasAssignDynamicPropertyValue = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 return null;
@@ -199,7 +199,7 @@ final readonly class AssignToPropertyTypeInferer
 
             if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
                 $assignedExprTypes = [];
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             $assignedExprTypes[] = $this->resolveExprStaticTypeIncludingDimFetch($node);

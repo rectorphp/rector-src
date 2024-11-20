@@ -48,13 +48,12 @@ trait ValidatesAttributes
 
     public function function2($value, $secondValue)
     {
-        return !(($value === true) || ($secondValue === true));
+        return !($value === true || $secondValue === true);
     }
 
     public function function3($attribute, $value, $parameters)
     {
-        return !($this->failsBasicDimensionChecks($parameters, $width, $height) ||
-            $this->failsRatioCheck($parameters, $width, $height));
+        return !($this->failsBasicDimensionChecks($parameters, $width, $height) || $this->failsRatioCheck($parameters, $width, $height));
     }
 }
 

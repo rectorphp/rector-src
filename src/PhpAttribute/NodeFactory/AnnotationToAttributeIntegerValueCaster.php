@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\NodeFactory;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParameterReflection;
@@ -44,11 +45,15 @@ final readonly class AnnotationToAttributeIntegerValueCaster
 
         foreach ($parameterReflections as $parameterReflection) {
             foreach ($args as $arg) {
-                if (! $arg->value instanceof ArrayItem) {
+                if (! $arg->value instanceof Array_) {
                     continue;
                 }
 
-                $arrayItem = $arg->value;
+                $arrayItem = current($arg->value->items) ?: null;
+                if (! $arrayItem instanceof ArrayItem) {
+                    continue;
+                }
+
                 if (! $arrayItem->key instanceof String_) {
                     continue;
                 }
@@ -72,7 +77,7 @@ final readonly class AnnotationToAttributeIntegerValueCaster
                     continue;
                 }
 
-                $arrayItem->value = new LNumber((int) $valueString->value);
+                $arrayItem->value = new Int_((int) $valueString->value);
             }
         }
     }
@@ -103,10 +108,10 @@ final readonly class AnnotationToAttributeIntegerValueCaster
     {
         $extendedMethodReflection = $classReflection->getConstructor();
 
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::combineAcceptors(
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
 
-        return $parametersAcceptorWithPhpDocs->getParameters();
+        return $extendedParametersAcceptor->getParameters();
     }
 }

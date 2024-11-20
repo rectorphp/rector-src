@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\NodeTraverser;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -80,7 +80,7 @@ final class UseAddingPostRector extends AbstractPostRector
          * visitor per execution, using stop traversal here is safe,
          * ref https://github.com/rectorphp/rector-src/blob/fc1e742fa4d9861ccdc5933f3b53613b8223438d/src/PostRector/Application/PostFileProcessor.php#L59-L61
          */
-        return NodeTraverser::STOP_TRAVERSAL;
+        return NodeVisitor::STOP_TRAVERSAL;
     }
 
     /**

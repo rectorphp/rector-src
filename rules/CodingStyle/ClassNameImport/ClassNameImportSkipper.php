@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use PhpParser\Node\UseItem;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -116,15 +116,15 @@ final readonly class ClassNameImportSkipper
     }
 
     private function isConflictedShortNameInUse(
-        UseUse $useUse,
+        UseItem $useItem,
         string $useName,
         string $lastUseName,
         string $stringName
     ): bool {
-        if (! $useUse->alias instanceof Identifier && $useName !== $stringName && $lastUseName === $stringName) {
+        if (! $useItem->alias instanceof Identifier && $useName !== $stringName && $lastUseName === $stringName) {
             return true;
         }
 
-        return $useUse->alias instanceof Identifier && $useUse->alias->toString() === $stringName;
+        return $useItem->alias instanceof Identifier && $useItem->alias->toString() === $stringName;
     }
 }

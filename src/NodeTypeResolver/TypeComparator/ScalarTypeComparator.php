@@ -67,7 +67,7 @@ final class ScalarTypeComparator
             return $firstType::class !== $secondType::class;
         }
 
-        if (! $secondType->isClassStringType()->yes()) {
+        if (! $secondType->isClassString()->yes()) {
             return $firstType::class !== $secondType::class;
         }
 

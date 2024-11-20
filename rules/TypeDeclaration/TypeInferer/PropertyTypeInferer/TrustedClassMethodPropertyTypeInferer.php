@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
@@ -14,7 +15,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
@@ -131,7 +131,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
 
     private function resolveParamTypeToPHPStanType(Param $param): Type
     {
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return new MixedType();
         }
 
@@ -174,7 +174,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
 
                 $paramStaticType = $this->nodeTypeResolver->getType($node);
 
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
         );
 
@@ -199,7 +199,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
 
     private function resolveFullyQualifiedOrAliasedObjectType(Param $param): ?Type
     {
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return null;
         }
 
@@ -235,7 +235,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
         Property $property,
         Class_ $class
     ): Type {
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return new MixedType();
         }
 

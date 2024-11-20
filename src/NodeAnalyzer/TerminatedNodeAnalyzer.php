@@ -7,6 +7,7 @@ namespace Rector\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Exit_;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -23,7 +24,6 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -33,12 +33,7 @@ final class TerminatedNodeAnalyzer
     /**
      * @var array<class-string<Node>>
      */
-    private const TERMINATED_NODES = [Return_::class, Throw_::class];
-
-    /**
-     * @var array<class-string<Node>>
-     */
-    private const TERMINABLE_NODES = [Throw_::class, Return_::class, Break_::class, Continue_::class];
+    private const TERMINABLE_NODES = [Return_::class, Break_::class, Continue_::class];
 
     /**
      * @var array<class-string<Node>>
@@ -82,7 +77,7 @@ final class TerminatedNodeAnalyzer
             return true;
         }
 
-        if ($previousNode instanceof Expression && $previousNode->expr instanceof Exit_) {
+        if ($previousNode instanceof Expression && ($previousNode->expr instanceof Exit_ || $previousNode->expr instanceof Throw_)) {
             return true;
         }
 
@@ -176,9 +171,9 @@ final class TerminatedNodeAnalyzer
         }
 
         if ($lastNode instanceof Expression) {
-            return $lastNode->expr instanceof Exit_;
+            return $lastNode->expr instanceof Exit_ || $lastNode->expr instanceof Throw_;
         }
 
-        return in_array($lastNode::class, self::TERMINATED_NODES, true);
+        return $lastNode instanceof Return_;
     }
 }

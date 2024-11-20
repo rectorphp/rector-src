@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Foreach_;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -12,7 +13,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\NodeTraverser;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -132,7 +132,7 @@ CODE_SAMPLE
                     $isAppend = $this->isNames($subNode->var->var, $emptyArrayVariables);
 
                     if ($isAppend) {
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
                 }
 
@@ -141,7 +141,7 @@ CODE_SAMPLE
                     $this->isNames($subNode->var, $emptyArrayVariables) &&
                     ! $this->valueResolver->isValue($subNode->expr, [])) {
                     $isAppend = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
+                    return NodeVisitor::STOP_TRAVERSAL;
                 }
 
                 return null;

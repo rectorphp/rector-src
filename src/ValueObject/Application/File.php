@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\NodeFinder;
+use PhpParser\Token;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\ValueObject\Reporting\FileDiff;
@@ -31,7 +32,7 @@ final class File
     private array $newStmts = [];
 
     /**
-     * @var array<int, array{int, string, int}|string>
+     * @var array<int, Token>
      */
     private array $oldTokens = [];
 
@@ -100,7 +101,7 @@ final class File
     /**
      * @param Stmt[] $newStmts
      * @param Stmt[] $oldStmts
-     * @param array<int, array{int, string, int}|string> $oldTokens
+     * @param array<int, Token> $oldTokens
      */
     public function hydrateStmtsAndTokens(array $newStmts, array $oldStmts, array $oldTokens): void
     {
@@ -130,7 +131,7 @@ final class File
     }
 
     /**
-     * @return array<int, array{int, string, int}|string>
+     * @return array<int, Token>
      */
     public function getOldTokens(): array
     {

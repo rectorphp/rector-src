@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php71\Rector\Assign;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -17,7 +18,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\NodeTraverser;
 use PHPStan\Type\UnionType;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
@@ -93,7 +93,7 @@ CODE_SAMPLE
             $node->stmts,
             function (Node $subNode) use (&$hasChanged, $node): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($subNode instanceof Assign) {
@@ -195,7 +195,7 @@ CODE_SAMPLE
 
             if ($this->isReAssignedAsArray($node, $variableName, $variable)) {
                 $assignedArrayDimFetches = [];
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if (! $node->var instanceof ArrayDimFetch) {

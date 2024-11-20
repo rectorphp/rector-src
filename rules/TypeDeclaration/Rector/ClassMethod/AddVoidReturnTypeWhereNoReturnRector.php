@@ -7,7 +7,8 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ClassModifierChecker;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -132,7 +133,7 @@ CODE_SAMPLE
         }
 
         $onlyStmt = $classMethod->stmts[0] ?? null;
-        return $onlyStmt instanceof Throw_;
+        return $onlyStmt instanceof Expression && $onlyStmt->expr instanceof Throw_;
     }
 
     private function isNotFinalAndEmpty(ClassMethod $classMethod): bool

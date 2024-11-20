@@ -29,7 +29,7 @@ final class DoWhileMaybeReturned3
                 return 1;
     		}
 		} while (++$i < 1);
-  return null;
+        return null;
     }
 }
 

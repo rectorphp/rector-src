@@ -214,7 +214,7 @@ CODE_SAMPLE
         }
 
         // int positions shouldn't have names
-        if ($arg->name !== null) {
+        if ($arg->name instanceof Identifier) {
             return null;
         }
 
@@ -228,7 +228,7 @@ CODE_SAMPLE
         $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
             $renameFunctionLikeParamWithinCallLikeArg
         ): bool {
-            if ($arg->name === null) {
+            if (!$arg->name instanceof Identifier) {
                 return false;
             }
 

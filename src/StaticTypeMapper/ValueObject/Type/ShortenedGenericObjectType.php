@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
-use PHPStan\TrinaryLogic;
+use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\Type;
 
@@ -24,7 +24,7 @@ final class ShortenedGenericObjectType extends GenericObjectType
         parent::__construct($shortName, $types);
     }
 
-    public function isSuperTypeOf(Type $type): TrinaryLogic
+    public function isSuperTypeOf(Type $type): IsSuperTypeOfResult
     {
         $genericObjectType = new GenericObjectType($this->fullyQualifiedName, $this->getTypes());
         return $genericObjectType->isSuperTypeOf($type);

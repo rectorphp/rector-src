@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Strict\NodeFactory;
 
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -19,7 +20,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -39,7 +39,7 @@ final readonly class ExactCompareFactory
         Expr $expr,
         bool $treatAsNonEmpty,
         bool $isOnlyString = true
-    ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null|FuncCall {
+    ): Identical|BooleanOr|NotIdentical|BooleanNot|null|FuncCall {
         $result = null;
 
         if ($exprType->isString()->yes()) {
@@ -49,7 +49,7 @@ final readonly class ExactCompareFactory
 
             $result = new BooleanOr(new Identical($expr, new String_('')), new Identical($expr, new String_('0')));
         } elseif ($exprType->isInteger()->yes()) {
-            return new Identical($expr, new LNumber(0));
+            return new Identical($expr, new Int_(0));
         } elseif ($exprType->isBoolean()->yes()) {
             return new Identical($expr, $this->nodeFactory->createFalse());
         } elseif ($exprType->isArray()->yes()) {
@@ -78,7 +78,7 @@ final readonly class ExactCompareFactory
         Expr $expr,
         bool $treatAsNotEmpty,
         bool $isOnlyString = true
-    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
+    ): Identical|Instanceof_|NotIdentical|BooleanAnd|BooleanNot|null {
         $result = null;
 
         if ($exprType->isString()->yes()) {
@@ -91,7 +91,7 @@ final readonly class ExactCompareFactory
                 new NotIdentical($expr, new String_('0'))
             );
         } elseif ($exprType->isInteger()->yes()) {
-            return new NotIdentical($expr, new LNumber(0));
+            return new NotIdentical($expr, new Int_(0));
         } elseif ($exprType->isArray()->yes()) {
             return new NotIdentical($expr, new Array_([]));
         } elseif (! $exprType instanceof UnionType) {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpAttribute\AnnotationToAttributeMapper;
 
+use PhpParser\Node\Scalar\Int_;
 use Iterator;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
@@ -44,7 +44,7 @@ final class AnnotationToAttributeMapperTest extends AbstractLazyTestCase
     {
         yield [false, ConstFetch::class];
         yield ['false', ConstFetch::class];
-        yield ['100', LNumber::class];
+        yield ['100', Int_::class];
         yield ['hey', String_::class];
         yield [['hey'], Array_::class];
     }

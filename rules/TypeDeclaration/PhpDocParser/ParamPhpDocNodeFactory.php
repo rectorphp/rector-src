@@ -22,7 +22,8 @@ final readonly class ParamPhpDocNodeFactory
             $typeNode,
             $param->variadic,
             '$' . $this->nodeNameResolver->getName($param),
-            ''
+            '',
+            false
         );
     }
 }

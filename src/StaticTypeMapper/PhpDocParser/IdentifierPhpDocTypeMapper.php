@@ -95,6 +95,7 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
                 return new UnionType($scalarTypes);
             }
 
+            $identifierTypeNode->name = ltrim($identifierTypeNode->name, '@');
             $objectType = new ObjectType($identifierTypeNode->name);
         }
 

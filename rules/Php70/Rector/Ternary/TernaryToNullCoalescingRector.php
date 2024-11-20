@@ -99,7 +99,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
             return null;
         }
 
-        if ($isset->vars === null) {
+        if ($isset->vars === []) {
             return null;
         }
 

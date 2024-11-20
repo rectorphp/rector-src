@@ -12,7 +12,8 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt\Expression;
 use PHPStan\Analyser\Scope;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
@@ -87,7 +88,10 @@ final readonly class AddNeverReturnType
 
     private function hasNeverNodesOrNeverFuncCalls(ClassMethod|Function_|Closure $node): bool
     {
-        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, [Throw_::class]);
+        $hasNeverNodes = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $node,
+            fn (Node $subNode): bool => $subNode instanceof Expression && $subNode->expr instanceof Throw_
+        );
         if ($hasNeverNodes) {
             return true;
         }

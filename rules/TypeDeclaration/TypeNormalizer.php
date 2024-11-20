@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration;
 
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
@@ -39,10 +40,15 @@ final class TypeNormalizer
      */
     public function normalizeArrayOfUnionToUnionArray(Type $type, int $arrayNesting = 1): Type
     {
-        if (! $type instanceof ArrayType) {
+        if (! $type->isArray()->yes()) {
             return $type;
         }
 
+        if ($type instanceof UnionType || $type instanceof IntersectionType) {
+            return $type;
+        }
+
+        /** @var ArrayType|ConstantArrayType $type */
         if ($type instanceof ConstantArrayType && $arrayNesting === 1) {
             return $type;
         }

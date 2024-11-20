@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\NodeAnalyzer;
 
+use PhpParser\Node\UseItem;
 use Nette\Utils\Strings;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -61,11 +61,11 @@ final readonly class UseImportNameMatcher
         return null;
     }
 
-    private function resolveName(string $prefix, string $tag, UseUse $useUse): string
+    private function resolveName(string $prefix, string $tag, UseItem $useItem): string
     {
         // useuse can be renamed on the fly, so just in case, use the original one
-        $originalUseUseNode = $useUse->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $originalUseUseNode instanceof UseUse) {
+        $originalUseUseNode = $useItem->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalUseUseNode instanceof UseItem) {
             throw new ShouldNotHappenException();
         }
 
@@ -87,11 +87,11 @@ final readonly class UseImportNameMatcher
         return $prefix . $originalUseUseNode->name . '\\' . $unaliasedShortClass;
     }
 
-    private function isUseMatchingName(string $tag, UseUse $useUse): bool
+    private function isUseMatchingName(string $tag, UseItem $useItem): bool
     {
         // useuse can be renamed on the fly, so just in case, use the original one
-        $originalUseUseNode = $useUse->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $originalUseUseNode instanceof UseUse) {
+        $originalUseUseNode = $useItem->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalUseUseNode instanceof UseItem) {
             return false;
         }
 

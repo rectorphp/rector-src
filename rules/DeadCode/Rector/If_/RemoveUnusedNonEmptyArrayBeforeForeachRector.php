@@ -88,9 +88,9 @@ CODE_SAMPLE
 
     /**
      * @param If_|StmtsAwareInterface $node
-     * @return Stmt[]|Foreach_|StmtsAwareInterface|null
+     * @return Foreach_|StmtsAwareInterface|null
      */
-    public function refactor(Node $node): array|Node|null
+    public function refactor(Node $node): Node|null
     {
         if ($node instanceof If_) {
             $scope = ScopeFetcher::fetch($node);
@@ -220,7 +220,7 @@ CODE_SAMPLE
 
     private function shouldSkipForeachExpr(Expr $foreachExpr, Scope $scope): bool
     {
-        if ($foreachExpr instanceof ArrayDimFetch && $foreachExpr->dim !== null) {
+        if ($foreachExpr instanceof ArrayDimFetch && $foreachExpr->dim instanceof Expr) {
             $exprType = $this->nodeTypeResolver->getNativeType($foreachExpr->var);
             $dimType = $this->nodeTypeResolver->getNativeType($foreachExpr->dim);
             if (! $exprType->hasOffsetValueType($dimType)->yes()) {

@@ -111,7 +111,11 @@ final readonly class FileProcessor
     private function parseFileAndDecorateNodes(File $file): ?SystemError
     {
         try {
-            $this->parseFileNodes($file);
+            try {
+                $this->parseFileNodes($file);
+            } catch (ParserErrorsException) {
+                $this->parseFileNodes($file, false);
+            }
         } catch (ShouldNotHappenException $shouldNotHappenException) {
             throw $shouldNotHappenException;
         } catch (AnalysedCodeException $analysedCodeException) {
@@ -157,19 +161,19 @@ final readonly class FileProcessor
              * Handle new line or space before <?php or InlineHTML node wiped on print format preserving
              * On very first content level
              */
-            $ltrimOriginalFileContent = ltrim($file->getOriginalFileContent());
-            if ($ltrimOriginalFileContent === $newContent) {
+            $originalFileContent = $file->getOriginalFileContent();
+            if ($originalFileContent === $newContent) {
                 return;
             }
 
             // handle space before <?php
-            $ltrimNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
-            $ltrimOriginalFileContent = Strings::replace(
-                $ltrimOriginalFileContent,
+            $strippedNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            $strippedOriginalFileContent = Strings::replace(
+                $originalFileContent,
                 self::OPEN_TAG_SPACED_REGEX,
                 '<?php'
             );
-            if ($ltrimOriginalFileContent === $ltrimNewContent) {
+            if ($strippedOriginalFileContent === $strippedNewContent) {
                 return;
             }
         }
@@ -187,10 +191,13 @@ final readonly class FileProcessor
         FileSystem::write($filePath, $newContent, null);
     }
 
-    private function parseFileNodes(File $file): void
+    private function parseFileNodes(File $file, bool $forNewestSupportedVersion = true): void
     {
         // store tokens by original file content, so we don't have to print them right now
-        $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($file->getOriginalFileContent());
+        $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens(
+            $file->getOriginalFileContent(),
+            $forNewestSupportedVersion
+        );
 
         $oldStmts = $stmtsAndTokens->getStmts();
         $oldTokens = $stmtsAndTokens->getTokens();

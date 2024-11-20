@@ -51,7 +51,7 @@ CODE_SAMPLE
     /**
      * @param LogicalOr|LogicalAnd $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): BooleanAnd|BooleanOr
     {
         return $this->refactorLogicalToBoolean($node);
     }

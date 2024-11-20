@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Arguments\NodeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PHPStan\Type\Type;
@@ -31,7 +32,7 @@ final readonly class ChangedArgumentsDetector
 
     public function isTypeChanged(Param $param, ?Type $newType): bool
     {
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return false;
         }
 

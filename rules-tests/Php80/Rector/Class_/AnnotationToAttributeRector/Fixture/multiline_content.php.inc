@@ -22,8 +22,8 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
 #[GenericAnnotation('
-    summary: Send webcam reward
-')]
+     summary: Send webcam reward
+ ')]
 final class MultilineContent
 {
 }

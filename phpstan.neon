@@ -1,6 +1,7 @@
-includes:
-    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
-    - vendor/symplify/phpstan-rules/config/rector-rules.neon
+# to be enabled later once rector upgraded to use phpstan v2
+#includes:
+#    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
+#    - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 parameters:
     level: 8
@@ -9,6 +10,8 @@ parameters:
 
     # requires exact closure types
     checkMissingCallableSignature: true
+
+    treatPhpDocTypesAsCertain: false
 
     paths:
         - rector.php
@@ -34,15 +37,67 @@ parameters:
         - '*tests/*/Source*'
 
     # https://github.com/rectorphp/type-perfect/
-    type_perfect:
-        no_mixed: true
-        null_over_false: true
-        narrow_param: true
-        narrow_return: true
+# to be enabled later once rector upgraded to use phpstan v2
+#    type_perfect:
+#        no_mixed: true
+#        null_over_false: true
+#        narrow_param: true
+#        narrow_return: true
 
     ignoreErrors:
         -
             identifier: missingType.generics
+
+        # phpstan class instance
+        -
+            identifier: phpstanApi.class
+
+        # phpstan class constant value
+        -
+            identifier: phpstanApi.classConstant
+
+        # phpstan instanceof
+        -
+            identifier: phpstanApi.instanceofAssumption
+
+        # assert phpunit
+        -
+            identifier: method.alreadyNarrowedType
+            path: tests
+
+        # runtime php id
+        -
+            identifier: greaterOrEqual.alwaysTrue
+            path: src/Util/FileHasher.php
+
+        # unreliable on loop
+        -
+            identifier: instanceof.alwaysTrue
+            path: rules/CodingStyle/Rector/Assign/SplitDoubleAssignRector.php
+
+        -
+            identifier: phpstanApi.constructor
+
+        # enforce native type
+        -
+            identifier: varTag.nativeType
+
+        # on runtime check
+        -
+            identifier: deadCode.unreachable
+            paths:
+                - src/Console/Notifier.php
+                - src/Util/FileHasher.php
+
+        -
+            identifier: argument.type
+
+        -
+            identifier: phpstanApi.varTagAssumption
+
+        -
+            identifier: assign.propertyType
+            path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
 
         # is nested expr
         -
@@ -307,3 +362,37 @@ parameters:
 
         # deprecated
         - '#Register "Rector\\Php80\\Rector\\FunctionLike\\MixedTypeRector" service to "php80\.php" config set#'
+
+        - '#::provideMinPhpVersion\(\) never returns \d+ so it can be removed from the return type#'
+
+        # runtime comparison
+        - '#Comparison operation ".*" between int<\d+, \d+> and \d+ is always true#'
+
+        # from mapper interface
+        - '#mapToPhpParserNode\(\) never returns PhpParser\\.* so it can be removed from the return#'
+
+        # from constant string
+        - '#Method Rector\\.*::providePolyfillPackage\(\) never returns#'
+        - '#Method Rector\\.*::filterPolyfillPackages\(\) should return array\<#'
+
+        # realpath() usage
+        -
+            message: '#should return string\|null but returns string\|false#'
+            paths:
+                - src/Bootstrap/RectorConfigsResolver.php
+                - src/ValueObject/Error/SystemError.php
+
+        -
+            message: '#should return array\<string\> but returns list\<string\|false\>#'
+            path: src/Set/SetManager.php
+
+        -
+            message: '#should return non-empty-string but returns non-empty-string\|false#'
+            paths:
+                - src/Configuration/RectorConfigBuilder.php
+                - src/FileSystem/FilesFinder.php
+
+        # collection of Type
+        -
+            message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory::uniquateTypes\(\) should return array\<TType of PHPStan\\Type\\Type\> but returns list\<PHPStan\\Type\\Type>#'
+            path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php

@@ -9,7 +9,7 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
@@ -31,8 +31,8 @@ final readonly class PhpAttributeGroupFactory
         private AnnotationToAttributeMapper $annotationToAttributeMapper,
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
-        private AttributeArrayNameInliner $attributeArrayNameInliner,
         private AnnotationToAttributeIntegerValueCaster $annotationToAttributeIntegerValueCaster,
+        private AttributeArrayNameInliner $attributeArrayNameInliner
     ) {
     }
 

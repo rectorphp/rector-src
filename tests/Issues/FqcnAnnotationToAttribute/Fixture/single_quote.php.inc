@@ -4,7 +4,7 @@ namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 /**
  * @\Doctrine\ORM\Mapping\Entity()
- * @\Doctrine\ORM\Mapping\Table('user', indexes={
+ * @\Doctrine\ORM\Mapping\Table("user", indexes={
  *  @\Doctrine\ORM\Mapping\Index(name="name_index", columns={"name"}),
  *  @\Doctrine\ORM\Mapping\Index(name="surname_index", columns={"surname"}),
  * })
@@ -30,12 +30,12 @@ class SingleQuote
 namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 #[\Doctrine\ORM\Mapping\Entity]
-#[\Doctrine\ORM\Mapping\Index(name: 'name_index', columns: ['name'])]
-#[\Doctrine\ORM\Mapping\Index(name: 'surname_index', columns: ['surname'])]
 #[\Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity('azureB2cUuid')]
 #[\Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity('uuid')]
 #[\Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity('email')]
 #[\Doctrine\ORM\Mapping\Table('user')]
+#[\Doctrine\ORM\Mapping\Index(name: 'name_index', columns: ['name'])]
+#[\Doctrine\ORM\Mapping\Index(name: 'surname_index', columns: ['surname'])]
 class SingleQuote
 {
     #[\Symfony\Component\Validator\Constraints\NotBlank]

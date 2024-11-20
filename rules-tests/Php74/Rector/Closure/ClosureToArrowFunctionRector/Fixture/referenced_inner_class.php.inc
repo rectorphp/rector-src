@@ -25,10 +25,10 @@ class ReferencedInnerClass
 {
     public function run()
     {
-        $callback = fn($b) => new class { public function __construct($i)
+        $callback = (fn($b) => new class { public function __construct($i)
             {
             }
-        };
+        });
     }
 }
 

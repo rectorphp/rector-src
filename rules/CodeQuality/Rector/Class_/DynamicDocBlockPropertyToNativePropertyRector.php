@@ -162,11 +162,11 @@ CODE_SAMPLE
             }
 
             // is property already defined?
-            if ($class->getProperty($propertyName)) {
+            if ($class->getProperty($propertyName) instanceof Property) {
                 // improve exising one type if needed
 
                 $existingProperty = $class->getProperty($propertyName);
-                if ($existingProperty->type !== null) {
+                if ($existingProperty->type instanceof Node) {
                     continue;
                 }
 

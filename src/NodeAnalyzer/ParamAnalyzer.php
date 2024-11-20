@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeAnalyzer;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
@@ -17,7 +18,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\NodeTraverser;
 use Rector\NodeManipulator\FuncCallManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -48,7 +48,7 @@ final readonly class ParamAnalyzer
             $param
         ): ?int {
             if ($isParamUsed) {
-                return NodeTraverser::STOP_TRAVERSAL;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if ($this->isUsedAsArg($node, $param)) {
@@ -57,7 +57,7 @@ final readonly class ParamAnalyzer
 
             // skip nested anonymous class
             if ($node instanceof Class_ || $node instanceof Function_) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $param->var)) {
@@ -98,7 +98,7 @@ final readonly class ParamAnalyzer
             return false;
         }
 
-        if ($param->type === null) {
+        if (!$param->type instanceof Node) {
             return false;
         }
 

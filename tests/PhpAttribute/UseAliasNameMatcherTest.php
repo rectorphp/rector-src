@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpAttribute;
 
+use PhpParser\Node\UseItem;
 use Iterator;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
@@ -38,10 +38,10 @@ final class UseAliasNameMatcherTest extends AbstractLazyTestCase
         string $expectedAttributeUseImportName,
         string $expectedShortAttributeName,
     ): void {
-        $useUse = new UseUse(new Name($useImportName), $useAlias);
-        $useUse->setAttribute(AttributeKey::ORIGINAL_NODE, $useUse);
+        $useItem = new UseItem(new Name($useImportName), $useAlias);
+        $useItem->setAttribute(AttributeKey::ORIGINAL_NODE, $useItem);
 
-        $uses = [new Use_([$useUse])];
+        $uses = [new Use_([$useItem])];
 
         // uses
         $useAliasMetadata = $this->useAliasNameMatcher->match($uses, $shortAnnotationName, $annotationToAttribute);

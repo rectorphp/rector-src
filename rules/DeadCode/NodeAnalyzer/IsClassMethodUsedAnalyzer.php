@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Reflection\ClassReflection;
@@ -110,10 +109,6 @@ final readonly class IsClassMethodUsedAnalyzer
             return false;
         }
 
-        if (! $array->items[1] instanceof ArrayItem) {
-            return false;
-        }
-
         $value = $this->valueResolver->getValue($array->items[1]->value);
 
         if (! is_string($value)) {
@@ -198,19 +193,19 @@ final readonly class IsClassMethodUsedAnalyzer
                 (array) $classMethod->stmts,
                 function (Node $subNode) use ($className, $classMethodName, &$callMethod): ?int {
                     if ($subNode instanceof Class_ || $subNode instanceof Function_) {
-                        return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                     }
 
                     if ($subNode instanceof MethodCall
                         && $this->nodeNameResolver->isName($subNode->var, 'this')
                         && $this->nodeNameResolver->isName($subNode->name, $classMethodName)) {
                         $callMethod = $subNode;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
 
                     if ($this->isStaticCallMatch($subNode, $className, $classMethodName)) {
                         $callMethod = $subNode;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        return NodeVisitor::STOP_TRAVERSAL;
                     }
 
                     return null;

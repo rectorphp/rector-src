@@ -6,8 +6,8 @@ namespace Rector\CodeQuality\Rector\Foreach_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -100,14 +100,16 @@ CODE_SAMPLE
             }
 
             // special case of nested array items
-            if ($stmt->valueVar instanceof Array_) {
+            if ($stmt->valueVar instanceof List_) {
                 $valueArray = $this->refactorArrayForeachValue($stmt->valueVar, $stmt);
-                if ($valueArray instanceof Array_) {
-                    $stmt->valueVar = $valueArray;
+                if (! $valueArray instanceof List_) {
+                    continue;
                 }
 
+                $stmt->valueVar = $valueArray;
+
                 // not sure what does this mean :)
-                if ($stmt->valueVar->items !== []) {
+                if ($valueArray->items !== []) {
                     continue;
                 }
 
@@ -146,11 +148,11 @@ CODE_SAMPLE
     /**
      * @param int[] $removedKeys
      */
-    private function isArrayItemsRemovalWithoutChangingOrder(Array_ $array, array $removedKeys): bool
+    private function isArrayItemsRemovalWithoutChangingOrder(List_ $list, array $removedKeys): bool
     {
         $hasRemovingStarted = false;
 
-        foreach (array_keys($array->items) as $key) {
+        foreach (array_keys($list->items) as $key) {
             if (in_array($key, $removedKeys, true)) {
                 $hasRemovingStarted = true;
             } elseif ($hasRemovingStarted) {
@@ -162,12 +164,12 @@ CODE_SAMPLE
         return true;
     }
 
-    private function refactorArrayForeachValue(Array_ $array, Foreach_ $foreach): ?Array_
+    private function refactorArrayForeachValue(List_ $list, Foreach_ $foreach): ?List_
     {
         // only last items can be removed, without changing the order
         $removedKeys = [];
 
-        foreach ($array->items as $key => $arrayItem) {
+        foreach ($list->items as $key => $arrayItem) {
             if (! $arrayItem instanceof ArrayItem) {
                 // only known values can be processes
                 return null;
@@ -186,16 +188,16 @@ CODE_SAMPLE
             $removedKeys[] = $key;
         }
 
-        if (! $this->isArrayItemsRemovalWithoutChangingOrder($array, $removedKeys)) {
+        if (! $this->isArrayItemsRemovalWithoutChangingOrder($list, $removedKeys)) {
             return null;
         }
 
         // clear removed items
         foreach ($removedKeys as $removedKey) {
-            unset($array->items[$removedKey]);
+            unset($list->items[$removedKey]);
         }
 
-        return $array;
+        return $list;
     }
 
     private function isVariableUsedInForeach(Variable $variable, Foreach_ $foreach): bool

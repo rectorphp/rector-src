@@ -33,7 +33,7 @@ final class DoWhileMaybeReturned2
 
 		    return 2;
 		} while (++$i < 1);
-  return null;
+        return null;
     }
 }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -19,8 +21,6 @@ use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ElseIf_;
@@ -176,14 +176,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $lNumber = new LNumber(0);
+        $int = new Int_(0);
 
         // compare === 0, assumption
         if ($isNegated) {
-            return new Identical($funcCall, $lNumber);
+            return new Identical($funcCall, $int);
         }
 
-        return new Greater($funcCall, $lNumber);
+        return new Greater($funcCall, $int);
     }
 
     /**
@@ -255,24 +255,24 @@ CODE_SAMPLE
 
     private function resolveInteger(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
-        $lNumber = new LNumber(0);
+        $int = new Int_(0);
 
         if ($isNegated) {
-            return new Identical($expr, $lNumber);
+            return new Identical($expr, $int);
         }
 
-        return new NotIdentical($expr, $lNumber);
+        return new NotIdentical($expr, $int);
     }
 
     private function resolveFloat(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
-        $dNumber = new DNumber(0.0);
+        $float = new Float_(0.0);
 
         if ($isNegated) {
-            return new Identical($expr, $dNumber);
+            return new Identical($expr, $float);
         }
 
-        return new NotIdentical($expr, $dNumber);
+        return new NotIdentical($expr, $float);
     }
 
     private function resolveNullable(bool $isNegated, Expr $expr): Identical | NotIdentical

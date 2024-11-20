@@ -33,8 +33,8 @@ final readonly class MatchTypePropertyRenamer
             return null;
         }
 
-        $onlyPropertyProperty = $propertyRename->getPropertyProperty();
-        $onlyPropertyProperty->name = new VarLikeIdentifier($propertyRename->getExpectedName());
+        $propertyItem = $propertyRename->getPropertyProperty();
+        $propertyItem->name = new VarLikeIdentifier($propertyRename->getExpectedName());
         $this->renamePropertyFetchesInClass($propertyRename);
 
         return $propertyRename->getProperty();

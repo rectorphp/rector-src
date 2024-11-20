@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
@@ -50,7 +51,7 @@ final readonly class ParentClassMethodTypeOverrideGuard
 
     public function shouldSkipReturnTypeChange(ClassMethod $classMethod, Type $parentType): bool
     {
-        if ($classMethod->returnType === null) {
+        if (!$classMethod->returnType instanceof Node) {
             return false;
         }
 

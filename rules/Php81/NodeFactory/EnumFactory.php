@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Php81\NodeFactory;
 
+use PhpParser\Node\Scalar\Int_;
 use Nette\Utils\Strings;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -202,11 +202,11 @@ final readonly class EnumFactory
                 continue;
             }
 
-            if (! $item->key instanceof LNumber && ! $item->key instanceof String_) {
+            if (! $item->key instanceof Int_ && ! $item->key instanceof String_) {
                 continue;
             }
 
-            if (! $item->value instanceof LNumber && ! $item->value instanceof String_) {
+            if (! $item->value instanceof Int_ && ! $item->value instanceof String_) {
                 continue;
             }
 

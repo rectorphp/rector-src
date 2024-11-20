@@ -14,6 +14,7 @@ use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\FileProcessor;
@@ -94,6 +95,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NameNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ReprintNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StmtKeyNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
@@ -129,6 +131,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ClassStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ClosureTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeForParameterMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\ConstantArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\FloatTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\GenericClassStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasMethodTypeMapper;
@@ -235,6 +238,7 @@ final class LazyContainerFactory
         NameNodeVisitor::class,
         StaticVariableNodeVisitor::class,
         StmtKeyNodeVisitor::class,
+        ReprintNodeVisitor::class,
     ];
 
     /**
@@ -265,6 +269,7 @@ final class LazyContainerFactory
         AccessoryNonEmptyStringTypeMapper::class,
         AccessoryNonFalsyStringTypeMapper::class,
         AccessoryNumericStringTypeMapper::class,
+        ConstantArrayTypeMapper::class,
         ArrayTypeMapper::class,
         BooleanTypeMapper::class,
         CallableTypeMapper::class,
@@ -665,6 +670,14 @@ final class LazyContainerFactory
         $rectorConfig->when(PhpDocNodeMapper::class)
             ->needs('$phpDocNodeVisitors')
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
+
+        $rectorConfig->singleton(
+            ParserConfig::class,
+            static fn (Container $container): ParserConfig => new ParserConfig([
+                'lines' => true,
+                'indexes' => true,
+            ])
+        );
 
         return $rectorConfig;
     }

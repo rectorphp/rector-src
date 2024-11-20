@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
@@ -15,7 +16,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\NodeTraverser;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -124,7 +124,7 @@ CODE_SAMPLE
         }
 
         // add return type
-        if ($toStringClassMethod->returnType === null) {
+        if (!$toStringClassMethod->returnType instanceof Node) {
             $toStringClassMethod->returnType = new Identifier('string');
             $this->hasChanged = true;
         }
@@ -154,7 +154,7 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode): ?int {
             if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $subNode instanceof Return_) {
