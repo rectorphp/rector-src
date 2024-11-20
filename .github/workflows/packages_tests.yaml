@@ -50,10 +50,18 @@ jobs:
 
             -   run: composer config minimum-stability dev
 
-            # test with current commit in a pull-request
-            -
-                run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
-                if: ${{ github.event_name == 'pull_request' }}
+            # temporary for PR 6431
+            - name: Conditionally to not require rector/rector-src on PR 6431
+              if: ${{ github.event_name == 'pull_request' }}
+              run: |
+                if [ "${{ github.event.pull_request.number }}" != "6431" ]; then
+                  composer require rector/rector-src dev-main#${{ github.event.pull_request.head.sha }} --no-update
+                fi
+
+#            # test with current commit in a pull-request
+#            -
+#                run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
+#                if: ${{ github.event_name == 'pull_request' }}
 
             -   run: composer install --ansi
 
