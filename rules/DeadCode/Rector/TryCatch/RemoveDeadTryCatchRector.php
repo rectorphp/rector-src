@@ -62,9 +62,9 @@ CODE_SAMPLE
 
     /**
      * @param TryCatch $node
-     * @return Stmt[]|null|TryCatch|int
+     * @return Stmt[]|null|int
      */
-    public function refactor(Node $node): array|null|TryCatch|int
+    public function refactor(Node $node): array|null|int
     {
         $isEmptyFinallyStmts = ! $node->finally instanceof Finally_ || $this->isEmpty($node->finally->stmts);
 

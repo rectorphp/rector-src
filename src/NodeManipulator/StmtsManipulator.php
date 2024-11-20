@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -29,8 +30,12 @@ final readonly class StmtsManipulator
     /**
      * @param Stmt[] $stmts
      */
-    public function getUnwrappedLastStmt(array $stmts): ?Node
+    public function getUnwrappedLastStmt(array $stmts): null|Expr|Stmt
     {
+        if ($stmts === []) {
+            return null;
+        }
+
         $lastStmtKey = array_key_last($stmts);
         $lastStmt = $stmts[$lastStmtKey];
 

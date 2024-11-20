@@ -23,7 +23,7 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
     ) {
     }
 
-    public function enterNode(Node $node): Node|int|null
+    public function enterNode(Node $node): Node|null
     {
         if (! $node instanceof Stmt && ! $node instanceof Param) {
             return null;

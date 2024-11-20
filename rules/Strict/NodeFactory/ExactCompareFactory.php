@@ -39,7 +39,7 @@ final readonly class ExactCompareFactory
         Expr $expr,
         bool $treatAsNonEmpty,
         bool $isOnlyString = true
-    ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null|FuncCall {
+    ): Identical|BooleanOr|NotIdentical|BooleanNot|null|FuncCall {
         $result = null;
 
         if ($exprType->isString()->yes()) {
@@ -78,7 +78,7 @@ final readonly class ExactCompareFactory
         Expr $expr,
         bool $treatAsNotEmpty,
         bool $isOnlyString = true
-    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
+    ): Identical|Instanceof_|NotIdentical|BooleanAnd|BooleanNot|null {
         $result = null;
 
         if ($exprType->isString()->yes()) {

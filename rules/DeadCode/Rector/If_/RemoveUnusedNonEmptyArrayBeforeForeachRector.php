@@ -88,9 +88,9 @@ CODE_SAMPLE
 
     /**
      * @param If_|StmtsAwareInterface $node
-     * @return Stmt[]|Foreach_|StmtsAwareInterface|null
+     * @return Foreach_|StmtsAwareInterface|null
      */
-    public function refactor(Node $node): array|Node|null
+    public function refactor(Node $node): Node|null
     {
         if ($node instanceof If_) {
             $scope = ScopeFetcher::fetch($node);

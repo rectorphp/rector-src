@@ -83,10 +83,6 @@ parameters:
         -
             identifier: phpstanApi.constructor
 
-        # follow parent signature
-        -
-            identifier: return.unusedType
-
         # enforce native type
         -
             identifier: varTag.nativeType
@@ -376,3 +372,9 @@ parameters:
 
         # runtime comparison
         - '#Comparison operation ".*" between int<\d+, \d+> and \d+ is always true#'
+
+        # from mapper interface
+        - '#mapToPhpParserNode\(\) never returns PhpParser\\.* so it can be removed from the return#'
+
+        # from constant string
+        - '#Method Rector\\.*::providePolyfillPackage\(\) never returns#'

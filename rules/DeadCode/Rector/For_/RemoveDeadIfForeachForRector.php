@@ -82,7 +82,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node): Node|null|int
+    public function refactor(Node $node): Node|null
     {
         if ($node->stmts === null) {
             return null;

@@ -82,7 +82,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): Class_|int|null
+    public function refactor(Node $node): Class_|null
     {
         $className = $this->getName($node);
         if (! is_string($className)) {
