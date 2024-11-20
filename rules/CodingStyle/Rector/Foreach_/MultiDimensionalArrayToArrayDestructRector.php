@@ -144,7 +144,7 @@ CODE_SAMPLE
      * Get all variable names which are used in the foreach tree. We need this so that we don't create array destructor
      * with variable name which is already used somewhere bellow
      *
-     * @return list<string>
+     * @return string[]
      */
     private function getUsedVariableNamesInForeachTree(Foreach_ $foreach): array
     {

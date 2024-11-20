@@ -95,9 +95,6 @@ parameters:
             identifier: argument.type
 
         -
-            identifier: return.type
-
-        -
             identifier: phpstanApi.varTagAssumption
 
         -
@@ -378,3 +375,26 @@ parameters:
 
         # from constant string
         - '#Method Rector\\.*::providePolyfillPackage\(\) never returns#'
+        - '#Method Rector\\.*::filterPolyfillPackages\(\) should return array\<#'
+
+        # realpath() usage
+        -
+            message: '#should return string\|null but returns string\|false#'
+            paths:
+                - src/Bootstrap/RectorConfigsResolver.php
+                - src/ValueObject/Error/SystemError.php
+
+        -
+            message: '#should return array\<string\> but returns list\<string\|false\>#'
+            path: src/Set/SetManager.php
+
+        -
+            message: '#should return non-empty-string but returns non-empty-string\|false#'
+            paths:
+                - src/Configuration/RectorConfigBuilder.php
+                - src/FileSystem/FilesFinder.php
+
+        # collection of Type
+        -
+            message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory::uniquateTypes\(\) should return array\<TType of PHPStan\\Type\\Type\> but returns list\<PHPStan\\Type\\Type>#'
+            path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
