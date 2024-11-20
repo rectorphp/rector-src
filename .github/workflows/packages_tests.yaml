@@ -50,7 +50,8 @@ jobs:
 
             -   run: composer config minimum-stability dev
 
-            # temporary for PR 6431
+            # temporary for PR 6431 as rector/rector-* packages already require this PR branch
+            # so avoid pointed to rector-src main branch composer.json
             - name: Conditionally to not require rector/rector-src on PR 6431
               if: ${{ github.event_name == 'pull_request' }}
               run: |
