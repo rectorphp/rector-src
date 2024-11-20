@@ -56,10 +56,6 @@ parameters:
         -
             identifier: phpstanApi.classConstant
 
-        # webmozart assert
-        -
-            identifier: staticMethod.alreadyNarrowedType
-
         # phpstan instanceof
         -
             identifier: phpstanApi.instanceofAssumption

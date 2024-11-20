@@ -216,8 +216,6 @@ final readonly class BetterNodeFinder
             }
         );
 
-        Assert::allIsInstanceOf($returns, Return_::class);
-
         return $returns;
     }
 
