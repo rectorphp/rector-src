@@ -67,9 +67,7 @@ parameters:
         # assert phpunit
         -
             identifier: method.alreadyNarrowedType
-            paths:
-                - tests
-                - rules-tests
+            path: tests
 
         # runtime php id
         -
