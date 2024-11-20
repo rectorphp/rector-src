@@ -438,7 +438,10 @@ final class BetterStandardPrinter extends Standard
             . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
     }
 
-    protected function pInterpolatedStringPart(InterpolatedStringPart $interpolatedStringPart): string
+    /**
+     * @api magic method in parent
+     */
+    public function pInterpolatedStringPart(InterpolatedStringPart $interpolatedStringPart): string
     {
         return $interpolatedStringPart->value;
     }
