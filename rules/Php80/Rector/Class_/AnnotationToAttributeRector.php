@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -60,6 +61,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -197,6 +199,11 @@ CODE_SAMPLE
                     continue;
                 }
 
+                // make sure the attribute class really exists to avoid error on early upgrade
+                if (! $this->reflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
+                    continue;
+                }
+
                 $attributeGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
@@ -233,6 +240,11 @@ CODE_SAMPLE
 
             $annotationToAttribute = $this->matchAnnotationToAttribute($doctrineTagValueNode);
             if (! $annotationToAttribute instanceof AnnotationToAttribute) {
+                continue;
+            }
+
+            // make sure the attribute class really exists to avoid error on early upgrade
+            if (! $this->reflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
                 continue;
             }
 
