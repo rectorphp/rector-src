@@ -186,6 +186,6 @@ CODE_SAMPLE
         $previousNode = $node->stmts[$key - 1];
         $currentNode = $node->stmts[$key];
 
-        return abs($currentNode->getLine() - $previousNode->getLine()) >= 2;
+        return abs($currentNode->getStartLine() - $previousNode->getStartLine()) >= 2;
     }
 }

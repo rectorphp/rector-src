@@ -98,7 +98,7 @@ CODE_SAMPLE
 
         $strictTypesDeclare = $this->creteStrictTypesDeclare();
 
-        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
+        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getStartLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         return \array_merge([$strictTypesDeclare, new Nop()], $nodes);

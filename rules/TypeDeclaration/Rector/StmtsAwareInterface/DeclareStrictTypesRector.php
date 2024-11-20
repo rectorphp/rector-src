@@ -97,7 +97,7 @@ CODE_SAMPLE
         $declareItem = new DeclareItem(new Identifier('strict_types'), new Int_(1));
         $strictTypesDeclare = new Declare_([$declareItem]);
 
-        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
+        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getStartLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         if ($rootStmt instanceof FileWithoutNamespace) {

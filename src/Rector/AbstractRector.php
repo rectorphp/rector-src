@@ -147,7 +147,7 @@ CODE_SAMPLE;
             $this->toBeRemovedNodeId = spl_object_id($originalNode);
 
             // notify this rule changing code
-            $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
+            $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
             $this->file->addRectorClassWithLine($rectorWithLineChange);
 
             return $originalNode;
@@ -325,7 +325,7 @@ CODE_SAMPLE;
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
-        $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
+        $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         /** @var MutatingScope|null $currentScope */
