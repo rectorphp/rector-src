@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\IndentationCrash\PrintCrash;
 
-final class InterpolatedStringPart
+final class WithInterpolatedStringPart
 {
     public function test(array $checkInputs): void
     {
