@@ -14,6 +14,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\ParserException;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
@@ -147,8 +148,13 @@ final class BetterPhpDocParser extends PhpDocParser
 
         $startPosition = $betterTokenIterator->currentPosition();
 
-        /** @var PhpDocTextNode|PhpDocTagNode $phpDocNode */
-        $phpDocNode = $this->privatesAccessor->callPrivateMethod($this, 'parseChild', [$betterTokenIterator]);
+        try {
+            /** @var PhpDocTextNode|PhpDocTagNode $phpDocNode */
+            $phpDocNode = $this->privatesAccessor->callPrivateMethod($this, 'parseChild', [$betterTokenIterator]);
+        } catch (ParserException) {
+            $phpDocNode = new PhpDocTextNode('');
+        }
+
         $endPosition = $betterTokenIterator->currentPosition();
 
         $startAndEnd = new StartAndEnd($startPosition, $endPosition);
