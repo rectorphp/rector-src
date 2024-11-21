@@ -59,7 +59,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
     /**
      * @var string
-     * @see https://regex101.com/r/3zXEh7/1
+     * @see https://regex101.com/r/3zXEh7/2
      */
     private const STAR_COMMENT_REGEX = '#^[ \t]+\*#ms';
 
