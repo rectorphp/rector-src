@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Stmt\Foreach_;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -71,6 +72,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($node->var->getAttribute(AttributeKey::KIND) === List_::KIND_ARRAY) {
+                return null;
+            }
+
             $list = $node->var;
 
             $node->var = new Array_($list->items);
@@ -78,6 +83,10 @@ CODE_SAMPLE
         }
 
         if (! $node->valueVar instanceof List_) {
+            return null;
+        }
+
+        if ($node->valueVar->getAttribute(AttributeKey::KIND) === List_::KIND_ARRAY) {
             return null;
         }
 
