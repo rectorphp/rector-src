@@ -152,7 +152,12 @@ final class BetterPhpDocParser extends PhpDocParser
             /** @var PhpDocTextNode|PhpDocTagNode $phpDocNode */
             $phpDocNode = $this->privatesAccessor->callPrivateMethod($this, 'parseChild', [$betterTokenIterator]);
         } catch (ParserException) {
-            $phpDocNode = new PhpDocTextNode('');
+            $text = '';
+            foreach ($tokenIterator->getTokens() as $token) {
+                $text .= (string) current($token);
+            }
+
+            $phpDocNode = new PhpDocTextNode($text);
         }
 
         $endPosition = $betterTokenIterator->currentPosition();
