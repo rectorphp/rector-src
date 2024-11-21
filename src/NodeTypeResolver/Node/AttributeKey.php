@@ -259,6 +259,11 @@ final class AttributeKey
     /**
      * @var string
      */
+    public const IS_RIGHT_AND = 'is_right_and';
+
+    /**
+     * @var string
+     */
     public const IS_CLASS_EXTENDS = 'is_class_extends';
 
     /**
