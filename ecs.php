@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\Casing\LowercaseKeywordsFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
@@ -26,5 +27,8 @@ return ECSConfig::configure()
             // double to Double false positive
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
         ],
+
+        // change constant to lower
+        LowercaseKeywordsFixer::class,
     ])
     ->withRootFiles();
