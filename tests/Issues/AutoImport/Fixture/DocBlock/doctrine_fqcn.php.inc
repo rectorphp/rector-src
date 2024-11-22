@@ -2,8 +2,6 @@
 
 namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
-use Doctrine\ORM\Mapping\Entity;
-
 /**
  * @\Doctrine\ORM\Mapping\Entity(repositoryClass="App\Some\Class")
  */
