@@ -207,8 +207,12 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($parentClassMethod->isAbstract()) {
+        if ($parentClassReflection->isTrait() && ! $parentClassMethod->isAbstract()) {
             return true;
+        }
+
+        if ($parentClassMethod->isAbstract()) {
+            return ! $parentClassReflection->isTrait();
         }
 
         // has any stmts?
