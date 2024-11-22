@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\BooleanType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
@@ -16,6 +17,7 @@ use Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Source\SomeCla
 use Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Source\SomeContainerBuilder;
 use Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Source\SomeMultiArg;
 use Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Source\SomeParentClient;
+use Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Source\SomeParentWithProtectedMethod;
 
 return static function (RectorConfig $rectorConfig): void {
     $arrayType = new ArrayType(new MixedType(), new MixedType());
@@ -33,6 +35,7 @@ return static function (RectorConfig $rectorConfig): void {
             ),
             new ArgumentAdder(SomeContainerBuilder::class, 'compile', 0, 'isCompiled', false),
             new ArgumentAdder(SomeContainerBuilder::class, 'addCompilerPass', 2, 'priority', 0, new IntegerType()),
+            new ArgumentAdder(SomeParentWithProtectedMethod::class, 'run', 2, 'inline', false, new BooleanType()),
             // scoped
             new ArgumentAdder(
                 SomeParentClient::class,
