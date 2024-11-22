@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
@@ -13,7 +14,10 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeVisitor;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
 use Rector\Rector\AbstractRector;
@@ -29,7 +33,8 @@ final class LocallyCalledStaticMethodToNonStaticRector extends AbstractRector
     public function __construct(
         private readonly ClassMethodVisibilityGuard $classMethodVisibilityGuard,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ArrayCallableMethodMatcher $arrayCallableMethodMatcher
     ) {
     }
 
@@ -217,6 +222,18 @@ CODE_SAMPLE
                 $currentClassMethodName,
                 &$isInsideStaticClassMethod
             ): ?int {
+                if ($node instanceof Array_) {
+                    $scope = $node->getAttribute(AttributeKey::SCOPE);
+                    if ($scope instanceof Scope && $this->arrayCallableMethodMatcher->match(
+                        $node,
+                        $scope,
+                        $currentClassMethodName
+                    )) {
+                        $isInsideStaticClassMethod = true;
+                        return NodeVisitor::STOP_TRAVERSAL;
+                    }
+                }
+
                 if (! $node instanceof StaticCall) {
                     return null;
                 }
