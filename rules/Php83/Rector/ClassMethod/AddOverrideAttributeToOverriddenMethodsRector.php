@@ -155,6 +155,7 @@ CODE_SAMPLE
         $classMethodName = $this->getName($classMethod->name);
 
         // Private methods should be ignored
+        $shouldAddOverride = false;
         foreach ($parentClassReflections as $parentClassReflection) {
             if (! $parentClassReflection->hasNativeMethod($classMethod->name->toString())) {
                 continue;
@@ -167,16 +168,23 @@ CODE_SAMPLE
 
             $parentMethod = $parentClassReflection->getNativeMethod($classMethodName);
             if ($parentMethod->isPrivate()) {
-                continue;
+                // early stop as already private
+                $shouldAddOverride = false;
+                return;
             }
 
             if ($this->shouldSkipParentClassMethod($parentClassReflection, $classMethod)) {
-                continue;
+                // early stop as already skipped
+                $shouldAddOverride = false;
+                return;
             }
 
+            $shouldAddOverride = true;
+        }
+
+        if ($shouldAddOverride) {
             $classMethod->attrGroups[] = new AttributeGroup([new Attribute(new FullyQualified(self::OVERRIDE_CLASS))]);
             $this->hasChanged = true;
-            return;
         }
     }
 
