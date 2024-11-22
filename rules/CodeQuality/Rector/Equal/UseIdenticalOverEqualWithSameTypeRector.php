@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -69,7 +68,7 @@ CODE_SAMPLE
         $rightStaticType = $this->nodeTypeResolver->getNativeType($node->right);
 
         // objects can be different by content
-        if ($leftStaticType instanceof ObjectType || $rightStaticType instanceof ObjectType) {
+        if (! $leftStaticType->isObject()->no() || ! $rightStaticType->isObject()->no()) {
             return null;
         }
 
