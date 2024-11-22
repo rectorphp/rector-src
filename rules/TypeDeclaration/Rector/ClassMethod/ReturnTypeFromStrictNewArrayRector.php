@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
@@ -147,7 +148,7 @@ CODE_SAMPLE
         ClassMethod|Function_|Closure $node,
         Type $returnType
     ): ClassMethod|Function_|Closure|null {
-        if (! $returnType->isArray()->yes()) {
+        if (! $returnType instanceof ArrayType && ! $returnType instanceof ConstantScalarType) {
             return null;
         }
 
@@ -174,8 +175,10 @@ CODE_SAMPLE
         );
     }
 
-    private function changeReturnType(ClassMethod|Function_|Closure $node, ArrayType|ConstantArrayType $arrayType): void
-    {
+    private function changeReturnType(
+        ClassMethod|Function_|Closure $node,
+        ArrayType|ConstantScalarType $arrayType
+    ): void {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         // skip already filled type, on purpose
@@ -263,7 +266,7 @@ CODE_SAMPLE
         return $variables;
     }
 
-    private function shouldAddReturnArrayDocType(ArrayType|ConstantArrayType $arrayType): bool
+    private function shouldAddReturnArrayDocType(ArrayType|ConstantScalarType $arrayType): bool
     {
         if ($arrayType instanceof ConstantArrayType) {
             if ($arrayType->getItemType() instanceof NeverType) {
