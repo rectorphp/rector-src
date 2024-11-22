@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration;
 
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
@@ -44,11 +43,10 @@ final class TypeNormalizer
             return $type;
         }
 
-        if ($type instanceof UnionType || $type instanceof IntersectionType) {
+        if (! $type instanceof ArrayType && ! $type instanceof ConstantArrayType) {
             return $type;
         }
 
-        /** @var ArrayType|ConstantArrayType $type */
         if ($type instanceof ConstantArrayType && $arrayNesting === 1) {
             return $type;
         }
