@@ -4,11 +4,11 @@ namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverridden
 
 use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\ExampleFromTrait;
 
-class ApplyAttributeToOverrideMethodFromTrait
+final class WithAbstractTraitMethod
 {
     use ExampleFromTrait;
 
-    public function bar()
+    public function foo()
     {
     }
 }
@@ -21,12 +21,12 @@ namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverridden
 
 use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\ExampleFromTrait;
 
-class ApplyAttributeToOverrideMethodFromTrait
+final class WithAbstractTraitMethod
 {
     use ExampleFromTrait;
 
     #[\Override]
-    public function bar()
+    public function foo()
     {
     }
 }
