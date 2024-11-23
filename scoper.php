@@ -85,6 +85,23 @@ return [
             return str_replace('public function getRuleDefinition', '// public function getRuleDefinition', $content);
         },
 
+        // avoid error to on conflict with real dependency of symplify/rule-doc-generator
+        static function (string $filePath, string $prefix, string $content): string {
+            if (! \str_ends_with(
+                $filePath,
+                'src/Contract/Rector/RectorInterface.php'
+            )) {
+                return $content;
+            }
+
+            // remove DocumentedRuleInterface implements
+            return str_replace(
+                'interface RectorInterface extends NodeVisitor, DocumentedRuleInterface',
+                'interface RectorInterface extends NodeVisitor',
+                $content
+            );
+        },
+
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'src/Application/VersionResolver.php')) {
                 return $content;
