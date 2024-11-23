@@ -190,7 +190,7 @@ CODE_SAMPLE
             return;
         }
 
-        $itemType = $arrayType->getItemType();
+        $itemType = $arrayType->getIterableValueType();
         if ($itemType instanceof IntersectionType) {
             $narrowArrayType = $arrayType;
         } else {
@@ -268,7 +268,7 @@ CODE_SAMPLE
     private function shouldAddReturnArrayDocType(ArrayType|ConstantArrayType $arrayType): bool
     {
         if ($arrayType instanceof ConstantArrayType) {
-            if ($arrayType->getItemType() instanceof NeverType) {
+            if ($arrayType->getIterableValueType() instanceof NeverType) {
                 return false;
             }
 

@@ -27,8 +27,8 @@ final readonly class ArrayTypeComparator
             return true;
         }
 
-        $checkedItemType = $checkedType->getItemType();
-        $mainItemType = $mainType->getItemType();
+        $checkedItemType = $checkedType->getIterableValueType();
+        $mainItemType = $mainType->getIterableValueType();
 
         return $checkedItemType->isSuperTypeOf($mainItemType)
             ->yes();

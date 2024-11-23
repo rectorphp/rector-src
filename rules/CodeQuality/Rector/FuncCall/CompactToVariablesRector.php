@@ -94,7 +94,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($firstValueStaticType->getItemType() instanceof MixedType) {
+        if ($firstValueStaticType->getIterableValueType() instanceof MixedType) {
             return null;
         }
 

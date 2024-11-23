@@ -64,7 +64,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
     {
         // this cannot be handled by PHPStan $type->toPhpDocNode() as requires space removal around "|" in union type
         // then e.g. "int" instead of explicit number, and nice arrays
-        $itemType = $type->getItemType();
+        $itemType = $type->getIterableValueType();
 
         $isGenericArray = $this->isGenericArrayCandidate($type);
 
@@ -152,7 +152,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private function createGenericArrayType(ArrayType $arrayType, bool $withKey = false): GenericTypeNode
     {
-        $itemType = $arrayType->getItemType();
+        $itemType = $arrayType->getIterableValueType();
         $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($itemType);
         $identifierTypeNode = new IdentifierTypeNode('array');
 
@@ -205,7 +205,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
             return false;
         }
 
-        return ! $arrayType->getItemType()
+        return ! $arrayType->getIterableValueType()
             ->isArray()
             ->yes();
     }
@@ -213,11 +213,11 @@ final class ArrayTypeMapper implements TypeMapperInterface
     private function isClassStringArrayType(ArrayType $arrayType): bool
     {
         if ($arrayType->getKeyType() instanceof MixedType) {
-            return $arrayType->getItemType() instanceof GenericClassStringType;
+            return $arrayType->getIterableValueType() instanceof GenericClassStringType;
         }
 
         if ($arrayType->getKeyType() instanceof ConstantIntegerType) {
-            return $arrayType->getItemType() instanceof GenericClassStringType;
+            return $arrayType->getIterableValueType() instanceof GenericClassStringType;
         }
 
         return false;

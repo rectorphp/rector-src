@@ -205,11 +205,11 @@ final readonly class ExpectedNameResolver
 
     private function resolveReturnTypeFromArrayType(ArrayType $arrayType): ?Type
     {
-        if (! $arrayType->getItemType() instanceof ObjectType) {
+        if (! $arrayType->getIterableValueType() instanceof ObjectType) {
             return null;
         }
 
-        return $arrayType->getItemType();
+        return $arrayType->getIterableValueType();
     }
 
     /**
