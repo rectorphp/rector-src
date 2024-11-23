@@ -325,7 +325,7 @@ final class BetterStandardPrinter extends Standard
             $lines = NewLineSplitter::split($content);
             $trimmedLines = array_map('ltrim', $lines);
 
-            return implode(PHP_EOL, $trimmedLines);
+            return implode("\n", $trimmedLines);
         }
 
         $isRegularPattern = (bool) $string->getAttribute(AttributeKey::IS_REGULAR_PATTERN, false);
@@ -371,7 +371,7 @@ final class BetterStandardPrinter extends Standard
         $content = parent::pScalar_InterpolatedString($interpolatedString);
 
         if ($interpolatedString->getAttribute(AttributeKey::DOC_INDENTATION) === '__REMOVED__') {
-            $lines = explode("\n", $content);
+            $lines = NewLineSplitter::split($content);
             $trimmedLines = array_map('ltrim', $lines);
 
             return implode("\n", $trimmedLines);
