@@ -87,6 +87,7 @@ return [
 
         // Add empty getRuleDefinition() method on AbstractRector to avoid error on #[Override]
         // which method getRuleDefinition() no longer exists
+        // via replace to extends \Rector\Rector\CommunityNodeVisitorAbstract
         // @see https://github.com/rectorphp/rector/issues/8815#issuecomment-2495378045
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with(
@@ -96,7 +97,7 @@ return [
                 return $content;
             }
 
-            // comment out
+
             return str_replace(
                 'abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface',
                 'abstract class AbstractRector extends \Rector\Rector\CommunityNodeVisitorAbstract implements RectorInterface',
