@@ -210,7 +210,7 @@ final readonly class TypeFactory
     {
         $unwrappedTypes = [];
 
-        $flattenKeyTypes = TypeUtils::flattenTypes($constantArrayType->getKeyType());
+        $flattenKeyTypes = TypeUtils::flattenTypes($constantArrayType->getIterableKeyType());
         $flattenItemTypes = TypeUtils::flattenTypes($constantArrayType->getIterableValueType());
 
         foreach ($flattenItemTypes as $position => $nestedFlattenItemType) {

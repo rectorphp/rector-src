@@ -273,7 +273,7 @@ CODE_SAMPLE
             }
 
             // handle only simple arrays
-            if (! $arrayType->getKeyType()->isInteger()->yes()) {
+            if (! $arrayType->getIterableKeyType()->isInteger()->yes()) {
                 return false;
             }
         }

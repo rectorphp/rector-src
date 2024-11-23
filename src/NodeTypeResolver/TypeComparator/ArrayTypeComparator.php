@@ -20,8 +20,8 @@ final readonly class ArrayTypeComparator
                 ->yes();
         }
 
-        $checkedKeyType = $checkedType->getKeyType();
-        $mainKeyType = $mainType->getKeyType();
+        $checkedKeyType = $checkedType->getIterableKeyType();
+        $mainKeyType = $mainType->getIterableKeyType();
 
         if (! $mainKeyType instanceof MixedType && $mainKeyType->isSuperTypeOf($checkedKeyType)->yes()) {
             return true;
