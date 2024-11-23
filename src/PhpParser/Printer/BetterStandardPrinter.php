@@ -417,7 +417,8 @@ final class BetterStandardPrinter extends Standard
             . ($param->byRef ? '&' : '')
             . ($param->variadic ? '...' : '')
             . $this->p($param->var)
-            . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
+            . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '')
+            . ($param->hooks !== [] ? ' {' . $this->pStmts($param->hooks) . $this->nl . '}' : '');
     }
 
     private function cleanStartIndentationOnHeredocNowDoc(string $content): string
