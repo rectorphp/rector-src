@@ -73,7 +73,7 @@ return [
 
         // make external rules easier to write without enforing getRuleDefinition()
         // as they are not designed for open-sourcing
-        // remove is the safest way to avoid error on conflict with real dependency of symplify/rule-doc-generator
+        // remove implements is the safest way to avoid error on conflict with real dependency of symplify/rule-doc-generator
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with(
                 $filePath,
