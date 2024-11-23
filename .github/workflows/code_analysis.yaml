@@ -40,7 +40,7 @@ jobs:
                     -
                         name: 'Active Classes'
                         run: |
-                            vendor/bin/class-leak check bin config src rules utils --skip-suffix "Rector" --skip-type="Rector\\Utils\\Compiler\\Unprefixer" --skip-type="Rector\\PhpDocParser\\PhpParser\\SmartPhpParserFactory" --skip-type="Rector\\NodeCollector\\BinaryOpConditionsCollector" --skip-type="Rector\\Set\\Contract\\SetListInterface"
+                            vendor/bin/class-leak check bin config src rules utils --skip-suffix "Rector" --skip-type="Rector\\Utils\\Compiler\\Unprefixer" --skip-type="Rector\\PhpDocParser\\PhpParser\\SmartPhpParserFactory" --skip-type="Rector\\NodeCollector\\BinaryOpConditionsCollector" --skip-type="Rector\\Set\\Contract\\SetListInterface" --skip-type="Rector\\Rector\\CommunityNodeVisitorAbstract"
 
                     -
                         name: 'Compatible PHPStan versions'
