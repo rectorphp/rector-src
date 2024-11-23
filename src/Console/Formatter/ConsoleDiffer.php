@@ -24,6 +24,10 @@ final readonly class ConsoleDiffer
 
     public function diff(string $old, string $new): string
     {
+        if ($old === $new) {
+            return '';
+        }
+
         $diff = $this->differ->diff($old, $new);
         return $this->colorConsoleDiffFormatter->format($diff);
     }
