@@ -73,19 +73,7 @@ return [
 
         // make external rules easier to write without enforing getRuleDefinition()
         // as they are not designed for open-sourcing
-        static function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with(
-                $filePath,
-                'vendor/symplify/rule-doc-generator-contracts/src/Contract/DocumentedRuleInterface.php'
-            )) {
-                return $content;
-            }
-
-            // comment out
-            return str_replace('public function getRuleDefinition', '// public function getRuleDefinition', $content);
-        },
-
-        // avoid error on conflict with real dependency of symplify/rule-doc-generator
+        // remove is the safest way to avoid error on conflict with real dependency of symplify/rule-doc-generator
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with(
                 $filePath,
