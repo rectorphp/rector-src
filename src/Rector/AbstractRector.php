@@ -102,8 +102,6 @@ CODE_SAMPLE;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
     }
 
-
-
     /**
      * @return Node[]|null
      */
