@@ -85,6 +85,25 @@ return [
             return str_replace('public function getRuleDefinition', '// public function getRuleDefinition', $content);
         },
 
+        // Add empty getRuleDefinition() method on AbstractRector to avoid error on #[Override]
+        // which method getRuleDefinition() no longer exists
+        // @see https://github.com/rectorphp/rector/issues/8815#issuecomment-2495378045
+        static function (string $filePath, string $prefix, string $content): string {
+            if (! \str_ends_with(
+                $filePath,
+                'src/Rector/AbstractRector.php'
+            )) {
+                return $content;
+            }
+
+            // comment out
+            return str_replace(
+                'abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface',
+                'abstract class AbstractRector extends \Rector\Rector\CommunityNodeVisitorAbstract implements RectorInterface',
+                $content
+            );
+        },
+
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'src/Application/VersionResolver.php')) {
                 return $content;
