@@ -39,11 +39,11 @@ final class TypeNormalizer
      */
     public function normalizeArrayOfUnionToUnionArray(Type $type, int $arrayNesting = 1): Type
     {
-        if (! $type instanceof ArrayType && ! $type instanceof ConstantArrayType) {
+        if (! $type->isArray()->yes()) {
             return $type;
         }
 
-        if ($type instanceof ConstantArrayType && $arrayNesting === 1) {
+        if ($type->isConstantArray()->yes() && $arrayNesting === 1) {
             return $type;
         }
 
@@ -52,16 +52,17 @@ final class TypeNormalizer
             $this->collectedNestedArrayTypes = [];
         }
 
-        if ($type->getItemType() instanceof ArrayType) {
+        $itemType = $type->getIterableValueType();
+        if ($itemType instanceof ArrayType) {
             ++$arrayNesting;
-            $this->normalizeArrayOfUnionToUnionArray($type->getItemType(), $arrayNesting);
-        } elseif ($type->getItemType() instanceof UnionType) {
-            $this->collectNestedArrayTypeFromUnionType($type->getItemType(), $arrayNesting);
+            $this->normalizeArrayOfUnionToUnionArray($itemType, $arrayNesting);
+        } elseif ($itemType instanceof UnionType) {
+            $this->collectNestedArrayTypeFromUnionType($itemType, $arrayNesting);
         } else {
             $this->collectedNestedArrayTypes[] = new NestedArrayType(
-                $type->getItemType(),
+                $itemType,
                 $arrayNesting,
-                $type->getKeyType()
+                $type->getIterableKeyType()
             );
         }
 
