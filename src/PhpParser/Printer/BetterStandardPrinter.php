@@ -29,6 +29,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Util\NewLineSplitter;
 
 /**
  * @see \Rector\Tests\PhpParser\Printer\BetterStandardPrinterTest
@@ -321,7 +322,7 @@ final class BetterStandardPrinter extends Standard
         if ($string->getAttribute(AttributeKey::DOC_INDENTATION) === '__REMOVED__') {
             $content = parent::pScalar_String($string);
 
-            $lines = explode("\n", $content);
+            $lines = NewLineSplitter::split($content);
             $trimmedLines = array_map('ltrim', $lines);
 
             return implode("\n", $trimmedLines);
@@ -370,7 +371,7 @@ final class BetterStandardPrinter extends Standard
         $content = parent::pScalar_InterpolatedString($interpolatedString);
 
         if ($interpolatedString->getAttribute(AttributeKey::DOC_INDENTATION) === '__REMOVED__') {
-            $lines = explode("\n", $content);
+            $lines = NewLineSplitter::split($content);
             $trimmedLines = array_map('ltrim', $lines);
 
             return implode("\n", $trimmedLines);
