@@ -73,16 +73,21 @@ return [
 
         // make external rules easier to write without enforing getRuleDefinition()
         // as they are not designed for open-sourcing
+        // remove implements is the safest way to avoid error on conflict with real dependency of symplify/rule-doc-generator
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with(
                 $filePath,
-                'vendor/symplify/rule-doc-generator-contracts/src/Contract/DocumentedRuleInterface.php'
+                'src/Contract/Rector/RectorInterface.php'
             )) {
                 return $content;
             }
 
-            // comment out
-            return str_replace('public function getRuleDefinition', '// public function getRuleDefinition', $content);
+            // remove DocumentedRuleInterface implements
+            return str_replace(
+                'interface RectorInterface extends NodeVisitor, DocumentedRuleInterface',
+                'interface RectorInterface extends NodeVisitor',
+                $content
+            );
         },
 
         static function (string $filePath, string $prefix, string $content): string {
