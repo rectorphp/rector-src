@@ -70,6 +70,23 @@ final readonly class ExactCompareFactory
             ]);
         }
 
+        if ($result instanceof BooleanOr
+            && $expr instanceof CallLike
+            && $result->left instanceof BooleanOr
+            && $result->left->left instanceof Identical
+            && $result->left->right instanceof Identical
+            && $result->right instanceof Identical) {
+            return new FuncCall(new Name('in_array'), [
+                new Arg($expr),
+                new Arg(new Array_([
+                    new ArrayItem($result->left->left->right),
+                    new ArrayItem($result->left->right->right),
+                    new ArrayItem($result->right->right)
+                ])),
+                new Arg(new ConstFetch(new Name('true'))),
+            ]);
+        }
+
         return $result;
     }
 
@@ -104,6 +121,23 @@ final readonly class ExactCompareFactory
             return new BooleanNot(new FuncCall(new Name('in_array'), [
                 new Arg($expr),
                 new Arg(new Array_([new ArrayItem($result->left->right), new ArrayItem($result->right->right)])),
+                new Arg(new ConstFetch(new Name('true'))),
+            ]));
+        }
+
+        if ($result instanceof BooleanAnd
+            && $expr instanceof CallLike
+            && $result->left instanceof BooleanAnd
+            && $result->left->left instanceof NotIdentical
+            && $result->left->right instanceof NotIdentical
+            && $result->right instanceof NotIdentical) {
+            return new BooleanNot(new FuncCall(new Name('in_array'), [
+                new Arg($expr),
+                new Arg(new Array_([
+                    new ArrayItem($result->left->left->right),
+                    new ArrayItem($result->left->right->right),
+                    new ArrayItem($result->right->right)
+                ])),
                 new Arg(new ConstFetch(new Name('true'))),
             ]));
         }

@@ -54,7 +54,7 @@ class Fixture {
 
     public function check(): bool
     {
-        return $this->getString() !== null && $this->getString() !== '' && $this->getString() !== '0' && !(($this->getString2() === null || $this->getString2() === '' || $this->getString2() === '0') && !is_numeric($this->getString2()));
+        return !in_array($this->getString(), [null, '', '0'], true) && !(in_array($this->getString2(), [null, '', '0'], true) && !is_numeric($this->getString2()));
     }
 }
 
