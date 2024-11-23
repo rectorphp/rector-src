@@ -30,7 +30,7 @@ final class TypeHasher
         }
 
         if ($type instanceof ArrayType) {
-            return $this->createTypeHash($type->getItemType()) . $this->createTypeHash($type->getKeyType()) . '[]';
+            return $this->createTypeHash($type->getIterableValueType()) . $this->createTypeHash($type->getKeyType()) . '[]';
         }
 
         if ($type instanceof GenericObjectType) {
