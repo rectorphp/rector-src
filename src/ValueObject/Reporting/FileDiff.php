@@ -6,6 +6,7 @@ namespace Rector\ValueObject\Reporting;
 
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Console\Formatter\NumberLineDiffCleaner;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
@@ -30,7 +31,6 @@ final readonly class FileDiff implements SerializableInterface
     public function __construct(
         private string $relativeFilePath,
         private string $diff,
-        private string $diffConsoleFormatted,
         private array $rectorsWithLineChanges = []
     ) {
         Assert::allIsInstanceOf($rectorsWithLineChanges, RectorWithLineChange::class);
@@ -38,12 +38,7 @@ final readonly class FileDiff implements SerializableInterface
 
     public function getDiff(): string
     {
-        return $this->diff;
-    }
-
-    public function getDiffConsoleFormatted(): string
-    {
-        return $this->diffConsoleFormatted;
+        return NumberLineDiffCleaner::clean($this->diff);
     }
 
     public function getRelativeFilePath(): string
@@ -104,14 +99,13 @@ final readonly class FileDiff implements SerializableInterface
     }
 
     /**
-     * @return array{relative_file_path: string, diff: string, diff_console_formatted: string, rectors_with_line_changes: RectorWithLineChange[]}
+     * @return array{relative_file_path: string, diff: string, rectors_with_line_changes: RectorWithLineChange[]}
      */
     public function jsonSerialize(): array
     {
         return [
             BridgeItem::RELATIVE_FILE_PATH => $this->relativeFilePath,
             BridgeItem::DIFF => $this->diff,
-            BridgeItem::DIFF_CONSOLE_FORMATTED => $this->diffConsoleFormatted,
             BridgeItem::RECTORS_WITH_LINE_CHANGES => $this->rectorsWithLineChanges,
         ];
     }
@@ -130,7 +124,6 @@ final readonly class FileDiff implements SerializableInterface
         return new self(
             $json[BridgeItem::RELATIVE_FILE_PATH],
             $json[BridgeItem::DIFF],
-            $json[BridgeItem::DIFF_CONSOLE_FORMATTED],
             $rectorWithLineChanges,
         );
     }

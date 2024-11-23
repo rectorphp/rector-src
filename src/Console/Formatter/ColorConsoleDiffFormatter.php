@@ -60,10 +60,12 @@ final readonly class ColorConsoleDiffFormatter
         foreach ($escapedDiffLines as $key => $escapedDiffLine) {
             if ($escapedDiffLine === '--- Original') {
                 unset($escapedDiffLines[$key]);
+                continue;
             }
 
             if ($escapedDiffLine === '+++ New') {
                 unset($escapedDiffLines[$key]);
+                continue;
             }
         }
 

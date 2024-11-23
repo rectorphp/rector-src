@@ -97,7 +97,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
             $this->symfonyStyle->writeln($message);
             $this->symfonyStyle->newLine();
-            $this->symfonyStyle->writeln($fileDiff->getDiffConsoleFormatted());
+            $this->symfonyStyle->writeln($fileDiff->getDiff());
 
             if ($fileDiff->getRectorChanges() !== []) {
                 $this->symfonyStyle->writeln('<options=underscore>Applied rules:</>');
