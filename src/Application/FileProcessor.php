@@ -158,8 +158,7 @@ final readonly class FileProcessor
          */
         if (! $file->getFileDiff() instanceof FileDiff) {
             /**
-             * Handle new line or space before <?php or InlineHTML node wiped on print format preserving
-             * On very first content level
+             * exact compare with original file content
              */
             $originalFileContent = $file->getOriginalFileContent();
             if ($originalFileContent === $newContent) {
