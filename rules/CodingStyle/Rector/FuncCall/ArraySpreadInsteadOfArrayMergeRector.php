@@ -151,7 +151,7 @@ CODE_SAMPLE
 
     private function isArrayKeyTypeAllowed(ArrayType|ConstantArrayType $arrayType): bool
     {
-        if ($arrayType->getKeyType()->isInteger()->yes()) {
+        if ($arrayType->getIterableKeyType()->isInteger()->yes()) {
             return true;
         }
 
