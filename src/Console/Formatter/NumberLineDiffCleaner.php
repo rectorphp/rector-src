@@ -11,7 +11,7 @@ class NumberLineDiffCleaner
 {
     /**
      * @var string
-     * @see https://regex101.com/r/zHJEfJ/1
+     * @see https://regex101.com/r/4Sr4Ua/1
      */
     private const LINE_RANGE_REGEX = '#^\<fg=cyan\>@@ (?<LINE_RANGE>\-\d+,\d+ \+\d+,\d+) @@\<\/fg=cyan\>$#';
 
