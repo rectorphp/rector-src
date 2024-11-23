@@ -81,7 +81,7 @@ final readonly class ExactCompareFactory
                 new Arg(new Array_([
                     new ArrayItem($result->left->left->right),
                     new ArrayItem($result->left->right->right),
-                    new ArrayItem($result->right->right)
+                    new ArrayItem($result->right->right),
                 ])),
                 new Arg(new ConstFetch(new Name('true'))),
             ]);
@@ -136,7 +136,7 @@ final readonly class ExactCompareFactory
                 new Arg(new Array_([
                     new ArrayItem($result->left->left->right),
                     new ArrayItem($result->left->right->right),
-                    new ArrayItem($result->right->right)
+                    new ArrayItem($result->right->right),
                 ])),
                 new Arg(new ConstFetch(new Name('true'))),
             ]));

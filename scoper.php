@@ -75,10 +75,7 @@ return [
         // as they are not designed for open-sourcing
         // remove implements is the safest way to avoid error on conflict with real dependency of symplify/rule-doc-generator
         static function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with(
-                $filePath,
-                'src/Contract/Rector/RectorInterface.php'
-            )) {
+            if (! \str_ends_with($filePath, 'src/Contract/Rector/RectorInterface.php')) {
                 return $content;
             }
 
