@@ -25,7 +25,6 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\PrettyPrinter\Standard;
-use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -119,10 +118,6 @@ final class BetterStandardPrinter extends Standard
         int $lhsPrecedence = self::MAX_PRECEDENCE,
         bool $parentFormatPreserved = false
     ): string {
-        while ($node instanceof AlwaysRememberedExpr) {
-            $node = $node->getExpr();
-        }
-
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
