@@ -128,21 +128,13 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             $phpNode
         );
 
-        if (! $staticType instanceof ObjectType) {
-            return $name;
-        }
-
-        if ($staticType instanceof ShortenedObjectType || $staticType instanceof AliasedObjectType) {
-            return $name;
-        }
-
         // @template and non existing object type from docblock not to be renamed
         // it not exist on use, and not exists in existing namespace
         if ($staticType instanceof TemplateObjectType || $staticType instanceof NonExistingObjectType) {
             return '';
         }
 
-        return $staticType->getClassName();
+        return $name;
     }
 
     private function ensureFQCNObject(Type $type, string $identiferName): ObjectType|Type
