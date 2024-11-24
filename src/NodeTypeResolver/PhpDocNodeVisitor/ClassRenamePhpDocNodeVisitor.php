@@ -136,11 +136,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $name;
         }
 
-        if ($staticType instanceof TemplateObjectType) {
-            return $staticType->getName();
-        }
-
-        if ($staticType instanceof NonExistingObjectType) {
+        // not to be renamed, docblock can be anything
+        if ($staticType instanceof TemplateObjectType || $staticType instanceof NonExistingObjectType) {
             return '';
         }
 
