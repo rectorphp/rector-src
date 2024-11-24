@@ -64,7 +64,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $currentPhpNode = $this->currentPhpNode;
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($node, $currentPhpNode);
 
-        // @template is to not be renamed
+        // non object type and @template is to not be renamed
         if (! $staticType instanceof ObjectType || $staticType instanceof TemplateObjectType) {
             return null;
         }
