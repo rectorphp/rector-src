@@ -198,11 +198,11 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private function ensureFQCNObject(Type $type, string $identiferName): ObjectType|Type
     {
-        if ($type instanceof ShortenedObjectType || $type instanceof AliasedObjectType) {
-            if (str_starts_with($identiferName, '\\')) {
-                return new ObjectType(ltrim($identiferName, '\\'));
-            }
+        if ($type instanceof ShortenedObjectType && str_starts_with($identiferName, '\\')) {
+            return new ObjectType(ltrim($identiferName, '\\'));
+        }
 
+        if ($type instanceof ShortenedObjectType || $type instanceof AliasedObjectType) {
             return new ObjectType($type->getFullyQualifiedName());
         }
 
