@@ -38,6 +38,17 @@ class Fixture
             return get_class($value) . $key;
         }, $array, $arrayTwo);
     }
+
+    /**
+     * @param array<int, string> $array
+     * @param array<int> $arrayTwo
+     */
+    public function runFour(array $array, array $arrayTwo)
+    {
+        return array_map(function ($value, $key) {
+            return get_class($value) . $key;
+        }, $array, $arrayTwo);
+    }
 }
 
 ?>
@@ -79,6 +90,17 @@ class Fixture
     public function runThree(array $array, array $arrayTwo)
     {
         return array_map(function (\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar|\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo|string $value, int $key) {
+            return get_class($value) . $key;
+        }, $array, $arrayTwo);
+    }
+
+    /**
+     * @param array<int, string> $array
+     * @param array<int> $arrayTwo
+     */
+    public function runFour(array $array, array $arrayTwo)
+    {
+        return array_map(function (string $value, int $key) {
             return get_class($value) . $key;
         }, $array, $arrayTwo);
     }
