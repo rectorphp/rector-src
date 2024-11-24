@@ -23,7 +23,7 @@ use Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativeProper
 
 final class IncludeNull
 {
-    protected ?\Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency $someDependency = null;
+    protected ?SomeDependency $someDependency = null;
 }
 
 ?>

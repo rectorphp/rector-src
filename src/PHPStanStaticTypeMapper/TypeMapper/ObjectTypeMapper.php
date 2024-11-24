@@ -71,7 +71,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
         }
 
         if ($type instanceof ShortenedObjectType || $type instanceof AliasedObjectType) {
-            return new FullyQualified($type->getFullyQualifiedName());
+            return new Name($type->getClassName());
         }
 
         if ($type instanceof FullyQualifiedObjectType) {

@@ -28,7 +28,7 @@ use Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativeProper
 #[\OtherAttribute]
 final class WithOtherExistingAttribute
 {
-    private ?\Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency $someDependency;
+    private ?SomeDependency $someDependency;
     public function run(): void
     {
         $this->someDependency = new SomeDependency();
