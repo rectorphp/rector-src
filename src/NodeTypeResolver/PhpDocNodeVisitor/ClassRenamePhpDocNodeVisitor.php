@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
 use PhpParser\Node as PhpNode;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
@@ -23,6 +24,7 @@ use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor
 use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
 final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
@@ -71,11 +73,12 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $currentPhpNode = $this->currentPhpNode;
 
         $identifier = clone $node;
+        $identifierName = $identifier->name;
         $identifier->name = $this->resolveNamespacedName($identifier, $currentPhpNode, $node->name);
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $currentPhpNode);
 
         // make sure to compare FQNs
-        $objectType = $this->ensureFQCNObject($staticType);
+        $objectType = $this->ensureFQCNObject($staticType, $identifierName);
 
         foreach ($this->oldToNewTypes as $oldToNewType) {
             /** @var ObjectType $oldType */
@@ -195,9 +198,13 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         return $name;
     }
 
-    private function ensureFQCNObject(Type $type): ObjectType|Type
+    private function ensureFQCNObject(Type $type, string $identiferName): ObjectType|Type
     {
         if ($type instanceof ShortenedObjectType || $type instanceof AliasedObjectType) {
+            if (str_starts_with($identiferName, '\\')) {
+                return new ObjectType(ltrim($identiferName, '\\'));
+            }
+
             return new ObjectType($type->getFullyQualifiedName());
         }
 
