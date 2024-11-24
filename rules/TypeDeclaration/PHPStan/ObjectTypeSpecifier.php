@@ -153,16 +153,16 @@ final readonly class ObjectTypeSpecifier
     ): ?AliasedObjectType {
         // A. is alias in use statement matching this class alias
         if ($alias === $className) {
-            return new AliasedObjectType($alias, $fullyQualifiedName);
+            return new AliasedObjectType($className, $fullyQualifiedName);
         }
 
         // B. is aliased classes matching the class name
         if ($useName === $className) {
-            return new AliasedObjectType($alias, $fullyQualifiedName);
+            return new AliasedObjectType($className, $fullyQualifiedName);
         }
 
         if (str_starts_with($className, $alias . '\\')) {
-            return new AliasedObjectType($alias, $fullyQualifiedName . ltrim($className, $alias));
+            return new AliasedObjectType($className, $fullyQualifiedName . ltrim($className, $alias));
         }
 
         return null;
