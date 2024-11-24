@@ -16,7 +16,8 @@ final readonly class AnnotationToAttribute implements AnnotationToAttributeInter
     public function __construct(
         private string $tag,
         private ?string $attributeClass = null,
-        private array $classReferenceFields = []
+        private array $classReferenceFields = [],
+        private bool $useValueAsAttributeArgument = false,
     ) {
         RectorAssert::className($tag);
 
@@ -47,5 +48,10 @@ final readonly class AnnotationToAttribute implements AnnotationToAttributeInter
     public function getClassReferenceFields(): array
     {
         return $this->classReferenceFields;
+    }
+
+    public function getUseValueAsAttributeArgument(): bool
+    {
+        return $this->useValueAsAttributeArgument;
     }
 }

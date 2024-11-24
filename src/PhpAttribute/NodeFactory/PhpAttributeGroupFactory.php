@@ -36,18 +36,25 @@ final readonly class PhpAttributeGroupFactory
     ) {
     }
 
-    public function createFromSimpleTag(AnnotationToAttribute $annotationToAttribute): AttributeGroup
-    {
-        return $this->createFromClass($annotationToAttribute->getAttributeClass());
+    public function createFromSimpleTag(
+        AnnotationToAttribute $annotationToAttribute,
+        ?string $value = null
+    ): AttributeGroup {
+        return $this->createFromClass($annotationToAttribute->getAttributeClass(), $value);
     }
 
     /**
      * @param AttributeName::*|string $attributeClass
      */
-    public function createFromClass(string $attributeClass): AttributeGroup
+    public function createFromClass(string $attributeClass, ?string $value = null): AttributeGroup
     {
         $fullyQualified = new FullyQualified($attributeClass);
         $attribute = new Attribute($fullyQualified);
+        if ($value !== null && $value !== '') {
+            $arg = new Arg(new String_($value));
+            $attribute->args = [$arg];
+        }
+
         return new AttributeGroup([$attribute]);
     }
 
