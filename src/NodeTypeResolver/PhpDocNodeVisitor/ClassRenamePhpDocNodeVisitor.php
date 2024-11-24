@@ -137,6 +137,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         // @template and non existing object type from docblock not to be renamed
+        // it not exist on use, and not exists in existing namespace
         if ($staticType instanceof TemplateObjectType || $staticType instanceof NonExistingObjectType) {
             return '';
         }
