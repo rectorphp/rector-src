@@ -31,7 +31,7 @@ use Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativeProper
 
 final class ImproveExistingPropertyType extends TestCase
 {
-    private SomeDependency $someDependency;
+    private \Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency $someDependency;
     protected function setUp(): void
     {
         parent::setUp();

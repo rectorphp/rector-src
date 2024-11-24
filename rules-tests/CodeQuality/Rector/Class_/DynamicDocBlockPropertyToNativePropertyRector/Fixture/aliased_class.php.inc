@@ -26,7 +26,7 @@ use Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativeProper
 
 final class AliasedClass
 {
-    private ?SomeSource\SomeDependency $someDependency;
+    private ?\Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency $someDependency;
     public function run(): void
     {
         $this->someDependency = new SomeSource\SomeDependency();
