@@ -6,7 +6,6 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
 use PhpParser\Node as PhpNode;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
@@ -24,7 +23,6 @@ use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor
 use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
 final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
