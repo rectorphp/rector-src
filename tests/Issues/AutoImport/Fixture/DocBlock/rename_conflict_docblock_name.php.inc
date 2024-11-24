@@ -20,12 +20,13 @@ class RenameConflictDocblockName
 
 namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
+use DateTimeInterface;
 use Rector\Tests\Issues\AutoImport\Source\Docblock\DateTime;
 
 class RenameConflictDocblockName
 {
     /**
-     * @param \DateTimeInterface|DateTime $dateTime
+     * @param DateTimeInterface|DateTime $dateTime
      */
     public function some($dateTime)
     {
