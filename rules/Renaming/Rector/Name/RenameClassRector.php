@@ -10,7 +10,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
@@ -85,7 +84,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FunctionLike|FullyQualified|ClassLike|Expression|Namespace_|Property|If_ $node
+     * @param FunctionLike|FullyQualified|ClassLike|Expression|Property|If_ $node
      */
     public function refactor(Node $node): ?Node
     {

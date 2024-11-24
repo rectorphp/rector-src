@@ -71,11 +71,12 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $currentPhpNode = $this->currentPhpNode;
 
         $identifier = clone $node;
+        $identifierName = $identifier->name;
         $identifier->name = $this->resolveNamespacedName($identifier, $currentPhpNode, $node->name);
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $currentPhpNode);
 
         // make sure to compare FQNs
-        $objectType = $this->ensureFQCNObject($staticType);
+        $objectType = $this->ensureFQCNObject($staticType, $identifierName);
 
         foreach ($this->oldToNewTypes as $oldToNewType) {
             /** @var ObjectType $oldType */
@@ -195,8 +196,12 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         return $name;
     }
 
-    private function ensureFQCNObject(Type $type): ObjectType|Type
+    private function ensureFQCNObject(Type $type, string $identiferName): ObjectType|Type
     {
+        if ($type instanceof ShortenedObjectType && str_starts_with($identiferName, '\\')) {
+            return new ObjectType(ltrim($identiferName, '\\'));
+        }
+
         if ($type instanceof ShortenedObjectType || $type instanceof AliasedObjectType) {
             return new ObjectType($type->getFullyQualifiedName());
         }
