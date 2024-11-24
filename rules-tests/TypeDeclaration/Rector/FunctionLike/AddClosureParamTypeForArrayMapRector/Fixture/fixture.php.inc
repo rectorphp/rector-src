@@ -41,9 +41,20 @@ class Fixture
 
     /**
      * @param array<int, string> $array
-     * @param array<int> $arrayTwo
+     * @param array<string> $arrayTwo tested for the missing key
      */
     public function runFour(array $array, array $arrayTwo)
+    {
+        return array_map(function ($value, $key) {
+            return get_class($value) . $key;
+        }, $array, $arrayTwo);
+    }
+
+    /**
+     * @param array<int, string> $array
+     * @param list<string> $arrayTwo tested for the missing key
+     */
+    public function runFive(array $array, array $arrayTwo)
     {
         return array_map(function ($value, $key) {
             return get_class($value) . $key;
@@ -96,9 +107,20 @@ class Fixture
 
     /**
      * @param array<int, string> $array
-     * @param array<int> $arrayTwo
+     * @param array<string> $arrayTwo tested for the missing key
      */
     public function runFour(array $array, array $arrayTwo)
+    {
+        return array_map(function (string $value, int|string $key) {
+            return get_class($value) . $key;
+        }, $array, $arrayTwo);
+    }
+
+    /**
+     * @param array<int, string> $array
+     * @param list<string> $arrayTwo tested for the missing key
+     */
+    public function runFive(array $array, array $arrayTwo)
     {
         return array_map(function (string $value, int $key) {
             return get_class($value) . $key;
