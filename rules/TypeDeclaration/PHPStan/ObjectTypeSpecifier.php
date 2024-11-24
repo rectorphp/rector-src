@@ -65,6 +65,7 @@ final readonly class ObjectTypeSpecifier
         }
 
         // probably in same namespace
+        $namespaceName = null;
         if ($scope instanceof Scope) {
             $namespaceName = $scope->getNamespace();
             if ($namespaceName !== null) {
@@ -73,9 +74,7 @@ final readonly class ObjectTypeSpecifier
                     return new FullyQualifiedObjectType($newClassName);
                 }
             }
-        }
 
-        if ($scope instanceof Scope) {
             $classReflection = $scope->getClassReflection();
             if ($classReflection instanceof ClassReflection) {
                 $templateTags = $classReflection->getTemplateTags();
@@ -84,14 +83,14 @@ final readonly class ObjectTypeSpecifier
 
                 if (! $templateTypeScope instanceof TemplateTypeScope) {
                     // invalid type
-                    return new NonExistingObjectType($className);
+                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className);
                 }
 
                 $currentTemplateTag = $templateTags[$className] ?? null;
 
                 if ($currentTemplateTag === null) {
                     // invalid type
-                    return new NonExistingObjectType($className);
+                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className);
                 }
 
                 return TemplateTypeFactory::create(
@@ -104,7 +103,16 @@ final readonly class ObjectTypeSpecifier
         }
 
         // invalid type
-        return new NonExistingObjectType($className);
+        return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className);
+    }
+
+    private function resolveNamespacedNonExistingObjectType(?string $namespacedName, string $className): NonExistingObjectType
+    {
+        if ($namespacedName === null) {
+            return new NonExistingObjectType($className);
+        }
+
+        return new NonExistingObjectType($namespacedName . '\\' . $className);
     }
 
     /**
