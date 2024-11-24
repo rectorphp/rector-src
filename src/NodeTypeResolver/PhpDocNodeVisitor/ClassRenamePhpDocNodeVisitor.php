@@ -22,6 +22,7 @@ use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
 final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
@@ -134,8 +135,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $name;
         }
 
-        if ($staticType instanceof ShortenedObjectType) {
-            return $name;
+        if ($staticType instanceof ShortenedObjectType || $staticType instanceof AliasedObjectType) {
+            return $staticType->getFullyQualifiedName();
         }
 
         $uses = $this->useImportsResolver->resolve();
