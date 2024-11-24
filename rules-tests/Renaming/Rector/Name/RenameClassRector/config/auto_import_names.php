@@ -20,5 +20,6 @@ return static function (RectorConfig $rectorConfig): void {
         'Storage' => 'Illuminate\Support\Facades\Storage',
         'Queue' => 'Illuminate\Support\Facades\Queue',
         'Some\Storage' => 'Illuminate\Support\Facades\Storage',
+        'Some2\Storage' => 'Foo2\Storage',
     ]);
 };
