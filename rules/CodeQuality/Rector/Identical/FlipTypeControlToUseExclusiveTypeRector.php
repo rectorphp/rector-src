@@ -14,6 +14,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\TypeAnalyzer\NullableTypeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -86,7 +87,9 @@ CODE_SAMPLE
         Expr $expr,
         Identical|NotIdentical $binaryOp
     ): BooleanNot|Instanceof_ {
-        $fullyQualifiedType = $objectType instanceof ShortenedObjectType ? $objectType->getFullyQualifiedName() : $objectType->getClassName();
+        $fullyQualifiedType = $objectType instanceof ShortenedObjectType || $objectType instanceof AliasedObjectType
+            ? $objectType->getFullyQualifiedName()
+            : $objectType->getClassName();
 
         $instanceof = new Instanceof_($expr, new FullyQualified($fullyQualifiedType));
         if ($binaryOp instanceof NotIdentical) {
