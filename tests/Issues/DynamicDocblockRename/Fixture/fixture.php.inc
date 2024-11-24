@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Fixture;
+namespace Rector\Tests\Issues\DynamicDocblockRename\Fixture;
 
 use Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source as SomeSource;
 
@@ -8,7 +8,7 @@ use Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativeProper
  * @property SomeSource\SomeDependency $someDependency
  */
 #[\AllowDynamicProperties]
-final class AliasedClass
+final class Fixture
 {
     public function run(): void
     {
@@ -20,16 +20,16 @@ final class AliasedClass
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Fixture;
+namespace Rector\Tests\Issues\DynamicDocblockRename\Fixture;
 
 use Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source as SomeSource;
 
-final class AliasedClass
+final class Fixture
 {
-    private ?\Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency $someDependency;
+    private ?\stdClass $someDependency;
     public function run(): void
     {
-        $this->someDependency = new SomeSource\SomeDependency();
+        $this->someDependency = new \stdClass();
     }
 }
 
