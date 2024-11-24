@@ -41,7 +41,8 @@ final readonly class ObjectTypeSpecifier
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
         ObjectType $objectType,
-        Scope|null $scope
+        Scope|null $scope,
+        bool $withPreslash = false
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType | TemplateType {
         $uses = $this->useImportsResolver->resolve();
 
@@ -65,6 +66,7 @@ final readonly class ObjectTypeSpecifier
         }
 
         // probably in same namespace
+        $namespaceName = null;
         if ($scope instanceof Scope) {
             $namespaceName = $scope->getNamespace();
             if ($namespaceName !== null) {
@@ -73,9 +75,7 @@ final readonly class ObjectTypeSpecifier
                     return new FullyQualifiedObjectType($newClassName);
                 }
             }
-        }
 
-        if ($scope instanceof Scope) {
             $classReflection = $scope->getClassReflection();
             if ($classReflection instanceof ClassReflection) {
                 $templateTags = $classReflection->getTemplateTags();
@@ -84,14 +84,14 @@ final readonly class ObjectTypeSpecifier
 
                 if (! $templateTypeScope instanceof TemplateTypeScope) {
                     // invalid type
-                    return new NonExistingObjectType($className);
+                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);
                 }
 
                 $currentTemplateTag = $templateTags[$className] ?? null;
 
                 if ($currentTemplateTag === null) {
                     // invalid type
-                    return new NonExistingObjectType($className);
+                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);
                 }
 
                 return TemplateTypeFactory::create(
@@ -104,7 +104,27 @@ final readonly class ObjectTypeSpecifier
         }
 
         // invalid type
-        return new NonExistingObjectType($className);
+        return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);
+    }
+
+    private function resolveNamespacedNonExistingObjectType(
+        ?string $namespacedName,
+        string $className,
+        bool $withPreslash
+    ): NonExistingObjectType {
+        if ($namespacedName === null) {
+            return new NonExistingObjectType($className);
+        }
+
+        if ($withPreslash) {
+            return new NonExistingObjectType($className);
+        }
+
+        if (str_contains($className, '\\')) {
+            return new NonExistingObjectType($className);
+        }
+
+        return new NonExistingObjectType($namespacedName . '\\' . $className);
     }
 
     /**

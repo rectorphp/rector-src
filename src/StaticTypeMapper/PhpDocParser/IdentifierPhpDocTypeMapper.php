@@ -85,9 +85,11 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
             return new IterableType(new MixedType(), new MixedType());
         }
 
+        $withPreslash = false;
         if (str_starts_with($identifierTypeNode->name, '\\')) {
             $typeWithoutPreslash = Strings::substring($identifierTypeNode->name, 1);
             $objectType = new FullyQualifiedObjectType($typeWithoutPreslash);
+            $withPreslash = true;
         } else {
             if ($identifierTypeNode->name === 'scalar') {
                 // pseudo type, see https://www.php.net/manual/en/language.types.intro.php
@@ -100,7 +102,12 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        return $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $objectType, $scope);
+        return $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType(
+            $node,
+            $objectType,
+            $scope,
+            $withPreslash
+        );
     }
 
     private function mapSelf(Node $node): MixedType | SelfObjectType
