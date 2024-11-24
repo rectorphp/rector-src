@@ -15,6 +15,7 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Skipper\Matcher\FileInfoMatcher;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\PhpVersion;
@@ -377,7 +378,7 @@ final class RectorConfig extends Container
      */
     public function boot(): void
     {
-        $skippedClassResolver = new SkippedClassResolver();
+        $skippedClassResolver = new SkippedClassResolver($this->get(FileInfoMatcher::class));
         $skippedElements = $skippedClassResolver->resolve();
 
         foreach ($skippedElements as $skippedClass => $path) {

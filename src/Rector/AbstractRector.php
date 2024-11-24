@@ -131,8 +131,9 @@ CODE_SAMPLE;
         }
 
         $filePath = $this->file->getFilePath();
-        if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
-            return null;
+        $skip = $this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node);
+        if ($skip) {
+            return $skip === true ? null : $skip;
         }
 
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);

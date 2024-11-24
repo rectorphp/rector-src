@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\Skipper;
 
-use Rector\Skipper\Matcher\FileInfoMatcher;
+use PhpParser\Node;
 
 final readonly class SkipSkipper
 {
-    public function __construct(
-        private FileInfoMatcher $fileInfoMatcher
-    ) {
-    }
-
     /**
-     * @param array<string, string[]|null> $skippedClasses
+     * @param array<string, FileNodeSkipperInterface[]|null> $skippedClasses
      */
-    public function doesMatchSkip(object | string $checker, string $filePath, array $skippedClasses): bool
+    public function doesMatchSkip(object | string $checker, string $filePath, ?Node $node, array $skippedClasses): bool
     {
         foreach ($skippedClasses as $skippedClass => $skippedFiles) {
             if (! is_a($checker, $skippedClass, true)) {
@@ -28,8 +23,10 @@ final readonly class SkipSkipper
                 return true;
             }
 
-            if ($this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedFiles)) {
-                return true;
+            foreach ($skippedFiles as $skippedFile) {
+                if ($skippedFile->shouldSkip($filePath, $node)) {
+                    return true;
+                }
             }
         }
 

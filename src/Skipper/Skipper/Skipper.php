@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Skipper\Skipper;
 
 use PhpParser\Node;
+use PhpParser\NodeVisitor;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Skipper\SkipVoter\ClassSkipVoter;
@@ -32,13 +33,13 @@ final readonly class Skipper
         return $this->pathSkipper->shouldSkip($filePath);
     }
 
-    public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
+    public function shouldSkipElementAndFilePath(string | object $element, string $filePath, ?Node $node = null): bool
     {
         if (! $this->classSkipVoter->match($element)) {
             return false;
         }
 
-        return $this->classSkipVoter->shouldSkip($element, $filePath);
+        return $this->classSkipVoter->shouldSkip($element, $filePath, $node);
     }
 
     /**
@@ -49,9 +50,10 @@ final readonly class Skipper
         string $filePath,
         string $rectorClass,
         Node $node
-    ): bool {
-        if ($this->shouldSkipElementAndFilePath($element, $filePath)) {
-            return true;
+    ): bool|int {
+        if ($this->shouldSkipElementAndFilePath($element, $filePath, $node)) {
+            // Don't go any deeper with this rule if we already know we will skip:
+            return NodeVisitor::DONT_TRAVERSE_CHILDREN;
         }
 
         return $this->rectifiedAnalyzer->hasRectified($rectorClass, $node);
