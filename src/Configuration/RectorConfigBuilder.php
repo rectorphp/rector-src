@@ -445,6 +445,7 @@ final class RectorConfigBuilder
         bool $fosRest = false,
         bool $jms = false,
         bool $sensiolabs = false,
+        bool $behat = false,
         bool $all = false
     ): self {
         // if nothing is passed, enable all as convention in other method
@@ -482,6 +483,10 @@ final class RectorConfigBuilder
 
         if ($sensiolabs || $all) {
             $this->sets[] = SensiolabsSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($behat || $all) {
+            $this->sets[] = SetList::BEHAT_ANNOTATIONS_TO_ATTRIBUTES;
         }
 
         return $this;
