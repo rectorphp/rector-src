@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
@@ -129,6 +130,7 @@ CODE_SAMPLE
     }
 
     /**
+     * @param ClassMethod[] $classMethods
      * @return string[]
      */
     private function collectTestMethodsUsesPrivateDataProvider(ClassReflection $classReflection, Class_ $class, array $classMethods): array
@@ -148,7 +150,7 @@ CODE_SAMPLE
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
             if ($phpDocInfo->hasByName('dataProvider')) {
                 $dataProvider = $phpDocInfo->getByName('dataProvider');
-                if ($dataProvider->value instanceof GenericTagValueNode && is_string($dataProvider->value->value)) {
+                if ($dataProvider instanceof PhpDocTagNode && $dataProvider->value instanceof GenericTagValueNode) {
                     $dataProviderMethod = $class->getMethod($dataProvider->value->value);
                     if ($dataProviderMethod instanceof ClassMethod && $dataProviderMethod->isPrivate()) {
                         $privateMethods[] = $dataProvider->value->value;
