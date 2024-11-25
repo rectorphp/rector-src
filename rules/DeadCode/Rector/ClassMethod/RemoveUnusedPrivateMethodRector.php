@@ -155,7 +155,6 @@ CODE_SAMPLE
                     $dataProviderMethod = $class->getMethod($dataProvider->value->value);
                     if ($dataProviderMethod instanceof ClassMethod && $dataProviderMethod->isPrivate()) {
                         $privateMethods[] = $dataProvider->value->value;
-                        continue;
                     }
                 }
             }
