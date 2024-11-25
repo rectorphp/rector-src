@@ -142,7 +142,7 @@ CODE_SAMPLE
         $privateMethods = [];
         foreach ($classMethods as $classMethod) {
             // test method only public, but may use private data provider
-            // so search public methods
+            // so verify @dataProvider and #[\PHPUnit\Framework\Attributes\DataProvider] only on public methods
             if (! $classMethod->isPublic()) {
                 continue;
             }
