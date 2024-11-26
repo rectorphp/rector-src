@@ -5,7 +5,7 @@ namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverridden
 use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\ExampleFromTrait;
 use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\SomeChild;
 
-final class OverrideAbstractTraitWithExtendsNonEmptyMethod extends SomeChild
+final class OverrideTraitWithExtendsNonEmptyMethod extends SomeChild
 {
     use ExampleFromTrait;
 
@@ -23,7 +23,7 @@ namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverridden
 use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\ExampleFromTrait;
 use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\SomeChild;
 
-final class OverrideAbstractTraitWithExtendsNonEmptyMethod extends SomeChild
+final class OverrideTraitWithExtendsNonEmptyMethod extends SomeChild
 {
     use ExampleFromTrait;
 
