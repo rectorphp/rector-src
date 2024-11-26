@@ -63,6 +63,7 @@ class ParentClass
 {
     public function foo()
     {
+        echo 'default';
     }
 }
 
@@ -70,6 +71,7 @@ final class ChildClass extends ParentClass
 {
     public function foo()
     {
+        echo 'override default';
     }
 }
 CODE_SAMPLE
@@ -79,6 +81,7 @@ class ParentClass
 {
     public function foo()
     {
+        echo 'default';
     }
 }
 
@@ -87,6 +90,7 @@ final class ChildClass extends ParentClass
     #[\Override]
     public function foo()
     {
+        echo 'override default';
     }
 }
 CODE_SAMPLE
@@ -218,7 +222,7 @@ CODE_SAMPLE
         }
 
         // just override abstract method also skipped on purpose
-        // only grand child of abstract method will have
+        // only grand child of abstract method that parent has content will have
         if ($parentClassMethod->isAbstract()) {
             return true;
         }
