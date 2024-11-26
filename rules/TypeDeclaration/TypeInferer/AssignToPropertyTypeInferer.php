@@ -198,7 +198,7 @@ final readonly class AssignToPropertyTypeInferer
             }
 
             if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
-                $assignedExprTypes = [];
+                $assignedExprTypes[] = new MixedType();
                 return NodeVisitor::STOP_TRAVERSAL;
             }
 
