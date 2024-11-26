@@ -22,6 +22,7 @@ use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
@@ -34,6 +35,11 @@ use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
  */
 final readonly class AssignToPropertyTypeInferer
 {
+    /**
+     * @var string
+     */
+    public const JMS_TYPE = 'JMS\Serializer\Annotation\Type';
+
     public function __construct(
         private ConstructorAssignDetector $constructorAssignDetector,
         private PropertyAssignMatcher $propertyAssignMatcher,
@@ -45,6 +51,7 @@ final readonly class AssignToPropertyTypeInferer
         private ExprAnalyzer $exprAnalyzer,
         private ValueResolver $valueResolver,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -54,7 +61,7 @@ final readonly class AssignToPropertyTypeInferer
             return null;
         }
 
-        $assignedExprTypes = $this->getAssignedExprTypes($classLike, $propertyName);
+        $assignedExprTypes = $this->getAssignedExprTypes($classLike, $property, $propertyName);
 
         if ($this->shouldAddNullType($classLike, $propertyName, $assignedExprTypes)) {
             $assignedExprTypes[] = new NullType();
@@ -180,13 +187,15 @@ final readonly class AssignToPropertyTypeInferer
     /**
      * @return array<Type>
      */
-    private function getAssignedExprTypes(ClassLike $classLike, string $propertyName): array
+    private function getAssignedExprTypes(ClassLike $classLike, Property $property, string $propertyName): array
     {
         $assignedExprTypes = [];
 
+        $hasJmsType = $this->phpAttributeAnalyzer->hasPhpAttribute($property, self::JMS_TYPE);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
             $propertyName,
             &$assignedExprTypes,
+            $hasJmsType
         ): ?int {
             if (! $node instanceof Assign) {
                 return null;
@@ -198,7 +207,10 @@ final readonly class AssignToPropertyTypeInferer
             }
 
             if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
-                $assignedExprTypes = [];
+                $assignedExprTypes = $hasJmsType
+                    ? []
+                    : [new MixedType()];
+
                 return NodeVisitor::STOP_TRAVERSAL;
             }
 

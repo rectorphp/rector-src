@@ -25,6 +25,7 @@ use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
+use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -36,11 +37,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TypedPropertyFromJMSSerializerAttributeTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const JMS_TYPE = 'JMS\Serializer\Annotation\Type';
-
     public function __construct(
         private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
@@ -107,7 +103,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->phpAttributeAnalyzer->hasPhpAttribute($property, self::JMS_TYPE)) {
+            if (! $this->phpAttributeAnalyzer->hasPhpAttribute($property, AssignToPropertyTypeInferer::JMS_TYPE)) {
                 continue;
             }
 
@@ -140,7 +136,7 @@ CODE_SAMPLE
             $typeValue = null;
             foreach ($property->attrGroups as $attrGroup) {
                 foreach ($attrGroup->attrs as $attr) {
-                    if ($attr->name->toString() === self::JMS_TYPE) {
+                    if ($attr->name->toString() === AssignToPropertyTypeInferer::JMS_TYPE) {
                         $typeValue = $this->valueResolver->getValue($attr->args[0]->value);
                         break;
                     }
