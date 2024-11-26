@@ -6,6 +6,7 @@ namespace Rector\Tests\Configuration;
 
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
 use Rector\Exception\Configuration\RectorRuleNotFoundException;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -75,5 +76,33 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         $this->expectException(RectorRuleNotFoundException::class);
 
         $this->resolver->resolve('This\\Rule\\Does\\Not\\Exist');
+    }
+
+    public function testResolveShortOk(): void
+    {
+        $this->assertEquals(
+            \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector::class,
+            $this->resolver->resolve('RemoveUnusedPrivateMethodRector'),
+        );
+    }
+
+    public function testResolveShortOkTwoLevels(): void
+    {
+        $this->assertEquals(
+            \Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector::class,
+            $this->resolver->resolve('Assign\\RemoveDoubleAssignRector'),
+        );
+    }
+
+    public function testResolveShortAmbiguous(): void
+    {
+        $this->expectExceptionMessage(
+            'Short rule name "RemoveDoubleAssignRector" is ambiguous. Specify the full rule name:' . PHP_EOL
+                . '- Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector' . PHP_EOL
+                . '- Rector\\Tests\\Configuration\\Source\\RemoveDoubleAssignRector'
+        );
+        $this->expectException(RectorRuleNameAmbigiousException::class);
+
+        $this->resolver->resolve('RemoveDoubleAssignRector');
     }
 }

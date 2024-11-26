@@ -6,6 +6,7 @@ namespace Rector\Configuration;
 
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\Configuration\RectorRuleNotFoundException;
+use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
 
 /**
  * @see \Rector\Tests\Configuration\OnlyRuleResolverTest
@@ -36,6 +37,27 @@ final class OnlyRuleResolver
             if ($rector::class === $rule) {
                 return $rule;
             }
+        }
+
+        //allow short rule names if there are not duplicates
+        $matching = [];
+        foreach ($this->rectors as $rector) {
+            if (str_ends_with($rector::class, '\\' . $rule)) {
+                $matching[] = $rector::class;
+            }
+        }
+        $matching = array_unique($matching);
+
+        if (count($matching) == 1) {
+            return $matching[0];
+        } elseif (count($matching) > 1) {
+            sort($matching);
+            $message = sprintf(
+                'Short rule name "%s" is ambiguous. Specify the full rule name:' . PHP_EOL
+                    . '- ' . implode(PHP_EOL . '- ', $matching),
+                $rule
+            );
+            throw new RectorRuleNameAmbigiousException($message);
         }
 
         if (strpos($rule, '\\') === false) {
