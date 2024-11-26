@@ -124,8 +124,8 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
+        $parentClassReflections = $classReflection->getParents();
 
-        $parentClassReflections = array_merge($classReflection->getParents(), $classReflection->getTraits());
         if ($parentClassReflections === []) {
             return null;
         }
@@ -213,11 +213,6 @@ CODE_SAMPLE
 
         $parentClassMethod = $parentClass->getMethod($classMethod->name->toString());
         if (! $parentClassMethod instanceof ClassMethod) {
-            return true;
-        }
-
-        // non-abstract trait can't have #[\Override]
-        if ($parentClassReflection->isTrait() && ! $parentClassMethod->isAbstract()) {
             return true;
         }
 
