@@ -2,10 +2,10 @@
 
 namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source;
 
-trait ExampleFromTrait
+class SomeChild extends SomeAbstractClass
 {
     public function run()
     {
-        $value = 'non empty';
+    	echo 'default';
     }
 }

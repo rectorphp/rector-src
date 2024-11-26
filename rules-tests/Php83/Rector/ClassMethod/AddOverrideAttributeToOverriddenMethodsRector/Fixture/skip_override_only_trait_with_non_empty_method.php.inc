@@ -4,11 +4,11 @@ namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverridden
 
 use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\ExampleFromTrait;
 
-class SkipOverrideNonEmptyMethodFromTrait
+final class SkipOverrideOnlyTraitWithNonEmptyMethod
 {
     use ExampleFromTrait;
 
-    public function bar()
+    public function run()
     {
     }
 }
