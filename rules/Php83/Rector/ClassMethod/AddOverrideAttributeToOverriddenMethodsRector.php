@@ -168,18 +168,15 @@ CODE_SAMPLE
 
             $parentMethod = $parentClassReflection->getNativeMethod($classMethodName);
             if ($parentMethod->isPrivate()) {
-                // early stop as already private
-                $shouldAddOverride = false;
-                return;
+                break;
             }
 
             if ($this->shouldSkipParentClassMethod($parentClassReflection, $classMethod)) {
-                // early stop as already skipped
-                $shouldAddOverride = false;
-                return;
+                continue;
             }
 
             $shouldAddOverride = true;
+            break;
         }
 
         if ($shouldAddOverride) {
@@ -215,16 +212,19 @@ CODE_SAMPLE
             return true;
         }
 
+        // non-abstract trait can't have #[\Override]
         if ($parentClassReflection->isTrait() && ! $parentClassMethod->isAbstract()) {
             return true;
         }
 
+        // just override abstract method also skipped on purpose
+        // only grand child of abstract method will have
         if ($parentClassMethod->isAbstract()) {
-            return ! $parentClassReflection->isTrait();
+            return true;
         }
 
-        // has any stmts?
-        if ($parentClassMethod->stmts === null || $parentClassMethod->stmts === []) {
+        // empty method, return null or throw are mostly marker
+        if ($parentClassMethod->stmts === []) {
             return true;
         }
 
