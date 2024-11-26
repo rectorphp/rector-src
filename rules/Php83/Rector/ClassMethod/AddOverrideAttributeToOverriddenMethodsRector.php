@@ -223,8 +223,8 @@ CODE_SAMPLE
             return true;
         }
 
-        // empty method, return null or throw are mostly marker
-        if ($parentClassMethod->stmts === []) {
+        // has any stmts?
+        if ($parentClassMethod->stmts === null || $parentClassMethod->stmts === []) {
             return true;
         }
 
