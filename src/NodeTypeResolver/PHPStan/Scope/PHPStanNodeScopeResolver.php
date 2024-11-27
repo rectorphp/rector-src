@@ -71,7 +71,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
-use Rector\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Webmozart\Assert\Assert;
 
@@ -295,7 +294,6 @@ final readonly class PHPStanNodeScopeResolver
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
 
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
 
         if ($hasUnreachableStatementNode) {
             $nodeTraverser->addVisitor(new UnreachableStatementNodeVisitor($this, $filePath, $scope));

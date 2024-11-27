@@ -24,8 +24,7 @@ use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
-use PhpParser\PrettyPrinter\Standard;
-use PHPStan\Node\Expr\AlwaysRememberedExpr;
+use PHPStan\Node\Printer\Printer;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -37,7 +36,7 @@ use Rector\Util\NewLineSplitter;
  *
  * @property array<string, array{string, bool, string, null}> $insertionMap
  */
-final class BetterStandardPrinter extends Standard
+final class BetterStandardPrinter extends Printer
 {
     /**
      * Remove extra spaces before new Nop_ nodes
@@ -114,10 +113,6 @@ final class BetterStandardPrinter extends Standard
         int $lhsPrecedence = self::MAX_PRECEDENCE,
         bool $parentFormatPreserved = false
     ): string {
-        while ($node instanceof AlwaysRememberedExpr) {
-            $node = $node->getExpr();
-        }
-
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
