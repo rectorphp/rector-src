@@ -60,7 +60,7 @@ final readonly class MatchFactory
 
                 $shouldRemoteNextStmt = ! $expr instanceof Expr;
 
-                $condAndExprs[] = new CondAndExpr([], $nextStmt->expr, MatchKind::RETURN);
+                $condAndExprs[] = new CondAndExpr([], $nextStmt->expr, MatchKind::RETURN, $nextStmt->getComments());
             }
         }
 

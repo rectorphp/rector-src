@@ -51,6 +51,7 @@ final class SwitchExprsResolver
             }
 
             $expr = $case->stmts[0];
+            $comments = $expr->getComments();
             if ($expr instanceof Expression) {
                 $expr = $expr->expr;
             }
@@ -83,7 +84,7 @@ final class SwitchExprsResolver
 
                 $condAndExpr[] = new CondAndExpr($condExprs, $returnedExpr, MatchKind::RETURN);
             } elseif ($expr instanceof Assign) {
-                $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::ASSIGN);
+                $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::ASSIGN, $comments);
             } elseif ($expr instanceof Expr) {
                 $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::NORMAL);
             } else {
