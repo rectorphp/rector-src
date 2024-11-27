@@ -23,6 +23,7 @@ use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
@@ -165,10 +166,22 @@ final class RectorConfigBuilder
 
     private ?bool $isWithPhpLevelUsed = null;
 
+    /**
+     * @var array<class-string<SetProviderInterface>>
+     */
+    private array $setProviders = [];
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
-        if ($this->setGroups !== []) {
-            $setManager = new SetManager(new SetProviderCollector(), new InstalledPackageResolver(getcwd()));
+        if ($this->setGroups !== [] || $this->setProviders !== []) {
+            $setProviderCollector = new SetProviderCollector(array_map(
+                static fn (string $setProvider): SetProviderInterface =>
+                $rectorConfig->make($setProvider),
+                $this->setProviders
+            ));
+
+            $setManager = new SetManager($setProviderCollector, new InstalledPackageResolver(getcwd()));
+
             $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
 
             SimpleParameterProvider::addParameter(Option::COMPOSER_BASED_SETS, $this->groupLoadedSets);
@@ -1093,6 +1106,26 @@ final class RectorConfigBuilder
     public function withEditorUrl(string $editorUrl): self
     {
         $this->editorUrl = $editorUrl;
+
+        return $this;
+    }
+
+    /**
+     * @param class-string<SetProviderInterface> ...$setProviders
+     */
+    public function withSetProviders(string ...$setProviders): self
+    {
+        foreach ($setProviders as $setProvider) {
+            if (! is_a($setProvider, SetProviderInterface::class, true)) {
+                throw new InvalidConfigurationException(sprintf(
+                    'Set provider "%s" must implement "%s"',
+                    $setProvider,
+                    SetProviderInterface::class
+                ));
+            }
+
+            $this->setProviders[] = $setProvider;
+        }
 
         return $this;
     }
