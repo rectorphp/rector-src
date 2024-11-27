@@ -75,7 +75,7 @@ final class SwitchExprsResolver
             }
 
             if ($expr instanceof Throw_) {
-                $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::THROW);
+                $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::THROW, $comments);
             } elseif ($expr instanceof Return_) {
                 $returnedExpr = $expr->expr;
                 if (! $returnedExpr instanceof Expr) {
