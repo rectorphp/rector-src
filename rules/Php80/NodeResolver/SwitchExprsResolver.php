@@ -86,7 +86,7 @@ final class SwitchExprsResolver
             } elseif ($expr instanceof Assign) {
                 $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::ASSIGN, $comments);
             } elseif ($expr instanceof Expr) {
-                $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::NORMAL);
+                $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::NORMAL, $comments);
             } else {
                 return [];
             }
