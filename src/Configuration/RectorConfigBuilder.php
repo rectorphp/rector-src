@@ -167,7 +167,7 @@ final class RectorConfigBuilder
     private ?bool $isWithPhpLevelUsed = null;
 
     /**
-     * @var array<class-string<SetProviderInterface>>
+     * @var array<class-string<SetProviderInterface>,bool>
      */
     private array $setProviders = [];
 
@@ -177,7 +177,7 @@ final class RectorConfigBuilder
             $setProviderCollector = new SetProviderCollector(array_map(
                 static fn (string $setProvider): SetProviderInterface =>
                 $rectorConfig->make($setProvider),
-                $this->setProviders
+                \array_keys($this->setProviders)
             ));
 
             $setManager = new SetManager($setProviderCollector, new InstalledPackageResolver(getcwd()));
@@ -1116,6 +1116,10 @@ final class RectorConfigBuilder
     public function withSetProviders(string ...$setProviders): self
     {
         foreach ($setProviders as $setProvider) {
+            if (\array_key_exists($setProvider, $this->setProviders)) {
+                continue;
+            }
+
             if (! is_a($setProvider, SetProviderInterface::class, true)) {
                 throw new InvalidConfigurationException(sprintf(
                     'Set provider "%s" must implement "%s"',
@@ -1124,7 +1128,7 @@ final class RectorConfigBuilder
                 ));
             }
 
-            $this->setProviders[] = $setProvider;
+            $this->setProviders[$setProvider] = true;
         }
 
         return $this;
