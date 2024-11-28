@@ -1,16 +1,16 @@
 <?php
 
-class B
+class SomeParentA
 {
-	public function B()
+	public function SomeParentA()
     {
     }
 }
 
-final class A extends B
+final class SomeChildB extends SomeParentA
 {
-    public function A() {
-        $this->B();
+    public function SomeChildB() {
+        $this->SomeParentA();
     }
 }
 
@@ -18,17 +18,17 @@ final class A extends B
 -----
 <?php
 
-class B
+class SomeParentA
 {
 	public function __construct()
     {
     }
 }
 
-final class A extends B
+final class SomeChildB extends SomeParentA
 {
     public function __construct() {
-        \B::__construct();
+        \SomeParentA::__construct();
     }
 }
 
