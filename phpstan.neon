@@ -70,11 +70,6 @@ parameters:
             identifier: greaterOrEqual.alwaysTrue
             path: src/Util/FileHasher.php
 
-        # unreliable on loop
-        -
-            identifier: instanceof.alwaysTrue
-            path: rules/CodingStyle/Rector/Assign/SplitDoubleAssignRector.php
-
         -
             identifier: phpstanApi.constructor
 
