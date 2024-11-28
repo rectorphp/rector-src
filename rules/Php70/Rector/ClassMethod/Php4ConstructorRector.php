@@ -132,7 +132,7 @@ CODE_SAMPLE
                 unset($node->stmts[$stmtKey]);
             }
 
-            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, $parentClassName)) {
+            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, $parentClassName) && ! $node->getMethod($parentClassName) instanceof ClassMethod) {
                 /** @var MethodCall $expr */
                 $expr = $classMethodStmt->expr;
                 $classMethodStmt->expr = new StaticCall(new FullyQualified($parentClassName), new Identifier(MethodName::CONSTRUCT), $expr->args);
