@@ -104,10 +104,6 @@ CODE_SAMPLE
                 $expr = $assign->var;
             }
 
-            if (! $assign->expr instanceof Assign) {
-                break;
-            }
-
             $assign = $assign->expr;
         }
 
