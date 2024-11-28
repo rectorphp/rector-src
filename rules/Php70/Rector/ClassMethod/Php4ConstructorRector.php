@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -117,15 +118,24 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($classMethodStmts) === 1) {
-            $stmt = $classMethodStmts[0];
-            if (! $stmt instanceof Expression) {
+        $parentClassName = $classReflection->getParentClass() instanceof ClassReflection
+            ? $classReflection->getParentClass()->getName()
+            : '';
+
+        foreach ($classMethodStmts as $classMethodStmt) {
+            if (! $classMethodStmt instanceof Expression) {
                 return null;
             }
 
-            if ($this->isLocalMethodCallNamed($stmt->expr, MethodName::CONSTRUCT)) {
+            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, MethodName::CONSTRUCT)) {
                 $stmtKey = $psr4ConstructorMethod->getAttribute(AttributeKey::STMT_KEY);
                 unset($node->stmts[$stmtKey]);
+            }
+
+            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, $parentClassName)) {
+                /** @var MethodCall $expr */
+                $expr = $classMethodStmt->expr;
+                $classMethodStmt->expr = new StaticCall(new FullyQualified($parentClassName), new Identifier(MethodName::CONSTRUCT), $expr->args);
             }
         }
 
