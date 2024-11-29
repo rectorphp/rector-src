@@ -90,10 +90,6 @@ parameters:
         -
             identifier: phpstanApi.varTagAssumption
 
-        -
-            identifier: assign.propertyType
-            path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
-
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
