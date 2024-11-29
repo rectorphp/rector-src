@@ -12,6 +12,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
 use PhpParser\NodeVisitor;
@@ -71,7 +72,14 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             if ($stmt->uses === []) {
-                unset($node->stmts[$key]);
+                $comments = $node->stmts[$key]->getComments();
+
+                if ($key === 0 && $comments !== []) {
+                    $node->stmts[$key] = new Nop();
+                    $node->stmts[$key]->setAttribute(AttributeKey::COMMENTS, $comments);
+                } else {
+                    unset($node->stmts[$key]);
+                }
             }
         }
 
