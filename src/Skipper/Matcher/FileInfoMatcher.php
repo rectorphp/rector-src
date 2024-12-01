@@ -23,7 +23,9 @@ final readonly class FileInfoMatcher
      */
     public function doesFileInfoMatchPatterns(string $filePath, array $filePatterns): bool
     {
+        $filePath = PathNormalizer::normalize($filePath);
         foreach ($filePatterns as $filePattern) {
+            $filePattern = PathNormalizer::normalize($filePattern);
             if ($this->doesFileMatchPattern($filePath, $filePattern)) {
                 return true;
             }
@@ -35,11 +37,8 @@ final readonly class FileInfoMatcher
     /**
      * Supports both relative and absolute $file path. They differ for PHP-CS-Fixer and PHP_CodeSniffer.
      */
-    public function doesFileMatchPattern(string $filePath, string $ignoredPattern): bool
+    private function doesFileMatchPattern(string $filePath, string $ignoredPath): bool
     {
-        $filePath = PathNormalizer::normalize($filePath);
-        $ignoredPath = PathNormalizer::normalize($ignoredPattern);
-
         // in rector.php, the path can be absolute
         if ($filePath === $ignoredPath) {
             return true;

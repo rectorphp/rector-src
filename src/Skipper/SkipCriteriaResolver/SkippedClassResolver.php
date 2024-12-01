@@ -10,7 +10,7 @@ use Rector\Skipper\Matcher\FileInfoMatcher;
 use Rector\Skipper\Skipper\CustomSkipper;
 use Rector\Skipper\Skipper\CustomSkipperSerializeWrapper;
 use Rector\Skipper\Skipper\FileNodeSkipperInterface;
-use Rector\Skipper\Skipper\FilePatternSkipper;
+use Rector\Skipper\Skipper\FilePatternsSkipper;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
 final class SkippedClassResolver
@@ -59,12 +59,23 @@ final class SkippedClassResolver
                 continue;
             }
 
-            $this->skippedClasses[$key] = is_array($value) ? array_map(
-                fn (string|CustomSkipperSerializeWrapper $val): FilePatternSkipper|CustomSkipper => is_string(
-                    $val
-                ) ? new FilePatternSkipper($this->fileInfoMatcher, $val) : new CustomSkipper($val->customSkipper),
-                $value
-            ) : null;
+            if (is_array($value)) {
+                $this->skippedClasses[$key] = [];
+                $strings = [];
+                foreach ($value as $val) {
+                    if (is_string($val)) {
+                        $strings[] = $val;
+                    } elseif ($val instanceof CustomSkipperSerializeWrapper) {
+                        $this->skippedClasses[$key][] = new CustomSkipper($val->customSkipper);
+                    }
+                }
+
+                if ($strings !== []) {
+                    $this->skippedClasses[$key][] = new FilePatternsSkipper($this->fileInfoMatcher, $strings);
+                }
+            } else {
+                $this->skippedClasses[$key] = null;
+            }
         }
 
         return $this->skippedClasses;

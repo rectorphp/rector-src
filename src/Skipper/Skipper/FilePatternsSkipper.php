@@ -7,16 +7,17 @@ namespace Rector\Skipper\Skipper;
 use PhpParser\Node;
 use Rector\Skipper\Matcher\FileInfoMatcher;
 
-final readonly class FilePatternSkipper implements FileNodeSkipperInterface
+final readonly class FilePatternsSkipper implements FileNodeSkipperInterface
 {
     public function __construct(
         private FileInfoMatcher $fileInfoMatcher,
-        private string $pattern,
+        /** @var string[] */
+        private array $patterns,
     ) {
     }
 
     public function shouldSkip(string $fileName, ?Node $node): bool
     {
-        return $this->fileInfoMatcher->doesFileMatchPattern($fileName, $this->pattern);
+        return $this->fileInfoMatcher->doesFileInfoMatchPatterns($fileName, $this->patterns);
     }
 }
