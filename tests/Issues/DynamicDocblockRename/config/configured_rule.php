@@ -12,7 +12,7 @@ return static function (RectorConfig $rectorConfig): void {
         RenameClassRector::class,
         [
             'Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency'
-                => 'stdClass'
+                => 'stdClass',
         ]
     );
 };

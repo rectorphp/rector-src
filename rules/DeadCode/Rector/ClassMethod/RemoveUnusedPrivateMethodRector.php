@@ -104,7 +104,11 @@ CODE_SAMPLE
 
         $hasChanged = false;
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        $collectionTestMethodsUsesPrivateProvider = $this->collectTestMethodsUsesPrivateDataProvider($classReflection, $node, $classMethods);
+        $collectionTestMethodsUsesPrivateProvider = $this->collectTestMethodsUsesPrivateDataProvider(
+            $classReflection,
+            $node,
+            $classMethods
+        );
 
         foreach ($privateMethods as $privateMethod) {
             if ($this->shouldSkip($privateMethod, $classReflection)) {
@@ -134,8 +138,11 @@ CODE_SAMPLE
      * @param ClassMethod[] $classMethods
      * @return string[]
      */
-    private function collectTestMethodsUsesPrivateDataProvider(ClassReflection $classReflection, Class_ $class, array $classMethods): array
-    {
+    private function collectTestMethodsUsesPrivateDataProvider(
+        ClassReflection $classReflection,
+        Class_ $class,
+        array $classMethods
+    ): array {
         if (! $classReflection->isSubClassOf('PHPUnit\Framework\TestCase')) {
             return [];
         }
@@ -159,7 +166,10 @@ CODE_SAMPLE
                 }
             }
 
-            if ($this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, 'PHPUnit\Framework\Attributes\DataProvider')) {
+            if ($this->phpAttributeAnalyzer->hasPhpAttribute(
+                $classMethod,
+                'PHPUnit\Framework\Attributes\DataProvider'
+            )) {
                 foreach ($classMethod->attrGroups as $attrGroup) {
                     foreach ($attrGroup->attrs as $attr) {
                         if ($attr->name->toString() === 'PHPUnit\Framework\Attributes\DataProvider') {
