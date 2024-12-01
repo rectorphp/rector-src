@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\Skipper\Skipper;
 
 use PhpParser\Node;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\Skipper\Skipper\Custom\CustomSkipperInterface;
 use Rector\Skipper\Skipper\Custom\ReflectionClassSkipperInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
@@ -50,10 +48,6 @@ final readonly class CustomSkipper implements FileNodeSkipperInterface
                     throw $throwable;
                 }
             }
-        }
-
-        if ($class->name instanceof Identifier) {
-            throw new ShouldNotHappenException('NameResolver must be configured as node visitor.');
         }
 
         return null;

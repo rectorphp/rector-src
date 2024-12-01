@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpParser\NodeTraverser;
 
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\NodeVisitor\NameResolver;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\PhpParser\NodeTraverser\Class_\RuleUsingClassRector;
@@ -49,17 +48,6 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertSame([], $visitors);
-    }
-
-    public function testGetVisitorsForNodeAfterPreparation(): void
-    {
-        $class = new Class_('test');
-
-        $this->rectorNodeTraverser->traverse([]); //calls `prepareNodeVisitors`
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertCount(1, $visitors);
-        $this->assertInstanceOf(NameResolver::class, $visitors[0]);
     }
 
     public function testGetVisitorsForNodeWhenSomeVisitorsMatch(): void

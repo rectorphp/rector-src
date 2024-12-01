@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\NodeTraverser;
 
-use PhpParser\ErrorHandler\Collecting;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
-use PhpParser\NodeVisitor\NameResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
-
-    private ?NameResolver $nameResolver = null;
 
     /**
      * @var array<class-string<Node>,RectorInterface[]>
@@ -56,7 +52,6 @@ final class RectorNodeTraverser extends NodeTraverser
         $this->visitorsPerNodeClass = [];
 
         $this->areNodeVisitorsPrepared = false;
-        $this->nameResolver = null;
     }
 
     /**
@@ -70,18 +65,12 @@ final class RectorNodeTraverser extends NodeTraverser
         $nodeClass = $node::class;
         if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
             $this->visitorsPerNodeClass[$nodeClass] = [];
-            if ($this->nameResolver instanceof NameResolver) {
-                //Always add the nameResolver:
-                $this->visitorsPerNodeClass[$nodeClass][] = $this->nameResolver;
-            }
-
             foreach ($this->visitors as $visitor) {
-                if ($visitor instanceof RectorInterface) {
-                    foreach ($visitor->getNodeTypes() as $nodeType) {
-                        if (is_a($nodeClass, $nodeType, true)) {
-                            $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
-                            continue 2;
-                        }
+                assert($visitor instanceof RectorInterface);
+                foreach ($visitor->getNodeTypes() as $nodeType) {
+                    if (is_a($nodeClass, $nodeType, true)) {
+                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+                        continue 2;
                     }
                 }
             }
@@ -102,17 +91,8 @@ final class RectorNodeTraverser extends NodeTraverser
             return;
         }
 
-        //The NameResolver must be added to `visitors` so that its `beforeTraverse` is called.
-        // Only adding it to the result of `getVisitorsForNode` is not sufficient!
-        $this->nameResolver ??= new NameResolver(
-            new Collecting(), //ignore duplicate name errors
-            [
-                'replaceNodes' => false,
-            ],
-        );
-
         // filer out by version
-        $this->visitors = [$this->nameResolver, ...$this->phpVersionedFilter->filter($this->rectors)];
+        $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
         $this->areNodeVisitorsPrepared = true;
     }
 }
