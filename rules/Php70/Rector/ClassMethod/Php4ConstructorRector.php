@@ -119,7 +119,8 @@ CODE_SAMPLE
         }
 
         $parentClassName = $classReflection->getParentClass() instanceof ClassReflection
-            ? $classReflection->getParentClass()->getName()
+            ? $classReflection->getParentClass()
+                ->getName()
             : '';
 
         foreach ($classMethodStmts as $classMethodStmt) {
@@ -132,10 +133,14 @@ CODE_SAMPLE
                 unset($node->stmts[$stmtKey]);
             }
 
-            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, $parentClassName) && ! $node->getMethod($parentClassName) instanceof ClassMethod) {
+            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, $parentClassName) && ! $node->getMethod(
+                $parentClassName
+            ) instanceof ClassMethod) {
                 /** @var MethodCall $expr */
                 $expr = $classMethodStmt->expr;
-                $classMethodStmt->expr = new StaticCall(new FullyQualified($parentClassName), new Identifier(MethodName::CONSTRUCT), $expr->args);
+                $classMethodStmt->expr = new StaticCall(new FullyQualified($parentClassName), new Identifier(
+                    MethodName::CONSTRUCT
+                ), $expr->args);
             }
         }
 
