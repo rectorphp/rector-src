@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Application;
 
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Caching\Detector\ChangedFilesDetector;
@@ -24,18 +23,11 @@ use Rector\ValueObject\Application\File;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\FileProcessResult;
-use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 final readonly class FileProcessor
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/llm7XZ/1
-     */
-    private const OPEN_TAG_SPACED_REGEX = '#^[ \t]+<\?php#m';
-
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
@@ -150,32 +142,6 @@ final readonly class FileProcessor
             $file->getOldStmts(),
             $file->getOldTokens()
         );
-
-        /**
-         * When no diff applied, the PostRector may still change the content, that's why printing still needed
-         * On printing, the space may be wiped, these below check compare with original file content used to verify
-         * that no change actually needed
-         */
-        if (! $file->getFileDiff() instanceof FileDiff) {
-            /**
-             * exact compare with original file content
-             */
-            $originalFileContent = $file->getOriginalFileContent();
-            if ($originalFileContent === $newContent) {
-                return;
-            }
-
-            // handle space before <?php
-            $strippedNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
-            $strippedOriginalFileContent = Strings::replace(
-                $originalFileContent,
-                self::OPEN_TAG_SPACED_REGEX,
-                '<?php'
-            );
-            if ($strippedOriginalFileContent === $strippedNewContent) {
-                return;
-            }
-        }
 
         // change file content early to make $file->hasChanged() based on new content
         $file->changeFileContent($newContent);
