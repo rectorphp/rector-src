@@ -55,6 +55,7 @@ final readonly class FileProcessor
         $filePath = $file->getFilePath();
 
         do {
+            // reset to false to change
             $file->changeHasChanged(false);
 
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
@@ -81,18 +82,24 @@ final readonly class FileProcessor
         // add as cacheable if not changed at all
         if (! $fileHasChanged) {
             $this->changedFilesDetector->addCachableFile($filePath);
-        } elseif ($configuration->shouldShowDiffs()) {
-            $file->setFileDiff(
-                $this->fileDiffFactory->createFileDiffWithLineChanges(
-                    $file,
-                    $file->getOriginalFileContent(),
-                    $file->getFileContent(),
-                    $file->getRectorWithLineChanges()
-                )
-            );
+        } else {
+            // mark final status as changed
+            $file->changeHasChanged(true);
+
+            if ($configuration->shouldShowDiffs()) {
+                $file->setFileDiff(
+                    $this->fileDiffFactory->createFileDiffWithLineChanges(
+                        $file,
+                        $file->getOriginalFileContent(),
+                        $file->getFileContent(),
+                        $file->getRectorWithLineChanges()
+                    )
+                );
+            }
         }
 
-        return new FileProcessResult([], $file->getFileDiff());
+        // pass $file->hasChanged() as final status
+        return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
     }
 
     private function parseFileAndDecorateNodes(File $file): ?SystemError

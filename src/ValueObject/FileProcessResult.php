@@ -15,7 +15,8 @@ final readonly class FileProcessResult
      */
     public function __construct(
         private array $systemErrors,
-        private ?FileDiff $fileDiff
+        private ?FileDiff $fileDiff,
+        private bool $fileHasChanged = false
     ) {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
     }
@@ -31,5 +32,10 @@ final readonly class FileProcessResult
     public function getFileDiff(): ?FileDiff
     {
         return $this->fileDiff;
+    }
+
+    public function getFileHasChanged(): bool
+    {
+        return $this->fileHasChanged;
     }
 }

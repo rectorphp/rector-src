@@ -169,7 +169,7 @@ final class ApplicationFileProcessor
 
         if ($fileProcessResult->getSystemErrors() !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());
-        } elseif (! $configuration->isDryRun() || ! $fileProcessResult->getFileDiff() instanceof FileDiff) {
+        } elseif (! $configuration->isDryRun() || ! $fileProcessResult->getFileHasChanged()) {
             $this->changedFilesDetector->cacheFile($file->getFilePath());
         }
 
