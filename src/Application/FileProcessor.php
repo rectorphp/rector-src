@@ -44,7 +44,7 @@ final readonly class FileProcessor
 
     public function processFile(File $file, Configuration $configuration): FileProcessResult
     {
-        // 1. parse files to nodes
+        // parse files to nodes
         $parsingSystemError = $this->parseFileAndDecorateNodes($file);
         if ($parsingSystemError instanceof SystemError) {
             // we cannot process this file as the parsing and type resolving itself went wrong
@@ -53,9 +53,6 @@ final readonly class FileProcessor
 
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
-
-        // 2. change nodes with Rectors
-        $rectorWithLineChanges = null;
 
         do {
             $file->changeHasChanged(false);
@@ -68,33 +65,31 @@ final readonly class FileProcessor
             // this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($postNewStmts);
 
-            // 3. print to file or string
+            // print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration, $filePath);
 
-            $fileHasChangedInCurrentPass = $file->hasChanged();
-
-            if ($fileHasChangedInCurrentPass) {
-                $file->setFileDiff($this->fileDiffFactory->createTempFileDiff($file));
-                $rectorWithLineChanges = $file->getRectorWithLineChanges();
-
-                $fileHasChanged = true;
+            // no change on current iteration, stop!
+            if (! $file->hasChanged()) {
+                break;
             }
-        } while ($fileHasChangedInCurrentPass);
 
-        // 5. add as cacheable if not changed at all
+            // mark flag changed to be used after loop
+            $fileHasChanged = true;
+        } while (true);
+
+        // add as cacheable if not changed at all
         if (! $fileHasChanged) {
             $this->changedFilesDetector->addCachableFile($filePath);
-        }
-
-        if ($configuration->shouldShowDiffs() && $rectorWithLineChanges !== null) {
-            $currentFileDiff = $this->fileDiffFactory->createFileDiffWithLineChanges(
-                $file,
-                $file->getOriginalFileContent(),
-                $file->getFileContent(),
-                $rectorWithLineChanges
+        } elseif ($configuration->shouldShowDiffs()) {
+            $file->setFileDiff(
+                $this->fileDiffFactory->createFileDiffWithLineChanges(
+                    $file,
+                    $file->getOriginalFileContent(),
+                    $file->getFileContent(),
+                    $file->getRectorWithLineChanges()
+                )
             );
-            $file->setFileDiff($currentFileDiff);
         }
 
         return new FileProcessResult([], $file->getFileDiff());

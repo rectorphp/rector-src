@@ -39,9 +39,4 @@ final readonly class FileDiffFactory
             $rectorsWithLineChanges
         );
     }
-
-    public function createTempFileDiff(File $file): FileDiff
-    {
-        return $this->createFileDiffWithLineChanges($file, '', '', $file->getRectorWithLineChanges());
-    }
 }
