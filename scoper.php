@@ -80,11 +80,14 @@ return [
             }
 
             // remove DocumentedRuleInterface implements
-            return str_replace(
+            $content = str_replace(
                 'interface RectorInterface extends NodeVisitor, DocumentedRuleInterface',
                 'interface RectorInterface extends NodeVisitor',
                 $content
             );
+
+            // remove use import itself, to make contract clean
+            return str_replace('use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;' . PHP_EOL, '', $content);
         },
 
         static function (string $filePath, string $prefix, string $content): string {
