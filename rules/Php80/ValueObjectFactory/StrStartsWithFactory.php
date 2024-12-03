@@ -20,9 +20,9 @@ final class StrStartsWithFactory
         }
 
         $haystack = $funcCall->getArgs()[0]
-->value;
+            ->value;
         $needle = $funcCall->getArgs()[1]
-->value;
+            ->value;
 
         return new StrStartsWith($funcCall, $haystack, $needle, $isPositive);
     }

@@ -75,7 +75,7 @@ CODE_SAMPLE
         }
 
         $object = $node->getArgs()[0]
-->value;
+            ->value;
         return new ClassConstFetch($object, 'class');
     }
 

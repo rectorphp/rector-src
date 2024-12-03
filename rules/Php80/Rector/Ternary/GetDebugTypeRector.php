@@ -84,7 +84,7 @@ CODE_SAMPLE
 
         $firstExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
             ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]
-->value
+                ->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
@@ -155,7 +155,7 @@ CODE_SAMPLE
         }
 
         $firstExpr = $isObjectFuncCall->getArgs()[0]
-->value;
+            ->value;
 
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
         $getClassFuncCallOrClassConstFetchClass = $ternary->if;
@@ -166,7 +166,7 @@ CODE_SAMPLE
 
         $secondExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
             ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]
-->value
+                ->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         $gettypeFuncCall = $ternary->else;

@@ -76,9 +76,9 @@ final readonly class StrposMatchAndRefactor implements StrStartWithMatchAndRefac
         }
 
         $haystack = $funcCall->getArgs()[0]
-->value;
+            ->value;
         $needle = $funcCall->getArgs()[1]
-->value;
+            ->value;
 
         return new StrStartsWith($funcCall, $haystack, $needle, $isPositive);
     }
@@ -96,9 +96,9 @@ final readonly class StrposMatchAndRefactor implements StrStartWithMatchAndRefac
         }
 
         $haystack = $funcCall->getArgs()[0]
-->value;
+            ->value;
         $needle = $funcCall->getArgs()[1]
-->value;
+            ->value;
 
         return new StrStartsWith($funcCall, $haystack, $needle, $isPositive);
     }

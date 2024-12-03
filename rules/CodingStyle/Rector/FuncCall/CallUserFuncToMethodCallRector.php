@@ -77,7 +77,7 @@ CODE_SAMPLE
         }
 
         $firstArgValue = $node->getArgs()[0]
-->value;
+            ->value;
         if (! $firstArgValue instanceof Array_) {
             return null;
         }

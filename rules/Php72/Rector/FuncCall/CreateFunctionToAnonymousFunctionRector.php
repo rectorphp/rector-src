@@ -103,9 +103,9 @@ CODE_SAMPLE
         }
 
         $firstExpr = $node->getArgs()[0]
-->value;
+            ->value;
         $secondExpr = $node->getArgs()[1]
-->value;
+            ->value;
 
         $params = $this->createParamsFromString($firstExpr);
         $stmts = $this->parseStringToBody($secondExpr);

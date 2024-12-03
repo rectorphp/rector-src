@@ -93,7 +93,7 @@ CODE_SAMPLE
         }
 
         $variable = $funcCall->getArgs()[0]
-->value;
+            ->value;
 
         // Needs string cast if variable type is not string
         // see https://github.com/rectorphp/rector/issues/6700

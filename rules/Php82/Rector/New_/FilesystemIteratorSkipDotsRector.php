@@ -67,7 +67,7 @@ final class FilesystemIteratorSkipDotsRector extends AbstractRector implements M
         }
 
         $flags = $node->getArgs()[1]
-->value;
+            ->value;
         if ($this->isSkipDotsPresent($flags)) {
             return null;
         }

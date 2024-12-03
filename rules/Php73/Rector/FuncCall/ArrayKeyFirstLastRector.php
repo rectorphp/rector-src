@@ -218,9 +218,9 @@ CODE_SAMPLE
 
                     return $this->nodeComparator->areNodesEqual(
                         $subNode->getArgs()[0]
-->value,
+                            ->value,
                         $funcCall->getArgs()[0]
-->value
+                            ->value
                     );
                 }
             );

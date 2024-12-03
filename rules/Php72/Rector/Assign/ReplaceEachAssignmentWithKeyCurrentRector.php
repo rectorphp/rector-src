@@ -95,7 +95,7 @@ CODE_SAMPLE
 
         $assignVariable = $assign->var;
         $eachedVariable = $eachFuncCall->getArgs()[0]
-->value;
+            ->value;
 
         return $this->createNewStmts($assignVariable, $eachedVariable);
     }

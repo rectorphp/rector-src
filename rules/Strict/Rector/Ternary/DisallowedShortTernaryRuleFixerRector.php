@@ -123,7 +123,7 @@ CODE_SAMPLE
         }
 
         $firstArgValue = $resetFuncCall->getArgs()[0]
-->value;
+            ->value;
         $firstArgType = $scope->getNativeType($firstArgValue);
 
         $falsyCompareExpr = $this->exactCompareFactory->createNotIdenticalFalsyCompare(

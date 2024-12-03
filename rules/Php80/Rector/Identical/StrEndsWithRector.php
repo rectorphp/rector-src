@@ -147,7 +147,7 @@ CODE_SAMPLE
         }
 
         $needle = $substrFuncCall->getArgs()[1]
-->value;
+            ->value;
         if (
             ! $this->isUnaryMinusStrlenFuncCallArgValue($needle, $comparedNeedleExpr) &&
             ! $this->isHardCodedLNumberAndString($needle, $comparedNeedleExpr)
@@ -156,7 +156,7 @@ CODE_SAMPLE
         }
 
         $haystack = $substrFuncCall->getArgs()[0]
-->value;
+            ->value;
 
         $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 

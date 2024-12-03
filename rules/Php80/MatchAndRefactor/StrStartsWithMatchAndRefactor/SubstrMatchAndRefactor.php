@@ -38,7 +38,7 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
             $funcCall = $binaryOp->left;
 
             $haystack = $funcCall->getArgs()[0]
-->value;
+                ->value;
 
             return new StrStartsWith($funcCall, $haystack, $binaryOp->right, $isPositive);
         }
@@ -48,7 +48,7 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
             $funcCall = $binaryOp->right;
 
             $haystack = $funcCall->getArgs()[0]
-->value;
+                ->value;
             return new StrStartsWith($funcCall, $haystack, $binaryOp->left, $isPositive);
         }
 
@@ -82,7 +82,7 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
         }
 
         $secondFuncCallArgValue = $substrFuncCall->getArgs()[2]
-->value;
+            ->value;
         if (! $secondFuncCallArgValue instanceof FuncCall) {
             return false;
         }
@@ -93,7 +93,7 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
 
         $strlenFuncCall = $secondFuncCallArgValue;
         $needleExpr = $strlenFuncCall->getArgs()[0]
-->value;
+            ->value;
 
         $comparedNeedleExpr = $strStartsWith->getNeedleExpr();
         return $this->nodeComparator->areNodesEqual($needleExpr, $comparedNeedleExpr);
@@ -122,7 +122,7 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
         }
 
         $lNumberLength = $substrFuncCall->getArgs()[2]
-->value;
+            ->value;
         if (! $lNumberLength instanceof Int_) {
             return false;
         }

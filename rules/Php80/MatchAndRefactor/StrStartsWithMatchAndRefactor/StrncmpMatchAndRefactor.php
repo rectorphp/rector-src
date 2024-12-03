@@ -95,7 +95,7 @@ final readonly class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefa
 
         $strlenFuncCall = $thirdArgExpr;
         $strlenExpr = $strlenFuncCall->getArgs()[0]
-->value;
+            ->value;
 
         return $this->nodeComparator->areNodesEqual($needleExpr, $strlenExpr);
     }
@@ -109,13 +109,13 @@ final readonly class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefa
         }
 
         $hardcodedStringNeedle = $strncmpFuncCall->getArgs()[1]
-->value;
+            ->value;
         if (! $hardcodedStringNeedle instanceof String_) {
             return false;
         }
 
         $lNumberLength = $strncmpFuncCall->getArgs()[2]
-->value;
+            ->value;
         if (! $lNumberLength instanceof Int_) {
             return false;
         }

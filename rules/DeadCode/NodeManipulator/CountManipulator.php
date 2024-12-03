@@ -114,7 +114,7 @@ final readonly class CountManipulator
         }
 
         $countedExpr = $node->getArgs()[0]
-->value;
+            ->value;
 
         if ($this->nodeComparator->areNodesEqual($countedExpr, $expr)) {
             $exprType = $this->nodeTypeResolver->getNativeType($expr);

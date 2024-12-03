@@ -79,9 +79,9 @@ CODE_SAMPLE
         }
 
         $firstArgValue = $node->getArgs()[0]
-->value;
+            ->value;
         $secondArgValue = $node->getArgs()[1]
-->value;
+            ->value;
 
         if ($firstArgValue instanceof String_) {
             $functionName = $this->valueResolver->getValue($firstArgValue);
