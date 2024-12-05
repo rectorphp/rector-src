@@ -29,6 +29,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
@@ -290,6 +291,10 @@ final readonly class PHPStanNodeScopeResolver
                 $this->processMatch($node, $mutatingScope);
                 return;
             }
+
+            if ($node instanceof Yield_) {
+                $this->processYield($node, $mutatingScope);
+            }
         };
 
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
@@ -304,6 +309,17 @@ final readonly class PHPStanNodeScopeResolver
         $nodeTraverser->traverse($stmts);
 
         return $stmts;
+    }
+
+    private function processYield(Yield_ $yield, MutatingScope $mutatingScope): void
+    {
+        if ($yield->key instanceof Expr) {
+            $yield->key->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        if ($yield->value instanceof Expr) {
+            $yield->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
     }
 
     private function processMatch(Match_ $match, MutatingScope $mutatingScope): void
@@ -343,6 +359,7 @@ final readonly class PHPStanNodeScopeResolver
 
     private function processCallike(CallLike $callLike, MutatingScope $mutatingScope): void
     {
+        $callLike->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         if ($callLike instanceof StaticCall) {
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
