@@ -108,7 +108,7 @@ final readonly class ChangedNodeScopeRefresher
             return [new Expression($node)];
         }
 
-        // moved from Expr/Stmt to directly under Node
+        // moved from Expr/Stmt to directly under Node on PHPParser 5
         if ($node instanceof ArrayItem) {
             return [new Expression(new Array_([$node]))];
         }
