@@ -359,7 +359,6 @@ final readonly class PHPStanNodeScopeResolver
 
     private function processCallike(CallLike $callLike, MutatingScope $mutatingScope): void
     {
-        $callLike->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         if ($callLike instanceof StaticCall) {
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
