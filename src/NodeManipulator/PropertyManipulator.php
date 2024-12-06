@@ -47,6 +47,14 @@ final readonly class PropertyManipulator
         'Doctrine\ORM\Mapping\Embeddable',
     ];
 
+    /**
+     * @var string[]|class-string<Table>[]
+     */
+    private const ALLOWED_NOT_READONLY_CLASS_ATTRIBUTES = [
+        'ApiPlatform\Metadata\ApiResource',
+        ...self::ALLOWED_NOT_READONLY_CLASS_ANNOTATIONS,
+    ];
+
     public function __construct(
         private AssignManipulator $assignManipulator,
         private BetterNodeFinder $betterNodeFinder,
@@ -189,6 +197,6 @@ final readonly class PropertyManipulator
             return true;
         }
 
-        return $this->phpAttributeAnalyzer->hasPhpAttributes($class, self::ALLOWED_NOT_READONLY_CLASS_ANNOTATIONS);
+        return $this->phpAttributeAnalyzer->hasPhpAttributes($class, self::ALLOWED_NOT_READONLY_CLASS_ATTRIBUTES);
     }
 }
