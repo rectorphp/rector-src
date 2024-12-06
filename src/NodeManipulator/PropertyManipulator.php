@@ -41,6 +41,7 @@ final readonly class PropertyManipulator
      */
     private const ALLOWED_NOT_READONLY_CLASS_ANNOTATIONS = [
         'ApiPlatform\Core\Annotation\ApiResource',
+        'ApiPlatform\Metadata\ApiResource',
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Table',
         'Doctrine\ORM\Mapping\MappedSuperclass',
@@ -51,7 +52,6 @@ final readonly class PropertyManipulator
      * @var string[]|class-string<Table>[]
      */
     private const ALLOWED_NOT_READONLY_CLASS_ATTRIBUTES = [
-        'ApiPlatform\Metadata\ApiResource',
         ...self::ALLOWED_NOT_READONLY_CLASS_ANNOTATIONS,
     ];
 
