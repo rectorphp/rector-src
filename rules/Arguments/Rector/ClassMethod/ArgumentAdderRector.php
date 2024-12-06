@@ -341,6 +341,10 @@ CODE_SAMPLE
 
     private function refactorCall(StaticCall|MethodCall $call): void
     {
+        if ($call->isFirstClassCallable()) {
+            return;
+        }
+
         $callName = $this->getName($call->name);
         if ($callName === null) {
             return;

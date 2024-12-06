@@ -25,7 +25,7 @@ final class SetRectorsResolverTest extends TestCase
     {
         $configFilePaths = PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_70);
         $this->assertCount(6, $configFilePaths);
-        $this->assertContainsOnly('string', $configFilePaths);
+        $this->assertContainsOnlyString($configFilePaths);
 
         foreach ($configFilePaths as $configFilePath) {
             $this->assertFileExists($configFilePath);
