@@ -1,0 +1,1 @@
+--only="Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector"
