@@ -118,11 +118,6 @@ final class RectorConfigBuilder
      */
     private array $phpstanConfigs = [];
 
-    /**
-     * @var null|PhpVersion::*
-     */
-    private ?int $phpVersion = null;
-
     private ?string $symfonyContainerXmlFile = null;
 
     private ?string $symfonyContainerPhpFile = null;
@@ -289,10 +284,6 @@ final class RectorConfigBuilder
 
         if ($this->phpstanConfigs !== []) {
             $rectorConfig->phpstanConfigs($this->phpstanConfigs);
-        }
-
-        if ($this->phpVersion !== null) {
-            $rectorConfig->phpVersion($this->phpVersion);
         }
 
         if ($this->parallel !== null) {
@@ -903,7 +894,10 @@ final class RectorConfigBuilder
      */
     public function withPhpVersion(int $phpVersion): self
     {
-        $this->phpVersion = $phpVersion;
+        // trigger from new RectorConfig instance
+        // as too late usage on __invoke() on withPhpSets() or withPhpLevel()
+        (new RectorConfig())->phpVersion($phpVersion);
+
         return $this;
     }
 

@@ -29,7 +29,7 @@ final class PhpVersionProvider
     /**
      * @return PhpVersion::*
      */
-    public function provide(): int
+    public function provide(bool $withComposerJsonFallback = true): int
     {
         if (SimpleParameterProvider::hasParameter(Option::PHP_VERSION_FEATURES)) {
             $this->phpVersionFeatures = SimpleParameterProvider::provideIntParameter(Option::PHP_VERSION_FEATURES);
@@ -46,16 +46,24 @@ final class PhpVersionProvider
             return PhpVersion::PHP_10;
         }
 
-        $projectComposerJson = getcwd() . '/composer.json';
-        if (file_exists($projectComposerJson)) {
-            $phpVersion = ComposerJsonPhpVersionResolver::resolve($projectComposerJson);
-            if ($phpVersion !== null) {
-                return $this->phpVersionFeatures = $phpVersion;
+        if ($withComposerJsonFallback) {
+            $projectComposerJson = getcwd() . '/composer.json';
+            if (file_exists($projectComposerJson)) {
+                $phpVersion = ComposerJsonPhpVersionResolver::resolve($projectComposerJson);
+                if ($phpVersion !== null) {
+                    return $this->phpVersionFeatures = $phpVersion;
+                }
             }
         }
 
         // fallback to current PHP runtime version
         return $this->phpVersionFeatures = PHP_VERSION_ID;
+    }
+
+    public static function provideWithoutComposerJon(): int
+    {
+        $self = new self();
+        return $self->provide(false);
     }
 
     public function isAtLeastPhpVersion(int $phpVersion): bool

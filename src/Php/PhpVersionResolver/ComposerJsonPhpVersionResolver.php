@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php\PhpVersionResolver;
 
 use Composer\Semver\VersionParser;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\FileSystem\JsonFileSystem;
+use Rector\Php\PhpVersionProvider;
 use Rector\Util\PhpVersionFactory;
 use Rector\ValueObject\PhpVersion;
 
@@ -25,7 +28,7 @@ final class ComposerJsonPhpVersionResolver
      */
     public static function resolveFromCwdOrFail(): int
     {
-        // use composer.json PHP version
+        // read from composer.json PHP version as priority
         $projectComposerJsonFilePath = getcwd() . '/composer.json';
         if (file_exists($projectComposerJsonFilePath)) {
             $projectPhpVersion = self::resolve($projectComposerJsonFilePath);
@@ -34,8 +37,14 @@ final class ComposerJsonPhpVersionResolver
             }
         }
 
+        // fallback from php version features defined
+        // check hasParameter() here is essential to ensure only fallback when PHP_VERSION_FEATURES constant exists
+        if (SimpleParameterProvider::hasParameter(Option::PHP_VERSION_FEATURES)) {
+            return PhpVersionProvider::provideWithoutComposerJon();
+        }
+
         throw new InvalidConfigurationException(sprintf(
-            'We could not find local "composer.json" to determine your PHP version.%sPlease, fill the PHP version set in withPhpSets() manually.',
+            'We could not find local "composer.json" or php version feature config to determine your PHP version.%sPlease, fill the PHP version set in withPhpSets() manually.',
             PHP_EOL
         ));
     }
