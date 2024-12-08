@@ -2,12 +2,16 @@
 
 namespace Rector\Tests\Php70\Rector\Variable\WrapVariableVariableNameInCurlyBracesRector\Fixture;
 
-final class WithArrayDimFetch
+use stdClass;
+
+final class ArrayDimFetchWithObject
 {
     public function run()
     {
-        $baz = 'bat';
-        $foo = array('bar' => 'baz');
+        $foo = 'a';
+        $a = [
+            'bar' => new stdClass()
+        ];
 
         echo $$foo['bar'];
     }
@@ -19,14 +23,18 @@ final class WithArrayDimFetch
 
 namespace Rector\Tests\Php70\Rector\Variable\WrapVariableVariableNameInCurlyBracesRector\Fixture;
 
-final class WithArrayDimFetch
+use stdClass;
+
+final class ArrayDimFetchWithObject
 {
     public function run()
     {
-        $baz = 'bat';
-        $foo = array('bar' => 'baz');
+        $foo = 'a';
+        $a = [
+            'bar' => new stdClass()
+        ];
 
-        echo ${$foo['bar']};
+        echo ${$foo}['bar'];
     }
 }
 
