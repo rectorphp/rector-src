@@ -66,7 +66,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (is_string($node->var->name)) {
+            if (! $node->var->name instanceof Variable) {
                 return null;
             }
 
