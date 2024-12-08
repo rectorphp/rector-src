@@ -34,11 +34,11 @@ use Rector\Util\Reflection\PrivatesAccessor;
  */
 abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements RectorTestInterface
 {
+    protected ?string $inputFilePath = null;
+
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
 
     private ApplicationFileProcessor $applicationFileProcessor;
-
-    private ?string $inputFilePath = null;
 
     /**
      * @var array<string, true>
@@ -170,6 +170,21 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         );
     }
 
+    protected function processFilePath(string $filePath): RectorTestResult
+    {
+        $this->dynamicSourceLocatorProvider->setFilePath($filePath);
+
+        /** @var ConfigurationFactory $configurationFactory */
+        $configurationFactory = $this->make(ConfigurationFactory::class);
+        $configuration = $configurationFactory->createForTests([$filePath]);
+
+        $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
+
+        // return changed file contents
+        $changedFileContents = FileSystem::read($filePath);
+        return new RectorTestResult($changedFileContents, $processResult);
+    }
+
     private function forgetRectorsRules(): void
     {
         $rectorConfig = self::getContainer();
@@ -248,21 +263,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
             $this->assertStringMatchesFormat($expectedFileContents, $changedContents, $failureMessage);
         }
-    }
-
-    private function processFilePath(string $filePath): RectorTestResult
-    {
-        $this->dynamicSourceLocatorProvider->setFilePath($filePath);
-
-        /** @var ConfigurationFactory $configurationFactory */
-        $configurationFactory = $this->make(ConfigurationFactory::class);
-        $configuration = $configurationFactory->createForTests([$filePath]);
-
-        $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
-
-        // return changed file contents
-        $changedFileContents = FileSystem::read($filePath);
-        return new RectorTestResult($changedFileContents, $processResult);
     }
 
     private function createInputFilePath(string $fixtureFilePath): string
