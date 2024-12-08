@@ -70,6 +70,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($node->dim instanceof ArrayDimFetch) {
+                return null;
+            }
+
             return new Variable(new ArrayDimFetch(
                 $node->var->name,
                 $node->dim
