@@ -62,7 +62,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof ArrayDimFetch) {
-            if (! $node->var instanceof PropertyFetch && ! $node->var instanceof Variable) {
+            if (! $node->var instanceof Variable) {
                 return null;
             }
 
