@@ -30,6 +30,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         );
 
         // method called needs to trigger exception above
+        // as refactor() is called via refactorWithScope()
         return $this->refactorWithScope($node, $currentScope);
     }
 }
