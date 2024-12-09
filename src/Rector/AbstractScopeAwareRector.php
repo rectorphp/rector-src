@@ -24,19 +24,12 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
      */
     public function refactor(Node $node): int|array|Node|null
     {
-        /** @var MutatingScope|null $currentScope */
-        $currentScope = $node->getAttribute(AttributeKey::SCOPE);
+        throw new ShouldNotHappenException(
+            'The `Rector\Rector\AbstractScopeAwareRector` is removed, use `Rector\Rector\AbstractScopeAwareRector` intead, see upgrading guide %s',
+            'https://github.com/rectorphp/rector-src/blob/main/UPGRADING.md#1-abstractscopeawarerector-is-removed-use-abstractrector-instead'
+        );
 
-        if (! $currentScope instanceof Scope) {
-            $errorMessage = sprintf(
-                'Scope not available on "%s" node, but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
-                $node::class,
-                static::class,
-            );
-
-            throw new ShouldNotHappenException($errorMessage);
-        }
-
+        // method called needs to trigger exception above
         return $this->refactorWithScope($node, $currentScope);
     }
 }
