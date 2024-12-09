@@ -23,7 +23,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     {
         trigger_error(
             sprintf(
-                'The `Rector\Rector\AbstractScopeAwareRector` is removed, use `Rector\Rector\AbstractScopeAwareRector` instead, see upgrading guide %s',
+                'The `Rector\Rector\AbstractScopeAwareRector` is removed, use `Rector\Rector\AbstractRector` with `ScopeFetcher::fetch($node)` instead, see upgrading guide %s',
                 'https://github.com/rectorphp/rector-src/blob/main/UPGRADING.md#1-abstractscopeawarerector-is-removed-use-abstractrector-instead',
             ),
             E_USER_DEPRECATED
