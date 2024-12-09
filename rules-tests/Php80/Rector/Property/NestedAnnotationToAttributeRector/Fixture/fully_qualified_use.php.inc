@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 
 /**
- * @ORM\Table(indexes={@Index(name="search_idx")}]
+ * @ORM\Table(indexes={@Index(name="search_idx")})
  */
 final class FullyQualifiedUse
 {
