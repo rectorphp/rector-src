@@ -83,6 +83,7 @@ parameters:
             paths:
                 - src/Console/Notifier.php
                 - src/Util/FileHasher.php
+                - src/Rector/AbstractScopeAwareRector.php
 
         -
             identifier: argument.type
