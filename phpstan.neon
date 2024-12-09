@@ -290,7 +290,6 @@ parameters:
              paths:
                  - src/CustomRules/SimpleNodeDumper.php
                  - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-                 - src/Testing/PHPUnit/AbstractTestCase.php
 
         # known node variables
         -
