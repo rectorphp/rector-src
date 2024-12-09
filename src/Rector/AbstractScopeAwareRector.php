@@ -6,10 +6,7 @@ namespace Rector\Rector;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use PHPStan\Analyser\MutatingScope;
-use PHPStan\Analyser\Scope;
 use Rector\Contract\Rector\ScopeAwareRectorInterface;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
