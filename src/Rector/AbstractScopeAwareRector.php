@@ -16,9 +16,8 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
 {
     /**
      * Process Node of matched type with its PHPStan scope
-     * @return Node|Node[]|null|NodeTraverser::*
      */
-    public function refactor(Node $node): int|array|Node|null
+    public function refactor(Node $node)
     {
         throw new ShouldNotHappenException(sprintf(
             'The `Rector\Rector\AbstractScopeAwareRector` is removed, use `Rector\Rector\AbstractScopeAwareRector` instead, see upgrading guide %s',
