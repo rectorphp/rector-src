@@ -22,10 +22,6 @@ final readonly class DefaultDiffer
 
     public function diff(string $old, string $new): string
     {
-        if ($old === $new) {
-            return '';
-        }
-
         return $this->differ->diff($old, $new);
     }
 }
