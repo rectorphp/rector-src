@@ -16,7 +16,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final readonly class ConfigurationFactory
 {
     public function __construct(
-        private SymfonyStyle $symfonyStyle
+        private SymfonyStyle $symfonyStyle,
+        private readonly OnlyRuleResolver $onlyRuleResolver,
     ) {
     }
 
@@ -41,7 +42,8 @@ final readonly class ConfigurationFactory
             false,
             null,
             false,
-            false
+            false,
+            null
         );
     }
 
@@ -61,6 +63,11 @@ final readonly class ConfigurationFactory
         $paths = $this->resolvePaths($input);
 
         $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
+
+        $onlyRule = $input->getOption(Option::ONLY);
+        if ($onlyRule !== null) {
+            $onlyRule = $this->onlyRuleResolver->resolve($onlyRule);
+        }
 
         $isParallel = SimpleParameterProvider::provideBoolParameter(Option::PARALLEL);
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
@@ -90,6 +97,7 @@ final readonly class ConfigurationFactory
             $memoryLimit,
             $isDebug,
             $isReportingWithRealPath,
+            $onlyRule,
         );
     }
 
