@@ -25,7 +25,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     public function refactor(Node $node): int|array|Node|null
     {
         throw new ShouldNotHappenException(
-            'The `Rector\Rector\AbstractScopeAwareRector` is removed, use `Rector\Rector\AbstractScopeAwareRector` intead, see upgrading guide %s',
+            'The `Rector\Rector\AbstractScopeAwareRector` is removed, use `Rector\Rector\AbstractScopeAwareRector` instead, see upgrading guide %s',
             'https://github.com/rectorphp/rector-src/blob/main/UPGRADING.md#1-abstractscopeawarerector-is-removed-use-abstractrector-instead'
         );
 
