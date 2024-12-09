@@ -6,17 +6,27 @@ namespace Rector\Skipper\SkipCriteriaResolver;
 
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Skipper\Matcher\FileInfoMatcher;
+use Rector\Skipper\Skipper\CustomSkipper;
+use Rector\Skipper\Skipper\CustomSkipperSerializeWrapper;
+use Rector\Skipper\Skipper\FileNodeSkipperInterface;
+use Rector\Skipper\Skipper\FilePatternsSkipper;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
 final class SkippedClassResolver
 {
     /**
-     * @var null|array<string, string[]|null>
+     * @var null|array<string, FileNodeSkipperInterface[]|null>
      */
     private null|array $skippedClasses = null;
 
+    public function __construct(
+        private readonly FileInfoMatcher $fileInfoMatcher,
+    ) {
+    }
+
     /**
-     * @return array<string, string[]|null>
+     * @return array<string, FileNodeSkipperInterface[]|null>
      */
     public function resolve(): array
     {
@@ -49,7 +59,23 @@ final class SkippedClassResolver
                 continue;
             }
 
-            $this->skippedClasses[$key] = $value;
+            if (is_array($value)) {
+                $this->skippedClasses[$key] = [];
+                $strings = [];
+                foreach ($value as $val) {
+                    if (is_string($val)) {
+                        $strings[] = $val;
+                    } elseif ($val instanceof CustomSkipperSerializeWrapper) {
+                        $this->skippedClasses[$key][] = new CustomSkipper($val->customSkipper);
+                    }
+                }
+
+                if ($strings !== []) {
+                    $this->skippedClasses[$key][] = new FilePatternsSkipper($this->fileInfoMatcher, $strings);
+                }
+            } else {
+                $this->skippedClasses[$key] = null;
+            }
         }
 
         return $this->skippedClasses;

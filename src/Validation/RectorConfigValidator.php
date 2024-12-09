@@ -7,6 +7,9 @@ namespace Rector\Validation;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Skipper\Skipper\Custom\CustomSkipperInterface;
+use Rector\Skipper\Skipper\CustomSkipper;
+use Rector\Skipper\Skipper\CustomSkipperSerializeWrapper;
 
 final class RectorConfigValidator
 {
@@ -29,15 +32,16 @@ final class RectorConfigValidator
     /**
      * @param mixed[] $skip
      */
-    public static function ensureRectorRulesExist(array $skip): void
+    public static function ensureRectorRulesExist(array &$skip): void
     {
         $nonExistingRules = [];
         $skippedRectorRules = [];
 
-        foreach ($skip as $key => $value) {
+        foreach ($skip as $key => &$value) {
             if (self::isRectorClassValue($key)) {
                 if (class_exists($key)) {
                     $skippedRectorRules[] = $key;
+                    self::ensureSkipValueIsValid($key, $value);
                 } else {
                     $nonExistingRules[] = $key;
                 }
@@ -57,6 +61,8 @@ final class RectorConfigValidator
             $nonExistingRules[] = $value;
         }
 
+        unset($value);
+
         SimpleParameterProvider::addParameter(Option::SKIPPED_RECTOR_RULES, $skippedRectorRules);
 
         if ($nonExistingRules === []) {
@@ -71,6 +77,37 @@ final class RectorConfigValidator
         throw new ShouldNotHappenException(
             'These rules from "$rectorConfig->skip()" does not exist - remove them or fix their names:' . PHP_EOL . $nonExistingRulesString
         );
+    }
+
+    private static function ensureSkipValueIsValid(string $name, mixed &$skipValue): void
+    {
+        if ($skipValue === null) {
+            return;
+        }
+
+        if (! is_array($skipValue)) {
+            throw new ShouldNotHappenException(
+                'Rule value from "$rectorConfig->skip()" is neither null nor array: ' . $name
+            );
+        }
+
+        foreach ($skipValue as $idx => &$value) {
+            if (is_string($value)) {
+                continue;
+            }
+
+            if (! ($value instanceof CustomSkipperInterface) || ! CustomSkipper::supports($value)) {
+                throw new ShouldNotHappenException(
+                    'Rule value from "$rectorConfig->skip()" is neither string nor a supported custom skipper implementation: ' . sprintf(
+                        '%s[%s]',
+                        $name,
+                        $idx
+                    )
+                );
+            }
+
+            $value = new CustomSkipperSerializeWrapper($value); // wrap so that SimpleParameterProvider::hash works
+        }
     }
 
     private static function isRectorClassValue(mixed $value): bool

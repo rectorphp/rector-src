@@ -32,13 +32,13 @@ final readonly class Skipper
         return $this->pathSkipper->shouldSkip($filePath);
     }
 
-    public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
+    public function shouldSkipElementAndFilePath(string | object $element, string $filePath, ?Node $node = null): bool
     {
         if (! $this->classSkipVoter->match($element)) {
             return false;
         }
 
-        return $this->classSkipVoter->shouldSkip($element, $filePath);
+        return $this->classSkipVoter->shouldSkip($element, $filePath, $node);
     }
 
     /**
@@ -49,11 +49,15 @@ final readonly class Skipper
         string $filePath,
         string $rectorClass,
         Node $node
-    ): bool {
-        if ($this->shouldSkipElementAndFilePath($element, $filePath)) {
-            return true;
+    ): SkipperResult {
+        if ($this->shouldSkipElementAndFilePath($element, $filePath, $node)) {
+            // Don't go any deeper with this rule if we already know we will skip:
+            return SkipperResult::skipTree;
         }
 
-        return $this->rectifiedAnalyzer->hasRectified($rectorClass, $node);
+        return $this->rectifiedAnalyzer->hasRectified(
+            $rectorClass,
+            $node
+        ) ? SkipperResult::skipNode : SkipperResult::noSkip;
     }
 }
