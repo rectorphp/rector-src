@@ -230,6 +230,8 @@ final readonly class PHPStanNodeScopeResolver
                         $this->processBinaryOp($subNode, $mutatingScope);
                     }
                 }
+
+                return;
             }
 
             if ($node instanceof Array_) {
