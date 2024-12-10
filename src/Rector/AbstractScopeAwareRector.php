@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace Rector\Rector;
 
 use PhpParser\Node;
-use PhpParser\NodeTraverser;
-use PHPStan\Analyser\MutatingScope;
-use PHPStan\Analyser\Scope;
 use Rector\Contract\Rector\ScopeAwareRectorInterface;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @deprecated This class is deprecated, as too granular.
@@ -20,23 +16,12 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
 {
     /**
      * Process Node of matched type with its PHPStan scope
-     * @return Node|Node[]|null|NodeTraverser::*
      */
-    public function refactor(Node $node): int|array|Node|null
+    public function refactor(Node $node)
     {
-        /** @var MutatingScope|null $currentScope */
-        $currentScope = $node->getAttribute(AttributeKey::SCOPE);
-
-        if (! $currentScope instanceof Scope) {
-            $errorMessage = sprintf(
-                'Scope not available on "%s" node, but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
-                $node::class,
-                static::class,
-            );
-
-            throw new ShouldNotHappenException($errorMessage);
-        }
-
-        return $this->refactorWithScope($node, $currentScope);
+        throw new ShouldNotHappenException(sprintf(
+            'The `Rector\Rector\AbstractScopeAwareRector` is removed, use `Rector\Rector\AbstractRector` instead, see upgrading guide %s',
+            'https://github.com/rectorphp/rector-src/blob/main/UPGRADING.md#1-abstractscopeawarerector-is-removed-use-abstractrector-instead',
+        ));
     }
 }
