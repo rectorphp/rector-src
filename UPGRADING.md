@@ -1,5 +1,23 @@
 # Upgrading from Rector 1.x to 2.0
 
+## PHP version requirements
+
+Rector now uses PHP 7.4 or newer to run.
+
+<br>
+
+## Rector now uses PHP-Parser 5
+
+See [upgrading guide](https://github.com/nikic/PHP-Parser/blob/master/UPGRADE-5.0.md) for PHP-Parser.
+
+<br>
+
+## Rector now uses PHPStan 2
+
+See [upgrading guide](https://github.com/phpstan/phpstan-src/blob/2.0.x/UPGRADING.md) for PHPStan.
+
+<br>
+
 ## Upgrade for custom Rules writers
 
 ### 1. `AbstractScopeAwareRector` is removed, use `AbstractRector` instead
