@@ -39,7 +39,7 @@ composer remove ocramius/package-versions -W --update-no-dev --working-dir "$BUI
 
 # Work around possible PHP memory limits
 note "Running php-scoper on /bin, /config, /src, /rules and /vendor"
-php -d memory_limit=-1 php-scoper.phar add-prefix bin config src rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
+php -d memory_limit=-1 php-scoper.phar add-prefix bin config src rules vendor composer.json UPGRADING.md --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
 
 note "Dumping prefixed Composer Autoload"
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --classmap-authoritative --no-dev
