@@ -224,10 +224,10 @@ final readonly class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof For_) {
-                foreach (array_merge($node->init, $node->cond, $node->loop) as $subNode) {
-                    $subNode->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                    if ($subNode instanceof BinaryOp) {
-                        $this->processBinaryOp($subNode, $mutatingScope);
+                foreach (array_merge($node->init, $node->cond, $node->loop) as $expr) {
+                    $expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    if ($expr instanceof BinaryOp) {
+                        $this->processBinaryOp($expr, $mutatingScope);
                     }
                 }
 
