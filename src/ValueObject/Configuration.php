@@ -26,7 +26,8 @@ final readonly class Configuration
         private bool $isParallel = false,
         private string|null $memoryLimit = null,
         private bool $isDebug = false,
-        private bool $reportingWithRealPath = false
+        private bool $reportingWithRealPath = false,
+        private ?string $onlyRule = null
     ) {
     }
 
@@ -52,6 +53,11 @@ final readonly class Configuration
     {
         Assert::notEmpty($this->fileExtensions);
         return $this->fileExtensions;
+    }
+
+    public function getOnlyRule(): ?string
+    {
+        return $this->onlyRule;
     }
 
     /**

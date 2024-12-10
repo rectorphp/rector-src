@@ -1,0 +1,22 @@
+1 file with changes
+===================
+
+1) src/MultiRules.php:9
+
+    ---------- begin diff ----------
+@@ @@
+             echo 'a statement';
+         }
+     }
+-
+-    private function notUsed()
+-    {
+-    }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnusedPrivateMethodRector
+
+
+ [OK] 1 file would have been changed (dry-run) by Rector
