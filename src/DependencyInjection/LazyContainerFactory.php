@@ -162,6 +162,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
+use Rector\Rector\CommunityAbstractRector;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
@@ -538,6 +539,23 @@ final class LazyContainerFactory
 
         $rectorConfig->afterResolving(
             AbstractRector::class,
+            static function (AbstractRector $rector, Container $container): void {
+                $rector->autowire(
+                    $container->get(NodeNameResolver::class),
+                    $container->get(NodeTypeResolver::class),
+                    $container->get(SimpleCallableNodeTraverser::class),
+                    $container->get(NodeFactory::class),
+                    $container->get(Skipper::class),
+                    $container->get(NodeComparator::class),
+                    $container->get(CurrentFileProvider::class),
+                    $container->get(CreatedByRuleDecorator::class),
+                    $container->get(ChangedNodeScopeRefresher::class),
+                );
+            }
+        );
+
+        $rectorConfig->afterResolving(
+            CommunityAbstractRector::class,
             static function (AbstractRector $rector, Container $container): void {
                 $rector->autowire(
                     $container->get(NodeNameResolver::class),
