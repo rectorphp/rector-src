@@ -554,23 +554,6 @@ final class LazyContainerFactory
             }
         );
 
-        $rectorConfig->afterResolving(
-            CommunityAbstractRector::class,
-            static function (CommunityAbstractRector $rector, Container $container): void {
-                $rector->autowire(
-                    $container->get(NodeNameResolver::class),
-                    $container->get(NodeTypeResolver::class),
-                    $container->get(SimpleCallableNodeTraverser::class),
-                    $container->get(NodeFactory::class),
-                    $container->get(Skipper::class),
-                    $container->get(NodeComparator::class),
-                    $container->get(CurrentFileProvider::class),
-                    $container->get(CreatedByRuleDecorator::class),
-                    $container->get(ChangedNodeScopeRefresher::class),
-                );
-            }
-        );
-
         $this->registerTagged(
             $rectorConfig,
             self::PHP_PARSER_NODE_MAPPER_CLASSES,
