@@ -22,7 +22,6 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Rector\AbstractRector;
-use Rector\Rector\CommunityAbstractRector;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureFileUpdater;
@@ -185,7 +184,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             'afterResolvingCallbacks',
             static function (array $afterResolvingCallbacks): array {
                 foreach (array_keys($afterResolvingCallbacks) as $key) {
-                    if (in_array($key, [AbstractRector::class, CommunityAbstractRector::class], true)) {
+                    if ($key === AbstractRector::class) {
                         continue;
                     }
 
