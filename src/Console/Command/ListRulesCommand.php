@@ -57,6 +57,7 @@ final class ListRulesCommand extends Command
         if ($onlyRule !== null) {
             $onlyRule = $this->onlyRuleResolver->resolve($onlyRule);
         }
+
         $rectorClasses = $this->resolveRectorClasses($onlyRule);
 
         $skippedClasses = $this->getSkippedCheckers();

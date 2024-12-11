@@ -25,14 +25,13 @@ final class ConfigurationRuleFilter
      */
     public function filter(array $rectors): array
     {
-        if ($this->configuration === null) {
+        if (!$this->configuration instanceof Configuration) {
             return $rectors;
         }
 
         $onlyRule = $this->configuration->getOnlyRule();
         if ($onlyRule !== null) {
-            $rectors = $this->filterOnlyRule($rectors, $onlyRule);
-            return $rectors;
+            return $this->filterOnlyRule($rectors, $onlyRule);
         }
 
         return $rectors;
@@ -46,7 +45,7 @@ final class ConfigurationRuleFilter
     {
         $activeRectors = [];
         foreach ($rectors as $rector) {
-            if (is_a($rector, $onlyRule)) {
+            if ($rector instanceof $onlyRule) {
                 $activeRectors[] = $rector;
             }
         }
