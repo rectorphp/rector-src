@@ -24,11 +24,11 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 final class WithValueAsArgument
 {
-    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\Behat\When('this is a simple annotation with a value')]
-    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\Behat\When]
-    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\Behat\When('"this value is within quotes"')]
-    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\Behat\When('this value has a \' character')]
-    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\Behat\When(key: 'value')] // this annotation has parameters so won't use this option
+    #[\Behat\Step\When('this is a simple annotation with a value')]
+    #[\Behat\Step\When]
+    #[\Behat\Step\When('"this value is within quotes"')]
+    #[\Behat\Step\When('this value has a \' character')]
+    #[\Behat\Step\When(key: 'value')] // this annotation has parameters so won't use this option
     public function someStep(): void
     {
     }
