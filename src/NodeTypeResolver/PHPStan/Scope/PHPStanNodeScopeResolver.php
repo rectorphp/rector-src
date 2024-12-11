@@ -216,9 +216,18 @@ final readonly class PHPStanNodeScopeResolver
             if ($node instanceof PostInc ||
                 $node instanceof PostDec ||
                 $node instanceof PreInc ||
-                $node instanceof PreDec ||
-                $node instanceof ArrayDimFetch) {
+                $node instanceof PreDec) {
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof ArrayDimFetch) {
+                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                if ($node->dim instanceof Expr) {
+                    $node->dim->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+
+                return;
             }
 
             if ($node instanceof Assign || $node instanceof AssignOp) {
