@@ -29,6 +29,7 @@ use PhpParser\Node\Expr\Eval_;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -211,7 +212,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof Print_ ||
                 $node instanceof Exit_ ||
                 $node instanceof ArrowFunction ||
-                $node instanceof Include_
+                $node instanceof Include_ ||
+                $node instanceof Instanceof_
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
