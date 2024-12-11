@@ -407,9 +407,9 @@ final readonly class PHPStanNodeScopeResolver
         }
     }
 
-    private function processEcho(Echo_ $node, MutatingScope $mutatingScope): void
+    private function processEcho(Echo_ $echo, MutatingScope $mutatingScope): void
     {
-        foreach ($node->exprs as $expr) {
+        foreach ($echo->exprs as $expr) {
             $expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
