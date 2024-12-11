@@ -13,12 +13,16 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BitwiseNot;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Clone_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Empty_;
+use PhpParser\Node\Expr\ErrorSuppress;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
@@ -192,7 +196,11 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof UnaryMinus ||
                 $node instanceof UnaryPlus ||
                 $node instanceof Throw_ ||
-                $node instanceof Empty_
+                $node instanceof Empty_ ||
+                $node instanceof BooleanNot ||
+                $node instanceof Clone_ ||
+                $node instanceof ErrorSuppress ||
+                $node instanceof BitwiseNot
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
