@@ -207,7 +207,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof BitwiseNot ||
                 $node instanceof Eval_ ||
                 $node instanceof Print_ ||
-                $node instanceof Exit_
+                $node instanceof Exit_ ||
+                $node instanceof ArrowFunction
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
