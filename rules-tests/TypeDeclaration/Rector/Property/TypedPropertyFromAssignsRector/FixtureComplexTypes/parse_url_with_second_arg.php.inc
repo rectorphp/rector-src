@@ -20,7 +20,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsR
 
 final class ParseUrlWithSecondArg
 {
-    private $host = null;
+    private string|bool|null $host = null;
 
     public function _cosntructor(string $url)
     {
