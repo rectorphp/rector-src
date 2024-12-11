@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
@@ -190,7 +191,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof YieldFrom ||
                 $node instanceof UnaryMinus ||
                 $node instanceof UnaryPlus ||
-                $node instanceof Throw_
+                $node instanceof Throw_ ||
+                $node instanceof Empty_
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
