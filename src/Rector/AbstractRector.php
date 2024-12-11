@@ -34,6 +34,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\Skipper\Skipper\Skipper;
+use Rector\Skipper\Skipper\SkipperResult;
 use Rector\ValueObject\Application\File;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
@@ -131,8 +132,9 @@ CODE_SAMPLE;
         }
 
         $filePath = $this->file->getFilePath();
-        if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
-            return null;
+        $skipperResult = $this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node);
+        if ($skipperResult !== SkipperResult::noSkip) {
+            return $skipperResult === SkipperResult::skipTree ? NodeVisitor::DONT_TRAVERSE_CHILDREN : null;
         }
 
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
