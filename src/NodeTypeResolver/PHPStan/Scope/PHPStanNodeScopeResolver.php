@@ -382,7 +382,7 @@ final readonly class PHPStanNodeScopeResolver
                 throw $e;
             }
 
-            // nothing we can do more precise here as error parsing from deep internal PHPStan service with service injection we cannot reset
+            // nothing we can do more precise here as error printing from deep internal PHPStan Printer service with service injection we cannot reset
             // in the middle of process
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $scope);
