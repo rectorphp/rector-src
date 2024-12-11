@@ -556,7 +556,7 @@ final class LazyContainerFactory
 
         $rectorConfig->afterResolving(
             CommunityAbstractRector::class,
-            static function (AbstractRector $rector, Container $container): void {
+            static function (CommunityAbstractRector $rector, Container $container): void {
                 $rector->autowire(
                     $container->get(NodeNameResolver::class),
                     $container->get(NodeTypeResolver::class),
