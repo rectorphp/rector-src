@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use Error;
+use PHPStan\Node\Printer\Printer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
@@ -377,9 +379,9 @@ final readonly class PHPStanNodeScopeResolver
 
         try {
             $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
-        } catch (\Error $e) {
-            if (! str_starts_with($e->getMessage(), 'Call to undefined method PHPStan\Node\Printer\Printer::pPHPStan_')) {
-                throw $e;
+        } catch (Error $error) {
+            if (! str_starts_with($error->getMessage(), 'Call to undefined method ' . Printer::class . '::pPHPStan_')) {
+                throw $error;
             }
 
             // nothing we can do more precise here as error printing from deep internal PHPStan Printer service with service injection we cannot reset
