@@ -390,7 +390,9 @@ final readonly class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof MethodCallableNode || $node instanceof FunctionCallableNode || $node instanceof StaticMethodCallableNode || $node instanceof InstantiationCallableNode) {
+                $node->getOriginalNode()->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $this->processCallike($node->getOriginalNode(), $mutatingScope);
+
                 return;
             }
         };
