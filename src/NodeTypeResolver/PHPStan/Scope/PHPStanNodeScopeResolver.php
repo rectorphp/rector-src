@@ -34,6 +34,7 @@ use PhpParser\Node\Expr\PostDec;
 use PhpParser\Node\Expr\PostInc;
 use PhpParser\Node\Expr\PreDec;
 use PhpParser\Node\Expr\PreInc;
+use PhpParser\Node\Expr\Print_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -202,7 +203,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof Clone_ ||
                 $node instanceof ErrorSuppress ||
                 $node instanceof BitwiseNot ||
-                $node instanceof Eval_
+                $node instanceof Eval_ ||
+                $node instanceof Print_
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
