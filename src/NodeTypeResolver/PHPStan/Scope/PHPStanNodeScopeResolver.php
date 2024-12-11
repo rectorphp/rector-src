@@ -378,15 +378,14 @@ final readonly class PHPStanNodeScopeResolver
         try {
             $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
         } catch (\Error $e) {
+            if (! str_starts_with($e->getMessage(), 'Call to undefined method PHPStan\Node\Printer\Printer::pPHPStan_')) {
+                throw $e;
+            }
+
             // nothing we can do more precise here as error parsing from deep internal PHPStan service with service injection we cannot reset
             // in the middle of process
             // fallback to fill by found scope
-            if (str_starts_with($e->getMessage(), 'Call to undefined method PHPStan\Node\Printer\Printer::pPHPStan_')) {
-                RectorNodeScopeResolver::processNodes($stmts, $scope);
-                return $stmts;
-            }
-
-            throw $e;
+            RectorNodeScopeResolver::processNodes($stmts, $scope);
         }
 
         $nodeTraverser = new NodeTraverser();
