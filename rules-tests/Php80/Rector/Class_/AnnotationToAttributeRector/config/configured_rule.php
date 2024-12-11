@@ -7,7 +7,6 @@ use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\Annotation\NestedPastAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\PastAnnotation;
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\Behat\When;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute\NestedFutureAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\FutureAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
@@ -48,6 +47,9 @@ return static function (RectorConfig $rectorConfig): void {
                 'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestOther'
             ),
             new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\Security'),
-            new AnnotationToAttribute('When', When::class, useValueAsAttributeArgument: true),
+
+            // special case with following comment becoming a inner value
+            new AnnotationToAttribute('When', \Behat\Step\When::class, useValueAsAttributeArgument: true),
+            new AnnotationToAttribute('Then', \Behat\Step\Then::class, useValueAsAttributeArgument: true),
         ]);
 };
