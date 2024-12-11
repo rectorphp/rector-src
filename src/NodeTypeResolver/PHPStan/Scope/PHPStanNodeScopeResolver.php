@@ -24,10 +24,16 @@ use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\PostDec;
+use PhpParser\Node\Expr\PostInc;
+use PhpParser\Node\Expr\PreDec;
+use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Expr\UnaryMinus;
+use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
@@ -180,10 +186,16 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof Return_ ||
                 $node instanceof EnumCase ||
                 $node instanceof Cast ||
-                $node instanceof YieldFrom
+                $node instanceof YieldFrom ||
+                $node instanceof UnaryMinus ||
+                $node instanceof UnaryPlus
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
+            }
+
+            if ($node instanceof PostInc || $node instanceof PostDec || $node instanceof PreInc || $node instanceof PreDec) {
+                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Assign || $node instanceof AssignOp) {
