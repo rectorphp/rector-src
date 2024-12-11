@@ -32,6 +32,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Expr\Variable;
@@ -188,7 +189,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof Cast ||
                 $node instanceof YieldFrom ||
                 $node instanceof UnaryMinus ||
-                $node instanceof UnaryPlus
+                $node instanceof UnaryPlus ||
+                $node instanceof Throw_
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
