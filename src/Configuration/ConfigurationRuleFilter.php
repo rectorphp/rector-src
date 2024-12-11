@@ -25,7 +25,7 @@ final class ConfigurationRuleFilter
      */
     public function filter(array $rectors): array
     {
-        if (!$this->configuration instanceof Configuration) {
+        if (! $this->configuration instanceof Configuration) {
             return $rectors;
         }
 

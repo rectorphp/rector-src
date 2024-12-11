@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Configuration;
 
-use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
 use Rector\Exception\Configuration\RectorRuleNotFoundException;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -21,7 +21,9 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         $this->bootFromConfigFiles([__DIR__ . '/config/only_rule_resolver_config.php']);
         $rectorConfig = self::getContainer();
 
-        $this->onlyRuleResolver = new OnlyRuleResolver(iterator_to_array($rectorConfig->tagged(RectorInterface::class)));
+        $this->onlyRuleResolver = new OnlyRuleResolver(iterator_to_array(
+            $rectorConfig->tagged(RectorInterface::class)
+        ));
     }
 
     public function testResolveOk(): void

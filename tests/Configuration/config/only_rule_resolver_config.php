@@ -8,4 +8,6 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\Tests\Configuration\Source\RemoveDoubleAssignRector as RemoveDoubleAssignRectorTest;
 
 return RectorConfig::configure()
-    ->withRules([RemoveDoubleAssignRector::class, RemoveDoubleAssignRectorTest::class, RemoveUnusedPrivateMethodRector::class]);
+    ->withRules(
+        [RemoveDoubleAssignRector::class, RemoveDoubleAssignRectorTest::class, RemoveUnusedPrivateMethodRector::class]
+    );
