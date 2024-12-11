@@ -179,7 +179,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
                 $node instanceof EnumCase ||
-                $node instanceof Cast
+                $node instanceof Cast ||
+                $node instanceof YieldFrom
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
@@ -307,11 +308,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Yield_) {
                 $this->processYield($node, $mutatingScope);
-                return;
-            }
-
-            if ($node instanceof YieldFrom) {
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
             }
         };
