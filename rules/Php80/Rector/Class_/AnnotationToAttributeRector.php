@@ -210,7 +210,7 @@ CODE_SAMPLE
                     // special case for newline
                     $docValue = (string) $docNode->value;
                     if (str_contains($docValue, '\\')) {
-                        $docValue = Strings::replace($docValue, "#\\\\\n#", '');
+                        $docValue = Strings::replace($docValue, "#\\\\\r?\n#", '');
                     }
                 }
 

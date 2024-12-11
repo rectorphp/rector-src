@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Behat\Step\When;
+use Behat\Step\Then;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
@@ -49,7 +51,7 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\Security'),
 
             // special case with following comment becoming a inner value
-            new AnnotationToAttribute('When', \Behat\Step\When::class, useValueAsAttributeArgument: true),
-            new AnnotationToAttribute('Then', \Behat\Step\Then::class, useValueAsAttributeArgument: true),
+            new AnnotationToAttribute('When', When::class, useValueAsAttributeArgument: true),
+            new AnnotationToAttribute('Then', Then::class, useValueAsAttributeArgument: true),
         ]);
 };
