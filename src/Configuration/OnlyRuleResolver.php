@@ -62,7 +62,7 @@ final readonly class OnlyRuleResolver
             throw new RectorRuleNameAmbigiousException($message);
         }
 
-        if (in_array(str_contains($rule, '\\'), [0, false], true)) {
+        if (! str_contains($rule, '\\')) {
             $message = sprintf(
                 'Rule "%s" was not found.%sThe rule has no namespace. Make sure to escape the backslashes, and add quotes around the rule name: --only="My\\Rector\\Rule"',
                 $rule,
