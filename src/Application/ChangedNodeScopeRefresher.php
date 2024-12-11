@@ -6,6 +6,7 @@ namespace Rector\Application;
 
 use PhpParser\Modifiers;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\ClosureUse;
 use PhpParser\Node\DeclareItem;
@@ -19,9 +20,11 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Param;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\StaticVar;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Expression;
@@ -133,6 +136,17 @@ final readonly class ChangedNodeScopeRefresher
 
         if ($node instanceof UseItem) {
             return [new Use_([$node])];
+        }
+
+        if ($node instanceof Param) {
+            $closure = new Closure();
+            $closure->params[] = $node;
+            return [new Expression($closure)];
+        }
+
+        if ($node instanceof Arg) {
+            $new = new New_(new Class_(null), [$node]);
+            return [new Expression($new)];
         }
 
         $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);

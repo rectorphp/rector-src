@@ -5,18 +5,16 @@ declare(strict_types=1);
 namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Param;
+use PhpParser\Node\Scalar;
 
 final class ScopeAnalyzer
 {
     /**
      * @var array<class-string<Node>>
      */
-    private const NON_REFRESHABLE_NODES = [Name::class, Identifier::class, Param::class, Arg::class, Variable::class];
+    private const NON_REFRESHABLE_NODES = [Name::class, Identifier::class, Scalar::class];
 
     public function isRefreshable(Node $node): bool
     {
