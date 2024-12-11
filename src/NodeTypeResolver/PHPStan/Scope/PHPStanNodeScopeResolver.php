@@ -30,6 +30,7 @@ use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -74,6 +75,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\UnionType;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
@@ -360,6 +362,11 @@ final readonly class PHPStanNodeScopeResolver
                 $this->processYield($node, $mutatingScope);
                 return;
             }
+
+            if ($node instanceof Isset_ || $node instanceof Unset_) {
+                $this->processIssetOrUnset($node, $mutatingScope);
+                return;
+            }
         };
 
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
@@ -384,6 +391,13 @@ final readonly class PHPStanNodeScopeResolver
 
         if ($yield->value instanceof Expr) {
             $yield->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+    }
+
+    private function processIssetOrUnset(Isset_|Unset_ $node, MutatingScope $mutatingScope): void
+    {
+        foreach ($node->vars as $var) {
+            $var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
 
