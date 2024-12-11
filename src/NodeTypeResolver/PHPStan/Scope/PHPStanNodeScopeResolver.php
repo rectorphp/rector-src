@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
@@ -212,7 +213,11 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof PostInc || $node instanceof PostDec || $node instanceof PreInc || $node instanceof PreDec) {
+            if ($node instanceof PostInc ||
+                $node instanceof PostDec ||
+                $node instanceof PreInc ||
+                $node instanceof PreDec ||
+                $node instanceof ArrayDimFetch) {
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
