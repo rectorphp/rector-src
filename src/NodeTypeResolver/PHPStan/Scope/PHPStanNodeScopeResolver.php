@@ -24,6 +24,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\ErrorSuppress;
 use PhpParser\Node\Expr\Eval_;
+use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
@@ -204,7 +205,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof ErrorSuppress ||
                 $node instanceof BitwiseNot ||
                 $node instanceof Eval_ ||
-                $node instanceof Print_
+                $node instanceof Print_ ||
+                $node instanceof Exit_
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
