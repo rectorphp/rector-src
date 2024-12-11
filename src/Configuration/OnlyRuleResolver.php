@@ -11,13 +11,13 @@ use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
 /**
  * @see \Rector\Tests\Configuration\OnlyRuleResolverTest
  */
-final class OnlyRuleResolver
+final readonly class OnlyRuleResolver
 {
     /**
      * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly array $rectors
+        private array $rectors
     ) {
     }
 
@@ -46,11 +46,13 @@ final class OnlyRuleResolver
                 $matching[] = $rector::class;
             }
         }
-        $matching = array_unique($matching);
 
+        $matching = array_unique($matching);
         if (count($matching) == 1) {
             return $matching[0];
-        } elseif (count($matching) > 1) {
+        }
+
+        if (count($matching) > 1) {
             sort($matching);
             $message = sprintf(
                 'Short rule name "%s" is ambiguous. Specify the full rule name:' . PHP_EOL
@@ -60,7 +62,7 @@ final class OnlyRuleResolver
             throw new RectorRuleNameAmbigiousException($message);
         }
 
-        if (strpos($rule, '\\') === false) {
+        if (in_array(str_contains($rule, '\\'), [0, false], true)) {
             $message = sprintf(
                 'Rule "%s" was not found.%sThe rule has no namespace. Make sure to escape the backslashes, and add quotes around the rule name: --only="My\\Rector\\Rule"',
                 $rule,
@@ -73,6 +75,7 @@ final class OnlyRuleResolver
                 PHP_EOL
             );
         }
+
         throw new RectorRuleNotFoundException($message);
     }
 }

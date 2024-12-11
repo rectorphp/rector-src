@@ -43,7 +43,7 @@ final class ProcessCommand extends Command
         private readonly ConfigurationFactory $configurationFactory,
         private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
         private readonly MissConfigurationReporter $missConfigurationReporter,
-        private ConfigurationRuleFilter $configurationRuleFilter,
+        private readonly ConfigurationRuleFilter $configurationRuleFilter,
     ) {
         parent::__construct();
     }

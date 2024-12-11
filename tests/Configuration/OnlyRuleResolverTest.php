@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Configuration;
 
+use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
@@ -12,46 +14,46 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class OnlyRuleResolverTest extends AbstractLazyTestCase
 {
-    protected OnlyRuleResolver $resolver;
+    private OnlyRuleResolver $onlyRuleResolver;
 
     protected function setUp(): void
     {
         $this->bootFromConfigFiles([__DIR__ . '/config/only_rule_resolver_config.php']);
         $rectorConfig = self::getContainer();
 
-        $this->resolver = new OnlyRuleResolver(iterator_to_array($rectorConfig->tagged(RectorInterface::class)));
+        $this->onlyRuleResolver = new OnlyRuleResolver(iterator_to_array($rectorConfig->tagged(RectorInterface::class)));
     }
 
     public function testResolveOk(): void
     {
-        $this->assertEquals(
-            \Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector::class,
-            $this->resolver->resolve('Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector')
+        $this->assertSame(
+            RemoveDoubleAssignRector::class,
+            $this->onlyRuleResolver->resolve('Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector')
         );
     }
 
     public function testResolveOkLeadingBackslash(): void
     {
-        $this->assertEquals(
-            \Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector::class,
-            $this->resolver->resolve('\\Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector')
+        $this->assertSame(
+            RemoveDoubleAssignRector::class,
+            $this->onlyRuleResolver->resolve('\\Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector')
         );
     }
 
     public function testResolveOkDoubleBackslashes(): void
     {
-        $this->assertEquals(
-            \Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector::class,
-            $this->resolver->resolve('\\\\Rector\\\\DeadCode\\\\Rector\\\\Assign\\\\RemoveDoubleAssignRector'),
+        $this->assertSame(
+            RemoveDoubleAssignRector::class,
+            $this->onlyRuleResolver->resolve('\\\\Rector\\\\DeadCode\\\\Rector\\\\Assign\\\\RemoveDoubleAssignRector'),
             'We want to fix wrongly double-quoted backslashes automatically'
         );
     }
 
     public function testResolveOkSingleQuotes(): void
     {
-        $this->assertEquals(
-            \Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector::class,
-            $this->resolver->resolve("'Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector'"),
+        $this->assertSame(
+            RemoveDoubleAssignRector::class,
+            $this->onlyRuleResolver->resolve("'Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector'"),
             'Remove stray single quotes on Windows systems'
         );
     }
@@ -64,7 +66,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         );
         $this->expectException(RectorRuleNotFoundException::class);
 
-        $this->resolver->resolve('RectorDeadCodeRectorAssignRemoveDoubleAssignRector');
+        $this->onlyRuleResolver->resolve('RectorDeadCodeRectorAssignRemoveDoubleAssignRector');
     }
 
     public function testResolveNotFound(): void
@@ -75,22 +77,22 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         );
         $this->expectException(RectorRuleNotFoundException::class);
 
-        $this->resolver->resolve('This\\Rule\\Does\\Not\\Exist');
+        $this->onlyRuleResolver->resolve('This\\Rule\\Does\\Not\\Exist');
     }
 
     public function testResolveShortOk(): void
     {
-        $this->assertEquals(
-            \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector::class,
-            $this->resolver->resolve('RemoveUnusedPrivateMethodRector'),
+        $this->assertSame(
+            RemoveUnusedPrivateMethodRector::class,
+            $this->onlyRuleResolver->resolve('RemoveUnusedPrivateMethodRector'),
         );
     }
 
     public function testResolveShortOkTwoLevels(): void
     {
-        $this->assertEquals(
-            \Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector::class,
-            $this->resolver->resolve('Assign\\RemoveDoubleAssignRector'),
+        $this->assertSame(
+            RemoveDoubleAssignRector::class,
+            $this->onlyRuleResolver->resolve('Assign\\RemoveDoubleAssignRector'),
         );
     }
 
@@ -103,6 +105,6 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         );
         $this->expectException(RectorRuleNameAmbigiousException::class);
 
-        $this->resolver->resolve('RemoveDoubleAssignRector');
+        $this->onlyRuleResolver->resolve('RemoveDoubleAssignRector');
     }
 }
