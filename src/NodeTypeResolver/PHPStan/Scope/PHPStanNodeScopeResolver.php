@@ -23,6 +23,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\ErrorSuppress;
+use PhpParser\Node\Expr\Eval_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
@@ -200,7 +201,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node instanceof BooleanNot ||
                 $node instanceof Clone_ ||
                 $node instanceof ErrorSuppress ||
-                $node instanceof BitwiseNot
+                $node instanceof BitwiseNot ||
+                $node instanceof Eval_
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
