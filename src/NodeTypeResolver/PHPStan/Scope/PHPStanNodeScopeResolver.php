@@ -62,6 +62,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
@@ -367,6 +368,11 @@ final readonly class PHPStanNodeScopeResolver
                 $this->processIssetOrUnset($node, $mutatingScope);
                 return;
             }
+
+            if ($node instanceof Echo_) {
+                $this->processEcho($node, $mutatingScope);
+                return;
+            }
         };
 
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
@@ -398,6 +404,13 @@ final readonly class PHPStanNodeScopeResolver
     {
         foreach ($node->vars as $var) {
             $var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+    }
+
+    private function processEcho(Echo_ $node, MutatingScope $mutatingScope): void
+    {
+        foreach ($node->exprs as $expr) {
+            $expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
 
