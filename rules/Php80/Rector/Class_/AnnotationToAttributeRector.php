@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -204,10 +205,20 @@ CODE_SAMPLE
                     continue;
                 }
 
+                $docValue = null;
+                if ($annotationToAttribute->getUseValueAsAttributeArgument()) {
+                    // special case for newline
+                    $docValue = (string) $docNode->value;
+                    if (str_contains($docValue, '\\')) {
+                        $docValue = Strings::replace($docValue, "#\\\\\n#", '');
+                    }
+                }
+
                 $attributeGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag(
                     $annotationToAttribute,
-                    $annotationToAttribute->getUseValueAsAttributeArgument() ? (string) $docNode->value : null
+                    $docValue
                 );
+
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
 
