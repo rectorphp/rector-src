@@ -73,8 +73,11 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $objectType = $this->ensureFQCNObject($staticType, $node->name);
 
         foreach ($this->oldToNewTypes as $oldToNewType) {
-            /** @var ObjectType $oldType */
             $oldType = $oldToNewType->getOldType();
+            if (! $oldType instanceof ObjectType) {
+                continue;
+            }
+
             if (! $objectType->equals($oldType)) {
                 continue;
             }
