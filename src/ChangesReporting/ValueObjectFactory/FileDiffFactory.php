@@ -24,6 +24,7 @@ final readonly class FileDiffFactory
      * @param RectorWithLineChange[] $rectorsWithLineChanges
      */
     public function createFileDiffWithLineChanges(
+        bool $shouldShowDiffs,
         File $file,
         string $oldContent,
         string $newContent,
@@ -34,14 +35,9 @@ final readonly class FileDiffFactory
         // always keep the most recent diff
         return new FileDiff(
             $relativeFilePath,
-            $this->defaultDiffer->diff($oldContent, $newContent),
-            $this->consoleDiffer->diff($oldContent, $newContent),
+            $shouldShowDiffs ? $this->defaultDiffer->diff($oldContent, $newContent) : '',
+            $shouldShowDiffs ? $this->consoleDiffer->diff($oldContent, $newContent) : '',
             $rectorsWithLineChanges
         );
-    }
-
-    public function createTempFileDiff(File $file): FileDiff
-    {
-        return $this->createFileDiffWithLineChanges($file, '', '', $file->getRectorWithLineChanges());
     }
 }
