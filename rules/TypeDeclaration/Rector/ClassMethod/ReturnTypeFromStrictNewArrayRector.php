@@ -147,7 +147,7 @@ CODE_SAMPLE
         ClassMethod|Function_|Closure $node,
         Type $returnType
     ): ClassMethod|Function_|Closure|null {
-        if (! $returnType instanceof ArrayType && ! $returnType instanceof ConstantArrayType) {
+        if (! $returnType->isArray()->yes()) {
             return null;
         }
 
@@ -174,10 +174,8 @@ CODE_SAMPLE
         );
     }
 
-    private function changeReturnType(
-        ClassMethod|Function_|Closure $node,
-        ArrayType|ConstantArrayType $arrayType
-    ): void {
+    private function changeReturnType(ClassMethod|Function_|Closure $node, Type $arrayType): void
+    {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         // skip already filled type, on purpose
@@ -265,7 +263,7 @@ CODE_SAMPLE
         return $variables;
     }
 
-    private function shouldAddReturnArrayDocType(ArrayType|ConstantArrayType $arrayType): bool
+    private function shouldAddReturnArrayDocType(Type $arrayType): bool
     {
         if ($arrayType instanceof ConstantArrayType) {
             if ($arrayType->getIterableValueType() instanceof NeverType) {

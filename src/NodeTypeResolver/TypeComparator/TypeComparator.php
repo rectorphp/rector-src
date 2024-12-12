@@ -21,13 +21,11 @@ use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
-use Rector\TypeDeclaration\TypeNormalizer;
 
 final readonly class TypeComparator
 {
     public function __construct(
         private TypeHasher $typeHasher,
-        private TypeNormalizer $typeNormalizer,
         private StaticTypeMapper $staticTypeMapper,
         private ArrayTypeComparator $arrayTypeComparator,
         private ScalarTypeComparator $scalarTypeComparator,
@@ -55,9 +53,6 @@ final readonly class TypeComparator
         if ($this->areAliasedObjectMatchingFqnObject($firstType, $secondType)) {
             return true;
         }
-
-        $firstType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($firstType);
-        $secondType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($secondType);
 
         if ($this->typeHasher->areTypesEqual($firstType, $secondType)) {
             return true;
