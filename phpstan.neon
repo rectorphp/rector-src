@@ -317,3 +317,9 @@ parameters:
         -
             message: '#PHPDoc tag @var with type int is not subtype of native type array\|PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNode\|Rector\\BetterPhpDocParser\\PhpDoc\\DoctrineAnnotationTagValueNode\|Rector\\BetterPhpDocParser\\PhpDoc\\StringNode\|Rector\\BetterPhpDocParser\\ValueObject\\PhpDoc\\DoctrineAnnotation\\CurlyListNode\|string#'
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
+
+        - '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000, 79999 given#'
+
+        # node vs stmts mix
+        - '#expects array<PhpParser\\Node\\Stmt>, array<PhpParser\\Node> given#'
+        - '#should return non\-empty\-string but returns string#'
