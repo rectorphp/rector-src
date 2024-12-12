@@ -294,8 +294,13 @@ final readonly class ReflectionResolver
             return null;
         }
 
-        if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
-            return $this->reflectionProvider->getFunction($funcCall->name, $scope);
+        $functionName = new Name((string) $this->nodeNameResolver->getName($funcCall));
+        if ($functionName === null) {
+            return null;
+        }
+
+        if ($this->reflectionProvider->hasFunction($functionName, $scope)) {
+            return $this->reflectionProvider->getFunction($functionName, $scope);
         }
 
         return null;
