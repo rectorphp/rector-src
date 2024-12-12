@@ -599,6 +599,9 @@ final readonly class PHPStanNodeScopeResolver
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
     }
 
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
     private function processProperty(Property $property, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         foreach ($property->props as $propertyProperty) {
@@ -614,6 +617,7 @@ final readonly class PHPStanNodeScopeResolver
                 continue;
             }
 
+            /** @var Stmt[] $stmts */
             $stmts = $hook->body instanceof Expr
                 ? [new Expression($hook->body)]
                 : [$hook->body];
