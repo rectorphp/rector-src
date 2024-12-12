@@ -37,12 +37,6 @@ final class ComposerJsonPhpVersionResolver
             }
         }
 
-        // fallback from php version features defined
-        // check hasParameter() here is essential to ensure only fallback when PHP_VERSION_FEATURES constant exists
-        if (SimpleParameterProvider::hasParameter(Option::PHP_VERSION_FEATURES)) {
-            return PhpVersionProvider::provideWithoutComposerJon();
-        }
-
         throw new InvalidConfigurationException(sprintf(
             'We could not find local "composer.json" or php version feature config to determine your PHP version.%sPlease, fill the PHP version set in withPhpSets() manually.',
             PHP_EOL
@@ -72,6 +66,12 @@ final class ComposerJsonPhpVersionResolver
         if ($platformPhp !== null) {
             self::$cachedPhpVersions[$composerJson] = PhpVersionFactory::createIntVersion($platformPhp);
             return self::$cachedPhpVersions[$composerJson];
+        }
+
+        // fallback from php version features defined
+        // check hasParameter() here is essential to ensure only fallback when PHP_VERSION_FEATURES constant exists
+        if (SimpleParameterProvider::hasParameter(Option::PHP_VERSION_FEATURES)) {
+            return self::$cachedPhpVersions[$composerJson] = PhpVersionProvider::provideWithoutComposerJon();
         }
 
         return self::$cachedPhpVersions[$composerJson] = null;
