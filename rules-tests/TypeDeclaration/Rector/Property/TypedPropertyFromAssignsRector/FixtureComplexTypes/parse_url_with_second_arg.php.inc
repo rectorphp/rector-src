@@ -6,7 +6,7 @@ final class ParseUrlWithSecondArg
 {
     private $host = null;
 
-    public function _cosntructor(string $url)
+    public function __construct(string $url)
     {
         $this->host = parse_url($url, \PHP_URL_HOST);
     }
@@ -22,7 +22,7 @@ final class ParseUrlWithSecondArg
 {
     private string|false|null $host = null;
 
-    public function _cosntructor(string $url)
+    public function __construct(string $url)
     {
         $this->host = parse_url($url, \PHP_URL_HOST);
     }
