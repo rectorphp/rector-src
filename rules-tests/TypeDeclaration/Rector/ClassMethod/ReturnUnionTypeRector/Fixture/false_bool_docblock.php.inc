@@ -28,7 +28,7 @@ final class FalseBoolDocblock
     /**
      * @return array|bool some description
      */
-    public function run(): array|false
+    public function run(): false|array
     {
         if (rand(0, 1)) {
             return false;
