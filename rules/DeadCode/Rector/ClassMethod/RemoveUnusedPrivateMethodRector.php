@@ -102,14 +102,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = false;
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
         $collectionTestMethodsUsesPrivateProvider = $this->collectTestMethodsUsesPrivateDataProvider(
             $classReflection,
             $node,
             $classMethods
         );
 
+        $hasChanged = false;
         foreach ($privateMethods as $privateMethod) {
             if ($this->shouldSkip($privateMethod, $classReflection)) {
                 continue;

@@ -76,8 +76,8 @@ parameters:
                 - src/Console/Notifier.php
                 - src/Util/FileHasher.php
 
-        -
-            identifier: argument.type
+#        -
+#            identifier: argument.type
 
         # is nested expr
         -
@@ -323,3 +323,22 @@ parameters:
         # node vs stmts mix
         - '#expects array<PhpParser\\Node\\Stmt>, array<PhpParser\\Node> given#'
         - '#should return non\-empty\-string but returns string#'
+
+        # false positive, can accept non-class string
+        - '#Parameter \#1 \$name of method PHPStan\\BetterReflection\\Reflection\\Adapter\\ReflectionClass\:\:getAttributes\(\) expects class\-string\|null, string given#'
+
+        # false positive, checked above
+        -
+            path: rules/Php71/Rector/List_/ListToArrayDestructRector.php
+            message: '#Parameter \#1 \$items of class PhpParser\\Node\\Expr\\Array_ constructor expects array<PhpParser\\Node\\ArrayItem>, array<PhpParser\\Node\\ArrayItem\|null> given#'
+        -
+            path: rules/CodeQuality/Rector/FunctionLike/SimplifyUselessVariableRector.php
+            message: '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
+
+        # scope vs mutating scope
+        - '#Parameter \#3 \$nodeCallback of method PHPStan\\Analyser\\NodeScopeResolver\:\:processNodes\(\) expects callable\(PhpParser\\Node, PHPStan\\Analyser\\Scope\)\: void, callable\(PhpParser\\Node, PHPStan\\Analyser\\MutatingScope\)\: void given#'
+
+        # list vs array
+        - '#Parameter (.*?) expects list<(.*?)>, array<(.*?)> given#'
+        - '#should return list<(.*?)>\|null but returns non\-empty\-array<(.*?)>\|null#'
+

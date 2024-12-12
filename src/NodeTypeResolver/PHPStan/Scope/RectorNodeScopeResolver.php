@@ -25,8 +25,9 @@ final class RectorNodeScopeResolver
 
         $simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            function (Node $node) use ($mutatingScope): void {
+            function (Node $node) use ($mutatingScope): null {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                return null;
             }
         );
     }
