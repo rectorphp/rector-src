@@ -83,8 +83,8 @@ parameters:
         -
             identifier: argument.type
 
-        -
-            identifier: phpstanApi.varTagAssumption
+#        -
+#            identifier: phpstanApi.varTagAssumption
 
         # is nested expr
         -
