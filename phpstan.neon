@@ -77,11 +77,6 @@ parameters:
         # phpstan instanceof
         - identifier: phpstanApi.instanceofAssumption
 
-        # assert phpunit
-#        -
-#            identifier: method.alreadyNarrowedType
-#            path: tests
-
         # runtime php id
         -
             identifier: greaterOrEqual.alwaysTrue
@@ -102,6 +97,7 @@ parameters:
                 - src/Console/Notifier.php
                 - src/Util/FileHasher.php
 
+        # @todo useful, handle next
         -
             identifier: argument.type
 
@@ -359,4 +355,12 @@ parameters:
         -
             message: '#Possibly invalid array key type array<mixed>\|PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNode\|Rector\\BetterPhpDocParser\\PhpDoc\\DoctrineAnnotationTagValueNode\|Rector\\BetterPhpDocParser\\PhpDoc\\StringNode\|Rector\\BetterPhpDocParser\\ValueObject\\PhpDoc\\DoctrineAnnotation\\CurlyListNode\|string#'
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
+<<<<<<< HEAD
 >>>>>>> 4e3ac08b3c (fix few reported static errors)
+=======
+
+        # overly detailed
+        - '#expects (non\-empty\-string|class-string), string given#'
+        - '#expects list<(.*?)>, array<(.*?)> given#'
+
+>>>>>>> e70cfd86c4 (add few static fixes)

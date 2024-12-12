@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Type\Accessory\HasPropertyType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
@@ -39,7 +40,7 @@ final readonly class ObjectWithoutClassTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param ObjectWithoutClassType $type
+     * @param ObjectWithoutClassType|HasPropertyType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
