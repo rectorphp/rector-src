@@ -18,7 +18,6 @@ use Rector\TypeDeclaration\TypeNormalizer;
 final readonly class ReturnTypeInferer
 {
     public function __construct(
-        private TypeNormalizer $typeNormalizer,
         private ReturnedNodesReturnTypeInfererTypeInferer $returnedNodesReturnTypeInfererTypeInferer
     ) {
     }
@@ -30,6 +29,7 @@ final readonly class ReturnTypeInferer
             return new MixedType();
         }
 
-        return $this->typeNormalizer->normalizeArrayTypeAndArrayNever($originalType);
+        return $originalType;
+        // return $this->typeNormalizer->normalizeArrayTypeAndArrayNever($originalType);
     }
 }
