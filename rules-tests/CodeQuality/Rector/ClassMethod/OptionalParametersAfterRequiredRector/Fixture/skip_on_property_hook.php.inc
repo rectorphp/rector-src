@@ -5,6 +5,6 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 final class SkipOnPropertyHook
 {
     public array $cookies {
-        get => get(CookieManager::class)->all();
+        get => $a > get(CookieManager::class)->all();
     }
 }

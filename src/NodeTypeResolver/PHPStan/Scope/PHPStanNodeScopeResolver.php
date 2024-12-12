@@ -305,7 +305,7 @@ final readonly class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Property) {
-                $this->processProperty($node, $mutatingScope);
+                $this->processProperty($node, $mutatingScope, $nodeCallback);
                 return;
             }
 
@@ -599,7 +599,7 @@ final readonly class PHPStanNodeScopeResolver
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
     }
 
-    private function processProperty(Property $property, MutatingScope $mutatingScope): void
+    private function processProperty(Property $property, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         foreach ($property->props as $propertyProperty) {
             $propertyProperty->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -607,6 +607,19 @@ final readonly class PHPStanNodeScopeResolver
             if ($propertyProperty->default instanceof Expr) {
                 $propertyProperty->default->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
+        }
+
+        foreach ($property->hooks as $hook) {
+            if ($hook->body === null) {
+                continue;
+            }
+
+            $hook->body->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+            $stmt = $hook->body instanceof Expr
+                ? [new Expression($hook->body)]
+                : [$hook->body];
+            $this->nodeScopeResolverProcessNodes($stmt, $mutatingScope, $nodeCallback);
         }
     }
 
