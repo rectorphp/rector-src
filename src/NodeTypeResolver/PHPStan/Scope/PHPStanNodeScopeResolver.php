@@ -614,8 +614,6 @@ final readonly class PHPStanNodeScopeResolver
                 continue;
             }
 
-            $hook->body->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
             $stmts = $hook->body instanceof Expr
                 ? [new Expression($hook->body)]
                 : [$hook->body];
