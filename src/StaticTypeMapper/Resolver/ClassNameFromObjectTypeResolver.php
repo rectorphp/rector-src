@@ -10,6 +10,7 @@ final class ClassNameFromObjectTypeResolver
 {
     public static function resolve(Type $type): ?string
     {
+        /** @var array<class-string> $objectClassNames */
         $objectClassNames = $type->getObjectClassNames();
 
         if (count($objectClassNames) !== 1) {

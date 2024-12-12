@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Rector\PhpParser\ValueObject;
 
 use PhpParser\Node\Stmt;
+use PhpParser\Token;
 
 final readonly class StmtsAndTokens
 {
     /**
      * @param Stmt[] $stmts
-     * @param array<int, array{int, string, int}|string> $tokens
+     * @param Token[] $tokens
      */
     public function __construct(
         private array $stmts,
@@ -27,7 +28,7 @@ final readonly class StmtsAndTokens
     }
 
     /**
-     * @return array<int, array{int, string, int}|string>
+     * @return Token[]
      */
     public function getTokens(): array
     {

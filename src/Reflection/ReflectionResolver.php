@@ -235,8 +235,8 @@ final readonly class ReflectionResolver
     public function resolveMethodReflectionFromNew(New_ $new): ?MethodReflection
     {
         $newClassType = $this->nodeTypeResolver->getType($new->class);
-        $className = ClassNameFromObjectTypeResolver::resolve($newClassType);
 
+        $className = ClassNameFromObjectTypeResolver::resolve($newClassType);
         if ($className === null) {
             return null;
         }

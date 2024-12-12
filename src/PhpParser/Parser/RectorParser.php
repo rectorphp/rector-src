@@ -60,6 +60,7 @@ final readonly class RectorParser
     {
         $stmts = $parser->parseString($fileContent);
 
+        /** @var \PhpParser\Parser $innerParser */
         $innerParser = $this->privatesAccessor->getPrivateProperty($parser, 'parser');
         $tokens = $innerParser->getTokens();
 

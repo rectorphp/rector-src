@@ -228,6 +228,7 @@ final class PhpDocInfo
     }
 
     /**
+     * @param class-string $class
      * @api used in tests, doctrine
      */
     public function hasByAnnotationClass(string $class): bool
