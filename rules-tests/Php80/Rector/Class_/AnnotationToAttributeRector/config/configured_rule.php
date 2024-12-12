@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Behat\Step\When;
 use Behat\Step\Then;
+use Behat\Step\When;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
