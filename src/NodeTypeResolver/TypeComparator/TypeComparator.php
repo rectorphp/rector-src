@@ -56,8 +56,8 @@ final readonly class TypeComparator
             return true;
         }
 
-        $firstType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($firstType);
-        $secondType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($secondType);
+//        $firstType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($firstType);
+//        $secondType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($secondType);
 
         if ($this->typeHasher->areTypesEqual($firstType, $secondType)) {
             return true;
