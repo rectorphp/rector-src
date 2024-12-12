@@ -98,7 +98,7 @@ final readonly class AssignToPropertyTypeInferer
         }
 
         // returns with constant as final result
-        // merge type with default value to ensure false and true merged as bool
+        // but merge type with default value to ensure false and true merged as bool
         $assignedExprTypes[] = $this->nodeTypeResolver->getNativeType($defaultPropertyValue);
         return $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes, true);
     }
