@@ -141,6 +141,10 @@ CODE_SAMPLE
                     }
                 }
             }
+
+            if ($type instanceof \PHPStan\Type\MixedType) {
+                return true;
+            }
         }
 
         return false;
