@@ -92,7 +92,13 @@ final readonly class AssignToPropertyTypeInferer
             return null;
         }
 
+        if (! $defaultPropertyValue instanceof Expr) {
+            // returns with constant as final result
+            return $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes, true);
+        }
+
         // returns with constant as final result
+        $assignedExprTypes[] = $this->nodeTypeResolver->getNativeType($defaultPropertyValue);
         return $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes, true);
     }
 
