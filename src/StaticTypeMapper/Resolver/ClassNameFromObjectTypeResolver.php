@@ -8,9 +8,6 @@ use PHPStan\Type\Type;
 
 final class ClassNameFromObjectTypeResolver
 {
-    /**
-     * @return class-string|null
-     */
     public static function resolve(Type $type): ?string
     {
         /** @var array<class-string> $objectClassNames */

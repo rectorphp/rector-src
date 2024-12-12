@@ -5,20 +5,7 @@ includes:
 parameters:
     level: 8
     errorFormat: symplify
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4e3ac08b3c (fix few reported static errors)
     reportUnmatchedIgnoredErrors: false
-    errorFormat: symplify
-=======
-    # reportUnmatchedIgnoredErrors: false
->>>>>>> 7a1a2b4658 (cleanup fixed phpstan errors)
-=======
-    reportUnmatchedIgnoredErrors: false
->>>>>>> 95bce6d377 (use config param to set error format)
 
     # requires exact closure types
     checkMissingCallableSignature: true
@@ -323,7 +310,6 @@ parameters:
         - '#Method Rector\\.*::providePolyfillPackage\(\) never returns#'
         - '#Method Rector\\.*::filterPolyfillPackages\(\) should return array\<#'
 
-<<<<<<< HEAD
         -
             identifier: typePerfect.noMixedMethodCaller
             paths:
@@ -332,14 +318,11 @@ parameters:
         -
             path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
             message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type> but returns list<PHPStan\\Type\\Type>#'
-=======
+
         # collection of Type
         -
             message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory::uniquateTypes\(\) should return array\<TType of PHPStan\\Type\\Type\> but returns list\<PHPStan\\Type\\Type>#'
             path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
-<<<<<<< HEAD
->>>>>>> 7a1a2b4658 (cleanup fixed phpstan errors)
-=======
 
         # known native PHP type
         -
@@ -355,12 +338,7 @@ parameters:
         -
             message: '#Possibly invalid array key type array<mixed>\|PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNode\|Rector\\BetterPhpDocParser\\PhpDoc\\DoctrineAnnotationTagValueNode\|Rector\\BetterPhpDocParser\\PhpDoc\\StringNode\|Rector\\BetterPhpDocParser\\ValueObject\\PhpDoc\\DoctrineAnnotation\\CurlyListNode\|string#'
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
-<<<<<<< HEAD
->>>>>>> 4e3ac08b3c (fix few reported static errors)
-=======
 
         # overly detailed
         - '#expects (non\-empty\-string|class-string), string given#'
         - '#expects list<(.*?)>, array<(.*?)> given#'
-
->>>>>>> e70cfd86c4 (add few static fixes)

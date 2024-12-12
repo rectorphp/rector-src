@@ -30,9 +30,7 @@ final class SplArrayFixedTypeNarrower
 
         if ($className === 'PhpCsFixer\Tokenizer\Tokens') {
             $types[] = new ObjectType('PhpCsFixer\Tokenizer\Token');
-        }
-
-        if ($className === 'PhpCsFixer\Doctrine\Annotation\Tokens') {
+        } elseif ($className === 'PhpCsFixer\Doctrine\Annotation\Tokens') {
             $types[] = new ObjectType('PhpCsFixer\Doctrine\Annotation\Token');
         }
 

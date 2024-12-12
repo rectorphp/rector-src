@@ -26,10 +26,6 @@ final readonly class TypeComparator
 {
     public function __construct(
         private TypeHasher $typeHasher,
-<<<<<<< HEAD
-=======
-        //        private TypeNormalizer $typeNormalizer,
->>>>>>> e07c5f96d4 (add few static fixes)
         private StaticTypeMapper $staticTypeMapper,
         private ArrayTypeComparator $arrayTypeComparator,
         private ScalarTypeComparator $scalarTypeComparator,
@@ -58,12 +54,6 @@ final readonly class TypeComparator
             return true;
         }
 
-<<<<<<< HEAD
-=======
-        //        $firstType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($firstType);
-        //        $secondType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($secondType);
-
->>>>>>> e07c5f96d4 (add few static fixes)
         if ($this->typeHasher->areTypesEqual($firstType, $secondType)) {
             return true;
         }

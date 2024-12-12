@@ -50,37 +50,17 @@
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^11.5",
         "rector/release-notes-generator": "^0.3.0",
-<<<<<<< HEAD
-<<<<<<< HEAD
         "rector/swiss-knife": "^2.0",
-=======
-<<<<<<< HEAD
-        "rector/swiss-knife": "^0.2.16",
->>>>>>> 7745041b3b (restore dev static analysis tools)
         "rector/type-perfect": "^2.0",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symplify/easy-coding-standard": "^12.5",
         "symplify/phpstan-extensions": "^12.0",
-<<<<<<< HEAD
-        "symplify/phpstan-rules": "^14.0",
         "symplify/rule-doc-generator": "^12.2.5",
         "symplify/vendor-patches": "^11.3",
         "tomasvotruba/class-leak": "^2.0",
-=======
-=======
-        "rector/type-perfect": "^2.0",
->>>>>>> d8ba100b89 (bump deps)
         "symplify/phpstan-rules": "^14.0.2",
-        "rector/swiss-knife": "^2.0",
-        "shipmonk/composer-dependency-analyser": "^1.8",
-        "symplify/easy-coding-standard": "^12.4",
-        "symplify/phpstan-extensions": "^12.0",
-        "symplify/rule-doc-generator": "^12.2",
-        "symplify/vendor-patches": "^11.3",
-        "tomasvotruba/class-leak": "^2.0",
         "tomasvotruba/type-coverage": "^2.0",
         "tomasvotruba/unused-public": "^2.0",
->>>>>>> 7745041b3b (restore dev static analysis tools)
         "tracy/tracy": "^2.9"
     },
     "replace": {
