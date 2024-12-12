@@ -178,7 +178,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
         // @see https://github.com/phpstan/phpdoc-parser/blob/98a088b17966bdf6ee25c8a4b634df313d8aa531/tests/PHPStan/Parser/PhpDocParserTest.php#L2692-L2696
 
         foreach ($genericTypes as $genericType) {
-            /** @var Node $genericType */
             $genericType->setAttribute(self::HAS_GENERIC_TYPE_PARENT, $withKey);
         }
 

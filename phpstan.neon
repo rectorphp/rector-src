@@ -4,13 +4,24 @@ includes:
 
 parameters:
     level: 8
+    errorFormat: symplify
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4e3ac08b3c (fix few reported static errors)
     reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
+=======
+    # reportUnmatchedIgnoredErrors: false
+>>>>>>> 7a1a2b4658 (cleanup fixed phpstan errors)
+=======
+    reportUnmatchedIgnoredErrors: false
+>>>>>>> 95bce6d377 (use config param to set error format)
 
     # requires exact closure types
     checkMissingCallableSignature: true
-
     treatPhpDocTypesAsCertain: false
 
     paths:
@@ -36,6 +47,17 @@ parameters:
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
 
+    type_coverage:
+        param: 99
+        return: 99
+        property: 99
+        constant: 99
+
+    unused_public:
+        methods: true
+        properties: true
+        constants: true
+
     # https://github.com/rectorphp/type-perfect/
     type_perfect:
         no_mixed: true
@@ -44,8 +66,7 @@ parameters:
         narrow_return: true
 
     ignoreErrors:
-        -
-            identifier: missingType.generics
+        - identifier: missingType.generics
 
         # phpstan class instance
         - identifier: phpstanApi.class
@@ -57,9 +78,9 @@ parameters:
         - identifier: phpstanApi.instanceofAssumption
 
         # assert phpunit
-        -
-            identifier: method.alreadyNarrowedType
-            path: tests
+#        -
+#            identifier: method.alreadyNarrowedType
+#            path: tests
 
         # runtime php id
         -
@@ -69,9 +90,10 @@ parameters:
         -
             identifier: phpstanApi.constructor
 
-        # enforce native type
+        # testing types
         -
-            identifier: varTag.nativeType
+            message: '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) will always evaluate to true#'
+            path: tests
 
         # on runtime check
         -
@@ -111,8 +133,6 @@ parameters:
                 - src/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
                 - src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
-        - '#(.*?) class\-string, string given#'
-
         -
             message: '#Use explicit return value over magic &reference#'
             paths:
@@ -148,9 +168,6 @@ parameters:
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
 
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
-
-        # known value
-        - '#Method (.*?) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000 but returns int#'
 
         -
             message: '#Function "class_exists\(\)" cannot be used/left in the code#'
@@ -266,6 +283,9 @@ parameters:
              message: '#Offset (.*?) on null on left side of \?\? does not exist#'
              path: src/Bootstrap/ExtensionConfigResolver.php
 
+        # known enum
+        - '#Method (.*?) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000 but returns int#'
+
         # wider types for external use
         -
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
@@ -307,6 +327,7 @@ parameters:
         - '#Method Rector\\.*::providePolyfillPackage\(\) never returns#'
         - '#Method Rector\\.*::filterPolyfillPackages\(\) should return array\<#'
 
+<<<<<<< HEAD
         -
             identifier: typePerfect.noMixedMethodCaller
             paths:
@@ -315,3 +336,27 @@ parameters:
         -
             path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
             message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type> but returns list<PHPStan\\Type\\Type>#'
+=======
+        # collection of Type
+        -
+            message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory::uniquateTypes\(\) should return array\<TType of PHPStan\\Type\\Type\> but returns list\<PHPStan\\Type\\Type>#'
+            path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
+<<<<<<< HEAD
+>>>>>>> 7a1a2b4658 (cleanup fixed phpstan errors)
+=======
+
+        # known native PHP type
+        -
+             message: '#PHPDoc tag @var with type array<string, int> is not subtype of native type array<int<1, max>>#'
+             path: rules/Naming/PhpArray/ArrayFilter.php
+
+        # known realpath
+        -
+             message: '#PHPDoc tag @var with type string is not subtype of native type non\-empty\-string\|false#'
+             path: bin/rector.php
+
+        # complext union type
+        -
+            message: '#Possibly invalid array key type array<mixed>\|PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNode\|Rector\\BetterPhpDocParser\\PhpDoc\\DoctrineAnnotationTagValueNode\|Rector\\BetterPhpDocParser\\PhpDoc\\StringNode\|Rector\\BetterPhpDocParser\\ValueObject\\PhpDoc\\DoctrineAnnotation\\CurlyListNode\|string#'
+            path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
+>>>>>>> 4e3ac08b3c (fix few reported static errors)

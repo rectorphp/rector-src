@@ -64,7 +64,6 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
         $phpStanDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($iterableType);
         $this->assertInstanceOf(GenericTypeNode::class, $phpStanDocTypeNode);
 
-        /** @var ArrayTypeNode $phpStanDocTypeNode */
         $this->assertInstanceOf(IdentifierTypeNode::class, $phpStanDocTypeNode->type);
     }
 
