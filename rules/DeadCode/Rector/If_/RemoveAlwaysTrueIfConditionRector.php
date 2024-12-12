@@ -19,6 +19,7 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\MixedType;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -142,7 +143,7 @@ CODE_SAMPLE
                 }
             }
 
-            if ($type instanceof \PHPStan\Type\MixedType) {
+            if ($type instanceof MixedType) {
                 return true;
             }
         }
