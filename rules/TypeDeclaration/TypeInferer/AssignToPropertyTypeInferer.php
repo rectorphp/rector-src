@@ -86,21 +86,11 @@ final readonly class AssignToPropertyTypeInferer
         }
 
         $inferredType = $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes);
-        // to compare with default value, constant type must not be kept
-        // eg, use more general bool over false or true
         if ($this->shouldSkipWithDifferentDefaultValueType($defaultPropertyValue, $inferredType)) {
             return null;
         }
 
-        if (! $defaultPropertyValue instanceof Expr) {
-            // returns with constant as final result
-            return $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes, true);
-        }
-
-        // returns with constant as final result
-        // but merge type with default value to ensure false and true merged as bool
-        $assignedExprTypes[] = $this->nodeTypeResolver->getNativeType($defaultPropertyValue);
-        return $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes, true);
+        return $inferredType;
     }
 
     private function shouldSkipWithDifferentDefaultValueType(?Expr $expr, Type $inferredType): bool
