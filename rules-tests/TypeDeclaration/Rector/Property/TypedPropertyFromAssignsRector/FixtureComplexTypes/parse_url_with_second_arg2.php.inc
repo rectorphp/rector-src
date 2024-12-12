@@ -2,9 +2,9 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
-final class ParseUrlWithSecondArg
+final class ParseUrlWithSecondArg2
 {
-    private $host = null;
+    private $host = true;
 
     public function __construct(string $url)
     {
@@ -18,9 +18,9 @@ final class ParseUrlWithSecondArg
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
-final class ParseUrlWithSecondArg
+final class ParseUrlWithSecondArg2
 {
-    private string|bool|null $host = null;
+    private string|bool|null $host = true;
 
     public function __construct(string $url)
     {
