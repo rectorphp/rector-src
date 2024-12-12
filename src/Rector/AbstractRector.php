@@ -162,7 +162,7 @@ CODE_SAMPLE;
                 true
             )) {
                 // notify this rule changing code
-                $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
+                $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
                 $this->file->addRectorClassWithLine($rectorWithLineChange);
 
                 return $refactoredNode;
