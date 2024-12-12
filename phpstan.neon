@@ -6,6 +6,7 @@ parameters:
     level: 8
 
     reportUnmatchedIgnoredErrors: false
+    errorFormat: symplify
 
     # requires exact closure types
     checkMissingCallableSignature: true
