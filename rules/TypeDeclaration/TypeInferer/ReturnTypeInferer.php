@@ -29,6 +29,5 @@ final readonly class ReturnTypeInferer
         }
 
         return $originalType;
-        // return $this->typeNormalizer->normalizeArrayTypeAndArrayNever($originalType);
     }
 }

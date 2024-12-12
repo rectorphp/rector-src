@@ -105,7 +105,7 @@ final class AutoloadIncluder
             return;
         }
 
-        /** @var string $realPath always string after file_exists() check */
+        /** @var non-empty-string $realPath always string after file_exists() check */
         $realPath = realpath($filePath);
         $this->alreadyLoadedAutoloadFiles[] = $realPath;
 
