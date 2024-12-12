@@ -90,7 +90,7 @@ final readonly class AssignToPropertyTypeInferer
             return null;
         }
 
-        return $inferredType;
+        return $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes, true);
     }
 
     private function shouldSkipWithDifferentDefaultValueType(?Expr $expr, Type $inferredType): bool
