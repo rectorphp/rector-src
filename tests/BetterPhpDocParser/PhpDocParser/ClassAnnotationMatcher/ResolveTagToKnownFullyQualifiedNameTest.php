@@ -16,6 +16,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
+use Webmozart\Assert\Assert;
 
 final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractLazyTestCase
 {
@@ -51,6 +52,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractLazyTestCase
             $varTagValueNode = $phpDoc->getVarTagValueNode();
             $this->assertInstanceOf(VarTagValueNode::class, $varTagValueNode);
 
+            /** @var non-empty-string $value */
             $value = $varTagValueNode->type->__toString();
             $propertyName = strtolower($this->nodeNameResolver->getName($property));
 
@@ -59,6 +61,8 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractLazyTestCase
                 $this->assertStringContainsString('Unknown', $result);
             } elseif (str_contains($propertyName, 'aliased')) {
                 $unaliasedClass = str_replace('Aliased', '', $value);
+                Assert::notEmpty($unaliasedClass);
+
                 $this->assertStringEndsWith($unaliasedClass, $result);
             } elseif (str_starts_with($propertyName, 'known')) {
                 $this->assertStringEndsWith($value, $result);

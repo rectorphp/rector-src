@@ -20,7 +20,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class ClassAnnotationMatcher
 {
     /**
-     * @var array<string, string>
+     * @var array<non-empty-string, string>
      */
     private array $fullyQualifiedNameByHash = [];
 
@@ -31,6 +31,9 @@ final class ClassAnnotationMatcher
     ) {
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function resolveTagFullyQualifiedName(string $tag, Node $node): string
     {
         $uniqueId = $tag . spl_object_id($node);
@@ -54,6 +57,7 @@ final class ClassAnnotationMatcher
 
     /**
      * @param array<Use_|GroupUse> $uses
+     * @return non-empty-string|null
      */
     private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag): ?string
     {
@@ -83,6 +87,7 @@ final class ClassAnnotationMatcher
 
     /**
      * @param array<Use_|GroupUse> $uses
+     * @return non-empty-string|null
      */
     private function resolveAsAliased(array $uses, string $tag): ?string
     {

@@ -167,7 +167,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
         if ($editorUrl !== '') {
             $editorUrl = str_replace(
                 ['%file%', '%relFile%', '%line%'],
-                [$absoluteFilePath, $relativeFilePath, $lineNumber],
+                [(string) $absoluteFilePath, (string) $relativeFilePath, (string) $lineNumber],
                 $editorUrl,
             );
             $filePath = '<href=' . OutputFormatter::escape($editorUrl) . '>' . $filePath . '</>';

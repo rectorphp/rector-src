@@ -46,7 +46,10 @@ final class GlobalVariableNodeVisitor extends NodeVisitorAbstract implements Sco
             foreach ($stmt->vars as $variable) {
                 if ($variable instanceof Variable && ! $variable->name instanceof Expr) {
                     $variable->setAttribute(AttributeKey::IS_GLOBAL_VAR, true);
-                    $globalVariableNames[] = $variable->name;
+
+                    /** @var string $variableName */
+                    $variableName = $variable->name;
+                    $globalVariableNames[] = $variableName;
                 }
             }
         }
