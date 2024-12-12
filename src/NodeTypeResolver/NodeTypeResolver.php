@@ -44,6 +44,7 @@ use PHPStan\Type\UnionType;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ClassAnalyzer;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverAwareInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -76,6 +77,7 @@ final class NodeTypeResolver
         private readonly ReflectionProvider $reflectionProvider,
         private readonly AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private readonly NodeNameResolver $nodeNameResolver,
         iterable $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
@@ -567,11 +569,12 @@ final class NodeTypeResolver
                 return $scope->getNativeType($expr);
             }
 
-            if (! $this->reflectionProvider->hasFunction($expr->name, $scope)) {
+            $functionName = new Name((string) $this->nodeNameResolver->getName($expr));
+            if (! $this->reflectionProvider->hasFunction($functionName, $scope)) {
                 return $scope->getNativeType($expr);
             }
 
-            $functionReflection = $this->reflectionProvider->getFunction($expr->name, $scope);
+            $functionReflection = $this->reflectionProvider->getFunction($functionName, $scope);
             if (! $functionReflection instanceof NativeFunctionReflection) {
                 return $scope->getNativeType($expr);
             }
