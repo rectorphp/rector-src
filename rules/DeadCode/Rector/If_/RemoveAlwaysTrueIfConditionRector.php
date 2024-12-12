@@ -141,10 +141,6 @@ CODE_SAMPLE
                     }
                 }
             }
-
-            if ($type instanceof \PHPStan\Type\MixedType) {
-                dump_node($variable);
-            }
         }
 
         return false;
