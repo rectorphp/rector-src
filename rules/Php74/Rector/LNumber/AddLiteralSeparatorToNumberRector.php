@@ -168,6 +168,7 @@ CODE_SAMPLE
     }
 
     /**
+     * @param int<1, max> $length
      * @return string[]
      */
     private function strSplitNegative(string $string, int $length): array
