@@ -8,7 +8,6 @@ use Iterator;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -63,8 +62,6 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
 
         $phpStanDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($iterableType);
         $this->assertInstanceOf(GenericTypeNode::class, $phpStanDocTypeNode);
-
-        /** @var ArrayTypeNode $phpStanDocTypeNode */
         $this->assertInstanceOf(IdentifierTypeNode::class, $phpStanDocTypeNode->type);
     }
 

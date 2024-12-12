@@ -69,10 +69,6 @@ parameters:
         -
             identifier: phpstanApi.constructor
 
-        # enforce native type
-        -
-            identifier: varTag.nativeType
-
         # on runtime check
         -
             identifier: deadCode.unreachable
@@ -82,9 +78,6 @@ parameters:
 
         -
             identifier: argument.type
-
-#        -
-#            identifier: phpstanApi.varTagAssumption
 
         # is nested expr
         -
@@ -315,3 +308,12 @@ parameters:
         -
             path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
             message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type> but returns list<PHPStan\\Type\\Type>#'
+
+        # known types
+        -
+            message: '#PHPDoc tag @var with type array<string, int> is not subtype of native type array<int<1, max>>#'
+            path: rules/Naming/PhpArray/ArrayFilter.php
+
+        -
+            message: '#PHPDoc tag @var with type int is not subtype of native type array\|PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNode\|Rector\\BetterPhpDocParser\\PhpDoc\\DoctrineAnnotationTagValueNode\|Rector\\BetterPhpDocParser\\PhpDoc\\StringNode\|Rector\\BetterPhpDocParser\\ValueObject\\PhpDoc\\DoctrineAnnotation\\CurlyListNode\|string#'
+            path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
