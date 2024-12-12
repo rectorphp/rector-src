@@ -27,7 +27,7 @@ jobs:
 
                     -
                         name: 'PHPStan'
-                        run: vendor/bin/phpstan analyse --ansi --error-format symplify
+                        run: vendor/bin/phpstan analyse --ansi
 
                     -
                         name: 'Commented Code'
