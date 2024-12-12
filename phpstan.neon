@@ -1,7 +1,7 @@
 # to be enabled later once rector upgraded to use phpstan v2
-#includes:
-#    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
-#    - vendor/symplify/phpstan-rules/config/rector-rules.neon
+includes:
+    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
+    - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 parameters:
     level: 8
