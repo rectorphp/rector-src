@@ -384,3 +384,10 @@ parameters:
         -
             message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory::uniquateTypes\(\) should return array\<TType of PHPStan\\Type\\Type\> but returns list\<PHPStan\\Type\\Type>#'
             path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
+
+        -
+            identifier: typePerfect.noMixedMethodCaller
+            paths:
+                - src/PhpParser/Parser/RectorParser.php
+                - src/functions/node_helper.php
+                - src/DependencyInjection/LazyContainerFactory.php
