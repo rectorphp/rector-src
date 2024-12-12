@@ -295,10 +295,6 @@ final readonly class ReflectionResolver
         }
 
         $functionName = new Name((string) $this->nodeNameResolver->getName($funcCall));
-        if ($functionName === null) {
-            return null;
-        }
-
         if ($this->reflectionProvider->hasFunction($functionName, $scope)) {
             return $this->reflectionProvider->getFunction($functionName, $scope);
         }
