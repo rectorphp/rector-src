@@ -6,8 +6,6 @@ final class BackslashWithoutNewline
 {
     /**
      * @Then then :value should \
-     *
-     * bar
      */
     public function someStep(): void
     {
