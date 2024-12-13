@@ -8,14 +8,15 @@ use Nette\Utils\Strings;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\AttributeValueAndDocComment;
+use Rector\Util\NewLineSplitter;
 
 final class AttributeValueResolver
 {
     /**
      * @var string
-     * @see https://regex101.com/r/CL9ktz/1
+     * @see https://regex101.com/r/CL9ktz/4
      */
-    private const END_SLASH_REGEX = '#\\\\\r?$#';
+    private const END_SLASH_REGEX = '#\\\\$#';
 
     public function resolve(
         AnnotationToAttribute $annotationToAttribute,
@@ -31,7 +32,7 @@ final class AttributeValueResolver
         // special case for newline
         if (str_contains($docValue, "\n")) {
             $keepJoining = true;
-            $docValueLines = explode("\n", $docValue);
+            $docValueLines = NewLineSplitter::split($docValue);
 
             $joinDocValue = '';
 
