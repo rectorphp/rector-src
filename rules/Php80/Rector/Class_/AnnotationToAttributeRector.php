@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -18,7 +17,9 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -32,6 +33,7 @@ use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
+use Rector\Php80\ValueObject\AttributeValueAndDocComment;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
@@ -63,7 +65,8 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly AttributeValueResolver $attributeValueResolver
     ) {
     }
 
@@ -179,7 +182,7 @@ CODE_SAMPLE
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (DocNode $docNode) use (
             &$attributeGroups,
-        ): ?int {
+        ): int|PhpDocChildNode|null {
             if (! $docNode instanceof PhpDocTagNode) {
                 return null;
             }
@@ -206,21 +209,20 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $docValue = null;
-                if ($annotationToAttribute->getUseValueAsAttributeArgument()) {
-                    // special case for newline
-                    $docValue = (string) $docNode->value;
-                    if (str_contains($docValue, '\\')) {
-                        $docValue = Strings::replace($docValue, "#\\\\\r?\n#", '');
-                    }
-                }
+                $attributeValueAndDocComment = $this->attributeValueResolver->resolve($annotationToAttribute, $docNode);
 
                 $attributeGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag(
                     $annotationToAttribute,
-                    $docValue
+                    $attributeValueAndDocComment instanceof AttributeValueAndDocComment ? $attributeValueAndDocComment->attributeValue : null,
                 );
 
+                // keep partial original comment, if useful
+                if ($attributeValueAndDocComment instanceof AttributeValueAndDocComment && $attributeValueAndDocComment->docComment) {
+                    return new PhpDocTextNode($attributeValueAndDocComment->docComment);
+                }
+
                 return PhpDocNodeTraverser::NODE_REMOVE;
+
             }
 
             return null;
