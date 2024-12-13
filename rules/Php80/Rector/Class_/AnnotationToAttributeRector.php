@@ -170,14 +170,14 @@ CODE_SAMPLE
             return;
         }
 
-        foreach ($node->getComments() as $comment) {
-            if ($comment->getText() !== '') {
-                return;
+        foreach ($comments as $key => $comment) {
+            if ($comment->getText() === '') {
+                unset($comments[$key]);
+                continue;
             }
         }
 
-        $node->setAttribute(AttributeKey::COMMENTS, []);
-        $node->setAttribute(AttributeKey::PHP_DOC_INFO, null);
+        $node->setAttribute(AttributeKey::COMMENTS, $comments);
     }
 
     /**
