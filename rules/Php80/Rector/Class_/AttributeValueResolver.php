@@ -13,9 +13,9 @@ final class AttributeValueResolver
 {
     /**
      * @var string
-     * @see https://regex101.com/r/CL9ktz/1
+     * @see https://regex101.com/r/CL9ktz/2
      */
-    private const END_SLASH_REGEX = '#\\\\\r?$#';
+    private const END_SLASH_REGEX = '#\\\\$#';
 
     public function resolve(
         AnnotationToAttribute $annotationToAttribute,
