@@ -13,7 +13,7 @@ final class AttributeValueResolver
 {
     /**
      * @var string
-     * @see https://regex101.com/r/CL9ktz/2
+     * @see https://regex101.com/r/CL9ktz/4
      */
     private const END_SLASH_REGEX = '#\\\\$#';
 
