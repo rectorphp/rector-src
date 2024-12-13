@@ -177,7 +177,7 @@ CODE_SAMPLE
             }
         }
 
-        $node->setAttribute(AttributeKey::COMMENTS, $comments);
+        $node->setAttribute(AttributeKey::COMMENTS, array_values($comments));
     }
 
     /**

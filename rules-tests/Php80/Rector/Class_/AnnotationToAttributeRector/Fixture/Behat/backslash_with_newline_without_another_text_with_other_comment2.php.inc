@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Behat;
 
-final class BackslashWitNewlineWithoutAnotherTextWithOtherComment
+final class BackslashWitNewlineWithoutAnotherTextWithOtherComment2
 {
     // some comment
     /**
@@ -11,7 +11,6 @@ final class BackslashWitNewlineWithoutAnotherTextWithOtherComment
      *
      *
      */
-    // some comment 2
     public function someStep(): void
     {
     }
@@ -23,10 +22,9 @@ final class BackslashWitNewlineWithoutAnotherTextWithOtherComment
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Behat;
 
-final class BackslashWitNewlineWithoutAnotherTextWithOtherComment
+final class BackslashWitNewlineWithoutAnotherTextWithOtherComment2
 {
     // some comment
-    // some comment 2
     #[\Behat\Step\Then('then :value should \\')]
     public function someStep(): void
     {
