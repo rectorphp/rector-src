@@ -15,43 +15,42 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericA
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericSingleImplicitAnnotation;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig
-        ->ruleWithConfiguration(AnnotationToAttributeRector::class, [
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\Embeddable'),
+    $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\Embeddable'),
 
-            new AnnotationToAttribute(PastAnnotation::class, FutureAttribute::class),
-            new AnnotationToAttribute(NestedPastAnnotation::class, NestedFutureAttribute::class),
+        new AnnotationToAttribute(PastAnnotation::class, FutureAttribute::class),
+        new AnnotationToAttribute(NestedPastAnnotation::class, NestedFutureAttribute::class),
 
-            // use always this annotation to test inner part of annotation - arguments, arrays, calls...
-            new AnnotationToAttribute(GenericAnnotation::class),
-            new AnnotationToAttribute(GenericSingleImplicitAnnotation::class),
+        // use always this annotation to test inner part of annotation - arguments, arrays, calls...
+        new AnnotationToAttribute(GenericAnnotation::class),
+        new AnnotationToAttribute(GenericSingleImplicitAnnotation::class),
 
-            new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
+        new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
 
-            // doctrine
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity', null, ['repositoryClass']),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
+        // doctrine
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity', null, ['repositoryClass']),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
 
-            // validation
-            new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
-            new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
-            new AnnotationToAttribute('Symfony\Component\Validator\Constraints\File'),
+        // validation
+        new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
+        new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
+        new AnnotationToAttribute('Symfony\Component\Validator\Constraints\File'),
 
-            // JMS + Symfony
-            new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),
+        // JMS + Symfony
+        new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),
 
-            // test for alias used
-            new AnnotationToAttribute(
-                'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestSmth'
-            ),
-            new AnnotationToAttribute(
-                'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestOther'
-            ),
-            new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\Security'),
+        // test for alias used
+        new AnnotationToAttribute(
+            'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestSmth'
+        ),
+        new AnnotationToAttribute(
+            'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestOther'
+        ),
+        new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\Security'),
 
-            // special case with following comment becoming a inner value
-            new AnnotationToAttribute('When', When::class, useValueAsAttributeArgument: true),
-            new AnnotationToAttribute('Then', Then::class, useValueAsAttributeArgument: true),
-        ]);
+        // special case with following comment becoming a inner value
+        new AnnotationToAttribute('When', When::class, useValueAsAttributeArgument: true),
+        new AnnotationToAttribute('Then', Then::class, useValueAsAttributeArgument: true),
+    ]);
 };
