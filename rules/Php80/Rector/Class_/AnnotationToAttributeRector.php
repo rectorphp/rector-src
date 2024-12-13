@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -171,7 +172,7 @@ CODE_SAMPLE
         }
 
         foreach ($comments as $key => $comment) {
-            if ($comment->getText() === '') {
+            if ($comment instanceof Doc && $comment->getText() === '') {
                 unset($comments[$key]);
                 continue;
             }
