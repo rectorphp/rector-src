@@ -10,6 +10,7 @@ final class WithValueAsArgumentAndDescription
      * @When(key="value") some description
      *
      * other comment
+     * other new line comment
      */
     public function someStep(): void
     {
@@ -30,6 +31,7 @@ final class WithValueAsArgumentAndDescription
      * some description
      *
      * other comment
+     * other new line comment
      */
     #[\Behat\Step\When('(key="value")')]
     public function someStep(): void
