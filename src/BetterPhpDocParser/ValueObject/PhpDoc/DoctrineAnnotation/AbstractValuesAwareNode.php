@@ -100,6 +100,11 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         $this->hasChanged = true;
     }
 
+    public function getOriginalContent(): ?string
+    {
+        return $this->originalContent;
+    }
+
     /**
      * @param mixed[] $values
      */
