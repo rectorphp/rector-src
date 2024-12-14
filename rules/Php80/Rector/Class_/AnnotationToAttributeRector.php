@@ -152,9 +152,6 @@ CODE_SAMPLE
         // 3. Reprint docblock
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
-        // 4. Left over comment removal
-        //$this->cleanLeftOverComment($node);
-
         $this->attributeGroupNamedArgumentManipulator->decorate($attributeGroups);
         $node->attrGroups = array_merge($node->attrGroups, $attributeGroups);
 
