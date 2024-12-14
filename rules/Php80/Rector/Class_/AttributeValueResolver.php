@@ -32,6 +32,17 @@ final class AttributeValueResolver
 
         $docValue = (string) $phpDocTagNode->value;
 
+        if ($docValue === '' && $phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
+            $originalContent = (string) $phpDocTagNode->value->getOriginalContent();
+            $attributeComment = (string) $phpDocTagNode->value->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
+
+            if ($originalContent === $attributeComment) {
+                $docValue = $originalContent;
+            } else {
+
+            }
+        }
+
         /*if ($phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
             $docValue = (string) $phpDocTagNode->value->getOriginalContent();
             $attributeComment = (string) $phpDocTagNode->value->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
