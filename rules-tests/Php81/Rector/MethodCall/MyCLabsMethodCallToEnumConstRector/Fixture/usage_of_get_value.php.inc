@@ -2,13 +2,16 @@
 
 namespace Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Fixture;
 
+use Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeClass;
 use Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum;
 
 final class UsageOfGetValue
 {
     public function run($value)
     {
-        $enum = SomeEnum::USED_TO_BE_CONST()->getValue();
+        $value = SomeEnum::USED_TO_BE_CONST()->getValue();
+        $enum = SomeEnum::USED_TO_BE_CONST();
+        $value2 = $enum->getValue();
     }
 }
 
@@ -18,13 +21,16 @@ final class UsageOfGetValue
 
 namespace Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Fixture;
 
+use Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeClass;
 use Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum;
 
 final class UsageOfGetValue
 {
     public function run($value)
     {
-        $enum = \Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum::USED_TO_BE_CONST->value;
+        $value = \Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum::USED_TO_BE_CONST->value;
+        $enum = \Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum::USED_TO_BE_CONST;
+        $value2 = $enum->value;
     }
 }
 
