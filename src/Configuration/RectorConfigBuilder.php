@@ -175,7 +175,7 @@ final class RectorConfigBuilder
         }
 
         // not to miss it by accident
-        if ($this->isWithPhpSetsUsed) {
+        if ($this->isWithPhpSetsUsed === true) {
             $this->sets[] = SetList::PHP_POLYFILLS;
         }
 
