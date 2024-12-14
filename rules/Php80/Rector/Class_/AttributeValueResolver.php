@@ -44,14 +44,18 @@ final class AttributeValueResolver
 
             $hasPreviousEndSlash = false;
 
-            foreach ($docValueLines as $docValueLine) {
+            foreach ($docValueLines as $key => $docValueLine) {
                 if ($keepJoining) {
                     $joinDocValue .= rtrim($docValueLine, '\\\\');
                 }
 
                 if (Strings::match($docValueLine, self::END_SLASH_REGEX) === null) {
-                    if ($hasPreviousEndSlash === false) {
-                        $docComment = $docValueLine;
+                    if ($hasPreviousEndSlash === false && $key > 0) {
+                        if ($key === 1) {
+                            $docComment .= $docValueLine;
+                        } else {
+                            $docComment .= "\n * " . $docValueLine;
+                        }
                     }
 
                     $keepJoining = false;
