@@ -93,12 +93,12 @@ CODE_SAMPLE
 
     private function isMyCLabsConstructor(New_ $node, string $classname): bool
     {
-        $class_reflection = $this->reflectionProvider->getClass($classname);
-        if (! $class_reflection->hasMethod(MethodName::CONSTRUCT)) {
+        $classReflection = $this->reflectionProvider->getClass($classname);
+        if (! $classReflection->hasMethod(MethodName::CONSTRUCT)) {
             return true;
         }
 
-        return $class_reflection
+        return $classReflection
             ->getMethod(MethodName::CONSTRUCT, ScopeFetcher::fetch($node))
             ->getDeclaringClass()
             ->getName() === self::MY_C_LABS_CLASS;
