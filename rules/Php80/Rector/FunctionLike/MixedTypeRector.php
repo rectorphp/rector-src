@@ -70,8 +70,6 @@ CODE_SAMPLE
             'The `%s` is removed. Use "typeDeclarations" set in rector.php instead, to avoid filling mixed on better known types.',
             self::class
         ));
-
-        return null;
     }
 
     public function provideMinPhpVersion(): int
