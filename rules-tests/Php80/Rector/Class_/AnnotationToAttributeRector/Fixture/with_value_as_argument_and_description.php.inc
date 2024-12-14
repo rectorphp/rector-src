@@ -28,6 +28,7 @@ final class WithValueAsArgumentAndDescription
 {
     /**
      * original comment
+     * some other new lines
      *
      * some description
      *
