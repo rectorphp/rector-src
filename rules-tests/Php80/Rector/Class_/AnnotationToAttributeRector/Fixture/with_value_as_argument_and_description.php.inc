@@ -6,6 +6,7 @@ final class WithValueAsArgumentAndDescription
 {
     /**
      * original comment
+     * some other new lines
      *
      * @When(key="value") some description
      *
