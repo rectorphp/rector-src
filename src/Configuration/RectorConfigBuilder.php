@@ -174,6 +174,11 @@ final class RectorConfigBuilder
             SimpleParameterProvider::addParameter(Option::COMPOSER_BASED_SETS, $this->groupLoadedSets);
         }
 
+        // not to miss it by accident
+        if ($this->isWithPhpSetsUsed === true) {
+            $this->sets[] = SetList::PHP_POLYFILLS;
+        }
+
         // merge sets together
         $this->sets = array_merge($this->sets, $this->groupLoadedSets);
 
@@ -493,6 +498,7 @@ final class RectorConfigBuilder
     }
 
     /**
+     * @deprecated Already included in withPhpSets(), no need to repeat
      * make use of polyfill packages in composer.json
      */
     public function withPhpPolyfill(): self
@@ -522,7 +528,6 @@ final class RectorConfigBuilder
         bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
         $this->isWithPhpSetsUsed = true;
-        $this->withPhpPolyfill();
 
         $pickedArguments = array_filter(func_get_args());
         if ($pickedArguments !== []) {
