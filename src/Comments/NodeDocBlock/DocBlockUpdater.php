@@ -49,7 +49,10 @@ final readonly class DocBlockUpdater
 
     private function clearEmptyDoc(Node $node): void
     {
-        $comments = array_filter($node->getComments(), static fn (Comment $comment): bool => ! $comment instanceof Doc || $comment->getText() !== '');
+        $comments = array_filter(
+            $node->getComments(),
+            static fn (Comment $comment): bool => ! $comment instanceof Doc || $comment->getText() !== ''
+        );
         $node->setAttribute(AttributeKey::COMMENTS, array_values($comments));
     }
 
