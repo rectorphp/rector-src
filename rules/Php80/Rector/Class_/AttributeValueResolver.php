@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\Class_;
 
 use Nette\Utils\Strings;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\AttributeValueAndDocComment;
 use Rector\Util\NewLineSplitter;
@@ -26,7 +27,12 @@ final class AttributeValueResolver
             return null;
         }
 
-        $docValue = (string) $phpDocTagNode->value;
+        if ($phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
+            $docValue = (string) $phpDocTagNode->value->getOriginalContent();
+        } else {
+            $docValue = (string) $phpDocTagNode->value;
+        }
+
         $docComment = '';
 
         // special case for newline

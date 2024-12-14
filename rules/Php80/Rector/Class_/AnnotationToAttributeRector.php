@@ -163,6 +163,20 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        Assert::allIsAOf($configuration, AnnotationToAttribute::class);
+        $this->annotationsToAttributes = $configuration;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ATTRIBUTES;
+    }
+
     private function cleanLeftOverComment(Node $node): void
     {
         $comments = $node->getComments();
@@ -182,20 +196,6 @@ CODE_SAMPLE
     }
 
     /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allIsAOf($configuration, AnnotationToAttribute::class);
-        $this->annotationsToAttributes = $configuration;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::ATTRIBUTES;
-    }
-
-    /**
      * @return AttributeGroup[]
      */
     private function processGenericTags(PhpDocInfo $phpDocInfo): array
@@ -206,11 +206,12 @@ CODE_SAMPLE
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (DocNode $docNode) use (
             &$attributeGroups,
         ): int|PhpDocChildNode|null {
+
             if (! $docNode instanceof PhpDocTagNode) {
                 return null;
             }
 
-            if (! $docNode->value instanceof GenericTagValueNode) {
+            if (! $docNode->value instanceof GenericTagValueNode && ! $docNode->value instanceof DoctrineAnnotationTagValueNode) {
                 return null;
             }
 
