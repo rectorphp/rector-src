@@ -7,6 +7,7 @@ namespace Rector\Php80\Rector\Class_;
 use Nette\Utils\Strings;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\AttributeValueAndDocComment;
 use Rector\Util\NewLineSplitter;
@@ -27,11 +28,26 @@ final class AttributeValueResolver
             return null;
         }
 
-        if ($phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
+        $docCommentAppend = '';
+
+        $docValue = (string) $phpDocTagNode->value;
+
+        /*if ($phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
             $docValue = (string) $phpDocTagNode->value->getOriginalContent();
+            $attributeComment = (string) $phpDocTagNode->value->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
+            $strippedDocValue = rtrim($docValue, $attributeComment);
+
+            dump($docValue);
+            //dump($attributeComment);
+            //die;
+
+            if (str_starts_with($docValue, '(') && $attributeComment !== '') {
+                $docValue = $strippedDocValue;
+                $docCommentAppend = $attributeComment;die('here');
+            }
         } else {
             $docValue = (string) $phpDocTagNode->value;
-        }
+        }*/
 
         $docComment = '';
 
