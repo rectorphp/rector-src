@@ -88,7 +88,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return new StaticCall(new Name\FullyQualified($classname), self::DEFAULT_ENUM_CONSTRUCTOR, $node->getArgs());
+        return new StaticCall(new Name\FullyQualified($classname), self::DEFAULT_ENUM_CONSTRUCTOR, $node->args);
     }
 
     private function isMyCLabsConstructor(New_ $node, string $classname): bool
