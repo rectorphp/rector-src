@@ -28,37 +28,24 @@ final class AttributeValueResolver
             return null;
         }
 
-        $docCommentAppend = '';
-
         $docValue = (string) $phpDocTagNode->value;
 
-        if ($docValue === '' && $phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
+        if ($phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
             $originalContent = (string) $phpDocTagNode->value->getOriginalContent();
-            $attributeComment = (string) $phpDocTagNode->value->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
 
-            if ($originalContent === $attributeComment) {
-                $docValue = $originalContent;
+            if ($docValue === '') {
+                $attributeComment = (string) $phpDocTagNode->value->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
+
+                if ($originalContent === $attributeComment) {
+                    $docValue = $originalContent;
+                }
             } else {
-
+                $attributeComment = ltrim($originalContent, $docValue);
+                if ($attributeComment !== '') {
+                    $docValue .= "\n" . $attributeComment;
+                }
             }
         }
-
-        /*if ($phpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
-            $docValue = (string) $phpDocTagNode->value->getOriginalContent();
-            $attributeComment = (string) $phpDocTagNode->value->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
-            $strippedDocValue = rtrim($docValue, $attributeComment);
-
-            dump($docValue);
-            //dump($attributeComment);
-            //die;
-
-            if (str_starts_with($docValue, '(') && $attributeComment !== '') {
-                $docValue = $strippedDocValue;
-                $docCommentAppend = $attributeComment;die('here');
-            }
-        } else {
-            $docValue = (string) $phpDocTagNode->value;
-        }*/
 
         $docComment = '';
 

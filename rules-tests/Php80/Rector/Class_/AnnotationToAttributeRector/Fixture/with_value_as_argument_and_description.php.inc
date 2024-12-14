@@ -27,9 +27,11 @@ final class WithValueAsArgumentAndDescription
     /**
      * original comment
      *
+     * some description
+     *
      * other comment
      */
-    #[\Behat\Step\When('(key="value")')] // some description
+    #[\Behat\Step\When('(key="value")')]
     public function someStep(): void
     {
     }
