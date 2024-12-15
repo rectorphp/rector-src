@@ -5,9 +5,9 @@ declare(strict_types=1);
 // see https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata
 namespace PHPSTORM_META;
 
-// $container->get(Type::class) → instance of "Type"
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 
+// $container->get(Type::class) → instance of "Type"
 override(\Psr\Container\ContainerInterface::get(0), type(0));
 
 expectedArguments(
