@@ -5,13 +5,17 @@ declare(strict_types=1);
 // see https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata
 namespace PHPSTORM_META;
 
+use Psr\Container\ContainerInterface;
+use PHPStan\PhpDocParser\Ast\Node;
+use PHPStan\PhpDocParser\Ast\NodeAttributes;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 
 // $container->get(Type::class) → instance of "Type"
-override(\Psr\Container\ContainerInterface::get(0), type(0));
+override((new ContainerInterface())->get(0), type(0));
 
 expectedArguments(
-    \PHPStan\PhpDocParser\Ast\Node::getAttribute(),
+    (new Node())->getAttribute(),
     0,
     PhpDocAttributeKey::START_AND_END,
     PhpDocAttributeKey::LAST_PHP_DOC_TOKEN_POSITION,
@@ -21,7 +25,7 @@ expectedArguments(
 );
 
 expectedArguments(
-    \PHPStan\PhpDocParser\Ast\NodeAttributes::getAttribute(),
+    (new NodeAttributes())->getAttribute(),
     0,
     PhpDocAttributeKey::START_AND_END,
     PhpDocAttributeKey::LAST_PHP_DOC_TOKEN_POSITION,
@@ -31,7 +35,7 @@ expectedArguments(
 );
 
 expectedArguments(
-    \PHPStan\PhpDocParser\Ast\Node::hasAttribute(),
+    (new Node())->hasAttribute(),
     0,
     PhpDocAttributeKey::START_AND_END,
     PhpDocAttributeKey::LAST_PHP_DOC_TOKEN_POSITION,
@@ -44,31 +48,31 @@ expectedArguments(
 // PhpStorm 2019.1 - add argument autocomplete
 // https://blog.jetbrains.com/phpstorm/2019/02/new-phpstorm-meta-php-features/
 expectedArguments(
-    \PhpParser\Node::getAttribute(),
+    (new \PhpParser\Node())->getAttribute(),
     0,
-    \Rector\NodeTypeResolver\Node\AttributeKey::SCOPE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::REPRINT_RAW_VALUE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NODE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::IS_UNREACHABLE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::PHP_DOC_INFO,
-    \Rector\NodeTypeResolver\Node\AttributeKey::KIND,
-    \Rector\NodeTypeResolver\Node\AttributeKey::IS_REGULAR_PATTERN,
-    \Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NAME,
-    \Rector\NodeTypeResolver\Node\AttributeKey::COMMENTS,
-    \Rector\NodeTypeResolver\Node\AttributeKey::RAW_VALUE,
+    AttributeKey::SCOPE,
+    AttributeKey::REPRINT_RAW_VALUE,
+    AttributeKey::ORIGINAL_NODE,
+    AttributeKey::IS_UNREACHABLE,
+    AttributeKey::PHP_DOC_INFO,
+    AttributeKey::KIND,
+    AttributeKey::IS_REGULAR_PATTERN,
+    AttributeKey::ORIGINAL_NAME,
+    AttributeKey::COMMENTS,
+    AttributeKey::RAW_VALUE,
 );
 
 expectedArguments(
-    \PhpParser\Node::setAttribute(),
+    (new \PhpParser\Node())->setAttribute(),
     0,
-    \Rector\NodeTypeResolver\Node\AttributeKey::SCOPE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::REPRINT_RAW_VALUE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NODE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::IS_UNREACHABLE,
-    \Rector\NodeTypeResolver\Node\AttributeKey::PHP_DOC_INFO,
-    \Rector\NodeTypeResolver\Node\AttributeKey::KIND,
-    \Rector\NodeTypeResolver\Node\AttributeKey::IS_REGULAR_PATTERN,
-    \Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NAME,
-    \Rector\NodeTypeResolver\Node\AttributeKey::COMMENTS,
-    \Rector\NodeTypeResolver\Node\AttributeKey::RAW_VALUE,
+    AttributeKey::SCOPE,
+    AttributeKey::REPRINT_RAW_VALUE,
+    AttributeKey::ORIGINAL_NODE,
+    AttributeKey::IS_UNREACHABLE,
+    AttributeKey::PHP_DOC_INFO,
+    AttributeKey::KIND,
+    AttributeKey::IS_REGULAR_PATTERN,
+    AttributeKey::ORIGINAL_NAME,
+    AttributeKey::COMMENTS,
+    AttributeKey::RAW_VALUE,
 );

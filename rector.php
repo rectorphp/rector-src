@@ -33,6 +33,7 @@ return RectorConfig::configure()
         __DIR__ . '/utils',
         __DIR__ . '/config',
         __DIR__ . '/build/build-preload.php',
+        __DIR__ . '/.phpstorm.meta.php',
     ])
     ->withRootFiles()
     ->withImportNames(removeUnusedImports: true)
