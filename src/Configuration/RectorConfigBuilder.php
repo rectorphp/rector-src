@@ -363,8 +363,8 @@ final class RectorConfigBuilder
     }
 
     /**
-     * Include PHP files from the root directory,
-     * typically ecs.php, rector.php etc.
+     * Include PHP files from the root directory (including hidden ones),
+     * typically ecs.php, rector.php, .php-cs-fixer.dist.php etc.
      */
     public function withRootFiles(): self
     {
@@ -413,7 +413,9 @@ final class RectorConfigBuilder
         $rootPhpFilesFinder = (new Finder())->files()
             ->in(getcwd())
             ->depth(0)
-            ->name('*.php');
+            ->ignoreDotFiles(false)
+            ->name('*.php')
+            ->name('.*.php');
 
         foreach ($rootPhpFilesFinder as $rootPhpFileFinder) {
             $path = $rootPhpFileFinder->getRealPath();
