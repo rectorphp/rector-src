@@ -415,7 +415,11 @@ final class RectorConfigBuilder
             ->depth(0)
             ->ignoreDotFiles(false)
             ->name('*.php')
-            ->name('.*.php');
+            ->name('.*.php')
+            // this file cannot be interpreted as PHP file
+            // https://www.jetbrains.com/help/phpstorm/ide-advanced-metadata.html#expected-arguments
+            ->notName('.phpstorm.meta.php')
+        ;
 
         foreach ($rootPhpFilesFinder as $rootPhpFileFinder) {
             $path = $rootPhpFileFinder->getRealPath();
