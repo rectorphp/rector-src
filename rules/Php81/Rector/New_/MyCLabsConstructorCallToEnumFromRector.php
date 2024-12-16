@@ -77,7 +77,7 @@ CODE_SAMPLE
 
         $classname = $this->getName($node->class);
         if (in_array($classname, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
-            $classname = ScopeFetcher::fetch($node) ->getClassReflection()?->getDisplayName();
+            $classname = ScopeFetcher::fetch($node)->getClassReflection()?->getName();
         }
 
         if ($classname === null) {
