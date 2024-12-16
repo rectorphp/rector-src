@@ -12,11 +12,6 @@ use PHPStan\Type\Type;
 
 final readonly class ClassChildAnalyzer
 {
-    public function hasParentClassMethod(ClassReflection $classReflection, string $methodName): bool
-    {
-        return $this->resolveParentClassMethods($classReflection, $methodName) !== [];
-    }
-
     /**
      * Look both parent class and interface, yes, all PHP interface methods are abstract
      */
