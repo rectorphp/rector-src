@@ -215,7 +215,7 @@ CODE_SAMPLE
 
         $totalParams = count($classMethod->params);
 
-        foreach ($params as $key => $param) {
+        foreach (array_keys($params) as $key) {
             for ($iteration = $key + 1; $iteration < $totalParams; ++$iteration) {
                 if (isset($classMethod->params[$iteration]) && ! $classMethod->params[$iteration]->default instanceof Expr) {
                     return [];
