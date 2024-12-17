@@ -209,9 +209,13 @@ CODE_SAMPLE
             static fn (Param $param): bool => $param->type instanceof NullableType
         );
 
+        $totalParams = count($classMethod->params);
+
         foreach ($params as $key => $param) {
-            if (isset($classMethod->params[$key + 1]) && ! $classMethod->params[$key + 1]->default instanceof Expr) {
-                return [];
+            for ($iteration = $key + 1; $iteration < $totalParams; ++$iteration) {
+                if (isset($classMethod->params[$iteration]) && ! $classMethod->params[$iteration]->default instanceof Expr) {
+                    return [];
+                }
             }
         }
 
