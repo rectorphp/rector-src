@@ -33,7 +33,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNe
 final class DeepNestedArray
 {
     /**
-     * @return array<int|string, non-empty-array<(int | string), array{c: mixed}>>
+     * @return non-empty-array<array{c: mixed}>[]
      */
     public function test(): array {
         $arr = [];
