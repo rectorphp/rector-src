@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -203,9 +204,17 @@ CODE_SAMPLE
             return [];
         }
 
-        return array_filter(
+        $params = array_filter(
             $classMethod->params,
             static fn (Param $param): bool => $param->type instanceof NullableType
         );
+
+        foreach ($params as $key => $param) {
+            if (isset($classMethod->params[$key + 1]) && ! $classMethod->params[$key + 1]->default instanceof Expr) {
+                return [];
+            }
+        }
+
+        return $params;
     }
 }
