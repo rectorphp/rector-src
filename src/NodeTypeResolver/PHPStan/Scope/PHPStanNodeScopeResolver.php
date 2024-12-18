@@ -161,6 +161,7 @@ final readonly class PHPStanNodeScopeResolver
 
         // on refresh, early reindex node attributes
         // due to PHPStan doing printing internally on process nodes
+        // using reindex via NodeVisitor on purpose to ensure reindex happen even on deep node changed
         if ($formerMutatingScope instanceof MutatingScope) {
             $nodeTraverser = new NodeTraverser(new ReIndexNodeAttributeVisitor());
             $stmts = $nodeTraverser->traverse($stmts);
