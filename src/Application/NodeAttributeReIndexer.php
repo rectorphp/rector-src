@@ -22,6 +22,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeAttributeReIndexer
 {
@@ -29,6 +30,11 @@ final class NodeAttributeReIndexer
     {
         if (($node instanceof StmtsAwareInterface || $node instanceof ClassLike || $node instanceof Declare_) && $node->stmts !== null) {
             $node->stmts = array_values($node->stmts);
+
+            // re-index stmt key under current node
+            foreach ($node->stmts as $key => $childStmt) {
+                $childStmt->setAttribute(AttributeKey::STMT_KEY, $key);
+            }
 
             if ($node instanceof If_) {
                 $node->elseifs = array_values($node->elseifs);
