@@ -31,23 +31,29 @@ final class NodeAttributeReIndexer
             if ($node instanceof Closure) {
                 $node->uses = array_values($node->uses);
             }
+
+            return $node;
         }
 
         if ($node instanceof CallLike) {
             /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $node */
             $node->args = array_values($node->args);
+            return $node;
         }
 
         if ($node instanceof If_) {
             $node->elseifs = array_values($node->elseifs);
+            return $node;
         }
 
         if ($node instanceof TryCatch) {
             $node->catches = array_values($node->catches);
+            return $node;
         }
 
         if ($node instanceof Switch_) {
             $node->cases = array_values($node->cases);
+            return $node;
         }
 
         if ($node instanceof MatchArm && is_array($node->conds)) {
