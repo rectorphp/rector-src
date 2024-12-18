@@ -127,7 +127,7 @@ CODE_SAMPLE
             }
 
             if ($this->stmtsManipulator->isVariableUsedInNextStmt(
-                $stmts,
+                $node,
                 $key + 1,
                 (string) $this->getName($stmt->valueVar)
             )) {
