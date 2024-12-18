@@ -13,7 +13,7 @@ class Fixture
         if ($someObject->run()) {
         }
 
-        $values = [];
+        $values = ['a', 'b', 'c'];
         foreach ($values as $value) {
         }
 
@@ -42,7 +42,9 @@ class Fixture
         if ($someObject->run()) {
         }
 
-        $values = [];
+        $values = ['a', 'b', 'c'];
+        foreach ($values as $value) {
+        }
 
         return $value;
     }

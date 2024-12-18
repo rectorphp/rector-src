@@ -74,23 +74,27 @@ final readonly class StmtsManipulator
     }
 
     /**
-     * @param StmtsAwareInterface|Stmt[] $stmtsAware
+     * @param StmtsAwareInterface $stmtsAware
      */
     public function isVariableUsedInNextStmt(
-        StmtsAwareInterface|array $stmtsAware,
+        StmtsAwareInterface $stmtsAware,
         int $jumpToKey,
         string $variableName
     ): bool {
-        if ($stmtsAware instanceof StmtsAwareInterface && $stmtsAware->stmts === null) {
+        if ($stmtsAware->stmts === null) {
             return false;
         }
 
-        $stmts = array_slice(
-            $stmtsAware instanceof StmtsAwareInterface ? $stmtsAware->stmts : $stmtsAware,
-            $jumpToKey,
-            null,
-            true
-        );
+        $lastKey = array_key_last($stmtsAware->stmts);
+        $stmts = [];
+
+        for ($key = $jumpToKey; $lastKey <= $lastKey; ++$key) {
+            if (! isset($stmtsAware->stmts[$key])) {
+                break;
+            }
+
+            $stmts[] = $stmtsAware->stmts[$key];
+        }
 
         if ($stmtsAware instanceof TryCatch) {
             $stmts = array_merge(

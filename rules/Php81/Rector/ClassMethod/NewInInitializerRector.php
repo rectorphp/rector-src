@@ -100,12 +100,6 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-
-        // stmts variable defined to avoid unset overlap when used via array_slice() on
-        // StmtsManipulator::isVariableUsedInNextStmt()
-        // @see https://github.com/rectorphp/rector-src/pull/5968
-        // @see https://3v4l.org/eojhk
-        $stmts = (array) $constructClassMethod->stmts;
         foreach ((array) $constructClassMethod->stmts as $key => $stmt) {
             foreach ($params as $param) {
                 $paramName = $this->getName($param);
@@ -118,7 +112,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($this->stmtsManipulator->isVariableUsedInNextStmt($stmts, $key + 1, $paramName)) {
+                if ($this->stmtsManipulator->isVariableUsedInNextStmt($constructClassMethod, $key + 1, $paramName)) {
                     continue;
                 }
 
