@@ -7,16 +7,15 @@ namespace Rector\PHPStan\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\NullsafeMethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\MatchArm;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeVisitorAbstract;
+use Webmozart\Assert\Assert;
 
 final class ReIndexNodeAttributeVisitor extends NodeVisitorAbstract
 {
@@ -30,13 +29,13 @@ final class ReIndexNodeAttributeVisitor extends NodeVisitorAbstract
                 $node->uses = array_values($node->uses);
             }
 
-            return null;
+            return $node;
         }
 
         if ($node instanceof CallLike) {
-            /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $node */
+            Assert::propertyExists($node, 'args');
             $node->args = array_values($node->args);
-            return null;
+            return $node;
         }
 
         if ($node instanceof If_) {
@@ -46,16 +45,17 @@ final class ReIndexNodeAttributeVisitor extends NodeVisitorAbstract
 
         if ($node instanceof TryCatch) {
             $node->catches = array_values($node->catches);
-            return null;
+            return $node;
         }
 
         if ($node instanceof Switch_) {
             $node->cases = array_values($node->cases);
-            return null;
+            return $node;
         }
 
         if ($node instanceof MatchArm && is_array($node->conds)) {
             $node->conds = array_values($node->conds);
+            return $node;
         }
 
         return null;
