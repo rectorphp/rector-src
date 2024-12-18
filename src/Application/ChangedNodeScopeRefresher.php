@@ -66,35 +66,6 @@ final readonly class ChangedNodeScopeRefresher
         $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath, $mutatingScope);
     }
 
-    public function reIndexNodeAttributes(Node $node): void
-    {
-        if ($node instanceof FunctionLike) {
-            /** @var ClassMethod|Function_|Closure $node */
-            $node->params = array_values($node->params);
-
-            if ($node instanceof Closure) {
-                $node->uses = array_values($node->uses);
-            }
-        }
-
-        if ($node instanceof CallLike) {
-            /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $node */
-            $node->args = array_values($node->args);
-        }
-
-        if ($node instanceof If_) {
-            $node->elseifs = array_values($node->elseifs);
-        }
-
-        if ($node instanceof TryCatch) {
-            $node->catches = array_values($node->catches);
-        }
-
-        if ($node instanceof Switch_) {
-            $node->cases = array_values($node->cases);
-        }
-    }
-
     /**
      * @return Stmt[]
      */

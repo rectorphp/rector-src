@@ -105,6 +105,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PHPStan\NodeVisitor\ReIndexNodeAttributeVisitor;
 use Rector\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 use Rector\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
@@ -157,6 +158,13 @@ final readonly class PHPStanNodeScopeResolver
          */
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
+
+        // on refresh, early reindex node attributes
+        // due to PHPStan doing printing internally on process nodes
+        if ($formerMutatingScope instanceof MutatingScope) {
+            $nodeTraverser = new NodeTraverser(new ReIndexNodeAttributeVisitor());
+            $stmts = $nodeTraverser->traverse($stmts);
+        }
 
         $this->nodeTraverser->traverse($stmts);
 
