@@ -44,7 +44,8 @@ final class AnnotationToAttributeMapperTest extends AbstractLazyTestCase
     {
         yield [false, ConstFetch::class];
         yield ['false', ConstFetch::class];
-        yield ['100', Int_::class];
+        yield ['100', String_::class];
+        yield [200, Int_::class];
         yield ['hey', String_::class];
         yield [['hey'], Array_::class];
     }
