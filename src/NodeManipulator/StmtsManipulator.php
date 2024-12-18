@@ -85,7 +85,7 @@ final readonly class StmtsManipulator
         $lastKey = array_key_last($stmtsAware->stmts);
         $stmts = [];
 
-        for ($key = $jumpToKey; $lastKey <= $lastKey; ++$key) {
+        for ($key = $jumpToKey; $key <= $lastKey; ++$key) {
             if (! isset($stmtsAware->stmts[$key])) {
                 break;
             }
