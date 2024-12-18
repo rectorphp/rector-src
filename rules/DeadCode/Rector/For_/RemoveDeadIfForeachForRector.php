@@ -51,8 +51,6 @@ class SomeClass
 
         foreach ($values as $value) {
         }
-
-        return $value;
     }
 }
 CODE_SAMPLE
@@ -62,7 +60,6 @@ class SomeClass
 {
     public function run($value)
     {
-        return $value;
     }
 }
 CODE_SAMPLE
