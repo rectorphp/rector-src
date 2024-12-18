@@ -22,6 +22,7 @@ final readonly class UseImportsRemover
      */
     public function removeImportsFromStmts(array $stmts, array $removedUses): array
     {
+        $hasRemoved = false;
         foreach ($stmts as $key => $stmt) {
             if (! $stmt instanceof Use_) {
                 continue;
@@ -32,10 +33,11 @@ final readonly class UseImportsRemover
             // remove empty uses
             if ($stmt->uses === []) {
                 unset($stmts[$key]);
+                $hasRemoved = true;
             }
         }
 
-        return array_values($stmts);
+        return $hasRemoved ? array_values($stmts) : $stmts;
     }
 
     /**
