@@ -33,12 +33,6 @@ final class MatchArmsFactory
             ]);
         }
 
-        foreach ($matchArms as $matchArm) {
-            if (is_array($matchArm->conds)) {
-                $matchArm->conds = array_values($matchArm->conds);
-            }
-        }
-
         return $matchArms;
     }
 }

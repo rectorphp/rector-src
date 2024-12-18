@@ -135,8 +135,6 @@ CODE_SAMPLE;
             return null;
         }
 
-        $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
-
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
 

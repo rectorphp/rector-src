@@ -90,7 +90,7 @@ CODE_SAMPLE
         $originalArgs = $node->args;
         unset($originalArgs[0]);
 
-        $methodCall->args = array_values($originalArgs);
+        $methodCall->args = $originalArgs;
         return $methodCall;
     }
 }
