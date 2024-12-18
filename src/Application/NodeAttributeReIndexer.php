@@ -40,23 +40,23 @@ final class NodeAttributeReIndexer
                 return $node;
             }
 
+            if ($node instanceof FunctionLike) {
+                /** @var ClassMethod|Function_|Closure $node */
+                $node->params = array_values($node->params);
+
+                if ($node instanceof Closure) {
+                    $node->uses = array_values($node->uses);
+                }
+
+                return $node;
+            }
+
             return $node;
         }
 
         if ($node instanceof CallLike) {
             /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $node */
             $node->args = array_values($node->args);
-            return $node;
-        }
-
-        if ($node instanceof FunctionLike) {
-            /** @var ClassMethod|Function_|Closure $node */
-            $node->params = array_values($node->params);
-
-            if ($node instanceof Closure) {
-                $node->uses = array_values($node->uses);
-            }
-
             return $node;
         }
 
