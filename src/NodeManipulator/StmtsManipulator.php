@@ -87,7 +87,8 @@ final readonly class StmtsManipulator
 
         for ($key = $jumpToKey; $key <= $lastKey; ++$key) {
             if (! isset($stmtsAware->stmts[$key])) {
-                break;
+                // can be just removed
+                continue;
             }
 
             $stmts[] = $stmtsAware->stmts[$key];
