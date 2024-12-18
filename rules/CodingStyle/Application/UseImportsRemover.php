@@ -35,7 +35,7 @@ final readonly class UseImportsRemover
             }
         }
 
-        return $stmts;
+        return array_values($stmts);
     }
 
     /**
