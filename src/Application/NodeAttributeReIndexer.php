@@ -24,6 +24,12 @@ final class NodeAttributeReIndexer
 {
     public static function reIndexNodeAttributes(Node $node): ?Node
     {
+        if ($node instanceof CallLike) {
+            /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $node */
+            $node->args = array_values($node->args);
+            return $node;
+        }
+
         if ($node instanceof FunctionLike) {
             /** @var ClassMethod|Function_|Closure $node */
             $node->params = array_values($node->params);
@@ -32,12 +38,6 @@ final class NodeAttributeReIndexer
                 $node->uses = array_values($node->uses);
             }
 
-            return $node;
-        }
-
-        if ($node instanceof CallLike) {
-            /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $node */
-            $node->args = array_values($node->args);
             return $node;
         }
 
