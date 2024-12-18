@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadIfForeachForRector\Fixture;
 
-class Fixture
+class WithUsedValue
 {
     public function run($someObject, $differentValue)
     {
@@ -17,13 +17,7 @@ class Fixture
         foreach ($values as $value) {
         }
 
-        return $differentValue;
-    }
-
-    public function forMe()
-    {
-        for ($i = 0; $i < 5; ++$i) {
-        }
+        return $value;
     }
 }
 
@@ -33,7 +27,7 @@ class Fixture
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadIfForeachForRector\Fixture;
 
-class Fixture
+class WithUsedValue
 {
     public function run($someObject, $differentValue)
     {
@@ -43,12 +37,10 @@ class Fixture
         }
 
         $values = ['a', 'b', 'c'];
+        foreach ($values as $value) {
+        }
 
-        return $differentValue;
-    }
-
-    public function forMe()
-    {
+        return $value;
     }
 }
 

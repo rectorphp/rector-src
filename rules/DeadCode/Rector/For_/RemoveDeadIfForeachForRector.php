@@ -44,7 +44,7 @@ final class RemoveDeadIfForeachForRector extends AbstractRector
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value)
+    public function run($value, $differrentValue)
     {
         if ($value) {
         }
@@ -52,7 +52,7 @@ class SomeClass
         foreach ($values as $value) {
         }
 
-        return $value;
+        return $differentValue;
     }
 }
 CODE_SAMPLE
@@ -60,9 +60,9 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value)
+    public function run($value, $differrentValue)
     {
-        return $value;
+        return $differentValue;
     }
 }
 CODE_SAMPLE
@@ -139,7 +139,6 @@ CODE_SAMPLE
 
     private function processForForeach(For_|Foreach_ $for, int $key, StmtsAwareInterface $stmtsAware): void
     {
-        $stmts = (array) $stmtsAware->stmts;
         if ($for instanceof For_) {
             $variables = $this->betterNodeFinder->findInstanceOf(
                 [...$for->init, ...$for->cond, ...$for->loop],
@@ -147,7 +146,7 @@ CODE_SAMPLE
             );
             foreach ($variables as $variable) {
                 if ($this->stmtsManipulator->isVariableUsedInNextStmt(
-                    $stmts,
+                    $stmtsAware,
                     $key + 1,
                     (string) $this->getName($variable)
                 )) {
@@ -165,7 +164,7 @@ CODE_SAMPLE
         $variables = $this->betterNodeFinder->findInstanceOf($exprs, Variable::class);
         foreach ($variables as $variable) {
             if ($this->stmtsManipulator->isVariableUsedInNextStmt(
-                $stmts,
+                $stmtsAware,
                 $key + 1,
                 (string) $this->getName($variable)
             )) {
