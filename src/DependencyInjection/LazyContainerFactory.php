@@ -120,6 +120,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
+use Rector\PhpParser\NodeTraverser\ReIndexNodeAttributesTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryLiteralStringTypeMapper;
@@ -549,6 +550,7 @@ final class LazyContainerFactory
                     $container->get(CurrentFileProvider::class),
                     $container->get(CreatedByRuleDecorator::class),
                     $container->get(ChangedNodeScopeRefresher::class),
+                    $container->get(ReIndexNodeAttributesTraverser::class)
                 );
             }
         );
