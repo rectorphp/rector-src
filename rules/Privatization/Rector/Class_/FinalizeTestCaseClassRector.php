@@ -7,7 +7,7 @@ namespace Rector\Privatization\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php81\NodeManipulator\AttributeGroupNewLiner;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -21,6 +21,7 @@ final class FinalizeTestCaseClassRector extends AbstractRector
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly VisibilityManipulator $visibilityManipulator,
+        private readonly AttributeGroupNewLiner $attributeGroupNewLiner
     ) {
     }
 
@@ -85,7 +86,7 @@ CODE_SAMPLE
         }
 
         if ($node->attrGroups !== []) {
-            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $this->attributeGroupNewLiner->newLine($this->file, $node);
         }
 
         $this->visibilityManipulator->makeFinal($node);

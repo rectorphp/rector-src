@@ -15,9 +15,9 @@ use PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeAnalyzer\ClassAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
+use Rector\Php81\NodeManipulator\AttributeGroupNewLiner;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
@@ -37,7 +37,8 @@ final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionI
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly AttributeGroupNewLiner $attributeGroupNewLiner
     ) {
     }
 
@@ -96,8 +97,7 @@ CODE_SAMPLE
                 $this->visibilityManipulator->removeReadonly($param);
 
                 if ($param->attrGroups !== []) {
-                    // invoke reprint with correct newline
-                    $param->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                    $this->attributeGroupNewLiner->newLine($this->file, $param);
                 }
             }
         }
@@ -106,14 +106,12 @@ CODE_SAMPLE
             $this->visibilityManipulator->removeReadonly($property);
 
             if ($property->attrGroups !== []) {
-                // invoke reprint with correct newline
-                $property->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                $this->attributeGroupNewLiner->newLine($this->file, $property);
             }
         }
 
         if ($node->attrGroups !== []) {
-            // invoke reprint with correct readonly newline
-            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $this->attributeGroupNewLiner->newLine($this->file, $node);
         }
 
         return $node;
