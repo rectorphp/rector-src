@@ -6,7 +6,9 @@ namespace Rector\Tests\Issues\IndexedStmt\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitor;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -22,11 +24,11 @@ final class ChangeLastIndex1Rector extends AbstractRector
 
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node)
     {
@@ -35,9 +37,13 @@ final class ChangeLastIndex1Rector extends AbstractRector
         }
 
         foreach ($node->stmts as $stmt) {
-            if ($stmt->getAttribute(AttributeKey::STMT_KEY) === 1 && $stmt instanceof Expression && $stmt->expr instanceof String_ && $stmt->expr->value === 'with index 2') {
-                $stmt->expr->value = 'final index';
-                return $node;
+            if ($stmt instanceof If_) {
+                foreach ($stmt->stmts as $childStmt) {
+                    if ($childStmt->getAttribute(AttributeKey::STMT_KEY) === 1 && $childStmt instanceof Expression && $childStmt->expr instanceof String_ && $childStmt->expr->value === 'with index 2') {
+                        $childStmt->expr->value = 'final index';
+                        return $node;
+                    }
+                }
             }
         }
 
