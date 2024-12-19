@@ -65,6 +65,7 @@ CODE_SAMPLE
 
         $modeArg = $args[2]->value;
 
+        $hasChanged = false;
         if ($modeArg instanceof ConstFetch) {
             if (isset($modeArg->name->getParts()[0])) {
                 $enumCase = match ($modeArg->name->getParts()[0]) {
@@ -80,10 +81,15 @@ CODE_SAMPLE
                 }
 
                 $args[2]->value = new Node\Expr\ClassConstFetch(new FullyQualified('RoundingMode'), $enumCase);
+                $hasChanged = true;
             }
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     public function provideMinPhpVersion(): int
