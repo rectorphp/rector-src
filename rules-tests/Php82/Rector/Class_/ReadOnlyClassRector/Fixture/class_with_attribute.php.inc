@@ -5,7 +5,7 @@ namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture;
 #[SomeAttribute]
 final class ClassWithAttribute
 {
-   private readonly string $property;
+    private readonly string $property;
 }
 
 ?>
