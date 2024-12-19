@@ -95,10 +95,7 @@ final readonly class StmtsManipulator
         }
 
         if ($stmtsAware instanceof TryCatch) {
-            $stmts = array_merge(
-                $stmts,
-                $stmtsAware->catches
-            );
+            $stmts = array_merge($stmts, $stmtsAware->catches);
 
             if ($stmtsAware->finally instanceof Finally_) {
                 $stmts = array_merge($stmts, $stmtsAware->finally->stmts);
