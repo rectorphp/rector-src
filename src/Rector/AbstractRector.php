@@ -34,6 +34,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\NodeTraverser\ReIndexNodeAttributesTraverser;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
@@ -79,6 +80,8 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
+    private ReIndexNodeAttributesTraverser $reIndexNodeAttributesTraverser;
+
     private ?int $toBeRemovedNodeId = null;
 
     public function autowire(
@@ -91,6 +94,7 @@ CODE_SAMPLE;
         CurrentFileProvider $currentFileProvider,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
+        ReIndexNodeAttributesTraverser $reIndexNodeAttributesTraverser
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -101,6 +105,7 @@ CODE_SAMPLE;
         $this->currentFileProvider = $currentFileProvider;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
+        $this->reIndexNodeAttributesTraverser = $reIndexNodeAttributesTraverser;
     }
 
     /**
@@ -139,7 +144,7 @@ CODE_SAMPLE;
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
 
-        NodeAttributeReIndexer::reIndexNodeAttributes($node);
+        $this->reIndexNodeAttributesTraverser->traverse([$node]);
 
         $refactoredNode = $this->refactor($node);
 
