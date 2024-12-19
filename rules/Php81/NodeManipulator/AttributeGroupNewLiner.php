@@ -34,11 +34,17 @@ final class AttributeGroupNewLiner
         $lastAttributeTokenPos = $node->attrGroups[$lastKey]->getEndTokenPos();
 
         while (isset($oldTokens[$startTokenPos + $iteration])) {
-            if ($startTokenPos + $iteration === $lastAttributeTokenPos
-                && $oldTokens[$startTokenPos + $iteration]->text === ']' &&
-                trim($oldTokens[$startTokenPos + $iteration + 1]->text) === ''
-            ) {
-                $space = ltrim($oldTokens[$startTokenPos + $iteration + 1]->text ?? '', "\r\n");
+            if ($startTokenPos + $iteration === $lastAttributeTokenPos) {
+                if ($oldTokens[$startTokenPos + $iteration]->text !== ']') {
+                    break;
+                }
+
+                if (trim($oldTokens[$startTokenPos + $iteration + 1]->text) === '') {
+                    $space = ltrim($oldTokens[$startTokenPos + $iteration + 1]->text ?? '', "\r\n");
+                } else {
+                    $space = ltrim($oldTokens[$startTokenPos - 1]->text ?? '', "\r\n");
+                }
+
                 $oldTokens[$startTokenPos + $iteration]->text = "]\n" . $space;
                 break;
             }
