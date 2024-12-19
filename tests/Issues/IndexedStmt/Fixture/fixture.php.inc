@@ -6,11 +6,9 @@ final class Fixture
 {
     public function run()
     {
-        if (rand(0, 1)) {
-            'with index 0';
-            'with index 1';
-            'with index 2';
-        }
+        'with index 0';
+        'with index 1';
+        'with index 2';
     }
 }
 
@@ -24,10 +22,8 @@ final class Fixture
 {
     public function run()
     {
-        if (rand(0, 1)) {
-            'with index 0';
-            'final index';
-        }
+        'with index 0';
+        'final index';
     }
 }
 
