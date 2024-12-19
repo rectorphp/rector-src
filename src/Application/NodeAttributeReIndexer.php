@@ -82,11 +82,6 @@ final class NodeAttributeReIndexer
             return $node;
         }
 
-        if ($node instanceof MatchArm && is_array($node->conds)) {
-            $node->conds = array_values($node->conds);
-            return $node;
-        }
-
         return null;
     }
 }

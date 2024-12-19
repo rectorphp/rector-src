@@ -26,7 +26,7 @@ final class MatchArmsFactory
                 $expr = $expr->expr;
             }
 
-            /** @var list<Expr> $condExprs */
+            /** @var null|list<Expr> $condExprs */
             $condExprs = $condAndExpr->getCondExprs();
             $matchArms[] = new MatchArm($condExprs, $expr, [
                 AttributeKey::COMMENTS => $condAndExprs[$key]->getComments(),

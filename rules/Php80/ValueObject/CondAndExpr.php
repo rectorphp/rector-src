@@ -38,7 +38,11 @@ final readonly class CondAndExpr
             return null;
         }
 
-        return $this->condExprs;
+        if ($this->condExprs === null) {
+            return null;
+        }
+
+        return array_values($this->condExprs);
     }
 
     /**

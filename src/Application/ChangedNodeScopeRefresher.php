@@ -50,6 +50,8 @@ final readonly class ChangedNodeScopeRefresher
             throw new ShouldNotHappenException($errorMessage);
         }
 
+        NodeAttributeReIndexer::reIndexNodeAttributes($node);
+
         $stmts = $this->resolveStmts($node);
         $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath, $mutatingScope);
     }
