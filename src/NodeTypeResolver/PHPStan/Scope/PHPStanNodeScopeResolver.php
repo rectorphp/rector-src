@@ -106,7 +106,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\NodeTraverser\ReIndexNodeAttributesTraverser;
-use Rector\PHPStan\NodeVisitor\ReIndexNodeAttributeVisitor;
 use Rector\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 use Rector\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
