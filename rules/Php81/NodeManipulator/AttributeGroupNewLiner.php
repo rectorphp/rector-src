@@ -39,10 +39,12 @@ final class AttributeGroupNewLiner
                     break;
                 }
 
-                if (trim($oldTokens[$startTokenPos + $iteration + 1]->text) === '') {
+                if (trim($oldTokens[$startTokenPos + $iteration + 1]->text ?? '') === '') {
                     $space = ltrim($oldTokens[$startTokenPos + $iteration + 1]->text ?? '', "\r\n");
-                } else {
+                } elseif (trim($oldTokens[$startTokenPos - 1]->text ?? '') === '') {
                     $space = ltrim($oldTokens[$startTokenPos - 1]->text ?? '', "\r\n");
+                } else {
+                    $space = '';
                 }
 
                 $oldTokens[$startTokenPos + $iteration]->text = "]\n" . $space;
