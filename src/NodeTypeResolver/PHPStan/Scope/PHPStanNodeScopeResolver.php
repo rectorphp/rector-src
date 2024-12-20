@@ -87,6 +87,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
+use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use PHPStan\Node\FunctionCallableNode;
 use PHPStan\Node\InstantiationCallableNode;
 use PHPStan\Node\MethodCallableNode;
@@ -163,10 +164,13 @@ final readonly class PHPStanNodeScopeResolver
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         $hasUnreachableStatementNode = false;
+        $hasAlwaysRememberedExpr = false;
+
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
             $filePath,
-            &$hasUnreachableStatementNode
+            &$hasUnreachableStatementNode,
+            &$hasAlwaysRememberedExpr
         ): void {
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
@@ -364,8 +368,13 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof Match_) {
-                $this->processMatch($node, $mutatingScope);
+            if ($node instanceof AlwaysRememberedExpr || $node instanceof Match_) {
+                $hasAlwaysRememberedExpr = true;
+
+                if ($node instanceof Match_) {
+                    $this->processMatch($node, $mutatingScope);
+                }
+
                 return;
             }
 
@@ -411,8 +420,15 @@ final readonly class PHPStanNodeScopeResolver
             RectorNodeScopeResolver::processNodes($stmts, $scope);
         }
 
+        if (! $hasAlwaysRememberedExpr && ! $hasUnreachableStatementNode) {
+            return $stmts;
+        }
+
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
+
+        if ($hasAlwaysRememberedExpr) {
+            $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
+        }
 
         if ($hasUnreachableStatementNode) {
             $nodeTraverser->addVisitor(new UnreachableStatementNodeVisitor($this, $filePath, $scope));
