@@ -685,6 +685,12 @@ final class PhpVersionFeature
     public const DEPRECATE_IMPLICIT_NULLABLE_PARAM_TYPE = PhpVersion::PHP_84;
 
     /**
+     * @see https://wiki.php.net/rfc/correctly_name_the_rounding_mode_and_make_it_an_enum
+     * @var int
+     */
+    public const ROUNDING_MODES = PhpVersion::PHP_84;
+
+    /**
      * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.ldap
      * @var int
      */
