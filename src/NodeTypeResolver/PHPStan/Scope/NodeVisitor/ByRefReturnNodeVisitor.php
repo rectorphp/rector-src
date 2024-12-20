@@ -37,7 +37,7 @@ final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements ScopeR
     /**
      * @param Stmt[] $stmts
      */
-    private function setByRefAttribute(array $stmts)
+    private function setByRefAttribute(array $stmts): void
     {
         foreach ($stmts as $stmt) {
             if ($stmt instanceof FunctionLike) {
