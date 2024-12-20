@@ -61,6 +61,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! isset($args[2])) {
+            return null;
+        }
+
         $modeArg = $args[2]->value;
 
         $hasChanged = false;
