@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -47,6 +48,14 @@ final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements ScopeR
 
             if ($stmt instanceof StmtsAwareInterface && $stmt->stmts !== null) {
                 $this->setByRefAttribute($stmt->stmts);
+                continue;
+            }
+
+            if ($stmt instanceof Switch_) {
+                foreach ($stmt->cases as $case) {
+                    $this->setByRefAttribute($case->stmts);
+                }
+
                 continue;
             }
 
