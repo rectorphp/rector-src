@@ -202,8 +202,14 @@ final readonly class PHPStanNodeScopeResolver
             // do not return early, as its properties will be checked next
             if (! $node instanceof VirtualNode) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof AlwaysRememberedExpr) {
+            } elseif ($node instanceof AlwaysRememberedExpr || $node instanceof Match_) {
                 $hasAlwaysRememberedExpr = true;
+
+                if ($node instanceof Match_) {
+                    $this->processMatch($node, $mutatingScope);
+                }
+
+                return;
             }
 
             if ($node instanceof FileWithoutNamespace) {
@@ -367,11 +373,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof CallLike) {
                 $this->processCallike($node, $mutatingScope);
-                return;
-            }
-
-            if ($node instanceof Match_) {
-                $this->processMatch($node, $mutatingScope);
                 return;
             }
 
