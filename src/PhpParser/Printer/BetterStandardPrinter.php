@@ -13,10 +13,12 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\InterpolatedStringPart;
+use PhpParser\Node\MatchArm;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
@@ -115,8 +117,23 @@ final class BetterStandardPrinter extends Standard
         int $lhsPrecedence = self::MAX_PRECEDENCE,
         bool $parentFormatPreserved = false
     ): string {
+        // handle already AlwaysRememberedExpr
+        // @see https://github.com/rectorphp/rector/issues/8815#issuecomment-2503453191
         while ($node instanceof AlwaysRememberedExpr) {
             $node = $node->getExpr();
+        }
+
+        // handle overlapped origNode is Match_
+        // and its subnodes still have AlwaysRememberedExpr
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+
+        if ($originalNode instanceof Match_) {
+            $subNodeNames = $node->getSubNodeNames();
+            foreach ($subNodeNames as $subNodeName) {
+                while ($originalNode->$subNodeName instanceof AlwaysRememberedExpr) {
+                    $originalNode->$subNodeName = $originalNode->$subNodeName->getExpr();
+                }
+            }
         }
 
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
