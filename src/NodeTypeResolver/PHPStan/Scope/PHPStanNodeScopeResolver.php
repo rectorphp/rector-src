@@ -33,6 +33,7 @@ use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
+use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
@@ -362,6 +363,11 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
+            if ($node instanceof Match_) {
+                $this->processMatch($node, $mutatingScope);
+                return;
+            }
+
             if ($node instanceof Yield_) {
                 $this->processYield($node, $mutatingScope);
                 return;
@@ -434,6 +440,20 @@ final readonly class PHPStanNodeScopeResolver
     {
         foreach ($echo->exprs as $expr) {
             $expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+    }
+
+    private function processMatch(Match_ $match, MutatingScope $mutatingScope): void
+    {
+        $match->cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        foreach ($match->arms as $arm) {
+            if ($arm->conds !== null) {
+                foreach ($arm->conds as $cond) {
+                    $cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
+
+            $arm->body->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
 
