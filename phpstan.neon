@@ -234,6 +234,7 @@ parameters:
              paths:
                  - src/CustomRules/SimpleNodeDumper.php
                  - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
+                 - src/PhpParser/Printer/BetterStandardPrinter.php
 
         # known node variables
         -
