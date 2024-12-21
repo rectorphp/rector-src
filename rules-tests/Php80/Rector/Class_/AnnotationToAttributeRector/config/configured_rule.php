@@ -49,6 +49,8 @@ return static function (RectorConfig $rectorConfig): void {
         ),
         new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\Security'),
 
+        new AnnotationToAttribute('Symfony\Component\Serializer\Attribute\Groups'),
+
         // special case with following comment becoming a inner value
         new AnnotationToAttribute('When', When::class, useValueAsAttributeArgument: true),
         new AnnotationToAttribute('Then', Then::class, useValueAsAttributeArgument: true),
