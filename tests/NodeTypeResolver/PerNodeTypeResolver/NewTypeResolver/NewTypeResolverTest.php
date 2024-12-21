@@ -27,7 +27,7 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
         $resolvedType = $this->nodeTypeResolver->getType($newNodes[$nodePosition]);
         $this->assertEquals($expectedType, $resolvedType);
 
-        $this->assertEquals(
+        $this->assertSame(
             $isObjectType,
             $this->nodeTypeResolver->isObjectType(
                 $newNodes[$nodePosition],
