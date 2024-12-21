@@ -43,9 +43,10 @@ final class AnnotationToAttributeMapperTest extends AbstractLazyTestCase
     public static function provideData(): Iterator
     {
         yield [false, ConstFetch::class];
-        yield ['false', ConstFetch::class];
-        yield ['100', Int_::class];
+        yield ['false', String_::class];
+        yield ['100', String_::class];
         yield ['hey', String_::class];
         yield [['hey'], Array_::class];
+        yield [100, Int_::class];
     }
 }
