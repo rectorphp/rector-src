@@ -129,8 +129,8 @@ final class BetterStandardPrinter extends Standard
         if ($originalNode instanceof Match_) {
             $subNodeNames = $node->getSubNodeNames();
             foreach ($subNodeNames as $subNodeName) {
-                while ($originalNode->$subNodeName instanceof AlwaysRememberedExpr) {
-                    $originalNode->$subNodeName = $originalNode->$subNodeName->getExpr();
+                while ($originalNode->{$subNodeName} instanceof AlwaysRememberedExpr) {
+                    $originalNode->{$subNodeName} = $originalNode->{$subNodeName}->getExpr();
                 }
             }
         }
