@@ -49,7 +49,8 @@ final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements ScopeR
 
                 $node->setAttribute(AttributeKey::IS_BYREF_RETURN, true);
                 return $node;
-            });
+            }
+        );
 
         return null;
     }
