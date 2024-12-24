@@ -71,7 +71,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->left instanceof Assign) {
+        if ($node->left instanceof Assign || $node->right instanceof Assign) {
             return null;
         }
 
