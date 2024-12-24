@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\BooleanAnd;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BooleanNot;
@@ -70,6 +71,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->left instanceof Assign || $node->right instanceof Assign) {
+            return null;
+        }
+
         if ($node instanceof BooleanOr) {
             return $this->processNegationBooleanOr($node);
         }
