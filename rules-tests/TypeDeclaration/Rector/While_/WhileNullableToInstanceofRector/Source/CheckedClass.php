@@ -4,5 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRe
 
 class CheckedClass
 {
-
+    public function run()
+    {
+    }
 }
