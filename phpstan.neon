@@ -130,13 +130,6 @@ parameters:
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
             path: src/Parallel/Application/ParallelFileProcessor.php
 
-        -
-            message: '#Use value object over return of values#'
-            paths:
-                - src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
-                - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
-                - rules/Php70/EregToPcreTransformer.php
-
         # internal reflection
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
 
@@ -249,12 +242,6 @@ parameters:
                 # for cache
                 - src/Testing/PHPUnit/AbstractRectorTestCase.php
 
-        -
-            message: '#Interface "(.*?)" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
-            paths:
-                # marker interface
-                - src/Contract/PhpParser/Node/StmtsAwareInterface.php
-
         # generated class in /vendor
         -
              message: '#Offset (.*?) on null on left side of \?\? does not exist#'
@@ -282,9 +269,6 @@ parameters:
         -
             message: '#Fetching (deprecated )?class constant (.*?) of (deprecated )?class (Rector\\Set\\ValueObject\\DowngradeLevelSetList|Rector\\Symfony\\Set\\(.*?))#'
             path: src/Configuration/RectorConfigBuilder.php
-
-        # marker interface to be used ad-hoc
-        - '#Interface "Rector\\Configuration\\Deprecation\\Contract\\DeprecatedInterface" has only single implementer#'
 
         # deprecated
         - '#Register "Rector\\Php80\\Rector\\FunctionLike\\MixedTypeRector" service to "php80\.php" config set#'
@@ -341,5 +325,3 @@ parameters:
 
         # list vs array
         - '#Parameter (.*?) expects list<(.*?)>, array<(.*?)> given#'
-        - '#should return list<(.*?)>\|null but returns non\-empty\-array<(.*?)>\|null#'
-
