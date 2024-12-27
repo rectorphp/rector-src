@@ -530,7 +530,7 @@ final class RectorConfigBuilder
         bool $php53 = false,
         bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
-        if ($this->isWithPhpSetsUsed) {
+        if ($this->isWithPhpSetsUsed === true) {
             throw new InvalidConfigurationException(sprintf(
                 'Method "%s()" can be called only once. It always includes all previous sets UP TO the defined version.%sThe best practise is to call it once with no argument. That way it will pick up PHP version from composer.json and your project will always stay up to date.',
                 __METHOD__,
