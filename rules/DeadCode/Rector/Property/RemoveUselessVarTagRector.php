@@ -26,7 +26,7 @@ final class RemoveUselessVarTagRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove unused @var annotation for properties and class constant', [
+        return new RuleDefinition('Remove unused @var annotation for properties and class constants', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
