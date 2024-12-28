@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Property;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -25,7 +26,7 @@ final class RemoveUselessVarTagRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove unused @var annotation for properties', [
+        return new RuleDefinition('Remove unused @var annotation for properties and class constant', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
@@ -53,11 +54,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Property::class];
+        return [Property::class, ClassConst::class];
     }
 
     /**
-     * @param Property $node
+     * @param Property|ClassConst $node
      */
     public function refactor(Node $node): ?Node
     {
