@@ -13,6 +13,10 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeVisitor;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -109,6 +113,19 @@ CODE_SAMPLE
                 continue;
             }
 
+            $type = $this->nodeTypeResolver->getNativeType($stmt->expr);
+            if ($type instanceof IntersectionType || $type instanceof UnionType) {
+                foreach ($type->getTypes() as $unionTyped) {
+                    if ($this->isArrayWithStringkeyType($unionTyped)) {
+                        continue 2;
+                    }
+                }
+            }
+
+            if ($this->isArrayWithStringkeyType($type)) {
+                continue;
+            }
+
             $directAssign = new Assign($assignVariable, $stmt->expr);
             $node->stmts[$key] = new Expression($directAssign);
 
@@ -116,6 +133,12 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isArrayWithStringkeyType(Type $type): bool
+    {
+        return $type->isArray()
+            ->yes() && $type->getIterableKeyType() instanceof StringType;
     }
 
     /**
