@@ -51,8 +51,14 @@ CODE_SAMPLE
     /**
      * @param LogicalOr|LogicalAnd $node
      */
-    public function refactor(Node $node): BooleanAnd|BooleanOr
+    public function refactor(Node $node): BooleanAnd|BooleanOr|null
     {
+        $type = $this->nodeTypeResolver->getType($node->left);
+
+        if (! $type->isBoolean()->yes()) {
+            return null;
+        }
+
         return $this->refactorLogicalToBoolean($node);
     }
 
