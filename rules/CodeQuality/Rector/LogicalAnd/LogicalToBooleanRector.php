@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\LogicalAnd;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
@@ -55,7 +56,7 @@ CODE_SAMPLE
     {
         $type = $this->nodeTypeResolver->getNativeType($node->left);
 
-        if (! $type->isBoolean()->yes()) {
+        if ($node->left instanceof Assign && ! $type->isBoolean()->yes()) {
             return null;
         }
 
