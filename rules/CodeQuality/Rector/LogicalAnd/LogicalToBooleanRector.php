@@ -53,7 +53,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): BooleanAnd|BooleanOr|null
     {
-        $type = $this->nodeTypeResolver->getType($node->left);
+        $type = $this->nodeTypeResolver->getNativeType($node->left);
 
         if (! $type->isBoolean()->yes()) {
             return null;
