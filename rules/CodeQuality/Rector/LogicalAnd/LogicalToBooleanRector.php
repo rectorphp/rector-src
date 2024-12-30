@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\LogicalAnd;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
@@ -51,8 +52,14 @@ CODE_SAMPLE
     /**
      * @param LogicalOr|LogicalAnd $node
      */
-    public function refactor(Node $node): BooleanAnd|BooleanOr
+    public function refactor(Node $node): BooleanAnd|BooleanOr|null
     {
+        $type = $this->nodeTypeResolver->getNativeType($node->left);
+
+        if ($node->left instanceof Assign && ! $type->isBoolean()->yes()) {
+            return null;
+        }
+
         return $this->refactorLogicalToBoolean($node);
     }
 
