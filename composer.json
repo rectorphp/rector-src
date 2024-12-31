@@ -24,7 +24,7 @@
         "ocramius/package-versions": "^2.9",
         "ondram/ci-detector": "^4.2",
         "phpstan/phpdoc-parser": "^2.0",
-        "phpstan/phpstan": "^2.0.4",
+        "phpstan/phpstan": "^2.1.0",
         "react/event-loop": "^1.5",
         "react/promise": "^3.2",
         "react/socket": "^1.15",
