@@ -43,9 +43,9 @@ final class SmartPhpParserFactory
         $nameResolver = new NameResolver();
         $variadicMethodsVisitor = new VariadicMethodsVisitor();
         $variadicFunctionsVisitor = new VariadicFunctionsVisitor();
-        $propertyNameHookVisitor = new PropertyHookNameVisitor();
+        $propertyHookNameVisitor = new PropertyHookNameVisitor();
 
-        $simpleParser = new SimpleParser($parser, $nameResolver, $variadicMethodsVisitor, $variadicFunctionsVisitor, $propertyNameHookVisitor);
+        $simpleParser = new SimpleParser($parser, $nameResolver, $variadicMethodsVisitor, $variadicFunctionsVisitor, $propertyHookNameVisitor);
 
         return new CachedParser($simpleParser, 1024);
     }
