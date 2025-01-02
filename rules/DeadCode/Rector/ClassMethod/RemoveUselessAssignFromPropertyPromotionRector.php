@@ -77,7 +77,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // re-assign will cause error too early, no need to collect names
+            // re-assign will cause error on the first place, no need to collect names
             if ($param->isReadonly()) {
                 continue;
             }
