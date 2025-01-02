@@ -8,7 +8,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromProper
  */
 class SkipReadonlyPromotion
 {
-    public function __construct(private \stdClass $std)
+    public function __construct(private readonly \stdClass $std)
     {
     }
 }
