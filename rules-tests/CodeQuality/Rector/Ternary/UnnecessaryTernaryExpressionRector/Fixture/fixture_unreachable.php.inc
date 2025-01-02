@@ -6,7 +6,7 @@ if (true) {
 
 echo 'test';
 
-class A
+class FixtureUnreachableA
 {
     public function run($order, $oldOrder)
     {
@@ -16,7 +16,7 @@ class A
 
 $order || $oldOrder ? true : false;
 
-class B
+class FixtureUnreachableB
 {
     public function run($order, $oldOrder)
     {
@@ -36,7 +36,7 @@ if (true) {
 
 echo 'test';
 
-class A
+class FixtureUnreachableA
 {
     public function run($order, $oldOrder)
     {
@@ -46,7 +46,7 @@ class A
 
 $order || $oldOrder;
 
-class B
+class FixtureUnreachableB
 {
     public function run($order, $oldOrder)
     {
