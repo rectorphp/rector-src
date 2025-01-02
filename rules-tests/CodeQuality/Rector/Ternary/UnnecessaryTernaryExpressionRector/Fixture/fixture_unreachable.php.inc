@@ -24,6 +24,8 @@ class B
     }
 }
 
+$order || $oldOrder ? true : false;
+
 ?>
 -----
 <?php
@@ -51,5 +53,7 @@ class B
         return $order || $oldOrder;
     }
 }
+
+$order || $oldOrder;
 
 ?>
