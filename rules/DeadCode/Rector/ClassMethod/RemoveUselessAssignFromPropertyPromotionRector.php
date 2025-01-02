@@ -86,7 +86,7 @@ CODE_SAMPLE
         $removeStmtKeys = [];
 
         foreach ($stmts as $key => $stmt) {
-            // has complex statements, skip
+            // has non direct expression with assign, skip
             if (! $stmt instanceof Expression || ! $stmt->expr instanceof Assign) {
                 return null;
             }
