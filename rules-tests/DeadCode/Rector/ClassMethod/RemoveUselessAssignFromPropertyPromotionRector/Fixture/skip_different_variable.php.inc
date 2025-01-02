@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromProper
 
 class SkipDifferentVariable
 {
-    public function __construct(private readonly \stdClass $std)
+    public function __construct(private \stdClass $std)
     {
         $differentVariable = new \stdClass();
         $this->std = $differentVariable;
