@@ -107,7 +107,7 @@ CODE_SAMPLE
             if ($assign->var->var instanceof Variable && $this->isName($assign->var->var, 'this') && $this->isNames(
                 $assign->var->name,
                 $variableNames
-            ) && $assign->expr instanceof Variable && $this->isName($assign->expr, $this->getName($assign->var->name))) {
+            ) && $assign->expr instanceof Variable && $this->isName($assign->expr, (string) $this->getName($assign->var->name))) {
                 $removeStmtKeys[] = $key;
                 continue;
             }
