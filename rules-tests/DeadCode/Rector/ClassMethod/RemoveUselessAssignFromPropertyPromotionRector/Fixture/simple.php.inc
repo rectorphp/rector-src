@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromProper
 
 class Simple
 {
-    public function __construct(private readonly \stdClass $std)
+    public function __construct(private \stdClass $std)
     {
     	$this->std = $std;
     }
@@ -18,7 +18,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromProper
 
 class Simple
 {
-    public function __construct(private readonly \stdClass $std)
+    public function __construct(private \stdClass $std)
     {
     }
 }
