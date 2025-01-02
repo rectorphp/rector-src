@@ -78,6 +78,7 @@ CODE_SAMPLE
             }
 
             // re-assign will cause error on the first place, no need to collect names
+            // on readonly property promotion
             if ($param->isReadonly()) {
                 continue;
             }
