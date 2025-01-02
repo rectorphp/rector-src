@@ -80,6 +80,10 @@ CODE_SAMPLE
             $variableNames[] = (string) $this->getName($param->var);
         }
 
+        if ($variableNames === []) {
+            return null;
+        }
+
         /** @var Stmt[] $stmts */
         $stmts = $node->stmts;
         $removeStmtKeys = [];
