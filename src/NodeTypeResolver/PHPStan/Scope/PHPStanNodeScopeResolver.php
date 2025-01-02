@@ -582,11 +582,6 @@ final readonly class PHPStanNodeScopeResolver
         callable $nodeCallback
     ): void {
         $originalStmt = $unreachableStatementNode->getOriginalStatement();
-        $originalStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-
-        foreach ($unreachableStatementNode->getNextStatements() as $stmt) {
-            $stmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-        }
 
         $this->nodeScopeResolverProcessNodes(
             array_merge([$originalStmt], $unreachableStatementNode->getNextStatements()),
