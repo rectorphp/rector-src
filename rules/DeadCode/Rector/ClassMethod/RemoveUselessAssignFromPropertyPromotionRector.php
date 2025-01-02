@@ -42,7 +42,6 @@ class SomeClass
 {
     public function __construct(private readonly \stdClass $std)
     {
-    	$this->std = $std;
     }
 }
 CODE_SAMPLE
