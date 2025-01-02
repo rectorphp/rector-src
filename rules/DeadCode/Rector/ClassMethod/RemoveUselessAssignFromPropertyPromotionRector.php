@@ -83,26 +83,24 @@ CODE_SAMPLE
 
         /** @var Stmt[] $stmts */
         $stmts = $node->stmts;
+        $removeStmtKeys = [];
 
-        // skip complex statements
-        foreach ($stmts as $stmt) {
+        foreach ($stmts as $key => $stmt) {
+            // skip complex statements
             if (! $stmt instanceof Expression || ! $stmt->expr instanceof Assign) {
                 return null;
             }
-        }
 
-        $removeStmtKeys = [];
-
-        /** @var Expression[] $stmts */
-        foreach ($stmts as $key => $stmt) {
             /** @var Assign $assign */
             $assign = $stmt->expr;
 
+            // skip non property fetches assignments
             if (! $assign->var instanceof PropertyFetch) {
                 return null;
             }
 
             // collect first, ensure not stop too early on non property fetch
+            // and already removed
             if ($assign->var->var instanceof Variable && $this->isName($assign->var->var, 'this') && $this->isNames(
                 $assign->var->name,
                 $variableNames
