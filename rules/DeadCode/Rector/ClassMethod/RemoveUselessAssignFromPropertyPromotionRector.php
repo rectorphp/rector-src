@@ -30,7 +30,7 @@ final class RemoveUselessAssignFromPropertyPromotionRector extends AbstractRecto
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function __construct(private readonly \stdClass $std)
+    public function __construct(private \stdClass $std)
     {
     	$this->std = $std;
     }
@@ -40,7 +40,7 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function __construct(private readonly \stdClass $std)
+    public function __construct(private \stdClass $std)
     {
     }
 }
