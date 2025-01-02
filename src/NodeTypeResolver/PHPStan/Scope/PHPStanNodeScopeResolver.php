@@ -184,7 +184,7 @@ final readonly class PHPStanNodeScopeResolver
             // early check here as UnreachableStatementNode is special VirtualNode
             // so node to be checked inside
             if ($node instanceof UnreachableStatementNode) {
-                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
+                $this->processUnreachableStatementNode($node, $mutatingScope, $nodeCallback);
                 return;
             }
 
@@ -573,16 +573,26 @@ final readonly class PHPStanNodeScopeResolver
         }
     }
 
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
     private function processUnreachableStatementNode(
         UnreachableStatementNode $unreachableStatementNode,
-        string $filePath,
-        MutatingScope $mutatingScope
+        MutatingScope $mutatingScope,
+        callable $nodeCallback
     ): void {
         $originalStmt = $unreachableStatementNode->getOriginalStatement();
         $originalStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-        $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
-        $this->processNodes(array_merge([$originalStmt], $unreachableStatementNode->getNextStatements()), $filePath, $mutatingScope);
+        foreach ($unreachableStatementNode->getNextStatements() as $nextStatement) {
+            $nextStatement->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+        }
+
+        $this->nodeScopeResolverProcessNodes(
+            array_merge([$originalStmt], $unreachableStatementNode->getNextStatements()),
+            $mutatingScope,
+            $nodeCallback
+        );
     }
 
     /**
