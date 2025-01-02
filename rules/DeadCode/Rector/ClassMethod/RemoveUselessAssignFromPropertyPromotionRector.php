@@ -86,7 +86,7 @@ CODE_SAMPLE
         $removeStmtKeys = [];
 
         foreach ($stmts as $key => $stmt) {
-            // skip complex statements
+            // has complex statements, skip
             if (! $stmt instanceof Expression || ! $stmt->expr instanceof Assign) {
                 return null;
             }
@@ -94,7 +94,7 @@ CODE_SAMPLE
             /** @var Assign $assign */
             $assign = $stmt->expr;
 
-            // skip non property fetches assignments
+            // has non property fetches assignments, skip
             if (! $assign->var instanceof PropertyFetch) {
                 return null;
             }
