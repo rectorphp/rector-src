@@ -44,7 +44,7 @@ class Fixture
         }
 
         $output = [];
-        echo(json_encode($output, JSON_THROW_ON_ERROR));
+        echo(json_encode($output));
     }
 }
 
