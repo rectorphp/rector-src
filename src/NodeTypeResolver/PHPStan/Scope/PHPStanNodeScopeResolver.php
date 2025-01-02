@@ -105,7 +105,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Webmozart\Assert\Assert;
 
