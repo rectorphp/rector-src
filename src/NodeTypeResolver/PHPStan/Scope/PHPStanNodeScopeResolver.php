@@ -161,11 +161,9 @@ final readonly class PHPStanNodeScopeResolver
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
-        $hasUnreachableStatementNode = false;
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
             $filePath,
-            &$hasUnreachableStatementNode
         ): void {
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
@@ -188,7 +186,6 @@ final readonly class PHPStanNodeScopeResolver
             // so node to be checked inside
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
-                $hasUnreachableStatementNode = true;
                 return;
             }
 
@@ -410,12 +407,7 @@ final readonly class PHPStanNodeScopeResolver
             RectorNodeScopeResolver::processNodes($stmts, $scope);
         }
 
-        if (! $hasUnreachableStatementNode) {
-            return $stmts;
-        }
-
-        $nodeTraverser = new NodeTraverser(new UnreachableStatementNodeVisitor($this, $filePath, $scope));
-        return $nodeTraverser->traverse($stmts);
+        return $stmts;
     }
 
     private function processYield(Yield_ $yield, MutatingScope $mutatingScope): void
@@ -591,7 +583,7 @@ final readonly class PHPStanNodeScopeResolver
         $originalStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
         $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
-        $this->processNodes([$originalStmt], $filePath, $mutatingScope);
+        $this->processNodes(array_merge([$originalStmt], $unreachableStatementNode->getNextStatements()), $filePath, $mutatingScope);
     }
 
     /**
