@@ -99,8 +99,8 @@ CODE_SAMPLE
                 return null;
             }
 
-            // collect first, ensure not stop too early on non property fetch
-            // and already removed
+            // collect first, ensure not removed too early on next non property fetch assignment
+            // which may have side effect
             if ($assign->var->var instanceof Variable && $this->isName($assign->var->var, 'this') && $this->isNames(
                 $assign->var->name,
                 $variableNames
