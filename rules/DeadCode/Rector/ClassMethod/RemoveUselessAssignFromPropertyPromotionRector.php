@@ -1,0 +1,129 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rector\DeadCode\Rector\ClassMethod;
+
+use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
+use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+
+/**
+ * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromPropertyPromotionRector\RemoveUselessAssignFromPropertyPromotionRectorTest
+ */
+final class RemoveUselessAssignFromPropertyPromotionRector extends AbstractRector
+{
+    public function getRuleDefinition(): RuleDefinition
+    {
+        return new RuleDefinition(
+            'Remove useless re-assign from property promotion',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
+class SomeClass
+{
+    public function __construct(private readonly \stdClass $std)
+    {
+    	$this->std = $std;
+    }
+}
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+class SomeClass
+{
+    public function __construct(private readonly \stdClass $std)
+    {
+    	$this->std = $std;
+    }
+}
+CODE_SAMPLE
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @return array<class-string<Node>>
+     */
+    public function getNodeTypes(): array
+    {
+        return [ClassMethod::class];
+    }
+
+    /**
+     * @param ClassMethod $node
+     */
+    public function refactor(Node $node): ?Node
+    {
+        if (! $this->isName($node, MethodName::CONSTRUCT)) {
+            return null;
+        }
+
+        if ($node->isAbstract()) {
+            return null;
+        }
+
+        $variableNames = [];
+        foreach ($node->params as $param) {
+            if (! $param->isPromoted()) {
+                continue;
+            }
+
+            $variableNames[] = (string) $this->getName($param->var);
+        }
+
+        /** @var Stmt[] $stmts */
+        $stmts = $node->stmts;
+
+        // skip complex statements
+        foreach ($stmts as $stmt) {
+            if (! $stmt instanceof Expression || ! $stmt->expr instanceof Assign) {
+                return null;
+            }
+        }
+
+        $removeStmtKeys = [];
+
+        /** @var Expression[] $stmts */
+        foreach ($stmts as $key => $stmt) {
+            /** @var Assign $assign */
+            $assign = $stmt->expr;
+
+            if (! $assign->var instanceof PropertyFetch) {
+                return null;
+            }
+
+            // collect first, ensure not stop too early on non property fetch
+            if ($assign->var->var instanceof Variable && $this->isName($assign->var->var, 'this') && $this->isNames(
+                $assign->var->name,
+                $variableNames
+            ) && $assign->expr instanceof Variable && $this->isName($assign->expr, $this->getName($assign->var->name))) {
+                $removeStmtKeys[] = $key;
+                continue;
+            }
+
+            // early return, if not all are property fetches from $this and its param
+            return null;
+        }
+
+        // empty data? nothing to remove
+        if ($removeStmtKeys === []) {
+            return null;
+        }
+
+        foreach ($removeStmtKeys as $removeStmtKey) {
+            unset($node->stmts[$removeStmtKey]);
+        }
+
+        return $node;
+    }
+}
