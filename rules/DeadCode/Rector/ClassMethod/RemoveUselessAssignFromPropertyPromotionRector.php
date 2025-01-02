@@ -77,6 +77,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            // re-assign will cause error too early, no need to collect names
+            if ($param->isReadonly()) {
+                continue;
+            }
+
             $variableNames[] = (string) $this->getName($param->var);
         }
 
