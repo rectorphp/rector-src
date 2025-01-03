@@ -2,12 +2,13 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromPropertyPromotionRector\Fixture;
 
+use stdClass;
+
 class SkipDifferentVariable
 {
-    public function __construct(private \stdClass $std)
+    public function __construct(private \stdClass $std, stdClass $std2)
     {
-        $differentVariable = new \stdClass();
-        $this->std = $differentVariable;
+        $this->std = $std2;
     }
 }
 
