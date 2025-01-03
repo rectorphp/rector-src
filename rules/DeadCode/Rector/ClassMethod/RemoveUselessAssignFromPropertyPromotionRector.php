@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Rector\AbstractRector;
@@ -67,7 +66,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->isAbstract()) {
+        if ($node->stmts === null || $node->stmts == []) {
             return null;
         }
 
@@ -90,11 +89,9 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Stmt[] $stmts */
-        $stmts = $node->stmts;
         $removeStmtKeys = [];
 
-        foreach ($stmts as $key => $stmt) {
+        foreach ($node->stmts as $key => $stmt) {
             // has non direct expression with assign, skip
             if (! $stmt instanceof Expression || ! $stmt->expr instanceof Assign) {
                 return null;
@@ -113,7 +110,10 @@ CODE_SAMPLE
             if ($assign->var->var instanceof Variable && $this->isName($assign->var->var, 'this') && $this->isNames(
                 $assign->var->name,
                 $variableNames
-            ) && $assign->expr instanceof Variable && $this->isName($assign->expr, (string) $this->getName($assign->var->name))) {
+            ) && $assign->expr instanceof Variable && $this->isName(
+                $assign->expr,
+                (string) $this->getName($assign->var->name)
+            )) {
                 $removeStmtKeys[] = $key;
                 continue;
             }
