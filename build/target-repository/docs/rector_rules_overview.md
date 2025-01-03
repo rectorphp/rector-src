@@ -12,7 +12,7 @@ Use https://getrector.com/find-rule instead!
 
 - [Carbon](#carbon) (4)
 
-- [CodeQuality](#codequality) (69)
+- [CodeQuality](#codequality) (70)
 
 - [CodingStyle](#codingstyle) (29)
 
@@ -344,6 +344,23 @@ Refactor `call_user_func()` with arrow function to direct call
 -        $result = \call_user_func(fn () => 100);
 +        $result = 100;
      }
+ }
+```
+
+<br>
+
+### CatchThrowableInsteadOfExceptionRector
+
+Replace last catch Exception with catch Throwable
+
+- class: [`Rector\CodeQuality\Rector\Catch_\CatchThrowableInsteadOfExceptionRector`](../rules/CodeQuality/Rector/Catch_\CatchThrowableInsteadOfExceptionRector.php)
+
+```diff
+ try {
+     $this->doSomething();
+-} catch (Exception $exception) {
++} catch (Throwable $exception) {
+     // do something
  }
 ```
 

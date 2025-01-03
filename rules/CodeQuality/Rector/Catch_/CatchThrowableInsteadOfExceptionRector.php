@@ -35,17 +35,17 @@ final class CatchThrowableInsteadOfExceptionRector extends AbstractRector
             new CodeSample(
                 <<<'CODE_SAMPLE'
 try {
-	$this->doSomething();
+    $this->doSomething();
 } catch (Exception $exception) {
-	// do something
+    // do something
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
 try {
-	$this->doSomething();
+    $this->doSomething();
 } catch (Throwable $exception) {
-	// do something
+    // do something
 }
 CODE_SAMPLE
                 ,
