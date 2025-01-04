@@ -21,6 +21,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromPropertyPromotionRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
@@ -88,6 +89,7 @@ final class DeadCodeLevel
         RemoveTypedPropertyDeadInstanceOfRector::class,
         TernaryToBooleanOrFalseToBooleanAndRector::class,
         RemoveDoubleAssignRector::class,
+        RemoveUselessAssignFromPropertyPromotionRector::class,
         RemoveConcatAutocastRector::class,
         SimplifyIfElseWithSameContentRector::class,
         SimplifyUselessVariableRector::class,
