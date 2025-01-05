@@ -217,7 +217,7 @@ CODE_SAMPLE
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
         if ($constructClassMethod instanceof ClassMethod) {
             foreach ($constructClassMethod->params as $param) {
-                if (! $param->flags) {
+                if (! $param->isPromoted()) {
                     continue;
                 }
 
