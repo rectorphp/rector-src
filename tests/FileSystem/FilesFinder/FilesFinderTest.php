@@ -127,10 +127,13 @@ final class FilesFinderTest extends AbstractLazyTestCase
     {
         // no suffix filter
         $foundNoFilterFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithSuffix']);
-        $this->assertCount(2, $foundNoFilterFiles);
+        $this->assertCount(3, $foundNoFilterFiles);
 
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles(
-            [__DIR__ . '/SourceWithSuffix'],
+            [
+                __DIR__ . '/SourceWithSuffix',
+                __DIR__ . '/SourceWithSuffix/other_unrelated_file.php',
+            ],
             ['php'],
             true,
             'Controller'
