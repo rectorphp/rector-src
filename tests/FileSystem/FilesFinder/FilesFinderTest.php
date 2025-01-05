@@ -130,7 +130,10 @@ final class FilesFinderTest extends AbstractLazyTestCase
         $this->assertCount(2, $foundNoFilterFiles);
 
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles(
-            [__DIR__ . '/SourceWithSuffix'],
+            [
+                __DIR__ . '/SourceWithSuffix',
+                __DIR__ . '/other_unrelated_file.php',
+            ],
             ['php'],
             true,
             'Controller'
