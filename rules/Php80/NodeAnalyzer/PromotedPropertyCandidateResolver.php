@@ -175,7 +175,7 @@ final readonly class PromotedPropertyCandidateResolver
         array $firstParamAsVariable
     ): bool {
         // already promoted
-        if ($matchedParam->flags !== 0) {
+        if ($matchedParam->isPromoted()) {
             return true;
         }
 

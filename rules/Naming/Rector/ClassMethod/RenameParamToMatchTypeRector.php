@@ -131,6 +131,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return $param->flags !== 0;
+        return $param->isPromoted();
     }
 }

@@ -84,7 +84,7 @@ final readonly class ParamAnalyzer
     public function hasPropertyPromotion(array $params): bool
     {
         foreach ($params as $param) {
-            if ($param->flags !== 0) {
+            if ($param->isPromoted()) {
                 return true;
             }
         }

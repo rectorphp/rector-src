@@ -215,7 +215,7 @@ CODE_SAMPLE
         }
 
         // early check not property promotion and already readonly
-        if ($param->flags === 0 || $this->visibilityManipulator->isReadonly($param)) {
+        if (! $param->isPromoted() || $this->visibilityManipulator->isReadonly($param)) {
             return null;
         }
 
@@ -253,7 +253,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($param->flags === 0) {
+        if (! $param->isPromoted()) {
             return false;
         }
 

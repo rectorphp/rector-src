@@ -80,7 +80,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // for param, only on property promotion
-        if ($node instanceof Param && $node->flags === 0) {
+        if ($node instanceof Param && ! $node->isPromoted()) {
             return null;
         }
 

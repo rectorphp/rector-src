@@ -376,7 +376,7 @@ final class AstResolver
                 }
 
                 foreach ($constructClassMethod->getParams() as $param) {
-                    if ($param->flags === 0) {
+                    if (! $param->isPromoted()) {
                         continue;
                     }
 

@@ -57,7 +57,7 @@ final readonly class PropertyPromotionRenamer
         $blockingParamNames = $this->resolveBlockingParamNames($constructClassMethod);
 
         foreach ($constructClassMethod->params as $param) {
-            if ($param->flags === 0) {
+            if (! $param->isPromoted()) {
                 continue;
             }
 
