@@ -58,7 +58,7 @@ final readonly class FilesFinder
 
         // filter files by specific suffix
         if ($hasOnlySuffix) {
-            $fileWithSuffixFilter = (static fn(string $filePath): bool => str_ends_with($filePath, $onlySuffix));
+            $fileWithSuffixFilter = (static fn(string $filePath): bool => str_ends_with($filePath, (string) $onlySuffix));
         } elseif ($suffixes !== []) {
             $fileWithSuffixFilter = static function (string $filePath) use ($suffixes): bool {
                 $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
