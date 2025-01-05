@@ -52,17 +52,13 @@ final readonly class FilesFinder
         // fallback append `.php` to be used for both $filteredFilePaths and $filteredFilePathsInDirectories
         $hasOnlySuffix = $onlySuffix !== null && $onlySuffix !== '';
 
-        if ($hasOnlySuffix) {
-            if (! str_ends_with($onlySuffix, '.php')) {
-                $onlySuffix .= '.php';
-            }
+        if ($hasOnlySuffix && ! str_ends_with($onlySuffix, '.php')) {
+            $onlySuffix .= '.php';
         }
 
         // filter files by specific suffix
         if ($hasOnlySuffix) {
-            $fileWithSuffixFilter = static function (string $filePath) use ($onlySuffix): bool {
-                return str_ends_with($filePath, $onlySuffix);
-            };
+            $fileWithSuffixFilter = (static fn(string $filePath): bool => str_ends_with($filePath, $onlySuffix));
         } elseif ($suffixes !== []) {
             $fileWithSuffixFilter = static function (string $filePath) use ($suffixes): bool {
                 $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
