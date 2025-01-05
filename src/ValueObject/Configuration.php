@@ -27,7 +27,8 @@ final readonly class Configuration
         private string|null $memoryLimit = null,
         private bool $isDebug = false,
         private bool $reportingWithRealPath = false,
-        private ?string $onlyRule = null
+        private ?string $onlyRule = null,
+        private ?string $onlySuffix = null,
     ) {
     }
 
@@ -106,5 +107,10 @@ final readonly class Configuration
     public function isReportingWithRealPath(): bool
     {
         return $this->reportingWithRealPath;
+    }
+
+    public function getOnlySuffix(): ?string
+    {
+        return $this->onlySuffix;
     }
 }

@@ -56,7 +56,14 @@ final class ProcessConfigureDecorator
             ConsoleOutputFormatter::NAME
         );
 
+        // filter by rule and path
         $command->addOption(Option::ONLY, null, InputOption::VALUE_REQUIRED, 'Fully qualified rule class name');
+        $command->addOption(
+            Option::ONLY_SUFFIX,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Filter only files with specific suffix in name, e.g. "Controller"'
+        );
 
         $command->addOption(Option::DEBUG, null, InputOption::VALUE_NONE, 'Display debug output.');
         $command->addOption(Option::MEMORY_LIMIT, null, InputOption::VALUE_REQUIRED, 'Memory limit for process');

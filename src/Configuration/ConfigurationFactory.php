@@ -17,7 +17,7 @@ final readonly class ConfigurationFactory
 {
     public function __construct(
         private SymfonyStyle $symfonyStyle,
-        private readonly OnlyRuleResolver $onlyRuleResolver,
+        private OnlyRuleResolver $onlyRuleResolver,
     ) {
     }
 
@@ -43,6 +43,7 @@ final readonly class ConfigurationFactory
             null,
             false,
             false,
+            null,
             null
         );
     }
@@ -64,10 +65,13 @@ final readonly class ConfigurationFactory
 
         $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
+        // filter rule and path
         $onlyRule = $input->getOption(Option::ONLY);
         if ($onlyRule !== null) {
             $onlyRule = $this->onlyRuleResolver->resolve($onlyRule);
         }
+
+        $onlySuffix = $input->getOption(Option::ONLY_SUFFIX);
 
         $isParallel = SimpleParameterProvider::provideBoolParameter(Option::PARALLEL);
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
@@ -98,6 +102,7 @@ final readonly class ConfigurationFactory
             $isDebug,
             $isReportingWithRealPath,
             $onlyRule,
+            $onlySuffix,
         );
     }
 
