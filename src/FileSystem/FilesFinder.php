@@ -59,7 +59,7 @@ final readonly class FilesFinder
         // filter files by specific suffix
         if ($hasOnlySuffix) {
             /** @var string $onlySuffix */
-            $fileWithSuffixFilter = (static fn(string $filePath): bool => str_ends_with($filePath, $onlySuffix));
+            $fileWithSuffixFilter = (static fn (string $filePath): bool => str_ends_with($filePath, $onlySuffix));
         } elseif ($suffixes !== []) {
             $fileWithSuffixFilter = static function (string $filePath) use ($suffixes): bool {
                 $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
@@ -88,7 +88,13 @@ final readonly class FilesFinder
 
         // filtering files in directories collection
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
-        $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $hasOnlySuffix, $onlySuffix, $sortByName);
+        $filteredFilePathsInDirectories = $this->findInDirectories(
+            $directories,
+            $suffixes,
+            $hasOnlySuffix,
+            $onlySuffix,
+            $sortByName
+        );
 
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);

@@ -45,10 +45,12 @@ use Rector\Exception\NotImplementedYetException;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeDecorator\PropertyTypeDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\ValueObject\PhpVersionFeature;
 
 /**
  * @see \Rector\Tests\PhpParser\Node\NodeFactoryTest
@@ -65,7 +67,8 @@ final readonly class NodeFactory
         private PhpDocInfoFactory $phpDocInfoFactory,
         private StaticTypeMapper $staticTypeMapper,
         private PropertyTypeDecorator $propertyTypeDecorator,
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -290,6 +293,11 @@ final readonly class NodeFactory
         $param = $paramBuilder->getNode();
         $propertyFlags = $propertyMetadata->getFlags();
         $param->flags = $propertyFlags !== 0 ? $propertyFlags : Modifiers::PRIVATE;
+
+        // make readonly by default
+        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::READONLY_PROPERTY)) {
+            $param->flags |= Modifiers::READONLY;
+        }
 
         return $param;
     }
