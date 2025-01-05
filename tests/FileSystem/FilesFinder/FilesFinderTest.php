@@ -53,8 +53,8 @@ final class FilesFinderTest extends AbstractLazyTestCase
      */
     public static function alwaysReturnsAbsolutePathDataProvider(): Iterator
     {
-        yield 'directory given' => ['tests/FileSystem/FilesFinder/Source/'];
-        yield 'file given' => ['tests/FileSystem/FilesFinder/Source/SomeFile.php'];
+        yield ['tests/FileSystem/FilesFinder/Source/'];
+        yield ['tests/FileSystem/FilesFinder/Source/SomeFile.php'];
     }
 
     public function testWithFollowingBrokenSymlinks(): void
@@ -121,6 +121,33 @@ final class FilesFinderTest extends AbstractLazyTestCase
 
         $fileBasename = $this->getFileBasename($foundFile);
         $this->assertSame('foo.txt', $fileBasename);
+    }
+
+    public function testFilterBySuffix(): void
+    {
+        // no suffix filter
+        $foundNoFilterFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithSuffix']);
+        $this->assertCount(2, $foundNoFilterFiles);
+
+        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles(
+            [__DIR__ . '/SourceWithSuffix'],
+            ['php'],
+            true,
+            'Controller'
+        );
+        $this->assertCount(1, $foundFiles);
+
+        $this->assertSame('SomeController.php', $this->getFileBasename($foundFiles[0]));
+
+        $foundFullSuffixFiles = $this->filesFinder->findInDirectoriesAndFiles(
+            [__DIR__ . '/SourceWithSuffix'],
+            ['php'],
+            true,
+            'Controller.php'
+        );
+        $this->assertCount(1, $foundFullSuffixFiles);
+
+        $this->assertSame($foundFiles, $foundFullSuffixFiles);
     }
 
     private function getFileBasename(string $foundFile): string
