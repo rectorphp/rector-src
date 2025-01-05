@@ -17,9 +17,12 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Type\ObjectType;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeManipulator\ClassDependencyManipulator;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\ValueObject\PhpVersionFeature;
 
 final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 {
@@ -30,7 +33,11 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     protected function setUp(): void
     {
         $this->classDependencyManipulator = $this->make(ClassDependencyManipulator::class);
+
         $this->printerStandard = new Standard();
+
+        // use at least readonly property
+        SimpleParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, PhpVersionFeature::READONLY_PROPERTY);
     }
 
     public function testEmptyClass(): void
@@ -46,7 +53,6 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     public function testSingleMethod(): void
     {
         $someClass = new Class_(new Identifier('SingleMethodClass'));
-
         $this->setNamespacedName($someClass);
 
         $someClass->stmts[] = new ClassMethod('firstMethod');

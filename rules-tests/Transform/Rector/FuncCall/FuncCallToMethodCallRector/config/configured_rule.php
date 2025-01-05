@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
+use Rector\ValueObject\PhpVersion;
 use Rector\Config\RectorConfig;
 use Rector\Tests\Transform\Rector\FuncCall\FuncCallToMethodCallRector\Source\SomeTranslator;
 use Rector\Transform\Rector\FuncCall\FuncCallToMethodCallRector;
 use Rector\Transform\ValueObject\FuncCallToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
+
     $rectorConfig
         ->ruleWithConfiguration(FuncCallToMethodCallRector::class, [
             new FuncCallToMethodCall('view', 'Namespaced\SomeRenderer', 'render'),
