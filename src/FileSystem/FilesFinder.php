@@ -49,13 +49,30 @@ final readonly class FilesFinder
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
         );
 
-        if ($suffixes !== []) {
-            $fileWithExtensionsFilter = static function (string $filePath) use ($suffixes): bool {
+        // fallback append `.php` to be used for both $filteredFilePaths and $filteredFilePathsInDirectories
+        $hasOnlySuffix = $onlySuffix !== null && $onlySuffix !== '';
+
+        if ($hasOnlySuffix) {
+            if (! str_ends_with($onlySuffix, '.php')) {
+                $onlySuffix .= '.php';
+            }
+        }
+
+        // filter files by specific suffix
+        if ($hasOnlySuffix) {
+            $fileWithSuffixFilter = static function (string $filePath) use ($onlySuffix): bool {
+                return str_ends_with($filePath, $onlySuffix);
+            };
+        } elseif ($suffixes !== []) {
+            $fileWithSuffixFilter = static function (string $filePath) use ($suffixes): bool {
                 $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                 return in_array($filePathExtension, $suffixes, true);
             };
-            $filteredFilePaths = array_filter($filteredFilePaths, $fileWithExtensionsFilter);
+        } else {
+            $fileWithSuffixFilter = fn (): bool => true;
         }
+
+        $filteredFilePaths = array_filter($filteredFilePaths, $fileWithSuffixFilter);
 
         $filteredFilePaths = array_filter(
             $filteredFilePaths,
