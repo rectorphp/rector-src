@@ -131,6 +131,19 @@ return [
             return Unprefixer::unprefixQuoted($content, $prefix);
         },
 
+        // unprefix regex content on doctrine inflector
+        static function (string $filePath, string $prefix, string $content): string {
+            if (\str_contains($filePath, 'vendor/doctrine/inflector')) {
+                return $content;
+            }
+
+            return str_replace(
+                "'" . $prefix . "\\",
+                "'\\",
+                $content
+            );
+        },
+
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'vendor/nette/utils/src/Utils/Strings.php')) {
                 return $content;
