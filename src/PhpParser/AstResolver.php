@@ -31,7 +31,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Parser\RectorParser;
 use Rector\Reflection\MethodReflectionResolver;
