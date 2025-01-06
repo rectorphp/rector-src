@@ -129,6 +129,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if ($expr->name instanceof Expr) {
+            return false;
+        }
+
         return $this->isName($expr->class, ObjectReference::PARENT);
     }
 
