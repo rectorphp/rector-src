@@ -6,7 +6,6 @@ namespace Rector\CodeQuality\Rector\Identical;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
@@ -87,11 +86,7 @@ CODE_SAMPLE
         ObjectType $objectType,
         Expr $expr,
         Identical|NotIdentical $binaryOp
-    ): BooleanNot|Instanceof_|null {
-        if ($expr instanceof Assign) {
-            return null;
-        }
-
+    ): BooleanNot|Instanceof_ {
         $fullyQualifiedType = $objectType instanceof ShortenedObjectType || $objectType instanceof AliasedObjectType
             ? $objectType->getFullyQualifiedName()
             : $objectType->getClassName();
