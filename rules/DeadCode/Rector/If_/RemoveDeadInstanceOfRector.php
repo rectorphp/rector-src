@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\If_;
 
-use Attribute;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
