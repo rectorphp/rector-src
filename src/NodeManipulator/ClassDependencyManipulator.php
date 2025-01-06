@@ -39,17 +39,23 @@ final readonly class ClassDependencyManipulator
         private PropertyPresenceChecker $propertyPresenceChecker,
         private NodeNameResolver $nodeNameResolver,
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
-        private ReflectionResolver $reflectionResolver
+        private ReflectionResolver $reflectionResolver,
     ) {
     }
 
     public function addConstructorDependency(Class_ $class, PropertyMetadata $propertyMetadata): void
     {
+        // already has property as dependency? skip it
         if ($this->hasClassPropertyAndDependency($class, $propertyMetadata)) {
             return;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PROPERTY_PROMOTION)) {
+        // special case for Symfony @required
+        $autowireClassMethod = $this->autowiredClassMethodOrPropertyAnalyzer->matchAutowiredMethodInClass($class);
+
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(
+            PhpVersionFeature::PROPERTY_PROMOTION
+        ) || $autowireClassMethod instanceof ClassMethod) {
             $this->classInsertManipulator->addPropertyToClass(
                 $class,
                 $propertyMetadata->getName(),
@@ -57,18 +63,34 @@ final readonly class ClassDependencyManipulator
             );
         }
 
-        if ($this->shouldAddPromotedProperty($class, $propertyMetadata)) {
-            $this->addPromotedProperty($class, $propertyMetadata);
-        } else {
+        // in case of existing autowire method, re-use it
+        if ($autowireClassMethod instanceof ClassMethod) {
             $assign = $this->nodeFactory->createPropertyAssignment($propertyMetadata->getName());
 
-            $this->addConstructorDependencyWithCustomAssign(
-                $class,
+            $this->classMethodAssignManipulator->addParameterAndAssignToMethod(
+                $autowireClassMethod,
                 $propertyMetadata->getName(),
                 $propertyMetadata->getType(),
                 $assign
             );
+            return;
+
         }
+
+        // add PHP 8.0 promoted property
+        if ($this->shouldAddPromotedProperty($class, $propertyMetadata)) {
+            $this->addPromotedProperty($class, $propertyMetadata);
+            return;
+        }
+
+        $assign = $this->nodeFactory->createPropertyAssignment($propertyMetadata->getName());
+
+        $this->addConstructorDependencyWithCustomAssign(
+            $class,
+            $propertyMetadata->getName(),
+            $propertyMetadata->getType(),
+            $assign
+        );
     }
 
     /**
