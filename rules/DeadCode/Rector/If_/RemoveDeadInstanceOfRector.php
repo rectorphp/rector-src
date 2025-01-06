@@ -22,7 +22,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use Rector\NodeManipulator\IfManipulator;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
