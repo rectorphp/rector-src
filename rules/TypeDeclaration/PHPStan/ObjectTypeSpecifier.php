@@ -44,6 +44,11 @@ final readonly class ObjectTypeSpecifier
         Scope|null $scope,
         bool $withPreslash = false
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType | TemplateType {
+        $className = ltrim($objectType->getClassName(), '\\');
+        if (str_starts_with($objectType->getClassName(), '\\')) {
+            return new FullyQualifiedObjectType($className);
+        }
+
         $uses = $this->useImportsResolver->resolve();
 
         $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
@@ -54,11 +59,6 @@ final readonly class ObjectTypeSpecifier
         $shortenedObjectType = $this->matchShortenedObjectType($objectType, $uses);
         if ($shortenedObjectType !== null) {
             return $shortenedObjectType;
-        }
-
-        $className = ltrim($objectType->getClassName(), '\\');
-        if (str_starts_with($objectType->getClassName(), '\\')) {
-            return new FullyQualifiedObjectType($className);
         }
 
         if ($this->reflectionProvider->hasClass($className)) {
