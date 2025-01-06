@@ -111,7 +111,6 @@ CODE_SAMPLE
         }
 
         if ($instanceof->expr instanceof Assign) {
-            $instanceof->expr->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, false);
             $assignExpression = new Expression($instanceof->expr);
             return array_merge([$assignExpression], $if->stmts);
         }

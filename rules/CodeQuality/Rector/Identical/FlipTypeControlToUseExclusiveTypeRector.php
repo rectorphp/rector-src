@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -88,14 +87,14 @@ CODE_SAMPLE
         ObjectType $objectType,
         Expr $expr,
         Identical|NotIdentical $binaryOp
-    ): BooleanNot|Instanceof_ {
+    ): BooleanNot|Instanceof_|null {
+        if ($expr instanceof Assign) {
+            return null;
+        }
+
         $fullyQualifiedType = $objectType instanceof ShortenedObjectType || $objectType instanceof AliasedObjectType
             ? $objectType->getFullyQualifiedName()
             : $objectType->getClassName();
-
-        if ($expr instanceof Assign) {
-            $expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
-        }
 
         $instanceof = new Instanceof_($expr, new FullyQualified($fullyQualifiedType));
         if ($binaryOp instanceof NotIdentical) {
