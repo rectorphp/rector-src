@@ -133,7 +133,7 @@ return [
 
         // unprefix regex content on doctrine inflector
         static function (string $filePath, string $prefix, string $content): string {
-            if (\str_contains($filePath, 'vendor/doctrine/inflector')) {
+            if (! \str_contains($filePath, 'vendor/doctrine/inflector')) {
                 return $content;
             }
 
