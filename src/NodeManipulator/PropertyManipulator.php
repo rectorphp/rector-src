@@ -144,6 +144,28 @@ final readonly class PropertyManipulator
         return false;
     }
 
+    public function hasTraitWithSamePropertyOrWritten(ClassReflection $classReflection, string $propertyName): bool
+    {
+        foreach ($classReflection->getTraits() as $traitUse) {
+            if ($traitUse->hasProperty($propertyName)) {
+                return true;
+            }
+
+            $trait = $this->astResolver->resolveClassFromClassReflection($traitUse);
+            if (! $trait instanceof Trait_) {
+                continue;
+            }
+
+            // is property written to
+            if ($this->propertyFetchAnalyzer->containsWrittenPropertyFetchName($trait, $propertyName)) {
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
     private function isPropertyAssignedOnlyInConstructor(
         Class_ $class,
         string $propertyName,

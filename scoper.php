@@ -137,11 +137,7 @@ return [
                 return $content;
             }
 
-            return str_replace(
-                "'" . $prefix . "\\",
-                "'\\",
-                $content
-            );
+            return str_replace("'" . $prefix . '\\', "'\\", $content);
         },
 
         static function (string $filePath, string $prefix, string $content): string {
