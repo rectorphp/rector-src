@@ -41,7 +41,7 @@ final readonly class PropertyTypeChangeGuard
 
         $propertyName = $this->nodeNameResolver->getName($property);
 
-        if ($this->propertyManipulator->isUsedByTrait($classReflection, $propertyName)) {
+        if ($this->propertyManipulator->hasTraitWithSamePropertyOrWritten($classReflection, $propertyName)) {
             return false;
         }
 

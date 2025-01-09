@@ -33,7 +33,7 @@ final class IncludeTraitAsWell
 {
     use TraitUsingEntityManager;
 
-    private EntityManagerInterface $entityManager;
+    private \Doctrine\ORM\EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

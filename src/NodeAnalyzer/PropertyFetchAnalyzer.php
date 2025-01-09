@@ -104,6 +104,24 @@ final readonly class PropertyFetchAnalyzer
         );
     }
 
+    public function containsWrittenPropertyFetchName(Trait_ $trait, string $propertyName): bool
+    {
+        if ($trait->getProperty($propertyName) instanceof Property) {
+            return true;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst(
+            $trait,
+            function (Node $node) use ($propertyName): bool {
+                if (! $node instanceof Assign) {
+                    return false;
+                }
+
+                return $this->isLocalPropertyFetchName($node->var, $propertyName);
+            }
+        );
+    }
+
     /**
      * @phpstan-assert-if-true PropertyFetch|StaticPropertyFetch $node
      */
