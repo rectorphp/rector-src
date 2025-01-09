@@ -36,9 +36,7 @@ final class ChangedFilesDetector
             return;
         }
 
-        $hash = $this->hashFile($filePath);
-
-        $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $hash);
+        $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $filePathCacheKey);
     }
 
     public function addCachableFile(string $filePath): void
@@ -53,8 +51,7 @@ final class ChangedFilesDetector
         $cachedValue = $this->cache->load($fileInfoCacheKey, CacheKey::FILE_HASH_KEY);
 
         if ($cachedValue !== null) {
-            $currentFileHash = $this->hashFile($filePath);
-            return $currentFileHash !== $cachedValue;
+            return $fileInfoCacheKey !== $cachedValue;
         }
 
         // we don't have a value to compare against. Be defensive and assume its changed
@@ -96,11 +93,6 @@ final class ChangedFilesDetector
     private function getFilePathCacheKey(string $filePath): string
     {
         return $this->fileHasher->hash($this->resolvePath($filePath));
-    }
-
-    private function hashFile(string $filePath): string
-    {
-        return $this->fileHasher->hashFiles([$this->resolvePath($filePath)]);
     }
 
     private function storeConfigurationDataHash(string $filePath, string $configurationHash): void
