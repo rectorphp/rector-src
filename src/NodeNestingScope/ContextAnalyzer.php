@@ -8,8 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
-use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
-use Rector\NodeManipulator\AssignManipulator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ContextAnalyzer
