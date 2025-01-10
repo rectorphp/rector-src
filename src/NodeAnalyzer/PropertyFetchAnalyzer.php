@@ -21,8 +21,10 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
+use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
 use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -41,7 +43,9 @@ final readonly class PropertyFetchAnalyzer
         private BetterNodeFinder $betterNodeFinder,
         private AstResolver $astResolver,
         private NodeTypeResolver $nodeTypeResolver,
-        private ReflectionResolver $reflectionResolver
+        private ReflectionResolver $reflectionResolver,
+        private ContextAnalyzer $contextAnalyzer,
+        private PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer
     ) {
     }
 
@@ -113,11 +117,18 @@ final readonly class PropertyFetchAnalyzer
         return (bool) $this->betterNodeFinder->findFirst(
             $trait,
             function (Node $node) use ($propertyName): bool {
-                if (! $node instanceof Assign) {
+                if (! $this->isLocalPropertyFetchName($node, $propertyName)) {
                     return false;
                 }
 
-                return $this->isLocalPropertyFetchName($node->var, $propertyName);
+                /**
+                 * @var PropertyFetch|StaticPropertyFetch|NullsafePropertyFetch $node
+                 */
+                if ($this->contextAnalyzer->isChangeableContext($node)) {
+                    return true;
+                }
+
+                return $this->propertyWriteonlyAnalyzer->arePropertyFetchesExclusivelyBeingAssignedTo([$node]);
             }
         );
     }
