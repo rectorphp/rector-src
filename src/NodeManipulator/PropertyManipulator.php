@@ -20,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -59,7 +60,8 @@ final readonly class PropertyManipulator
         private PromotedPropertyResolver $promotedPropertyResolver,
         private ConstructorAssignDetector $constructorAssignDetector,
         private AstResolver $astResolver,
-        private PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private ContextAnalyzer $contextAnalyzer
     ) {
     }
 
@@ -78,7 +80,7 @@ final readonly class PropertyManipulator
         $classMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         foreach ($propertyFetches as $propertyFetch) {
-            if ($this->isChangeableContext($propertyFetch)) {
+            if ($this->contextAnalyzer->isChangeableContext($propertyFetch)) {
                 return true;
             }
 
@@ -187,23 +189,6 @@ final readonly class PropertyManipulator
         }
 
         return $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName);
-    }
-
-    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
-    {
-        if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR, false)) {
-            return true;
-        }
-
-        if ($propertyFetch->getAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, false)) {
-            return true;
-        }
-
-        if ($propertyFetch->getAttribute(AttributeKey::IS_USED_AS_ARG_BY_REF_VALUE, false) === true) {
-            return true;
-        }
-
-        return $propertyFetch->getAttribute(AttributeKey::IS_INCREMENT_OR_DECREMENT, false) === true;
     }
 
     private function hasAllowedNotReadonlyAnnotationOrAttribute(PhpDocInfo $phpDocInfo, Class_ $class): bool
