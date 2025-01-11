@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Php81\Rector\New_;
 
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Enum\ObjectReference;
@@ -69,29 +71,29 @@ CODE_SAMPLE
         );
     }
 
-    private function refactorConstructorCallToStaticFromCall(New_ $node): ?StaticCall
+    private function refactorConstructorCallToStaticFromCall(New_ $new): ?StaticCall
     {
-        if (! $this->isObjectType($node->class, new ObjectType(self::MY_C_LABS_CLASS))) {
+        if (! $this->isObjectType($new->class, new ObjectType(self::MY_C_LABS_CLASS))) {
             return null;
         }
 
-        $classname = $this->getName($node->class);
+        $classname = $this->getName($new->class);
         if (in_array($classname, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
-            $classname = ScopeFetcher::fetch($node)->getClassReflection()?->getName();
+            $classname = ScopeFetcher::fetch($new)->getClassReflection()?->getName();
         }
 
         if ($classname === null) {
             return null;
         }
 
-        if (! $this->isMyCLabsConstructor($node, $classname)) {
+        if (! $this->isMyCLabsConstructor($new, $classname)) {
             return null;
         }
 
-        return new StaticCall(new Name\FullyQualified($classname), self::DEFAULT_ENUM_CONSTRUCTOR, $node->args);
+        return new StaticCall(new FullyQualified($classname), self::DEFAULT_ENUM_CONSTRUCTOR, $new->args);
     }
 
-    private function isMyCLabsConstructor(New_ $node, string $classname): bool
+    private function isMyCLabsConstructor(New_ $new, string $classname): bool
     {
         $classReflection = $this->reflectionProvider->getClass($classname);
         if (! $classReflection->hasMethod(MethodName::CONSTRUCT)) {
@@ -99,7 +101,7 @@ CODE_SAMPLE
         }
 
         return $classReflection
-            ->getMethod(MethodName::CONSTRUCT, ScopeFetcher::fetch($node))
+            ->getMethod(MethodName::CONSTRUCT, ScopeFetcher::fetch($new))
             ->getDeclaringClass()
             ->getName() === self::MY_C_LABS_CLASS;
     }
