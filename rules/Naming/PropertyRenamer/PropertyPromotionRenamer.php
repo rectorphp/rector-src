@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
@@ -20,8 +21,10 @@ use Rector\Naming\ParamRenamer\ParamRenamer;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\Naming\ValueObjectFactory\ParamRenameFactory;
 use Rector\Naming\VariableRenamer;
+use Rector\NodeManipulator\PropertyManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php\PhpVersionProvider;
+use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 
@@ -37,6 +40,8 @@ final readonly class PropertyPromotionRenamer
         private NodeNameResolver $nodeNameResolver,
         private VariableRenamer $variableRenamer,
         private DocBlockUpdater $docBlockUpdater,
+        private ReflectionResolver $reflectionResolver,
+        private PropertyManipulator $propertyManipulator
     ) {
     }
 
@@ -50,6 +55,11 @@ final readonly class PropertyPromotionRenamer
 
         $constructClassMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classLike);
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
@@ -73,6 +83,10 @@ final readonly class PropertyPromotionRenamer
 
             $currentParamName = $this->nodeNameResolver->getName($param);
             if ($this->isNameSuffixed($currentParamName, $desiredPropertyName)) {
+                continue;
+            }
+
+            if ($this->propertyManipulator->isUsedByTrait($classReflection, $currentParamName)) {
                 continue;
             }
 

@@ -28,8 +28,9 @@ final class ContextAnalyzer
         return $node->getAttribute(AttributeKey::IS_IN_IF) === true;
     }
 
-    public function isChangeableContext(PropertyFetch | StaticPropertyFetch | NullsafePropertyFetch $propertyFetch): bool
-    {
+    public function isChangeableContext(
+        PropertyFetch | StaticPropertyFetch | NullsafePropertyFetch $propertyFetch
+    ): bool {
         if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR, false)) {
             return true;
         }
