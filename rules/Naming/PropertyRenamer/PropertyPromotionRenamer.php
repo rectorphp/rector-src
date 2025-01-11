@@ -20,10 +20,13 @@ use Rector\Naming\ParamRenamer\ParamRenamer;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\Naming\ValueObjectFactory\ParamRenameFactory;
 use Rector\Naming\VariableRenamer;
+use Rector\NodeManipulator\PropertyManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php\PhpVersionProvider;
+use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
+use PHPStan\Reflection\ClassReflection;
 
 final readonly class PropertyPromotionRenamer
 {
@@ -37,6 +40,8 @@ final readonly class PropertyPromotionRenamer
         private NodeNameResolver $nodeNameResolver,
         private VariableRenamer $variableRenamer,
         private DocBlockUpdater $docBlockUpdater,
+        private ReflectionResolver $reflectionResolver,
+        private PropertyManipulator $propertyManipulator
     ) {
     }
 
@@ -50,6 +55,11 @@ final readonly class PropertyPromotionRenamer
 
         $constructClassMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classLike);
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
@@ -73,6 +83,10 @@ final readonly class PropertyPromotionRenamer
 
             $currentParamName = $this->nodeNameResolver->getName($param);
             if ($this->isNameSuffixed($currentParamName, $desiredPropertyName)) {
+                continue;
+            }
+
+            if ($this->propertyManipulator->isUsedByTrait($classReflection, $currentParamName)) {
                 continue;
             }
 
