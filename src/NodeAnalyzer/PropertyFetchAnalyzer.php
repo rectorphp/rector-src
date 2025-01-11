@@ -21,7 +21,6 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
-use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
 use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeNestingScope\ContextAnalyzer;
@@ -44,8 +43,7 @@ final readonly class PropertyFetchAnalyzer
         private AstResolver $astResolver,
         private NodeTypeResolver $nodeTypeResolver,
         private ReflectionResolver $reflectionResolver,
-        private ContextAnalyzer $contextAnalyzer,
-        private PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer
+        private ContextAnalyzer $contextAnalyzer
     ) {
     }
 
@@ -128,7 +126,7 @@ final readonly class PropertyFetchAnalyzer
                     return true;
                 }
 
-                return $this->propertyWriteonlyAnalyzer->arePropertyFetchesExclusivelyBeingAssignedTo([$node]);
+                return $this->contextAnalyzer->isLeftPartOfAssign($node);
             }
         );
     }

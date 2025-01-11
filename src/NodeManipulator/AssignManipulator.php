@@ -14,7 +14,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\FunctionLike;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\Php72\ValueObject\ListAndEach;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
@@ -23,7 +23,8 @@ final readonly class AssignManipulator
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private BetterNodeFinder $betterNodeFinder,
-        private PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private ContextAnalyzer $contextAnalyzer
     ) {
     }
 
@@ -61,19 +62,6 @@ final readonly class AssignManipulator
         return new ListAndEach($assign->var, $bareExpr);
     }
 
-    public function isLeftPartOfAssign(Node $node): bool
-    {
-        if ($node->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
-            return true;
-        }
-
-        if ($node->getAttribute(AttributeKey::IS_ASSIGN_REF_EXPR) === true) {
-            return true;
-        }
-
-        return $node->getAttribute(AttributeKey::IS_ASSIGN_OP_VAR) === true;
-    }
-
     /**
      * @api doctrine
      * @return array<PropertyFetch|StaticPropertyFetch>
@@ -85,7 +73,7 @@ final readonly class AssignManipulator
                 return false;
             }
 
-            return $this->isLeftPartOfAssign($node);
+            return $this->contextAnalyzer->isLeftPartOfAssign($node);
         });
     }
 }

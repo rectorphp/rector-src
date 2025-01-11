@@ -50,7 +50,6 @@ final readonly class PropertyManipulator
     ];
 
     public function __construct(
-        private AssignManipulator $assignManipulator,
         private BetterNodeFinder $betterNodeFinder,
         private PhpDocInfoFactory $phpDocInfoFactory,
         private PropertyFetchFinder $propertyFetchFinder,
@@ -91,7 +90,7 @@ final readonly class PropertyManipulator
                 continue;
             }
 
-            if ($this->assignManipulator->isLeftPartOfAssign($propertyFetch)) {
+            if ($this->contextAnalyzer->isLeftPartOfAssign($propertyFetch)) {
                 return true;
             }
 
