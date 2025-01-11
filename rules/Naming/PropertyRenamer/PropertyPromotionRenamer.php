@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
@@ -26,7 +27,6 @@ use Rector\Php\PhpVersionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
-use PHPStan\Reflection\ClassReflection;
 
 final readonly class PropertyPromotionRenamer
 {

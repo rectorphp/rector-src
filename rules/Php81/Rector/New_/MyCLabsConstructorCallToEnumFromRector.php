@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\New_;
 
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Enum\ObjectReference;
