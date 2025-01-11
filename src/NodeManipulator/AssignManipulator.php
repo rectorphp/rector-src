@@ -15,7 +15,6 @@ use PhpParser\Node\FunctionLike;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeNestingScope\ContextAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php72\ValueObject\ListAndEach;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
