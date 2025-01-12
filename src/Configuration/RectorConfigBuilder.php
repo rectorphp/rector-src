@@ -171,7 +171,8 @@ final class RectorConfigBuilder
     {
         if ($this->setGroups !== [] || $this->setProviders !== []) {
             $setProviderCollector = new SetProviderCollector(array_map(
-                $rectorConfig->make(...),
+                static fn (string $setProvider): SetProviderInterface =>
+                $rectorConfig->make($setProvider),
                 \array_keys($this->setProviders)
             ));
 
