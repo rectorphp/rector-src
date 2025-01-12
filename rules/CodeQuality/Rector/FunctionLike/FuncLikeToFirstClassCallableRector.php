@@ -69,7 +69,9 @@ CODE_SAMPLE
             if (
                 ($node->expr instanceof MethodCall || $node->expr instanceof StaticCall) &&
                 ! $node->expr->isFirstClassCallable() &&
-                $this->sameParamsForArgs($node->getParams(), $node->expr->getArgs())) {
+                $this->sameParamsForArgs($node->getParams(), $node->expr->getArgs()) &&
+                $this->isNonDependantMethod($node->expr, $node->getParams())
+            ) {
                 return $node->expr;
             }
 
@@ -89,7 +91,8 @@ CODE_SAMPLE
 
         if (
             ! $callLike->isFirstClassCallable() &&
-            $this->sameParamsForArgs($node->getParams(), $callLike->getArgs())) {
+            $this->sameParamsForArgs($node->getParams(), $callLike->getArgs()) &&
+            $this->isNonDependantMethod($callLike, $node->getParams())) {
             return $callLike;
         }
 
@@ -115,6 +118,26 @@ CODE_SAMPLE
 
         foreach ($args as $key => $arg) {
             if (! $this->nodeComparator->areNodesEqual($arg->value, $params[$key]->var)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Param[] $params
+     */
+    private function isNonDependantMethod(StaticCall|MethodCall $expr, array $params): bool
+    {
+        Assert::allIsInstanceOf($params, Param::class);
+
+        if ($expr instanceof StaticCall) {
+            return true;
+        }
+
+        foreach ($params as $param) {
+            if ($this->nodeComparator->areNodesEqual($param->var, $expr->var)) {
                 return false;
             }
         }
