@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
@@ -69,6 +70,7 @@ CODE_SAMPLE
             if (
                 ($node->expr instanceof MethodCall || $node->expr instanceof StaticCall) &&
                 ! $node->expr->isFirstClassCallable() &&
+                $this->notUsingNamedArgs($node->expr->getArgs()) &&
                 $this->sameParamsForArgs($node->getParams(), $node->expr->getArgs()) &&
                 $this->isNonDependantMethod($node->expr, $node->getParams())
             ) {
@@ -91,6 +93,7 @@ CODE_SAMPLE
 
         if (
             ! $callLike->isFirstClassCallable() &&
+            $this->notUsingNamedArgs($callLike->getArgs()) &&
             $this->sameParamsForArgs($node->getParams(), $callLike->getArgs()) &&
             $this->isNonDependantMethod($callLike, $node->getParams())) {
             return $callLike;
@@ -146,6 +149,7 @@ CODE_SAMPLE
                     return null;
                 });
             }
+
             if ($expr instanceof StaticCall) {
                 $this->traverseNodesWithCallable($expr->class, function (Node $node) use ($param, &$found): null {
                     if ($this->nodeComparator->areNodesEqual($node, $param->var)) {
@@ -157,6 +161,22 @@ CODE_SAMPLE
             }
 
             if ($found) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function notUsingNamedArgs(array $args): bool
+    {
+        Assert::allIsInstanceOf($args, Arg::class);
+
+        foreach ($args as $arg) {
+            if ($arg->name instanceof Identifier) {
                 return false;
             }
         }
