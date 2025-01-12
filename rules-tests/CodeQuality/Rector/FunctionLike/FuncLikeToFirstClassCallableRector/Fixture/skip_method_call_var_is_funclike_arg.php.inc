@@ -7,4 +7,6 @@ function ($foo)
     return $foo->foo();
 };
 
+fn ($foo) => $foo->foo();
+
 ?>
