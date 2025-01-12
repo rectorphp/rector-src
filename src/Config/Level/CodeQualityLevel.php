@@ -176,7 +176,6 @@ final class CodeQualityLevel
         CompleteMissingIfElseBracketRector::class,
         RemoveUselessIsObjectCheckRector::class,
         StaticToSelfStaticMethodCallOnFinalClassRector::class,
-        FuncLikeToFirstClassCallableRector::class,
     ];
 
     /**
