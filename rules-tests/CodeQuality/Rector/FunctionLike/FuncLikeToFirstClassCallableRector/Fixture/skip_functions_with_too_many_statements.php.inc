@@ -8,6 +8,8 @@ function ($foo)
     return FooBar::foo($foo);
 };
 
+fn ($foo) => FooBar::foo($foo) && true;
+
 $bar = null;
 
 function ($foo) use ($bar)
