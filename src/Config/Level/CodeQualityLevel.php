@@ -42,6 +42,7 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
+use Rector\CodeQuality\Rector\FunctionLike\FuncLikeToFirstClassCallableRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
@@ -175,6 +176,7 @@ final class CodeQualityLevel
         CompleteMissingIfElseBracketRector::class,
         RemoveUselessIsObjectCheckRector::class,
         StaticToSelfStaticMethodCallOnFinalClassRector::class,
+        FuncLikeToFirstClassCallableRector::class,
     ];
 
     /**
