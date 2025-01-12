@@ -126,18 +126,37 @@ CODE_SAMPLE
     }
 
     /**
+     * Makes sure the parameter isn't used to make the call e.g. in the var or class
+     *
      * @param Param[] $params
      */
     private function isNonDependantMethod(StaticCall|MethodCall $expr, array $params): bool
     {
         Assert::allIsInstanceOf($params, Param::class);
 
-        if ($expr instanceof StaticCall) {
-            return true;
-        }
+        $found = false;
 
         foreach ($params as $param) {
-            if ($this->nodeComparator->areNodesEqual($param->var, $expr->var)) {
+            if ($expr instanceof MethodCall) {
+                $this->traverseNodesWithCallable($expr->var, function (Node $node) use ($param, &$found): null {
+                    if ($this->nodeComparator->areNodesEqual($node, $param->var)) {
+                        $found = true;
+                    }
+
+                    return null;
+                });
+            }
+            if ($expr instanceof StaticCall) {
+                $this->traverseNodesWithCallable($expr->class, function (Node $node) use ($param, &$found): null {
+                    if ($this->nodeComparator->areNodesEqual($node, $param->var)) {
+                        $found = true;
+                    }
+
+                    return null;
+                });
+            }
+
+            if ($found) {
                 return false;
             }
         }
