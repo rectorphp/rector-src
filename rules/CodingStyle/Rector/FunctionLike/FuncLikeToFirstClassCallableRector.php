@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\CodeQuality\Rector\FunctionLike;
+namespace Rector\CodingStyle\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -20,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\CodeQuality\Rector\FunctionLike\FuncLikeToFirstClassCallableRector\FuncLikeToFirstClassCallableRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\FunctionLike\FuncLikeToFirstClassCallableRector\FuncLikeToFirstClassCallableRectorTest
  */
 final class FuncLikeToFirstClassCallableRector extends AbstractRector
 {
