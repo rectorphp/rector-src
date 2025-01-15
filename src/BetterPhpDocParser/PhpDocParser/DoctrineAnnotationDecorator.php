@@ -449,7 +449,8 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                     Lexer::TOKEN_CLOSE_CURLY_BRACKET,
                     Lexer::TOKEN_CLOSE_PARENTHESES
                     // sometimes it gets mixed int    ")
-                ) || \str_contains($composedTokenIterator->currentTokenValue(), ')')) {
+                ) || \str_contains($composedTokenIterator->currentTokenValue(), '}')
+                  || \str_contains($composedTokenIterator->currentTokenValue(), ')')) {
                 ++$closeBracketCount;
             }
 
