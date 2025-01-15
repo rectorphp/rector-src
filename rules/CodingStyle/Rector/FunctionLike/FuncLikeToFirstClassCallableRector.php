@@ -71,6 +71,7 @@ CODE_SAMPLE
                 ($node->expr instanceof MethodCall || $node->expr instanceof StaticCall) &&
                 ! $node->expr->isFirstClassCallable() &&
                 $this->notUsingNamedArgs($node->expr->getArgs()) &&
+                $this->notUsingByRef($node->getParams()) &&
                 $this->sameParamsForArgs($node->getParams(), $node->expr->getArgs()) &&
                 $this->isNonDependantMethod($node->expr, $node->getParams())
             ) {
@@ -94,6 +95,7 @@ CODE_SAMPLE
         if (
             ! $callLike->isFirstClassCallable() &&
             $this->notUsingNamedArgs($callLike->getArgs()) &&
+            $this->notUsingByRef($node->getParams()) &&
             $this->sameParamsForArgs($node->getParams(), $callLike->getArgs()) &&
             $this->isNonDependantMethod($callLike, $node->getParams())) {
             return $callLike;
@@ -161,6 +163,22 @@ CODE_SAMPLE
             }
 
             if ($found) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Param[] $params
+     */
+    private function notUsingByRef(array $params): bool
+    {
+        Assert::allIsInstanceOf($params, Param::class);
+
+        foreach ($params as $param) {
+            if ($param->byRef) {
                 return false;
             }
         }
