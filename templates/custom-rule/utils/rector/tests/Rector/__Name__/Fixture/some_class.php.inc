@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\__Name__\Fixture;
+namespace __Tests_Namespace__\__Name__\Fixture;
 
 // @todo fill code before
 
@@ -8,7 +8,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\__Name__\Fixture;
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\__Name__\Fixture;
+namespace __Tests_Namespace__\__Name__\Fixture;
 
 // @todo fill code after
 

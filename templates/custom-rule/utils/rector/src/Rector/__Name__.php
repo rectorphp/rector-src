@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Utils\Rector\Rector;
+namespace __Namespace__;
 
 use PhpParser\Node;
 use Rector\Rector\AbstractRector;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\__Name__\__Name__Test
+ * @see \__Tests_Namespace__\__Name__\__Name__Test
  */
 final class __Name__ extends AbstractRector
 {

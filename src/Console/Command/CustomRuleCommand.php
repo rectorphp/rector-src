@@ -14,6 +14,7 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\JsonFileSystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
@@ -37,22 +38,49 @@ final class CustomRuleCommand extends Command
     {
         $this->setName('custom-rule');
         $this->setDescription('Create base of local custom rule with tests');
+        $this->addOption('name', null, null, 'Name of the rule class (e.g. "LegacyCallToDbalMethodCall")');
+        $this->addOption(
+            'with-composer-changes',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Do not modify composer.json',
+            true
+        );
+        $this->addOption('with-phpunit-changes', null, InputOption::VALUE_OPTIONAL, 'Do not modify phpunit.xml', true);
+        $this->addOption(
+            'with-rules-dir',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Where to put the rule class',
+            'utils/rector/src/Rector'
+        );
+        $this->addOption(
+            'with-tests-dir',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Where to put the rule tests',
+            'utils/rector/tests/Rector'
+        );
+        $this->addOption(
+            'with-rules-namespace',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'What namespace to use for the rule class',
+            'Utils\\Rector\\Rector'
+        );
+        $this->addOption(
+            'with-tests-namespace',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'What namespace to use for the rule tests',
+            'Utils\\Rector\\Tests\\Rector'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // ask for rule name
-        $rectorName = $this->symfonyStyle->ask(
-            'What is the name of the rule class (e.g. "LegacyCallToDbalMethodCall")?',
-            null,
-            static function (string $answer): string {
-                if ($answer === '') {
-                    throw new ShouldNotHappenException('Rector name cannot be empty');
-                }
-
-                return $answer;
-            }
-        );
+        $rectorName = $this->getRectorName($input);
 
         // suffix with Rector by convention
         if (! str_ends_with((string) $rectorName, 'Rector')) {
@@ -97,9 +125,15 @@ final class CustomRuleCommand extends Command
         $fileInfos = iterator_to_array($finder->getIterator());
 
         foreach ($fileInfos as $fileInfo) {
-            // replace __Name__ with $rectorName
+            // replace __Name__, __Namespace__, and __Test_Namespace__ in file content
             $newContent = $this->replaceNameVariable($rectorName, $fileInfo->getContents());
+            $newContent = $this->replaceNamespaceVariable($input->getOption('with-rules-namespace'), $newContent);
+            $newContent = $this->replaceTestsNamespaceVariable($input->getOption('with-tests-namespace'), $newContent);
+
+            // Replace the directory structure found in the template with the one provided by the user
             $newFilePath = $this->replaceNameVariable($rectorName, $fileInfo->getRelativePathname());
+            $newFilePath = str_replace('utils/rector/src/Rector', $input->getOption('with-rules-dir'), $newFilePath);
+            $newFilePath = str_replace('utils/rector/tests/Rector', $input->getOption('with-tests-dir'), $newFilePath);
 
             FileSystem::write($currentDirectory . '/' . $newFilePath, $newContent, null);
 
@@ -113,27 +147,31 @@ final class CustomRuleCommand extends Command
         );
 
         // 2. update autoload-dev in composer.json
-        $composerJsonFilePath = $currentDirectory . '/composer.json';
-        if (file_exists($composerJsonFilePath)) {
-            $hasChanged = false;
-            $composerJson = JsonFileSystem::readFilePath($composerJsonFilePath);
+        if ($input->getOption('with-composer-changes')) {
+            $composerJsonFilePath = $currentDirectory . '/composer.json';
+            if (file_exists($composerJsonFilePath)) {
+                $hasChanged = false;
+                $composerJson = JsonFileSystem::readFilePath($composerJsonFilePath);
 
-            if (! isset($composerJson['autoload-dev']['psr-4']['Utils\\Rector\\'])) {
-                $composerJson['autoload-dev']['psr-4']['Utils\\Rector\\'] = 'utils/rector/src';
-                $composerJson['autoload-dev']['psr-4']['Utils\\Rector\\Tests\\'] = 'utils/rector/tests';
-                $hasChanged = true;
-            }
+                if (! isset($composerJson['autoload-dev']['psr-4']['Utils\\Rector\\'])) {
+                    $composerJson['autoload-dev']['psr-4']['Utils\\Rector\\'] = 'utils/rector/src';
+                    $composerJson['autoload-dev']['psr-4']['Utils\\Rector\\Tests\\'] = 'utils/rector/tests';
+                    $hasChanged = true;
+                }
 
-            if ($hasChanged) {
-                $this->symfonyStyle->success(
-                    'We also update composer.json autoload-dev, to load Rector rules. Now run "composer dump-autoload" to update paths'
-                );
-                JsonFileSystem::writeFile($composerJsonFilePath, $composerJson);
+                if ($hasChanged) {
+                    $this->symfonyStyle->success(
+                        'We also update composer.json autoload-dev, to load Rector rules. Now run "composer dump-autoload" to update paths'
+                    );
+                    JsonFileSystem::writeFile($composerJsonFilePath, $composerJson);
+                }
             }
         }
 
         // 3. update phpunit.xml(.dist) to include rector test suite
-        $this->setupRectorTestSuite($currentDirectory);
+        if ($input->getOption('with-phpunit-changes')) {
+            $this->setupRectorTestSuite($currentDirectory);
+        }
 
         return Command::SUCCESS;
     }
@@ -279,6 +317,16 @@ final class CustomRuleCommand extends Command
         return str_replace('__Name__', $rectorName, $contents);
     }
 
+    private function replaceNamespaceVariable(string $namespace, string $contents): string
+    {
+        return str_replace('__Namespace__', $namespace, $contents);
+    }
+
+    private function replaceTestsNamespaceVariable(string $testsNamespace, string $contents): string
+    {
+        return str_replace('__Tests_Namespace__', $testsNamespace, $contents);
+    }
+
     private function detectPHPUnitAttributeSupport(): bool
     {
         $composerJsonFilePath = getcwd() . '/composer.json';
@@ -296,5 +344,26 @@ final class CustomRuleCommand extends Command
         }
 
         return (bool) Strings::match($phpunitVersion, self::START_WITH_10_REGEX);
+    }
+
+    private function getRectorName(InputInterface $input): mixed
+    {
+        $nameFromOption = $input->getOption('name');
+
+        if ($nameFromOption) {
+            return $nameFromOption;
+        }
+
+        return $this->symfonyStyle->ask(
+            'What is the name of the rule class (e.g. "LegacyCallToDbalMethodCall")?',
+            null,
+            static function (string $answer): string {
+                if ($answer === '') {
+                    throw new ShouldNotHappenException('Rector name cannot be empty');
+                }
+
+                return $answer;
+            }
+        );
     }
 }
