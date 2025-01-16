@@ -251,6 +251,6 @@ final readonly class UseImportsAdder
             return false;
         }
 
-        return ! \str_contains($afterCurrentNamespace, '\\');
+        return $namespaceName . '\\' . $afterCurrentNamespace === $objectType->getClassName();
     }
 }
