@@ -440,8 +440,8 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             if ($composedTokenIterator->isCurrentTokenType(
                 Lexer::TOKEN_OPEN_CURLY_BRACKET,
                 Lexer::TOKEN_OPEN_PARENTHESES
-            ) || \str_starts_with($composedTokenIterator->currentTokenValue(), '{')
-              || \str_starts_with($composedTokenIterator->currentTokenValue(), '(')
+            ) || \str_contains($composedTokenIterator->currentTokenValue(), '{')
+              || \str_contains($composedTokenIterator->currentTokenValue(), '(')
             ) {
                 ++$openBracketCount;
             }
@@ -451,8 +451,8 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                     Lexer::TOKEN_CLOSE_CURLY_BRACKET,
                     Lexer::TOKEN_CLOSE_PARENTHESES
                     // sometimes it gets mixed int    ")
-                ) || \str_ends_with($composedTokenIterator->currentTokenValue(), '}')
-                  || \str_ends_with($composedTokenIterator->currentTokenValue(), ')')) {
+                ) || \str_contains($composedTokenIterator->currentTokenValue(), '}')
+                  || \str_contains($composedTokenIterator->currentTokenValue(), ')')) {
                 ++$closeBracketCount;
             }
 
