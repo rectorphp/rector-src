@@ -34,10 +34,6 @@ jobs:
                         run: vendor/bin/swiss-knife check-commented-code src rules tests rules-tests --line-limit 5 --ansi
 
                     -
-                        name: "Validate docs"
-                        run: vendor/bin/rule-doc-generator validate rules
-
-                    -
                         name: 'Active Classes'
                         run: |
                             vendor/bin/class-leak check bin config src rules utils --skip-suffix "Rector" --skip-type="Rector\\Utils\\Compiler\\Unprefixer" --skip-type="Rector\\NodeCollector\\BinaryOpConditionsCollector" --skip-type="Rector\\Set\\Contract\\SetListInterface"

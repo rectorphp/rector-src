@@ -28,11 +28,6 @@ jobs:
                         run: "composer preload"
                         branch: 'automated-regenerated-preload'
 
-                    -
-                        name: "Re-Generate Nodes/Rectors Documentation"
-                        run: "composer docs"
-                        branch: 'automated-regenerated-nodes-rectors-documentation'
-
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
 
