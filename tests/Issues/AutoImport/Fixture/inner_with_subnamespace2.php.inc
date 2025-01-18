@@ -2,7 +2,7 @@
 
 namespace helpers;
 
-class InnerWithSubnamespace extends Sub\VarDumper
+class InnerWithSubnamespace extends helpers\Sub\VarDumper
 {
 }
 
@@ -12,7 +12,7 @@ class InnerWithSubnamespace extends Sub\VarDumper
 
 namespace helpers;
 
-use helpers\Sub\VarDumper;
+use helpers\helpers\Sub\VarDumper;
 
 class InnerWithSubnamespace extends VarDumper
 {
