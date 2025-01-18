@@ -728,8 +728,12 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    public function withComposerBased(bool $twig = false, bool $doctrine = false, bool $phpunit = false, bool $symfony = \false): self
-    {
+    public function withComposerBased(
+        bool $twig = false,
+        bool $doctrine = false,
+        bool $phpunit = false,
+        bool $symfony = \false
+    ): self {
         $setMap = [
             SetGroup::TWIG => $twig,
             SetGroup::DOCTRINE => $doctrine,
