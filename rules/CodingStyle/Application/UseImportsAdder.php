@@ -246,12 +246,10 @@ final readonly class UseImportsAdder
 
     private function isCurrentNamespace(string $namespaceName, ObjectType $objectType): bool
     {
-        $afterCurrentNamespace = Strings::after($objectType->getClassName(), $namespaceName . '\\');
-        if ($afterCurrentNamespace === null) {
+        if (! str_starts_with($objectType->getClassName(), $namespaceName . '\\')) {
             return false;
         }
 
-        return str_starts_with($objectType->getClassName(), $namespaceName . '\\')
-            && ! \str_contains($afterCurrentNamespace, '\\');
+        return $namespaceName . '\\' . $objectType->getShortName() === $objectType->getClassName();
     }
 }
