@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Application;
 
-use Nette\Utils\Strings;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
@@ -12,7 +11,6 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
-use PHPStan\Type\ObjectType;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -244,13 +242,14 @@ final readonly class UseImportsAdder
         return $namespace->name->toString();
     }
 
-    private function isCurrentNamespace(string $namespaceName, ObjectType $objectType): bool
+    private function isCurrentNamespace(string $namespaceName, AliasedObjectType|FullyQualifiedObjectType $objectType): bool
     {
-        $afterCurrentNamespace = Strings::after($objectType->getClassName(), $namespaceName . '\\');
-        if ($afterCurrentNamespace === null) {
+        $className = $objectType->getClassName();
+
+        if (! str_starts_with($className, $namespaceName . '\\')) {
             return false;
         }
 
-        return $namespaceName . '\\' . $afterCurrentNamespace === $objectType->getClassName();
+        return $namespaceName . '\\' . $objectType->getShortName() === $className;
     }
 }
