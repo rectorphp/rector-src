@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FuncLikeToFirstClassCallableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Fixture;
 
 function ($foo)
 {
@@ -29,7 +29,7 @@ fn ($foo, $bar, $ray) => FooBar::foo($foo);
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FuncLikeToFirstClassCallableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Fixture;
 
 FooBar::foo(...);
 

@@ -20,9 +20,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\FunctionLike\FuncLikeToFirstClassCallableRector\FuncLikeToFirstClassCallableRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\FunctionLikeToFirstClassCallableRectorTest
  */
-final class FuncLikeToFirstClassCallableRector extends AbstractRector
+final class FunctionLikeToFirstClassCallableRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
