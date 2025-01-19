@@ -66,9 +66,6 @@ parameters:
             identifier: greaterOrEqual.alwaysTrue
             path: src/Util/FileHasher.php
 
-        -
-            identifier: phpstanApi.constructor
-
         # on runtime check
         -
             identifier: deadCode.unreachable
