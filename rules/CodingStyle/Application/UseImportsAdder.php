@@ -242,8 +242,10 @@ final readonly class UseImportsAdder
         return $namespace->name->toString();
     }
 
-    private function isCurrentNamespace(string $namespaceName, AliasedObjectType|FullyQualifiedObjectType $objectType): bool
-    {
+    private function isCurrentNamespace(
+        string $namespaceName,
+        AliasedObjectType|FullyQualifiedObjectType $objectType
+    ): bool {
         $className = $objectType->getClassName();
 
         if (! str_starts_with($className, $namespaceName . '\\')) {
