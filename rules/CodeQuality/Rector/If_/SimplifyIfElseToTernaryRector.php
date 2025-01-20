@@ -168,6 +168,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($stmt->getComments() !== []) {
+            return null;
+        }
+
         $stmtExpr = $stmt->expr;
         if (! $stmtExpr instanceof Assign) {
             return null;
