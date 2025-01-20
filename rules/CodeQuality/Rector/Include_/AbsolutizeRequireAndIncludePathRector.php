@@ -12,6 +12,7 @@ use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\String_;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\Util\StringUtils;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -20,6 +21,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AbsolutizeRequireAndIncludePathRector extends AbstractRector
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/N8oLqv/1
+     */
+    private const WINDOWS_DRIVE_REGEX = '#^[a-zA-z]\:[\/\\\]#';
+
     public function __construct(
         private readonly ValueResolver $valueResolver
     ) {
@@ -97,11 +104,15 @@ CODE_SAMPLE
         }
 
         // skip absolute paths
-        if (\str_starts_with($includeValue, '/')) {
+        if (\str_starts_with($includeValue, '/') || \str_starts_with($includeValue, '\\')) {
             return null;
         }
 
         if (str_contains($includeValue, 'config/')) {
+            return null;
+        }
+
+        if (StringUtils::isMatch($includeValue, self::WINDOWS_DRIVE_REGEX)) {
             return null;
         }
 
