@@ -111,7 +111,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (Strings::match($includeValue, self::WINDOWS_DRIVE_REGEX)) {
+        if (!in_array(Strings::match($includeValue, self::WINDOWS_DRIVE_REGEX), [null, []], true)) {
             return null;
         }
 
