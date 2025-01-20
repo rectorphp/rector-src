@@ -20,6 +20,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AbsolutizeRequireAndIncludePathRector extends AbstractRector
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/spMHn4/1
+     */
+    private const WINDOWS_DRIVE_REGEX = '#^[a-zA-z]+.*\:[\/\\\]#';
+
     public function __construct(
         private readonly ValueResolver $valueResolver
     ) {
@@ -102,6 +108,10 @@ CODE_SAMPLE
         }
 
         if (str_contains($includeValue, 'config/')) {
+            return null;
+        }
+
+        if (Strings::match($includeValue, self::WINDOWS_DRIVE_REGEX)) {
             return null;
         }
 
