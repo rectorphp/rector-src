@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
@@ -441,6 +442,20 @@ final class BetterStandardPrinter extends Standard
         }
 
         return parent::pInfixOp($class, $leftNode, $operatorString, $rightNode, $precedence, $lhsPrecedence);
+    }
+
+    protected function pExpr_Instanceof(Instanceof_ $node, int $precedence, int $lhsPrecedence): string
+    {
+        /**
+         * ensure left side is assign and right side is just created
+         *
+         * @see https://github.com/rectorphp/rector-src/pull/6653
+         */
+        if ($node->expr instanceof Assign && $node->expr->getStartTokenPos() > 0 && $node->class->getStartTokenPos() < 0) {
+            $node->expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
+        return parent::pExpr_Instanceof($node, $precedence, $lhsPrecedence);
     }
 
     private function cleanStartIndentationOnHeredocNowDoc(string $content): string
