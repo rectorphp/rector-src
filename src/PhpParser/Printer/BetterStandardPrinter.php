@@ -431,8 +431,12 @@ final class BetterStandardPrinter extends Standard
 
     protected function pInfixOp(string $class, Node $leftNode, string $operatorString, Node $rightNode, int $precedence, int $lhsPrecedence): string
     {
-        // ensure left side is assign and right side is just created
-        // @see https://github.com/rectorphp/rector/issues/8980
+        /**
+         * ensure left side is assign and right side is just created
+         *
+         * @see https://github.com/rectorphp/rector-src/pull/6668
+         * @see https://github.com/rectorphp/rector/issues/8980
+         */
         if ($leftNode instanceof Assign && $rightNode->getStartTokenPos() < 0) {
             $leftNode->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
