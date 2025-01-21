@@ -437,7 +437,7 @@ final class BetterStandardPrinter extends Standard
          * @see https://github.com/rectorphp/rector-src/pull/6668
          * @see https://github.com/rectorphp/rector/issues/8980
          */
-        if ($leftNode instanceof Assign && $rightNode->getStartTokenPos() < 0) {
+        if ($leftNode instanceof Assign && $leftNode->getStartTokenPos() > 0 && $rightNode->getStartTokenPos() < 0) {
             $leftNode->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
