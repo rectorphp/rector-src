@@ -36,12 +36,6 @@ final class ReprintNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             return $node;
         }
 
-        if ($node instanceof BooleanNot && $node->expr instanceof BinaryOp && $node->expr->getAttribute(
-            AttributeKey::ORIGINAL_NODE
-        ) instanceof Node) {
-            $node->expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
-        }
-
         return null;
     }
 }
