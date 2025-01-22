@@ -13,6 +13,8 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Match_;
@@ -137,11 +139,35 @@ final class BetterStandardPrinter extends Standard
             }
         }
 
+        $this->wrapBinaryOp($node);
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
             ? ('(' . $content . ')')
             : $content;
+    }
+
+    private function wrapBinaryOp(Node $node): void
+    {
+        if (! $node instanceof BinaryOp) {
+            return;
+        }
+
+        if ($node->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            return;
+        }
+
+        if ($node instanceof Coalesce) {
+            return;
+        }
+
+        if ($node->left instanceof BinaryOp && $node->left->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            $node->left->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
+        if ($node->right instanceof BinaryOp && $node->right->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            $node->right->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
     }
 
     protected function pAttributeGroup(AttributeGroup $attributeGroup): string
