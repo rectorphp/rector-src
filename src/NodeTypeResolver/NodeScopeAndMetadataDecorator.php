@@ -19,10 +19,8 @@ final readonly class NodeScopeAndMetadataDecorator
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
     ) {
-        $this->nodeTraverser = new NodeTraverser();
-
         // needed for format preserving printing
-        $this->nodeTraverser->addVisitor($cloningVisitor);
+        $this->nodeTraverser = new NodeTraverser($cloningVisitor);
     }
 
     /**

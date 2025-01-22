@@ -133,11 +133,7 @@ final readonly class PHPStanNodeScopeResolver
         private NodeNameResolver $nodeNameResolver,
         private ClassAnalyzer $classAnalyzer
     ) {
-        $this->nodeTraverser = new NodeTraverser();
-
-        foreach ($nodeVisitors as $nodeVisitor) {
-            $this->nodeTraverser->addVisitor($nodeVisitor);
-        }
+        $this->nodeTraverser = new NodeTraverser(...$nodeVisitors);
     }
 
     /**
