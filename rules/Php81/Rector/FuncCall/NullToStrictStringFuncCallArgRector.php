@@ -22,6 +22,7 @@ use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
@@ -299,7 +300,9 @@ CODE_SAMPLE
             return $parentScope->getType($expr) instanceof ErrorType;
         }
 
-        return false;
+        return $type instanceof MixedType &&
+            ! $type->isExplicitMixed() &&
+            $type->getSubtractedType() instanceof NullType;
     }
 
     /**
