@@ -299,11 +299,9 @@ CODE_SAMPLE
             return $parentScope->getType($expr) instanceof ErrorType;
         }
 
-        if ($type instanceof MixedType && ! $type->isExplicitMixed() && $type->getSubtractedType() instanceof \PHPStan\Type\NullType) {
-            return true;
-        }
-
-        return false;
+        return $type instanceof MixedType &&
+            ! $type->isExplicitMixed() &&
+            $type->getSubtractedType() instanceof \PHPStan\Type\NullType;
     }
 
     /**
