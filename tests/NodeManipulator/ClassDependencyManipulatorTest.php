@@ -108,9 +108,8 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
     private function setNamespacedName(Class_ $class): void
     {
         $nameResolver = new NameResolver();
-        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser = new NodeTraverser($nameResolver);
 
-        $nodeTraverser->addVisitor($nameResolver);
         $nodeTraverser->traverse([$class]);
     }
 
