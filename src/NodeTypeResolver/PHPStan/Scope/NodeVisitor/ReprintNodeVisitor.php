@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
-use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
@@ -34,12 +33,6 @@ final class ReprintNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             }
 
             return $node;
-        }
-
-        if ($node instanceof BooleanNot && $node->expr instanceof BinaryOp && $node->expr->getAttribute(
-            AttributeKey::ORIGINAL_NODE
-        ) instanceof Node) {
-            $node->expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
         return null;
