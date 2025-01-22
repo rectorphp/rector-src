@@ -58,8 +58,7 @@ final class PostFileProcessor implements ResetableInterface
                 continue;
             }
 
-            $nodeTraverser = new NodeTraverser();
-            $nodeTraverser->addVisitor($postRector);
+            $nodeTraverser = new NodeTraverser($postRector);
             $stmts = $nodeTraverser->traverse($stmts);
         }
 
