@@ -93,10 +93,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (!$node->name ?? null instanceof Node) {
-                continue;
-            }
-
             if (! $node->name instanceof Identifier) {
                 continue;
             }
