@@ -93,7 +93,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (($node->name ?? null) === null) {
+            if (!$node->name ?? null instanceof Node) {
                 continue;
             }
 
