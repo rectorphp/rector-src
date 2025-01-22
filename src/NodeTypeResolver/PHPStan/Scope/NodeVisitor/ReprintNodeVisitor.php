@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
-use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
