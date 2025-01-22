@@ -299,11 +299,6 @@ CODE_SAMPLE
             return $parentScope->getType($expr) instanceof ErrorType;
         }
 
-        if ($type instanceof MixedType) {
-            $subtractedType = $type->getSubtractedType();
-            return $subtractedType instanceof Type;
-        }
-
         return false;
     }
 
