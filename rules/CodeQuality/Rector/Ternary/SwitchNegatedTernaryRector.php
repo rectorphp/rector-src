@@ -82,7 +82,7 @@ CODE_SAMPLE
 
         if ($node->if instanceof Ternary) {
             $ternary = $node->if;
-            $ternary->setAttribute(AttributeKey::KIND, 'wrapped_with_brackets');
+            $ternary->setAttribute(AttributeKey::KIND, AttributeKey::WRAPPED_IN_PARENTHESES);
             $ternary->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
