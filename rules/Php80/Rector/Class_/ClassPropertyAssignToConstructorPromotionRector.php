@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -15,6 +16,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
+use PhpParser\NodeVisitor;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
@@ -239,7 +241,11 @@ CODE_SAMPLE
             $this->traverseNodesWithCallable((array) $constructClassMethod->stmts, function (Node $node) use (
                 $promotionCandidate,
                 $propertyName
-            ): ?PropertyFetch {
+            ): null|int|PropertyFetch {
+                if ($node instanceof Class_ || $node instanceof FunctionLike) {
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
                 if (! $node instanceof Variable) {
                     return null;
                 }
