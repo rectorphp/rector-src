@@ -582,11 +582,6 @@ final class NodeTypeResolver
             return $scope->getType($expr);
         }
 
-        try {
-           return $scope->getNativeType($expr);
-        } catch (\PHPStan\ShouldNotHappenException) {
-            // PHPStan internal, nothing we can do here
-            return new MixedType();
-        }
+        return $scope->getNativeType($expr);
     }
 }
