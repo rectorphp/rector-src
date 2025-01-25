@@ -9,6 +9,7 @@ use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
+use Rector\Config\Level\CodingStyleLevel;
 use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
@@ -137,6 +138,8 @@ final class RectorConfigBuilder
 
     private ?bool $isCodeQualityLevelUsed = null;
 
+    private ?bool $isCodingStyleLevelUsed = null;
+
     private ?bool $isFluentNewLine = null;
 
     /**
@@ -217,6 +220,13 @@ final class RectorConfigBuilder
         if (in_array(SetList::CODE_QUALITY, $uniqueSets, true) && $this->isCodeQualityLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
                 'Your config already enables code quality set.%sRemove "->withCodeQualityLevel()" as it only duplicates it, or remove code quality set.',
+                PHP_EOL
+            ));
+        }
+
+        if (in_array(SetList::CODING_STYLE, $uniqueSets, true) && $this->isCodingStyleLevelUsed === true) {
+            throw new InvalidConfigurationException(sprintf(
+                'Your config already enables coding style set.%sRemove "->withCodingStyleLevel()" as it only duplicates it, or remove coding style set.',
                 PHP_EOL
             ));
         }
@@ -1004,6 +1014,27 @@ final class RectorConfigBuilder
         $this->rules = array_merge($this->rules, $levelRules);
 
         foreach (CodeQualityLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
+            $this->rulesWithConfigurations[$rectorClass][] = $configuration;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @experimental Raise your coding style from the safest rules
+     * to more affecting ones, one level at a time
+     */
+    public function withCodingStyleLevel(int $level): self
+    {
+        Assert::natural($level);
+
+        $this->isCodingStyleLevelUsed = true;
+
+        $levelRules = LevelRulesResolver::resolve($level, CodingStyleLevel::RULES, __METHOD__);
+
+        $this->rules = array_merge($this->rules, $levelRules);
+
+        foreach (CodingStyleLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
             $this->rulesWithConfigurations[$rectorClass][] = $configuration;
         }
 
