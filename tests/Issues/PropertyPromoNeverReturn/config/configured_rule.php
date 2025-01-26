@@ -7,8 +7,5 @@ use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        ClassPropertyAssignToConstructorPromotionRector::class,
-        ReturnNeverTypeRector::class,
-    ]);
+    $rectorConfig->rules([ClassPropertyAssignToConstructorPromotionRector::class, ReturnNeverTypeRector::class]);
 };
