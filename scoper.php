@@ -15,16 +15,17 @@ $dateTime = DateTime::from('now');
 $timestamp = $dateTime->format('Ym');
 
 // @see https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md
-$polyfillsBootstraps = array_map(
+$polyfillFinder = Finder::create()
+    ->files()
+    ->in(__DIR__ . '/vendor/symfony/polyfill-*')
+    ->name('bootstrap*.php');
+
+$excludedFiles = array_map(
     static fn (SplFileInfo $fileInfo): string => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*')
-            ->name('bootstrap*.php'),
-        false,
-    ),
+    iterator_to_array($polyfillFinder->getIterator()),
 );
+
+$excludedFiles[] = 'src/functions/node_helper.php';
 
 // see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
@@ -43,7 +44,8 @@ return [
         '#^Symplify\\\\RuleDocGenerator#',
         '#^Symfony\\\\Polyfill#',
     ],
-    'exclude-files' => [...$polyfillsBootstraps],
+
+    'exclude-files' => $excludedFiles,
 
     // expose
     'expose-classes' => ['Normalizer'],
