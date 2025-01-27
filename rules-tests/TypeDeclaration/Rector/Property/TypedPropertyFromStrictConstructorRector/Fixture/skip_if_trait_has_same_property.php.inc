@@ -10,7 +10,7 @@ final class SkipIfTraitHasSameProperty
 
     private $skipMe;
 
-    public function __construct(string $nullableString = null)
+    public function __construct(?string $nullableString = null)
     {
         $this->skipMe = $nullableString;
     }

@@ -6,7 +6,7 @@ final class DefaultNullInParam
 {
     private $nullableString;
 
-    public function __construct(string $nullableString = null)
+    public function __construct(?string $nullableString = null)
     {
         $this->nullableString = $nullableString;
     }
@@ -22,7 +22,7 @@ final class DefaultNullInParam
 {
     private ?string $nullableString;
 
-    public function __construct(string $nullableString = null)
+    public function __construct(?string $nullableString = null)
     {
         $this->nullableString = $nullableString;
     }

@@ -6,7 +6,7 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRecto
 
 class SomeClassImplementingParserInterface implements ParserInterface
 {
-    public function parse($code, \PhpParser\ErrorHandler $errorHandler = null)
+    public function parse($code, ?\PhpParser\ErrorHandler $errorHandler = null)
     {
     }
 }
@@ -21,7 +21,7 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRecto
 
 class SomeClassImplementingParserInterface implements ParserInterface
 {
-    public function parse(string $code, \PhpParser\ErrorHandler $errorHandler = null)
+    public function parse(string $code, ?\PhpParser\ErrorHandler $errorHandler = null)
     {
     }
 }

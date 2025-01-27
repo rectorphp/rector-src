@@ -10,7 +10,7 @@ final class SkipCallByRef
         $this->doSomething($this->someArray);
     }
 
-    public function doSomething(array &$someArray = null): void
+    public function doSomething(?array &$someArray = null): void
     {
     }
 }

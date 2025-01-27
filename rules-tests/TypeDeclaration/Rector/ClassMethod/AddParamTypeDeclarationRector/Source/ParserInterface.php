@@ -6,5 +6,5 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclaratio
 
 interface ParserInterface
 {
-    public function parse($code, \PhpParser\ErrorHandler $errorHandler = null);
+    public function parse($code, ?\PhpParser\ErrorHandler $errorHandler = null);
 }

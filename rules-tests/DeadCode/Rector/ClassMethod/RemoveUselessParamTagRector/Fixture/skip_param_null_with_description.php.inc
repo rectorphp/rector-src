@@ -7,7 +7,7 @@ class SkipParamNullWithDescription
     /**
      * @param null $a this is description
      */
-    public function foo(int $a = null)
+    public function foo(?int $a = null)
     {
 
     }

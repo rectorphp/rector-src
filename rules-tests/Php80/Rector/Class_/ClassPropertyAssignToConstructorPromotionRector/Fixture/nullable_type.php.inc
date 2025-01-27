@@ -8,7 +8,7 @@ class NullableType
 {
     private ?DateTimeInterface $time;
 
-    public function __construct(DateTimeInterface $time = null)
+    public function __construct(?DateTimeInterface $time = null)
     {
         $this->time = $time;
     }

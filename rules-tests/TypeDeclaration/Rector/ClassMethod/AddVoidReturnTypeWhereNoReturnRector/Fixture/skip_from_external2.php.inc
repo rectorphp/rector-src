@@ -8,7 +8,7 @@ final class SkipFromExternal2
 {
     use Foo;
 
-    public function load($resource, string $type = null)
+    public function load($resource, ?string $type = null)
     {
     }
 }

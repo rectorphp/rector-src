@@ -6,7 +6,7 @@ use stdClass;
 
 class DoNotReprintNodeType
 {
-    public function run(stdClass $a = null)
+    public function run(?stdClass $a = null)
     {
     }
 }

@@ -9,8 +9,8 @@ final class AddDefaultNullable
     public $surname;
 
     public function __construct(
-        string $name = null,
-        string|false $surname = null
+        ?string $name = null,
+        string|false|null $surname = null
     ) {
         $this->name = $name;
         $this->surname = $surname;

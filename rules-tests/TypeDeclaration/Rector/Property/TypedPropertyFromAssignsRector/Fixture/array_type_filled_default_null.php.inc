@@ -9,7 +9,7 @@ final class ArrayTypeFilledDefaultNull
      */
     private $property;
 
-    public function __construct(array $property = null)
+    public function __construct(?array $property = null)
     {
         $this->property = $property;
     }
@@ -25,7 +25,7 @@ final class ArrayTypeFilledDefaultNull
 {
     private ?array $property = null;
 
-    public function __construct(array $property = null)
+    public function __construct(?array $property = null)
     {
         $this->property = $property;
     }

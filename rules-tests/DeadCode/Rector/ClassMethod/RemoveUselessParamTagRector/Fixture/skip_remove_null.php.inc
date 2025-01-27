@@ -7,7 +7,7 @@ class SkipRemoveNull
     /**
      * @param null $a
      */
-    public function foo(int $a = null)
+    public function foo(?int $a = null)
     {
     }
 }

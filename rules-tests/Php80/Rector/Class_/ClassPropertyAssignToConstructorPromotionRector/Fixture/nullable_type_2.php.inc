@@ -6,7 +6,7 @@ class NullableType2
 {
     private ?string $str;
 
-    public function __construct(string $str = null)
+    public function __construct(?string $str = null)
     {
         $this->str = $str;
     }

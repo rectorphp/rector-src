@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class ExternalImplicitVoidOverride extends PhpFileLoader
 {
-    public function load($resource, string $type = null)
+    public function load($resource, ?string $type = null)
     {
     }
 }
@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class ExternalImplicitVoidOverride extends PhpFileLoader
 {
-    public function load($resource, string $type = null): void
+    public function load($resource, ?string $type = null): void
     {
     }
 }
