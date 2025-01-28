@@ -43,6 +43,8 @@ return [
         '#^Symfony\\\\Polyfill#',
     ],
 
+    'exclude-files' => $excludedFiles,
+
     // expose
     'expose-classes' => ['Normalizer'],
     'expose-functions' => [
