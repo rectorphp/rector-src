@@ -14,7 +14,7 @@ final class SomeTypedService
     {
     }
 
-    public function withDefaultNull(string $name = null)
+    public function withDefaultNull(?string $name = null)
     {
     }
 
