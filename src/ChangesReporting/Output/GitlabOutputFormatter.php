@@ -22,11 +22,15 @@ final readonly class GitlabOutputFormatter implements OutputFormatterInterface
      */
     public const NAME = 'gitlab';
 
-    private const ERROR_TYPE_ISSUE        = 'issue';
+    private const ERROR_TYPE_ISSUE = 'issue';
+
     private const ERROR_CATEGORY_BUG_RISK = 'Bug Risk';
-    private const ERROR_CATEGORY_STYLE    = 'Style';
-    private const ERROR_SEVERITY_BLOCKER  = 'blocker';
-    private const ERROR_SEVERITY_MINOR    = 'minor';
+
+    private const ERROR_CATEGORY_STYLE = 'Style';
+
+    private const ERROR_SEVERITY_BLOCKER = 'blocker';
+
+    private const ERROR_SEVERITY_MINOR = 'minor';
 
     public function __construct(
         private Filehasher $filehasher,

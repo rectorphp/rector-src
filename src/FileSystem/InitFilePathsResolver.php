@@ -16,7 +16,7 @@ final class InitFilePathsResolver
      * @var string
      * @see https://regex101.com/r/XkQ6Pe/1
      */
-    private const DO_NOT_INCLUDE_PATHS_REGEX = '#(vendor|var|stubs|temp|templates|tmp|e2e|bin|build|Migrations|data(?:base)?|storage|migrations|writable)#';
+    private const DO_NOT_INCLUDE_PATHS_REGEX = '#(vendor|var|stubs|temp|templates|tmp|e2e|bin|build|Migrations|data(?:base)?|storage|migrations|writable|node_modules)#';
 
     /**
      * @return string[]
@@ -50,12 +50,10 @@ final class InitFilePathsResolver
     private function hasDirectoryFileInfoPhpFiles(SplFileInfo $rootDirectoryFileInfo): bool
     {
         // is directory with PHP files?
-        $phpFilesCount = Finder::create()
+        return Finder::create()
             ->files()
             ->in($rootDirectoryFileInfo->getPathname())
             ->name('*.php')
-            ->count();
-
-        return $phpFilesCount !== 0;
+            ->hasResults();
     }
 }
