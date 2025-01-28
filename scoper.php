@@ -25,8 +25,6 @@ $excludedFiles = array_map(
     iterator_to_array($polyfillFinder->getIterator()),
 );
 
-$excludedFiles[] = 'src/functions/node_helper.php';
-
 // see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
     'prefix' => 'RectorPrefix' . $timestamp,
@@ -44,8 +42,6 @@ return [
         '#^Symplify\\\\RuleDocGenerator#',
         '#^Symfony\\\\Polyfill#',
     ],
-
-    'exclude-files' => $excludedFiles,
 
     // expose
     'expose-classes' => ['Normalizer'],
