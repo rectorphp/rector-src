@@ -42,6 +42,10 @@ final class SomeClass
         $value->setValue(5);
         $value2 = new Value;
         $value2->setValue(1);
+        $foo = new Value;
+        $foo->bar = 5;
+        $bar = new Value;
+        $bar->foo = 1;
     }
 }
 CODE_SAMPLE
@@ -56,6 +60,12 @@ final class SomeClass
 
         $value2 = new Value;
         $value2->setValue(1);
+
+        $foo = new Value;
+        $foo->bar = 5;
+
+        $bar = new Value;
+        $bar->foo = 1;
     }
 }
 CODE_SAMPLE
@@ -187,5 +197,14 @@ CODE_SAMPLE
         $currentNode = $node->stmts[$key];
 
         return abs($currentNode->getStartLine() - $previousNode->getStartLine()) >= 2;
+    }
+    protected function getName(Node $node): ?string
+    {
+        if ($node instanceof Node\Expr\PropertyFetch) {
+            do {
+                $node = $node->var;
+            } while ($node instanceof Node\Expr\PropertyFetch);
+        }
+        return parent::getName($node);
     }
 }
