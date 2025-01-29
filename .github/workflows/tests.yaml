@@ -18,18 +18,19 @@ jobs:
             fail-fast: false
             matrix:
                 os: [ubuntu-latest, windows-latest]
+                php-versions: ['8.2', '8.3', '8.4']
 
         runs-on: ${{ matrix.os }}
         timeout-minutes: 3
 
-        name: PHP 8.2 tests
+        name: PHP ${{ matrix.php-versions }} tests (${{ matrix.os }})
         steps:
             -   uses: actions/checkout@v4
 
             -
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 8.2
+                    php-version: ${{ matrix.php-versions }}
                     coverage: none
                     # to display warning when assert() is called, eg: on direct getArgs() on CallLike
                     # and check against first class callable strlen(...)
