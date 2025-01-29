@@ -23,7 +23,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         timeout-minutes: 3
 
-        name: PHP ${{ matrix.php-versions }} tests
+        name: PHP ${{ matrix.php-versions }} tests (${{ matrix.os }})
         steps:
             -   uses: actions/checkout@v4
 
