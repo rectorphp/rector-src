@@ -455,13 +455,11 @@ final readonly class PHPStanNodeScopeResolver
     ): void {
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
-        } catch (ParserErrorsException|ParserException) {
+        } catch (ParserErrorsException|ParserException|ShouldNotHappenException) {
             // nothing we can do more precise here as error parsing from deep internal PHPStan service with service injection we cannot reset
             // in the middle of process
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $mutatingScope);
-        } catch (ShouldNotHappenException) {
-            // internal PHPStan error
         }
     }
 
