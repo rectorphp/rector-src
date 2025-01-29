@@ -136,7 +136,14 @@ CODE_SAMPLE
             }
 
             if (! $stmtExpr->var instanceof MethodCall && ! $stmtExpr->var instanceof StaticCall) {
-                return $this->getName($stmtExpr->var);
+                $node = $stmtExpr->var;
+
+                if ($node instanceof Node\Expr\PropertyFetch) {
+                    do {
+                        $node = $node->var;
+                    } while ($node instanceof Node\Expr\PropertyFetch);
+                }
+                return $this->getName($node);
             }
         }
 
@@ -197,14 +204,5 @@ CODE_SAMPLE
         $currentNode = $node->stmts[$key];
 
         return abs($currentNode->getStartLine() - $previousNode->getStartLine()) >= 2;
-    }
-    protected function getName(Node $node): ?string
-    {
-        if ($node instanceof Node\Expr\PropertyFetch) {
-            do {
-                $node = $node->var;
-            } while ($node instanceof Node\Expr\PropertyFetch);
-        }
-        return parent::getName($node);
     }
 }
