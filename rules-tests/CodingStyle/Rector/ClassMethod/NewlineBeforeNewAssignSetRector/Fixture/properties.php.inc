@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector\Fixture;
 
-final class Fixture
+final class Properties
 {
     public function run()
     {
@@ -20,7 +20,7 @@ final class Fixture
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector\Fixture;
 
-final class Fixture
+final class Properties
 {
     public function run()
     {
