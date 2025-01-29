@@ -72,7 +72,6 @@ final class ExprAnalyzer
             $node instanceof Eval_ ||
             $node instanceof Print_ ||
             $node instanceof Exit_ ||
-            $node instanceof ArrowFunction ||
             $node instanceof Include_ ||
             $node instanceof Instanceof_) {
                 return $node->expr instanceof BinaryOp;
