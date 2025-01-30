@@ -136,14 +136,19 @@ CODE_SAMPLE
             }
 
             if (! $stmtExpr->var instanceof MethodCall && ! $stmtExpr->var instanceof StaticCall) {
-                $node = $stmtExpr->var;
+                $nodeVar = $stmtExpr->var;
 
-                if ($node instanceof Node\Expr\PropertyFetch) {
+                if ($nodeVar instanceof Node\Expr\PropertyFetch) {
                     do {
-                        $node = $node->var;
-                    } while ($node instanceof Node\Expr\PropertyFetch);
+                        $previous = $nodeVar;
+                        $nodeVar = $nodeVar->var;
+                    } while ($nodeVar instanceof Node\Expr\PropertyFetch);
+
+                    if ($this->getName($nodeVar) === 'this') {
+                        $nodeVar = $previous;
+                    }
                 }
-                return $this->getName($node);
+                return $this->getName($nodeVar);
             }
         }
 
