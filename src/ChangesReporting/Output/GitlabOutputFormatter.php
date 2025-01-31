@@ -79,7 +79,9 @@ final readonly class GitlabOutputFormatter implements OutputFormatterInterface
                 : ($systemError->getRelativeFilePath() ?? '')
             ;
 
-            $fingerprint = $this->filehasher->hash($filePath . ';' . $systemError->getLine() . ';' . $systemError->getMessage());
+            $fingerprint = $this->filehasher->hash(
+                $filePath . ';' . $systemError->getLine() . ';' . $systemError->getMessage()
+            );
 
             $errorsJson[] = [
                 'fingerprint' => $fingerprint,
