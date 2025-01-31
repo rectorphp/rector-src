@@ -51,8 +51,9 @@ final class BetterStandardPrinter extends Standard
      */
     private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
 
-    public function __construct(private readonly ExprAnalyzer $exprAnalyzer)
-    {
+    public function __construct(
+        private readonly ExprAnalyzer $exprAnalyzer
+    ) {
         parent::__construct([]);
     }
 

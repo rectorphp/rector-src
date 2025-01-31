@@ -72,7 +72,7 @@ final class ExprAnalyzer
             $node instanceof Exit_ ||
             $node instanceof Include_ ||
             $node instanceof Instanceof_) {
-                return $node->expr instanceof BinaryOp;
+            return $node->expr instanceof BinaryOp;
         }
 
         return false;
