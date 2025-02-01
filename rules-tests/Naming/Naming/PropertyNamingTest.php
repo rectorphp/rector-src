@@ -26,7 +26,7 @@ final class PropertyNamingTest extends AbstractLazyTestCase
         $expectedName = $this->propertyNaming->getExpectedNameFromMethodName($methodName);
 
         if ($expectedPropertyName === null) {
-            $this->assertNull($expectedName);
+            $this->assertNotInstanceOf(ExpectedName::class, $expectedName);
         } else {
             $this->assertInstanceOf(ExpectedName::class, $expectedName);
             $this->assertSame($expectedPropertyName, $expectedName->getSingularized());
