@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
-use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Match_;
@@ -162,10 +161,6 @@ final class BetterStandardPrinter extends Standard
         }
 
         if (! $node instanceof BinaryOp) {
-            return;
-        }
-
-        if ($node instanceof Coalesce) {
             return;
         }
 
