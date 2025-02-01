@@ -98,7 +98,6 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NameNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ReprintNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StmtKeyNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
@@ -241,7 +240,6 @@ final class LazyContainerFactory
         NameNodeVisitor::class,
         StaticVariableNodeVisitor::class,
         StmtKeyNodeVisitor::class,
-        ReprintNodeVisitor::class,
     ];
 
     /**
