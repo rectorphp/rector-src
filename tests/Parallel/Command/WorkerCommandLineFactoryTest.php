@@ -60,8 +60,8 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
-        $expectedCommand = $this->normalizeCommandOutput($expectedCommand);
-        $expectedCommand = $this->cleanUpEmptyQuote($expectedCommand);
+        $expectedCommand = $this->normalizeExpectedCommandOutput($expectedCommand);
+        $expectedCommand = $this->cleanUpEmptyQuoteExpectedCommandOutput($expectedCommand);
 
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
@@ -131,8 +131,8 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
-        $expectedCommand = $this->normalizeCommandOutput($expectedCommand);
-        $expectedCommand = $this->cleanUpEmptyQuote($expectedCommand);
+        $expectedCommand = $this->normalizeExpectedCommandOutput($expectedCommand);
+        $expectedCommand = $this->cleanUpEmptyQuoteExpectedCommandOutput($expectedCommand);
 
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
@@ -194,7 +194,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         ];
     }
 
-    private function cleanUpEmptyQuote(string $result): string
+    private function cleanUpEmptyQuoteExpectedCommandOutput(string $result): string
     {
         if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
             return str_replace(' "" ', ' ', $result);
@@ -203,7 +203,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         return str_replace(" '' ", ' ', $result);
     }
 
-    private function normalizeCommandOutput(string $command): string
+    private function normalizeExpectedCommandOutput(string $command): string
     {
         if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
             $command = str_replace("'", '"', $command);
