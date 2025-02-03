@@ -206,7 +206,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
     private function normalizeExpectedCommandOutput(string $command): string
     {
         if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-            $command = str_replace("'", '"', $command);
+            return str_replace("'", '"', $command);
         }
 
         return $command;
