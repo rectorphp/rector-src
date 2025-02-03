@@ -60,7 +60,7 @@ final class FilesFinderTest extends AbstractLazyTestCase
     public function testWithFollowingBrokenSymlinks(): void
     {
         if ($this->isWindows()) {
-            $this->markTestSkipped('This test is not reliable on Windows');
+            $this->markTestSkipped('Symlinks test is not reliable on Windows');
         }
 
         SimpleParameterProvider::setParameter(Option::SKIP, [__DIR__ . '/../SourceWithBrokenSymlinks/folder1']);
