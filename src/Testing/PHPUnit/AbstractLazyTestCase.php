@@ -46,4 +46,9 @@ abstract class AbstractLazyTestCase extends TestCase
 
         return self::$rectorConfig;
     }
+
+    protected function isWindows(): bool
+    {
+        return strncasecmp(PHP_OS, 'WIN', 3) === 0;
+    }
 }
