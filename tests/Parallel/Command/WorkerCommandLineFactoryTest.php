@@ -196,7 +196,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 
     private function cleanUpEmptyQuoteExpectedCommandOutput(string $result): string
     {
-        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+        if ($this->isWindows()) {
             return str_replace(' "" ', ' ', $result);
         }
 
@@ -205,7 +205,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 
     private function normalizeExpectedCommandOutput(string $command): string
     {
-        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+        if ($this->isWindows()) {
             return str_replace("'", '"', $command);
         }
 
