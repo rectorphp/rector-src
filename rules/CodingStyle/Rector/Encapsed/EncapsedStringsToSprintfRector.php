@@ -146,7 +146,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->containsASCIIChar($part->value)) {
+            if ($this->containsControlASCIIChar($part->value)) {
                 return true;
             }
         }
@@ -265,7 +265,7 @@ CODE_SAMPLE
         ]);
     }
 
-    private function containsASCIIChar(string $content): bool
+    private function containsControlASCIIChar(string $content): bool
     {
         return (bool) Strings::match($content, '#[\x00-\x08\x0B\x0C\x0E-\x1F]#');
     }
