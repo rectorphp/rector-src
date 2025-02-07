@@ -13,8 +13,6 @@ $var = get();
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source as SomeSource;
-
 /** @var \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClass $var */
 $var = get();
 
