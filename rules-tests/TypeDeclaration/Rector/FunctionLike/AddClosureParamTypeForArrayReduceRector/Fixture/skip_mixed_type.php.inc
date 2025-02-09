@@ -13,6 +13,16 @@ class SkipMixedType
             return $value->foo($carry);
         }, '');
     }
+
+    /**
+     * @param array<int, mixed> $array
+     */
+    public function runTwo(array $array, mixed $initial)
+    {
+        return array_reduce($array, function ($carry, $value) {
+            return '';
+        }, $initial);
+    }
 }
 
 ?>

@@ -12,6 +12,8 @@ use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Type\ClosureType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
+use PHPStan\Type\UnionTypeHelper;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
@@ -90,13 +92,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $closureType->getReturnType();
+        $carryType = $closureType->getReturnType();
+
+        if (isset($args[2])) {
+            $carryType = $this->combineTypes([$this->getType($args[2]->value), $carryType]);
+        }
 
         $type = $this->getType($args[0]->value);
-
         $valueType = $type->getIterableValueType();
 
-        if ($this->updateClosureWithTypes($args[1]->value, $valueType, $returnType)) {
+        if ($this->updateClosureWithTypes($args[1]->value, $valueType, $carryType)) {
             return $node;
         }
 
@@ -149,5 +154,32 @@ CODE_SAMPLE
         $param->type = $paramTypeNode;
 
         return true;
+    }
+
+    /**
+     * @param Type[] $types
+     */
+    private function combineTypes(array $types): ?Type
+    {
+        if ($types === []) {
+            return null;
+        }
+
+        $types = array_reduce($types, function (array $types, Type $type): array {
+            foreach ($types as $previousType) {
+                if ($this->typeComparator->areTypesEqual($type, $previousType)) {
+                    return $types;
+                }
+            }
+
+            $types[] = $type;
+            return $types;
+        }, []);
+
+        if (count($types) === 1) {
+            return $types[0];
+        }
+
+        return new UnionType(UnionTypeHelper::sortTypes($types));
     }
 }

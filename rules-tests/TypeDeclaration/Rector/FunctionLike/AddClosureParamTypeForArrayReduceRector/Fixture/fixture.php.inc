@@ -13,6 +13,16 @@ class Fixture
             return $carry . $value;
         }, '');
     }
+
+    /**
+     * @param list<string|int> $array
+     */
+    public function runTwo(array $array)
+    {
+        return array_reduce($array, function ($carry, $value) {
+            return $carry . $value;
+        }, 100);
+    }
 }
 
 ?>
@@ -31,6 +41,16 @@ class Fixture
         return array_reduce($array, function (string $carry, string $value) {
             return $carry . $value;
         }, '');
+    }
+
+    /**
+     * @param list<string|int> $array
+     */
+    public function runTwo(array $array)
+    {
+        return array_reduce($array, function (int|string $carry, int|string $value) {
+            return $carry . $value;
+        }, 100);
     }
 }
 
