@@ -49,8 +49,6 @@ use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnR
 use Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector;
-use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector;
-use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayReduceRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
@@ -122,8 +120,6 @@ final class TypeDeclarationLevel
         // closures
         AddClosureNeverReturnTypeRector::class,
         ClosureReturnTypeRector::class,
-        AddClosureParamTypeForArrayReduceRector::class,
-        AddClosureParamTypeForArrayMapRector::class,
 
         // more risky rules
         ReturnTypeFromStrictParamRector::class,
