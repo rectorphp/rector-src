@@ -7,7 +7,7 @@ namespace Rector\Carbon\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Rector\AbstractRector;
@@ -15,13 +15,13 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector\DateFuncCallToCarbonRectorTest
+ * @see \Rector\Tests\Carbon\Rector\FuncCall\TimeFuncCallToCarbonRector\TimeFuncCallToCarbonRectorTest
  */
 final class TimeFuncCallToCarbonRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert time() function call to Carbon::now()->timestamp', [
+        return new RuleDefinition('Convert time() function call to Carbon::now()->getTimestamp()', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
@@ -39,7 +39,7 @@ class SomeClass
 {
     public function run()
     {
-        $time = \Carbon\Carbon::now()->timestamp;
+        $time = \Carbon\Carbon::now()->getTimestamp();
     }
 }
 CODE_SAMPLE
@@ -72,15 +72,15 @@ CODE_SAMPLE
 
         // create now and format()
         $nowStaticCall = new StaticCall(new FullyQualified('Carbon\Carbon'), 'now');
-        $propertyFetch = new PropertyFetch($nowStaticCall, 'timestamp');
+        $methodCall = new MethodCall($nowStaticCall, 'getTimestamp');
 
         if ($firstClassCallable) {
             return new ArrowFunction([
                 'static' => true,
-                'expr' => $propertyFetch,
+                'expr' => $methodCall,
             ]);
         }
 
-        return $propertyFetch;
+        return $methodCall;
     }
 }

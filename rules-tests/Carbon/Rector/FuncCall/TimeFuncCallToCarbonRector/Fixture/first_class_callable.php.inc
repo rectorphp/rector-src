@@ -20,7 +20,7 @@ class FirstClassCallable
 {
     public function run()
     {
-        $time = (static fn() => \Carbon\Carbon::now()->timestamp);
+        $time = (static fn() => \Carbon\Carbon::now()->getTimestamp());
     }
 }
 

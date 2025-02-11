@@ -20,7 +20,7 @@ class SomeClass
 {
     public function run()
     {
-        $time = \Carbon\Carbon::now()->timestamp;
+        $time = \Carbon\Carbon::now()->getTimestamp();
     }
 }
 
