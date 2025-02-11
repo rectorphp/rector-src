@@ -2,8 +2,13 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture;
 
-final class DoubleStaticMethod
+final class DoubleStaticPrivateMethod
 {
+    public function output()
+    {
+        $result = self::run();
+    }
+
     private static function run()
     {
         self::someStatic();
@@ -20,8 +25,13 @@ final class DoubleStaticMethod
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture;
 
-final class DoubleStaticMethod
+final class DoubleStaticPrivateMethod
 {
+    public function output()
+    {
+        $result = $this->run();
+    }
+
     private function run()
     {
         $this->someStatic();
