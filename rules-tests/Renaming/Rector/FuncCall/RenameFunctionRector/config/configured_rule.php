@@ -11,5 +11,6 @@ return static function (RectorConfig $rectorConfig): void {
             'view' => 'Laravel\Templating\render',
             'sprintf' => 'Safe\sprintf',
             'abc2' => 'abc',
+            'sizeof' => 'count',
         ]);
 };
