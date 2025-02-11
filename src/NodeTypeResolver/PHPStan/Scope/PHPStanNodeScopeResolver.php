@@ -285,6 +285,7 @@ final readonly class PHPStanNodeScopeResolver
                     if ($expr instanceof BinaryOp) {
                         $this->processBinaryOp($expr, $mutatingScope);
                     }
+
                     if ($expr instanceof Assign) {
                         $this->processAssign($expr, $mutatingScope);
                     }
