@@ -441,4 +441,12 @@ final class RectorConfig extends Container
     {
         return $this->tags[RectorInterface::class] ?? [];
     }
+
+    /**
+     * @param array<array{string, int, int}> $overflowLevels
+     */
+    public function setOverflowLevels(array $overflowLevels): void
+    {
+        SimpleParameterProvider::addParameter(Option::OVERFLOW_LEVELS, $overflowLevels);
+    }
 }

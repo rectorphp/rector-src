@@ -285,4 +285,9 @@ final class Option
      * @internal To filter files by specific suffix
      */
     public const ONLY_SUFFIX = 'only-suffix';
+
+    /**
+     * @internal To report overflow levels in ->with*Level() methods
+     */
+    public const OVERFLOW_LEVELS = 'overflow_levels';
 }
