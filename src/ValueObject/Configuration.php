@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\ValueObject;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
+use Rector\ValueObject\Configuration\LevelOverflow;
 use Webmozart\Assert\Assert;
 
 final readonly class Configuration
@@ -12,6 +13,7 @@ final readonly class Configuration
     /**
      * @param string[] $fileExtensions
      * @param string[] $paths
+     * @param LevelOverflow[] $levelOverflows
      */
     public function __construct(
         private bool $isDryRun = false,
@@ -29,6 +31,7 @@ final readonly class Configuration
         private bool $reportingWithRealPath = false,
         private ?string $onlyRule = null,
         private ?string $onlySuffix = null,
+        private array $levelOverflows = []
     ) {
     }
 
@@ -112,5 +115,13 @@ final readonly class Configuration
     public function getOnlySuffix(): ?string
     {
         return $this->onlySuffix;
+    }
+
+    /**
+     * @return LevelOverflow[]
+     */
+    public function getLevelOverflows(): array
+    {
+        return $this->levelOverflows;
     }
 }
