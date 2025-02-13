@@ -384,15 +384,15 @@ final class LazyContainerFactory
         $rectorConfig->import(__DIR__ . '/../../config/config.php');
 
         $rectorConfig->singleton(Application::class, static function (Container $container): Application {
-            $application = $container->make(ConsoleApplication::class);
+            $consoleApplication = $container->make(ConsoleApplication::class);
 
             $commandNamesToHide = ['list', 'completion', 'help', 'worker'];
             foreach ($commandNamesToHide as $commandNameToHide) {
-                $commandToHide = $application->get($commandNameToHide);
+                $commandToHide = $consoleApplication->get($commandNameToHide);
                 $commandToHide->setHidden();
             }
 
-            return $application;
+            return $consoleApplication;
         });
 
         $rectorConfig->when(ConsoleApplication::class)
@@ -618,8 +618,8 @@ final class LazyContainerFactory
                 ArrayAnnotationToAttributeMapper $arrayAnnotationToAttributeMapper,
                 Container $container
             ): void {
-                $annotationToAttributesMapper = $container->make(AnnotationToAttributeMapper::class);
-                $arrayAnnotationToAttributeMapper->autowire($annotationToAttributesMapper);
+                $annotationToAttributeMapper = $container->make(AnnotationToAttributeMapper::class);
+                $arrayAnnotationToAttributeMapper->autowire($annotationToAttributeMapper);
             }
         );
 
@@ -710,21 +710,21 @@ final class LazyContainerFactory
     private function createPHPStanServices(RectorConfig $rectorConfig): void
     {
         $rectorConfig->singleton(Parser::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createPHPStanParser();
+            $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpStanServicesFactory->createPHPStanParser();
         });
 
         $rectorConfig->singleton(Lexer::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createEmulativeLexer();
+            $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpStanServicesFactory->createEmulativeLexer();
         });
 
         foreach (self::PUBLIC_PHPSTAN_SERVICE_TYPES as $publicPhpstanServiceType) {
             $rectorConfig->singleton($publicPhpstanServiceType, static function (Container $container) use (
                 $publicPhpstanServiceType
             ) {
-                $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-                return $phpstanServiceFactory->getByType($publicPhpstanServiceType);
+                $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
+                return $phpStanServicesFactory->getByType($publicPhpstanServiceType);
             });
         }
     }
