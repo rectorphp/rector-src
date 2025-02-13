@@ -10,7 +10,7 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 return RectorConfig::configure()
     ->withPreparedSets(
         deadCode: true,
-        // codeQuality: true,
+        codeQuality: true,
         codingStyle: true,
         typeDeclarations: true,
         privatization: true,
@@ -35,7 +35,6 @@ return RectorConfig::configure()
         __DIR__ . '/build/build-preload.php',
     ])
     ->withRootFiles()
-    ->withCodeQualityLevel(120)
     ->withImportNames(removeUnusedImports: true)
     ->withSkip([
         StringClassNameToClassConstantRector::class,

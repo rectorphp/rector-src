@@ -17,6 +17,7 @@ use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
+use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PolyfillPackage;
 use Symfony\Component\Console\Command\Command;
@@ -443,10 +444,10 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param array<array{string, int, int}> $overflowLevels
+     * @param LevelOverflow[] $levelOverflows
      */
-    public function setOverflowLevels(array $overflowLevels): void
+    public function setOverflowLevels(array $levelOverflows): void
     {
-        SimpleParameterProvider::addParameter(Option::OVERFLOW_LEVELS, $overflowLevels);
+        SimpleParameterProvider::addParameter(Option::LEVEL_OVERFLOWS, $levelOverflows);
     }
 }

@@ -87,7 +87,7 @@ final readonly class ConfigurationFactory
 
         $isReportingWithRealPath = SimpleParameterProvider::provideBoolParameter(Option::ABSOLUTE_FILE_PATH);
 
-        $overflowLevels = SimpleParameterProvider::provideArrayParameter(Option::OVERFLOW_LEVELS);
+        $levelOverflows = SimpleParameterProvider::provideArrayParameter(Option::LEVEL_OVERFLOWS);
 
         return new Configuration(
             $isDryRun,
@@ -105,7 +105,7 @@ final readonly class ConfigurationFactory
             $isReportingWithRealPath,
             $onlyRule,
             $onlySuffix,
-            $overflowLevels
+            $levelOverflows
         );
     }
 

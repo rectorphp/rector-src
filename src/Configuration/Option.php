@@ -289,5 +289,5 @@ final class Option
     /**
      * @internal To report overflow levels in ->with*Level() methods
      */
-    public const OVERFLOW_LEVELS = 'overflow_levels';
+    public const LEVEL_OVERFLOWS = 'level_overflows';
 }
