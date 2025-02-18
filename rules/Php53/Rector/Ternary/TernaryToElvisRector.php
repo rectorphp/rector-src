@@ -79,7 +79,7 @@ CODE_SAMPLE
         }
 
         while (isset($tokens[$lastIfExprTokenEnd])) {
-            $lastIfExprTokenEnd++;
+            ++$lastIfExprTokenEnd;
 
             if ($elseExprTokenStart === $lastIfExprTokenEnd) {
                 break;
