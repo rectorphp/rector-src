@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php53\Rector\Ternary;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Ternary;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
@@ -57,9 +58,43 @@ CODE_SAMPLE
         }
 
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-        $node->if = null;
 
+        if ($node->else instanceof Ternary && $this->isParenthesized($node->if, $node->else)) {
+            $node->else->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
+        $node->if = null;
         return $node;
+    }
+
+    private function isParenthesized(Expr $ifExpr, Expr $elseExpr): bool
+    {
+        $tokens = $this->file->getOldTokens();
+
+        $lastIfExprTokenEnd = $ifExpr->getEndTokenPos();
+        $elseExprTokenStart = $elseExpr->getStartTokenPos();
+
+        if ($lastIfExprTokenEnd < 0 || $elseExprTokenStart < 0) {
+            return false;
+        }
+
+        if ($elseExprTokenStart < $lastIfExprTokenEnd) {
+            return false;
+        }
+
+        while (isset($tokens[$lastIfExprTokenEnd])) {
+            $lastIfExprTokenEnd++;
+
+            if ($elseExprTokenStart === $lastIfExprTokenEnd) {
+                break;
+            }
+
+            if ((string) $tokens[$lastIfExprTokenEnd] === '(') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function provideMinPhpVersion(): int
