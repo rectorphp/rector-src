@@ -75,21 +75,21 @@ CODE_SAMPLE
     {
         $tokens = $this->file->getOldTokens();
 
-        $lastIfExprTokenEnd = $ifExpr->getEndTokenPos();
+        $ifExprTokenEnd = $ifExpr->getEndTokenPos();
         $elseExprTokenStart = $elseExpr->getStartTokenPos();
 
-        if ($lastIfExprTokenEnd < 0 || $elseExprTokenStart < 0 || $elseExprTokenStart <= $lastIfExprTokenEnd) {
+        if ($ifExprTokenEnd < 0 || $elseExprTokenStart < 0 || $elseExprTokenStart <= $ifExprTokenEnd) {
             return false;
         }
 
-        while (isset($tokens[$lastIfExprTokenEnd])) {
-            ++$lastIfExprTokenEnd;
+        while (isset($tokens[$ifExprTokenEnd])) {
+            ++$ifExprTokenEnd;
 
-            if ($elseExprTokenStart === $lastIfExprTokenEnd) {
+            if ($elseExprTokenStart === $ifExprTokenEnd) {
                 break;
             }
 
-            if ((string) $tokens[$lastIfExprTokenEnd] === '(') {
+            if ((string) $tokens[$ifExprTokenEnd] === '(') {
                 return true;
             }
         }
