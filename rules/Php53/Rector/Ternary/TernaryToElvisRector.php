@@ -53,6 +53,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! $node->if instanceof Expr) {
+            return null;
+        }
+
         if (! $this->nodeComparator->areNodesEqual($node->cond, $node->if)) {
             return null;
         }
