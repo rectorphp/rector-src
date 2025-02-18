@@ -74,11 +74,7 @@ CODE_SAMPLE
         $lastIfExprTokenEnd = $ifExpr->getEndTokenPos();
         $elseExprTokenStart = $elseExpr->getStartTokenPos();
 
-        if ($lastIfExprTokenEnd < 0 || $elseExprTokenStart < 0) {
-            return false;
-        }
-
-        if ($elseExprTokenStart < $lastIfExprTokenEnd) {
+        if ($lastIfExprTokenEnd < 0 || $elseExprTokenStart < 0 || $elseExprTokenStart <= $lastIfExprTokenEnd) {
             return false;
         }
 
