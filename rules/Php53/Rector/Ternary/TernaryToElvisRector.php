@@ -57,13 +57,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->if instanceof Expr) {
-            return null;
-        }
-
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
-        if ($node->else instanceof Ternary && $this->isParenthesized($node->if, $node->else)) {
+        /** @var Expr $nodeIf */
+        $nodeIf = $node->if;
+
+        if ($node->else instanceof Ternary && $this->isParenthesized($nodeIf, $node->else)) {
             $node->else->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
