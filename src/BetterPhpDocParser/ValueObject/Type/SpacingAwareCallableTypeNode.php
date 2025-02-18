@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\ValueObject\Type;
 
 use PHPStan\PhpDocParser\Ast\Type\CallableTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Stringable;
 
 final class SpacingAwareCallableTypeNode extends CallableTypeNode implements Stringable
@@ -19,12 +17,9 @@ final class SpacingAwareCallableTypeNode extends CallableTypeNode implements Str
 
     private function createExplicitCallable(): string
     {
-        /** @var IdentifierTypeNode|GenericTypeNode $returnType */
-        $returnType = $this->returnType;
-
         $parameterTypeString = $this->createParameterTypeString();
 
-        $returnTypeAsString = (string) $returnType;
+        $returnTypeAsString = (string) $this->returnType;
         if (\str_contains($returnTypeAsString, '|')) {
             $returnTypeAsString = '(' . $returnTypeAsString . ')';
         }
