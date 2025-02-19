@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node\Value;
 
+use ArithmeticError;
 use PhpParser\ConstExprEvaluationException;
 use PhpParser\ConstExprEvaluator;
 use PhpParser\Node\Arg;
@@ -157,7 +158,7 @@ final class ValueResolver
         try {
             $constExprEvaluator = $this->getConstExprEvaluator();
             return $constExprEvaluator->evaluateDirectly($expr);
-        } catch (ConstExprEvaluationException|TypeError) {
+        } catch (ConstExprEvaluationException|TypeError|ArithmeticError) {
         }
 
         if ($expr instanceof Class_) {
