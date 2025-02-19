@@ -147,14 +147,7 @@ final readonly class IfManipulator
             return [];
         }
 
-        $return = $this->betterNodeFinder->findFirstInstanceOf($currentIf->stmts, Return_::class);
-
-        if ($return instanceof Return_) {
-            return [];
-        }
-
-        $exit = $this->betterNodeFinder->findFirstInstanceOf($currentIf->stmts, Exit_::class);
-        if ($exit instanceof Exit_) {
+        if ($this->betterNodeFinder->hasInstancesOf($currentIf->stmts, [Return_::class, Exit_::class])) {
             return [];
         }
 

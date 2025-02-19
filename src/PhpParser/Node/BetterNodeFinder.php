@@ -112,16 +112,15 @@ final readonly class BetterNodeFinder
     {
         Assert::allIsAOf($types, Node::class);
 
-        foreach ($types as $type) {
-            $foundNode = $this->nodeFinder->findFirstInstanceOf($nodes, $type);
-            if (! $foundNode instanceof Node) {
-                continue;
+        return (bool) $this->nodeFinder->findFirst($nodes, static function (Node $node) use ($types): bool {
+            foreach ($types as $type) {
+                if ($node instanceof $type) {
+                    return true;
+                }
             }
 
-            return true;
-        }
-
-        return false;
+            return false;
+        });
     }
 
     /**
