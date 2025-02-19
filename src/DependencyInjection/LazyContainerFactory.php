@@ -12,8 +12,6 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
-use PHPStan\PhpDocParser\Parser\ConstExprParser;
-use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Application\ChangedNodeScopeRefresher;
@@ -423,21 +421,6 @@ final class LazyContainerFactory
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
 
-        // phpdoc-parser
-        $rectorConfig->when(TypeParser::class)
-            ->needs('$usedAttributes')
-            ->give([
-                'lines' => true,
-                'indexes' => true,
-            ]);
-
-        $rectorConfig->when(ConstExprParser::class)
-            ->needs('$usedAttributes')
-            ->give([
-                'lines' => true,
-                'indexes' => true,
-            ]);
-
         $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
@@ -682,11 +665,13 @@ final class LazyContainerFactory
             ->needs('$phpDocNodeVisitors')
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
 
+        // phpdoc-parser
         $rectorConfig->singleton(
             ParserConfig::class,
             static fn (Container $container): ParserConfig => new ParserConfig([
                 'lines' => true,
                 'indexes' => true,
+                'comments' => true,
             ])
         );
 
