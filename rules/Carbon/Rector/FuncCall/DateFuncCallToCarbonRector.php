@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
@@ -61,7 +62,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isName($node->name, 'date')) {
+        if (! $this->isName($node->name, 'date') && ! $this->isName($node->name, 'strtotime')) {
             return null;
         }
 
@@ -78,9 +79,16 @@ CODE_SAMPLE
             return null;
         }
 
-        // create now and format()
-        $nowStaticCall = new StaticCall(new FullyQualified('Carbon\Carbon'), 'now');
+        if ($this->isName($node->name, 'date')) {
+            $nowStaticCall = new StaticCall(new FullyQualified('Carbon\\Carbon'), 'now');
+            return new MethodCall($nowStaticCall, 'format', [new Arg($firstArg->value)]);
+        }
 
-        return new MethodCall($nowStaticCall, 'format', [new Arg($firstArg->value)]);
+        if ($this->isName($node->name, 'strtotime')) {
+            $parseCall = new StaticCall(new FullyQualified('Carbon\\Carbon'), 'parse', [new Arg($firstArg->value)]);
+            return new PropertyFetch($parseCall, 'timestamp');
+        }
+
+        return null;
     }
 }
