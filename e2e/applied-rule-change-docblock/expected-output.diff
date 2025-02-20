@@ -1,7 +1,7 @@
 2 files with changes
 ====================
 
-1) src/RenameDocblock.php:0
+1) src/RenameDocblock.php:1
 
     ---------- begin diff ----------
 @@ @@
@@ -19,7 +19,7 @@ Applied rules:
  * RenameClassRector
 
 
-2) src/UselessVarTag.php:1
+2) src/UselessVarTag.php:2
 
     ---------- begin diff ----------
 @@ @@

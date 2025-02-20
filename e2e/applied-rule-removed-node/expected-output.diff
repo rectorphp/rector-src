@@ -1,7 +1,7 @@
 2 files with changes
 ====================
 
-1) src/AlwaysTrue.php:3
+1) src/AlwaysTrue.php:4
 
     ---------- begin diff ----------
 @@ @@
@@ -20,7 +20,7 @@ Applied rules:
  * RemoveAlwaysTrueIfConditionRector
 
 
-2) src/DeadConstructor.php:1
+2) src/DeadConstructor.php:2
 
     ---------- begin diff ----------
 @@ @@
