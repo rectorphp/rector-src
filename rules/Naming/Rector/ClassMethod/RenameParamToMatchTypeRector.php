@@ -80,6 +80,11 @@ CODE_SAMPLE
         $this->hasChanged = false;
 
         foreach ($node->params as $param) {
+            // skip as array-like
+            if ($param->variadic) {
+                continue;
+            }
+
             $expectedName = $this->expectedNameResolver->resolveForParamIfNotYet($param);
             if ($expectedName === null) {
                 continue;
