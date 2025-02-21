@@ -200,7 +200,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function calculateProduct(Expr $node): ?int
+    private function calculateProduct(Expr $node): float|int|null
     {
         if ($node instanceof LNumber) {
             return $node->value;
