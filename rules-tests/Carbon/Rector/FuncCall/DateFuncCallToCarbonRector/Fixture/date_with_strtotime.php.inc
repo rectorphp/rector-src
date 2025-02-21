@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector\Fixture;
 
-class StrtotimeExample
+class DateWithStrtotimeExample
 {
     public function run()
     {
-        $timestamp = strtotime('2025-02-20');
+        $formatted = date('d.m.Y', strtotime('2025-02-21'));
     }
 }
 
@@ -15,10 +15,10 @@ class StrtotimeExample
 
 namespace Rector\Tests\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector\Fixture;
 
-class StrtotimeExample
+class DateWithStrtotimeExample
 {
     public function run()
     {
-        $timestamp = \Carbon\Carbon::parse('2025-02-20')->timestamp;
+        $formatted = \Carbon\Carbon::parse('2025-02-21')->format('d.m.Y');
     }
 }
