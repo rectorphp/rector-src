@@ -15,10 +15,12 @@ class StrtotimeExample
 
 namespace Rector\Tests\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector\Fixture;
 
+use Carbon\Carbon;
+
 class StrtotimeExample
 {
     public function run()
     {
-        $timestamp = \Carbon\Carbon::parse('2025-02-20')->timestamp;
+        $timestamp = Carbon::parse('2025-02-20')->timestamp;
     }
 }
