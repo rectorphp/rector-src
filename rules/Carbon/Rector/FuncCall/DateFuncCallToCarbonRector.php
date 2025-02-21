@@ -17,7 +17,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\Exception\PoorDocumentationException;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -34,9 +33,6 @@ final class DateFuncCallToCarbonRector extends AbstractRector
         ['seconds', 1],
     ];
 
-    /**
-     * @throws PoorDocumentationException
-     */
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Convert date() function call to Carbon::now()->format(*)', [
@@ -74,7 +70,6 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall $node
-     * @return Node|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -127,14 +122,9 @@ CODE_SAMPLE
         return null;
     }
 
-    /**
-     * @param FuncCall $node
-     * @param int $index
-     * @return Expr|null
-     */
     private function getArgValue(FuncCall $node, int $index): ?Expr
     {
-        if (!isset($node->args[$index]) || !$node->args[$index] instanceof Arg) {
+        if (! isset($node->args[$index]) || ! $node->args[$index] instanceof Arg) {
             return null;
         }
 
@@ -175,10 +165,10 @@ CODE_SAMPLE
 
     /**
      * @param array{unit: string, value: int} $timeUnit
-     * @return PropertyFetch
      */
-    private function createCarbonSubtract(array $timeUnit): PropertyFetch
-    {
+    private function createCarbonSubtract(
+        array $timeUnit
+    ): PropertyFetch {
         $nowCall = new StaticCall(
             new FullyQualified('Carbon\\Carbon'),
             'now'
@@ -189,7 +179,6 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Expr $node
      * @return array{unit: string, value: int}|null
      */
     private function detectTimeUnit(Expr $node): ?array
@@ -203,7 +192,7 @@ CODE_SAMPLE
             if ($product % $seconds === 0) {
                 return [
                     'unit' => (string) $unit,
-                    'value' => (int) ($product / $seconds)
+                    'value' => (int) ($product / $seconds),
                 ];
             }
         }
@@ -211,17 +200,13 @@ CODE_SAMPLE
         return null;
     }
 
-    /**
-     * @param Expr $node
-     * @return int|null
-     */
     private function calculateProduct(Expr $node): ?int
     {
         if ($node instanceof LNumber) {
             return $node->value;
         }
 
-        if (!$node instanceof Mul) {
+        if (! $node instanceof Mul) {
             return null;
         }
 
@@ -234,13 +219,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Node $node
      * @return int[]
      */
     private function extractMultipliers(Node $node): array
     {
         $multipliers = [];
-        if (!$node instanceof Mul) {
+        if (! $node instanceof Mul) {
             return $multipliers;
         }
 
