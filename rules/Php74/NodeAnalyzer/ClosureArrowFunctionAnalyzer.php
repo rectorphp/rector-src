@@ -51,7 +51,7 @@ final readonly class ClosureArrowFunctionAnalyzer
             return null;
         }
 
-        if ($this->shouldSkipMoreSpecificTypeWithVarDoc($return)) {
+        if ($this->shouldSkipMoreSpecificTypeWithVarDoc($return, $return->expr)) {
             return null;
         }
 
@@ -59,10 +59,9 @@ final readonly class ClosureArrowFunctionAnalyzer
     }
 
     /**
-     * ensure @var doc usage
-     * with more specific type on purpose to be skipped
+     * Ensure @var doc usage with more specific type on purpose to be skipped
      */
-    private function shouldSkipMoreSpecificTypeWithVarDoc(Return_ $return): bool
+    private function shouldSkipMoreSpecificTypeWithVarDoc(Return_ $return, Expr $expr): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($return);
 
@@ -82,7 +81,7 @@ final readonly class ClosureArrowFunctionAnalyzer
 
         $variableName = ltrim($varTagValueNode->variableName, '$');
         $variable = $this->betterNodeFinder->findFirst(
-            $return->expr,
+            $expr,
             static fn (Node $node): bool => $node instanceof Variable && $node->name === $variableName
         );
 
