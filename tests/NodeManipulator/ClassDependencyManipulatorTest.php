@@ -32,6 +32,8 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->classDependencyManipulator = $this->make(ClassDependencyManipulator::class);
 
         $this->printerStandard = new Standard();

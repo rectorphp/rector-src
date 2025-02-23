@@ -17,6 +17,8 @@ final class FilesFinderTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->filesFinder = $this->make(FilesFinder::class);
     }
 

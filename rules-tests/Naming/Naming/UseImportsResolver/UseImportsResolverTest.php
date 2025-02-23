@@ -26,6 +26,8 @@ final class UseImportsResolverTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->useImportsResolver = $this->make(UseImportsResolver::class);
         $this->testingParser = $this->make(TestingParser::class);
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);

@@ -17,6 +17,8 @@ final class PhpAttributeGroupFactoryTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->phpAttributeGroupFactory = $this->make(PhpAttributeGroupFactory::class);
     }
 

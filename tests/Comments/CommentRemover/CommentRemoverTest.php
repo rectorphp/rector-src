@@ -25,6 +25,8 @@ final class CommentRemoverTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->commentRemover = $this->make(CommentRemover::class);
         $this->testingParser = $this->make(TestingParser::class);
         $this->betterStandardPrinter = $this->make(BetterStandardPrinter::class);

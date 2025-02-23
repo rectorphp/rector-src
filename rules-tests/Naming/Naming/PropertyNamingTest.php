@@ -17,6 +17,8 @@ final class PropertyNamingTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->propertyNaming = $this->make(PropertyNaming::class);
     }
 

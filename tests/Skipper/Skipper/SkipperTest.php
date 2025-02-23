@@ -21,6 +21,8 @@ final class SkipperTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         SimpleParameterProvider::setParameter(Option::SKIP, [
             // windows like path
             '*\SomeSkipped\*',

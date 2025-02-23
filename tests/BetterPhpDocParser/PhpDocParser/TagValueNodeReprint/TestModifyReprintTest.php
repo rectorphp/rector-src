@@ -33,6 +33,8 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->testingParser = $this->make(TestingParser::class);
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);

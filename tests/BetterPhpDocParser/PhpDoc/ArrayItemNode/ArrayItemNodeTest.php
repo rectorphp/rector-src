@@ -29,6 +29,8 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->docBlockUpdater = $this->make(DocBlockUpdater::class);
         $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);

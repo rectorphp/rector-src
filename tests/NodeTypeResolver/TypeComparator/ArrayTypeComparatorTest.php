@@ -26,6 +26,8 @@ final class ArrayTypeComparatorTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->arrayTypeComparator = $this->make(ArrayTypeComparator::class);
         $this->reflectionProvider = $this->make(ReflectionProvider::class);
     }

@@ -34,6 +34,8 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->testingParser = $this->make(TestingParser::class);
         $this->filePathHelper = $this->make(FilePathHelper::class);
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);

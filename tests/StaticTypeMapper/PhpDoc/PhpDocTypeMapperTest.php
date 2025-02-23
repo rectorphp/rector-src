@@ -24,6 +24,8 @@ final class PhpDocTypeMapperTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->phpDocTypeMapper = $this->make(PhpDocTypeMapper::class);
         $this->nameScopeFactory = $this->make(NameScopeFactory::class);
     }

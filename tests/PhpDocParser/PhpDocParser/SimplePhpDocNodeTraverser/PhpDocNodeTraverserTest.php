@@ -23,6 +23,8 @@ final class PhpDocNodeTraverserTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->phpDocNodeTraverser = $this->make(PhpDocNodeTraverser::class);
     }
 
