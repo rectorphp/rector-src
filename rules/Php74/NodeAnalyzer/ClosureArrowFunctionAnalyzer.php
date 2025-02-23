@@ -47,36 +47,51 @@ final readonly class ClosureArrowFunctionAnalyzer
             return null;
         }
 
-        // ensure @var doc usage
-        // with more specific type on purpose to be skipped
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($return);
-
-        if ($phpDocInfo instanceof PhpDocInfo && $phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
-            $varType = $phpDocInfo->getVarType();
-
-            if (! $varType instanceof MixedType) {
-                $variableName = ltrim($phpDocInfo->getVarTagValueNode()->variableName, '$');
-
-                $variable = $this->betterNodeFinder->findFirst(
-                    $return->expr,
-                    static fn (Node $node): bool => $node instanceof Variable && $node->name === $variableName
-                );
-
-                if ($variable instanceof Variable) {
-                    $nativeVariableType = $this->nodeTypeResolver->getNativeType($variable);
-                    // not equal with native type means more specific type
-                    if (! $nativeVariableType->equals($varType)) {
-                        return null;
-                    }
-                }
-            }
-        }
-
         if ($this->shouldSkipForUsedReferencedValue($closure)) {
             return null;
         }
 
+        if ($this->shouldSkipMoreSpecificTypeWithVarDoc($return)) {
+            return null;
+        }
+
         return $return->expr;
+    }
+
+    private function shouldSkipMoreSpecificTypeWithVarDoc(Return_ $return): bool
+    {
+        // ensure @var doc usage
+        // with more specific type on purpose to be skipped
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($return);
+
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return false;
+        }
+
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+        if (! $varTagValueNode instanceof VarTagValueNode) {
+            return false;
+        }
+
+        $varType = $phpDocInfo->getVarType();
+        if ($varType instanceof MixedType) {
+            return false;
+        }
+
+        $variableName = ltrim($varTagValueNode->variableName, '$');
+        $variable = $this->betterNodeFinder->findFirst(
+            $return->expr,
+            static fn (Node $node): bool => $node instanceof Variable && $node->name === $variableName
+        );
+
+        if (! $variable instanceof Variable) {
+            return false;
+        }
+
+        $nativeVariableType = $this->nodeTypeResolver->getNativeType($variable);
+
+        // not equal with native type means more specific type
+        return ! $nativeVariableType->equals($varType);
     }
 
     private function shouldSkipForUsedReferencedValue(Closure $closure): bool
