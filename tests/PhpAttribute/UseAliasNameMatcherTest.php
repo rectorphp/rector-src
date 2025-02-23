@@ -25,6 +25,8 @@ final class UseAliasNameMatcherTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->useAliasNameMatcher = $this->make(UseAliasNameMatcher::class);
     }
 

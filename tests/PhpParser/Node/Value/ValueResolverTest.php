@@ -19,6 +19,8 @@ final class ValueResolverTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->valueResolver = $this->make(ValueResolver::class);
     }
 

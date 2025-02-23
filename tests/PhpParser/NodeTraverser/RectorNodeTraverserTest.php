@@ -23,6 +23,8 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->rectorNodeTraverser = $this->make(RectorNodeTraverser::class);
         $this->rectorNodeTraverser->refreshPhpRectors([]);
 

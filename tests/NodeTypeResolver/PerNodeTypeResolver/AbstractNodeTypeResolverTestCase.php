@@ -20,6 +20,8 @@ abstract class AbstractNodeTypeResolverTestCase extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
         $this->testingParser = $this->make(TestingParser::class);
         $this->nodeTypeResolver = $this->make(NodeTypeResolver::class);

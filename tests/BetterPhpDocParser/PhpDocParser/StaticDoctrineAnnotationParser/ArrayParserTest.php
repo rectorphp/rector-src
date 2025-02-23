@@ -21,6 +21,8 @@ final class ArrayParserTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->arrayParser = $this->make(ArrayParser::class);
         $this->tokenIteratorFactory = $this->make(TokenIteratorFactory::class);
     }

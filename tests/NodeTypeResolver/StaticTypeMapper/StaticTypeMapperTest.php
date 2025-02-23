@@ -26,6 +26,8 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->staticTypeMapper = $this->make(StaticTypeMapper::class);
     }
 

@@ -38,6 +38,8 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->workerCommandLineFactory = $this->make(WorkerCommandLineFactory::class);
         $this->processCommand = $this->make(ProcessCommand::class);
     }

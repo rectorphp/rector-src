@@ -22,6 +22,8 @@ final class StaticDoctrineAnnotationParserTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->tokenIteratorFactory = $this->make(TokenIteratorFactory::class);
         $this->staticDoctrineAnnotationParser = $this->make(StaticDoctrineAnnotationParser::class);
     }

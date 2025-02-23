@@ -21,6 +21,8 @@ final class AnnotationToAttributeMapperTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->annotationToAttributeMapper = $this->make(AnnotationToAttributeMapper::class);
     }
 
