@@ -14,6 +14,8 @@ abstract class AbstractLazyTestCase extends TestCase
 
     protected function setUp(): void
     {
+        // this is needed to have always the same preloaded nikic/php-parser classes
+        // in both bare AbstractLazyTestCase lazy tests and AbstractRectorTestCase tests
         $this->includePreloadFilesAndScoperAutoload();
     }
 
