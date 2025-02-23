@@ -58,10 +58,12 @@ final readonly class ClosureArrowFunctionAnalyzer
         return $return->expr;
     }
 
+    /**
+     * ensure @var doc usage
+     * with more specific type on purpose to be skipped
+     */
     private function shouldSkipMoreSpecificTypeWithVarDoc(Return_ $return): bool
     {
-        // ensure @var doc usage
-        // with more specific type on purpose to be skipped
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($return);
 
         if (! $phpDocInfo instanceof PhpDocInfo) {
