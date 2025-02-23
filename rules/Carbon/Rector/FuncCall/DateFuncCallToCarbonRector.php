@@ -89,6 +89,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if ($this->isName($node->name, 'date') && isset($node->args[1]) && $node->args[1] instanceof Arg) {
             $format = $this->getArgValue($node, 0);
             if (! $format instanceof Expr) {
