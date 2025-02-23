@@ -14,6 +14,8 @@ final class FileHasherTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->fileHasher = $this->make(FileHasher::class);
     }
 

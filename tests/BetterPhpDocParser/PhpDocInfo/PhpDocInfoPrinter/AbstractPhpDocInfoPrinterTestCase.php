@@ -22,6 +22,8 @@ abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->filePathHelper = $this->make(FilePathHelper::class);
         $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);

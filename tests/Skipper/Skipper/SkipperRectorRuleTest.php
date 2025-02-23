@@ -16,6 +16,8 @@ final class SkipperRectorRuleTest extends AbstractLazyTestCase
 {
     protected function setUp(): void
     {
+        parent::setUp();
+
         // reset to make skip free and invoke resolving
         self::$rectorConfig = null;
     }

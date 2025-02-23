@@ -26,6 +26,8 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         // to avoid reflection parsing previous files
         $dynamicSourceLocatorProvider = $this->make(DynamicSourceLocatorProvider::class);
         $dynamicSourceLocatorProvider->reset();

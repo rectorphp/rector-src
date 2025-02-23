@@ -16,6 +16,8 @@ final class SkippedPathsResolverTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         SimpleParameterProvider::setParameter(Option::SKIP, [
             // windows slashes
             __DIR__ . '\non-existing-path',

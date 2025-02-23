@@ -15,6 +15,8 @@ final class FileHashComputerTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->fileHashComputer = $this->make(FileHashComputer::class);
     }
 

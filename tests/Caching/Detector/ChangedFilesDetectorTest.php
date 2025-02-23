@@ -13,6 +13,8 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->changedFilesDetector = $this->make(ChangedFilesDetector::class);
     }
 
