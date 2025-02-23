@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php74\NodeAnalyzer;
 
-use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\ClosureUse;
 use PhpParser\Node\Expr;
@@ -14,11 +13,9 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Util\ArrayChecker;
-use PHPStan\Analyser\Scope;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final readonly class ClosureArrowFunctionAnalyzer
