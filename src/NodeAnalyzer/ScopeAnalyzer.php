@@ -17,7 +17,14 @@ final class ScopeAnalyzer
     /**
      * @var array<class-string<Node>>
      */
-    private const NON_REFRESHABLE_NODES = [Name::class, Identifier::class, Param::class, Arg::class, Variable::class, Attribute::class];
+    private const NON_REFRESHABLE_NODES = [
+        Name::class,
+        Identifier::class,
+        Param::class,
+        Arg::class,
+        Variable::class,
+        Attribute::class,
+    ];
 
     public function isRefreshable(Node $node): bool
     {
