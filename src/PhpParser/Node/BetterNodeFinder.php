@@ -19,6 +19,7 @@ use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Webmozart\Assert\Assert;
 
@@ -281,45 +282,30 @@ final readonly class BetterNodeFinder
         ClassMethod | Function_ | Closure $functionLike,
         callable $filter
     ): ?Node {
-        if ($functionLike->stmts === null) {
-            return null;
-        }
-
-        $foundNode = $this->findFirst($functionLike->stmts, $filter);
-        if (! $foundNode instanceof Node) {
-            return null;
-        }
-
-        if (! $this->hasInstancesOf($functionLike->stmts, [Class_::class, FunctionLike::class])) {
-            return $foundNode;
-        }
-
         $scopedNode = null;
+
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $functionLike->stmts,
-            function (Node $subNode) use (&$scopedNode, $foundNode, $filter): ?int {
+            (array) $functionLike->stmts,
+            static function (Node $subNode) use ($filter,&$scopedNode): ?int {
+                $isFound = $filter($subNode);
+
+                if (! $isFound) {
+                    return null;
+                }
+
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
-                    if ($foundNode instanceof $subNode && $subNode === $foundNode) {
+                    if ($isFound) {
                         $scopedNode = $subNode;
                         return NodeVisitor::STOP_TRAVERSAL;
                     }
 
+                    // not looking class or function, don't traverse it and its below
+                    // continue to next node instead
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                if (! $foundNode instanceof $subNode) {
-                    return null;
-                }
-
-                // handle after Closure
-                // @see https://github.com/rectorphp/rector-src/pull/4931
-                $scopedFoundNode = $this->findFirst($subNode, $filter);
-                if ($scopedFoundNode === $subNode) {
-                    $scopedNode = $subNode;
-                    return NodeVisitor::STOP_TRAVERSAL;
-                }
-
-                return null;
+                $scopedNode = $subNode;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
         );
 
