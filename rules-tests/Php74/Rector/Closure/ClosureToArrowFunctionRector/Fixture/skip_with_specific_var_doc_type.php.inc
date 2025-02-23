@@ -4,7 +4,7 @@ namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture
 
 use Illuminate\Support\Collection;
 
-class SkipWithSpecificVarDoc
+class SkipWithSpecificVarDocType
 {
     public function run()
     {

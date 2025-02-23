@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
 
-class WithEqualVarDoc
+class WithEqualVarDocType
 {
     public function run()
     {
@@ -19,7 +19,7 @@ class WithEqualVarDoc
 
 namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
 
-class WithEqualVarDoc
+class WithEqualVarDocType
 {
     public function run()
     {
