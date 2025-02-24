@@ -8,6 +8,8 @@ class Fixture
     {
         strlen(__DIR__);
         strlen(__FILE__);
+
+        new \Foo(['bar' => ['foo' => __DIR__ . '/bar']]);
     }
 }
 
@@ -23,6 +25,8 @@ class Fixture
     {
         'tests/Issues/GetValueMagicDir/Fixture';
         'tests/Issues/GetValueMagicDir/Fixture/fixture.php';
+
+        ['bar' => ['foo' => 'tests/Issues/GetValueMagicDir/Fixture/bar']];
     }
 }
 
