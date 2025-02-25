@@ -20,6 +20,8 @@ final class ParentConnectingPhpDocNodeVisitorTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->phpDocNodeTraverser = $this->make(PhpDocNodeTraverser::class);
 
         /** @var ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor */

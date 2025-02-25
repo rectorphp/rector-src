@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -42,6 +43,10 @@ final class SomeClass
         $value->setValue(5);
         $value2 = new Value;
         $value2->setValue(1);
+        $foo = new Value;
+        $foo->bar = 5;
+        $bar = new Value;
+        $bar->foo = 1;
     }
 }
 CODE_SAMPLE
@@ -56,6 +61,12 @@ final class SomeClass
 
         $value2 = new Value;
         $value2->setValue(1);
+
+        $foo = new Value;
+        $foo->bar = 5;
+
+        $bar = new Value;
+        $bar->foo = 1;
     }
 }
 CODE_SAMPLE
@@ -126,7 +137,20 @@ CODE_SAMPLE
             }
 
             if (! $stmtExpr->var instanceof MethodCall && ! $stmtExpr->var instanceof StaticCall) {
-                return $this->getName($stmtExpr->var);
+                $nodeVar = $stmtExpr->var;
+
+                if ($nodeVar instanceof PropertyFetch) {
+                    do {
+                        $previous = $nodeVar;
+                        $nodeVar = $nodeVar->var;
+                    } while ($nodeVar instanceof PropertyFetch);
+
+                    if ($this->getName($nodeVar) === 'this') {
+                        $nodeVar = $previous;
+                    }
+                }
+
+                return $this->getName($nodeVar);
             }
         }
 

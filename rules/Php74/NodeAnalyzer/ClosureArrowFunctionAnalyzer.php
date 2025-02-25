@@ -10,6 +10,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\Type\MixedType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Util\ArrayChecker;
@@ -19,7 +24,9 @@ final readonly class ClosureArrowFunctionAnalyzer
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private NodeComparator $nodeComparator,
-        private ArrayChecker $arrayChecker
+        private ArrayChecker $arrayChecker,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -44,7 +51,48 @@ final readonly class ClosureArrowFunctionAnalyzer
             return null;
         }
 
+        if ($this->shouldSkipMoreSpecificTypeWithVarDoc($return, $return->expr)) {
+            return null;
+        }
+
         return $return->expr;
+    }
+
+    /**
+     * Ensure @var doc usage with more specific type on purpose to be skipped
+     */
+    private function shouldSkipMoreSpecificTypeWithVarDoc(Return_ $return, Expr $expr): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($return);
+
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return false;
+        }
+
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+        if (! $varTagValueNode instanceof VarTagValueNode) {
+            return false;
+        }
+
+        $varType = $phpDocInfo->getVarType();
+        if ($varType instanceof MixedType) {
+            return false;
+        }
+
+        $variableName = ltrim($varTagValueNode->variableName, '$');
+        $variable = $this->betterNodeFinder->findFirst(
+            $expr,
+            static fn (Node $node): bool => $node instanceof Variable && $node->name === $variableName
+        );
+
+        if (! $variable instanceof Variable) {
+            return false;
+        }
+
+        $nativeVariableType = $this->nodeTypeResolver->getNativeType($variable);
+
+        // not equal with native type means more specific type
+        return ! $nativeVariableType->equals($varType);
     }
 
     private function shouldSkipForUsedReferencedValue(Closure $closure): bool

@@ -20,6 +20,8 @@ final class ArrayTypeMapperTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->arrayTypeMapper = $this->make(ArrayTypeMapper::class);
     }
 

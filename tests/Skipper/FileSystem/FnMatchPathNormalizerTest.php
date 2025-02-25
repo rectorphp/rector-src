@@ -16,6 +16,8 @@ final class FnMatchPathNormalizerTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->fnMatchPathNormalizer = $this->make(FnMatchPathNormalizer::class);
     }
 

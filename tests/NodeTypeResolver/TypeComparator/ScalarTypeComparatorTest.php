@@ -21,6 +21,8 @@ final class ScalarTypeComparatorTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->scalarTypeComparator = $this->make(ScalarTypeComparator::class);
     }
 

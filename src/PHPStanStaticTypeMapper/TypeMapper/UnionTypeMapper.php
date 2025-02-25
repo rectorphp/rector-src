@@ -16,6 +16,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
+use Rector\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -33,6 +34,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly PropertyAnalyzer $propertyAnalyzer
     ) {
     }
 
@@ -184,7 +186,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             }
 
             // special callable type only not allowed on property
-            if ($typeKind === TypeKind::PROPERTY && $unionedType->isCallable()->yes()) {
+            if ($typeKind === TypeKind::PROPERTY && $this->propertyAnalyzer->isForbiddenType($unionedType)) {
                 return null;
             }
 

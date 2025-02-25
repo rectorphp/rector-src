@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -57,7 +58,6 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-
                     ,
                     <<<'CODE_SAMPLE'
 class SomeClass
@@ -126,6 +126,10 @@ CODE_SAMPLE
         }
 
         if ($this->isClassMethodCalledInAnotherStaticClassMethod($class, $classMethod)) {
+            return null;
+        }
+
+        if ($this->isNeverCalled($class, $classMethod)) {
             return null;
         }
 
@@ -210,7 +214,7 @@ CODE_SAMPLE
 
         $isInsideStaticClassMethod = false;
 
-        // check if called stati call somewhere in class, but only in static methods
+        // check if called static call somewhere in class, but only in static methods
         foreach ($class->getMethods() as $checkedClassMethod) {
             // not a problem
             if (! $checkedClassMethod->isStatic()) {
@@ -256,5 +260,32 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    /**
+     * In case of never called method call,
+     * it should be skipped and handled by another dead-code rule
+     */
+    private function isNeverCalled(Class_ $class, ClassMethod $classMethod): bool
+    {
+        $currentMethodName = $this->getName($classMethod);
+
+        $nodeFinder = new NodeFinder();
+
+        $methodCall = $nodeFinder->findFirst($class, function (Node $node) use ($currentMethodName): bool {
+            if ($node instanceof MethodCall && $node->var instanceof Variable && $this->isName(
+                $node->var,
+                'this'
+            ) && $this->isName($node->name, $currentMethodName)) {
+                return true;
+            }
+
+            return $node instanceof StaticCall && $this->isNames($node->class, ['self', 'static']) && $this->isName(
+                $node->name,
+                $currentMethodName
+            );
+        });
+
+        return ! $methodCall instanceof Node;
     }
 }

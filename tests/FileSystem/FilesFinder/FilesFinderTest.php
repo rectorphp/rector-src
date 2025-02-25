@@ -17,6 +17,8 @@ final class FilesFinderTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->filesFinder = $this->make(FilesFinder::class);
     }
 
@@ -26,7 +28,7 @@ final class FilesFinderTest extends AbstractLazyTestCase
         $this->assertCount(1, $foundFiles);
 
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithShortEchoes'], ['php']);
-        $this->assertCount(0, $foundFiles);
+        $this->assertEmpty($foundFiles);
     }
 
     #[DataProvider('alwaysReturnsAbsolutePathDataProvider')]
@@ -59,10 +61,14 @@ final class FilesFinderTest extends AbstractLazyTestCase
 
     public function testWithFollowingBrokenSymlinks(): void
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('Symlinks test is not reliable on Windows');
+        }
+
         SimpleParameterProvider::setParameter(Option::SKIP, [__DIR__ . '/../SourceWithBrokenSymlinks/folder1']);
 
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithBrokenSymlinks']);
-        $this->assertCount(0, $foundFiles);
+        $this->assertEmpty($foundFiles);
     }
 
     #[DataProvider('provideData')]

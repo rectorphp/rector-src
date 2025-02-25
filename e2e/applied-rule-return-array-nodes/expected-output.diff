@@ -1,7 +1,7 @@
 2 files with changes
 ====================
 
-1) src/MultiRules.php:5
+1) src/MultiRules.php:6
 
     ---------- begin diff ----------
 @@ @@
@@ -25,7 +25,7 @@ Applied rules:
  * RemoveAlwaysElseRector
 
 
-2) src/RemoveAlwaysElse.php:5
+2) src/RemoveAlwaysElse.php:6
 
     ---------- begin diff ----------
 @@ @@

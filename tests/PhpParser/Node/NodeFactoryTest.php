@@ -21,6 +21,8 @@ final class NodeFactoryTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->nodeFactory = $this->make(NodeFactory::class);
     }
 

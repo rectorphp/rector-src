@@ -12,8 +12,6 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
-use PHPStan\PhpDocParser\Parser\ConstExprParser;
-use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Application\ChangedNodeScopeRefresher;
@@ -38,6 +36,7 @@ use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
+use Rector\ChangesReporting\Output\GitHubOutputFormatter;
 use Rector\ChangesReporting\Output\GitlabOutputFormatter;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\ChangesReporting\Output\JUnitOutputFormatter;
@@ -99,7 +98,6 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NameNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ReprintNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StmtKeyNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
@@ -242,7 +240,6 @@ final class LazyContainerFactory
         NameNodeVisitor::class,
         StaticVariableNodeVisitor::class,
         StmtKeyNodeVisitor::class,
-        ReprintNodeVisitor::class,
     ];
 
     /**
@@ -336,6 +333,7 @@ final class LazyContainerFactory
         JsonOutputFormatter::class,
         GitlabOutputFormatter::class,
         JUnitOutputFormatter::class,
+        GitHubOutputFormatter::class,
     ];
 
     /**
@@ -388,15 +386,15 @@ final class LazyContainerFactory
         $rectorConfig->import(__DIR__ . '/../../config/config.php');
 
         $rectorConfig->singleton(Application::class, static function (Container $container): Application {
-            $application = $container->make(ConsoleApplication::class);
+            $consoleApplication = $container->make(ConsoleApplication::class);
 
             $commandNamesToHide = ['list', 'completion', 'help', 'worker'];
             foreach ($commandNamesToHide as $commandNameToHide) {
-                $commandToHide = $application->get($commandNameToHide);
+                $commandToHide = $consoleApplication->get($commandNameToHide);
                 $commandToHide->setHidden();
             }
 
-            return $application;
+            return $consoleApplication;
         });
 
         $rectorConfig->when(ConsoleApplication::class)
@@ -426,21 +424,6 @@ final class LazyContainerFactory
 
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
-
-        // phpdoc-parser
-        $rectorConfig->when(TypeParser::class)
-            ->needs('$usedAttributes')
-            ->give([
-                'lines' => true,
-                'indexes' => true,
-            ]);
-
-        $rectorConfig->when(ConstExprParser::class)
-            ->needs('$usedAttributes')
-            ->give([
-                'lines' => true,
-                'indexes' => true,
-            ]);
 
         $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$rectors')
@@ -622,8 +605,8 @@ final class LazyContainerFactory
                 ArrayAnnotationToAttributeMapper $arrayAnnotationToAttributeMapper,
                 Container $container
             ): void {
-                $annotationToAttributesMapper = $container->make(AnnotationToAttributeMapper::class);
-                $arrayAnnotationToAttributeMapper->autowire($annotationToAttributesMapper);
+                $annotationToAttributeMapper = $container->make(AnnotationToAttributeMapper::class);
+                $arrayAnnotationToAttributeMapper->autowire($annotationToAttributeMapper);
             }
         );
 
@@ -686,11 +669,13 @@ final class LazyContainerFactory
             ->needs('$phpDocNodeVisitors')
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
 
+        // phpdoc-parser
         $rectorConfig->singleton(
             ParserConfig::class,
             static fn (Container $container): ParserConfig => new ParserConfig([
                 'lines' => true,
                 'indexes' => true,
+                'comments' => true,
             ])
         );
 
@@ -714,21 +699,21 @@ final class LazyContainerFactory
     private function createPHPStanServices(RectorConfig $rectorConfig): void
     {
         $rectorConfig->singleton(Parser::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createPHPStanParser();
+            $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpStanServicesFactory->createPHPStanParser();
         });
 
         $rectorConfig->singleton(Lexer::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createEmulativeLexer();
+            $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpStanServicesFactory->createEmulativeLexer();
         });
 
         foreach (self::PUBLIC_PHPSTAN_SERVICE_TYPES as $publicPhpstanServiceType) {
             $rectorConfig->singleton($publicPhpstanServiceType, static function (Container $container) use (
                 $publicPhpstanServiceType
             ) {
-                $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-                return $phpstanServiceFactory->getByType($publicPhpstanServiceType);
+                $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
+                return $phpStanServicesFactory->getByType($publicPhpstanServiceType);
             });
         }
     }

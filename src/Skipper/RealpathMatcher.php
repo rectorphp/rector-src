@@ -23,16 +23,13 @@ final class RealpathMatcher
         $normalizedMatchingPath = PathNormalizer::normalize($realPathMatchingPath);
         $normalizedFilePath = PathNormalizer::normalize($realpathFilePath);
 
-        // skip define direct path
-        if (is_file($normalizedMatchingPath)) {
-            return $normalizedMatchingPath === $normalizedFilePath;
+        // skip define direct path exactly equal
+        if ($normalizedMatchingPath === $normalizedFilePath) {
+            return true;
         }
 
         // ensure add / suffix to ensure no same prefix directory
-        if (is_dir($normalizedMatchingPath)) {
-            $normalizedMatchingPath = rtrim($normalizedMatchingPath, '/') . '/';
-        }
-
-        return str_starts_with($normalizedFilePath, $normalizedMatchingPath);
+        $suffixedMatchingPath = rtrim($normalizedMatchingPath, '/') . '/';
+        return str_starts_with($normalizedFilePath, $suffixedMatchingPath);
     }
 }

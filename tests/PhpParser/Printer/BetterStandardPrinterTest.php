@@ -24,6 +24,8 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->betterStandardPrinter = $this->make(BetterStandardPrinter::class);
     }
 

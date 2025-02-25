@@ -212,6 +212,10 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         // match partial import
         foreach ($names as $name) {
+            if (str_starts_with($name, '\\')) {
+                continue;
+            }
+
             if ($this->isSubNamespace($name, $comparedName, $namespacedPrefix)) {
                 return true;
             }

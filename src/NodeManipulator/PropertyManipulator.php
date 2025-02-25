@@ -47,6 +47,8 @@ final readonly class PropertyManipulator
         'Doctrine\ORM\Mapping\Table',
         'Doctrine\ORM\Mapping\MappedSuperclass',
         'Doctrine\ORM\Mapping\Embeddable',
+        'Doctrine\ODM\MongoDB\Mapping\Annotations\Document',
+        'Doctrine\ODM\MongoDB\Mapping\Annotations\EmbeddedDocument',
     ];
 
     public function __construct(

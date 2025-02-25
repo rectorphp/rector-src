@@ -18,6 +18,8 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->bootFromConfigFiles([__DIR__ . '/config/only_rule_resolver_config.php']);
         $rectorConfig = self::getContainer();
 

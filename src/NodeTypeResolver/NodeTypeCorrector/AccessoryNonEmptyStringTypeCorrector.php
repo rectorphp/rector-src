@@ -10,7 +10,7 @@ use PHPStan\Type\Type;
 
 final class AccessoryNonEmptyStringTypeCorrector
 {
-    public function correct(Type $mainType): Type | IntersectionType
+    public function correct(Type $mainType): Type
     {
         if (! $mainType instanceof IntersectionType) {
             return $mainType;

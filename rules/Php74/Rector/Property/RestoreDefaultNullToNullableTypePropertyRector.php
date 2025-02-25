@@ -115,6 +115,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($property->hooks !== []) {
+            return true;
+        }
+
         // is variable assigned in constructor
         $propertyName = $this->getName($property);
         return $this->constructorAssignDetector->isPropertyAssignedConditionally($class, $propertyName);

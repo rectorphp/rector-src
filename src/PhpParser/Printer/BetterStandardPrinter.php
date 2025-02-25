@@ -13,6 +13,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Match_;
@@ -32,6 +33,7 @@ use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Util\NewLineSplitter;
@@ -49,6 +51,12 @@ final class BetterStandardPrinter extends Standard
      * @var string
      */
     private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
+
+    public function __construct(
+        private readonly ExprAnalyzer $exprAnalyzer
+    ) {
+        parent::__construct([]);
+    }
 
     /**
      * @param Node[] $stmts
@@ -136,6 +144,8 @@ final class BetterStandardPrinter extends Standard
                 }
             }
         }
+
+        $this->wrapBinaryOp($node);
 
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
@@ -392,26 +402,26 @@ final class BetterStandardPrinter extends Standard
 
     protected function pExpr_MethodCall(MethodCall $methodCall): string
     {
+        if (! $methodCall->var instanceof CallLike) {
+            return parent::pExpr_MethodCall($methodCall);
+        }
+
         if (SimpleParameterProvider::provideBoolParameter(Option::NEW_LINE_ON_FLUENT_CALL) === false) {
             return parent::pExpr_MethodCall($methodCall);
         }
 
-        if ($methodCall->var instanceof CallLike) {
-            foreach ($methodCall->args as $arg) {
-                if (! $arg instanceof Arg) {
-                    continue;
-                }
-
-                $arg->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        foreach ($methodCall->args as $arg) {
+            if (! $arg instanceof Arg) {
+                continue;
             }
 
-            return $this->pDereferenceLhs(
-                $methodCall->var
-            ) . "\n" . $this->resolveIndentSpaces() . '->' . $this->pObjectProperty($methodCall->name)
-            . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
+            $arg->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
-        return parent::pExpr_MethodCall($methodCall);
+        return $this->pDereferenceLhs($methodCall->var) . "\n"
+            . $this->resolveIndentSpaces() . '->'
+            . $this->pObjectProperty($methodCall->name)
+            . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
     }
 
     /**
@@ -445,6 +455,31 @@ final class BetterStandardPrinter extends Standard
     {
         $this->wrapAssign($instanceof->expr, $instanceof->class);
         return parent::pExpr_Instanceof($instanceof, $precedence, $lhsPrecedence);
+    }
+
+    private function wrapBinaryOp(Node $node): void
+    {
+        if ($this->exprAnalyzer->isExprWithExprPropertyWrappable($node)) {
+            $node->expr->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
+
+        if (! $node instanceof BinaryOp) {
+            return;
+        }
+
+        if ($node->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            return;
+        }
+
+        if ($node->left instanceof BinaryOp &&
+            $node->left->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
+
+        if ($node->right instanceof BinaryOp &&
+            $node->right->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            $node->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
     }
 
     /**

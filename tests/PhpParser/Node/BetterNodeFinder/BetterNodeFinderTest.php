@@ -22,6 +22,8 @@ final class BetterNodeFinderTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
 
         $simplePhpParser = $this->make(SimplePhpParser::class);

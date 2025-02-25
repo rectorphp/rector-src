@@ -32,6 +32,8 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->classAnnotationMatcher = $this->make(ClassAnnotationMatcher::class);
         $this->testingParser = $this->make(TestingParser::class);
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);

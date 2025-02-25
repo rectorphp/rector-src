@@ -38,6 +38,8 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->workerCommandLineFactory = $this->make(WorkerCommandLineFactory::class);
         $this->processCommand = $this->make(ProcessCommand::class);
     }
@@ -60,14 +62,8 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
-        // running on macOS cause empty string after SPACED_DUMMY_MAIN_SCRIPT constant value removed on run whole unit test
-        // this ensure it works
-        $workerCommandLine = str_replace("rector' worker", "rector' '' worker", $workerCommandLine);
-
-        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-            $expectedCommand = str_replace("'", '"', $expectedCommand);
-            $workerCommandLine = str_replace("'", '"', $workerCommandLine);
-        }
+        $expectedCommand = $this->normalizeExpectedCommandOutput($expectedCommand);
+        $expectedCommand = $this->cleanUpEmptyQuoteExpectedCommandOutput($expectedCommand);
 
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
@@ -137,14 +133,8 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
-        // running on macOS cause empty string after main_script removed on run whole unit test
-        // this ensure it works
-        $workerCommandLine = str_replace("'main_script' worker", "'main_script' '' worker", $workerCommandLine);
-
-        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-            $expectedCommand = str_replace("'", '"', $expectedCommand);
-            $workerCommandLine = str_replace("'", '"', $workerCommandLine);
-        }
+        $expectedCommand = $this->normalizeExpectedCommandOutput($expectedCommand);
+        $expectedCommand = $this->cleanUpEmptyQuoteExpectedCommandOutput($expectedCommand);
 
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
@@ -204,6 +194,24 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             ],
             "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --memory-limit='-1' --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
+    }
+
+    private function cleanUpEmptyQuoteExpectedCommandOutput(string $result): string
+    {
+        if ($this->isWindows()) {
+            return str_replace(' "" ', ' ', $result);
+        }
+
+        return str_replace(" '' ", ' ', $result);
+    }
+
+    private function normalizeExpectedCommandOutput(string $command): string
+    {
+        if ($this->isWindows()) {
+            return str_replace("'", '"', $command);
+        }
+
+        return $command;
     }
 
     private function prepareProcessCommandDefinition(): InputDefinition
