@@ -75,27 +75,27 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
         ProcessResult $processResult,
         Configuration $configuration,
         DOMDocument $domDocument,
-        DOMElement $xmlTestSuite,
+        DOMElement $domElement,
     ): void {
-        if (count($processResult->getSystemErrors()) === 0) {
+        if ($processResult->getSystemErrors() === []) {
             return;
         }
 
-        foreach ($processResult->getSystemErrors() as $error) {
+        foreach ($processResult->getSystemErrors() as $systemError) {
             $filePath = $configuration->isReportingWithRealPath()
-                ? ($error->getAbsoluteFilePath() ?? '')
-                : ($error->getRelativeFilePath() ?? '')
+                ? ($systemError->getAbsoluteFilePath() ?? '')
+                : ($systemError->getRelativeFilePath() ?? '')
             ;
 
-            $xmlError = $domDocument->createElement(self::XML_ELEMENT_ERROR, $error->getMessage());
+            $xmlError = $domDocument->createElement(self::XML_ELEMENT_ERROR, $systemError->getMessage());
             $xmlError->setAttribute(self::XML_ATTRIBUTE_TYPE, 'Error');
 
             $xmlTestCase = $domDocument->createElement(self::XML_ELEMENT_TESTCASE);
             $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_FILE, $filePath);
-            $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_NAME, $filePath . ':' . $error->getLine());
+            $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_NAME, $filePath . ':' . $systemError->getLine());
             $xmlTestCase->appendChild($xmlError);
 
-            $xmlTestSuite->appendChild($xmlTestCase);
+            $domElement->appendChild($xmlTestCase);
         }
     }
 
@@ -103,9 +103,9 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
         ProcessResult $processResult,
         Configuration $configuration,
         DOMDocument $domDocument,
-        DOMElement $xmlTestSuite,
+        DOMElement $domElement,
     ): void {
-        if (count($processResult->getFileDiffs()) === 0) {
+        if ($processResult->getFileDiffs() === []) {
             return;
         }
 
@@ -128,7 +128,7 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
             $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_NAME, $filePath . ':' . $fileDiff->getFirstLineNumber());
             $xmlTestCase->appendChild($xmlError);
 
-            $xmlTestSuite->appendChild($xmlTestCase);
+            $domElement->appendChild($xmlTestCase);
         }
     }
 }
