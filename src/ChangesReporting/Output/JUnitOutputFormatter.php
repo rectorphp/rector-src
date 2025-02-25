@@ -21,12 +21,17 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
     public const NAME = 'junit';
 
     private const XML_ATTRIBUTE_FILE = 'file';
+
     private const XML_ATTRIBUTE_NAME = 'name';
+
     private const XML_ATTRIBUTE_TYPE = 'type';
 
     private const XML_ELEMENT_TESTSUITES = 'testsuites';
+
     private const XML_ELEMENT_TESTSUITE = 'testsuite';
+
     private const XML_ELEMENT_TESTCASE = 'testcase';
+
     private const XML_ELEMENT_ERROR = 'error';
 
     public function __construct(
@@ -42,7 +47,7 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
 
     public function report(ProcessResult $processResult, Configuration $configuration): void
     {
-        if (!extension_loaded('dom')) {
+        if (! extension_loaded('dom')) {
             $this->symfonyStyle->warning(
                 'The "dom" extension is not loaded. The rector could not generate a response in the JUnit format',
             );
@@ -70,28 +75,27 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
         ProcessResult $processResult,
         Configuration $configuration,
         DOMDocument $domDocument,
-        DOMElement $xmlTestSuite,
-    ): void
-    {
-        if (count($processResult->getSystemErrors()) === 0) {
+        DOMElement $domElement,
+    ): void {
+        if ($processResult->getSystemErrors() === []) {
             return;
         }
 
-        foreach ($processResult->getSystemErrors() as $error) {
+        foreach ($processResult->getSystemErrors() as $systemError) {
             $filePath = $configuration->isReportingWithRealPath()
-                ? ($error->getAbsoluteFilePath() ?? '')
-                : ($error->getRelativeFilePath() ?? '')
+                ? ($systemError->getAbsoluteFilePath() ?? '')
+                : ($systemError->getRelativeFilePath() ?? '')
             ;
 
-            $xmlError = $domDocument->createElement(self::XML_ELEMENT_ERROR, $error->getMessage());
+            $xmlError = $domDocument->createElement(self::XML_ELEMENT_ERROR, $systemError->getMessage());
             $xmlError->setAttribute(self::XML_ATTRIBUTE_TYPE, 'Error');
 
             $xmlTestCase = $domDocument->createElement(self::XML_ELEMENT_TESTCASE);
             $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_FILE, $filePath);
-            $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_NAME, $filePath . ':' . $error->getLine());
+            $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_NAME, $filePath . ':' . $systemError->getLine());
             $xmlTestCase->appendChild($xmlError);
 
-            $xmlTestSuite->appendChild($xmlTestCase);
+            $domElement->appendChild($xmlTestCase);
         }
     }
 
@@ -99,10 +103,9 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
         ProcessResult $processResult,
         Configuration $configuration,
         DOMDocument $domDocument,
-        DOMElement $xmlTestSuite,
-    ): void
-    {
-        if (count($processResult->getFileDiffs()) === 0) {
+        DOMElement $domElement,
+    ): void {
+        if ($processResult->getFileDiffs() === []) {
             return;
         }
 
@@ -125,7 +128,7 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
             $xmlTestCase->setAttribute(self::XML_ATTRIBUTE_NAME, $filePath . ':' . $fileDiff->getFirstLineNumber());
             $xmlTestCase->appendChild($xmlError);
 
-            $xmlTestSuite->appendChild($xmlTestCase);
+            $domElement->appendChild($xmlTestCase);
         }
     }
 }
