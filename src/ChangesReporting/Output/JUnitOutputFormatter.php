@@ -21,12 +21,17 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
     public const NAME = 'junit';
 
     private const XML_ATTRIBUTE_FILE = 'file';
+
     private const XML_ATTRIBUTE_NAME = 'name';
+
     private const XML_ATTRIBUTE_TYPE = 'type';
 
     private const XML_ELEMENT_TESTSUITES = 'testsuites';
+
     private const XML_ELEMENT_TESTSUITE = 'testsuite';
+
     private const XML_ELEMENT_TESTCASE = 'testcase';
+
     private const XML_ELEMENT_ERROR = 'error';
 
     public function __construct(
@@ -42,7 +47,7 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
 
     public function report(ProcessResult $processResult, Configuration $configuration): void
     {
-        if (!extension_loaded('dom')) {
+        if (! extension_loaded('dom')) {
             $this->symfonyStyle->warning(
                 'The "dom" extension is not loaded. The rector could not generate a response in the JUnit format',
             );
@@ -71,8 +76,7 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
         Configuration $configuration,
         DOMDocument $domDocument,
         DOMElement $xmlTestSuite,
-    ): void
-    {
+    ): void {
         if (count($processResult->getSystemErrors()) === 0) {
             return;
         }
@@ -100,8 +104,7 @@ final readonly class JUnitOutputFormatter implements OutputFormatterInterface
         Configuration $configuration,
         DOMDocument $domDocument,
         DOMElement $xmlTestSuite,
-    ): void
-    {
+    ): void {
         if (count($processResult->getFileDiffs()) === 0) {
             return;
         }
