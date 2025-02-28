@@ -102,7 +102,6 @@ EOF
 
         // 0. warn about too high levels
         foreach ($configuration->getLevelOverflows() as $levelOverflow) {
-<<<<<<< HEAD
             $this->reportLevelOverflow($levelOverflow);
         }
 
@@ -114,9 +113,8 @@ EOF
                 PHP_EOL . PHP_EOL,
                 implode(' * ', $setAndRulesDuplicatedRegistrations) . PHP_EOL
             ));
-=======
+
             $this->warnAboutLevelOverflow($levelOverflow);
->>>>>>> 9f563287fb ([dx] prepare command name if nothing passed)
         }
 
         // 1. add files and directories to static locator
@@ -229,11 +227,7 @@ EOF
         $this->symfonyStyle->listing($composerBasedSets);
     }
 
-<<<<<<< HEAD
-    private function reportLevelOverflow(LevelOverflow $levelOverflow): void
-=======
     private function warnAboutLevelOverflow(LevelOverflow $levelOverflow): void
->>>>>>> 9f563287fb ([dx] prepare command name if nothing passed)
     {
         $suggestedSetMethod = PHP_VERSION_ID >= 80000 ? sprintf(
             '->withPreparedSets(%s: true)',
