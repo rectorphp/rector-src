@@ -8,6 +8,7 @@ use Composer\XdebugHandler\XdebugHandler;
 use Rector\Application\VersionResolver;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Option;
+use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -59,6 +60,18 @@ final class ConsoleApplication extends Application
 
         if ($shouldFollowByNewline) {
             $output->write(PHP_EOL);
+        }
+
+        $commandName = $input->getFirstArgument();
+
+        // if paths exist
+        if (is_string($commandName) && file_exists($commandName)) {
+            // prepend command name if implicit
+            $privatesAccessor = new PrivatesAccessor();
+            $tokens = $privatesAccessor->getPrivateProperty($input, 'tokens');
+            $tokens = array_merge(['process'], $tokens);
+
+            $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
         }
 
         return parent::doRun($input, $output);

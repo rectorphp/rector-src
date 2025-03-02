@@ -41,8 +41,15 @@ final readonly class WorkerCommandLineFactory
         int $port
     ): string {
         $commandArguments = array_slice($_SERVER['argv'], 1);
-        $args = [PHP_BINARY, $mainScript, ...$commandArguments];
 
+        // add implicit "process" command name if missing
+        if ($commandArguments !== [] && ($commandArguments[0] !== 'process' && $commandArguments[0] !== 'p') && ! defined(
+            'PHPUNIT_COMPOSER_INSTALL'
+        )) {
+            $commandArguments = array_merge(['process'], $commandArguments);
+        }
+
+        $args = [PHP_BINARY, $mainScript, ...$commandArguments];
         $workerCommandArray = [];
 
         $mainCommand = $this->commandFromReflectionFactory->create($mainCommandClass);

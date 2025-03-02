@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
+use Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
 return RectorConfig::configure()
@@ -24,6 +25,10 @@ return RectorConfig::configure()
     ->withAttributesSets()
     ->withComposerBased(phpunit: true)
     ->withPhpSets()
+    ->withRules([
+        // @todo this should be reported as registered twice
+        RemoveUnusedForeachKeyRector::class,
+    ])
     ->withPaths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
