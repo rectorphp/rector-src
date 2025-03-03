@@ -787,7 +787,12 @@ final class RectorConfigBuilder
         $this->rules = array_merge($this->rules, $rules);
 
         // log all explicitly registered rules
-        SimpleParameterProvider::addParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, $rules);
+        // we only check the non-configurable rules, as the configurable ones might override them
+        $nonConfigurableRules = array_filter(
+            $rules,
+            fn (string $rule): bool => ! is_a($rule, ConfigurableRectorInterface::class)
+        );
+        SimpleParameterProvider::addParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, $nonConfigurableRules);
 
         return $this;
     }
