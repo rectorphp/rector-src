@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\BinaryOp\Minus;
 use PhpParser\Node\Expr\BinaryOp\Mul;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\LNumber;
@@ -145,7 +144,7 @@ CODE_SAMPLE
         return new MethodCall($nowCall, 'format', [new Arg($format)]);
     }
 
-    private function createCarbonParseTimestamp(Expr $dateExpr): PropertyFetch
+    private function createCarbonParseTimestamp(Expr $dateExpr): MethodCall
     {
         $parseCall = new StaticCall(
             new FullyQualified('Carbon\\Carbon'),
@@ -153,7 +152,7 @@ CODE_SAMPLE
             [new Arg($dateExpr)]
         );
 
-        return new PropertyFetch($parseCall, 'timestamp');
+        return new MethodCall($parseCall, 'getTimestamp');
     }
 
     private function createCarbonParseFormat(Expr $dateExpr, Expr $format): MethodCall
@@ -172,14 +171,14 @@ CODE_SAMPLE
      */
     private function createCarbonSubtract(
         array $timeUnit
-    ): PropertyFetch {
+    ): MethodCall {
         $nowCall = new StaticCall(
             new FullyQualified('Carbon\\Carbon'),
             'now'
         );
         $methodName = 'sub' . ucfirst($timeUnit['unit']);
         $subtractCall = new MethodCall($nowCall, $methodName, [new Arg(new LNumber($timeUnit['value']))]);
-        return new PropertyFetch($subtractCall, 'timestamp');
+        return new MethodCall($subtractCall, 'getTimestamp');
     }
 
     /**

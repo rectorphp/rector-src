@@ -19,6 +19,6 @@ class StrtotimeExample
 {
     public function run()
     {
-        $timestamp = \Carbon\Carbon::parse('2025-02-20')->timestamp;
+        $timestamp = \Carbon\Carbon::parse('2025-02-20')->getTimestamp();
     }
 }

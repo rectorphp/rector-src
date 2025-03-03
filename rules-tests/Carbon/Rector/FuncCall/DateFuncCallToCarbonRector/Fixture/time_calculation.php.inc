@@ -23,10 +23,10 @@ class TimeCalculationExample
 {
     public function run()
     {
-        $twoSecondsAgo = \Carbon\Carbon::now()->subSeconds(2)->timestamp;
-        $twoMinutesAgo = \Carbon\Carbon::now()->subMinutes(2)->timestamp;
-        $twoHoursAgo   = \Carbon\Carbon::now()->subHours(2)->timestamp;
-        $twoDaysAgo    = \Carbon\Carbon::now()->subDays(2)->timestamp;
-        $twoWeeksAgo   = \Carbon\Carbon::now()->subWeeks(2)->timestamp;
+        $twoSecondsAgo = \Carbon\Carbon::now()->subSeconds(2)->getTimestamp();
+        $twoMinutesAgo = \Carbon\Carbon::now()->subMinutes(2)->getTimestamp();
+        $twoHoursAgo   = \Carbon\Carbon::now()->subHours(2)->getTimestamp();
+        $twoDaysAgo    = \Carbon\Carbon::now()->subDays(2)->getTimestamp();
+        $twoWeeksAgo   = \Carbon\Carbon::now()->subWeeks(2)->getTimestamp();
     }
 }
