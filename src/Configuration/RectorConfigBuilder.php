@@ -790,7 +790,7 @@ final class RectorConfigBuilder
         // we only check the non-configurable rules, as the configurable ones might override them
         $nonConfigurableRules = array_filter(
             $rules,
-            fn (string $rule): bool => ! is_a($rule, ConfigurableRectorInterface::class)
+            fn (string $rule): bool => ! is_a($rule, ConfigurableRectorInterface::class, true)
         );
         SimpleParameterProvider::addParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, $nonConfigurableRules);
 

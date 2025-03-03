@@ -137,7 +137,8 @@ final readonly class Configuration
         );
         $setRegisteredRules = SimpleParameterProvider::provideArrayParameter(Option::SET_REGISTERED_RULES);
 
-        // @todo exclude duplitions
-        return array_intersect($rootStandaloneRegisteredRules, $setRegisteredRules);
+        $ruleDuplicatedRegistrations = array_intersect($rootStandaloneRegisteredRules, $setRegisteredRules);
+
+        return array_unique($ruleDuplicatedRegistrations);
     }
 }
