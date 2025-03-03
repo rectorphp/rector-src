@@ -246,6 +246,10 @@ final class RectorConfigBuilder
             $rectorConfig->sets($uniqueSets);
         }
 
+        // log rules from sets and compare them with explicit rules
+        $setRegisteredRectorClasses = $rectorConfig->getRectorClasses();
+        SimpleParameterProvider::addParameter(Option::SET_REGISTERED_RULES, $setRegisteredRectorClasses);
+
         if ($this->paths !== []) {
             $rectorConfig->paths($this->paths);
         }
@@ -782,6 +786,14 @@ final class RectorConfigBuilder
     {
         $this->rules = array_merge($this->rules, $rules);
 
+        // log all explicitly registered rules
+        // we only check the non-configurable rules, as the configurable ones might override them
+        $nonConfigurableRules = array_filter(
+            $rules,
+            fn (string $rule): bool => ! is_a($rule, ConfigurableRectorInterface::class, true)
+        );
+        SimpleParameterProvider::addParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, $nonConfigurableRules);
+
         return $this;
     }
 
@@ -1135,29 +1147,17 @@ final class RectorConfigBuilder
 
         if ($php82) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_82;
-        }
-
-        if ($php81) {
+        } elseif ($php81) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_81;
-        }
-
-        if ($php80) {
+        } elseif ($php80) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_80;
-        }
-
-        if ($php74) {
+        } elseif ($php74) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_74;
-        }
-
-        if ($php73) {
+        } elseif ($php73) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_73;
-        }
-
-        if ($php72) {
+        } elseif ($php72) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_72;
-        }
-
-        if ($php71) {
+        } elseif ($php71) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_71;
         }
 

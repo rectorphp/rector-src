@@ -9,6 +9,7 @@ use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
@@ -187,6 +188,12 @@ CODE_SAMPLE
             }
 
             $assign = $stmt->expr;
+
+            // skip new X instance with args to keep complex assign readable
+            if ($assign->expr instanceof New_ && ! $assign->expr->isFirstClassCallable() && $assign->expr->getArgs() !== []) {
+                return false;
+            }
+
             if (! $assign->var instanceof ArrayDimFetch) {
                 return false;
             }

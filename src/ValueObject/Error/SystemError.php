@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject\Error;
 
+use Nette\Utils\Strings;
 use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 
@@ -77,5 +78,15 @@ final readonly class SystemError implements SerializableInterface
     public function getRectorClass(): ?string
     {
         return $this->rectorClass;
+    }
+
+    public function getRectorShortClass(): ?string
+    {
+        $rectorClass = $this->rectorClass;
+        if ($rectorClass !== null && $rectorClass !== '' && $rectorClass !== '0') {
+            return (string) Strings::after($rectorClass, '\\', -1);
+        }
+
+        return null;
     }
 }

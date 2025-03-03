@@ -72,9 +72,6 @@ use Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector;
 use Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector;
-use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
-use Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector;
-use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
@@ -154,10 +151,7 @@ final class CodeQualityLevel
         SwitchNegatedTernaryRector::class,
         SingularSwitchToIfRector::class,
         SimplifyIfNullableReturnRector::class,
-        FuncGetArgsToVariadicParamRector::class,
-        CallUserFuncToMethodCallRector::class,
         CallUserFuncWithArrowFunctionToInlineRector::class,
-        CountArrayToEmptyArrayComparisonRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
         InlineArrayReturnAssignRector::class,
         InlineIsAInstanceOfRector::class,
