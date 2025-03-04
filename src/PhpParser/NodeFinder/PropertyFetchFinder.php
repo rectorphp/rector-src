@@ -77,7 +77,7 @@ final readonly class PropertyFetchFinder
     {
         /** @var PropertyFetch[]|StaticPropertyFetch[]|NullsafePropertyFetch[] $foundPropertyFetches */
         $foundPropertyFetches = $this->betterNodeFinder->find(
-            $class->getMethods(),
+            $this->resolveNodesToLocate($class),
             function (Node $subNode) use ($paramName): bool {
                 if ($subNode instanceof PropertyFetch) {
                     return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($subNode, $paramName);
@@ -108,7 +108,7 @@ final readonly class PropertyFetchFinder
         $propertyArrayDimFetches = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $class->getMethods(),
+            $this->resolveNodesToLocate($class),
             function (Node $subNode) use (&$propertyArrayDimFetches, $propertyName): null {
                 if (! $subNode instanceof Assign) {
                     return null;
@@ -157,6 +157,19 @@ final readonly class PropertyFetchFinder
         }
 
         return false;
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function resolveNodesToLocate(Class_ $class): array
+    {
+        $propertyWithHooks = array_filter(
+            $class->getProperties(),
+            fn (Property $property): bool => $property->hooks !== []
+        );
+
+        return [...$propertyWithHooks, ...$class->getMethods()];
     }
 
     /**
