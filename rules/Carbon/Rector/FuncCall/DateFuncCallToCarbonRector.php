@@ -117,7 +117,7 @@ CODE_SAMPLE
 
         if ($this->isName($node->name, 'strtotime') && isset($node->args[0])) {
             $dateExpr = $this->getArgValue($node, 0);
-            if ($dateExpr !== null) {
+            if ($dateExpr instanceof Expr) {
                 return $this->createCarbonParseTimestamp($dateExpr);
             }
         }
@@ -125,68 +125,53 @@ CODE_SAMPLE
         return null;
     }
 
-    private function getArgValue(FuncCall $node, int $index): ?Expr
+    private function getArgValue(FuncCall $funcCall, int $index): ?Expr
     {
-        if (! isset($node->args[$index]) || ! $node->args[$index] instanceof Arg) {
+        if (! isset($funcCall->args[$index]) || ! $funcCall->args[$index] instanceof Arg) {
             return null;
         }
 
-        return $node->args[$index]->value;
+        return $funcCall->args[$index]->value;
     }
 
-    private function createCarbonNowFormat(String_ $format): MethodCall
+    private function createCarbonNowFormat(String_ $string): MethodCall
     {
-        $nowCall = new StaticCall(
-            new FullyQualified('Carbon\\Carbon'),
-            'now'
-        );
+        $staticCall = new StaticCall(new FullyQualified('Carbon\\Carbon'), 'now');
 
-        return new MethodCall($nowCall, 'format', [new Arg($format)]);
+        return new MethodCall($staticCall, 'format', [new Arg($string)]);
     }
 
     private function createCarbonParseTimestamp(Expr $dateExpr): MethodCall
     {
-        $parseCall = new StaticCall(
-            new FullyQualified('Carbon\\Carbon'),
-            'parse',
-            [new Arg($dateExpr)]
-        );
+        $staticCall = new StaticCall(new FullyQualified('Carbon\\Carbon'), 'parse', [new Arg($dateExpr)]);
 
-        return new MethodCall($parseCall, 'getTimestamp');
+        return new MethodCall($staticCall, 'getTimestamp');
     }
 
     private function createCarbonParseFormat(Expr $dateExpr, Expr $format): MethodCall
     {
-        $parseCall = new StaticCall(
-            new FullyQualified('Carbon\\Carbon'),
-            'parse',
-            [new Arg($dateExpr)]
-        );
+        $staticCall = new StaticCall(new FullyQualified('Carbon\\Carbon'), 'parse', [new Arg($dateExpr)]);
 
-        return new MethodCall($parseCall, 'format', [new Arg($format)]);
+        return new MethodCall($staticCall, 'format', [new Arg($format)]);
     }
 
     /**
      * @param array{unit: string, value: int} $timeUnit
      */
-    private function createCarbonSubtract(
-        array $timeUnit
-    ): MethodCall {
-        $nowCall = new StaticCall(
-            new FullyQualified('Carbon\\Carbon'),
-            'now'
-        );
+    private function createCarbonSubtract(array $timeUnit): MethodCall
+    {
+        $staticCall = new StaticCall(new FullyQualified('Carbon\\Carbon'), 'now');
         $methodName = 'sub' . ucfirst($timeUnit['unit']);
-        $subtractCall = new MethodCall($nowCall, $methodName, [new Arg(new LNumber($timeUnit['value']))]);
-        return new MethodCall($subtractCall, 'getTimestamp');
+        $methodCall = new MethodCall($staticCall, $methodName, [new Arg(new LNumber($timeUnit['value']))]);
+        return new MethodCall($methodCall, 'getTimestamp');
     }
 
     /**
      * @return array{unit: string, value: int}|null
      */
-    private function detectTimeUnit(Expr $node): ?array
+    private function detectTimeUnit(Expr $expr): ?array
     {
-        $product = $this->calculateProduct($node);
+        $product = $this->calculateProduct($expr);
         if ($product === null) {
             return null;
         }
@@ -203,17 +188,17 @@ CODE_SAMPLE
         return null;
     }
 
-    private function calculateProduct(Expr $node): float|int|null
+    private function calculateProduct(Expr $expr): float|int|null
     {
-        if ($node instanceof LNumber) {
-            return $node->value;
+        if ($expr instanceof LNumber) {
+            return $expr->value;
         }
 
-        if (! $node instanceof Mul) {
+        if (! $expr instanceof Mul) {
             return null;
         }
 
-        $multipliers = $this->extractMultipliers($node);
+        $multipliers = $this->extractMultipliers($expr);
         if ($multipliers === []) {
             return null;
         }
