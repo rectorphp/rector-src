@@ -15,8 +15,10 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
+use PhpParser\Node\PropertyHook;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
@@ -70,6 +72,16 @@ final readonly class PropertyFetchFinder
         return $this->findPropertyFetchesInClassLike($class, $nodes, $propertyName, $hasTrait, $scope);
     }
 
+    private function resolveNodesToLocate(Class_ $class): array
+    {
+        $propertyWithHooks = array_filter(
+            $class->getProperties(),
+            fn (Property $property): bool => $property->hooks !== []
+        );
+
+        return [...$propertyWithHooks, ...$class->getMethods()];
+    }
+
     /**
      * @return PropertyFetch[]|StaticPropertyFetch[]|NullsafePropertyFetch[]
      */
@@ -77,7 +89,7 @@ final readonly class PropertyFetchFinder
     {
         /** @var PropertyFetch[]|StaticPropertyFetch[]|NullsafePropertyFetch[] $foundPropertyFetches */
         $foundPropertyFetches = $this->betterNodeFinder->find(
-            $class->getMethods(),
+            $this->resolveNodesToLocate($class),
             function (Node $subNode) use ($paramName): bool {
                 if ($subNode instanceof PropertyFetch) {
                     return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($subNode, $paramName);
@@ -108,7 +120,7 @@ final readonly class PropertyFetchFinder
         $propertyArrayDimFetches = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $class->getMethods(),
+            $this->resolveNodesToLocate($class),
             function (Node $subNode) use (&$propertyArrayDimFetches, $propertyName): null {
                 if (! $subNode instanceof Assign) {
                     return null;
