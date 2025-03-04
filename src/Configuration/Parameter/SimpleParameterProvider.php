@@ -50,7 +50,7 @@ final class SimpleParameterProvider
 
         if (array_is_list($parameter)) {
             // remove duplicates
-            $uniqueParameters = array_unique($parameter);
+            $uniqueParameters = array_unique($parameter, SORT_REGULAR);
             return array_values($uniqueParameters);
         }
 
