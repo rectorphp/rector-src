@@ -159,6 +159,9 @@ final readonly class PropertyFetchFinder
         return false;
     }
 
+    /**
+     * @return Stmt[]
+     */
     private function resolveNodesToLocate(Class_ $class): array
     {
         $propertyWithHooks = array_filter(
