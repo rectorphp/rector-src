@@ -17,7 +17,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTy
 
 final class AbsReturn
 {
-    function aa($param): int|float
+    function aa($param): float|int
     {
         return abs($param);
     }
