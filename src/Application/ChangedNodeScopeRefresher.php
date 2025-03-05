@@ -6,14 +6,12 @@ namespace Rector\Application;
 
 use PhpParser\Modifiers;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\ClosureUse;
 use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Param;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\StaticVar;
