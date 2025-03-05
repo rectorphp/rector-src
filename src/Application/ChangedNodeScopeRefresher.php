@@ -6,16 +6,21 @@ namespace Rector\Application;
 
 use PhpParser\Modifiers;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\ClosureUse;
 use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Param;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\StaticVar;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
@@ -103,6 +108,27 @@ final readonly class ChangedNodeScopeRefresher
             $closure = new Closure();
             $closure->params[] = $node;
             return [new Expression($closure)];
+        }
+
+        if ($node instanceof AttributeGroup) {
+            $class = new Class_(null);
+            $class->attrGroups[] = $node;
+
+            return [$class];
+        }
+
+        if ($node instanceof Attribute) {
+            $class = new Class_(null);
+            $class->attrGroups[] = new AttributeGroup([$node]);
+
+            return [$class];
+        }
+
+        if ($node instanceof Arg) {
+            $class = new Class_(null);
+            $new = new New_($class, [$node]);
+
+            return [new Expression($new)];
         }
 
         $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
