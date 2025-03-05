@@ -10,7 +10,6 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Param;
 
 final class ScopeAnalyzer
 {
@@ -20,7 +19,6 @@ final class ScopeAnalyzer
     private const NON_REFRESHABLE_NODES = [
         Name::class,
         Identifier::class,
-        Param::class,
         Arg::class,
         Variable::class,
         Attribute::class,
