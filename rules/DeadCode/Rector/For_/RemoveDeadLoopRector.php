@@ -75,7 +75,7 @@ CODE_SAMPLE
         }
 
         if ($node instanceof Do_ || $node instanceof While_) {
-            $exprs = $node->cond;
+            $exprs = [$node->cond];
         } elseif ($node instanceof For_) {
             $exprs = [...$node->init, ...$node->cond, ...$node->loop];
         } else {
