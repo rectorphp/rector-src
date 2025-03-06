@@ -22,10 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDeadLoopRector extends AbstractRector
 {
-    public function __construct(private readonly SideEffectNodeDetector $sideEffectNodeDetector)
-    {
-
+    public function __construct(
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector
+    ) {
     }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
