@@ -182,7 +182,13 @@ CODE_SAMPLE
             $getterBasedStrictTypes = [$getterBasedStrictType];
         }
 
-        return new UnionType([$setterBasedStrictType, ...$getterBasedStrictTypes]);
+        if ($setterBasedStrictType instanceof UnionType) {
+            $setterBasedStrictTypes = $setterBasedStrictType->getTypes();
+        } else {
+            $setterBasedStrictTypes = [$setterBasedStrictType];
+        }
+
+        return new UnionType([...$setterBasedStrictTypes, ...$getterBasedStrictTypes]);
     }
 
     private function isDefaultExprTypeCompatible(Property $property, Type $getterSetterPropertyType): bool
