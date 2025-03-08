@@ -125,7 +125,10 @@ final readonly class ChangedNodeScopeRefresher
         }
 
         if ($node instanceof Arg) {
-            $class = new Class_(null);
+            $class = new Class_(null, [], [
+                'startLine' => $node->getStartLine(),
+                'endLine' => $node->getEndLine(),
+            ]);
             $new = new New_($class, [$node]);
 
             return [new Expression($new)];
