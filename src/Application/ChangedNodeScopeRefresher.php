@@ -28,7 +28,6 @@ use PhpParser\Node\Stmt\Static_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
 use PHPStan\Analyser\MutatingScope;
-use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
