@@ -117,12 +117,7 @@ final readonly class ChangedNodeScopeRefresher
             $class = new Class_(null);
             $class->attrGroups[] = $node;
 
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use ($node): void {
-                $subNode->setAttributes([
-                    'startLine' => $node->getStartLine(),
-                    'endLine' => $node->getEndLine(),
-                ]);
-            });
+            $this->setLineAttributesOnClass($class, $node);
 
             return [$class];
         }
@@ -131,12 +126,7 @@ final readonly class ChangedNodeScopeRefresher
             $class = new Class_(null);
             $class->attrGroups[] = new AttributeGroup([$node]);
 
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use ($node): void {
-                $subNode->setAttributes([
-                    'startLine' => $node->getStartLine(),
-                    'endLine' => $node->getEndLine(),
-                ]);
-            });
+            $this->setLineAttributesOnClass($class, $node);
 
             return [$class];
         }
@@ -153,5 +143,15 @@ final readonly class ChangedNodeScopeRefresher
 
         $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
         throw new ShouldNotHappenException($errorMessage);
+    }
+
+    private function setLineAttributesOnClass(Class_ $class, Attribute|AttributeGroup $node): void
+    {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use ($node): void {
+            $subNode->setAttributes([
+                'startLine' => $node->getStartLine(),
+                'endLine' => $node->getEndLine(),
+            ]);
+        });
     }
 }
