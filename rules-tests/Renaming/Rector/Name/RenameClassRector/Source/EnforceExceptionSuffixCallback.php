@@ -18,7 +18,7 @@ final class EnforceExceptionSuffixCallback
     ): ?string {
         $fullyQualifiedClassName = (string) $nodeNameResolver->getName($class);
         $classReflection = $reflectionProvider->getClass($fullyQualifiedClassName);
-        if (! $classReflection->isSubclassOf(Exception::class)) {
+        if (! $classReflection->is(Exception::class)) {
             return null;
         }
 

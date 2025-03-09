@@ -147,7 +147,7 @@ CODE_SAMPLE
         Class_ $class,
         array $classMethods
     ): array {
-        if (! $classReflection->isSubClassOf('PHPUnit\Framework\TestCase')) {
+        if (! $classReflection->is('PHPUnit\Framework\TestCase')) {
             return [];
         }
 

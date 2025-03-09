@@ -122,6 +122,6 @@ CODE_SAMPLE
             return true;
         }
 
-        return $classReflection->isSubclassOf($type);
+        return $classReflection->is($type);
     }
 }
