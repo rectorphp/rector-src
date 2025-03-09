@@ -6,16 +6,21 @@ namespace Rector\Application;
 
 use PhpParser\Modifiers;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\ClosureUse;
 use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Param;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\StaticVar;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
@@ -26,6 +31,7 @@ use PHPStan\Analyser\MutatingScope;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 /**
  * In case of changed node, we need to re-traverse the PHPStan Scope to make all the new nodes aware of what is going on.
@@ -34,7 +40,8 @@ final readonly class ChangedNodeScopeRefresher
 {
     public function __construct(
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private ScopeAnalyzer $scopeAnalyzer
+        private ScopeAnalyzer $scopeAnalyzer,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -105,7 +112,46 @@ final readonly class ChangedNodeScopeRefresher
             return [new Expression($closure)];
         }
 
+        if ($node instanceof AttributeGroup) {
+            $class = new Class_(null);
+            $class->attrGroups[] = $node;
+
+            $this->setLineAttributesOnClass($class, $node);
+
+            return [$class];
+        }
+
+        if ($node instanceof Attribute) {
+            $class = new Class_(null);
+            $class->attrGroups[] = new AttributeGroup([$node]);
+
+            $this->setLineAttributesOnClass($class, $node);
+
+            return [$class];
+        }
+
+        if ($node instanceof Arg) {
+            $class = new Class_(null, [], [
+                'startLine' => $node->getStartLine(),
+                'endLine' => $node->getEndLine(),
+            ]);
+            $new = new New_($class, [$node]);
+
+            return [new Expression($new)];
+        }
+
         $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
         throw new ShouldNotHappenException($errorMessage);
+    }
+
+    private function setLineAttributesOnClass(Class_ $class, Attribute|AttributeGroup $node): void
+    {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use ($node): Node {
+            $subNode->setAttributes([
+                'startLine' => $node->getStartLine(),
+                'endLine' => $node->getEndLine(),
+            ]);
+            return $subNode;
+        });
     }
 }
