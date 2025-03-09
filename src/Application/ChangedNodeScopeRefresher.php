@@ -28,9 +28,11 @@ use PhpParser\Node\Stmt\Static_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
 use PHPStan\Analyser\MutatingScope;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 /**
  * In case of changed node, we need to re-traverse the PHPStan Scope to make all the new nodes aware of what is going on.
@@ -39,7 +41,8 @@ final readonly class ChangedNodeScopeRefresher
 {
     public function __construct(
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private ScopeAnalyzer $scopeAnalyzer
+        private ScopeAnalyzer $scopeAnalyzer,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -114,12 +117,26 @@ final readonly class ChangedNodeScopeRefresher
             $class = new Class_(null);
             $class->attrGroups[] = $node;
 
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use ($node): void {
+                $subNode->setAttributes([
+                    'startLine' => $node->getStartLine(),
+                    'endLine' => $node->getEndLine(),
+                ]);
+            });
+
             return [$class];
         }
 
         if ($node instanceof Attribute) {
             $class = new Class_(null);
             $class->attrGroups[] = new AttributeGroup([$node]);
+
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use ($node): void {
+                $subNode->setAttributes([
+                    'startLine' => $node->getStartLine(),
+                    'endLine' => $node->getEndLine(),
+                ]);
+            });
 
             return [$class];
         }
