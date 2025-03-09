@@ -148,7 +148,10 @@ CODE_SAMPLE
             // get previous message
             $getMessageMethodCall = new MethodCall($catchedThrowableVariable, 'getMessage');
             $new->args[0] = new Arg($getMessageMethodCall);
-        } elseif ($new->args[0] instanceof Arg && $new->args[0]->name instanceof Identifier && $new->args[0]->name->toString() === 'previous' && $this->nodeComparator->areNodesEqual($new->args[0]->value, $catchedThrowableVariable)) {
+        } elseif ($new->args[0] instanceof Arg && $new->args[0]->name instanceof Identifier && $new->args[0]->name->toString() === 'previous' && $this->nodeComparator->areNodesEqual(
+            $new->args[0]->value,
+            $catchedThrowableVariable
+        )) {
             $new->args[0]->name->name = 'message';
             $new->args[0]->value = new MethodCall($catchedThrowableVariable, 'getMessage');
         }
