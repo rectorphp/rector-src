@@ -100,7 +100,7 @@ CODE_SAMPLE
             }
 
             foreach ($this->returnTypeChangedClassMethodReferences as $returnTypeChangedClassMethodReference) {
-                if (! $classReflection->isSubclassOf($returnTypeChangedClassMethodReference->getClass())) {
+                if (! $classReflection->is($returnTypeChangedClassMethodReference->getClass())) {
                     continue;
                 }
 

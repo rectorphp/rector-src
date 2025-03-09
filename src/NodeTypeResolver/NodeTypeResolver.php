@@ -332,7 +332,7 @@ final class NodeTypeResolver
             return true;
         }
 
-        return $classReflection->isSubclassOf($objectType->getClassName());
+        return $classReflection->is($objectType->getClassName());
     }
 
     /**

@@ -81,7 +81,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        if (! $classReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
+        if (! $classReflection->is('PHPUnit\Framework\TestCase')) {
             return null;
         }
 
