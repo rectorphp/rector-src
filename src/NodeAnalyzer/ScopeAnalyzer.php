@@ -6,7 +6,6 @@ namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 
@@ -19,7 +18,6 @@ final class ScopeAnalyzer
         Name::class,
         Identifier::class,
         ComplexType::class,
-        Variable::class,
     ];
 
     public function isRefreshable(Node $node): bool
