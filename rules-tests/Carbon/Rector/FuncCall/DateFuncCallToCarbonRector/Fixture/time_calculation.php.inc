@@ -14,6 +14,7 @@ class TimeCalculationExample
     }
 }
 
+?>
 -----
 <?php
 
@@ -30,3 +31,5 @@ class TimeCalculationExample
         $twoWeeksAgo   = \Carbon\Carbon::now()->subWeeks(2)->getTimestamp();
     }
 }
+
+?>
