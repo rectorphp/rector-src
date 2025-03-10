@@ -21,16 +21,12 @@ final class FromSimpleTag
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName1;
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName2;
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\SameName;
-
 final class FromSimpleTag
 {
-    #[\Name\Space\NewName1(limit: 10, period: 100)]
-    #[\Name\Space\NewName1(limit: 20, period: 200)]
-    #[\Name\Space\NewName2(action: 'login')]
-    #[\Name\Space\SameName('non_named_arg')]
+    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName1(limit: 10, period: 100)]
+    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName1(limit: 20, period: 200)]
+    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName2(action: 'login')]
+    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\SameName('non_named_arg')]
     public function someStep(): void
     {
     }
