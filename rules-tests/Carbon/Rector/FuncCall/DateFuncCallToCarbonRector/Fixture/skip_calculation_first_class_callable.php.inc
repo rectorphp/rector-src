@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector\Fixture;
 
-class TimeCalculationExample
+class SkipFirstClassCallable
 {
     public function run()
     {
