@@ -10,6 +10,7 @@ class DateWithStrtotimeExample
     }
 }
 
+?>
 -----
 <?php
 
@@ -22,3 +23,5 @@ class DateWithStrtotimeExample
         $formatted = \Carbon\Carbon::parse('2025-02-21')->format('d.m.Y');
     }
 }
+
+?>

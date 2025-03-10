@@ -10,6 +10,7 @@ class StrtotimeExample
     }
 }
 
+?>
 -----
 <?php
 
@@ -22,3 +23,5 @@ class StrtotimeExample
         $timestamp = \Carbon\Carbon::parse('2025-02-20')->getTimestamp();
     }
 }
+
+?>

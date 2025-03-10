@@ -10,6 +10,7 @@ class SimpleDateExample
     }
 }
 
+?>
 -----
 <?php
 
@@ -22,3 +23,5 @@ class SimpleDateExample
         $date = \Carbon\Carbon::now()->format('Y-m-d');
     }
 }
+
+?>
