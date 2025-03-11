@@ -14,6 +14,7 @@ use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Class_\StaticToSelfStaticMethodCallOnFinalClassRector;
 use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
+use Rector\CodeQuality\Rector\ClassConstFetch\ReplaceProductionConstantsWithLiteralsInTestFilesRector;
 use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
@@ -164,6 +165,7 @@ final class CodeQualityLevel
         CleanupUnneededNullsafeOperatorRector::class,
         DisallowedEmptyRuleFixerRector::class,
         ConvertStaticPrivateConstantToSelfRector::class,
+        ReplaceProductionConstantsWithLiteralsInTestFilesRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
         NumberCompareToMaxFuncCallRector::class,
         CompleteMissingIfElseBracketRector::class,
