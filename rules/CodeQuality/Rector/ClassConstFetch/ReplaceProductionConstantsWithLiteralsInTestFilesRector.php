@@ -23,9 +23,9 @@ use function assert;
  */
 class ReplaceProductionConstantsWithLiteralsInTestFilesRector extends AbstractRector implements ConfigurableRectorInterface
 {
-    private const string ALLOWED_PATTERNS = 'allowedPatterns';
+    private const ALLOWED_PATTERNS = 'allowedPatterns';
 
-    private const string ALLOWED_CONSTANTS = 'allowedConstants';
+    private const ALLOWED_CONSTANTS = 'allowedConstants';
 
     /**
      * @var array<string>
