@@ -100,17 +100,25 @@ CODE_SAMPLE
             return true;
         }
 
-        $argsCount = count($funcCall->args);
+        $args = $funcCall->getArgs();
+        $argsCount = count($args);
         if ($argsCount <= 2) {
             return true;
         }
 
-        if ($funcCall->args[2] instanceof Arg && $funcCall->args[2]->value instanceof Array_) {
+        if ($funcCall->args[2]->value instanceof Array_) {
             return true;
         }
 
         if ($argsCount === 3) {
-            return $funcCall->args[2] instanceof Arg && $funcCall->args[2]->value instanceof Variable;
+            if ($funcCall->args[2]->value instanceof Variable) {
+                return true;
+            }
+
+            $type = $this->nodeTypeResolver->getNativeType($funcCall->args[2]->value);
+            if (! $type->isInteger()->yes()) {
+                return true;
+            }
         }
 
         return false;
