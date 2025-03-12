@@ -106,16 +106,16 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($funcCall->args[2]->value instanceof Array_) {
+        if ($args[2]->value instanceof Array_) {
             return true;
         }
 
         if ($argsCount === 3) {
-            if ($funcCall->args[2]->value instanceof Variable) {
+            if ($args[2]->value instanceof Variable) {
                 return true;
             }
 
-            $type = $this->nodeTypeResolver->getNativeType($funcCall->args[2]->value);
+            $type = $this->nodeTypeResolver->getNativeType($args[2]->value);
             if (! $type->isInteger()->yes()) {
                 return true;
             }
