@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php73\Rector\FuncCall\SetcookieRector\Fixture;
 
-class SkipDynamicThirdArg
+class SkipNonIntegerThirdArg
 {
     public function run()
     {
