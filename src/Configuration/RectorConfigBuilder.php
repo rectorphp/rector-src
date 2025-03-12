@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
+use Nette\Utils\Strings;
 use Rector\Bridge\SetProviderCollector;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
@@ -199,7 +200,23 @@ final class RectorConfigBuilder
 
         // not to miss it by accident
         if ($this->isWithPhpSetsUsed === true) {
-            $this->sets[] = SetList::PHP_POLYFILLS;
+            $polyfills = require_once SetList::PHP_POLYFILLS;
+
+            foreach ($this->sets as $set) {
+                $match = Strings::match($set,  '#(php\d+)\.php$#');
+
+                if ($match === null) {
+                    continue;
+                }
+
+                foreach ($polyfills as $polyfill) {
+                    if ($polyfill === 'symfony/polyfill-' . $match[0]) {
+                        $this->sets[] = SetList::PHP_POLYFILLS;
+
+                        continue 2;
+                    }
+                }
+            }
         }
 
         // merge sets together
