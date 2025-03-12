@@ -49,6 +49,12 @@ final class RectorConfigBuilder
     private const MAX_LEVEL_GAP = 10;
 
     /**
+     * @var string
+     * @see https://regex101.com/r/qqIhLS/1
+     */
+    private const POLYFILL_PHP_REGEX = '#(php\d+)\.php$#';
+
+    /**
      * @var string[]
      */
     private array $paths = [];
@@ -203,7 +209,7 @@ final class RectorConfigBuilder
             $polyfills = require_once SetList::PHP_POLYFILLS;
 
             foreach ($this->sets as $set) {
-                $match = Strings::match($set,  '#(php\d+)\.php$#');
+                $match = Strings::match($set, self::POLYFILL_PHP_REGEX);
 
                 if ($match === null) {
                     continue;
