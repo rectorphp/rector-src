@@ -9,7 +9,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
