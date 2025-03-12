@@ -14,7 +14,6 @@ class SkipSetCookieWithoutModifier
         $args = [$name, $value, $expire];
         setcookie($name);
         setcookie($name, $value);
-        setcookie($name, $value, $expire);
         setcookie($name, $value, ...$args);
         setcookie(...$args);
         setrawcookie('name');

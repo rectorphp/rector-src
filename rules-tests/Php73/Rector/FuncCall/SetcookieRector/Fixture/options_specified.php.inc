@@ -12,6 +12,7 @@ class OptionsSpecified
         $secure = false;
         $httponly = false;
         setcookie('name', 'value', 3600);
+        setcookie('name', 'value', $expire);
         setcookie('name', 'value', $expire, $path);
         setcookie('name', 'value', $expire, $path, $domain);
         setcookie('name', 'value', $expire, $path, $domain, $secure);
@@ -40,6 +41,7 @@ class OptionsSpecified
         $secure = false;
         $httponly = false;
         setcookie('name', 'value', ['expires' => 3600]);
+        setcookie('name', 'value', ['expires' => $expire]);
         setcookie('name', 'value', ['expires' => $expire, 'path' => $path]);
         setcookie('name', 'value', ['expires' => $expire, 'path' => $path, 'domain' => $domain]);
         setcookie('name', 'value', ['expires' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure]);
