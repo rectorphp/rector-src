@@ -111,10 +111,6 @@ CODE_SAMPLE
         }
 
         if ($argsCount === 3) {
-            if ($args[2]->value instanceof Variable) {
-                return true;
-            }
-
             $type = $this->nodeTypeResolver->getNativeType($args[2]->value);
             if (! $type->isInteger()->yes()) {
                 return true;
