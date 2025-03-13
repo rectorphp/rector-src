@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
-use Nette\Utils\Strings;
 use Rector\Bridge\SetProviderCollector;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
