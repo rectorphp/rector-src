@@ -63,21 +63,7 @@ CODE_SAMPLE
                 }
             }
 
-            $name = $this->getName($node);
-
-            if (in_array($name, ['fgetcsv', 'fputcsv'], true)) {
-                $numberArg = 4;
-            }  else {
-                $numberArg = 3;
-            }
-
-            $fourthArg = $node->getArgs()[$numberArg] ?? null;
-
-            if ($fourthArg instanceof Arg) {
-                return null;
-            }
-
-            $node->args[$numberArg] = new Arg(new String_("\\"));
+            $node->args[count($node->getArgs())] = new Arg(new String_("\\"), name: new Identifier('escape'));
             return $node;
         }
 

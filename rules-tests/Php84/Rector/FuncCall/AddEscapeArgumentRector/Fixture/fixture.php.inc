@@ -20,7 +20,7 @@ final class Fixture
 {
     public function run($a, $b)
     {
-        str_getcsv($a, $b, '\\');
+        str_getcsv($a, $b, escape: '\\');
     }
 }
 
