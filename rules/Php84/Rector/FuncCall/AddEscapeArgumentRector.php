@@ -68,7 +68,7 @@ CODE_SAMPLE
             if (in_array($name, ['fgetcsv', 'fputcsv'], true)) {
                 $numberArg = 4;
             }  else {
-                $numberArg = 4;
+                $numberArg = 3;
             }
 
             $fourthArg = $node->getArgs()[$numberArg] ?? null;
