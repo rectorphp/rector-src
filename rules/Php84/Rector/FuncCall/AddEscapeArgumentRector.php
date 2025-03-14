@@ -63,7 +63,9 @@ CODE_SAMPLE
                 }
             }
 
-            if ($this->isNames($node, ['fgetcsv', 'fputcsv'])) {
+            $name = $this->getName($node);
+
+            if (in_array($name, ['fgetcsv', 'fputcsv'], true)) {
                 $numberArg = 4;
             }  else {
                 $numberArg = 4;
