@@ -94,11 +94,11 @@ CODE_SAMPLE
             }
         }
 
-        if (in_array($name, ['setCsvControl', 'fgetcsv'], true) && isset($node->getArgs()[3])) {
+        if (in_array($name, ['setCsvControl', 'fgetcsv'], true) && isset($node->getArgs()[2])) {
             return null;
         }
 
-        if ($name === 'fputcsv' && isset($node->getArgs()[2])) {
+        if ($name === 'fputcsv' && isset($node->getArgs()[3])) {
             return null;
         }
 
