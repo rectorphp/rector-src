@@ -691,6 +691,12 @@ final class PhpVersionFeature
     public const ROUNDING_MODES = PhpVersion::PHP_84;
 
     /**
+     * @see https://php.watch/versions/8.4/csv-functions-escape-parameter
+     * @var int
+     */
+    public const REQUIRED_ESCAPE_PARAMETER = PhpVersion::PHP_84;
+
+    /**
      * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.ldap
      * @var int
      */
