@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\FuncCall;
 
-use PhpParser\Builder\Function_;
 use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
