@@ -13,6 +13,9 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribut
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\FutureAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericSingleImplicitAnnotation;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName1;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName2;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\SameName;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
@@ -54,5 +57,10 @@ return static function (RectorConfig $rectorConfig): void {
         // special case with following comment becoming a inner value
         new AnnotationToAttribute('When', When::class, useValueAsAttributeArgument: true),
         new AnnotationToAttribute('Then', Then::class, useValueAsAttributeArgument: true),
+
+        // simple tag to attribute
+        new AnnotationToAttribute('OldName1', NewName1::class),
+        new AnnotationToAttribute('OldName2', NewName2::class),
+        new AnnotationToAttribute('SameName', SameName::class),
     ]);
 };
