@@ -19,10 +19,30 @@ final class FilesystemTweaker
         foreach ($paths as $path) {
             if (\str_contains($path, '*')) {
                 $foundPaths = $this->foundInGlob($path);
-                $absolutePathsFound = [...$absolutePathsFound, ...$foundPaths];
+                $absolutePathsFound = $this->appendPaths($foundPaths, $absolutePathsFound);
             } else {
-                $absolutePathsFound[] = $path;
+                $absolutePathsFound = $this->appendPaths([$path], $absolutePathsFound);
             }
+        }
+
+        return $absolutePathsFound;
+    }
+
+    /**
+     * @param string[] $foundPaths
+     * @param string[] $absolutePathsFound
+     * @return string[]
+     */
+    private function appendPaths(array $foundPaths, array $absolutePathsFound): array
+    {
+        foreach ($foundPaths as $foundPath) {
+            $foundPath = realpath($foundPath);
+
+            if ($foundPath === false) {
+                continue;
+            }
+
+            $absolutePathsFound[] = $foundPath;
         }
 
         return $absolutePathsFound;
