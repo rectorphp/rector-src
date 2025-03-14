@@ -63,6 +63,16 @@ CODE_SAMPLE
                 }
             }
 
+            $name = $this->getName($node);
+
+            if (in_array($name, ['fputcsv', 'fgetcsv'], true) && isset($node->getArgs()[4])) {
+                return null;
+            }
+
+            if ($name === 'str_getcsv' && isset($node->getArgs()[3])) {
+                return null;
+            }
+
             $node->args[count($node->getArgs())] = new Arg(new String_("\\"), name: new Identifier('escape'));
             return $node;
         }
