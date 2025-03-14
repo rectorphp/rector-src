@@ -77,9 +77,33 @@ CODE_SAMPLE
             return $node;
         }
 
-        //  check on method call here ...
+        if (! $this->isObjectType($node->var, new \PHPStan\Type\ObjectType('SplFileObject'))) {
+            return null;
+        }
 
-        return null;
+        $name = $this->getName($node->name);
+
+        if (! in_array($name, ['setCsvControl', 'fputcsv', 'fgetcsv'], true)) {
+            return null;
+        }
+
+        // already defined in named arg
+        foreach ($node->getArgs() as $arg) {
+            if ($arg->name instanceof Identifier && $arg->name->toString() === 'escape') {
+                return null;
+            }
+        }
+
+        if (in_array($name, ['setCsvControl', 'fgetcsv'], true) && isset($node->getArgs()[3])) {
+            return null;
+        }
+
+        if ($name === 'fputcsv' && isset($node->getArgs()[2])) {
+            return null;
+        }
+
+        $node->args[count($node->getArgs())] = new Arg(new String_("\\"), name: new Identifier('escape'));
+        return $node;
     }
 
     public function provideMinPhpVersion(): int
