@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\FuncCall;
 
+use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -77,7 +78,7 @@ CODE_SAMPLE
             return $node;
         }
 
-        if (! $this->isObjectType($node->var, new \PHPStan\Type\ObjectType('SplFileObject'))) {
+        if (! $this->isObjectType($node->var, new ObjectType('SplFileObject'))) {
             return null;
         }
 
