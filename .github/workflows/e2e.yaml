@@ -35,6 +35,7 @@ jobs:
                     - 'e2e/invalid-paths'
                     - 'e2e/applied-polyfill-php80'
                     - 'e2e/skip-polyfill-php80-on-php53-set'
+                    - 'e2e/applied-polyfill-php80-on-php80-sets'
                     - 'e2e/print-new-node'
                     - 'e2e/only-option'
                     - 'e2e/only-option-quote-double-equalnone'
