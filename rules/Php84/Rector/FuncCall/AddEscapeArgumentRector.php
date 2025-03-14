@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\FuncCall;
 
+use PhpParser\Builder\Function_;
 use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -57,11 +58,8 @@ CODE_SAMPLE
                 return null;
             }
 
-            // already defined in named arg
-            foreach ($node->getArgs() as $arg) {
-                if ($arg->name instanceof Identifier && $arg->name->toString() === 'escape') {
-                    return null;
-                }
+            if  ($this->shouldSkipNamedArg($node)) {
+                return null;
             }
 
             $name = $this->getName($node);
@@ -88,11 +86,8 @@ CODE_SAMPLE
             return null;
         }
 
-        // already defined in named arg
-        foreach ($node->getArgs() as $arg) {
-            if ($arg->name instanceof Identifier && $arg->name->toString() === 'escape') {
-                return null;
-            }
+        if  ($this->shouldSkipNamedArg($node)) {
+            return null;
         }
 
         if (in_array($name, ['setCsvControl', 'fgetcsv'], true) && isset($node->getArgs()[2])) {
@@ -105,6 +100,18 @@ CODE_SAMPLE
 
         $node->args[count($node->getArgs())] = new Arg(new String_("\\"), name: new Identifier('escape'));
         return $node;
+    }
+
+    private function shouldSkipNamedArg(FuncCall|MethodCall $node): bool
+    {
+        foreach ($node->getArgs() as $arg) {
+            // already defined in named arg
+            if ($arg->name instanceof Identifier && $arg->name->toString() === 'escape') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function provideMinPhpVersion(): int
