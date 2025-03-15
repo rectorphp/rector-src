@@ -17,7 +17,7 @@ final class FileAndDirectoryFilter
     {
         $directories = array_filter(
             $filesAndDirectories,
-            static fn (string $path): bool => is_dir($path) && realpath($path) !== false
+            static fn (string $path): bool => is_dir($path)
         );
 
         return array_values($directories);
@@ -31,7 +31,7 @@ final class FileAndDirectoryFilter
     {
         $files = array_filter(
             $filesAndDirectories,
-            static fn (string $path): bool => is_file($path) && realpath($path) !== false
+            static fn (string $path): bool => is_file($path)
         );
 
         return array_values($files);

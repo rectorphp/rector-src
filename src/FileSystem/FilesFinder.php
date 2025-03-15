@@ -43,7 +43,6 @@ final readonly class FilesFinder
 
         // filtering files in files collection
         $filteredFilePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
-        $filteredFilePaths = array_map(fn (string $filePath): string => realpath($filePath), $filteredFilePaths);
         $filteredFilePaths = array_filter(
             $filteredFilePaths,
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
