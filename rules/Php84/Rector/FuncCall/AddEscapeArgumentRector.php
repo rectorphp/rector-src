@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\FuncCall;
 
-use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -57,7 +57,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if  ($this->shouldSkipNamedArg($node)) {
+            if ($this->shouldSkipNamedArg($node)) {
                 return null;
             }
 
@@ -71,7 +71,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $node->args[count($node->getArgs())] = new Arg(new String_("\\"), name: new Identifier('escape'));
+            $node->args[count($node->getArgs())] = new Arg(new String_('\\'), name: new Identifier('escape'));
             return $node;
         }
 
@@ -85,7 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if  ($this->shouldSkipNamedArg($node)) {
+        if ($this->shouldSkipNamedArg($node)) {
             return null;
         }
 
@@ -97,8 +97,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args[count($node->getArgs())] = new Arg(new String_("\\"), name: new Identifier('escape'));
+        $node->args[count($node->getArgs())] = new Arg(new String_('\\'), name: new Identifier('escape'));
         return $node;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::REQUIRED_ESCAPE_PARAMETER;
     }
 
     private function shouldSkipNamedArg(FuncCall|MethodCall $node): bool
@@ -111,10 +116,5 @@ CODE_SAMPLE
         }
 
         return false;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::REQUIRED_ESCAPE_PARAMETER;
     }
 }

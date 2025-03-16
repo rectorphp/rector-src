@@ -8,5 +8,7 @@ use Rector\Php84\Rector\FuncCall\RoundingModeEnumRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([ExplicitNullableParamTypeRector::class, RoundingModeEnumRector::class, AddEscapeArgumentRector::class]);
+    $rectorConfig->rules(
+        [ExplicitNullableParamTypeRector::class, RoundingModeEnumRector::class, AddEscapeArgumentRector::class]
+    );
 };

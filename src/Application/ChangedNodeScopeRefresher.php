@@ -146,7 +146,9 @@ final readonly class ChangedNodeScopeRefresher
 
     private function setLineAttributesOnClass(Class_ $class, Attribute|AttributeGroup $node): void
     {
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use ($node): Node {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable([$class], function (Node $subNode) use (
+            $node
+        ): Node {
             $subNode->setAttributes([
                 'startLine' => $node->getStartLine(),
                 'endLine' => $node->getEndLine(),
