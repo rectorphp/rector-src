@@ -203,7 +203,7 @@ final class RectorConfigBuilder
         }
 
         // merge sets together
-        $this->sets = array_merge($this->sets, $this->groupLoadedSets);
+        $this->sets = [...$this->sets, ...$this->groupLoadedSets];
 
         $uniqueSets = array_unique($this->sets);
 
@@ -386,7 +386,7 @@ final class RectorConfigBuilder
      */
     public function withSkip(array $skip): self
     {
-        $this->skip = array_merge($this->skip, $skip);
+        $this->skip = [...$this->skip, ...$skip];
 
         return $this;
     }
@@ -431,7 +431,7 @@ final class RectorConfigBuilder
      */
     public function withSets(array $sets): self
     {
-        $this->sets = array_merge($this->sets, $sets);
+        $this->sets = [...$this->sets, ...$sets];
 
         return $this;
     }
@@ -553,7 +553,7 @@ final class RectorConfigBuilder
             $projectPhpVersion = ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
             $phpLevelSets = PhpLevelSetResolver::resolveFromPhpVersion($projectPhpVersion);
 
-            $this->sets = array_merge($this->sets, $phpLevelSets);
+            $this->sets = [...$this->sets, ...$phpLevelSets];
 
             return $this;
         }
@@ -618,7 +618,7 @@ final class RectorConfigBuilder
         }
 
         $phpLevelSets = PhpLevelSetResolver::resolveFromPhpVersion($targetPhpVersion);
-        $this->sets = array_merge($this->sets, $phpLevelSets);
+        $this->sets = [...$this->sets, ...$phpLevelSets];
 
         return $this;
     }
@@ -631,7 +631,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_53));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_53)];
 
         return $this;
     }
@@ -640,7 +640,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_54));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_54)];
 
         return $this;
     }
@@ -649,7 +649,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_55));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_55)];
 
         return $this;
     }
@@ -658,7 +658,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_56));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_56)];
 
         return $this;
     }
@@ -667,7 +667,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_70));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_70)];
 
         return $this;
     }
@@ -676,7 +676,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_71));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_71)];
 
         return $this;
     }
@@ -685,7 +685,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_72));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_72)];
 
         return $this;
     }
@@ -694,7 +694,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_73));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_73)];
 
         return $this;
     }
@@ -703,7 +703,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_74));
+        $this->sets = [...$this->sets, ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_74)];
 
         return $this;
     }
@@ -784,7 +784,7 @@ final class RectorConfigBuilder
      */
     public function withRules(array $rules): self
     {
-        $this->rules = array_merge($this->rules, $rules);
+        $this->rules = [...$this->rules, ...$rules];
 
         // log all explicitly registered rules
         // we only check the non-configurable rules, as the configurable ones might override them
@@ -981,7 +981,7 @@ final class RectorConfigBuilder
             );
         }
 
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->rules = [...$this->rules, ...$levelRules];
 
         return $this;
     }
@@ -1010,7 +1010,7 @@ final class RectorConfigBuilder
             );
         }
 
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->rules = [...$this->rules, ...$levelRules];
 
         return $this;
     }
@@ -1074,7 +1074,7 @@ final class RectorConfigBuilder
             );
         }
 
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->rules = [...$this->rules, ...$levelRules];
 
         foreach (CodeQualityLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
             $this->rulesWithConfigurations[$rectorClass][] = $configuration;
@@ -1107,7 +1107,7 @@ final class RectorConfigBuilder
             );
         }
 
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->rules = [...$this->rules, ...$levelRules];
 
         foreach (CodingStyleLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
             $this->rulesWithConfigurations[$rectorClass][] = $configuration;
