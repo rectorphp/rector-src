@@ -41,7 +41,7 @@ final readonly class SetProviderCollector
             new TwigSetProvider(),
         ];
 
-        $this->setProviders = array_merge($setProviders, $extraSetProviders);
+        $this->setProviders = [...$setProviders, ...$extraSetProviders];
     }
 
     /**
@@ -60,7 +60,7 @@ final readonly class SetProviderCollector
         $sets = [];
 
         foreach ($this->setProviders as $setProvider) {
-            $sets = array_merge($sets, $setProvider->provide());
+            $sets = [...$sets, ...$setProvider->provide()];
         }
 
         return $sets;
