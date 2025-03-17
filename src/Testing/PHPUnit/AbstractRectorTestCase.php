@@ -18,6 +18,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
+use Rector\Exception\Configuration\RectorRuleShouldNotBeAppliedException;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
@@ -207,16 +208,20 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $changedContents = $rectorTestResult->getChangedContents();
 
         $fixtureFilename = basename($fixtureFilePath);
-        $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
+        $fixtureNameMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
 
+        $failureMessage = $fixtureNameMessage;
+        $numAppliedRectorClasses = count($rectorTestResult->getAppliedRectorClasses());
         // give more context about used rules in case of set testing
-        if (count($rectorTestResult->getAppliedRectorClasses()) > 1) {
-            $failureMessage .= PHP_EOL . PHP_EOL;
-            $failureMessage .= 'Applied Rector rules:' . PHP_EOL;
-
+        $appliedRulesList = '';
+        if ($numAppliedRectorClasses > 0) {
             foreach ($rectorTestResult->getAppliedRectorClasses() as $appliedRectorClass) {
-                $failureMessage .= ' * ' . $appliedRectorClass . PHP_EOL;
+                $appliedRulesList .= ' * ' . $appliedRectorClass . PHP_EOL;
             }
+        }
+
+        if ($numAppliedRectorClasses > 1) {
+            $failureMessage .= PHP_EOL . PHP_EOL . 'Applied Rector rules:' . PHP_EOL . $appliedRulesList;
         }
 
         try {
@@ -226,6 +231,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
             $this->assertStringMatchesFormat($expectedFileContents, $changedContents, $failureMessage);
+        }
+
+        if ($inputFileContents === $expectedFileContents && $numAppliedRectorClasses > 0) {
+            $failureMessage = $fixtureNameMessage . PHP_EOL . PHP_EOL
+                . 'File not changed but some Rector rules applied:' . PHP_EOL . $appliedRulesList;
+            throw new RectorRuleShouldNotBeAppliedException($failureMessage);
         }
     }
 
