@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Rector\Class_;
 
-use DateTime;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
@@ -150,6 +149,6 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->isName($property->type, DateTime::class);
+        return $this->isName($property->type, ClassName::DATE_TIME);
     }
 }

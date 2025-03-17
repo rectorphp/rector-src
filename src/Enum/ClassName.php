@@ -15,4 +15,9 @@ final class ClassName
      * @var string
      */
     public const MOCK_OBJECT = 'PHPUnit\Framework\MockObject\MockObject';
+
+    /**
+     * @var string
+     */
+    public const DATE_TIME = 'DateTime';
 }
