@@ -25,11 +25,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TypedPropertyFromCreateMockAssignRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
-
     public function __construct(
         private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly StaticTypeMapper $staticTypeMapper,
@@ -110,7 +105,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isObjectType($propertyType, new ObjectType(self::MOCK_OBJECT_CLASS))) {
+            if (! $this->isObjectType($propertyType, new ObjectType(ClassName::MOCK_OBJECT))) {
                 continue;
             }
 

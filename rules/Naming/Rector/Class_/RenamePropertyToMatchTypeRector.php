@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\Naming\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
+use Rector\Enum\ClassName;
 use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
 use Rector\Naming\PropertyRenamer\MatchTypePropertyRenamer;
 use Rector\Naming\PropertyRenamer\PropertyPromotionRenamer;
@@ -120,6 +122,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->skipMockObjectProperty($property)) {
+                continue;
+            }
+
             $renameProperty = $this->matchTypePropertyRenamer->rename($propertyRename);
             if (! $renameProperty instanceof Property) {
                 continue;
@@ -127,5 +133,18 @@ CODE_SAMPLE
 
             $this->hasChanged = true;
         }
+    }
+
+    /**
+     * Such properties can have "xMock" names that are not compatible with "MockObject" suffix
+     * They should be kept and handled by another naming rule that deals with mocks
+     */
+    private function skipMockObjectProperty(Property $property): bool
+    {
+        if (! $property->type instanceof Name) {
+            return false;
+        }
+
+        return $this->isName($property->type, ClassName::MOCK_OBJECT);
     }
 }
