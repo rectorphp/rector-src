@@ -13,6 +13,7 @@ use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\Enum\ClassName;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -117,12 +118,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($propertyType instanceof ObjectType && $propertyType->getClassName() === 'PHPUnit\Framework\MockObject\MockObject') {
+            if ($propertyType instanceof ObjectType && $propertyType->getClassName() === ClassName::MOCK_OBJECT) {
                 $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
                 $varTag = $phpDocInfo->getVarTagValueNode();
                 $varType = $phpDocInfo->getVarType();
 
-                if ($varTag instanceof VarTagValueNode && $varType instanceof ObjectType && $varType->getClassName() !== 'PHPUnit\Framework\MockObject\MockObject') {
+                if ($varTag instanceof VarTagValueNode && $varType instanceof ObjectType && $varType->getClassName() !== ClassName::MOCK_OBJECT) {
                     $varTag->type = new IntersectionTypeNode([
                         new FullyQualifiedIdentifierTypeNode($propertyType->getClassName()),
                         new FullyQualifiedIdentifierTypeNode($varType->getClassName()),
