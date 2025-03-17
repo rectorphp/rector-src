@@ -28,11 +28,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveTypedPropertyNonMockDocblockRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
-
     public function __construct(
         private readonly VarTagRemover $varTagRemover,
         private readonly StaticTypeMapper $staticTypeMapper,
@@ -103,7 +98,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->isObjectType($property->type, new ObjectType(self::MOCK_OBJECT_CLASS))) {
+            if ($this->isObjectType($property->type, new ObjectType(ClassName::MOCK_OBJECT))) {
                 continue;
             }
 
@@ -148,7 +143,7 @@ CODE_SAMPLE
         }
 
         foreach ($varTagType->getTypes() as $unionedType) {
-            if ($unionedType->isSuperTypeOf(new ObjectType(self::MOCK_OBJECT_CLASS))->yes()) {
+            if ($unionedType->isSuperTypeOf(new ObjectType(ClassName::MOCK_OBJECT))->yes()) {
                 return true;
             }
         }
