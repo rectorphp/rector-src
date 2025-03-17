@@ -122,7 +122,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->skipMockObjectProperty($property)) {
+            if ($this->skipDateTimeOrMockObjectPropertyType($property)) {
                 continue;
             }
 
@@ -139,12 +139,16 @@ CODE_SAMPLE
      * Such properties can have "xMock" names that are not compatible with "MockObject" suffix
      * They should be kept and handled by another naming rule that deals with mocks
      */
-    private function skipMockObjectProperty(Property $property): bool
+    private function skipDateTimeOrMockObjectPropertyType(Property $property): bool
     {
         if (! $property->type instanceof Name) {
             return false;
         }
 
-        return $this->isName($property->type, ClassName::MOCK_OBJECT);
+        if ($this->isName($property->type, ClassName::MOCK_OBJECT)) {
+            return true;
+        }
+
+        return $this->isName($property->type, \DateTime::class);
     }
 }
