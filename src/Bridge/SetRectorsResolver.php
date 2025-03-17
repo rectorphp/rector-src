@@ -30,10 +30,7 @@ final class SetRectorsResolver
         foreach ($configFilePaths as $configFilePath) {
             $rectorRulesWithConfiguration = $this->resolveFromFilePathIncludingConfiguration($configFilePath);
 
-            $combinedRectorRulesWithConfiguration = array_merge(
-                $combinedRectorRulesWithConfiguration,
-                $rectorRulesWithConfiguration
-            );
+            $combinedRectorRulesWithConfiguration = [...$combinedRectorRulesWithConfiguration, ...$rectorRulesWithConfiguration];
         }
 
         return $combinedRectorRulesWithConfiguration;
