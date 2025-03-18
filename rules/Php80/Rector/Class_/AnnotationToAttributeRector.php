@@ -261,6 +261,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($annotationToAttribute->getUseValueAsAttributeArgument()) {
+                /* Will be processed by processGenericTags instead */
+                continue;
+            }
+
             // make sure the attribute class really exists to avoid error on early upgrade
             if (! $this->reflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
                 continue;
