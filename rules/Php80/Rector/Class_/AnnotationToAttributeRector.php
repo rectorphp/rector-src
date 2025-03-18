@@ -138,13 +138,13 @@ CODE_SAMPLE
 
         $uses = $this->useImportsResolver->resolveBareUses();
 
-        // 1. bare tags without annotation class, e.g. "@require"
-        $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
-
-        // 2. Doctrine annotation classes
+        // 1. Doctrine annotation classes
         $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $uses);
 
-        $attributeGroups = [...$genericAttributeGroups, ...$annotationAttributeGroups];
+        // 2. bare tags without annotation class, e.g. "@require"
+        $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
+
+        $attributeGroups = [...$annotationAttributeGroups, ...$genericAttributeGroups];
         if ($attributeGroups === []) {
             return null;
         }
@@ -258,6 +258,11 @@ CODE_SAMPLE
 
             $annotationToAttribute = $this->matchAnnotationToAttribute($doctrineTagValueNode);
             if (! $annotationToAttribute instanceof AnnotationToAttribute) {
+                continue;
+            }
+
+            if ($annotationToAttribute->getUseValueAsAttributeArgument()) {
+                /* Will be processed by processGenericTags instead */
                 continue;
             }
 
