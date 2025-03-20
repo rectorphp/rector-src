@@ -142,7 +142,7 @@ CODE_SAMPLE
                 }
 
                 $node->stmts = $originalStmts;
-                return $node;
+                return null;
             }
 
             unset($node->stmts[$key]);
