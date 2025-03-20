@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\FuncCall;
 
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Rector\AbstractRector;
@@ -65,7 +66,7 @@ CODE_SAMPLE
         $secondArgValue = $node->getArgs()[1]
             ->value;
 
-        if (! $secondArgValue instanceof Node\Expr\ConstFetch) {
+        if (! $secondArgValue instanceof ConstFetch) {
             return null;
         }
 
@@ -73,22 +74,16 @@ CODE_SAMPLE
 
         $valueType = $this->getType($firstArgValue);
 
-        if ($constantFilterName === 'FILTER_VALIDATE_INT') {
-            if ($valueType->isInteger()->yes()) {
-                return $firstArgValue;
-            }
+        if ($constantFilterName === 'FILTER_VALIDATE_INT' && $valueType->isInteger()->yes()) {
+            return $firstArgValue;
         }
 
-        if ($constantFilterName === 'FILTER_VALIDATE_FLOAT') {
-            if ($valueType->isFloat()->yes()) {
-                return $firstArgValue;
-            }
+        if ($constantFilterName === 'FILTER_VALIDATE_FLOAT' && $valueType->isFloat()->yes()) {
+            return $firstArgValue;
         }
 
-        if (in_array($constantFilterName, ['FILTER_VALIDATE_BOOLEAN', 'FILTER_VALIDATE_BOOL'])) {
-            if ($valueType->isBoolean()->yes()) {
-                return $firstArgValue;
-            }
+        if (in_array($constantFilterName, ['FILTER_VALIDATE_BOOLEAN', 'FILTER_VALIDATE_BOOL']) && $valueType->isBoolean()->yes()) {
+            return $firstArgValue;
         }
 
         return null;
