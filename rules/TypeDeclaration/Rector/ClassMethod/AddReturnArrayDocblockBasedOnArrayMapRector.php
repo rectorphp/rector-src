@@ -127,10 +127,10 @@ CODE_SAMPLE
 
         $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $functionLikePhpDocInfo, $arrayType);
         if ($hasChanged) {
-            return null;
+            return $node;
         }
 
-        return $node;
+        return null;
     }
 
     private function hasNonArrayReturnType(ClassMethod|Function_ $functionLike): bool
