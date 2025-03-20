@@ -501,6 +501,11 @@ final class RectorConfigBuilder
      */
     public function withPhpPolyfill(): self
     {
+        throw new InvalidConfigurationException(sprintf(
+            'Method "%s()" is deprecated and is now part of ->withPhpSets() to avoid duplications and too granular configuration.',
+            __METHOD__,
+        ));
+
         $this->sets[] = SetList::PHP_POLYFILLS;
         return $this;
     }
