@@ -542,7 +542,7 @@ final class RectorConfigBuilder
 
         $pickedArguments = array_filter(func_get_args());
         if ($pickedArguments !== []) {
-            Notifier::notifyWithPhpSetsNotSuitableForPHP80();
+            Notifier::errorWithPhpSetsNotSuitableForPHP74AndLower();
         }
 
         if (count($pickedArguments) > 1) {
