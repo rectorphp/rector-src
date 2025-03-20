@@ -133,7 +133,7 @@ CODE_SAMPLE
 
             $dataProviderNodes = $this->resolveDataProviderNodes($classMethod);
             if ($dataProviderNodes->isEmpty()) {
-                return null;
+                continue;
             }
 
             $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $node, $dataProviderNodes->nodes);
@@ -353,12 +353,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                $paramTypeDeclaration,
-                TypeKind::PARAM
-            );
-
-            $hasChanged = true;
+            $type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramTypeDeclaration, TypeKind::PARAM);
+            if ($type instanceof Node) {
+                $param->type = $type;
+                $hasChanged = true;
+            }
         }
 
         return $hasChanged;
