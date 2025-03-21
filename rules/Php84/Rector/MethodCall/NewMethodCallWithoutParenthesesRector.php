@@ -53,8 +53,26 @@ CODE_SAMPLE
             return null;
         }
 
-        // process here..
-        return $node;
+        $oldTokens = $this->file->getOldTokens();
+
+        // start node
+        if (! isset($oldTokens[$node->getStartTokenPos()])) {
+            return null;
+        }
+
+        // end of "var" node
+        if (! isset($oldTokens[$node->var->getEndTokenPos()])) {
+            return null;
+        }
+
+        if ((string) $oldTokens[$node->getStartTokenPos()] === '(' && (string) $oldTokens[$node->var->getEndTokenPos()] === ')') {
+            $oldTokens[$node->getStartTokenPos()]->text = '';
+            $oldTokens[$node->var->getEndTokenPos()]->text = '';
+
+            return $node;
+        }
+
+        return null;
     }
 
     public function provideMinPhpVersion(): int
