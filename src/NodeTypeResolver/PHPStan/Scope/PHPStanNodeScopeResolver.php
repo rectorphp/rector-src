@@ -191,8 +191,9 @@ final readonly class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
+            // Block node has stmts, just not part of StmtsAwareInterface
             if ($node instanceof StmtsAwareInterface || $node instanceof Block) {
-                $this->processStmtsAware($node, $mutatingScope, $nodeCallback);
+                $this->processStmtsAwareOrBlock($node, $mutatingScope, $nodeCallback);
                 return;
             }
 
@@ -372,7 +373,7 @@ final readonly class PHPStanNodeScopeResolver
     /**
      * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
      */
-    private function processStmtsAware(StmtsAwareInterface|Block $stmtsAware, MutatingScope $mutatingScope, callable $nodeCallback): void
+    private function processStmtsAwareOrBlock(StmtsAwareInterface|Block $stmtsAware, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         if ($stmtsAware->stmts !== null) {
             $this->nodeScopeResolverProcessNodes($stmtsAware->stmts, $mutatingScope, $nodeCallback);
