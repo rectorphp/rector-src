@@ -191,13 +191,14 @@ final readonly class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
+            // decorate attrGroups early
+            $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
+
             // Block node has stmts, just not part of StmtsAwareInterface
             if ($node instanceof StmtsAwareInterface || $node instanceof Block) {
                 $this->processStmtsAwareOrBlock($node, $mutatingScope, $nodeCallback);
                 return;
             }
-
-            $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
 
             if ((
                 $node instanceof Expression ||
