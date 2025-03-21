@@ -374,24 +374,24 @@ final readonly class PHPStanNodeScopeResolver
     /**
      * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
      */
-    private function processStmtsAwareOrBlock(StmtsAwareInterface|Block $stmtsAware, MutatingScope $mutatingScope, callable $nodeCallback): void
+    private function processStmtsAwareOrBlock(StmtsAwareInterface|Block $node, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
-        if ($stmtsAware->stmts !== null) {
-            $this->nodeScopeResolverProcessNodes($stmtsAware->stmts, $mutatingScope, $nodeCallback);
+        if ($node->stmts !== null) {
+            $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
         }
 
-        if ($stmtsAware instanceof Foreach_) {
+        if ($node instanceof Foreach_) {
             // decorate value as well
-            $stmtsAware->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            if ($stmtsAware->valueVar instanceof List_) {
-                $this->processArray($stmtsAware->valueVar, $mutatingScope);
+            $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            if ($node->valueVar instanceof List_) {
+                $this->processArray($node->valueVar, $mutatingScope);
             }
 
             return;
         }
 
-        if ($stmtsAware instanceof For_) {
-            foreach (array_merge($stmtsAware->init, $stmtsAware->cond, $stmtsAware->loop) as $expr) {
+        if ($node instanceof For_) {
+            foreach (array_merge($node->init, $node->cond, $node->loop) as $expr) {
                 $expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 if ($expr instanceof BinaryOp) {
                     $this->processBinaryOp($expr, $mutatingScope);
@@ -405,18 +405,18 @@ final readonly class PHPStanNodeScopeResolver
             return;
         }
 
-        if ($stmtsAware instanceof TryCatch) {
-            $this->processTryCatch($stmtsAware, $mutatingScope);
+        if ($node instanceof TryCatch) {
+            $this->processTryCatch($node, $mutatingScope);
             return;
         }
 
-        if ($stmtsAware instanceof Catch_) {
-            $this->processCatch($stmtsAware, $mutatingScope, $nodeCallback);
+        if ($node instanceof Catch_) {
+            $this->processCatch($node, $mutatingScope, $nodeCallback);
             return;
         }
 
-        if ($stmtsAware instanceof If_ || $stmtsAware instanceof ElseIf_ || $stmtsAware instanceof Do_ || $stmtsAware instanceof While_) {
-            $stmtsAware->cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        if ($node instanceof If_ || $node instanceof ElseIf_ || $node instanceof Do_ || $node instanceof While_) {
+            $node->cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             return;
         }
     }
