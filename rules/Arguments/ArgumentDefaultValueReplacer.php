@@ -108,15 +108,15 @@ final readonly class ArgumentDefaultValueReplacer
         }
 
         $argValue = $this->valueResolver->getValue($particularArg->value);
-
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()
         ) && $argValue === $replaceArgumentDefaultValue->getValueBefore()) {
             $expr->args[$position] = $this->normalizeValueToArgument($replaceArgumentDefaultValue->getValueAfter());
             return $expr;
-        } elseif (is_array($replaceArgumentDefaultValue->getValueBefore())) {
-            $newArgs = $this->processArrayReplacement($expr->getArgs(), $replaceArgumentDefaultValue);
+        }
 
+        if (is_array($replaceArgumentDefaultValue->getValueBefore())) {
+            $newArgs = $this->processArrayReplacement($expr->getArgs(), $replaceArgumentDefaultValue);
             if (is_array($newArgs)) {
                 $expr->args = $newArgs;
                 return $expr;

@@ -18,7 +18,6 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
-use Rector\Exception\Configuration\RectorRuleShouldNotBeAppliedException;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
@@ -166,6 +165,23 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         );
     }
 
+    protected function doTestFileExpectingWarningAboutRuleApplied(
+        string $fixtureFilePath,
+        string $expectedRuleApplied
+    ): void {
+        ob_start();
+        $this->doTestFile($fixtureFilePath);
+        $content = ob_get_clean();
+        $fixtureName = basename($fixtureFilePath);
+        $testClass = static::class;
+        $this->assertSame(
+            PHP_EOL . "WARNING: On fixture file \"" . $fixtureName . '" for test "' . $testClass . "\"" . PHP_EOL .
+            "File not changed but some Rector rules applied:" . PHP_EOL .
+            ' * ' . $expectedRuleApplied . PHP_EOL,
+            $content
+        );
+    }
+
     private function forgetRectorsRules(): void
     {
         $rectorConfig = self::getContainer();
@@ -208,9 +224,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $changedContents = $rectorTestResult->getChangedContents();
 
         $fixtureFilename = basename($fixtureFilePath);
-        $fixtureNameMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
+        $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
 
-        $failureMessage = $fixtureNameMessage;
         $numAppliedRectorClasses = count($rectorTestResult->getAppliedRectorClasses());
         // give more context about used rules in case of set testing
         $appliedRulesList = '';
@@ -234,9 +249,13 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
 
         if ($inputFileContents === $expectedFileContents && $numAppliedRectorClasses > 0) {
-            $failureMessage = $fixtureNameMessage . PHP_EOL . PHP_EOL
+            $failureMessage = PHP_EOL . sprintf(
+                'WARNING: On fixture file "%s" for test "%s"',
+                $fixtureFilename,
+                static::class
+            ) . PHP_EOL
                 . 'File not changed but some Rector rules applied:' . PHP_EOL . $appliedRulesList;
-            throw new RectorRuleShouldNotBeAppliedException($failureMessage);
+            echo $failureMessage;
         }
     }
 
