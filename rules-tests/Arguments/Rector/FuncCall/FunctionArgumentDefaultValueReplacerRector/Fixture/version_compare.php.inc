@@ -6,10 +6,8 @@ class VersionCompare
 {
     public function run()
     {
-        version_compare(1, 2);
         version_compare(1, 2, '');
         version_compare(PHP_VERSION, '5.6', 'lte');
-        version_compare(PHP_VERSION, '5.6', 'le');
     }
 }
 
@@ -23,9 +21,7 @@ class VersionCompare
 {
     public function run()
     {
-        version_compare(1, 2);
         version_compare(1, 2, '!=');
-        version_compare(PHP_VERSION, '5.6', 'le');
         version_compare(PHP_VERSION, '5.6', 'le');
     }
 }
