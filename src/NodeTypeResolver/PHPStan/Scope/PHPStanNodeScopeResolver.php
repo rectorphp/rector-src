@@ -58,6 +58,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Block;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -190,7 +191,7 @@ final readonly class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof StmtsAwareInterface) {
+            if ($node instanceof StmtsAwareInterface || $node instanceof Block) {
                 $this->processStmtsAware($node, $mutatingScope, $nodeCallback);
                 return;
             }
@@ -371,7 +372,7 @@ final readonly class PHPStanNodeScopeResolver
     /**
      * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
      */
-    private function  processStmtsAware(StmtsAwareInterface $stmtsAware, MutatingScope $mutatingScope, callable $nodeCallback): void
+    private function processStmtsAware(StmtsAwareInterface|Block $stmtsAware, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         if ($stmtsAware->stmts !== null) {
             $this->nodeScopeResolverProcessNodes($stmtsAware->stmts, $mutatingScope, $nodeCallback);
