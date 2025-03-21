@@ -6,16 +6,15 @@ namespace Rector\Tests\Issues\ScopeNotAvailable;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Exception\Configuration\RectorRuleShouldNotBeAppliedException;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
+use Rector\Tests\Issues\ScopeNotAvailable\Variable\ArrayItemForeachValueRector;
 
 final class ForeachValueScopeTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        $this->expectException(RectorRuleShouldNotBeAppliedException::class);
-        $this->doTestFile($filePath);
+        $this->doTestFileExpectingWarningAboutRuleApplied($filePath, ArrayItemForeachValueRector::class);
     }
 
     public static function provideData(): Iterator
