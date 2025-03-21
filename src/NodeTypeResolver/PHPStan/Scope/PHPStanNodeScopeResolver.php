@@ -100,11 +100,11 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Webmozart\Assert\Assert;
 
@@ -158,7 +158,6 @@ final readonly class PHPStanNodeScopeResolver
 
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
-            $filePath,
         ): void {
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
@@ -191,8 +190,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof FileWithoutNamespace) {
-                $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
+            if ($node instanceof StmtsAwareInterface) {
+                $this->processStmtsAware($node, $mutatingScope, $nodeCallback);
                 return;
             }
 
@@ -269,31 +268,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof Foreach_) {
-                // decorate value as well
-                $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                if ($node->valueVar instanceof List_) {
-                    $this->processArray($node->valueVar, $mutatingScope);
-                }
-
-                return;
-            }
-
-            if ($node instanceof For_) {
-                foreach (array_merge($node->init, $node->cond, $node->loop) as $expr) {
-                    $expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                    if ($expr instanceof BinaryOp) {
-                        $this->processBinaryOp($expr, $mutatingScope);
-                    }
-
-                    if ($expr instanceof Assign) {
-                        $this->processAssign($expr, $mutatingScope);
-                    }
-                }
-
-                return;
-            }
-
             if ($node instanceof Array_) {
                 $this->processArray($node, $mutatingScope);
                 return;
@@ -306,16 +280,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Switch_) {
                 $this->processSwitch($node, $mutatingScope);
-                return;
-            }
-
-            if ($node instanceof TryCatch) {
-                $this->processTryCatch($node, $mutatingScope);
-                return;
-            }
-
-            if ($node instanceof Catch_) {
-                $this->processCatch($node, $filePath, $mutatingScope);
                 return;
             }
 
@@ -379,11 +343,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof If_ || $node instanceof ElseIf_ || $node instanceof Do_ || $node instanceof While_) {
-                $node->cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                return;
-            }
-
             if ($node instanceof MethodCallableNode || $node instanceof FunctionCallableNode || $node instanceof StaticMethodCallableNode || $node instanceof InstantiationCallableNode) {
                 $node->getOriginalNode()
                     ->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -407,6 +366,56 @@ final readonly class PHPStanNodeScopeResolver
         }
 
         return $stmts;
+    }
+
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function  processStmtsAware(StmtsAwareInterface $stmtsAware, MutatingScope $mutatingScope, callable $nodeCallback): void
+    {
+        if ($stmtsAware->stmts !== null) {
+            $this->nodeScopeResolverProcessNodes($stmtsAware->stmts, $mutatingScope, $nodeCallback);
+        }
+
+        if ($stmtsAware instanceof Foreach_) {
+            // decorate value as well
+            $stmtsAware->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            if ($stmtsAware->valueVar instanceof List_) {
+                $this->processArray($stmtsAware->valueVar, $mutatingScope);
+            }
+
+            return;
+        }
+
+        if ($stmtsAware instanceof For_) {
+            foreach (array_merge($stmtsAware->init, $stmtsAware->cond, $stmtsAware->loop) as $expr) {
+                $expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                if ($expr instanceof BinaryOp) {
+                    $this->processBinaryOp($expr, $mutatingScope);
+                }
+
+                if ($expr instanceof Assign) {
+                    $this->processAssign($expr, $mutatingScope);
+                }
+            }
+
+            return;
+        }
+
+        if ($stmtsAware instanceof TryCatch) {
+            $this->processTryCatch($stmtsAware, $mutatingScope);
+            return;
+        }
+
+        if ($stmtsAware instanceof Catch_) {
+            $this->processCatch($stmtsAware, $mutatingScope, $nodeCallback);
+            return;
+        }
+
+        if ($stmtsAware instanceof If_ || $stmtsAware instanceof ElseIf_ || $stmtsAware instanceof Do_ || $stmtsAware instanceof While_) {
+            $stmtsAware->cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            return;
+        }
     }
 
     private function processYield(Yield_ $yield, MutatingScope $mutatingScope): void
@@ -550,18 +559,21 @@ final readonly class PHPStanNodeScopeResolver
         }
     }
 
-    private function processCatch(Catch_ $catch, string $filePath, MutatingScope $mutatingScope): void
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function processCatch(Catch_ $catch, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         $varName = $catch->var instanceof Variable
-        ? $this->nodeNameResolver->getName($catch->var)
-        : null;
+            ? $this->nodeNameResolver->getName($catch->var)
+            : null;
 
         $type = TypeCombinator::union(
             ...array_map(static fn (Name $name): ObjectType => new ObjectType((string) $name), $catch->types)
         );
 
         $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-        $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
+        $this->nodeScopeResolverProcessNodes($catch->stmts, $catchMutatingScope, $nodeCallback);
     }
 
     private function processTryCatch(TryCatch $tryCatch, MutatingScope $mutatingScope): void

@@ -77,14 +77,6 @@ final class RectifiedAnalyzer
          * - Parent Node's original node is null
          */
         $startTokenPos = $node->getStartTokenPos();
-        if ($startTokenPos >= 0) {
-            return true;
-        }
-
-        if ($node instanceof Stmt) {
-            return ! in_array(AttributeKey::SCOPE, array_keys($node->getAttributes()), true);
-        }
-
-        return $node->getAttributes() === [];
+        return $startTokenPos >= 0;
     }
 }
