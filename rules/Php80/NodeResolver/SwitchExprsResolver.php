@@ -39,6 +39,10 @@ final class SwitchExprsResolver
             }
 
             if (! $case->cond instanceof Expr) {
+                if ($case->stmts === []) {
+                    return [];
+                }
+
                 continue;
             }
 
