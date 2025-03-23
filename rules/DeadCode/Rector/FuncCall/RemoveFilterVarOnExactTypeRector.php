@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\FuncCall;
 
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -82,7 +82,10 @@ CODE_SAMPLE
             return $firstArgValue;
         }
 
-        if (in_array($constantFilterName, ['FILTER_VALIDATE_BOOLEAN', 'FILTER_VALIDATE_BOOL']) && $valueType->isBoolean()->yes()) {
+        if (in_array(
+            $constantFilterName,
+            ['FILTER_VALIDATE_BOOLEAN', 'FILTER_VALIDATE_BOOL']
+        ) && $valueType->isBoolean()->yes()) {
             return $firstArgValue;
         }
 
