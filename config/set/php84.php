@@ -10,6 +10,11 @@ use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules(
-        [ExplicitNullableParamTypeRector::class, RoundingModeEnumRector::class, AddEscapeArgumentRector::class, NewMethodCallWithoutParenthesesRector::class]
+        [
+            ExplicitNullableParamTypeRector::class,
+            RoundingModeEnumRector::class,
+            AddEscapeArgumentRector::class,
+            NewMethodCallWithoutParenthesesRector::class,
+        ]
     );
 };
