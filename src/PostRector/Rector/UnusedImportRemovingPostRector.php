@@ -221,6 +221,9 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             if (! str_starts_with($name, $lastName . '\\')) {
+                if (str_starts_with($name, $comparedName . '\\')) {
+                    return true;
+                }
                 continue;
             }
 
