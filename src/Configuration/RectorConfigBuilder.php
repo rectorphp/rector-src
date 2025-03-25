@@ -978,7 +978,7 @@ final class RectorConfigBuilder
                 'withTypeCoverageLevel',
                 $level,
                 $levelRulesCount,
-                'typeCoverage',
+                'typeDeclarations',
                 'TYPE_DECLARATION'
             );
         }
