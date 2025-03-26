@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector\Fixture;
+
 $foo = rand(0,1);
 $bar = rand(0,1);
 
@@ -8,11 +10,15 @@ if($foo and $bar) {
 } else {
 	$baz = '2';
 }
+
 ?>
 -----
 <?php
 
 namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector\Fixture;
+
+$foo = rand(0,1);
+$bar = rand(0,1);
 
 $baz = ($foo and $bar) ? '1' : '2';
 
