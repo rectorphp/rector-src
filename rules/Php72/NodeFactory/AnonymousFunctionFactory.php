@@ -24,6 +24,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Parser\InlineCodeParser;
@@ -42,7 +43,8 @@ final readonly class AnonymousFunctionFactory
         private BetterNodeFinder $betterNodeFinder,
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private SimplePhpParser $simplePhpParser,
-        private InlineCodeParser $inlineCodeParser
+        private InlineCodeParser $inlineCodeParser,
+        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
     ) {
     }
 
@@ -156,7 +158,7 @@ final readonly class AnonymousFunctionFactory
         $alreadyAssignedVariables = [];
         foreach ($variables as $variable) {
             // "$this" is allowed
-            if ($this->nodeNameResolver-> isName($variable, 'this')) {
+            if ($this->nodeNameResolver->isName($variable, 'this')) {
                 continue;
             }
 
@@ -170,10 +172,7 @@ final readonly class AnonymousFunctionFactory
             }
 
             // Superglobal variables cannot be in a use statement
-            if (\in_array(
-                $variableName,
-                ['GLOBALS', '_SERVER', '_GET', '_POST', '_FILES', '_REQUEST', '_SESSION', '_ENV', '_COOKIE']
-            )) {
+            if ($this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
                 continue;
             }
 
