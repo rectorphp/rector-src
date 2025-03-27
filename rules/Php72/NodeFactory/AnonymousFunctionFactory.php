@@ -169,6 +169,14 @@ final readonly class AnonymousFunctionFactory
                 continue;
             }
 
+            // Superglobal variables cannot be in a use statement
+            if (\in_array(
+                $variableName,
+                ['GLOBALS', '_SERVER', '_GET', '_POST', '_FILES', '_REQUEST', '_SESSION', '_ENV', '_COOKIE']
+            )) {
+                continue;
+            }
+
             if (
                 $variable->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true
                 || $variable->getAttribute(AttributeKey::IS_PARAM_VAR) === true
