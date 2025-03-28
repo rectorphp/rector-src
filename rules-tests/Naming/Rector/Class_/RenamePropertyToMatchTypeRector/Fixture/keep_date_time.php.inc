@@ -4,8 +4,11 @@ namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixt
 
 final class KeepDateTime
 {
-    public function __construct(
-        private \DateTimeInterface $cratedAt,
+    private ?DateTime $timestamp = null;
+
+    public function setValue(
+        \DateTime $timestamp,
     ) {
+        $this->timestamp = $timestamp;
     }
 }
