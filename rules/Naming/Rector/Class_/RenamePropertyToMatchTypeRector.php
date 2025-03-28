@@ -148,7 +148,6 @@ CODE_SAMPLE
         if ($this->isName($property->type, ClassName::MOCK_OBJECT)) {
             return true;
         }
-
         return $this->isName($property->type, ClassName::DATE_TIME);
     }
 }

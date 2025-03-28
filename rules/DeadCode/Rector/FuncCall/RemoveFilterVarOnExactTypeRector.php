@@ -85,7 +85,8 @@ CODE_SAMPLE
         if (in_array(
             $constantFilterName,
             ['FILTER_VALIDATE_BOOLEAN', 'FILTER_VALIDATE_BOOL']
-        ) && $valueType->isBoolean()->yes()) {
+        ) && $valueType->isBoolean()
+            ->yes()) {
             return $firstArgValue;
         }
 
