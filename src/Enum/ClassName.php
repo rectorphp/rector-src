@@ -19,5 +19,5 @@ final class ClassName
     /**
      * @var string
      */
-    public const DATE_TIME = 'DateTime';
+    public const DATE_TIME_INTERFACE = 'DateTimeInterface';
 }

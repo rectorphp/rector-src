@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Type\ObjectType;
 use Rector\Enum\ClassName;
 use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
 use Rector\Naming\PropertyRenamer\MatchTypePropertyRenamer;
@@ -148,6 +149,7 @@ CODE_SAMPLE
         if ($this->isName($property->type, ClassName::MOCK_OBJECT)) {
             return true;
         }
-        return $this->isName($property->type, ClassName::DATE_TIME);
+
+        return $this->isObjectType($property->type, new ObjectType(ClassName::DATE_TIME_INTERFACE));
     }
 }
