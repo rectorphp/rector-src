@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Identifier;
 use PhpParser\NodeFinder;
 use Rector\Rector\AbstractRector;
@@ -76,6 +77,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->hasTernary($arrowFunction)) {
+            return null;
+        }
+
         $paramName = $this->getName($arrowFunctionParam);
         if (! $this->isParamArrayDimFetched($arrowFunction, $paramName)) {
             return null;
@@ -103,5 +108,11 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function hasTernary(ArrowFunction $arrowFunction): bool
+    {
+        $nodeFinder = new NodeFinder();
+        return (bool) $nodeFinder->findFirstInstanceOf($arrowFunction->expr, Ternary::class);
     }
 }
