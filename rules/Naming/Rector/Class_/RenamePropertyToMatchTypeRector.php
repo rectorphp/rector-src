@@ -146,7 +146,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($this->isName($property->type, ClassName::MOCK_OBJECT)) {
+        if ($this->isObjectType($property->type, new ObjectType(ClassName::MOCK_OBJECT))) {
             return true;
         }
 
