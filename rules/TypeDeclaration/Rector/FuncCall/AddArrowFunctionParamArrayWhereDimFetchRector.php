@@ -10,8 +10,11 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeFinder;
+use PhpParser\NodeVisitor;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -118,12 +121,19 @@ CODE_SAMPLE
 
     private function shouldSkip(ArrowFunction $arrowFunction): bool
     {
-        return $this->betterNodeFinder->hasInstancesOf(
+        $shouldSkip = false;
+
+        $this->traverseNodesWithCallable(
             $arrowFunction->expr,
-            [
-                Ternary::class,
-                Closure::class,
-            ]
-        );
+            function (Node $subNode) use (&$shouldSkip) {
+                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike || $subNode instanceof Ternary) {
+                    $shouldSkip = true;
+                    return NodeVisitor::STOP_TRAVERSAL;
+                }
+
+                return null;
+            });
+
+        return $shouldSkip;
     }
 }
