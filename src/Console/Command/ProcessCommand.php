@@ -105,7 +105,7 @@ EOF
             $this->reportLevelOverflow($levelOverflow);
         }
 
-        // 0. warn about rules registered in both withRules() and sets to avoid bloated rector.php configs
+        // 1. warn about rules registered in both withRules() and sets to avoid bloated rector.php configs
         $setAndRulesDuplicatedRegistrations = $configuration->getBothSetAndRulesDuplicatedRegistrations();
         if ($setAndRulesDuplicatedRegistrations !== []) {
             $this->symfonyStyle->warning(sprintf(
@@ -113,8 +113,6 @@ EOF
                 PHP_EOL . PHP_EOL,
                 implode(' * ', $setAndRulesDuplicatedRegistrations) . PHP_EOL
             ));
-
-            $this->warnAboutLevelOverflow($levelOverflow);
         }
 
         // 1. add files and directories to static locator
@@ -227,7 +225,7 @@ EOF
         $this->symfonyStyle->listing($composerBasedSets);
     }
 
-    private function warnAboutLevelOverflow(LevelOverflow $levelOverflow): void
+    private function reportLevelOverflow(LevelOverflow $levelOverflow): void
     {
         $suggestedSetMethod = PHP_VERSION_ID >= 80000 ? sprintf(
             '->withPreparedSets(%s: true)',
