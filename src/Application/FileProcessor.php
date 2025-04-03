@@ -85,7 +85,10 @@ final readonly class FileProcessor
             // when changed, set final status changed to true
             // to ensure it make sense to verify in next process when needed
             $file->changeHasChanged(true);
+        }
 
+        $rectorWithLineChanges = $file->getRectorWithLineChanges();
+        if ($file->hasChanged() || $rectorWithLineChanges !== []) {
             $currentFileDiff = $this->fileDiffFactory->createFileDiffWithLineChanges(
                 $configuration->shouldShowDiffs(),
                 $file,
