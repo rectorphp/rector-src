@@ -48,6 +48,7 @@ use Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
+use Rector\TypeDeclaration\Rector\FuncCall\AddArrowFunctionParamArrayWhereDimFetchRector;
 use Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector;
@@ -120,6 +121,7 @@ final class TypeDeclarationLevel
         // closures
         AddClosureNeverReturnTypeRector::class,
         ClosureReturnTypeRector::class,
+        AddArrowFunctionParamArrayWhereDimFetchRector::class,
 
         // more risky rules
         ReturnTypeFromStrictParamRector::class,

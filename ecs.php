@@ -27,8 +27,5 @@ return ECSConfig::configure()
             // double to Double false positive
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
         ],
-
-        // change constant to lower
-        LowercaseKeywordsFixer::class,
     ])
     ->withRootFiles();
