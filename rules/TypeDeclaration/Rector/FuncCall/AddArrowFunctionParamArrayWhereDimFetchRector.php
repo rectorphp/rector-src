@@ -7,10 +7,12 @@ namespace Rector\TypeDeclaration\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Identifier;
 use PhpParser\NodeFinder;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -22,6 +24,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddArrowFunctionParamArrayWhereDimFetchRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(private readonly BetterNodeFinder $betterNodeFinder)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add function/closure param array type, if dim fetch is inside', [
@@ -77,7 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasTernary($arrowFunction)) {
+        if ($this->shouldSkip($arrowFunction)) {
             return null;
         }
 
@@ -110,9 +116,14 @@ CODE_SAMPLE
         return false;
     }
 
-    private function hasTernary(ArrowFunction $arrowFunction): bool
+    private function shouldSkip(ArrowFunction $arrowFunction): bool
     {
-        $nodeFinder = new NodeFinder();
-        return (bool) $nodeFinder->findFirstInstanceOf($arrowFunction->expr, Ternary::class);
+        return $this->betterNodeFinder->hasInstancesOf(
+            $arrowFunction->expr,
+            [
+                Ternary::class,
+                Closure::class,
+            ]
+        );
     }
 }
