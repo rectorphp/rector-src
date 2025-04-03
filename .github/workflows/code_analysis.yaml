@@ -30,6 +30,12 @@ jobs:
                         run: vendor/bin/phpstan analyse --ansi
 
                     -
+                        name: 'Help and Version'
+                        run:
+                            bin/rector --help
+                            bin/rector --version
+
+                    -
                         name: 'Commented Code'
                         run: vendor/bin/swiss-knife check-commented-code src rules tests rules-tests --line-limit 5 --ansi
 
