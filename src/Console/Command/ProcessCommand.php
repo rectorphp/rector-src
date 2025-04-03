@@ -115,7 +115,7 @@ EOF
             ));
         }
 
-        // 1. add files and directories to static locator
+        // 2. add files and directories to static locator
         $this->dynamicSourceLocatorDecorator->addPaths($paths);
         if ($this->dynamicSourceLocatorDecorator->isPathsEmpty()) {
             // read from rector.php, no paths definition needs withPaths() config
