@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Fixer\Casing\LowercaseKeywordsFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
