@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\FunctionLike;
@@ -15,7 +14,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -27,10 +25,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddArrowFunctionParamArrayWhereDimFetchRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly BetterNodeFinder $betterNodeFinder)
-    {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add function/closure param array type, if dim fetch is inside', [
@@ -125,7 +119,7 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable(
             $arrowFunction->expr,
-            function (Node $subNode) use (&$shouldSkip) {
+            function (Node $subNode) use (&$shouldSkip): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike || $subNode instanceof Ternary) {
                     $shouldSkip = true;
                     return NodeVisitor::STOP_TRAVERSAL;
