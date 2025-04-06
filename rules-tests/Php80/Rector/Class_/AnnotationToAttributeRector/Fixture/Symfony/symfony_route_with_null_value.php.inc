@@ -11,9 +11,6 @@ final class SymfonyRouteWithNullValue
      */
     public function action()
     {
-        $keepSpace = 1;
-
-        $keepSpaceAgain = 1;
     }
 }
 
@@ -30,9 +27,6 @@ final class SymfonyRouteWithNullValue
     #[Route(path: '/some/{id}', defaults: ['id' => null])]
     public function action()
     {
-        $keepSpace = 1;
-
-        $keepSpaceAgain = 1;
     }
 }
 
