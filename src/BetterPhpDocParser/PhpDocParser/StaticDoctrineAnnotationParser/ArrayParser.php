@@ -185,7 +185,16 @@ final readonly class ArrayParser
             // give raw value
             $value = new StringNode(substr($rawValue, 1, strlen($rawValue) - 2));
         } else {
-            $value = $rawValue;
+            if ($valueQuoteKind === null) {
+                $value = match ($rawValue) {
+                    'null' => null,
+                    'true' => true,
+                    'false' => false,
+                    default => $rawValue
+                };
+            } else {
+                $value = $rawValue;
+            }
         }
 
         $keyQuoteKind = $this->resolveQuoteKind($rawKey);
