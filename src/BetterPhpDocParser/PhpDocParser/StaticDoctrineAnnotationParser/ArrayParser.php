@@ -184,17 +184,15 @@ final readonly class ArrayParser
         if (is_string($rawValue) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
             // give raw value
             $value = new StringNode(substr($rawValue, 1, strlen($rawValue) - 2));
+        } elseif ($valueQuoteKind === null) {
+            $value = match ($rawValue) {
+                'null' => null,
+                'true' => true,
+                'false' => false,
+                default => $rawValue
+            };
         } else {
-            if ($valueQuoteKind === null) {
-                $value = match ($rawValue) {
-                    'null' => null,
-                    'true' => true,
-                    'false' => false,
-                    default => $rawValue
-                };
-            } else {
-                $value = $rawValue;
-            }
+            $value = $rawValue;
         }
 
         $keyQuoteKind = $this->resolveQuoteKind($rawKey);
