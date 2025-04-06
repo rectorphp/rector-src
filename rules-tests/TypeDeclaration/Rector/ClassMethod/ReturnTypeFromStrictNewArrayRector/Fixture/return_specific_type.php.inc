@@ -30,7 +30,7 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArray
 final class ReturnSpecificType
 {
     /**
-     * @return \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Source\AppleJuice[]
+     * @return list<\Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Source\AppleJuice>
      */
     public function run(): array
     {

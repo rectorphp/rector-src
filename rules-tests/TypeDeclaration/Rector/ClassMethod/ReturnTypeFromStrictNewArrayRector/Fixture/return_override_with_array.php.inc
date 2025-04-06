@@ -23,7 +23,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNe
 final class ReturnOverrideWithArray
 {
     /**
-     * @return int[]
+     * @return list<1000>
      */
     public function run(): array
     {
