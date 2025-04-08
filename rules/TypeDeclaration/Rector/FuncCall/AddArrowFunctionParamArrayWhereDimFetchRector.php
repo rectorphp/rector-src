@@ -8,9 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Identifier;
-use PhpParser\NodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -36,7 +34,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 $array = [['name' => 'John']];
 
-$result = array_map(fn ($item) => $item['name'], $array);
+$result = array_map(fn (array $item) => $item['name'], $array);
 CODE_SAMPLE
             ),
         ]);
@@ -77,12 +75,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasTernary($arrowFunction)) {
+        if (! $arrowFunction->expr instanceof ArrayDimFetch) {
             return null;
         }
 
-        $paramName = $this->getName($arrowFunctionParam);
-        if (! $this->isParamArrayDimFetched($arrowFunction, $paramName)) {
+        $var = $arrowFunction->expr;
+        while ($var instanceof ArrayDimFetch) {
+            $var = $var->var;
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($var, $arrowFunctionParam->var)) {
             return null;
         }
 
@@ -94,25 +96,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SCALAR_TYPES;
-    }
-
-    private function isParamArrayDimFetched(ArrowFunction $arrowFunction, string $paramName): bool
-    {
-        $nodeFinder = new NodeFinder();
-
-        $arrayDimFetches = $nodeFinder->findInstanceOf($arrowFunction->expr, ArrayDimFetch::class);
-        foreach ($arrayDimFetches as $arrayDimFetch) {
-            if ($this->isName($arrayDimFetch->var, $paramName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function hasTernary(ArrowFunction $arrowFunction): bool
-    {
-        $nodeFinder = new NodeFinder();
-        return (bool) $nodeFinder->findFirstInstanceOf($arrowFunction->expr, Ternary::class);
     }
 }

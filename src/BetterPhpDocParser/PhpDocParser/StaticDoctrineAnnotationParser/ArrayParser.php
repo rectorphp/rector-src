@@ -184,6 +184,14 @@ final readonly class ArrayParser
         if (is_string($rawValue) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
             // give raw value
             $value = new StringNode(substr($rawValue, 1, strlen($rawValue) - 2));
+        } elseif ($valueQuoteKind === null && is_string($rawValue)) {
+            $lowerRawValue = strtolower($rawValue);
+            $value = match ($lowerRawValue) {
+                'null' => null,
+                'true' => true,
+                'false' => false,
+                default => $rawValue
+            };
         } else {
             $value = $rawValue;
         }

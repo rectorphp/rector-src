@@ -105,7 +105,7 @@ EOF
             $this->reportLevelOverflow($levelOverflow);
         }
 
-        // 0. warn about rules registered in both withRules() and sets to avoid bloated rector.php configs
+        // 1. warn about rules registered in both withRules() and sets to avoid bloated rector.php configs
         $setAndRulesDuplicatedRegistrations = $configuration->getBothSetAndRulesDuplicatedRegistrations();
         if ($setAndRulesDuplicatedRegistrations !== []) {
             $this->symfonyStyle->warning(sprintf(
@@ -115,7 +115,7 @@ EOF
             ));
         }
 
-        // 1. add files and directories to static locator
+        // 2. add files and directories to static locator
         $this->dynamicSourceLocatorDecorator->addPaths($paths);
         if ($this->dynamicSourceLocatorDecorator->isPathsEmpty()) {
             // read from rector.php, no paths definition needs withPaths() config
