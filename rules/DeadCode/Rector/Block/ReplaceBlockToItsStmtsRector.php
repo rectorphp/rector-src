@@ -52,7 +52,7 @@ CODE_SAMPLE
 
     /**
      * @param Block $node
-     * @return Stmt[]
+     * @return int|Stmt[]
      */
     public function refactor(Node $node): int|array
     {
