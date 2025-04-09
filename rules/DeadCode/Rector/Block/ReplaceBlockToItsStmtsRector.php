@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\Block;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Block;
+use PhpParser\NodeVisitor;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -53,8 +54,12 @@ CODE_SAMPLE
      * @param Block $node
      * @return Stmt[]
      */
-    public function refactor(Node $node): array
+    public function refactor(Node $node): int|array
     {
+        if ($node->stmts === []) {
+            return NodeVisitor::REMOVE_NODE;
+        }
+
         return $node->stmts;
     }
 }
