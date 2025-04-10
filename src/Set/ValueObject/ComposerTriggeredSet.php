@@ -46,7 +46,7 @@ final readonly class ComposerTriggeredSet implements SetInterface
     public function matchInstalledPackages(array $installedPackages): bool
     {
         foreach ($installedPackages as $installedPackage) {
-            if ($installedPackage->getName() !== $this->packageName) {
+            if (!fnmatch($this->packageName, $installedPackage->getName())) {
                 continue;
             }
 
