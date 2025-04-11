@@ -83,8 +83,10 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
             }
         }
 
-        if ($functionLikeReflection->getVariants() === []) {
-           // return null;
+        // skip replaced native function
+        if ($functionLikeReflection instanceof \PHPStan\Reflection\Php\PhpFunctionReflection
+             && strtolower($this->getName($node)) !== strtolower($functionLikeReflection->getName())) {
+            return null;
         }
 
         $maximumAllowedParameterCount = $this->resolveMaximumAllowedParameterCount($functionLikeReflection);
