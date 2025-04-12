@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
@@ -39,7 +38,7 @@ final readonly class SideEffectNodeDetector
     ) {
     }
 
-    public function detect(Expr $expr, Scope $scope): bool
+    public function detect(Expr $expr): bool
     {
         if ($expr instanceof Assign) {
             return true;
@@ -47,7 +46,7 @@ final readonly class SideEffectNodeDetector
 
         return (bool) $this->betterNodeFinder->findFirst(
             $expr,
-            fn (Node $subNode): bool => $this->detectCallExpr($subNode, $scope)
+            fn (Node $subNode): bool => $this->detectCallExpr($subNode)
         );
     }
 
