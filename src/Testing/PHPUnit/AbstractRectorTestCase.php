@@ -175,8 +175,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $fixtureName = basename($fixtureFilePath);
         $testClass = static::class;
         $this->assertSame(
-            PHP_EOL . "WARNING: On fixture file \"" . $fixtureName . '" for test "' . $testClass . "\"" . PHP_EOL .
-            "File not changed but some Rector rules applied:" . PHP_EOL .
+            PHP_EOL . 'WARNING: On fixture file "' . $fixtureName . '" for test "' . $testClass . '"' . PHP_EOL .
+            'File not changed but some Rector rules applied:' . PHP_EOL .
             ' * ' . $expectedRuleApplied . PHP_EOL,
             $content
         );
