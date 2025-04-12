@@ -82,8 +82,6 @@ CODE_SAMPLE
             $exprs = [$node->expr, $node->valueVar];
         }
 
-        ScopeFetcher::fetch($node);
-
         foreach ($exprs as $expr) {
             if ($expr instanceof Assign) {
                 $expr = $expr->expr;
