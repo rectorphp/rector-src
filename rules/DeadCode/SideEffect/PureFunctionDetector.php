@@ -6,7 +6,6 @@ namespace Rector\DeadCode\SideEffect;
 
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -19,7 +18,7 @@ final readonly class PureFunctionDetector
     ) {
     }
 
-    public function detect(FuncCall $funcCall, Scope $scope): bool
+    public function detect(FuncCall $funcCall): bool
     {
         $funcCallName = $this->nodeNameResolver->getName($funcCall);
         if ($funcCallName === null) {

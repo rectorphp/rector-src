@@ -217,7 +217,7 @@ final readonly class ReflectionResolver
         return $this->resolveMethodReflection($className, $methodName, $scope);
     }
 
-    public function resolveFunctionReflectionFromFunction(Function_ $function, Scope $scope): ?FunctionReflection
+    public function resolveFunctionReflectionFromFunction(Function_ $function): ?FunctionReflection
     {
         $name = $this->nodeNameResolver->getName($function);
         if ($name === null) {
@@ -288,7 +288,7 @@ final readonly class ReflectionResolver
     private function resolveFunctionReflectionFromFuncCall(
         FuncCall $funcCall
     ): FunctionReflection | MethodReflection | null {
-        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+        $funcCall->getAttribute(AttributeKey::SCOPE);
 
         if (! $funcCall->name instanceof Name) {
             return null;

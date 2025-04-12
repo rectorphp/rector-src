@@ -21,7 +21,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
@@ -112,11 +111,10 @@ final class AstResolver
     }
 
     public function resolveClassMethodOrFunctionFromCall(
-        FuncCall | StaticCall | MethodCall $call,
-        Scope $scope
+        FuncCall | StaticCall | MethodCall $call
     ): ClassMethod | Function_ | null {
         if ($call instanceof FuncCall) {
-            return $this->resolveFunctionFromFuncCall($call, $scope);
+            return $this->resolveFunctionFromFuncCall($call);
         }
 
         return $this->resolveClassMethodFromCall($call);
@@ -393,7 +391,7 @@ final class AstResolver
         return $paramNode;
     }
 
-    private function resolveFunctionFromFuncCall(FuncCall $funcCall, Scope $scope): ?Function_
+    private function resolveFunctionFromFuncCall(FuncCall $funcCall): ?Function_
     {
         if ($funcCall->name instanceof Expr) {
             return null;
