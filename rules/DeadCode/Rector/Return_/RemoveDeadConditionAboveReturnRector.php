@@ -85,7 +85,7 @@ CODE_SAMPLE
             $scope = $stmt->getAttribute(AttributeKey::SCOPE);
 
             /** @var If_ $previousNode */
-            if ($this->sideEffectNodeDetector->detect($previousNode->cond, $scope)) {
+            if ($this->sideEffectNodeDetector->detect($previousNode->cond)) {
                 continue;
             }
 

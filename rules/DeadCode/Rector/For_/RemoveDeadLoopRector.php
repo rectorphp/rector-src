@@ -82,14 +82,14 @@ CODE_SAMPLE
             $exprs = [$node->expr, $node->valueVar];
         }
 
-        $scope = ScopeFetcher::fetch($node);
+        ScopeFetcher::fetch($node);
 
         foreach ($exprs as $expr) {
             if ($expr instanceof Assign) {
                 $expr = $expr->expr;
             }
 
-            if ($this->sideEffectNodeDetector->detect($expr, $scope)) {
+            if ($this->sideEffectNodeDetector->detect($expr)) {
                 return null;
             }
         }
