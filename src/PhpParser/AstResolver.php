@@ -400,11 +400,11 @@ final class AstResolver
         }
 
         $functionName = new Name((string) $this->nodeNameResolver->getName($funcCall));
-        if (! $this->reflectionProvider->hasFunction($functionName, $scope)) {
+        if (! $this->reflectionProvider->hasFunction($functionName, null)) {
             return null;
         }
 
-        $functionReflection = $this->reflectionProvider->getFunction($functionName, $scope);
+        $functionReflection = $this->reflectionProvider->getFunction($functionName, null);
         return $this->resolveFunctionFromFunctionReflection($functionReflection);
     }
 }

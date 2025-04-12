@@ -28,12 +28,12 @@ final readonly class PureFunctionDetector
 
         $name = new Name($funcCallName);
 
-        $hasFunction = $this->reflectionProvider->hasFunction($name, $scope);
+        $hasFunction = $this->reflectionProvider->hasFunction($name, null);
         if (! $hasFunction) {
             return false;
         }
 
-        $functionReflection = $this->reflectionProvider->getFunction($name, $scope);
+        $functionReflection = $this->reflectionProvider->getFunction($name, null);
         if (! $functionReflection instanceof NativeFunctionReflection) {
             return false;
         }
