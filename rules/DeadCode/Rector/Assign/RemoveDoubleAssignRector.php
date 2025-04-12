@@ -56,7 +56,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        ScopeFetcher::fetch($node);
         $stmts = $node->stmts;
         if ($stmts === null) {
             return null;

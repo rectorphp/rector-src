@@ -81,9 +81,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var Scope $scope */
-            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
-
             /** @var If_ $previousNode */
             if ($this->sideEffectNodeDetector->detect($previousNode->cond)) {
                 continue;
