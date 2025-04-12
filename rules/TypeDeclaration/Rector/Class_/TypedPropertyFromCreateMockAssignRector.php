@@ -85,7 +85,10 @@ CODE_SAMPLE
 
         foreach ($node->getProperties() as $property) {
             // already use PHPUnit\Framework\MockObject\MockObject type
-            if ($property->type instanceof Node && $this->isObjectType($property->type, new ObjectType(ClassName::MOCK_OBJECT))){
+            if ($property->type instanceof Node && $this->isObjectType(
+                $property->type,
+                new ObjectType(ClassName::MOCK_OBJECT)
+            )) {
                 continue;
             }
 
