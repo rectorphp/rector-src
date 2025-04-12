@@ -105,7 +105,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        ScopeFetcher::fetch($node);
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
