@@ -11,11 +11,9 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Analyser\Scope;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
@@ -106,7 +104,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
@@ -120,7 +117,7 @@ CODE_SAMPLE
                 [StaticCall::class, MethodCall::class, FuncCall::class]
             );
 
-            $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $callers, $scope);
+            $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $callers);
             if ($hasClassMethodChanged) {
                 $hasChanged = true;
             }
@@ -159,7 +156,7 @@ CODE_SAMPLE
     /**
      * @param array<StaticCall|MethodCall|FuncCall> $callers
      */
-    private function refactorClassMethod(ClassMethod $classMethod, array $callers, Scope $scope): bool
+    private function refactorClassMethod(ClassMethod $classMethod, array $callers): bool
     {
         $hasChanged = false;
 
@@ -170,7 +167,7 @@ CODE_SAMPLE
 
             $paramTypes = [];
             foreach ($callers as $caller) {
-                $matchCallParam = $this->callerParamMatcher->matchCallParam($caller, $param, $scope);
+                $matchCallParam = $this->callerParamMatcher->matchCallParam($caller, $param);
 
                 // nothing to do with param, continue
                 if (! $matchCallParam instanceof Param) {

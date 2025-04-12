@@ -101,14 +101,14 @@ final readonly class CallerParamMatcher
         return $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
     }
 
-    public function matchCallParam(StaticCall | MethodCall | FuncCall $call, Param $param, Scope $scope): ?Param
+    public function matchCallParam(StaticCall | MethodCall | FuncCall $call, Param $param): ?Param
     {
         $callArgPosition = $this->matchCallArgPosition($call, $param);
         if ($callArgPosition === null) {
             return null;
         }
 
-        $classMethodOrFunction = $this->astResolver->resolveClassMethodOrFunctionFromCall($call, $scope);
+        $classMethodOrFunction = $this->astResolver->resolveClassMethodOrFunctionFromCall($call);
         if ($classMethodOrFunction === null) {
             return null;
         }
