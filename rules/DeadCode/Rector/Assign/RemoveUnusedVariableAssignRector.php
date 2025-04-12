@@ -104,8 +104,6 @@ CODE_SAMPLE
             /** @var Assign $assign */
             $assign = $currentStmt->expr;
 
-            $scope = ScopeFetcher::fetch($node);
-
             if ($this->hasCallLikeInAssignExpr($assign)) {
                 // clean safely
                 $cleanAssignedExpr = $this->cleanCastedExpr($assign->expr);
