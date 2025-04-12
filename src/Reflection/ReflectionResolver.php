@@ -288,8 +288,6 @@ final readonly class ReflectionResolver
     private function resolveFunctionReflectionFromFuncCall(
         FuncCall $funcCall
     ): FunctionReflection | MethodReflection | null {
-        $funcCall->getAttribute(AttributeKey::SCOPE);
-
         if (! $funcCall->name instanceof Name) {
             return null;
         }
