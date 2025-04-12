@@ -51,7 +51,7 @@ final readonly class SideEffectNodeDetector
         );
     }
 
-    public function detectCallExpr(Node $node, Scope $scope): bool
+    public function detectCallExpr(Node $node): bool
     {
         if (! $node instanceof Expr) {
             return false;
@@ -71,7 +71,7 @@ final readonly class SideEffectNodeDetector
         }
 
         if ($node instanceof FuncCall) {
-            return ! $this->pureFunctionDetector->detect($node, $scope);
+            return ! $this->pureFunctionDetector->detect($node);
         }
 
         if ($node instanceof Variable || $node instanceof ArrayDimFetch) {
