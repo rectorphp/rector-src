@@ -210,6 +210,10 @@ CODE_SAMPLE,
                 continue;
             }
 
+            if ($parentClassReflection->isTrait() && ! $parentMethod->isAbstract()) {
+                break;
+            }
+
             $shouldAddOverride = true;
             break;
         }
