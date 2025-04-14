@@ -4,5 +4,5 @@ namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverridden
 
 abstract class SomeAbstractClass
 {
-    public function run();
+    abstract public function run();
 }
