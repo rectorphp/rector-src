@@ -2,7 +2,8 @@
 
 namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source;
 
-abstract class SomeAbstractClass
+use Stringable;
+
+abstract class SomeClassImplementsToString implements Stringable
 {
-    abstract public function run();
 }

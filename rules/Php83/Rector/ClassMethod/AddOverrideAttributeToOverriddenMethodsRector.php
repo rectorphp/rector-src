@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\AstResolver;
@@ -26,7 +27,7 @@ use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -34,12 +35,20 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\AddOverrideAttributeToOverriddenMethodsRectorTest
  */
-final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector implements MinPhpVersionInterface
+final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
     /**
      * @var string
      */
     private const OVERRIDE_CLASS = 'Override';
+
+    /**
+     * @api
+     * @var string
+     */
+    public const ALLOW_OVERRIDE_EMPTY_METHOD = 'allow_override_empty_method';
+
+    private bool $allowOverrideEmptyMethod = false;
 
     private bool $hasChanged = false;
 
@@ -57,7 +66,7 @@ final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector
         return new RuleDefinition(
             'Add override attribute to overridden methods',
             [
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 class ParentClass
 {
@@ -93,7 +102,10 @@ final class ChildClass extends ParentClass
         echo 'override default';
     }
 }
-CODE_SAMPLE
+CODE_SAMPLE,
+            [
+                self::ALLOW_OVERRIDE_EMPTY_METHOD => false,
+            ]
                 ),
             ]
         );
@@ -105,6 +117,14 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [Class_::class];
+    }
+
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $this->allowOverrideEmptyMethod = $configuration[self::ALLOW_OVERRIDE_EMPTY_METHOD] ?? false;
     }
 
     /**
@@ -125,6 +145,17 @@ CODE_SAMPLE
 
         $classReflection = $this->reflectionProvider->getClass($className);
         $parentClassReflections = $classReflection->getParents();
+
+        if ($this->allowOverrideEmptyMethod) {
+            $parentClassReflections = array_merge(
+                $parentClassReflections,
+                $classReflection->getInterfaces(),
+
+                // place on last to ensure verify method exists on parent early
+                // for non abstract method from trait
+                $classReflection->getTraits(),
+            );
+        }
 
         if ($parentClassReflections === []) {
             return null;
@@ -179,6 +210,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($parentClassReflection->isTrait() && ! $parentMethod->isAbstract()) {
+                break;
+            }
+
             $shouldAddOverride = true;
             break;
         }
@@ -205,6 +240,10 @@ CODE_SAMPLE
 
     private function shouldSkipParentClassMethod(ClassReflection $parentClassReflection, ClassMethod $classMethod): bool
     {
+        if ($this->allowOverrideEmptyMethod && $parentClassReflection->isBuiltIn()) {
+            return false;
+        }
+
         // parse parent method, if it has some contents or not
         $parentClass = $this->astResolver->resolveClassFromClassReflection($parentClassReflection);
         if (! $parentClass instanceof ClassLike) {
@@ -214,6 +253,10 @@ CODE_SAMPLE
         $parentClassMethod = $parentClass->getMethod($classMethod->name->toString());
         if (! $parentClassMethod instanceof ClassMethod) {
             return true;
+        }
+
+        if ($this->allowOverrideEmptyMethod) {
+            return false;
         }
 
         // just override abstract method also skipped on purpose
