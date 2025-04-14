@@ -147,7 +147,14 @@ CODE_SAMPLE,
         $parentClassReflections = $classReflection->getParents();
 
         if ($this->allowOverrideEmptyMethod) {
-            $parentClassReflections = array_merge($parentClassReflections, $classReflection->getInterfaces());
+            $parentClassReflections = array_merge(
+                $parentClassReflections,
+                $classReflection->getInterfaces(),
+
+                // place on last to ensure verify method exists on parent early
+                // for non abstract method from trait
+                $classReflection->getTraits(),
+            );
         }
 
         if ($parentClassReflections === []) {
