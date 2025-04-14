@@ -9,6 +9,7 @@ use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\AbstractType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\DifferentInterface;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Enum\SomeEnumWithMethod;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Foo;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\NewInterface;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SomeSubscriber;
@@ -35,5 +36,8 @@ return static function (RectorConfig $rectorConfig): void {
         new MethodCallRenameWithArrayKey('Nette\Utils\Html', 'addToArray', 'addToHtmlArray', 'hey'),
         // never types
         new MethodCallRename('Symfony\\Component\\Workflow\\DefinitionBuilder', 'reset', 'clear'),
+
+        // enum method
+        new MethodCallRename(SomeEnumWithMethod::class, 'oldEnumMethod', 'newEnumMethod'),
     ]);
 };
