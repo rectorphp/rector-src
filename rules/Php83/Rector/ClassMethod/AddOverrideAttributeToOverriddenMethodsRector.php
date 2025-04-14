@@ -146,6 +146,10 @@ CODE_SAMPLE,
         $classReflection = $this->reflectionProvider->getClass($className);
         $parentClassReflections = $classReflection->getParents();
 
+        if ($this->allowOverrideEmptyMethod) {
+            $parentClassReflections = array_merge($parentClassReflections, $classReflection->getInterfaces());
+        }
+
         if ($parentClassReflections === []) {
             return null;
         }
@@ -225,6 +229,10 @@ CODE_SAMPLE,
 
     private function shouldSkipParentClassMethod(ClassReflection $parentClassReflection, ClassMethod $classMethod): bool
     {
+        if ($this->allowOverrideEmptyMethod && $parentClassReflection->isBuiltIn()) {
+            return false;
+        }
+
         // parse parent method, if it has some contents or not
         $parentClass = $this->astResolver->resolveClassFromClassReflection($parentClassReflection);
         if (! $parentClass instanceof ClassLike) {
