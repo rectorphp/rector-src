@@ -2,7 +2,8 @@
 
 namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\Fixture;
 
-final class switchBreakNotUnreachable {
+final class SkipSwitchBreakNotUnreachable
+{
     public function run(): bool {
         switch('test') {
             case 'test':
@@ -16,4 +17,3 @@ final class switchBreakNotUnreachable {
         return true;
     }
 }
-?>
