@@ -143,13 +143,13 @@ final readonly class ConfigurationFactory
 
         // give priority to command line
         if ($commandLinePaths !== []) {
-            $this->setFileWithoutExtensionsParameter($commandLinePaths);
+            $this->setFilesWithoutExtensionParameter($commandLinePaths);
             return $commandLinePaths;
         }
 
         // fallback to parameter
         $configPaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
-        $this->setFileWithoutExtensionsParameter($configPaths);
+        $this->setFilesWithoutExtensionParameter($configPaths);
 
         return $configPaths;
     }
@@ -157,7 +157,7 @@ final readonly class ConfigurationFactory
     /**
      * @param string[] $paths
      */
-    private function setFileWithoutExtensionsParameter(array $paths): void
+    private function setFilesWithoutExtensionParameter(array $paths): void
     {
         foreach ($paths as $path) {
             if (is_file($path) && pathinfo($path, PATHINFO_EXTENSION) === '') {
