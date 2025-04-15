@@ -176,13 +176,13 @@ CODE_SAMPLE
     {
         foreach ($configuration as $config) {
             /** @var AnnotationToAttribute $config */
-            if (! $config->getUseValueAsAttributeArgument() && $config->getAttributeClass() !== $config->getTag()) {
+            if ($config->getAttributeClass() !== $config->getTag()) {
                 // add to make sure apply after use statement changed
                 $configuration[] = new AnnotationToAttribute(
                     $config->getAttributeClass(),
                     $config->getAttributeClass(),
                     $config->getClassReferenceFields(),
-                    false
+                    $config->getUseValueAsAttributeArgument(),
                 );
             }
         }
