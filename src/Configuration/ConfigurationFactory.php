@@ -148,10 +148,10 @@ final readonly class ConfigurationFactory
         }
 
         // fallback to parameter
-        $commandLinePaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
-        $this->setFileWithoutExtensionsParameter($commandLinePaths);
+        $configPaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
+        $this->setFileWithoutExtensionsParameter($configPaths);
 
-        return $commandLinePaths;
+        return $configPaths;
     }
 
     /**
