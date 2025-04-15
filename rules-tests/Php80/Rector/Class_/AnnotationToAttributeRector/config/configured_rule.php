@@ -62,5 +62,7 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute('OldName1', NewName1::class),
         new AnnotationToAttribute('OldName2', NewName2::class),
         new AnnotationToAttribute('SameName', SameName::class),
+
+        new AnnotationToAttribute('OpenApi\Annotations\Property', 'OpenApi\Attributes\Property'),
     ]);
 };
