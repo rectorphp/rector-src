@@ -164,7 +164,30 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allIsAOf($configuration, AnnotationToAttribute::class);
-        $this->annotationsToAttributes = $configuration;
+
+        $this->annotationsToAttributes = $this->setChangedAttributesClass($configuration);
+    }
+
+    /**
+     * @param AnnotationToAttribute[] $configuration
+     * @return AnnotationToAttribute[] $configuration
+     */
+    private function setChangedAttributesClass(array $configuration): array
+    {
+        foreach ($configuration as $config) {
+            /** @var AnnotationToAttribute $config */
+            if (! $config->getUseValueAsAttributeArgument() && $config->getAttributeClass() !== $config->getTag()) {
+                // add to make sure apply after use statement changed
+                $configuration[] = new AnnotationToAttribute(
+                    $config->getAttributeClass(),
+                    $config->getAttributeClass(),
+                    $config->getClassReferenceFields(),
+                    false
+                );
+            }
+        }
+
+        return $configuration;
     }
 
     public function provideMinPhpVersion(): int
