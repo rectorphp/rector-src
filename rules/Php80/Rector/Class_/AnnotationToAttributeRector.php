@@ -165,14 +165,14 @@ CODE_SAMPLE
     {
         Assert::allIsAOf($configuration, AnnotationToAttribute::class);
 
-        $this->annotationsToAttributes = $this->setChangedAttributesClass($configuration);
+        $this->annotationsToAttributes = $this->resolveWithChangedAttributesClass($configuration);
     }
 
     /**
      * @param AnnotationToAttribute[] $configuration
      * @return AnnotationToAttribute[] $configuration
      */
-    private function setChangedAttributesClass(array $configuration): array
+    private function resolveWithChangedAttributesClass(array $configuration): array
     {
         foreach ($configuration as $config) {
             /** @var AnnotationToAttribute $config */
