@@ -143,11 +143,27 @@ final readonly class ConfigurationFactory
 
         // give priority to command line
         if ($commandLinePaths !== []) {
+            $this->setFileWithoutExtensionsParameter($commandLinePaths);
             return $commandLinePaths;
         }
 
         // fallback to parameter
-        return SimpleParameterProvider::provideArrayParameter(Option::PATHS);
+        $commandLinePaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
+        $this->setFileWithoutExtensionsParameter($commandLinePaths);
+
+        return $commandLinePaths;
+    }
+
+    /**
+     * @param string[] $paths
+     */
+    private function setFileWithoutExtensionsParameter(array $paths): void
+    {
+        foreach ($paths as $path) {
+            if (is_file($path) && pathinfo($path, PATHINFO_EXTENSION) === '') {
+                SimpleParameterProvider::addParameter(Option::FILES_WITHOUT_EXTENSION, $path);
+            }
+        }
     }
 
     private function resolveMemoryLimit(InputInterface $input): string | null
