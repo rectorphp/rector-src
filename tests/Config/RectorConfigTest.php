@@ -15,16 +15,13 @@ final class RectorConfigTest extends AbstractLazyTestCase
 {
     public function test(): void
     {
-        $rectorConfigBuilder = RectorConfig::configure()
+        RectorConfig::configure()
             ->withSets([
                 TwigSetList::TWIG_134
             ])
             ->withRules([
                 ReturnTypeFromReturnNewRector::class
-            ]);
-
-        // invoke is needed to get collection of rules
-        $rectorConfigBuilder->__invoke(new RectorConfig());
+            ])(new RectorConfig());
 
         // only collect root withRules()
         $this->assertCount(1, SimpleParameterProvider::provideArrayParameter(Option::ROOT_STANDALONE_REGISTERED_RULES));
