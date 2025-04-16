@@ -41,8 +41,18 @@ final class RectorConfig extends Container
      */
     private array $autotagInterfaces = [Command::class, ResetableInterface::class];
 
+    private static ?bool $recreated = null;
+
     public static function configure(): RectorConfigBuilder
     {
+        if (self::$recreated === null) {
+            self::$recreated = false;
+        } elseif (self::$recreated === false) {
+            self::$recreated = true;
+        }
+
+        SimpleParameterProvider::setParameter(Option::IS_RECTORCONFIG_BUILDER_RECREATED, self::$recreated);
+
         return new RectorConfigBuilder();
     }
 

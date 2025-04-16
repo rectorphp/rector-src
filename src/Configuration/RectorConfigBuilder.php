@@ -788,13 +788,16 @@ final class RectorConfigBuilder
     {
         $this->rules = array_merge($this->rules, $rules);
 
-        // log all explicitly registered rules
-        // we only check the non-configurable rules, as the configurable ones might override them
-        $nonConfigurableRules = array_filter(
-            $rules,
-            fn (string $rule): bool => ! is_a($rule, ConfigurableRectorInterface::class, true)
-        );
-        SimpleParameterProvider::addParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, $nonConfigurableRules);
+        if (SimpleParameterProvider::provideBoolParameter(Option::IS_RECTORCONFIG_BUILDER_RECREATED) === false) {
+            // log all explicitly registered rules on root rector.php
+            // we only check the non-configurable rules, as the configurable ones might override them
+            $nonConfigurableRules = array_filter(
+                $rules,
+                fn (string $rule): bool => ! is_a($rule, ConfigurableRectorInterface::class, true)
+            );
+
+            SimpleParameterProvider::addParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, $nonConfigurableRules);
+        }
 
         return $this;
     }
