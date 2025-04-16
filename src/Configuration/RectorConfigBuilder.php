@@ -788,7 +788,7 @@ final class RectorConfigBuilder
     {
         $this->rules = array_merge($this->rules, $rules);
 
-        if (SimpleParameterProvider::provideBoolParameter(Option::IS_RECTORCONFIG_BUILDER_RECREATED) === false) {
+        if (SimpleParameterProvider::provideBoolParameter(Option::IS_RECTORCONFIG_BUILDER_RECREATED, false) === false) {
             // log all explicitly registered rules on root rector.php
             // we only check the non-configurable rules, as the configurable ones might override them
             $nonConfigurableRules = array_filter(
