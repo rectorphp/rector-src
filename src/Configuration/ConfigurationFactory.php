@@ -161,7 +161,13 @@ final readonly class ConfigurationFactory
     {
         foreach ($paths as $path) {
             if (is_file($path) && pathinfo($path, PATHINFO_EXTENSION) === '') {
-                SimpleParameterProvider::addParameter(Option::FILES_WITHOUT_EXTENSION, realpath($path));
+                $path = realpath($path);
+
+                if ($path === false) {
+                    continue;
+                }
+
+                SimpleParameterProvider::addParameter(Option::FILES_WITHOUT_EXTENSION, $path);
             }
         }
     }
