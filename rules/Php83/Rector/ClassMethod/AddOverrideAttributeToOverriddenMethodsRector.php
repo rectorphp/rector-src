@@ -38,15 +38,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
     /**
-     * @var string
-     */
-    private const OVERRIDE_CLASS = 'Override';
-
-    /**
      * @api
      * @var string
      */
     public const ALLOW_OVERRIDE_EMPTY_METHOD = 'allow_override_empty_method';
+
+    /**
+     * @var string
+     */
+    private const OVERRIDE_CLASS = 'Override';
 
     private bool $allowOverrideEmptyMethod = false;
 
@@ -102,10 +102,11 @@ final class ChildClass extends ParentClass
         echo 'override default';
     }
 }
-CODE_SAMPLE,
-            [
-                self::ALLOW_OVERRIDE_EMPTY_METHOD => false,
-            ]
+CODE_SAMPLE
+                    ,
+                    [
+                        self::ALLOW_OVERRIDE_EMPTY_METHOD => false,
+                    ]
                 ),
             ]
         );
