@@ -70,6 +70,12 @@ final readonly class FilesFinder
 
         $filteredFilePaths = array_filter($filteredFilePaths, $fileWithSuffixFilter);
 
+        // add file without extension after file extension filter
+        $filteredFilePaths = array_merge(
+            $filteredFilePaths,
+            SimpleParameterProvider::provideArrayParameter(Option::FILES_WITHOUT_EXTENSION)
+        );
+
         $filteredFilePaths = array_filter(
             $filteredFilePaths,
             function (string $file): bool {
