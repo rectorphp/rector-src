@@ -90,6 +90,8 @@ CODE_SAMPLE
 
         if (StringUtils::isMatch($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX)) {
             $node->value = Strings::replace($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX, '$1\-');
+            $this->setRawValue($node);
+
             // helped needed to skip re-escaping regular expression
             $node->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);
 
@@ -98,6 +100,8 @@ CODE_SAMPLE
 
         if (StringUtils::isMatch($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX)) {
             $node->value = Strings::replace($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX, '\-$1]');
+            $this->setRawValue($node);
+
             // helped needed to skip re-escaping regular expression
             $node->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);
 
@@ -105,5 +109,19 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function setRawValue(String_ $string): void
+    {
+        $rawValue = $string->getAttribute(AttributeKey::RAW_VALUE);
+        if ($rawValue === null) {
+            return;
+        }
+
+        $rawValue = str_starts_with($rawValue, '"')
+            ? '"' . $string->value . '"'
+            : "'" . $string->value . "'";
+
+        $string->setAttribute(AttributeKey::RAW_VALUE, $rawValue);
     }
 }
