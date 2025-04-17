@@ -82,7 +82,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $stringValue = trim($node->getAttribute(AttributeKey::RAW_VALUE) ?? $node->value, '"\'');
+        if ($node->getAttribute(AttributeKey::RAW_VALUE) !== null) {
+            $stringValue = substr($node->getAttribute(AttributeKey::RAW_VALUE), 1, -1);
+        } else {
+            $stringValue = $node->value;
+        }
 
         if (StringUtils::isMatch($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX)) {
             $node->value = Strings::replace($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX, '$1\-');
