@@ -6,6 +6,7 @@ function escapedQuote()
 {
     $string = '...';
     $string = preg_replace('/[^[:alnum:]\s-\'\/]+/', '', $string);
+    $string = preg_replace('/\'[^[:alnum:]\s-\'\/]+/', '', $string);
 }
 
 ?>
@@ -18,6 +19,7 @@ function escapedQuote()
 {
     $string = '...';
     $string = preg_replace('/[^[:alnum:]\s\-\'\/]+/', '', $string);
+    $string = preg_replace('/\'[^[:alnum:]\s\-\'\/]+/', '', $string);
 }
 
 ?>
