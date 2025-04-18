@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 
 final class Fixture extends TestCase
 {
-    #[\PHPUnit\Framework\Attributes\TestDox('property is true')]
+    #[\PHPUnit\Framework\Attributes\TestDox('::property is true')]
     public function myAwesomeTest(): void
     {
     }
