@@ -36,6 +36,7 @@ final readonly class MatchParamTypeExpectedNameResolver
 
         $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
         $expectedName = $this->propertyNaming->getExpectedNameFromType($staticType);
+
         if (! $expectedName instanceof ExpectedName) {
             return null;
         }
