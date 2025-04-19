@@ -105,6 +105,7 @@ final readonly class PropertyNaming
 
         // prolong too short generic names with one namespace up
         $originalName = $this->prolongIfTooShort($shortClassName, $className);
+
         return new ExpectedName($originalName, $this->rectorNamingInflector->singularize($originalName));
     }
 
@@ -173,7 +174,10 @@ final readonly class PropertyNaming
 
     private function prolongIfTooShort(string $shortClassName, string $className): string
     {
-        if (in_array($shortClassName, ['Factory', 'Repository'], true)) {
+        if (in_array($shortClassName, ['Factory', 'Repository'], true) && ! str_ends_with(
+            $className,
+            'Repository'
+        ) && ! str_ends_with($className, 'Factory')) {
             $namespaceAbove = (string) Strings::after($className, '\\', -2);
             $namespaceAbove = (string) Strings::before($namespaceAbove, '\\');
 
