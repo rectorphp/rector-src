@@ -312,4 +312,9 @@ final class Option
      * @internal to allow process file without extension if explicitly registered
      */
     public const FILES_WITHOUT_EXTENSION = 'files_without_extension';
+
+    /**
+     * @internal Additional PostRectorRules to run after all Rector rules have been processed
+     */
+    public const REGISTERED_POST_RECTOR_RULES = 'registered_post_rector_rules';
 }

@@ -21,6 +21,8 @@ use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
+use Rector\PostRector\Application\PostFileProcessor;
+use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Rector\AbstractRector;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -100,6 +102,17 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
             $rectorNodeTraverser->refreshPhpRectors($rectors);
+
+            $postRectorsGenerator = $rectorConfig->tagged(PostRectorInterface::class);
+            $postRectors = $postRectorsGenerator instanceof RewindableGenerator
+                ? iterator_to_array($postRectorsGenerator->getIterator())
+                : [];
+
+            if ($postRectors !== []) {
+                /** @var PostFileProcessor $postFileProcessor */
+                $postFileProcessor = $rectorConfig->make(PostFileProcessor::class);
+                $postFileProcessor->refreshAdditionalPostRectors($postRectors);
+            }
 
             // store cache
             self::$cacheByRuleAndConfig[$cacheKey] = true;
@@ -188,6 +201,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         // 1. forget tagged services
         ContainerMemento::forgetTag($rectorConfig, RectorInterface::class);
+
+        ContainerMemento::forgetTag($rectorConfig, PostRectorInterface::class);
 
         // 2. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor = new PrivatesAccessor();

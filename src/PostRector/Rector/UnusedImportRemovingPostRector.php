@@ -91,6 +91,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         return $node;
     }
 
+    public function getPriority(): int
+    {
+        return 500;
+    }
+
     /**
      * @return string[]
      */
