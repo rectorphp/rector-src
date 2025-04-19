@@ -161,6 +161,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\TypeWithClassNameTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
+use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Rector\AbstractRector;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
@@ -424,6 +425,10 @@ final class LazyContainerFactory
 
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
+
+        $rectorConfig->when(PostFileProcessor::class)
+            ->needs('$additionalPostRectors')
+            ->giveTagged(PostRectorInterface::class);
 
         $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$rectors')

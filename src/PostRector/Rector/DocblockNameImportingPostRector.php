@@ -50,4 +50,9 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
     {
         return $this->addUseStatementGuard->shouldTraverse($stmts, $this->getFile()->getFilePath());
     }
+
+    public function getPriority(): int
+    {
+        return 300;
+    }
 }

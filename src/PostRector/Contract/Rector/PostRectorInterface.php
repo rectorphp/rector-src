@@ -19,4 +19,10 @@ interface PostRectorInterface extends NodeVisitor
     public function shouldTraverse(array $stmts): bool;
 
     public function setFile(File $file): void;
+
+    /**
+     * Used to sort PostRectors in the order in which they should run
+     * A smaller number means higher priority (should run first)
+     */
+    public function getPriority(): int;
 }

@@ -95,6 +95,11 @@ final class ClassRenamingPostRector extends AbstractPostRector
         return $this->oldToNewClasses !== [];
     }
 
+    public function getPriority(): int
+    {
+        return 100;
+    }
+
     private function resolveResultWithPhpAttributeName(Name $name, ?Scope $scope): ?FullyQualified
     {
         $phpAttributeName = $name->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);

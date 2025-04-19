@@ -15,6 +15,7 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\Configuration\LevelOverflow;
@@ -238,6 +239,21 @@ final class RectorConfig extends Container
     }
 
     /**
+     * @param class-string<PostRectorInterface> $postRectorClass
+     */
+    public function postRector(string $postRectorClass): void
+    {
+        Assert::classExists($postRectorClass);
+        Assert::isAOf($postRectorClass, PostRectorInterface::class);
+
+        $this->singleton($postRectorClass);
+        $this->tag($postRectorClass, PostRectorInterface::class);
+
+        // for cache invalidation in case of change
+        SimpleParameterProvider::addParameter(Option::REGISTERED_POST_RECTOR_RULES, $postRectorClass);
+    }
+
+    /**
      * @param class-string<Command> $commandClass
      */
     public function command(string $commandClass): void
@@ -275,6 +291,20 @@ final class RectorConfig extends Container
 
         foreach ($rectorClasses as $rectorClass) {
             $this->rule($rectorClass);
+        }
+    }
+
+    /**
+     * @param array<class-string<PostRectorInterface>> $postRectorClasses
+     */
+    public function postRectors(array $postRectorClasses): void
+    {
+        Assert::allString($postRectorClasses);
+
+        RectorConfigValidator::ensureNoDuplicatedClasses($postRectorClasses);
+
+        foreach ($postRectorClasses as $postRectorClass) {
+            $this->postRector($postRectorClass);
         }
     }
 

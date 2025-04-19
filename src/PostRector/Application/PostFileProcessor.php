@@ -27,6 +27,9 @@ final class PostFileProcessor implements ResetableInterface
      */
     private array $postRectors = [];
 
+    /**
+     * @param PostRectorInterface[] $additionalPostRectors
+     */
     public function __construct(
         private readonly Skipper $skipper,
         private readonly UseAddingPostRector $useAddingPostRector,
@@ -34,13 +37,24 @@ final class PostFileProcessor implements ResetableInterface
         private readonly ClassRenamingPostRector $classRenamingPostRector,
         private readonly DocblockNameImportingPostRector $docblockNameImportingPostRector,
         private readonly UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private array $additionalPostRectors
     ) {
     }
 
     public function reset(): void
     {
         $this->postRectors = [];
+        $this->additionalPostRectors = [];
+    }
+
+    /**
+     * @param PostRectorInterface[] $postRectors
+     * @api used in tests to update the list of additional post rectors
+     */
+    public function refreshAdditionalPostRectors(array $postRectors): void
+    {
+        $this->additionalPostRectors = $postRectors;
     }
 
     /**
@@ -125,6 +139,13 @@ final class PostFileProcessor implements ResetableInterface
         if ($isRemovingUnusedImportsEnabled) {
             $postRectors[] = $this->unusedImportRemovingPostRector;
         }
+
+        $postRectors = [...$postRectors, ...$this->additionalPostRectors];
+
+        usort(
+            $postRectors,
+            fn (PostRectorInterface $a, PostRectorInterface $b): int => $a->getPriority() <=> $b->getPriority()
+        );
 
         $this->postRectors = $postRectors;
 

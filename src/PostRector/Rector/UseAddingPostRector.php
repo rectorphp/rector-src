@@ -83,6 +83,11 @@ final class UseAddingPostRector extends AbstractPostRector
         return NodeVisitor::STOP_TRAVERSAL;
     }
 
+    public function getPriority(): int
+    {
+        return 400;
+    }
+
     /**
      * @param Stmt[] $nodes
      * @param FullyQualifiedObjectType[] $useImportTypes

@@ -23,6 +23,7 @@ use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
@@ -71,6 +72,11 @@ final class RectorConfigBuilder
      * @var array<class-string<ConfigurableRectorInterface>, mixed[]>
      */
     private array $rulesWithConfigurations = [];
+
+    /**
+     * @var array<class-string<PostRectorInterface>>
+     */
+    private array $postRectors = [];
 
     /**
      * @var string[]
@@ -279,6 +285,10 @@ final class RectorConfigBuilder
             foreach ($configurations as $configuration) {
                 $rectorConfig->ruleWithConfiguration($rectorClass, $configuration);
             }
+        }
+
+        if ($this->postRectors !== []) {
+            $rectorConfig->postRectors($this->postRectors);
         }
 
         if ($this->fileExtensions !== []) {
@@ -798,6 +808,26 @@ final class RectorConfigBuilder
 
             SimpleParameterProvider::addParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, $nonConfigurableRules);
         }
+
+        return $this;
+    }
+
+    /**
+     * @param class-string<PostRectorInterface> $postRector
+     */
+    public function withPostRector(string $postRector): self
+    {
+        $this->postRectors[] = $postRector;
+
+        return $this;
+    }
+
+    /**
+     * @param array<class-string<PostRectorInterface>> $postRectors
+     */
+    public function withPostRectors(array $postRectors): self
+    {
+        $this->postRectors = array_merge($this->postRectors, $postRectors);
 
         return $this;
     }
