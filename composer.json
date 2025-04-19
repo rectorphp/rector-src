@@ -104,7 +104,6 @@
         "complete-check": [
             "@check-cs",
             "@phpstan",
-            "@docs",
             "phpunit"
         ],
         "check-cs": "vendor/bin/ecs check --ansi",
