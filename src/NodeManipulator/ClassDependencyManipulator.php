@@ -162,19 +162,44 @@ final readonly class ClassDependencyManipulator
         Assign $assign
     ): void {
         /** @var ClassMethod|null $constructorMethod */
-        $constructorMethod = $class->getMethod(MethodName::CONSTRUCT);
+        $constructClassMethod = $this->resolveConstruct($class);
 
-        if ($constructorMethod instanceof ClassMethod) {
-            $this->classMethodAssignManipulator->addParameterAndAssignToMethod(
-                $constructorMethod,
-                $name,
-                $type,
-                $assign
-            );
+        if ($constructClassMethod instanceof ClassMethod) {
+            if (! $class->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
+                $parentArgs = [];
+
+                foreach ($constructClassMethod->params as $originalParam) {
+                    $parentArgs[] = new Arg(new Variable((string) $this->nodeNameResolver->getName($originalParam->var)));
+                }
+
+                $constructClassMethod->stmts = [new Expression(
+                    new StaticCall(
+                        new Name(ObjectReference::PARENT),
+                        MethodName::CONSTRUCT,
+                        $parentArgs
+                    )
+                )];
+                $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
+
+                $this->classMethodAssignManipulator->addParameterAndAssignToMethod(
+                    $constructClassMethod,
+                    $name,
+                    $type,
+                    $assign
+                );
+            } else {
+                $this->classMethodAssignManipulator->addParameterAndAssignToMethod(
+                    $constructClassMethod,
+                    $name,
+                    $type,
+                    $assign
+                );
+            }
+
             return;
         }
 
-        $constructorMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
+        $constructClassMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
 
         $this->classMethodAssignManipulator->addParameterAndAssignToMethod($constructorMethod, $name, $type, $assign);
         $this->classInsertManipulator->addAsFirstMethod($class, $constructorMethod);
