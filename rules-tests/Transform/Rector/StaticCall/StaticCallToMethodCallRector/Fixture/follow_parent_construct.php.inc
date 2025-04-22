@@ -31,7 +31,7 @@ use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source
 
 class FollowParentConstruct extends JsonResource
 {
-    public function __construct($resource,private \Illuminate\Foundation\Application $application)
+    public function __construct($resource, private \Illuminate\Foundation\Application $application)
     {
     }
     public function toArray(
