@@ -20,5 +20,11 @@ return static function (RectorConfig $rectorConfig): void {
                 'Illuminate\Contracts\Routing\ResponseFactory',
                 '*'
             ),
+            new StaticCallToMethodCall(
+                'Illuminate\Support\Facades\App',
+                '*',
+                'Illuminate\Foundation\Application',
+                '*'
+            ),
         ]);
 };
