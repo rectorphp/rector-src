@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
 use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\JsonResource;
 
-class FollowParentConstruct extends JsonResource
+class FollowParentConstructOnPhp74 extends JsonResource
 {
     public function toArray(
         Request $request,
@@ -29,7 +29,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
 use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\JsonResource;
 
-class FollowParentConstruct extends JsonResource
+class FollowParentConstructOnPhp74 extends JsonResource
 {
     private \Illuminate\Foundation\Application $application;
     public function __construct($resource, \Illuminate\Foundation\Application $application)
