@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\NodeManipulator;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -214,11 +216,26 @@ final readonly class ClassDependencyManipulator
                 return;
             }
 
-            $constructClassMethod->params[] = $param;
-
             // found construct, but only on parent, add to current class
             if (! $class->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
+                $parentArgs = [];
+
+                foreach ($constructClassMethod->params as $originalParam) {
+                    $parentArgs[] = new Arg(new Variable((string) $this->nodeNameResolver->getName($originalParam->var)));
+                }
+
+                $constructClassMethod->params[] = $param;
+
+                $constructClassMethod->stmts = [new Expression(
+                    new StaticCall(
+                        new Name(ObjectReference::PARENT),
+                        MethodName::CONSTRUCT,
+                        $parentArgs
+                    )
+                )];
                 $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
+            } else {
+                $constructClassMethod->params[] = $param;
             }
         } else {
             $constructClassMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);

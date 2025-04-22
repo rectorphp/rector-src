@@ -33,6 +33,7 @@ class FollowParentConstruct extends JsonResource
 {
     public function __construct($resource, private \Illuminate\Foundation\Application $application)
     {
+        parent::__construct($resource);
     }
     public function toArray(
         Request $request,
