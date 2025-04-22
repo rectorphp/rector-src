@@ -215,6 +215,11 @@ final readonly class ClassDependencyManipulator
             }
 
             $constructClassMethod->params[] = $param;
+
+            // found construct, but only on parent, add to current class
+            if (! $class->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
+                $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
+            }
         } else {
             $constructClassMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
             $constructClassMethod->params[] = $param;
