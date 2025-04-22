@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\NodeManipulator;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
@@ -18,6 +21,7 @@ use Rector\Enum\ObjectReference;
 use Rector\NodeAnalyzer\PropertyPresenceChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php\PhpVersionProvider;
+use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Reflection\ReflectionResolver;
@@ -40,7 +44,60 @@ final readonly class ClassDependencyManipulator
         private NodeNameResolver $nodeNameResolver,
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
         private ReflectionResolver $reflectionResolver,
+        private AstResolver $astResolver
     ) {
+    }
+
+    private function resolveConstruct(Class_ $class): ?ClassMethod
+    {
+        /** @var ClassMethod|null $constructorMethod */
+        $constructorMethod = $class->getMethod(MethodName::CONSTRUCT);
+
+        // exists in current class
+        if ($constructorMethod instanceof ClassMethod) {
+            return $constructorMethod;
+        }
+
+        // lookup parent, found first found (nearest parent constructor to follow)
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        $ancestors = array_filter(
+            $classReflection->getAncestors(),
+            static fn (ClassReflection $ancestor): bool => $ancestor->getName() !== $classReflection->getName()
+        );
+
+        foreach ($ancestors as $ancestor) {
+            if (! $ancestor->hasNativeMethod(MethodName::CONSTRUCT)) {
+                continue;
+            }
+
+            $parentClass = $this->astResolver->resolveClassFromClassReflection($ancestor);
+            if (! $parentClass instanceof ClassLike) {
+                continue;
+            }
+
+            $parentConstructorMethod = $parentClass->getMethod(MethodName::CONSTRUCT);
+
+            if (! $parentConstructorMethod instanceof ClassMethod) {
+                continue;
+            }
+
+            // only if it has parameters to check
+            // early returns as nearest parent construct
+            if ($parentConstructorMethod->params === []) {
+                return null;
+            }
+
+            // reprint parent method node to avoid invalid tokens
+            $this->nodeFactory->createReprintedNode($parentConstructorMethod);
+
+            return $parentConstructorMethod;
+        }
+
+        return null;
     }
 
     public function addConstructorDependency(Class_ $class, PropertyMetadata $propertyMetadata): void
@@ -77,9 +134,11 @@ final readonly class ClassDependencyManipulator
 
         }
 
+        $constructClassMethod = $this->resolveConstruct($class);
+
         // add PHP 8.0 promoted property
         if ($this->shouldAddPromotedProperty($class, $propertyMetadata)) {
-            $this->addPromotedProperty($class, $propertyMetadata);
+            $this->addPromotedProperty($class, $propertyMetadata, $constructClassMethod);
             return;
         }
 
@@ -102,23 +161,48 @@ final readonly class ClassDependencyManipulator
         ?Type $type,
         Assign $assign
     ): void {
-        /** @var ClassMethod|null $constructorMethod */
-        $constructorMethod = $class->getMethod(MethodName::CONSTRUCT);
+        /** @var ClassMethod|null $constructClassMethod */
+        $constructClassMethod = $this->resolveConstruct($class);
 
-        if ($constructorMethod instanceof ClassMethod) {
-            $this->classMethodAssignManipulator->addParameterAndAssignToMethod(
-                $constructorMethod,
-                $name,
-                $type,
-                $assign
-            );
+        if ($constructClassMethod instanceof ClassMethod) {
+            if (! $class->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
+                $parentArgs = [];
+
+                foreach ($constructClassMethod->params as $originalParam) {
+                    $parentArgs[] = new Arg(new Variable((string) $this->nodeNameResolver->getName($originalParam->var)));
+                }
+
+                $constructClassMethod->stmts = [new Expression(
+                    new StaticCall(
+                        new Name(ObjectReference::PARENT),
+                        MethodName::CONSTRUCT,
+                        $parentArgs
+                    )
+                )];
+                $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
+
+                $this->classMethodAssignManipulator->addParameterAndAssignToMethod(
+                    $constructClassMethod,
+                    $name,
+                    $type,
+                    $assign
+                );
+            } else {
+                $this->classMethodAssignManipulator->addParameterAndAssignToMethod(
+                    $constructClassMethod,
+                    $name,
+                    $type,
+                    $assign
+                );
+            }
+
             return;
         }
 
-        $constructorMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
+        $constructClassMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
 
-        $this->classMethodAssignManipulator->addParameterAndAssignToMethod($constructorMethod, $name, $type, $assign);
-        $this->classInsertManipulator->addAsFirstMethod($class, $constructorMethod);
+        $this->classMethodAssignManipulator->addParameterAndAssignToMethod($constructClassMethod, $name, $type, $assign);
+        $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
     }
 
     /**
@@ -153,9 +237,8 @@ final readonly class ClassDependencyManipulator
         $classMethod->stmts = array_merge($stmts, (array) $classMethod->stmts);
     }
 
-    private function addPromotedProperty(Class_ $class, PropertyMetadata $propertyMetadata): void
+    private function addPromotedProperty(Class_ $class, PropertyMetadata $propertyMetadata, ?ClassMethod $constructClassMethod): void
     {
-        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
         $param = $this->nodeFactory->createPromotedPropertyParam($propertyMetadata);
 
         if ($constructClassMethod instanceof ClassMethod) {
@@ -164,7 +247,27 @@ final readonly class ClassDependencyManipulator
                 return;
             }
 
-            $constructClassMethod->params[] = $param;
+            // found construct, but only on parent, add to current class
+            if (! $class->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
+                $parentArgs = [];
+
+                foreach ($constructClassMethod->params as $originalParam) {
+                    $parentArgs[] = new Arg(new Variable((string) $this->nodeNameResolver->getName($originalParam->var)));
+                }
+
+                $constructClassMethod->params[] = $param;
+
+                $constructClassMethod->stmts = [new Expression(
+                    new StaticCall(
+                        new Name(ObjectReference::PARENT),
+                        MethodName::CONSTRUCT,
+                        $parentArgs
+                    )
+                )];
+                $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
+            } else {
+                $constructClassMethod->params[] = $param;
+            }
         } else {
             $constructClassMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
             $constructClassMethod->params[] = $param;
