@@ -85,6 +85,12 @@ final readonly class ClassDependencyManipulator
                 continue;
             }
 
+            // only if it has parameters to check
+            // early returns as nearest parent construct
+            if ($parentConstructorMethod->params === []) {
+                return null;
+            }
+
             // reprint parent method node to avoid invalid tokens
             $this->nodeFactory->createReprintedNode($parentConstructorMethod);
 
