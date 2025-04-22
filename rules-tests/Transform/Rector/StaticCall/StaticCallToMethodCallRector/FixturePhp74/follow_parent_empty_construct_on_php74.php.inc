@@ -5,9 +5,9 @@ namespace Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
-use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\XmlResource2;
+use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\XmlResource;
 
-class FollowParentEmptyConstructOnPhp74 extends XmlResource2
+class FollowParentEmptyConstructOnPhp74 extends XmlResource
 {
     public function toArray(
         Request $request,
@@ -27,9 +27,9 @@ namespace Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
-use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\XmlResource2;
+use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\XmlResource;
 
-class FollowParentEmptyConstructOnPhp74 extends XmlResource2
+class FollowParentEmptyConstructOnPhp74 extends XmlResource
 {
     private \Illuminate\Foundation\Application $application;
     public function __construct(\Illuminate\Foundation\Application $application)

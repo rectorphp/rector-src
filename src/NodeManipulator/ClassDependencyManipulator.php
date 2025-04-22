@@ -231,10 +231,12 @@ final readonly class ClassDependencyManipulator
                 break;
             }
 
-            // reprint parent method node to avoid invalid tokens
-            $this->nodeFactory->createReprintedNode($parentConstructorMethod);
+            $constructorMethod = clone $parentConstructorMethod;
 
-            return $parentConstructorMethod;
+            // reprint parent method node to avoid invalid tokens
+            $this->nodeFactory->createReprintedNode($constructorMethod);
+
+            return $constructorMethod;
         }
 
         return null;
