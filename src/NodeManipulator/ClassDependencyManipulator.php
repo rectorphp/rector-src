@@ -67,12 +67,12 @@ final readonly class ClassDependencyManipulator
             static fn (ClassReflection $ancestor): bool => $ancestor->getName() !== $classReflection->getName()
         );
 
-        foreach ($ancestors as $ancestorClassReflection) {
-            if (! $ancestorClassReflection->hasNativeMethod(MethodName::CONSTRUCT)) {
+        foreach ($ancestors as $ancestor) {
+            if (! $ancestor->hasNativeMethod(MethodName::CONSTRUCT)) {
                 continue;
             }
 
-            $parentClass = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
+            $parentClass = $this->astResolver->resolveClassFromClassReflection($ancestor);
             if (! $parentClass instanceof ClassLike) {
                 continue;
             }
