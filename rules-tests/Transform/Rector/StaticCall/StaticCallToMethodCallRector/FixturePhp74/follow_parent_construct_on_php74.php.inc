@@ -5,9 +5,9 @@ namespace Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
-use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\JsonResource2;
+use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\JsonResource;
 
-class FollowParentConstructOnPhp74 extends JsonResource2
+class FollowParentConstructOnPhp74 extends JsonResource
 {
     public function toArray(
         Request $request,
@@ -27,9 +27,9 @@ namespace Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
-use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\JsonResource2;
+use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\JsonResource;
 
-class FollowParentConstructOnPhp74 extends JsonResource2
+class FollowParentConstructOnPhp74 extends JsonResource
 {
     private \Illuminate\Foundation\Application $application;
     public function __construct($resource, \Illuminate\Foundation\Application $application)
