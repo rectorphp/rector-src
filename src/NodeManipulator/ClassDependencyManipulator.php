@@ -161,7 +161,7 @@ final readonly class ClassDependencyManipulator
         ?Type $type,
         Assign $assign
     ): void {
-        /** @var ClassMethod|null $constructorMethod */
+        /** @var ClassMethod|null $constructClassMethod */
         $constructClassMethod = $this->resolveConstruct($class);
 
         if ($constructClassMethod instanceof ClassMethod) {
@@ -202,7 +202,7 @@ final readonly class ClassDependencyManipulator
         $constructClassMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
 
         $this->classMethodAssignManipulator->addParameterAndAssignToMethod($constructClassMethod, $name, $type, $assign);
-        $this->classInsertManipulator->addAsFirstMethod($class, $constructorMethod);
+        $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
     }
 
     /**
