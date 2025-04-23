@@ -2,26 +2,13 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
 
-use ArrayAccess;
-use Enumerable;
-
-/**
- * @template TKey of array-key
- *
- * @template-covariant TValue
- *
- * @implements ArrayAccess<TKey, TValue>
- */
-class Collection implements ArrayAccess, Enumerable {}
-
-class VariableValue {
-    public function __construct(public mixed $value) {}
-}
+use Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Source\Collection;
+use Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Source\SomeClass;
 
 final class SkipPropertyOnArrayAccess
 {
     /**
-     * @param  Collection<string, VariableValue>  $values
+     * @param  Collection<string, SomeClass>  $values
      */
     private function run(Collection $values): void
     {
