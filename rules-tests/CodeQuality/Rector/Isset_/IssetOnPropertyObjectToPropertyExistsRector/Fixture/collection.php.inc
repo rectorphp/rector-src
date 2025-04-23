@@ -1,4 +1,7 @@
 <?php
+
+namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
+
 /**
  * @template TKey of array-key
  *
@@ -6,16 +9,11 @@
  *
  * @implements \ArrayAccess<TKey, TValue>
  */
-namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
-
 class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerable {}
-namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
 
 class VariableValue {
     public function __construct(public string $name, public mixed $value, public ?string $expression, public ?AnswerType $type) {}
 }
-
-namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
 
 final class DemoFile
 {
