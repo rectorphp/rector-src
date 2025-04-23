@@ -2,25 +2,28 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
 
+use ArrayAccess;
+use Enumerable;
+
 /**
  * @template TKey of array-key
  *
  * @template-covariant TValue
  *
- * @implements \ArrayAccess<TKey, TValue>
+ * @implements ArrayAccess<TKey, TValue>
  */
-class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerable {}
+class Collection implements ArrayAccess, Enumerable {}
 
 class VariableValue {
-    public function __construct(public string $name, public mixed $value, public ?string $expression, public ?AnswerType $type) {}
+    public function __construct(public mixed $value) {}
 }
 
-final class DemoFile
+final class SkipPropertyOnArrayAccess
 {
     /**
      * @param  Collection<string, VariableValue>  $values
      */
-    private function setBlockTitle(Collection $values): void
+    private function run(Collection $values): void
     {
         if (! isset($values['_identity']->value)) {
             return;
@@ -29,4 +32,3 @@ final class DemoFile
         echo $values['_identity']->value;
     }
 }
-?>
