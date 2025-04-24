@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\Isset_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -117,6 +118,11 @@ CODE_SAMPLE
 
             $classReflection = $this->matchPropertyTypeClassReflection($issetExpr);
             if (! $classReflection instanceof ClassReflection) {
+                continue;
+            }
+
+            // possibly by docblock
+            if ($issetExpr->var instanceof ArrayDimFetch) {
                 continue;
             }
 
