@@ -34,7 +34,7 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add typed property from assigned mock', [
+        return new RuleDefinition('Add "PHPUnit\Framework\MockObject\MockObject" typed property from assigned mock to clearly separate from real objects', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
@@ -52,10 +52,11 @@ CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 final class SomeTest extends TestCase
 {
-    private \PHPUnit\Framework\MockObject\MockObject $someProperty;
+    private MockObject $someProperty;
 
     protected function setUp(): void
     {
@@ -84,15 +85,13 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getProperties() as $property) {
-            // already use PHPUnit\Framework\MockObject\MockObject type
-            if ($property->type instanceof Node && $this->isObjectType(
-                $property->type,
-                new ObjectType(ClassName::MOCK_OBJECT)
-            )) {
+            if (count($property->props) !== 1) {
                 continue;
             }
 
-            if (count($property->props) !== 1) {
+
+            // already use PHPUnit\Framework\MockObject\MockObject type
+            if ($this->isAlreadyTypedWithMockObject($property)) {
                 continue;
             }
 
@@ -134,5 +133,19 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::TYPED_PROPERTIES;
+    }
+
+    private function isAlreadyTypedWithMockObject(Node\Stmt\Property $property): bool
+    {
+        if (! $property->type instanceof Node) {
+            return false;
+        }
+
+        // complex type, used on purpose
+        if ($property->type instanceof Node\IntersectionType) {
+            return true;
+        }
+
+        return $this->isObjectType($property->type, new ObjectType(ClassName::MOCK_OBJECT));
     }
 }
