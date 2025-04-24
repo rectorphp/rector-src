@@ -76,7 +76,7 @@ final class InstalledPackageResolver
 
     private function resolveVendorDir(): string
     {
-        $projectComposerJsonFilePath = \getcwd() . '/composer.json';
+        $projectComposerJsonFilePath = $this->projectDirectory . '/composer.json';
         if (\file_exists($projectComposerJsonFilePath)) {
             $projectComposerContents = FileSystem::read($projectComposerJsonFilePath);
             $projectComposerJson = Json::decode($projectComposerContents, true);
