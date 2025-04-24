@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\Composer\ValueObject\InstalledPackage;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Webmozart\Assert\Assert;
 
 /**
@@ -41,7 +42,7 @@ final class InstalledPackageResolver
             return $this->resolvedInstalledPackages;
         }
 
-        $installedPackagesFilePath = $this->projectDirectory . '/' . self::resolveVendorDir() . '/composer/installed.json';
+        $installedPackagesFilePath = self::resolveVendorDir() . '/composer/installed.json';
         if (! file_exists($installedPackagesFilePath)) {
             throw new ShouldNotHappenException(
                 'The installed package json not found. Make sure you run `composer update` and the "vendor/composer/installed.json" file exists'
@@ -75,13 +76,22 @@ final class InstalledPackageResolver
 
     private function resolveVendorDir(): string
     {
-        $defaultVendorDir = 'vendor';
         $projectComposerJsonFilePath = \getcwd() . '/composer.json';
         if (\file_exists($projectComposerJsonFilePath)) {
             $projectComposerContents = FileSystem::read($projectComposerJsonFilePath);
             $projectComposerJson = Json::decode($projectComposerContents, true);
-            return $projectComposerJson['config']['vendor-dir'] ?? $defaultVendorDir;
+
+            if (isset($projectComposerJson['config']['vendor-dir']) &&
+                is_string($projectComposerJson['config']['vendor-dir'])
+            ) {
+                return PathNormalizer::normalize(
+                    realpath($projectComposerJson['config']['vendor-dir'])
+                ) === PathNormalizer::normalize($projectComposerJson['config']['vendor-dir'])
+                    ? $projectComposerJson['config']['vendor-dir']
+                    : $this->projectDirectory . '/' . $projectComposerJson['config']['vendor-dir'];
+            }
+
         }
-        return $defaultVendorDir;
+        return $this->projectDirectory . '/vendor';
     }
 }
