@@ -41,7 +41,7 @@ final class InstalledPackageResolver
             return $this->resolvedInstalledPackages;
         }
 
-        $installedPackagesFilePath = $this->projectDirectory . '/vendor/composer/installed.json';
+        $installedPackagesFilePath = $this->projectDirectory . '/' . self::resolveVendorDir() . '/composer/installed.json';
         if (! file_exists($installedPackagesFilePath)) {
             throw new ShouldNotHappenException(
                 'The installed package json not found. Make sure you run `composer update` and the "vendor/composer/installed.json" file exists'
@@ -71,5 +71,17 @@ final class InstalledPackageResolver
         }
 
         return $installedPackages;
+    }
+
+    private function resolveVendorDir(): string
+    {
+        $defaultVendorDir = 'vendor';
+        $projectComposerJsonFilePath = \getcwd() . '/composer.json';
+        if (\file_exists($projectComposerJsonFilePath)) {
+            $projectComposerContents = FileSystem::read($projectComposerJsonFilePath);
+            $projectComposerJson = Json::decode($projectComposerContents, true);
+            return $projectComposerJson['config']['vendor-dir'] ?? $defaultVendorDir;
+        }
+        return $defaultVendorDir;
     }
 }
