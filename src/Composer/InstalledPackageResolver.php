@@ -85,13 +85,14 @@ final class InstalledPackageResolver
                 is_string($projectComposerJson['config']['vendor-dir'])
             ) {
                 return PathNormalizer::normalize(
-                    realpath($projectComposerJson['config']['vendor-dir'])
+                    realpath($projectComposerJson['config']['vendor-dir']) ?: ''
                 ) === PathNormalizer::normalize($projectComposerJson['config']['vendor-dir'])
                     ? $projectComposerJson['config']['vendor-dir']
                     : $this->projectDirectory . '/' . $projectComposerJson['config']['vendor-dir'];
             }
 
         }
+
         return $this->projectDirectory . '/vendor';
     }
 }
