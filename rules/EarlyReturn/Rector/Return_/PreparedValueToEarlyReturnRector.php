@@ -110,12 +110,12 @@ CODE_SAMPLE
                 return null;
             }
 
-            if ($stmt instanceof For_ || $stmt instanceof Foreach_ || $stmt instanceof While_ || $stmt instanceof Do_) {
+            if (($stmt instanceof For_ || $stmt instanceof Foreach_ || $stmt instanceof While_ || $stmt instanceof Do_) && $initialAssign instanceof Assign) {
                 $isReassignInLoop = (bool) $this->betterNodeFinder->findFirst(
                     $stmt,
                     fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
                         $node->var,
-                        $initialAssign?->var
+                        $initialAssign->var
                     )
                 );
 
