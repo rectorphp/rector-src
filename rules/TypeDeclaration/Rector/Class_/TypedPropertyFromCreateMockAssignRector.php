@@ -89,6 +89,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $mockObjectType = new ObjectType(ClassName::MOCK_OBJECT);
 
         foreach ($node->getProperties() as $property) {
             if (count($property->props) !== 1) {
@@ -96,7 +97,7 @@ CODE_SAMPLE
             }
 
             // already use PHPUnit\Framework\MockObject\MockObject type
-            if ($this->isAlreadyTypedWithMockObject($property)) {
+            if ($this->isAlreadyTypedWithMockObject($property, $mockObjectType)) {
                 continue;
             }
 
@@ -112,7 +113,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isObjectType($propertyType, new ObjectType(ClassName::MOCK_OBJECT))) {
+            if (! $this->isObjectType($propertyType, $mockObjectType)) {
                 continue;
             }
 
@@ -140,7 +141,7 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function isAlreadyTypedWithMockObject(Property $property): bool
+    private function isAlreadyTypedWithMockObject(Property $property, ObjectType $mockObjectType): bool
     {
         if (! $property->type instanceof Node) {
             return false;
@@ -151,6 +152,6 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->isObjectType($property->type, new ObjectType(ClassName::MOCK_OBJECT));
+        return $this->isObjectType($property->type, $mockObjectType);
     }
 }
