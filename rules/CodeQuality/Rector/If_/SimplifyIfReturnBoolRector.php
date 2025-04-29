@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\CodeQuality\NodeManipulator\ExprBoolCaster;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Rector\AbstractRector;
@@ -106,7 +105,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            $if->cond->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             $this->commentsMerger->keepComments($newReturn, [$if, $return, $ifInnerNode]);
 
             // remove previous IF
