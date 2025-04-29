@@ -325,3 +325,6 @@ parameters:
 
         # list vs array
         - '#Parameter (.*?) expects list<(.*?)>, array<(.*?)> given#'
+
+        - identifier: symplify.noConstructorOverride
+          path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
