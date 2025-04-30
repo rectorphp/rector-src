@@ -8,6 +8,5 @@ class SkipProtectedPropertyPromotionOnNonFinalClass
 {
     public function __construct(protected GitWrapper $wrapper)
     {
-        $this->wrapper = $wrapper;
     }
 }
