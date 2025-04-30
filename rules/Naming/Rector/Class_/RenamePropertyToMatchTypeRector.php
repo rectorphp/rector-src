@@ -7,8 +7,6 @@ namespace Rector\Naming\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\ObjectType;
 use Rector\Enum\ClassName;
@@ -105,25 +103,25 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorClassProperties(Class_ $classLike): void
+    private function refactorClassProperties(Class_ $class): void
     {
-        foreach ($classLike->getProperties() as $property) {
+        foreach ($class->getProperties() as $property) {
             // skip public properties, as they can be used in external code
             if ($property->isPublic()) {
                 continue;
             }
 
-            if (!$classLike->isFinal() && $property->isProtected()) {
+            if (!$class->isFinal() && $property->isProtected()) {
                 continue;
             }
 
-            $expectedPropertyName = $this->matchPropertyTypeExpectedNameResolver->resolve($property, $classLike);
+            $expectedPropertyName = $this->matchPropertyTypeExpectedNameResolver->resolve($property, $class);
             if ($expectedPropertyName === null) {
                 continue;
             }
 
             $propertyRename = $this->propertyRenameFactory->createFromExpectedName(
-                $classLike,
+                $class,
                 $property,
                 $expectedPropertyName
             );
