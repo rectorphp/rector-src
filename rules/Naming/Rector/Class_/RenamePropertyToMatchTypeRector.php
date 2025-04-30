@@ -81,11 +81,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Class_::class, Interface_::class];
+        return [Class_::class];
     }
 
     /**
-     * @param Class_|Interface_ $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -105,11 +105,15 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorClassProperties(ClassLike $classLike): void
+    private function refactorClassProperties(Class_ $classLike): void
     {
         foreach ($classLike->getProperties() as $property) {
             // skip public properties, as they can be used in external code
             if ($property->isPublic()) {
+                continue;
+            }
+
+            if (!$classLike->isFinal() && $property->isProtected()) {
                 continue;
             }
 

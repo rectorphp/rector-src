@@ -45,7 +45,7 @@ final readonly class PropertyPromotionRenamer
     ) {
     }
 
-    public function renamePropertyPromotion(Class_|Interface_ $classLike): bool
+    public function renamePropertyPromotion(Class_ $classLike): bool
     {
         $hasChanged = false;
 
@@ -73,6 +73,10 @@ final readonly class PropertyPromotionRenamer
 
             // skip public properties, as they can be used in external code
             if ($param->isPublic()) {
+                continue;
+            }
+
+            if (! $classLike->isFinal() && $param->isProtected()) {
                 continue;
             }
 
