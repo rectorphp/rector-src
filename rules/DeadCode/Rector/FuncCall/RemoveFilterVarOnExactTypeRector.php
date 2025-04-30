@@ -72,7 +72,7 @@ CODE_SAMPLE
 
         $constantFilterName = $secondArgValue->name->toString();
 
-        $valueType = $this->getType($firstArgValue);
+        $valueType = $this->nodeTypeResolver->getNativeType($firstArgValue);
 
         if ($constantFilterName === 'FILTER_VALIDATE_INT' && $valueType->isInteger()->yes()) {
             return $firstArgValue;
