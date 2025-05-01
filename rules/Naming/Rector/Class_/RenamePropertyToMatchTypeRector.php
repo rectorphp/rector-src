@@ -111,7 +111,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (!$class->isFinal() && $property->isProtected()) {
+            if (! $class->isFinal() && $property->isProtected()) {
                 continue;
             }
 
