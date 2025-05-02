@@ -120,7 +120,7 @@ final class ApplicationFileProcessor
         ?callable $preFileCallback = null,
         ?callable $postFileCallback = null
     ): ProcessResult {
-        if (!in_array($configuration->getKaizenStepCount(), [null, 0], true)) {
+        if (! in_array($configuration->getKaizenStepCount(), [null, 0], true)) {
             $this->kaizenStepper->setStepCount($configuration->getKaizenStepCount());
         }
 

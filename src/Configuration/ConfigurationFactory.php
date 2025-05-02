@@ -9,6 +9,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Configuration\ConfigurationFactoryTest
@@ -59,15 +60,9 @@ final readonly class ConfigurationFactory
         $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
 
         $kaizenStepCount = $input->getOption(Option::KAIZEN);
-
-        if ($kaizenStepCount === false) {
-            // not active
-            $kaizenStepCount = null;
-        } elseif ($kaizenStepCount === null) {
-            // enabled, but no value
-            $kaizenStepCount = 1;
-        } elseif (is_string($kaizenStepCount)) {
+        if ($kaizenStepCount !== null) {
             $kaizenStepCount = (int) $kaizenStepCount;
+            Assert::positiveInteger($kaizenStepCount, 'Change "--kaizen" value to a positive integer');
         }
 
         $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);

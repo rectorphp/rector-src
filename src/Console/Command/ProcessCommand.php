@@ -87,7 +87,7 @@ EOF
         }
 
         $configuration = $this->configurationFactory->createFromInput($input);
-        if (!in_array($configuration->getKaizenStepCount(), [null, 0], true)) {
+        if (! in_array($configuration->getKaizenStepCount(), [null, 0], true)) {
             $this->symfonyStyle->writeln(sprintf(
                 '<fg=yellow>[EXPERIMENTAL] Running Kaizen mode. Only first %d rule%s will be applied</>',
                 $configuration->getKaizenStepCount(),

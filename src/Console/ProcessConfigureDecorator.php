@@ -69,9 +69,8 @@ final class ProcessConfigureDecorator
         $command->addOption(
             Option::KAIZEN,
             null,
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_REQUIRED,
             'Improve step by step: apply only first X rules that make a change',
-            false
         );
 
         $command->addOption(Option::DEBUG, null, InputOption::VALUE_NONE, 'Display debug output.');
