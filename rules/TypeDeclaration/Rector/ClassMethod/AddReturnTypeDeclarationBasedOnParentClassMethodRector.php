@@ -159,7 +159,7 @@ CODE_SAMPLE
         Type $parentType
     ): ?ClassMethod {
         if ($parentType instanceof MixedType) {
-            $className = (string) $this->nodeNameResolver->getName($class);
+            $className = (string) $this->getName($class);
             $currentObjectType = new ObjectType($className);
             if (! $parentType->equals($currentObjectType) && $classMethod->returnType instanceof Node) {
                 return null;

@@ -198,7 +198,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $this->nodeNameResolver->isName($expr, 'iterator_to_array')) {
+        if (! $this->isName($expr, 'iterator_to_array')) {
             return false;
         }
 

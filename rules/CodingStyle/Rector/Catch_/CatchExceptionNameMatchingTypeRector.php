@@ -200,7 +200,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->nodeNameResolver->isName($node, $oldVariableName)) {
+            if (! $this->isName($node, $oldVariableName)) {
                 return null;
             }
 
@@ -239,7 +239,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->nodeNameResolver->isName($node, $oldVariableName)) {
+            if (! $this->isName($node, $oldVariableName)) {
                 return null;
             }
 

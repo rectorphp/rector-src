@@ -109,7 +109,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->nodeNameResolver->isName($ternary->cond, 'is_object')) {
+        if (! $this->isName($ternary->cond, 'is_object')) {
             return true;
         }
 
@@ -121,7 +121,7 @@ CODE_SAMPLE
             return $this->shouldSkipClassConstFetch($ternary->if);
         }
 
-        if (! $this->nodeNameResolver->isName($ternary->if, 'get_class')) {
+        if (! $this->isName($ternary->if, 'get_class')) {
             return true;
         }
 
@@ -133,7 +133,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $this->nodeNameResolver->isName($ternary->else, 'gettype');
+        return ! $this->isName($ternary->else, 'gettype');
     }
 
     private function shouldSkipClassConstFetch(ClassConstFetch $classConstFetch): bool

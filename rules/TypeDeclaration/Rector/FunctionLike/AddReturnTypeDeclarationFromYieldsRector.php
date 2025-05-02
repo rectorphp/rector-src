@@ -224,8 +224,8 @@ CODE_SAMPLE
             return 'Iterator';
         }
 
-        if ($returnTypeNode instanceof Name && ! $this->nodeNameResolver->isName($returnTypeNode, 'Generator')) {
-            return $this->nodeNameResolver->getName($returnTypeNode);
+        if ($returnTypeNode instanceof Name && ! $this->isName($returnTypeNode, 'Generator')) {
+            return $this->getName($returnTypeNode);
         }
 
         return 'Generator';

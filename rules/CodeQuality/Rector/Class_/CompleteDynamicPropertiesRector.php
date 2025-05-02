@@ -130,7 +130,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $className = (string) $this->nodeNameResolver->getName($class);
+        $className = (string) $this->getName($class);
         if (! $this->reflectionProvider->hasClass($className)) {
             return true;
         }

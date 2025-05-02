@@ -156,7 +156,7 @@ CODE_SAMPLE
      */
     private function resolveNamedPositions(FuncCall $funcCall, array $args): array
     {
-        $functionName = $this->nodeNameResolver->getName($funcCall);
+        $functionName = $this->getName($funcCall);
         $argNames = NameNullToStrictNullFunctionMap::FUNCTION_TO_PARAM_NAMES[$functionName];
         $positions = [];
 
