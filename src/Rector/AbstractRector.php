@@ -24,6 +24,7 @@ use Rector\Application\NodeAttributeReIndexer;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Configuration\KaizenStepper;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -81,6 +82,8 @@ CODE_SAMPLE;
 
     private ?int $toBeRemovedNodeId = null;
 
+    private KaizenStepper $kaizenStepper;
+
     public function autowire(
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
@@ -91,6 +94,7 @@ CODE_SAMPLE;
         CurrentFileProvider $currentFileProvider,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
+        KaizenStepper $kaizenStepper
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -101,6 +105,7 @@ CODE_SAMPLE;
         $this->currentFileProvider = $currentFileProvider;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
+        $this->kaizenStepper = $kaizenStepper;
     }
 
     /**
@@ -131,6 +136,13 @@ CODE_SAMPLE;
             return null;
         }
 
+        if ($this->kaizenStepper->enabled()) {
+            // should keep improving?
+            if (! $this->kaizenStepper->shouldKeepImproving(static::class)) {
+                return null;
+            }
+        }
+
         $filePath = $this->file->getFilePath();
         if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
             return null;
@@ -143,8 +155,16 @@ CODE_SAMPLE;
 
         $refactoredNode = $this->refactor($node);
 
+        if ($refactoredNode !== null) {
+            // take it step by step
+            if ($this->kaizenStepper->enabled()) {
+                $this->kaizenStepper->recordAppliedRule(static::class);
+            }
+        }
+
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
         if ($refactoredNode === NodeVisitor::REMOVE_NODE) {
+            // log here, so we can remove the node in leaveNode() method
             $this->toBeRemovedNodeId = spl_object_id($originalNode);
 
             // notify this rule changing code

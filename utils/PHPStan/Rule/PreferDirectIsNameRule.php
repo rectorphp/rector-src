@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Utils\PHPStan\Rule;
 
+/**
+ * @todo outsource to symplify/phpstan-rules later
+ */
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -13,11 +16,10 @@ use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use Rector\Rector\AbstractRector;
 
-/**
- * @todo outsource to symplify/phpstan-rules later
- */
 final class PreferDirectIsNameRule implements Rule
 {
+    public const ERROR_MESSAGE = 'Use direct $this->isName() call instead of fetching NodeNameResolver service';
+
     public function getNodeType(): string
     {
         return MethodCall::class;
@@ -51,7 +53,7 @@ final class PreferDirectIsNameRule implements Rule
             return [];
         }
 
-        // must be Rector child class
+        // check rector rules only
         if (! $classReflection->is(AbstractRector::class)) {
             return [];
         }
@@ -65,9 +67,7 @@ final class PreferDirectIsNameRule implements Rule
             return [];
         }
 
-        $identifierRuleError = RuleErrorBuilder::message(
-            'Use direct $this->isName() call instead of fetching NodeNameResolver service'
-        )
+        $identifierRuleError = RuleErrorBuilder::message(self::ERROR_MESSAGE)
             ->identifier('rector.preferDirectIsName')
             ->build();
 

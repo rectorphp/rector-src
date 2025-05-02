@@ -57,6 +57,19 @@ final readonly class ConfigurationFactory
         $shouldClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
 
         $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
+
+        $kaizenStepCount = $input->getOption(Option::KAIZEN);
+
+        if ($kaizenStepCount === false) {
+            // not active
+            $kaizenStepCount = null;
+        } elseif ($kaizenStepCount === null) {
+            // enabled, but no value
+            $kaizenStepCount = 1;
+        } elseif (is_string($kaizenStepCount)) {
+            $kaizenStepCount = (int) $kaizenStepCount;
+        }
+
         $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);
 
         $showDiffs = $this->shouldShowDiffs($input);
@@ -105,7 +118,8 @@ final readonly class ConfigurationFactory
             $isReportingWithRealPath,
             $onlyRule,
             $onlySuffix,
-            $levelOverflows
+            $levelOverflows,
+            $kaizenStepCount
         );
     }
 

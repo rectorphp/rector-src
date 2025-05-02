@@ -33,8 +33,12 @@ final readonly class Configuration
         private bool $reportingWithRealPath = false,
         private ?string $onlyRule = null,
         private ?string $onlySuffix = null,
-        private array $levelOverflows = []
+        private array $levelOverflows = [],
+        private ?int $kaizenStepCount = null,
     ) {
+        if (is_int($kaizenStepCount)) {
+            Assert::positiveInteger($kaizenStepCount, 'Change "--kaizen" value to a positive integer');
+        }
     }
 
     public function isDryRun(): bool
@@ -140,5 +144,10 @@ final readonly class Configuration
         $ruleDuplicatedRegistrations = array_intersect($rootStandaloneRegisteredRules, $setRegisteredRules);
 
         return array_unique($ruleDuplicatedRegistrations);
+    }
+
+    public function getKaizenStepCount(): ?int
+    {
+        return $this->kaizenStepCount;
     }
 }
