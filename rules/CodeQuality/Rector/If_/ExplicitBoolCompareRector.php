@@ -136,7 +136,7 @@ CODE_SAMPLE
 
     private function resolveNewConditionNode(Expr $expr, bool $isNegated): ?BinaryOp
     {
-        if ($expr instanceof FuncCall && $this->nodeNameResolver->isName($expr, 'count')) {
+        if ($expr instanceof FuncCall && $this->isName($expr, 'count')) {
             return $this->resolveCount($isNegated, $expr);
         }
 

@@ -134,7 +134,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
+            if (! $this->isName($subNode->var, 'this')) {
                 return null;
             }
 

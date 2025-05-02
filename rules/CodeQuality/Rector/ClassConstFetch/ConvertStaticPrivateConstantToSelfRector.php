@@ -114,7 +114,7 @@ CODE_SAMPLE
         }
 
         foreach ($class->getConstants() as $classConst) {
-            if (! $this->nodeNameResolver->isName($classConst, $constantName)) {
+            if (! $this->isName($classConst, $constantName)) {
                 continue;
             }
 

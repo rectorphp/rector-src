@@ -137,11 +137,11 @@ CODE_SAMPLE
         }
 
         $propertyFetch = $assign->var;
-        if (! $this->nodeNameResolver->isName($propertyFetch->var, 'this')) {
+        if (! $this->isName($propertyFetch->var, 'this')) {
             return null;
         }
 
-        $propertyName = $this->nodeNameResolver->getName($propertyFetch->name);
+        $propertyName = $this->getName($propertyFetch->name);
         if (! is_string($propertyName)) {
             return null;
         }

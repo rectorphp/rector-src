@@ -97,7 +97,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->nodeNameResolver->isName($node, MethodName::CONSTRUCT)) {
+        if ($this->isName($node, MethodName::CONSTRUCT)) {
             return null;
         }
 
@@ -195,7 +195,7 @@ CODE_SAMPLE
 
         foreach ($parentClassMethodParams as $key => $parentClassMethodParam) {
             if (isset($currentClassMethodParams[$key])) {
-                $currentParamName = $this->nodeNameResolver->getName($currentClassMethodParams[$key]);
+                $currentParamName = $this->getName($currentClassMethodParams[$key]);
                 $collectParamNamesNextKey = $this->collectParamNamesNextKey($parentClassMethod, $key);
 
                 if (in_array($currentParamName, $collectParamNamesNextKey, true)) {
@@ -228,7 +228,7 @@ CODE_SAMPLE
                 $paramDefault = $this->nodeFactory->createReprintedNode($paramDefault);
             }
 
-            $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
+            $paramName = $this->getName($parentClassMethodParam);
             $paramType = $this->resolveParamType($parentClassMethodParam);
 
             $node->params[$key] = new Param(
@@ -268,7 +268,7 @@ CODE_SAMPLE
 
         foreach ($classMethod->params as $paramKey => $param) {
             if ($paramKey > $key) {
-                $paramNames[] = $this->nodeNameResolver->getName($param);
+                $paramNames[] = $this->getName($param);
             }
         }
 

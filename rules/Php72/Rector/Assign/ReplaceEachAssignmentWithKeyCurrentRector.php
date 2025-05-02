@@ -106,7 +106,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->nodeNameResolver->isName($assign->expr, 'each')) {
+        if (! $this->isName($assign->expr, 'each')) {
             return true;
         }
 

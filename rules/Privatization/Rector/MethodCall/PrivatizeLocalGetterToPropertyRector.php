@@ -98,7 +98,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->nodeNameResolver->isName($node->var, 'this')) {
+            if (! $this->isName($node->var, 'this')) {
                 return null;
             }
 
