@@ -82,7 +82,7 @@ final readonly class ClassChildAnalyzer
 
         if ($class instanceof ClassLike) {
             $classMethod = $class->getMethod($phpMethodReflection->getName());
-            if ($classMethod instanceof ClassMethod && !$classMethod->returnType instanceof Node) {
+            if ($classMethod instanceof ClassMethod && ! $classMethod->returnType instanceof Node) {
                 return new MixedType();
             }
         }

@@ -190,7 +190,7 @@ CODE_SAMPLE;
      * Replacing nodes in leaveNode() method avoids infinite recursion
      * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
      */
-    public function leaveNode(Node $node): array|int|Node|null
+    final public function leaveNode(Node $node): array|int|Node|null
     {
         if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
             return null;
