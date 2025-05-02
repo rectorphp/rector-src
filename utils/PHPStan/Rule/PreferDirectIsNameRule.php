@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Utils\PHPStan\Rule;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
@@ -25,7 +26,7 @@ final class PreferDirectIsNameRule implements Rule
     /**
      * @param MethodCall $node
      */
-    public function processNode(\PhpParser\Node $node, Scope $scope): array
+    public function processNode(Node $node, Scope $scope): array
     {
         if ($node->isFirstClassCallable()) {
             return [];
@@ -64,12 +65,12 @@ final class PreferDirectIsNameRule implements Rule
             return [];
         }
 
-        $ruleError = RuleErrorBuilder::message(
+        $identifierRuleError = RuleErrorBuilder::message(
             'Use direct $this->isName() call instead of fetching NodeNameResolver service'
         )
             ->identifier('rector.preferDirectIsName')
             ->build();
 
-        return [$ruleError];
+        return [$identifierRuleError];
     }
 }
