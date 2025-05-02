@@ -35,7 +35,7 @@ return RectorConfig::configure()
         __DIR__ . '/build/build-preload.php',
     ])
     ->withRootFiles()
-    ->withImportNames()
+    ->withImportNames(removeUnusedImports: true)
     ->withSkip([
         StringClassNameToClassConstantRector::class,
         // tests
