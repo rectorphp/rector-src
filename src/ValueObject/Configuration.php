@@ -16,6 +16,7 @@ final readonly class Configuration
      * @param string[] $fileExtensions
      * @param string[] $paths
      * @param LevelOverflow[] $levelOverflows
+     * @param positive-int|null $kaizenStepCount
      */
     public function __construct(
         private bool $isDryRun = false,
@@ -146,8 +147,18 @@ final readonly class Configuration
         return array_unique($ruleDuplicatedRegistrations);
     }
 
-    public function getKaizenStepCount(): ?int
+    /**
+     * @return positive-int
+     */
+    public function getKaizenStepCount(): int
     {
+        Assert::notNull($this->kaizenStepCount);
+
         return $this->kaizenStepCount;
+    }
+
+    public function isKaizenEnabled(): bool
+    {
+        return $this->kaizenStepCount !== null;
     }
 }

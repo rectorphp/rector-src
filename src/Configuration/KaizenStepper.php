@@ -8,6 +8,9 @@ use Rector\Contract\Rector\RectorInterface;
 
 final class KaizenStepper
 {
+    /**
+     * @var positive-int|null
+     */
     private ?int $stepCount = null;
 
     /**
@@ -15,6 +18,9 @@ final class KaizenStepper
      */
     private array $appliedRectorClasses = [];
 
+    /**
+     * @param positive-int $stepCount
+     */
     public function setStepCount(int $stepCount): void
     {
         $this->stepCount = $stepCount;
