@@ -58,13 +58,14 @@ final class ApplicationFileProcessor
     public function run(Configuration $configuration, InputInterface $input): ProcessResult
     {
         $filePaths = $this->filesFinder->findFilesInPaths($configuration->getPaths(), $configuration);
-        $this->missConfigurationReporter->reportVendorInPaths($filePaths);
-        $this->missConfigurationReporter->reportStartWithShortOpenTag();
 
         // no files found
         if ($filePaths === []) {
             return new ProcessResult([], []);
         }
+
+        $this->missConfigurationReporter->reportVendorInPaths($filePaths);
+        $this->missConfigurationReporter->reportStartWithShortOpenTag();
 
         $this->configureCustomErrorHandler();
 
