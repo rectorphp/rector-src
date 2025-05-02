@@ -38,7 +38,7 @@ final class PreferDirectIsNameRule implements Rule
             return [];
         }
 
-        if (! in_array($node->name, ['isName', 'getName'])) {
+        if (! in_array($node->name, ['isName', 'isNames', 'getName'])) {
             return [];
         }
 

@@ -136,11 +136,9 @@ CODE_SAMPLE;
             return null;
         }
 
-        if ($this->kaizenStepper->enabled()) {
-            // should keep improving?
-            if (! $this->kaizenStepper->shouldKeepImproving(static::class)) {
-                return null;
-            }
+        // should keep improving?
+        if ($this->kaizenStepper->enabled() && ! $this->kaizenStepper->shouldKeepImproving(static::class)) {
+            return null;
         }
 
         $filePath = $this->file->getFilePath();
@@ -155,11 +153,9 @@ CODE_SAMPLE;
 
         $refactoredNode = $this->refactor($node);
 
-        if ($refactoredNode !== null) {
-            // take it step by step
-            if ($this->kaizenStepper->enabled()) {
-                $this->kaizenStepper->recordAppliedRule(static::class);
-            }
+        // take it step by step
+        if ($refactoredNode !== null && $this->kaizenStepper->enabled()) {
+            $this->kaizenStepper->recordAppliedRule(static::class);
         }
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing

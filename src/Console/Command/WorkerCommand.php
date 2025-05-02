@@ -112,6 +112,7 @@ final class WorkerCommand extends Command
         } else {
             $preFileCallback = null;
         }
+
         // 1. handle system error
         $handleErrorCallback = static function (Throwable $throwable) use ($encoder): void {
             $systemError = new SystemError($throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
