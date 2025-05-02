@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\FamilyTree\NodeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
@@ -81,7 +82,7 @@ final readonly class ClassChildAnalyzer
 
         if ($class instanceof ClassLike) {
             $classMethod = $class->getMethod($phpMethodReflection->getName());
-            if ($classMethod instanceof ClassMethod && $classMethod->returnType === null) {
+            if ($classMethod instanceof ClassMethod && !$classMethod->returnType instanceof Node) {
                 return new MixedType();
             }
         }
