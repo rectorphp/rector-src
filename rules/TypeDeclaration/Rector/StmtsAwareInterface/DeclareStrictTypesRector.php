@@ -66,7 +66,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->startWithShebang($this->file)) {
+        if ($this->startsWithShebang($this->file)) {
             return null;
         }
 
@@ -126,7 +126,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function startWithShebang(File $file): bool
+    private function startsWithShebang(File $file): bool
     {
         return str_starts_with($file->getFileContent(), '#!');
     }
