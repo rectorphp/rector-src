@@ -41,6 +41,6 @@ final readonly class DynamicSourceLocatorDecorator
 
     public function isPathsEmpty(): bool
     {
-        return $this->dynamicSourceLocatorProvider->isPathsEmpty();
+        return $this->dynamicSourceLocatorProvider->arePathsEmpty();
     }
 }

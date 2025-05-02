@@ -78,7 +78,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         return $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
     }
 
-    public function isPathsEmpty(): bool
+    public function arePathsEmpty(): bool
     {
         return $this->filePaths === [] && $this->directories === [];
     }
