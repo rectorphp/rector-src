@@ -20,6 +20,7 @@ use Rector\Console\Notifier;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Enum\Config\Defaults;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
@@ -90,7 +91,7 @@ final class RectorConfigBuilder
 
     private int $parallelTimeoutSeconds = 120;
 
-    private int $parallelMaxNumberOfProcess = 16;
+    private int $parallelMaxNumberOfProcess = Defaults::PARALLEL_MAX_NUMBER_OF_PROCESS;
 
     private int $parallelJobSize = 16;
 
