@@ -12,6 +12,9 @@ use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\Tests\NetteUtils\Rector\StaticCall\UtilsJsonStaticCallNamedArgRector\UtilsJsonStaticCallNamedArgRectorTest
+ */
 final class UtilsJsonStaticCallNamedArgRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition

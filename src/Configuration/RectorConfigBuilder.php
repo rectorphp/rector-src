@@ -791,13 +791,15 @@ final class RectorConfigBuilder
         bool $twig = false,
         bool $doctrine = false,
         bool $phpunit = false,
-        bool $symfony = \false
+        bool $symfony = false,
+        bool $netteUtils = false,
     ): self {
         $setMap = [
             SetGroup::TWIG => $twig,
             SetGroup::DOCTRINE => $doctrine,
             SetGroup::PHPUNIT => $phpunit,
             SetGroup::SYMFONY => $symfony,
+            SetGroup::NETTE_UTILS => $netteUtils,
         ];
 
         foreach ($setMap as $setPath => $isEnabled) {
