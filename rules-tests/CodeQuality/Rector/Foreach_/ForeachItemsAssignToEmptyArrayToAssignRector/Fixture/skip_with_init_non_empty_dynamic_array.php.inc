@@ -4,12 +4,10 @@ namespace Rector\Tests\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArra
 
 use stdClass;
 
-class SkipWithInitNonEmptyArray
+class SkipWithInitNonEmptyDynamicArray
 {
-    public function run($items)
+    public function run($items, stdClass $primary)
     {
-        $primary = new stdClass();
-
         // init
         $assembled = [
             $primary,

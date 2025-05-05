@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeVisitor;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,7 +28,8 @@ final class ForeachItemsAssignToEmptyArrayToAssignRector extends AbstractRector
 {
     public function __construct(
         private readonly ForeachAnalyzer $foreachAnalyzer,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -188,6 +190,10 @@ CODE_SAMPLE
 
         // must be assign of empty array
         if (! $this->valueResolver->isValue($assign->expr, [])) {
+            return null;
+        }
+
+        if ($this->exprAnalyzer->isDynamicArray($assign->expr)) {
             return null;
         }
 
