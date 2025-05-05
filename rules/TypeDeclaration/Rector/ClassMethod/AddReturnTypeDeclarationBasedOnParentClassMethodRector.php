@@ -93,7 +93,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
-            if ($this->isName($classMethod, MethodName::CONSTRUCT)) {
+            if ($this->isNames($classMethod, [MethodName::CONSTRUCT, MethodName::DESCTRUCT])) {
                 continue;
             }
 
