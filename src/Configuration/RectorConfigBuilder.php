@@ -23,6 +23,8 @@ use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Enum\Config\Defaults;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
+use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
+use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\Enum\SetGroup;
@@ -450,7 +452,9 @@ final class RectorConfigBuilder
         bool $jms = false,
         bool $sensiolabs = false,
         bool $behat = false,
-        bool $all = false
+        bool $all = false,
+        bool $symfonyRoute = false,
+        bool $symfonyValidator = false
     ): self {
         // if nothing is passed, enable all as convention in other method
         if (func_get_args() === []) {
@@ -459,6 +463,29 @@ final class RectorConfigBuilder
 
         if ($symfony || $all) {
             $this->sets[] = SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        // dx for more granular upgrade
+        if ($symfonyRoute) {
+            if ($symfony) {
+                throw new InvalidConfigurationException(sprintf(
+                    '$symfonyRoute is already included in $symfony. Use $symfony only',
+                ));
+            }
+
+            $this->withConfiguredRule(AnnotationToAttributeRector::class, [
+                new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
+            ]);
+        }
+
+        if ($symfonyValidator) {
+            if ($symfony) {
+                throw new InvalidConfigurationException(sprintf(
+                    '$symfonyValidator is already included in $symfony. Use $symfony only',
+                ));
+            }
+
+            $this->sets[] = SymfonySetList::SYMFONY_52_VALIDATOR_ATTRIBUTES;
         }
 
         if ($doctrine || $all) {
