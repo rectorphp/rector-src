@@ -366,7 +366,7 @@ final class NodeTypeResolver
             return $originalNativeType;
         }
 
-        $type = $scope->getType($arrayDimFetch);
+        $type = $scope->getNativeType($arrayDimFetch);
 
         if (! $arrayDimFetch->dim instanceof String_) {
             return $type;
