@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\Foreach_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
@@ -185,6 +186,10 @@ CODE_SAMPLE
 
         $assign = $stmt->expr;
         if (! $assign->var instanceof Variable) {
+            return null;
+        }
+
+        if (! $assign->expr instanceof Array_) {
             return null;
         }
 
