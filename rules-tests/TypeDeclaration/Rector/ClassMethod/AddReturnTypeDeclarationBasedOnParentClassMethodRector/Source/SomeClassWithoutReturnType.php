@@ -10,4 +10,8 @@ class SomeClassWithoutReturnType
     {
       return 5;
     }
+
+    public function __destruct()
+    {
+    }
 }
