@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector\Fixture;
 
-final class DemoFile
+final class SkipPhpdocArrayshape
 {
     /**
      * @return array{'sql': string, 'files': array<string>}
