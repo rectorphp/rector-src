@@ -468,9 +468,7 @@ final class RectorConfigBuilder
         // dx for more granular upgrade
         if ($symfonyRoute) {
             if ($symfony) {
-                throw new InvalidConfigurationException(sprintf(
-                    '$symfonyRoute is already included in $symfony. Use $symfony only',
-                ));
+                throw new InvalidConfigurationException('$symfonyRoute is already included in $symfony. Use $symfony only');
             }
 
             $this->withConfiguredRule(AnnotationToAttributeRector::class, [
@@ -480,9 +478,7 @@ final class RectorConfigBuilder
 
         if ($symfonyValidator) {
             if ($symfony) {
-                throw new InvalidConfigurationException(sprintf(
-                    '$symfonyValidator is already included in $symfony. Use $symfony only',
-                ));
+                throw new InvalidConfigurationException('$symfonyValidator is already included in $symfony. Use $symfony only');
             }
 
             $this->sets[] = SymfonySetList::SYMFONY_52_VALIDATOR_ATTRIBUTES;
