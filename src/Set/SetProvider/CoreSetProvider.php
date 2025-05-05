@@ -7,6 +7,7 @@ namespace Rector\Set\SetProvider;
 use Rector\Set\Contract\SetInterface;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\Enum\SetGroup;
+use Rector\Set\ValueObject\ComposerTriggeredSet;
 use Rector\Set\ValueObject\Set;
 
 final class CoreSetProvider implements SetProviderInterface
@@ -28,6 +29,13 @@ final class CoreSetProvider implements SetProviderInterface
             new Set(SetGroup::CORE, 'Privatization', __DIR__ . '/../../../config/set/privatization.php'),
             new Set(SetGroup::CORE, 'Strict Booleans', __DIR__ . '/../../../config/set/strict-booleans.php'),
             new Set(SetGroup::CORE, 'Type Declarations', __DIR__ . '/../../../config/set/type-declaration.php'),
+
+            new ComposerTriggeredSet(
+                SetGroup::NETTE_UTILS,
+                'nette/utils',
+                '4.0',
+                __DIR__ . '/../../../config/set/nette-utils/nette-utils4.php',
+            ),
         ];
     }
 }

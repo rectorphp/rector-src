@@ -468,7 +468,9 @@ final class RectorConfigBuilder
         // dx for more granular upgrade
         if ($symfonyRoute) {
             if ($symfony) {
-                throw new InvalidConfigurationException('$symfonyRoute is already included in $symfony. Use $symfony only');
+                throw new InvalidConfigurationException(
+                    '$symfonyRoute is already included in $symfony. Use $symfony only'
+                );
             }
 
             $this->withConfiguredRule(AnnotationToAttributeRector::class, [
@@ -478,7 +480,9 @@ final class RectorConfigBuilder
 
         if ($symfonyValidator) {
             if ($symfony) {
-                throw new InvalidConfigurationException('$symfonyValidator is already included in $symfony. Use $symfony only');
+                throw new InvalidConfigurationException(
+                    '$symfonyValidator is already included in $symfony. Use $symfony only'
+                );
             }
 
             $this->sets[] = SymfonySetList::SYMFONY_52_VALIDATOR_ATTRIBUTES;
@@ -787,13 +791,15 @@ final class RectorConfigBuilder
         bool $twig = false,
         bool $doctrine = false,
         bool $phpunit = false,
-        bool $symfony = \false
+        bool $symfony = false,
+        bool $netteUtils = false,
     ): self {
         $setMap = [
             SetGroup::TWIG => $twig,
             SetGroup::DOCTRINE => $doctrine,
             SetGroup::PHPUNIT => $phpunit,
             SetGroup::SYMFONY => $symfony,
+            SetGroup::NETTE_UTILS => $netteUtils,
         ];
 
         foreach ($setMap as $setPath => $isEnabled) {
