@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\ArgvInput;
 @ini_set('memory_limit', '-1');
 
 // Performance boost
-error_reporting(E_ALL);
 ini_set('display_errors', 'stderr');
 gc_disable();
 
