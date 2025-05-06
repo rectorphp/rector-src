@@ -109,7 +109,7 @@ CODE_SAMPLE
         $this->processClassMethodStatementsForParentConstructorCalls($psr4ConstructorMethod, $scope);
 
         // does it already have a __construct method?
-        if (! $classReflection->hasNativeMethod(MethodName::CONSTRUCT)) {
+        if (! $node->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
             $psr4ConstructorMethod->name = new Identifier(MethodName::CONSTRUCT);
         }
 
