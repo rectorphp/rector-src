@@ -151,6 +151,8 @@ CODE_SAMPLE
             $newName = self::PREVIOUS_TO_NEW_FUNCTIONS[$this->getName($stmt->expr)];
             $keyFuncCall->name = new Name($newName);
 
+            $this->changeNextKeyCall($stmtsAware, $key + 2, $resetOrEndFuncCall, $keyFuncCall->name);
+
             unset($stmtsAware->stmts[$key]);
             $hasChanged = true;
 
@@ -162,6 +164,31 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function changeNextKeyCall(
+        StmtsAwareInterface $stmtsAware,
+        int $key,
+        FuncCall $resetOrEndFuncCall,
+        Name $newName
+    ): void {
+        $counter = count($stmtsAware->stmts);
+        for ($nextKey = $key; $nextKey < $counter; ++$nextKey) {
+            if (! isset($stmtsAware->stmts[$nextKey])) {
+                break;
+            }
+
+            if ($stmtsAware->stmts[$nextKey] instanceof Expression && $this->shouldSkip($stmtsAware->stmts[$nextKey])) {
+                break;
+            }
+
+            $keyFuncCall = $this->resolveKeyFuncCall($stmtsAware->stmts[$nextKey], $resetOrEndFuncCall);
+            if (! $keyFuncCall instanceof FuncCall) {
+                continue;
+            }
+
+            $keyFuncCall->name = $newName;
+        }
     }
 
     private function resolveKeyFuncCall(Stmt $nextStmt, FuncCall $resetOrEndFuncCall): ?FuncCall
