@@ -178,7 +178,7 @@ CODE_SAMPLE
                 break;
             }
 
-            if ($stmtsAware->stmts[$nextKey] instanceof Expression && $this->shouldSkip($stmtsAware->stmts[$nextKey])) {
+            if ($stmtsAware->stmts[$nextKey] instanceof Expression && ! $this->shouldSkip($stmtsAware->stmts[$nextKey])) {
                 break;
             }
 

@@ -11,8 +11,10 @@ class KeyCalledMultipleTimes
         echo key($items);
         echo key($items);
 
-        // flip get last
+        echo 'another call';
+
         end($items);
+        echo key($items);
         echo key($items);
     }
 
@@ -23,8 +25,10 @@ class KeyCalledMultipleTimes
         echo key($items2);
         echo key($items2);
 
-        // flip get first
+        echo 'another call';
+
         reset($items2);
+        echo key($items2);
         echo key($items2);
     }
 }
@@ -43,7 +47,8 @@ class KeyCalledMultipleTimes
         echo array_key_first($items);
         echo array_key_first($items);
 
-        // flip get last
+        echo 'another call';
+        echo array_key_last($items);
         echo array_key_last($items);
     }
 
@@ -53,7 +58,8 @@ class KeyCalledMultipleTimes
         echo array_key_last($items2);
         echo array_key_last($items2);
 
-        // flip get first
+        echo 'another call';
+        echo array_key_first($items2);
         echo array_key_first($items2);
     }
 }
