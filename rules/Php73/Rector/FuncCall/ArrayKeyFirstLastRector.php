@@ -179,6 +179,11 @@ CODE_SAMPLE
             }
 
             if ($stmtsAware->stmts[$nextKey] instanceof Expression && ! $this->shouldSkip($stmtsAware->stmts[$nextKey])) {
+                $this->processArrayKeyFirstLast(
+                    $stmtsAware,
+                    true,
+                    $nextKey
+                );
                 break;
             }
 
