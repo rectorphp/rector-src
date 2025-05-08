@@ -95,7 +95,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?StmtsAwareInterface
     {
-        return $this->processArrayKeyFirstLast($node, false);
+        return $this->processArrayKeyFirstLast($node);
     }
 
     public function provideMinPhpVersion(): int
@@ -110,7 +110,6 @@ CODE_SAMPLE
 
     private function processArrayKeyFirstLast(
         StmtsAwareInterface $stmtsAware,
-        bool $hasChanged,
         int $jumpToKey = 0
     ): ?StmtsAwareInterface {
         if ($stmtsAware->stmts === null) {
@@ -154,12 +153,7 @@ CODE_SAMPLE
             $this->changeNextKeyCall($stmtsAware, $key + 2, $resetOrEndFuncCall, $keyFuncCall->name);
 
             unset($stmtsAware->stmts[$key]);
-            $hasChanged = true;
 
-            return $this->processArrayKeyFirstLast($stmtsAware, $hasChanged, $key + 2);
-        }
-
-        if ($hasChanged) {
             return $stmtsAware;
         }
 
@@ -181,7 +175,6 @@ CODE_SAMPLE
             if ($stmtsAware->stmts[$nextKey] instanceof Expression && ! $this->shouldSkip($stmtsAware->stmts[$nextKey])) {
                 $this->processArrayKeyFirstLast(
                     $stmtsAware,
-                    true,
                     $nextKey
                 );
                 break;
