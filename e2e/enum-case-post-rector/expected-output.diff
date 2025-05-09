@@ -1,0 +1,47 @@
+3 files with changes
+====================
+
+1) src/Module1/Status.php:4
+
+    ---------- begin diff ----------
+@@ @@
+
+ enum Status
+ {
+-    case APPROVED;
++    case Approved;
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * EnumCaseToPascalCaseRector
+
+
+2) src/Module1/Usage1.php:6
+
+    ---------- begin diff ----------
+@@ @@
+ {
+     public function isValid(Status $status): bool
+     {
+-        return $status === Status::APPROVED;
++        return $status === Status::Approved;
+     }
+ }
+    ----------- end diff -----------
+
+3) src/Module1/Usage1_with_alias.php:8
+
+    ---------- begin diff ----------
+@@ @@
+ {
+     public function isValid(StatusAlias $status): bool
+     {
+-        return $status === StatusAlias::APPROVED;
++        return $status === StatusAlias::Approved;
+     }
+ }
+    ----------- end diff -----------
+
+ [OK] 3 files would have been changed (dry-run) by Rector
+
