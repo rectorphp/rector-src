@@ -13,6 +13,7 @@ use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\PostRector\Rector\ClassRenamingPostRector;
 use Rector\PostRector\Rector\DocblockNameImportingPostRector;
+use Rector\PostRector\Rector\EnumReferenceUpdaterPostRector;
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\PostRector\Rector\UnusedImportRemovingPostRector;
 use Rector\PostRector\Rector\UseAddingPostRector;
@@ -34,6 +35,7 @@ final class PostFileProcessor implements ResetableInterface
         private readonly ClassRenamingPostRector $classRenamingPostRector,
         private readonly DocblockNameImportingPostRector $docblockNameImportingPostRector,
         private readonly UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
+        private readonly EnumReferenceUpdaterPostRector $enumReferenceUpdaterPostRector,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
@@ -126,6 +128,7 @@ final class PostFileProcessor implements ResetableInterface
             $postRectors[] = $this->unusedImportRemovingPostRector;
         }
 
+        $postRectors[] = $this->enumReferenceUpdaterPostRector;
         $this->postRectors = $postRectors;
 
         return $this->postRectors;
