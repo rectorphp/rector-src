@@ -230,7 +230,11 @@ final class RectorConfig extends Container
 
     public function import(string $filePath): void
     {
-        if (str_contains($filePath, '*')) {
+        /**
+         * Only stop when filePath realpath is false and contains glob patterns
+         * @see https://github.com/rectorphp/rector/issues/9156#issuecomment-2869130541
+         */
+        if (realpath($filePath) === false && str_contains($filePath, '*')) {
             throw new ShouldNotHappenException(
                 'Matching file paths by using glob-patterns is no longer supported. Use specific file path instead.'
             );
