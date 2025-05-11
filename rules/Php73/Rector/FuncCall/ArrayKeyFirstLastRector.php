@@ -172,11 +172,10 @@ CODE_SAMPLE
                 break;
             }
 
-            if ($stmtsAware->stmts[$nextKey] instanceof Expression && ! $this->shouldSkip($stmtsAware->stmts[$nextKey])) {
-                $this->processArrayKeyFirstLast(
-                    $stmtsAware,
-                    $nextKey
-                );
+            if ($stmtsAware->stmts[$nextKey] instanceof Expression && ! $this->shouldSkip(
+                $stmtsAware->stmts[$nextKey]
+            )) {
+                $this->processArrayKeyFirstLast($stmtsAware, $nextKey);
                 break;
             }
 
