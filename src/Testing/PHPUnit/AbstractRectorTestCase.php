@@ -278,12 +278,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         // return changed file contents
         $changedFileContents = FileSystem::read($filePath);
-        $result = new RectorTestResult($changedFileContents, $processResult);
+        $rectorTestResult = new RectorTestResult($changedFileContents, $processResult);
 
         // always reset so other test can run from fresh start
         $this->dynamicSourceLocatorProvider->reset();
 
-        return $result;
+        return $rectorTestResult;
     }
 
     private function createInputFilePath(string $fixtureFilePath): string
