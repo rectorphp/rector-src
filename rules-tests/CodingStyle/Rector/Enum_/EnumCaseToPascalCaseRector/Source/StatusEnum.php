@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\Source;
 
 enum StatusEnum
 {

@@ -15,6 +15,11 @@ use Rector\Rector\AbstractRector;
 use Rector\Util\FilePath;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\BetterReflection\Reflector\DefaultReflector;
+use PHPStan\BetterReflection\Identifier\Identifier as BetterReflectionIdentifier;
+use PHPStan\BetterReflection\Identifier\IdentifierType;
+use PHPStan\BetterReflection\Reflection\ReflectionClass;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 
 /**
  * @see \Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\EnumCaseToPascalCaseRectorTest
@@ -22,7 +27,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class EnumCaseToPascalCaseRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
     ) {
     }
 
@@ -131,14 +137,16 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
             return null;
         }
 
-        $targetEnumFile = $this->reflectionProvider->getClass($classConstFetch->class->toString())
-            ->getFileName();
+        $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
 
-        if ($targetEnumFile === null) {
-            return null;
-        }
+       $defaultReflector = new DefaultReflector($sourceLocator);
 
-        if (! FilePath::fileIsInRectorPathOrSource($targetEnumFile)) {
+       $classIdentifier = $sourceLocator->locateIdentifier(
+            $defaultReflector,
+            new BetterReflectionIdentifier($classConstFetch->class->toString(), new IdentifierType(IdentifierType::IDENTIFIER_CLASS)),
+        );
+
+        if (! $classIdentifier instanceof ReflectionClass) {
             return null;
         }
 
