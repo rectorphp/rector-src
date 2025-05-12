@@ -192,7 +192,15 @@ final class VisibilityManipulator
         Class_ | ClassMethod | Property | ClassConst | Param $node,
         int $visibility
     ): void {
+        $isConstructorPromotionBefore = $node instanceof Param && $node->isPromoted();
+
         $node->flags &= ~$visibility;
+
+        $isConstructorPromotionAfter = $node instanceof Param && $node->isPromoted();
+
+        if ($node instanceof Param && $visibility === Modifiers::READONLY &&  $isConstructorPromotionBefore && ! $isConstructorPromotionAfter) {
+            $node->flags |= Modifiers::PUBLIC;
+        }
     }
 
     private function replaceVisibilityFlag(ClassMethod | Property | ClassConst | Param $node, int $visibility): void
