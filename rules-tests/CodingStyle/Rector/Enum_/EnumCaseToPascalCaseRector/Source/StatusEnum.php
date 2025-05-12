@@ -10,8 +10,4 @@ enum StatusEnum
     case waiting_for_approval;
 }
 
-
-if (StatusEnum::PENDING) {
-    echo 'PENDING';
-}
 ?>
