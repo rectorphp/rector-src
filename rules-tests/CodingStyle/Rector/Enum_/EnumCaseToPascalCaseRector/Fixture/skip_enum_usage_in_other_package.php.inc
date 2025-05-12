@@ -4,7 +4,7 @@ namespace Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\Fixtu
 
 use Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\Source\StatusEnum;
 
-class EnumUsageInOtherPackage {
+class SkipEnumUsageInOtherPackage {
     public function isValid(StatusEnum $status): bool {
         return $status === StatusEnum::PENDING;
     }
