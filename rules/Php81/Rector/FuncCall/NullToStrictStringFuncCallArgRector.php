@@ -165,7 +165,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->nodeNameResolver->isNames($arg->name, $argNames)) {
+            if (! $this->isNames($arg->name, $argNames)) {
                 continue;
             }
 
@@ -336,7 +336,7 @@ CODE_SAMPLE
     private function shouldSkip(FuncCall $funcCall): bool
     {
         $functionNames = array_keys(NameNullToStrictNullFunctionMap::FUNCTION_TO_PARAM_NAMES);
-        if (! $this->nodeNameResolver->isNames($funcCall, $functionNames)) {
+        if (! $this->isNames($funcCall, $functionNames)) {
             return true;
         }
 
