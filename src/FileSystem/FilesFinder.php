@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Rector\FileSystem;
 
 use Nette\Utils\FileSystem;
+use Rector\Caching\Cache;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\Skipper\PathSkipper;
+use Rector\Util\FileHasher;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Finder\Finder;
 
@@ -25,6 +27,8 @@ final readonly class FilesFinder
         private PathSkipper $pathSkipper,
         private FilePathHelper $filePathHelper,
         private ChangedFilesDetector $changedFilesDetector,
+        private Cache $cache,
+        private FileHasher $fileHasher
     ) {
     }
 
@@ -102,6 +106,20 @@ final readonly class FilesFinder
         );
 
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
+
+        // before filtering unchanged files, cache file paths collection
+        $this->cache->save(
+            'file_paths_' . $this->fileHasher->hash(getcwd()),
+            Option::FILE_PATHS,
+            $filePaths
+        );
+
+        // access it with:
+        dump($this->cache->load(
+            'file_paths_' . $this->fileHasher->hash(getcwd()),
+            Option::FILE_PATHS
+        ));
+
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
