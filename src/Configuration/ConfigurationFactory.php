@@ -143,6 +143,7 @@ final readonly class ConfigurationFactory
 
         // give priority to command line
         if ($commandLinePaths !== []) {
+            SimpleParameterProvider::addParameter(Option::SOURCE, $commandLinePaths);
             $this->setFilesWithoutExtensionParameter($commandLinePaths);
             return $commandLinePaths;
         }
