@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
 
-final class IssetOnNullalbeTypedProperty
+final class IssetOnNullableTypedProperty
 {
     private ?int $age = null;
 
@@ -18,7 +18,7 @@ final class IssetOnNullalbeTypedProperty
 
 namespace Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\Fixture;
 
-final class IssetOnNullalbeTypedProperty
+final class IssetOnNullableTypedProperty
 {
     private ?int $age = null;
 

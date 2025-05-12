@@ -2,7 +2,7 @@
 
 namespace helpers;
 
-class Dum extends \yii\helpers\VarDumper
+class Dump extends \yii\helpers\VarDumper
 {
 }
 
@@ -14,7 +14,7 @@ namespace helpers;
 
 use yii\helpers\VarDumper;
 
-class Dum extends VarDumper
+class Dump extends VarDumper
 {
 }
 

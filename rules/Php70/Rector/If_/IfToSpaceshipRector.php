@@ -90,7 +90,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // preceeded by if
+            // preceded by if
             $prevStmt = $node->stmts[$key - 1] ?? null;
             if (! $prevStmt instanceof If_) {
                 continue;

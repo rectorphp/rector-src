@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php83\Rector\FuncCall\CombineHostPortLdapUriRector\Fixture;
 
-class SkipNo2ndArg
+class SkipNo2andArg
 {
     public function run()
     {

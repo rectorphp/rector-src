@@ -115,7 +115,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function refactorThrow(Throw_ $throw, Variable $catchedThrowableVariable): ?int
+    private function refactorThrow(Throw_ $throw, Variable $caughtThrowableVariable): ?int
     {
         if (! $throw->expr instanceof New_) {
             return null;
@@ -146,20 +146,20 @@ CODE_SAMPLE
 
         if (! isset($new->args[0])) {
             // get previous message
-            $getMessageMethodCall = new MethodCall($catchedThrowableVariable, 'getMessage');
+            $getMessageMethodCall = new MethodCall($caughtThrowableVariable, 'getMessage');
             $new->args[0] = new Arg($getMessageMethodCall);
         } elseif ($new->args[0] instanceof Arg && $new->args[0]->name instanceof Identifier && $new->args[0]->name->toString() === 'previous' && $this->nodeComparator->areNodesEqual(
             $new->args[0]->value,
-            $catchedThrowableVariable
+            $caughtThrowableVariable
         )) {
             $new->args[0]->name->name = 'message';
-            $new->args[0]->value = new MethodCall($catchedThrowableVariable, 'getMessage');
+            $new->args[0]->value = new MethodCall($caughtThrowableVariable, 'getMessage');
         }
 
         if (! isset($new->getArgs()[1])) {
             // get previous code
             $new->args[1] = new Arg(
-                new MethodCall($catchedThrowableVariable, 'getCode'),
+                new MethodCall($caughtThrowableVariable, 'getCode'),
                 name: $shouldUseNamedArguments ? new Identifier('code') : null
             );
         }
@@ -168,13 +168,13 @@ CODE_SAMPLE
         $arg1 = $new->args[1];
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
             $new->args[1] = new Arg(
-                new MethodCall($catchedThrowableVariable, 'getCode'),
+                new MethodCall($caughtThrowableVariable, 'getCode'),
                 name: $shouldUseNamedArguments ? new Identifier('code') : null
             );
             $new->args[$exceptionArgumentPosition] = $arg1;
         } else {
             $new->args[$exceptionArgumentPosition] = new Arg(
-                $catchedThrowableVariable,
+                $caughtThrowableVariable,
                 name: $shouldUseNamedArguments ? new Identifier('previous') : null
             );
         }

@@ -5,7 +5,7 @@ namespace Rector\Tests\Issues\DoubleRun\Fixture;
 final class RemoveAll
 {
     public function __construct(
-        private $unusedPropety
+        private $unusedProperty
     ) {
     }
 }

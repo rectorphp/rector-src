@@ -12,7 +12,7 @@ class SomeCatch
         try {
 
         } catch (Exception $e) {
-            throw new RuntimeException($e->getMesssage());
+            throw new RuntimeException($e->getMessage());
             echo 'test';
         }
     }
@@ -34,7 +34,7 @@ class SomeCatch
         try {
 
         } catch (Exception $e) {
-            throw new RuntimeException($e->getMesssage());
+            throw new RuntimeException($e->getMessage());
         }
     }
 }

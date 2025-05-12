@@ -107,7 +107,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
                 . '- Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector' . PHP_EOL
                 . '- Rector\\Tests\\Configuration\\Source\\RemoveDoubleAssignRector'
         );
-        $this->expectException(RectorRuleNameAmbigiousException::class);
+        $this->expectException(RectorRuleNameAmbiguousException::class);
 
         $this->onlyRuleResolver->resolve('RemoveDoubleAssignRector');
     }

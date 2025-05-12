@@ -13,7 +13,7 @@ class Fixture
 
         $this->rules = [
             'chave' => function ($value) {
-                return is_string($value) ? true : 'deve ser uma string';
+                return is_string($value) ? true : 'deve set uma string';
             },
         ];
     }
@@ -33,7 +33,7 @@ class Fixture
     {
         $this->rules = [
             'chave' => function ($value) {
-                return is_string($value) ? true : 'deve ser uma string';
+                return is_string($value) ? true : 'deve set uma string';
             },
         ];
     }

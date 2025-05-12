@@ -26,7 +26,7 @@ final readonly class ColorConsoleDiffFormatter
      * @var string
      * @see https://regex101.com/r/xwywpa/1
      */
-    private const MINUT_START_REGEX = '#^(\-.*)#';
+    private const MINUS_START_REGEX = '#^(\-.*)#';
 
     /**
      * @var string
@@ -89,7 +89,7 @@ final readonly class ColorConsoleDiffFormatter
 
     private function makeMinusLinesRed(string $string): string
     {
-        return Strings::replace($string, self::MINUT_START_REGEX, '<fg=red>$1</fg=red>');
+        return Strings::replace($string, self::MINUS_START_REGEX, '<fg=red>$1</fg=red>');
     }
 
     private function makeAtNoteCyan(string $string): string

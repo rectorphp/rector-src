@@ -212,7 +212,7 @@ CODE_SAMPLE
     ): void {
         if (! TypeCombinator::containsNull($getterSetterPropertyType)) {
             if ($hasPropertyDefaultNull) {
-                // reset to nothign
+                // reset to nothing
                 $property->props[0]->default = null;
             }
 

@@ -44,7 +44,7 @@ final class RemoveDeadIfForeachForRector extends AbstractRector
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value, $differrentValue)
+    public function run($value, $differentValue)
     {
         if ($value) {
         }
@@ -60,7 +60,7 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value, $differrentValue)
+    public function run($value, $differentValue)
     {
         return $differentValue;
     }

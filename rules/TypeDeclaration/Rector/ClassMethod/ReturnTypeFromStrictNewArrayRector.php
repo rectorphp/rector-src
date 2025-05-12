@@ -212,7 +212,7 @@ CODE_SAMPLE
         ClassMethod|Function_ $functionLike,
         array $variables
     ): array {
-        // is variable overriden?
+        // is variable overridden?
         /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Assign::class);
         foreach ($assigns as $assign) {

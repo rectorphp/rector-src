@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
 
-function run(\Closure $closue): void
+function run(\Closure $closure): void
 {
 }
 

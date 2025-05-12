@@ -36,7 +36,7 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTestCa
         $propertyFetchNodes = $this->getNodesForFileOfType($inputFilePath, PropertyFetch::class);
         $resolvedType = $this->nodeTypeResolver->getType($propertyFetchNodes[0]);
 
-        // this file actually containts PHP for type
+        // this file actually contains PHP for type
         $typeFilePath = FixtureTempFileDumper::dump($expectedType);
         $expectedType = include $typeFilePath;
 

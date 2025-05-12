@@ -12,7 +12,7 @@ use Rector\Exception\ShouldNotHappenException;
 final class FileHasher
 {
     /**
-     * cryptographic insecure hasing of a string
+     * cryptographic insecure hashing of a string
      */
     public function hash(string $string): string
     {
@@ -20,7 +20,7 @@ final class FileHasher
     }
 
     /**
-     * cryptographic insecure hasing of files
+     * cryptographic insecure hashing of files
      *
      * @param string[] $files
      */

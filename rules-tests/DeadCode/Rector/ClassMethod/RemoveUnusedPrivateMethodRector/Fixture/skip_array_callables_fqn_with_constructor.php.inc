@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector\Fixture;
 
-final class SkipArrayCallablesFqnWithConstuctor
+final class SkipArrayCallablesFqnWithConstructor
 {
     private $args;
 
@@ -15,7 +15,7 @@ final class SkipArrayCallablesFqnWithConstuctor
     {
         $array  = [3, 2, 1];
 
-        usort($array, [SkipArrayCallablesFqnWithConstuctor::class, 'sort']);
+        usort($array, [SkipArrayCallablesFqnWithConstructor::class, 'sort']);
 
         return $array;
     }

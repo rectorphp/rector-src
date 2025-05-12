@@ -1067,7 +1067,7 @@ final class RectorConfigBuilder
         $rectorRulesWithConfiguration = $setRectorsResolver->resolveFromFilePathsIncludingConfiguration($setFilePaths);
 
         foreach ($rectorRulesWithConfiguration as $position => $rectorRuleWithConfiguration) {
-            // add rules untill level is reached
+            // add rules until level is reached
             if ($position > $level) {
                 continue;
             }

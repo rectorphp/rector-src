@@ -18,7 +18,7 @@ class SkipWithConstructor
     }
 }
 
-class TryWithContructor
+class TryWithConstructor
 {
     public function run()
     {
