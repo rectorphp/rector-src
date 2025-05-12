@@ -298,6 +298,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
 
         $fixtureBasename = pathinfo($trimmedFixtureFilePath, PATHINFO_BASENAME);
-        return $inputFileDirectory . DIRECTORY_SEPARATOR . $fixtureBasename;
+        return $inputFileDirectory . '/' . $fixtureBasename;
     }
 }
