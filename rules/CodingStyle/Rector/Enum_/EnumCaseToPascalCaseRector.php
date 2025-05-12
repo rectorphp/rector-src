@@ -10,16 +10,15 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
-use PHPStan\Reflection\ReflectionProvider;
-use Rector\Rector\AbstractRector;
-use Rector\Util\FilePath;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\BetterReflection\Reflector\DefaultReflector;
 use PHPStan\BetterReflection\Identifier\Identifier as BetterReflectionIdentifier;
 use PHPStan\BetterReflection\Identifier\IdentifierType;
 use PHPStan\BetterReflection\Reflection\ReflectionClass;
+use PHPStan\BetterReflection\Reflector\DefaultReflector;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Rector\Rector\AbstractRector;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\EnumCaseToPascalCaseRectorTest
@@ -139,11 +138,13 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
 
         $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
 
-       $defaultReflector = new DefaultReflector($sourceLocator);
+        $defaultReflector = new DefaultReflector($sourceLocator);
 
-       $classIdentifier = $sourceLocator->locateIdentifier(
+        $classIdentifier = $sourceLocator->locateIdentifier(
             $defaultReflector,
-            new BetterReflectionIdentifier($classConstFetch->class->toString(), new IdentifierType(IdentifierType::IDENTIFIER_CLASS)),
+            new BetterReflectionIdentifier($classConstFetch->class->toString(), new IdentifierType(
+                IdentifierType::IDENTIFIER_CLASS
+            )),
         );
 
         if (! $classIdentifier instanceof ReflectionClass) {
