@@ -8,7 +8,7 @@ use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
-use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
+use Rector\Exception\Configuration\RectorRuleNameAmbiguousException;
 use Rector\Exception\Configuration\RectorRuleNotFoundException;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
