@@ -38,7 +38,7 @@ final readonly class VariadicFunctionLikeDetector
                     return null;
                 }
 
-                if (! $this->isNames($node, self::VARIADIC_FUNCTION_NAMES)) {
+                if (! $this->nodeNameResolver->isNames($node, self::VARIADIC_FUNCTION_NAMES)) {
                     return null;
                 }
 
