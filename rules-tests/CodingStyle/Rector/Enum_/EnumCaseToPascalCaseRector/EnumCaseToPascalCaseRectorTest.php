@@ -13,7 +13,7 @@ final class EnumCaseToPascalCaseRectorTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        $this->doTestFile($filePath);
+        $this->doTestFile($filePath, true);
     }
 
     public static function provideData(): Iterator
