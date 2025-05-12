@@ -115,10 +115,10 @@ final readonly class FilesFinder
         );
 
         // access it with:
-        dump($this->cache->load(
-            'file_paths_' . $this->fileHasher->hash(getcwd()),
-            Option::FILE_PATHS
-        ));
+        // dump($this->cache->load(
+           // 'file_paths_' . $this->fileHasher->hash(getcwd()),
+           // Option::FILE_PATHS
+        // ));
 
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
