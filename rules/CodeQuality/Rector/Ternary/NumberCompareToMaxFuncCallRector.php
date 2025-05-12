@@ -22,7 +22,7 @@ final class NumberCompareToMaxFuncCallRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Ternary number compare to max() call', [
+        return new RuleDefinition('Change ternary number compare to `max()` call', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

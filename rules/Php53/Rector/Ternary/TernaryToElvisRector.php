@@ -21,7 +21,7 @@ final class TernaryToElvisRector extends AbstractRector implements MinPhpVersion
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Use ?: instead of ?, where useful', [
+        return new RuleDefinition('Use `?:` instead of `?`, where useful', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 function elvis()

@@ -27,7 +27,7 @@ final class DateTimeMethodCallToCarbonRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert new DateTime() with a method call to Carbon::*()', [
+        return new RuleDefinition('Convert `new DateTime()` with a method call to `Carbon::*()`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

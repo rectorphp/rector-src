@@ -27,7 +27,7 @@ final class FinalizeTestCaseClassRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('PHPUnit test case will be finalized', [
+        return new RuleDefinition('Make PHPUnit test case final', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use PHPUnit\Framework\TestCase;

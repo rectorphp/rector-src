@@ -41,7 +41,7 @@ final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVe
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change switch() to match()', [
+        return new RuleDefinition('Change `switch()` to `match()`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 switch ($input) {

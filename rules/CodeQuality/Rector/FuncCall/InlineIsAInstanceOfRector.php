@@ -26,7 +26,7 @@ final class InlineIsAInstanceOfRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change is_a() with object and class name check to instanceof', [
+        return new RuleDefinition('Change `is_a()` with object and class name check to `instanceof`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

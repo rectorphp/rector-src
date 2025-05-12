@@ -32,7 +32,7 @@ final class CallUserFuncArrayToVariadicRector extends AbstractRector implements 
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Replace call_user_func_array() with variadic', [
+        return new RuleDefinition('Replace `call_user_func_array()` with variadic', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

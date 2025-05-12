@@ -24,7 +24,7 @@ final class ReduceAlwaysFalseIfOrRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Reduce always false in a if ( || ) condition', [
+        return new RuleDefinition('Reduce always false in a `if (a || b)` condition', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

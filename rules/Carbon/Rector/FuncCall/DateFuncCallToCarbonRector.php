@@ -34,7 +34,7 @@ final class DateFuncCallToCarbonRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert date() function call to Carbon::now()->format(*)', [
+        return new RuleDefinition('Convert `date()` function call to `Carbon::now()->format(*)`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

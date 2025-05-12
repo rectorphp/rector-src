@@ -25,7 +25,7 @@ final class RealToFloatTypeCastRector extends AbstractRector implements MinPhpVe
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change deprecated (real) to (float)', [
+        return new RuleDefinition('Change deprecated `(real)` to `(float)`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

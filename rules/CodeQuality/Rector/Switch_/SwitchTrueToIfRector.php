@@ -28,7 +28,7 @@ final class SwitchTrueToIfRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change switch (true) to if statements', [
+        return new RuleDefinition('Change `switch (true)` to `if` statements', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

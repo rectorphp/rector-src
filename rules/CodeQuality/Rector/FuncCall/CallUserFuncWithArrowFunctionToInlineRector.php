@@ -26,7 +26,7 @@ final class CallUserFuncWithArrowFunctionToInlineRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Refactor call_user_func() with arrow function to direct call', [
+        return new RuleDefinition('Refactor `call_user_func()` with arrow function to direct call', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass

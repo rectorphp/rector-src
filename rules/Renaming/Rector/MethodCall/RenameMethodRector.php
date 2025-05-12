@@ -48,7 +48,7 @@ final class RenameMethodRector extends AbstractRector implements ConfigurableRec
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Turns method names to new ones.', [
+        return new RuleDefinition('Turn method names to new ones', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 $someObject = new SomeExampleClass;

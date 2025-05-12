@@ -33,7 +33,7 @@ final class FuncGetArgsToVariadicParamRector extends AbstractRector implements M
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Refactor func_get_args() in to a variadic param', [
+        return new RuleDefinition('Refactor `func_get_args()` in to a variadic param', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 function run()
