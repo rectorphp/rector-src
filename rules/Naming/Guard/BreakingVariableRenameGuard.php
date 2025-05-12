@@ -16,7 +16,7 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Naming\Naming\ConflictingNameResolver;
-use Rector\Naming\Naming\OverridenExistingNamesResolver;
+use Rector\Naming\Naming\OverriddenExistingNamesResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
