@@ -130,7 +130,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         return FixtureFileFinder::yieldDirectory($directory, $suffix);
     }
 
-    protected function doTestFile(string $fixtureFilePath): void
+    protected function doTestFile(string $fixtureFilePath, bool $includeFixtureDirectoryAsSource = false): void
     {
         // prepare input file contents and expected file output contents
         $fixtureFileContents = FileSystem::read($fixtureFilePath);
@@ -161,7 +161,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $inputFilePath,
             $inputFileContents,
             $expectedFileContents,
-            $fixtureFilePath
+            $fixtureFilePath,
+            $includeFixtureDirectoryAsSource
         );
     }
 
@@ -214,12 +215,13 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         string $originalFilePath,
         string $inputFileContents,
         string $expectedFileContents,
-        string $fixtureFilePath
+        string $fixtureFilePath,
+        bool $includeFixtureDirectoryAsSource
     ): void {
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
         // the file is now changed (if any rule matches)
-        $rectorTestResult = $this->processFilePath($originalFilePath);
+        $rectorTestResult = $this->processFilePath($originalFilePath, $includeFixtureDirectoryAsSource);
 
         $changedContents = $rectorTestResult->getChangedContents();
 
@@ -259,9 +261,14 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
     }
 
-    private function processFilePath(string $filePath): RectorTestResult
+    private function processFilePath(string $filePath, bool $includeFixtureDirectoryAsSource): RectorTestResult
     {
-        $this->dynamicSourceLocatorProvider->setFilePath($filePath);
+        if ($includeFixtureDirectoryAsSource) {
+            $fixtureDirectory = dirname($filePath);
+            $this->dynamicSourceLocatorProvider->addDirectories([$fixtureDirectory]);
+        } else {
+            $this->dynamicSourceLocatorProvider->setFilePath($filePath);
+        }
 
         /** @var ConfigurationFactory $configurationFactory */
         $configurationFactory = $this->make(ConfigurationFactory::class);
@@ -271,7 +278,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         // return changed file contents
         $changedFileContents = FileSystem::read($filePath);
-        return new RectorTestResult($changedFileContents, $processResult);
+        $result = new RectorTestResult($changedFileContents, $processResult);
+
+        // always reset so other test can run from fresh start
+        $this->dynamicSourceLocatorProvider->reset();
+
+        return $result;
     }
 
     private function createInputFilePath(string $fixtureFilePath): string
