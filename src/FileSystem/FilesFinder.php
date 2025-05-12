@@ -7,6 +7,7 @@ namespace Rector\FileSystem;
 use Nette\Utils\FileSystem;
 use Rector\Caching\Cache;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\Enum\CacheKey;
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -110,14 +111,14 @@ final readonly class FilesFinder
         // before filtering unchanged files, cache file paths collection
         $this->cache->save(
             'file_paths_' . $this->fileHasher->hash(getcwd()),
-            Option::FILE_PATHS,
+            CacheKey::FILE_PATHS_KEY,
             $filePaths
         );
 
         // access it with:
         // dump($this->cache->load(
            // 'file_paths_' . $this->fileHasher->hash(getcwd()),
-           // Option::FILE_PATHS
+           // CacheKey::FILE_PATHS_KEY
         // ));
 
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);

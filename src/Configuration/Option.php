@@ -312,9 +312,4 @@ final class Option
      * @internal to allow process file without extension if explicitly registered
      */
     public const FILES_WITHOUT_EXTENSION = 'files_without_extension';
-
-    /**
-     * used to get all files paths that would be processed by Rector
-     */
-    public const FILE_PATHS = 'file_paths';
 }
