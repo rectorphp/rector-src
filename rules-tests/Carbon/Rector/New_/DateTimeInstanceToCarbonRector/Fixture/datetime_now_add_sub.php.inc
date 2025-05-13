@@ -15,7 +15,7 @@ final class DateTimeNowAddSub
         $addYears = new \DateTime('+5 years');
 
         $subSeconds = new \DateTime('-5 seconds');
-        $subMinuts = new \DateTime('-5 minutes');
+        $subMinutes = new \DateTime('-5 minutes');
         $subHours = new \DateTime('-5 hours');
         $subDays = new \DateTime('-5 days');
         $subWeeks = new \DateTime('-5 weeks');
@@ -43,7 +43,7 @@ final class DateTimeNowAddSub
         $addYears = \Carbon\Carbon::now()->addYears(5);
 
         $subSeconds = \Carbon\Carbon::now()->subSeconds(5);
-        $subMinuts = \Carbon\Carbon::now()->subMinutes(5);
+        $subMinutes = \Carbon\Carbon::now()->subMinutes(5);
         $subHours = \Carbon\Carbon::now()->subHours(5);
         $subDays = \Carbon\Carbon::now()->subDays(5);
         $subWeeks = \Carbon\Carbon::now()->subWeeks(5);

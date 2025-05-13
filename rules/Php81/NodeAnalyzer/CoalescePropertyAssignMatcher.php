@@ -13,7 +13,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final readonly class CoalesePropertyAssignMatcher
+final readonly class CoalescePropertyAssignMatcher
 {
     public function __construct(
         private ComplexNewAnalyzer $complexNewAnalyzer,

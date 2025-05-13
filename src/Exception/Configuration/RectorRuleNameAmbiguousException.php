@@ -6,6 +6,6 @@ namespace Rector\Exception\Configuration;
 
 use Exception;
 
-final class RectorRuleNameAmbigiousException extends Exception
+final class RectorRuleNameAmbiguousException extends Exception
 {
 }

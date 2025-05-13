@@ -8,7 +8,7 @@ use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
-use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
+use Rector\Exception\Configuration\RectorRuleNameAmbiguousException;
 use Rector\Exception\Configuration\RectorRuleNotFoundException;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -107,7 +107,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
                 . '- Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector' . PHP_EOL
                 . '- Rector\\Tests\\Configuration\\Source\\RemoveDoubleAssignRector'
         );
-        $this->expectException(RectorRuleNameAmbigiousException::class);
+        $this->expectException(RectorRuleNameAmbiguousException::class);
 
         $this->onlyRuleResolver->resolve('RemoveDoubleAssignRector');
     }

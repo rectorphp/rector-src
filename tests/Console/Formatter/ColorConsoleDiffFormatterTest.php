@@ -20,12 +20,12 @@ final class ColorConsoleDiffFormatterTest extends TestCase
     }
 
     #[DataProvider('provideData')]
-    public function test(string $content, string $expectedFormatedFileContent): void
+    public function test(string $content, string $expectedFormattedFileContent): void
     {
         $formattedContent = $this->colorConsoleDiffFormatter->format($content);
-        $this->assertNotEmpty($expectedFormatedFileContent);
+        $this->assertNotEmpty($expectedFormattedFileContent);
 
-        $this->assertStringEqualsFile($expectedFormatedFileContent, $formattedContent);
+        $this->assertStringEqualsFile($expectedFormattedFileContent, $formattedContent);
     }
 
     public static function provideData(): Iterator

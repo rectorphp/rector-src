@@ -7,7 +7,7 @@ class Fixture
     public function run(int $firstValue, int $secondValue)
     {
          $isSame = $firstValue == $secondValue;
-         $isDiffernt = $firstValue != $secondValue;
+         $isDifferent = $firstValue != $secondValue;
     }
 }
 
@@ -22,7 +22,7 @@ class Fixture
     public function run(int $firstValue, int $secondValue)
     {
          $isSame = $firstValue === $secondValue;
-         $isDiffernt = $firstValue !== $secondValue;
+         $isDifferent = $firstValue !== $secondValue;
     }
 }
 

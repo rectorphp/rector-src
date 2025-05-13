@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector\Fixture;
 
-class Wordpress
+class WordPress
 {
     public function run()
     {
@@ -23,7 +23,7 @@ class Wordpress
 
 namespace Rector\Tests\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector\Fixture;
 
-class Wordpress
+class WordPress
 {
     public function run()
     {

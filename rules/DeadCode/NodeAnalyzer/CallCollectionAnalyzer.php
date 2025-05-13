@@ -33,8 +33,8 @@ final readonly class CallCollectionAnalyzer
             $callerRoot = $call instanceof StaticCall ? $call->class : $call->var;
             $callerType = $this->nodeTypeResolver->getType($callerRoot);
 
-            $callerTypeClasName = ClassNameFromObjectTypeResolver::resolve($callerType);
-            if ($callerTypeClasName === null) {
+            $callerTypeClassName = ClassNameFromObjectTypeResolver::resolve($callerType);
+            if ($callerTypeClassName === null) {
                 // handle fluent by $this->bar()->baz()->qux()
                 // that methods don't have return type
                 if ($callerType instanceof MixedType && ! $callerType->isExplicitMixed()) {
@@ -67,7 +67,7 @@ final readonly class CallCollectionAnalyzer
                 return true;
             }
 
-            if ($callerTypeClasName !== $className) {
+            if ($callerTypeClassName !== $className) {
                 continue;
             }
 

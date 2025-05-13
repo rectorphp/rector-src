@@ -4,7 +4,7 @@ namespace Rector\Tests\Transform\Rector\Assign\PropertyAssignToMethodCallRector\
 
 use stdClass;
 
-class SkipInvaidType
+class SkipInvalidType
 {
     public function createForm()
     {
