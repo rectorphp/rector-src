@@ -45,17 +45,6 @@ echo array_first($array);
 echo $array[array_key_last($array)];
 CODE_SAMPLE
                 ),
-                new CodeSample(
-                    <<<'CODE_SAMPLE'
-end($items);
-$lastKey = key($items);
-CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
-$lastKey = array_key_last($items);
-CODE_SAMPLE
-                ),
-
             ]
         );
     }
