@@ -7,17 +7,9 @@ namespace Rector\Php85\Rector\ArrayDimFetch;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Expression;
-use PHPStan\Reflection\ReflectionProvider;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
-use Rector\ValueObject\PolyfillPackage;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -36,12 +28,6 @@ final class ArrayFirstLastRector extends AbstractRector implements MinPhpVersion
      * @var string
      */
     private const ARRAY_KEY_LAST = 'array_key_last';
-
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly BetterNodeFinder $betterNodeFinder
-    ) {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
