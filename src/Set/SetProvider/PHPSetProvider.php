@@ -31,6 +31,7 @@ final class PHPSetProvider implements SetProviderInterface
             new Set(SetGroup::PHP, 'PHP 8.2', __DIR__ . '/../../../config/set/php82.php'),
             new Set(SetGroup::PHP, 'PHP 8.3', __DIR__ . '/../../../config/set/php83.php'),
             new Set(SetGroup::PHP, 'PHP 8.4', __DIR__ . '/../../../config/set/php84.php'),
+            new Set(SetGroup::PHP, 'PHP 8.5', __DIR__ . '/../../../config/set/php85.php'),
             new Set(SetGroup::PHP, 'Polyfills', __DIR__ . '/../../../config/set/php-polyfills.php'),
         ];
     }
