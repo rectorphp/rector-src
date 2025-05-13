@@ -20,7 +20,7 @@ final class ClassConstantToSelfClassRector extends AbstractRector implements Min
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change `__CLASS__` to self::class', [
+        return new RuleDefinition('Change `__CLASS__` to `self::class`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

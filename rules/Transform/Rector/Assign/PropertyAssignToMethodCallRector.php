@@ -27,7 +27,7 @@ final class PropertyAssignToMethodCallRector extends AbstractRector implements C
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Turns property assign of specific type and property name to method call', [
+        return new RuleDefinition('Turn property assign of specific type and property name to method call', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 $someObject = new SomeClass;

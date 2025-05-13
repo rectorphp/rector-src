@@ -28,7 +28,7 @@ final class GetCalledClassToSelfClassRector extends AbstractRector implements Mi
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change get_called_class() to self::class on final class', [
+        return new RuleDefinition('Change `get_called_class()` to `self::class` on final class', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass

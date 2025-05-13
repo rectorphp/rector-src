@@ -19,7 +19,7 @@ final class UtilsJsonStaticCallNamedArgRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change ' . Json::class . '::encode() and decode() to named args', [
+        return new RuleDefinition('Change `' . Json::class . '::encode()` and `decode()` to named args', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 use Nette\Utils\Json;

@@ -33,7 +33,7 @@ final class RemoveUselessReadOnlyTagRector extends AbstractRector implements Min
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove useless @readonly annotation on native readonly type', [
+        return new RuleDefinition('Remove useless `@readonly` annotation on native readonly type', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass

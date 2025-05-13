@@ -22,7 +22,7 @@ final class RoundingModeEnumRector extends AbstractRector implements MinPhpVersi
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Replace rounding mode constant to RoundMode enum in round()', [
+        return new RuleDefinition('Replace rounding mode constant to RoundMode enum in `round()`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 round(1.5, 0, PHP_ROUND_HALF_UP);

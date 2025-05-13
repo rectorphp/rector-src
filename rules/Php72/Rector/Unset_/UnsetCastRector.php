@@ -28,7 +28,7 @@ final class UnsetCastRector extends AbstractRector implements MinPhpVersionInter
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Removes (unset) cast', [
+        return new RuleDefinition('Remove `(unset)` cast', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 $different = (unset) $value;

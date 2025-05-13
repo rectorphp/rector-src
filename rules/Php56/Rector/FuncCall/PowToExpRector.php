@@ -21,7 +21,7 @@ final class PowToExpRector extends AbstractRector implements MinPhpVersionInterf
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes pow(val, val2) to ** (exp) parameter',
+            'Changes `pow(val, val2)` to `**` (exp) parameter',
             [new CodeSample('pow(1, 2);', '1**2;')]
         );
     }

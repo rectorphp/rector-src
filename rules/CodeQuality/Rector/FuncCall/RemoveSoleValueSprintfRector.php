@@ -18,7 +18,7 @@ final class RemoveSoleValueSprintfRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove sprintf() wrapper if not needed', [
+        return new RuleDefinition('Remove `sprintf()` wrapper if not needed', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

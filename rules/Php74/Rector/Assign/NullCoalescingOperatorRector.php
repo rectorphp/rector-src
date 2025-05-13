@@ -21,7 +21,7 @@ final class NullCoalescingOperatorRector extends AbstractRector implements MinPh
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Use null coalescing operator ??=', [
+        return new RuleDefinition('Use null coalescing operator `??=`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 $array = [];

@@ -23,7 +23,7 @@ final class ListToArrayDestructRector extends AbstractRector implements MinPhpVe
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change list() to array destruct', [
+        return new RuleDefinition('Change `list()` to array destruct', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

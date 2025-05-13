@@ -52,7 +52,7 @@ final class SimplifyUselessVariableRector extends AbstractRector implements Conf
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Removes useless variable assigns', [
+        return new RuleDefinition('Remove useless variable assigns', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 function () {

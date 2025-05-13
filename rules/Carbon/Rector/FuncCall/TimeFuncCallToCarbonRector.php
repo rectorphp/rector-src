@@ -21,7 +21,7 @@ final class TimeFuncCallToCarbonRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert time() function call to Carbon::now()->getTimestamp()', [
+        return new RuleDefinition('Convert `time()` function call to `Carbon::now()->getTimestamp()`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

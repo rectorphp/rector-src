@@ -25,7 +25,7 @@ final class RemoveInterfacesRector extends AbstractRector implements Configurabl
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Removes interfaces usage from class.', [
+        return new RuleDefinition('Remove interfaces from class', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass implements SomeInterface

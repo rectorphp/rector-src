@@ -33,7 +33,7 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Replaces defined classes by new ones.', [
+        return new RuleDefinition('Replace defined classes by new ones', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 namespace App;

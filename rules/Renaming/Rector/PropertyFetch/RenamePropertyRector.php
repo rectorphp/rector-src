@@ -32,7 +32,7 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Replaces defined old properties by new ones.', [
+        return new RuleDefinition('Replace defined old properties by new ones', [
             new ConfiguredCodeSample(
                 '$someObject->someOldProperty;',
                 '$someObject->someNewProperty;',

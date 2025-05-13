@@ -30,7 +30,7 @@ final class MergeInterfacesRector extends AbstractRector implements Configurable
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Merges old interface to a new one, that already has its methods', [
+        return new RuleDefinition('Merge old interface to a new one, that already has its methods', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass implements SomeInterface, SomeOldInterface

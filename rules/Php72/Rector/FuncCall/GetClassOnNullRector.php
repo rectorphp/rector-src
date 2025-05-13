@@ -30,7 +30,7 @@ final class GetClassOnNullRector extends AbstractRector implements MinPhpVersion
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Null is no more allowed in get_class()', [
+        return new RuleDefinition('Null is no more allowed in `get_class()`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass

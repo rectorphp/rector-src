@@ -21,7 +21,7 @@ final class VariableInStringInterpolationFixerRector extends AbstractRector impl
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Replace deprecated "${var}" to "{$var}"', [
+        return new RuleDefinition('Replace deprecated `${var}` to `{$var}`', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 $c = "football";
