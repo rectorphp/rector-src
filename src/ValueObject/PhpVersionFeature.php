@@ -300,6 +300,12 @@ final class PhpVersionFeature
 
     /**
      * @var int
+     * @see https://php.watch/versions/8.5/array_first-array_last
+     */
+    public const ARRAY_FIRST_LAST = PhpVersion::PHP_85;
+
+    /**
+     * @var int
      */
     public const JSON_EXCEPTION = PhpVersion::PHP_73;
 
