@@ -10,10 +10,9 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
-use PHPStan\BetterReflection\Identifier\Identifier as BetterReflectionIdentifier;
-use PHPStan\BetterReflection\Identifier\IdentifierType;
-use PHPStan\BetterReflection\Reflection\ReflectionClass;
+use PHPStan\BetterReflection\Reflection\ReflectionEnum;
 use PHPStan\BetterReflection\Reflector\DefaultReflector;
+use PHPStan\BetterReflection\Reflector\Exception\IdentifierNotFound;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Rector\AbstractRector;
@@ -137,17 +136,17 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
         }
 
         $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
-
         $defaultReflector = new DefaultReflector($sourceLocator);
 
-        $classIdentifier = $sourceLocator->locateIdentifier(
-            $defaultReflector,
-            new BetterReflectionIdentifier($classConstFetch->class->toString(), new IdentifierType(
-                IdentifierType::IDENTIFIER_CLASS
-            )),
-        );
+        try {
+            $classIdentifier = $defaultReflector->reflectClass($classConstFetch->class->toString());
+        } catch (IdentifierNotFound) {
+            // source is outside the paths defined in withPaths(), eg: vendor
+            return null;
+        }
 
-        if (! $classIdentifier instanceof ReflectionClass) {
+        // ensure exactly ReflectionEnum
+        if (! $classIdentifier instanceof ReflectionEnum) {
             return null;
         }
 
