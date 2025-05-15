@@ -69,7 +69,7 @@ final class RectorConfigValidator
         }
 
         throw new ShouldNotHappenException(
-            'These rules from "$rectorConfig->skip()" does not exist - remove them or fix their names:' . PHP_EOL . $nonExistingRulesString
+            'These rules from "$rectorConfig->skip()" do not exist - remove them or fix their names:' . PHP_EOL . $nonExistingRulesString
         );
     }
 
