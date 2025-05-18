@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Rector\Contract\Rector\RectorInterface;
-use Rector\Exception\Configuration\RectorRuleNameAmbigiousException;
+use Rector\Exception\Configuration\RectorRuleNameAmbiguousException;
 use Rector\Exception\Configuration\RectorRuleNotFoundException;
 
 /**
