@@ -85,7 +85,7 @@ CODE_SAMPLE
 
             /**
              * @var Expression $stmt
-             * @var FuncCall $expr
+             * @var FuncCall
              */
             $expr = $stmt->expr;
             $resultVariable = new Variable('result');
