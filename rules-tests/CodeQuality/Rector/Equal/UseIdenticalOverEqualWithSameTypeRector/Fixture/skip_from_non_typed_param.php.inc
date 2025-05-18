@@ -11,6 +11,6 @@ class SkipFromNonTypedParam
     public function run($firstValue, $secondValue)
     {
          $isSame = $firstValue == $secondValue;
-         $isDiffernt = $firstValue != $secondValue;
+         $isDifferent = $firstValue != $secondValue;
     }
 }

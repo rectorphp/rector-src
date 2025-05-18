@@ -49,7 +49,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
         $this->setNamespacedName($someClass);
 
         $this->addSingleDependency($someClass);
-        $this->asssertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_empty_class.php.inc');
+        $this->assertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_empty_class.php.inc');
     }
 
     public function testSingleMethod(): void
@@ -61,7 +61,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 
         $this->addSingleDependency($someClass);
 
-        $this->asssertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_single_method.php.inc');
+        $this->assertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_single_method.php.inc');
     }
 
     public function testWithProperty(): void
@@ -74,7 +74,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 
         $this->addSingleDependency($someClass);
 
-        $this->asssertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_single_property.php.inc');
+        $this->assertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_single_property.php.inc');
 
     }
 
@@ -89,7 +89,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 
         $this->addSingleDependency($someClass);
 
-        $this->asssertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_method_and_property.php.inc');
+        $this->assertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_method_and_property.php.inc');
     }
 
     public function testConstantProperties(): void
@@ -104,7 +104,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 
         $this->addSingleDependency($someClass);
 
-        $this->asssertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_class_const_property.php.inc');
+        $this->assertClassEqualsFile($someClass, __DIR__ . '/Fixture/expected_class_const_property.php.inc');
     }
 
     private function setNamespacedName(Class_ $class): void
@@ -123,7 +123,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
         ));
     }
 
-    private function asssertClassEqualsFile(Class_ $class, string $expectedFilePath): void
+    private function assertClassEqualsFile(Class_ $class, string $expectedFilePath): void
     {
         $printedClass = $this->printerStandard->prettyPrintFile([$class]);
 

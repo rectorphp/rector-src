@@ -10,7 +10,7 @@ namespace Rector\PhpDocParser\ValueObject;
 final class AttributeKey
 {
     /**
-     * Used in php-paser, do not change
+     * Used in php-parser, do not change
      *
      * @var string
      */

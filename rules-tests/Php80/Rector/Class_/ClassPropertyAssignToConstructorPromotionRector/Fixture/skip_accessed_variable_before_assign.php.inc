@@ -7,7 +7,7 @@ class SkipAccessedVariableBeforeAssign
     public $x;
 
     function __construct(string $x) {
-        $x = 'preprended-' . $x;
+        $x = 'prepended-' . $x;
         $this->x = $x;
     }
 }

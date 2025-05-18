@@ -71,7 +71,7 @@ return [
             // comment out
             str_replace('\\' . $prefix . '\trigger_deprecation(', '// \trigger_deprecation(', $content),
 
-        // make external rules easier to write without enforing getRuleDefinition()
+        // make external rules easier to write without enforcing getRuleDefinition()
         // as they are not designed for open-sourcing
         // remove implements is the safest way to avoid error on conflict with real dependency of symplify/rule-doc-generator
         static function (string $filePath, string $prefix, string $content): string {

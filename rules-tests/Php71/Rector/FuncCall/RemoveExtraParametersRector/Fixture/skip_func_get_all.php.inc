@@ -13,7 +13,7 @@ final class SkipFuncGetAll
 
     function perform()
     {
-        $argumemnts = func_get_args();
-        var_dump($argumemnts);
+        $arguments = func_get_args();
+        var_dump($arguments);
     }
 }

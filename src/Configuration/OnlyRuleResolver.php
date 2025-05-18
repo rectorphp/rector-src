@@ -59,7 +59,7 @@ final readonly class OnlyRuleResolver
                     . '- ' . implode(PHP_EOL . '- ', $matching),
                 $rule
             );
-            throw new RectorRuleNameAmbigiousException($message);
+            throw new RectorRuleNameAmbiguousException($message);
         }
 
         if (! str_contains($rule, '\\')) {

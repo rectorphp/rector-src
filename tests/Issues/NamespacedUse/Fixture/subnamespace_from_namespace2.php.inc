@@ -4,7 +4,7 @@ namespace App\Bar;
 
 use App;
 
-final class SubNamepaceFromNamespace2
+final class SubNamespaceFromNamespace2
 {
     public function run(Bar\Baz $baz)
     {
@@ -17,7 +17,7 @@ final class SubNamepaceFromNamespace2
 
 namespace App\Bar;
 
-final class SubNamepaceFromNamespace2
+final class SubNamespaceFromNamespace2
 {
     public function run(Bar\Baz $baz)
     {

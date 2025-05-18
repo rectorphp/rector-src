@@ -11,8 +11,8 @@ final class RemoveAnotherClassMethodCallExtraArgument
 
     function performBetter($value)
     {
-        $argumemnts = better_func_get_args();
-        var_dump($argumemnts);
+        $arguments = better_func_get_args();
+        var_dump($arguments);
     }
 }
 
@@ -34,8 +34,8 @@ final class RemoveAnotherClassMethodCallExtraArgument
 
     function performBetter($value)
     {
-        $argumemnts = better_func_get_args();
-        var_dump($argumemnts);
+        $arguments = better_func_get_args();
+        var_dump($arguments);
     }
 }
 

@@ -13,7 +13,7 @@ function removeExtraParams()
 
 function functionWithVariadics(...$variadic)
 {
-    $argumemnts = $variadic;
+    $arguments = $variadic;
 }
 
 ?>
@@ -33,7 +33,7 @@ function removeExtraParams()
 
 function functionWithVariadics(...$variadic)
 {
-    $argumemnts = $variadic;
+    $arguments = $variadic;
 }
 
 ?>
