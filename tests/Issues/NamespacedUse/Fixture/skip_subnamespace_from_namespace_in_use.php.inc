@@ -4,7 +4,7 @@ namespace App\Bar;
 
 use App\Bar\Baz;
 
-final class SkipSubNamepaceFromNamespaceInUse
+final class SkipSubNamespaceFromNamespaceInUse
 {
     public function run(Baz $baz)
     {

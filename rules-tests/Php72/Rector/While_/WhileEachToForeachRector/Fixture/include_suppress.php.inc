@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php72\Rector\While_\WhileEachToForeachRector\Fixture;
 
-final class IncludeSupress
+final class IncludeSuppress
 {
     public function run(array $items)
     {
@@ -18,7 +18,7 @@ final class IncludeSupress
 
 namespace Rector\Tests\Php72\Rector\While_\WhileEachToForeachRector\Fixture;
 
-final class IncludeSupress
+final class IncludeSuppress
 {
     public function run(array $items)
     {

@@ -8,10 +8,10 @@ final class SkipWhenSwitchDoesNotAssignValue
     {
         switch ($input) {
             case "a":
-                $ths->a();
+                $this->a();
                 break;
             case "b":
-                $ths->b();
+                $this->b();
                 break;
         }
     }

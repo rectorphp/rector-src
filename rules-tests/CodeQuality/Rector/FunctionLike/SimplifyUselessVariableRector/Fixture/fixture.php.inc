@@ -16,19 +16,19 @@ function sameVariableInDifferentScope()
     return $n;
 }
 
-function moreVariableOneWithoutAssigment() {
+function moreVariableOneWithoutAssignment() {
     $o++;
     $o = 10;
 
     return $o;
 }
 
-function assigmentAsFunctionParametr() {
+function assignmentAsFunctionParameter() {
     doSomething($p = 0);
     return $p;
 }
 
-function assigmentAfterAssignment() {
+function assignmentAfterAssignment() {
     doSomething($qq = $q = 0);
     return $q;
 }
@@ -60,18 +60,18 @@ function sameVariableInDifferentScope()
     }, []);
 }
 
-function moreVariableOneWithoutAssigment() {
+function moreVariableOneWithoutAssignment() {
     $o++;
 
     return 10;
 }
 
-function assigmentAsFunctionParametr() {
+function assignmentAsFunctionParameter() {
     doSomething($p = 0);
     return $p;
 }
 
-function assigmentAfterAssignment() {
+function assignmentAfterAssignment() {
     doSomething($qq = $q = 0);
     return $q;
 }

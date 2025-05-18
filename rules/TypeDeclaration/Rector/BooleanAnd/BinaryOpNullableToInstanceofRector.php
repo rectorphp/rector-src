@@ -79,10 +79,10 @@ CODE_SAMPLE
             return $this->processNegationBooleanOr($node);
         }
 
-        return $this->processsNullableInstance($node);
+        return $this->processNullableInstance($node);
     }
 
-    private function processsNullableInstance(BooleanAnd|BooleanOr $node): null|BooleanAnd|BooleanOr
+    private function processNullableInstance(BooleanAnd|BooleanOr $node): null|BooleanAnd|BooleanOr
     {
         $nullableObjectType = $this->nullableTypeAnalyzer->resolveNullableObjectType($node->left);
 
@@ -135,7 +135,7 @@ CODE_SAMPLE
         }
 
         /** @var BooleanOr|null $result */
-        $result = $this->processsNullableInstance($booleanOr);
+        $result = $this->processNullableInstance($booleanOr);
         return $result;
     }
 

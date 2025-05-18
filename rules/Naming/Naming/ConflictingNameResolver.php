@@ -46,7 +46,7 @@ final class ConflictingNameResolver
             $expectedNames[] = $expectedName;
         }
 
-        return $this->arrayFilter->filterWithAtLeastTwoOccurences($expectedNames);
+        return $this->arrayFilter->filterWithAtLeastTwoOccurrences($expectedNames);
     }
 
     public function hasNameIsInFunctionLike(
@@ -76,7 +76,7 @@ final class ConflictingNameResolver
 
         $protectedNames = [...$paramNames, ...$newAssignNames, ...$nonNewAssignNames];
 
-        $protectedNames = $this->arrayFilter->filterWithAtLeastTwoOccurences($protectedNames);
+        $protectedNames = $this->arrayFilter->filterWithAtLeastTwoOccurrences($protectedNames);
         $this->conflictingVariableNamesByClassMethod[$classMethodId] = $protectedNames;
 
         return $protectedNames;

@@ -16,7 +16,7 @@ use PHPStan\Analyser\Scope;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PHPStan\ScopeFetcher;
-use Rector\Strict\NodeAnalyzer\UnitializedPropertyAnalyzer;
+use Rector\Strict\NodeAnalyzer\UninitializedPropertyAnalyzer;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
 use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -30,7 +30,7 @@ final class DisallowedEmptyRuleFixerRector extends AbstractFalsyScalarRuleFixerR
     public function __construct(
         private readonly ExactCompareFactory $exactCompareFactory,
         private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly UnitializedPropertyAnalyzer $unitializedPropertyAnalyzer
+        private readonly UninitializedPropertyAnalyzer $uninitializedPropertyAnalyzer
     ) {
     }
 
@@ -122,7 +122,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->unitializedPropertyAnalyzer->isUnitialized($empty->expr)) {
+        if ($this->uninitializedPropertyAnalyzer->isUninitialized($empty->expr)) {
             return new BooleanAnd(new Isset_([$empty->expr]), $result);
         }
 
@@ -141,7 +141,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->unitializedPropertyAnalyzer->isUnitialized($empty->expr)) {
+        if ($this->uninitializedPropertyAnalyzer->isUninitialized($empty->expr)) {
             return new BooleanOr(new BooleanNot(new Isset_([$empty->expr])), $result);
         }
 

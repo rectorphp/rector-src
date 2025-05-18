@@ -4,7 +4,7 @@ namespace Rector\Tests\Issues\FixtureArrayAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
-class ArrayInAttribtue
+class ArrayInAttribute
 {
     public function __construct(
         /**
@@ -25,7 +25,7 @@ namespace Rector\Tests\Issues\FixtureArrayAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
-class ArrayInAttribtue
+class ArrayInAttribute
 {
     public function __construct(
         #[ORM\ManyToOne(targetEntity: OfferPrice::class, inversedBy: 'myEntities', cascade: ['persist'])]

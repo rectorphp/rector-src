@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInst
 
 use Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector\Source\AnotherObject;
 
-final class SkipUnitializedProperty
+final class SkipUninitializedProperty
 {
     private AnotherObject $id;
 
