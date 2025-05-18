@@ -83,10 +83,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            /**
-             * @var Expression $stmt
-             * @var FuncCall $expr
-             */
+            /** @var Expression $stmt */
+            /** @var FuncCall $expr */
             $expr = $stmt->expr;
             $resultVariable = new Variable('result');
             $expr->args[1] = new Arg($resultVariable);
