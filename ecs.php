@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
@@ -27,7 +28,7 @@ return ECSConfig::configure()
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
         ],
 
-        \PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer::class => [
+        GeneralPhpdocAnnotationRemoveFixer::class => [
             // bug remove @author annotation
             __DIR__ . '/src/Util/ArrayParametersMerger.php',
         ],
