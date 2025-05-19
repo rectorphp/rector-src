@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
@@ -25,6 +26,11 @@ return ECSConfig::configure()
         PhpdocTypesFixer::class => [
             // double to Double false positive
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
+        ],
+
+        GeneralPhpdocAnnotationRemoveFixer::class => [
+            // bug remove @author annotation
+            __DIR__ . '/src/Util/ArrayParametersMerger.php',
         ],
     ])
     ->withRootFiles();

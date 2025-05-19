@@ -5,20 +5,16 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\DeprecatedTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
 use Rector\DeadCode\NodeManipulator\ControllerClassMethodManipulator;
 use Rector\NodeAnalyzer\ParamAnalyzer;
-use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeManipulator\ClassMethodManipulator;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
@@ -35,8 +31,7 @@ final class RemoveEmptyClassMethodRector extends AbstractRector
         private readonly ControllerClassMethodManipulator $controllerClassMethodManipulator,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ArrayCallableMethodMatcher $arrayCallableMethodMatcher
+        private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer
     ) {
     }
 
@@ -135,18 +130,10 @@ CODE_SAMPLE
 
     private function shouldSkipClassMethod(Class_ $class, ClassMethod $classMethod): bool
     {
-        $desiredClassMethodName = $this->getName($classMethod);
-        $className = (string) $this->getName($class);
-
         // is method called somewhere else in the class?
-        foreach ($class->getMethods() as $anotherClassMethod) {
-            if ($anotherClassMethod === $classMethod) {
-                continue;
-            }
-
-            if ($this->containsMethodCallOrArrayCallable($anotherClassMethod, $desiredClassMethodName, $className)) {
-                return true;
-            }
+        $scope = ScopeFetcher::fetch($classMethod);
+        if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($class, $classMethod, $scope)) {
+            return true;
         }
 
         if ($this->classMethodManipulator->isNamedConstructor($classMethod)) {
@@ -185,37 +172,5 @@ CODE_SAMPLE
         }
 
         return $phpDocInfo->hasByType(DeprecatedTagValueNode::class);
-    }
-
-    private function containsMethodCallOrArrayCallable(ClassMethod $anotherClassMethod, string $desiredClassMethodName, string $className): bool
-    {
-        $scope = ScopeFetcher::fetch($anotherClassMethod);
-        return (bool) $this->betterNodeFinder->findFirst($anotherClassMethod, function (Node $node) use (
-            $desiredClassMethodName,
-            $className,
-            $scope
-        ): bool {
-            if ($node instanceof Array_) {
-                return (bool) $this->arrayCallableMethodMatcher->match(
-                    $node,
-                    $scope,
-                    $className
-                );
-            }
-
-            if (! $node instanceof MethodCall) {
-                return false;
-            }
-
-            if (! $node->var instanceof Variable) {
-                return false;
-            }
-
-            if (! $this->isName($node->var, 'this')) {
-                return false;
-            }
-
-            return $this->isName($node->name, $desiredClassMethodName);
-        });
     }
 }
