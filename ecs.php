@@ -26,5 +26,10 @@ return ECSConfig::configure()
             // double to Double false positive
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
         ],
+
+        \PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer::class => [
+            // bug remove @author annotation
+            __DIR__ . '/src/Util/ArrayParametersMerger.php',
+        ],
     ])
     ->withRootFiles();
