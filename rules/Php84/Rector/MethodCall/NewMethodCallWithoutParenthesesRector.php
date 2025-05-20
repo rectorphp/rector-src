@@ -55,6 +55,31 @@ CODE_SAMPLE
 
         $oldTokens = $this->file->getOldTokens();
 
+        $class = $node->var;
+
+        $loop = 1;
+        while (isset($oldTokens[$class->getStartTokenPos() + $loop])) {
+            if (trim((string) $oldTokens[$class->getStartTokenPos() + $loop]) === '') {
+                ++$loop;
+                continue;
+            }
+
+            if ((string) $oldTokens[$class->getStartTokenPos() + $loop] !== '(') {
+                break;
+            }
+
+            return null;
+        }
+
+        // start of class to be instantiated
+        if (! isset($oldTokens[$class->getStartTokenPos()])) {
+            return null;
+        }
+
+        if ((string) $oldTokens[$class->getStartTokenPos()] === '(') {
+            return null;
+        }
+
         // start node
         if (! isset($oldTokens[$node->getStartTokenPos()])) {
             return null;
