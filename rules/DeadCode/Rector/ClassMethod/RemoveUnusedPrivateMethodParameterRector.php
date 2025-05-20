@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -129,9 +130,10 @@ CODE_SAMPLE
         $methodName = $this->getName($classMethod);
         $keysArg = array_keys($unusedParameters);
 
+        $classObjectType = new \PHPStan\Type\ObjectType((string) $this->getName($class));
         foreach ($classMethods as $classMethod) {
             /** @var MethodCall[] $callers */
-            $callers = $this->resolveCallers($classMethod, $methodName);
+            $callers = $this->resolveCallers($classMethod, $methodName, $classObjectType);
             if ($callers === []) {
                 continue;
             }
@@ -145,7 +147,7 @@ CODE_SAMPLE
     /**
      * @param int[] $keysArg
      */
-    private function cleanupArgs(MethodCall $methodCall, array $keysArg): void
+    private function cleanupArgs(MethodCall|StaticCall $methodCall, array $keysArg): void
     {
         if ($methodCall->isFirstClassCallable()) {
             return;
@@ -163,12 +165,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @return MethodCall[]
+     * @return MethodCall[]|StaticCall[]
      */
-    private function resolveCallers(ClassMethod $classMethod, string $methodName): array
+    private function resolveCallers(ClassMethod $classMethod, string $methodName, \PHPStan\Type\ObjectType $classObjectType): array
     {
-        return $this->betterNodeFinder->find($classMethod, function (Node $subNode) use ($methodName): bool {
-            if (! $subNode instanceof MethodCall) {
+        return $this->betterNodeFinder->find($classMethod, function (Node $subNode) use ($methodName, $classObjectType): bool {
+            if (! $subNode instanceof MethodCall && ! $subNode instanceof StaticCall) {
                 return false;
             }
 
@@ -176,11 +178,11 @@ CODE_SAMPLE
                 return false;
             }
 
-            if (! $subNode->var instanceof Variable) {
-                return false;
-            }
+            $nodeToCheck = $subNode instanceof MethodCall
+                ? $subNode->var
+                : $subNode->class;
 
-            if (! $this->isName($subNode->var, 'this')) {
+            if (! $this->isObjectType($nodeToCheck, $classObjectType)) {
                 return false;
             }
 
