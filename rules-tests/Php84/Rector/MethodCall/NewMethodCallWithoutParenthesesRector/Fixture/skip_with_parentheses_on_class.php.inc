@@ -6,7 +6,7 @@ final class SkipWithParenthesesOnClass
 {
     public static function getGlobalSearchEloquentQuery(): Builder
     {
-        return (new ( static::getModel()))->newQuery()
+        return (new (static::getModel()))->newQuery()
             ->orderByDesc('received_at');
     }
 }
