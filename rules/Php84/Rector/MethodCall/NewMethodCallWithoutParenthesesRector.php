@@ -55,6 +55,20 @@ CODE_SAMPLE
 
         $oldTokens = $this->file->getOldTokens();
 
+        $loop = 1;
+        while (isset($oldTokens[$node->var->getStartTokenPos() + $loop])) {
+            if (trim((string) $oldTokens[$node->var->getStartTokenPos() + $loop]) === '') {
+                ++$loop;
+                continue;
+            }
+
+            if ((string) $oldTokens[$node->var->getStartTokenPos() + $loop] !== '(') {
+                break;
+            }
+
+            return null;
+        }
+
         // start node
         if (! isset($oldTokens[$node->getStartTokenPos()])) {
             return null;
