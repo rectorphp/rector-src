@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Console\Command;
 
 use Rector\Application\ApplicationFileProcessor;
-use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\ConfigInitializer;
@@ -33,7 +32,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class ProcessCommand extends Command
 {
     public function __construct(
-        private readonly AdditionalAutoloader $additionalAutoloader,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly ConfigInitializer $configInitializer,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
@@ -94,9 +92,6 @@ EOF
         if ($configuration->getOutputFormat() === JsonOutputFormatter::NAME) {
             $this->symfonyStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
-
-        $this->additionalAutoloader->autoloadInput($input);
-        $this->additionalAutoloader->autoloadPaths();
 
         $paths = $configuration->getPaths();
 

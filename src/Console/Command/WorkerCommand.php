@@ -14,7 +14,6 @@ use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Console\ProcessConfigureDecorator;
 use Rector\Parallel\ValueObject\Bridge;
-use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
@@ -42,7 +41,6 @@ final class WorkerCommand extends Command
     private const RESULT = 'result';
 
     public function __construct(
-        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly ConfigurationFactory $configurationFactory,
@@ -76,6 +74,7 @@ final class WorkerCommand extends Command
         $promise->then(function (ConnectionInterface $connection) use (
             $parallelIdentifier,
             $configuration,
+            $input,
             $output
         ): void {
             $inDecoder = new Decoder($connection, true, 512, JSON_INVALID_UTF8_IGNORE);
@@ -86,7 +85,7 @@ final class WorkerCommand extends Command
                 ReactCommand::IDENTIFIER => $parallelIdentifier,
             ]);
 
-            $this->runWorker($outEncoder, $inDecoder, $configuration, $output);
+            $this->runWorker($outEncoder, $inDecoder, $configuration, $input, $output);
         });
 
         $streamSelectLoop->run();
@@ -98,10 +97,9 @@ final class WorkerCommand extends Command
         Encoder $encoder,
         Decoder $decoder,
         Configuration $configuration,
+        InputInterface $input,
         OutputInterface $output
     ): void {
-        $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
-
         if ($configuration->isDebug()) {
             $preFileCallback = static function (string $filePath) use ($output): void {
                 $output->writeln($filePath);
@@ -128,7 +126,7 @@ final class WorkerCommand extends Command
         $encoder->on(ReactEvent::ERROR, $handleErrorCallback);
 
         // 2. collect diffs + errors from file processor
-        $decoder->on(ReactEvent::DATA, function (array $json) use ($preFileCallback, $encoder, $configuration): void {
+        $decoder->on(ReactEvent::DATA, function (array $json) use ($preFileCallback, $encoder, $configuration, $input): void {
             $action = $json[ReactCommand::ACTION];
             if ($action !== Action::MAIN) {
                 return;
@@ -142,7 +140,9 @@ final class WorkerCommand extends Command
             $processResult = $this->applicationFileProcessor->processFiles(
                 $filePaths,
                 $configuration,
-                $preFileCallback
+                $preFileCallback,
+                null,
+                $input,
             );
 
             /**

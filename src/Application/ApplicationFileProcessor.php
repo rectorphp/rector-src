@@ -7,6 +7,7 @@ namespace Rector\Application;
 use Nette\Utils\FileSystem as UtilsFileSystem;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Application\Provider\CurrentFileProvider;
+use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -14,6 +15,7 @@ use Rector\FileSystem\FilesFinder;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\PhpParser\Parser\ParserErrors;
 use Rector\Reporting\MissConfigurationReporter;
+use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\Util\ArrayParametersMerger;
 use Rector\ValueObject\Application\File;
@@ -52,6 +54,8 @@ final class ApplicationFileProcessor
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
+        private readonly AdditionalAutoloader $additionalAutoloader,
+        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator
     ) {
     }
 
@@ -97,7 +101,7 @@ final class ApplicationFileProcessor
         if ($configuration->isParallel()) {
             $processResult = $this->runParallel($filePaths, $input, $postFileCallback);
         } else {
-            $processResult = $this->processFiles($filePaths, $configuration, $preFileCallback, $postFileCallback);
+            $processResult = $this->processFiles($filePaths, $configuration, $preFileCallback, $postFileCallback, $input);
         }
 
         $processResult->addSystemErrors($this->systemErrors);
@@ -116,13 +120,22 @@ final class ApplicationFileProcessor
         array $filePaths,
         Configuration $configuration,
         ?callable $preFileCallback = null,
-        ?callable $postFileCallback = null
+        ?callable $postFileCallback = null,
+        ?InputInterface $input = null
     ): ProcessResult {
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
         /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
+
+        // avoid registered autoload input, paths, and config paths here gone on parallel
+        if ($input instanceof InputInterface) {
+            $this->additionalAutoloader->autoloadInput($input);
+        }
+
+        $this->additionalAutoloader->autoloadPaths();
+        $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
 
         foreach ($filePaths as $filePath) {
             if ($preFileCallback !== null) {
