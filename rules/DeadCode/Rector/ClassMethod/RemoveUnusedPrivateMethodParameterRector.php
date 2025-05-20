@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
+use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -130,9 +130,9 @@ CODE_SAMPLE
         $methodName = $this->getName($classMethod);
         $keysArg = array_keys($unusedParameters);
 
-        $classObjectType = new \PHPStan\Type\ObjectType((string) $this->getName($class));
+        $classObjectType = new ObjectType((string) $this->getName($class));
         foreach ($classMethods as $classMethod) {
-            /** @var MethodCall[] $callers */
+            /** @var MethodCall[]|StaticCall[] $callers */
             $callers = $this->resolveCallers($classMethod, $methodName, $classObjectType);
             if ($callers === []) {
                 continue;
@@ -147,13 +147,13 @@ CODE_SAMPLE
     /**
      * @param int[] $keysArg
      */
-    private function cleanupArgs(MethodCall|StaticCall $methodCall, array $keysArg): void
+    private function cleanupArgs(MethodCall|StaticCall $call, array $keysArg): void
     {
-        if ($methodCall->isFirstClassCallable()) {
+        if ($call->isFirstClassCallable()) {
             return;
         }
 
-        $args = $methodCall->getArgs();
+        $args = $call->getArgs();
         foreach (array_keys($args) as $key) {
             if (in_array($key, $keysArg, true)) {
                 unset($args[$key]);
@@ -161,13 +161,13 @@ CODE_SAMPLE
         }
 
         // reset arg keys
-        $methodCall->args = array_values($args);
+        $call->args = array_values($args);
     }
 
     /**
      * @return MethodCall[]|StaticCall[]
      */
-    private function resolveCallers(ClassMethod $classMethod, string $methodName, \PHPStan\Type\ObjectType $classObjectType): array
+    private function resolveCallers(ClassMethod $classMethod, string $methodName, ObjectType $classObjectType): array
     {
         return $this->betterNodeFinder->find($classMethod, function (Node $subNode) use ($methodName, $classObjectType): bool {
             if (! $subNode instanceof MethodCall && ! $subNode instanceof StaticCall) {
