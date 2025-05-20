@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
-use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -12,6 +11,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
@@ -169,7 +169,10 @@ CODE_SAMPLE
      */
     private function resolveCallers(ClassMethod $classMethod, string $methodName, ObjectType $classObjectType): array
     {
-        return $this->betterNodeFinder->find($classMethod, function (Node $subNode) use ($methodName, $classObjectType): bool {
+        return $this->betterNodeFinder->find($classMethod, function (Node $subNode) use (
+            $methodName,
+            $classObjectType
+        ): bool {
             if (! $subNode instanceof MethodCall && ! $subNode instanceof StaticCall) {
                 return false;
             }
