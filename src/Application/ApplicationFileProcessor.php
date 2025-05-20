@@ -129,7 +129,7 @@ final class ApplicationFileProcessor
         /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
 
-        // avoid registered autoload input, paths, and config paths here gone on parallel
+        // avoid registered autoload input setup gone on parallel
         if ($input instanceof InputInterface) {
             $this->additionalAutoloader->autoloadInput($input);
         }
