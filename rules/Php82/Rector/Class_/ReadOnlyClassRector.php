@@ -68,7 +68,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->readonlyClassManipulator->processs($node, $this->file);
+        return $this->readonlyClassManipulator->process($node, $this->file);
     }
 
     public function provideMinPhpVersion(): int

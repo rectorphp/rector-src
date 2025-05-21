@@ -33,7 +33,7 @@ final readonly class ReadonlyClassManipulator
     ) {
     }
 
-    public function processs(Class_|New_ $node, File $file): Class_|New_|null
+    public function process(Class_ $node, File $file): Class_|null
     {
         $scope = ScopeFetcher::fetch($node);
         if ($this->shouldSkip($node, $scope)) {
@@ -97,15 +97,11 @@ final readonly class ReadonlyClassManipulator
         return false;
     }
 
-    private function shouldSkip(Class_|New_ $class, Scope $scope): bool
+    private function shouldSkip(Class_ $class, Scope $scope): bool
     {
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return true;
-        }
-
-        if ($class instanceof New_) {
-            $class = $class->class;
         }
 
         if ($this->shouldSkipClass($class)) {
