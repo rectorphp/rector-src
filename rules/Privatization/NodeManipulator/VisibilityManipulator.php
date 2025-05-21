@@ -129,15 +129,11 @@ final class VisibilityManipulator
         return $this->hasVisibility($node, Visibility::READONLY);
     }
 
-    public function removeReadonly(Class_ | Property | Param | New_ $node): void
+    public function removeReadonly(Class_ | Property | Param $node): void
     {
         $isConstructorPromotionBefore = $node instanceof Param && $node->isPromoted();
 
-        if (! $node instanceof New_) {
-            $node->flags &= ~Modifiers::READONLY;
-        } elseif ($node->class instanceof Class_) {
-            $node->class->flags &= ~Modifiers::READONLY;
-        }
+        $node->flags &= ~Modifiers::READONLY;
 
         $isConstructorPromotionAfter = $node instanceof Param && $node->isPromoted();
 
