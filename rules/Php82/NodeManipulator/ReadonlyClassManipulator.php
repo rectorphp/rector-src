@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php82\NodeManipulator;
 
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -33,16 +32,16 @@ final readonly class ReadonlyClassManipulator
     ) {
     }
 
-    public function process(Class_ $node, File $file): Class_|null
+    public function process(Class_ $class, File $file): Class_|null
     {
-        $scope = ScopeFetcher::fetch($node);
-        if ($this->shouldSkip($node, $scope)) {
+        $scope = ScopeFetcher::fetch($class);
+        if ($this->shouldSkip($class, $scope)) {
             return null;
         }
 
-        $this->visibilityManipulator->makeReadonly($node);
+        $this->visibilityManipulator->makeReadonly($class);
 
-        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         if ($constructClassMethod instanceof ClassMethod) {
             foreach ($constructClassMethod->getParams() as $param) {
@@ -54,7 +53,7 @@ final readonly class ReadonlyClassManipulator
             }
         }
 
-        foreach ($node->getProperties() as $property) {
+        foreach ($class->getProperties() as $property) {
             $this->visibilityManipulator->removeReadonly($property);
 
             if ($property->attrGroups !== []) {
@@ -62,11 +61,11 @@ final readonly class ReadonlyClassManipulator
             }
         }
 
-        if ($node->attrGroups !== []) {
-            $this->attributeGroupNewLiner->newLine($file, $node);
+        if ($class->attrGroups !== []) {
+            $this->attributeGroupNewLiner->newLine($file, $class);
         }
 
-        return $node;
+        return $class;
     }
 
     /**
