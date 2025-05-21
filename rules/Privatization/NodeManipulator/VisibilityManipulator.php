@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Privatization\NodeManipulator;
 
 use PhpParser\Modifiers;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
