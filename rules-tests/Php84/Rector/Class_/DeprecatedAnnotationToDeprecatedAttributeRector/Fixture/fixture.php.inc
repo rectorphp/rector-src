@@ -3,7 +3,7 @@
 namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 
 /**
- * @deprecated 1.0.0 some reason.
+ * @deprecated some reason.
  */
 final class Fixture
 {
@@ -21,7 +21,7 @@ final class Fixture
 
 namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 
-#[\Deprecated(message: 'some reason.', since: '1.0.0')]
+#[\Deprecated(message: 'some reason.')]
 final class Fixture
 {
     #[\Deprecated(message: 'use new method.', since: '1.0.1')]
