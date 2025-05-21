@@ -7,6 +7,7 @@ use Rector\Php83\Rector\ClassConst\AddTypeToConstRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\Php83\Rector\FuncCall\CombineHostPortLdapUriRector;
 use Rector\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector;
+use Rector\Php83\Rector\New_\ReadOnlyAnonymousClassRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
@@ -14,5 +15,6 @@ return static function (RectorConfig $rectorConfig): void {
         AddTypeToConstRector::class,
         CombineHostPortLdapUriRector::class,
         RemoveGetClassGetParentClassNoArgsRector::class,
+        ReadOnlyAnonymousClassRector::class,
     ]);
 };

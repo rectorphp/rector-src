@@ -630,6 +630,12 @@ final class PhpVersionFeature
     public const READONLY_CLASS = PhpVersion::PHP_82;
 
     /**
+     * @see https://www.php.net/manual/en/migration83.new-features.php#migration83.new-features.core.readonly-modifier-improvements
+     * @var int
+     */
+    public const READONLY_ANONYMOUS_CLASS = PhpVersion::PHP_83;
+
+    /**
      * @see https://wiki.php.net/rfc/mixed_type_v2
      * @var int
      */
