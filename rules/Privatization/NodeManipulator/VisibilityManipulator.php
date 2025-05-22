@@ -139,9 +139,13 @@ final class VisibilityManipulator
         if ($node instanceof Param && $isConstructorPromotionBefore && ! $isConstructorPromotionAfter) {
             $this->makePublic($node);
         }
+
+        if ($node instanceof Property) {
+            $this->publicize($node);
+        }
     }
 
-    public function publicize(ClassConst|ClassMethod $node): ClassConst|ClassMethod|null
+    public function publicize(ClassConst|ClassMethod|Property $node): ClassConst|ClassMethod|Property|null
     {
         // already non-public
         if (! $node->isPublic()) {
