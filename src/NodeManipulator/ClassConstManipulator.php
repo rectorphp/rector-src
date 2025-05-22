@@ -6,10 +6,13 @@ namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
@@ -18,7 +21,8 @@ final readonly class ClassConstManipulator
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private NodeNameResolver $nodeNameResolver,
-        private AstResolver $astResolver
+        private AstResolver $astResolver,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -29,6 +33,7 @@ final readonly class ClassConstManipulator
         }
 
         $className = $classReflection->getName();
+        $objectType = new ObjectType($className);
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
             $ancestorClass = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
 
@@ -39,14 +44,15 @@ final readonly class ClassConstManipulator
             // has in class?
             $isClassConstFetchFound = (bool) $this->betterNodeFinder->findFirst($ancestorClass, function (Node $node) use (
                 $classConst,
-                $className
+                $className,
+                $objectType
             ): bool {
                 // property + static fetch
                 if (! $node instanceof ClassConstFetch) {
                     return false;
                 }
 
-                return $this->isNameMatch($node, $classConst, $className);
+                return $this->isNameMatch($node, $classConst, $className, $objectType);
             });
 
             if ($isClassConstFetchFound) {
@@ -57,16 +63,29 @@ final readonly class ClassConstManipulator
         return false;
     }
 
-    private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst, string $className): bool
+    private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst, string $className, ObjectType $objectType): bool
     {
+        // dynamic
+        if (! $classConstFetch->name instanceof Identifier) {
+            return true;
+        }
+
         $classConstName = (string) $this->nodeNameResolver->getName($classConst);
         $selfConstantName = 'self::' . $classConstName;
         $staticConstantName = 'static::' . $classConstName;
         $classNameConstantName = $className . '::' . $classConstName;
 
-        return $this->nodeNameResolver->isNames(
+        if (! $this->nodeNameResolver->isName($classConstFetch->name, $classConstName)) {
+            return false;
+        }
+
+        if ($this->nodeNameResolver->isNames(
             $classConstFetch,
             [$selfConstantName, $staticConstantName, $classNameConstantName]
-        );
+        )) {
+            return true;
+        }
+
+        return $this->nodeTypeResolver->isObjectType($classConstFetch->class, $objectType);
     }
 }
