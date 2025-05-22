@@ -63,8 +63,12 @@ final readonly class ClassConstManipulator
         return false;
     }
 
-    private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst, string $className, ObjectType $objectType): bool
-    {
+    private function isNameMatch(
+        ClassConstFetch $classConstFetch,
+        ClassConst $classConst,
+        string $className,
+        ObjectType $objectType
+    ): bool {
         $classConstName = (string) $this->nodeNameResolver->getName($classConst);
         $selfConstantName = 'self::' . $classConstName;
         $staticConstantName = 'static::' . $classConstName;
