@@ -6,6 +6,7 @@ namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ClassReflection;
@@ -77,6 +78,10 @@ final readonly class ClassConstManipulator
         }
 
         if ($this->nodeTypeResolver->isObjectType($classConstFetch->class, $objectType)) {
+            if (! $classConstFetch->name instanceof Identifier) {
+                return true;
+            }
+
             return $this->nodeNameResolver->isName($classConstFetch->name, $classConstName);
         }
 
