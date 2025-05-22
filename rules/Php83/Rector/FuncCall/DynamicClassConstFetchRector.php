@@ -17,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php83\Rector\ClassConstFetch\DynamicClassConstFetchRector\DynamicClassConstFetchRectorTest
+ * @see \Rector\Tests\Php83\Rector\FuncCall\DynamicClassConstFetchRector\DynamicClassConstFetchRectorTest
  */
 final class DynamicClassConstFetchRector extends AbstractRector implements MinPhpVersionInterface
 {
