@@ -6,7 +6,6 @@ namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ClassReflection;
@@ -65,19 +64,10 @@ final readonly class ClassConstManipulator
 
     private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst, string $className, ObjectType $objectType): bool
     {
-        // dynamic
-        if (! $classConstFetch->name instanceof Identifier) {
-            return true;
-        }
-
         $classConstName = (string) $this->nodeNameResolver->getName($classConst);
         $selfConstantName = 'self::' . $classConstName;
         $staticConstantName = 'static::' . $classConstName;
         $classNameConstantName = $className . '::' . $classConstName;
-
-        if (! $this->nodeNameResolver->isName($classConstFetch->name, $classConstName)) {
-            return false;
-        }
 
         if ($this->nodeNameResolver->isNames(
             $classConstFetch,
@@ -86,6 +76,10 @@ final readonly class ClassConstManipulator
             return true;
         }
 
-        return $this->nodeTypeResolver->isObjectType($classConstFetch->class, $objectType);
+        if ($this->nodeTypeResolver->isObjectType($classConstFetch->class, $objectType)) {
+            return $this->nodeNameResolver->isName($classConstFetch->name, $classConstName);
+        }
+
+        return false;
     }
 }
