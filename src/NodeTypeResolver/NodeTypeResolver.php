@@ -24,7 +24,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\UnionType as NodeUnionType;
 use PHPStan\Analyser\Scope;
-use PHPStan\Broker\ClassAutoloadingException;
+use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -130,7 +130,7 @@ final class NodeTypeResolver
         if ($resolvedType instanceof ObjectType) {
             try {
                 return $this->resolveObjectType($resolvedType, $requiredObjectType);
-            } catch (ClassAutoloadingException) {
+            } catch (ClassNotFoundException) {
                 // in some type checks, the provided type in rector.php configuration does not have to exists
                 return false;
             }
