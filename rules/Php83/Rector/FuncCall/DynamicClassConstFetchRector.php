@@ -24,7 +24,7 @@ final class DynamicClassConstFetchRector extends AbstractRector implements MinPh
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'use dynamic class const fetch Example::{$constName} over constant(Example::class . \'::\' . $constName)',
+            'constant(Example::class . \'::\' . $constName) to dynamic class const fetch Example::{$constName}',
             [
             new CodeSample(
                 <<<'CODE_SAMPLE'
@@ -36,7 +36,7 @@ Example::{$constName};
 CODE_SAMPLE
                 ,
             ),
-        
+
         ]);
     }
 
