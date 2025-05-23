@@ -45,7 +45,7 @@ final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRect
             new CodeSample(
                 <<<'CODE_SAMPLE'
 /**
- * @deprecated 1.0 Use SomeOtherClass instead
+ * @deprecated 1.0.0 Use SomeOtherClass instead
  */
 class SomeClass
 {
@@ -53,8 +53,25 @@ class SomeClass
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-#[\Deprecated('1.0', 'Use SomeOtherClass instead')]
+#[\Deprecated(message: 'Use SomeOtherClass instead', since: '1.0.0')]
 class SomeClass
+{
+}
+CODE_SAMPLE
+            ),
+            new CodeSample(
+                <<<'CODE_SAMPLE'
+/**
+ * @deprecated 1.0.0 Use SomeOtherFunction instead
+ */
+function someFunction()
+{
+}
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+#[\Deprecated(message: 'Use SomeOtherFunction instead', since: '1.0.0')]
+function someFunction()
 {
 }
 CODE_SAMPLE
