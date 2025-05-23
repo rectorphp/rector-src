@@ -1,9 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Php84\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\DeprecatedTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -12,61 +21,74 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRector
+/**
+ * @see \Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector\DeprecatedAnnotationToDeprecatedAttributeRectorTest
+ */
+final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change @deprecated annotation to Deprecated attribute', [
-            new CodeSample(<<<'CODE_SAMPLE'
+            new CodeSample(
+                <<<'CODE_SAMPLE'
 /**
  * @deprecated 1.0 Use SomeOtherClass instead
  */
 class SomeClass
 {
 }
-CODE_SAMPLE,
-            <<<'CODE_SAMPLE'
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
 #[\Deprecated('1.0', 'Use SomeOtherClass instead')]
 class SomeClass
 {
 }
 CODE_SAMPLE
-
-)
+            ),
         ]);
     }
 
     public function getNodeTypes(): array
     {
         return [
-            Node\Stmt\Class_::class,
-            Node\Stmt\Interface_::class,
-            Node\Stmt\Trait_::class,
-            Node\Stmt\Function_::class,
-            Node\Stmt\ClassMethod::class,
-            Node\Stmt\Property::class,
-            Node\Stmt\ClassConst::class,
+            Class_::class,
+            Interface_::class,
+            Trait_::class,
+            Function_::class,
+            ClassMethod::class,
+            Property::class,
+            ClassConst::class,
         ];
     }
 
-    /**
-     * @param Node\Stmt\Class_|Node\Stmt\Interface_|Node\Stmt\Trait_|Node\Stmt\Function_|Node\Stmt\ClassMethod|Node\Stmt\Property|Node\Stmt\Const_ $node
-     * @return Node\Stmt\Class_|Node\Stmt\Interface_|Node\Stmt\Trait_|Node\Stmt\Function_|Node\Stmt\ClassMethod|Node\Stmt\Property|Node\Stmt\Const_
-     */
     public function refactor(Node $node): ?Node
     {
+        if (
+            ! $node instanceof ClassConst
+            && ! $node instanceof ClassMethod
+            && ! $node instanceof Property
+            && ! $node instanceof Class_
+            && ! $node instanceof Interface_
+            && ! $node instanceof Trait_
+            && ! $node instanceof Function_
+        ) {
+            return null;
+        }
+
         $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if ($phpDocInfo instanceof PhpDocInfo) {
@@ -82,8 +104,13 @@ CODE_SAMPLE
         return $hasChanged ? $node : null;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DEPRECATED_ATTRIBUTE;
+    }
+
     /**
-     * @return array<string, AttributeGroup|null>
+     * @return list<AttributeGroup>
      */
     private function handleDeprecated(PhpDocInfo $phpDocInfo): array
     {
@@ -101,7 +128,7 @@ CODE_SAMPLE
         return $attributeGroups;
     }
 
-    private function createAttributeGroup(string $annotationValue): ?AttributeGroup
+    private function createAttributeGroup(string $annotationValue): AttributeGroup
     {
         $pattern = '/^(?:(\d+\.\d+\.\d+)\s+)?(.*)$/';
         preg_match($pattern, $annotationValue, $matches);
