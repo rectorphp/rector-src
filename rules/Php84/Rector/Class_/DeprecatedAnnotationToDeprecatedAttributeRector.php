@@ -57,7 +57,7 @@ CODE_SAMPLE
             Node\Stmt\Function_::class,
             Node\Stmt\ClassMethod::class,
             Node\Stmt\Property::class,
-            Node\Stmt\Const_::class,
+            Node\Stmt\ClassConst::class,
         ];
     }
 

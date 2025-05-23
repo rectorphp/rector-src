@@ -5,7 +5,7 @@ namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttri
 /**
  * @deprecated some reason.
  */
-final class Fixture
+interface WorksWithInterfaces
 {
     /**
      * @deprecated use new constant.
@@ -13,16 +13,9 @@ final class Fixture
     public const CONSTANT = 'some reason.';
 
     /**
-     * @deprecated use new property.
-     */
-    public $property;
-
-    /**
      * @deprecated 1.0.1 use new method.
      */
-    public function run()
-    {
-    }
+    public function run();
 }
 
 ?>
@@ -32,18 +25,13 @@ final class Fixture
 namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 
 #[\Deprecated(message: 'some reason.')]
-final class Fixture
+interface WorksWithInterfaces
 {
     #[\Deprecated(message: 'use new constant.')]
     public const CONSTANT = 'some reason.';
 
-    #[\Deprecated(message: 'use new property.')]
-    public $property;
-
     #[\Deprecated(message: 'use new method.', since: '1.0.1')]
-    public function run()
-    {
-    }
+    public function run();
 }
 
 ?>

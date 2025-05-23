@@ -5,7 +5,7 @@ namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttri
 /**
  * @deprecated some reason.
  */
-final class Fixture
+trait WorksWithTraits
 {
     /**
      * @deprecated use new constant.
@@ -32,7 +32,7 @@ final class Fixture
 namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 
 #[\Deprecated(message: 'some reason.')]
-final class Fixture
+trait WorksWithTraits
 {
     #[\Deprecated(message: 'use new constant.')]
     public const CONSTANT = 'some reason.';
