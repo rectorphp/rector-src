@@ -31,6 +31,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @see https://regex101.com/r/HL3OAT/1
+     */
+    private const VERSION_MATCH_REGEX = '/^(?:(\d+\.\d+\.\d+)\s+)?(.*)$/';
+
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
@@ -82,12 +87,8 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [
-            Class_::class,
-            Interface_::class,
-            Trait_::class,
             Function_::class,
             ClassMethod::class,
-            Property::class,
             ClassConst::class,
         ];
     }
@@ -139,8 +140,7 @@ CODE_SAMPLE
 
     private function createAttributeGroup(string $annotationValue): AttributeGroup
     {
-        $pattern = '/^(?:(\d+\.\d+\.\d+)\s+)?(.*)$/';
-        preg_match($pattern, $annotationValue, $matches);
+        preg_match(self::VERSION_MATCH_REGEX, $annotationValue, $matches);
 
         $since = $matches[1] ?? null;
         $message = $matches[2] ?? null;
