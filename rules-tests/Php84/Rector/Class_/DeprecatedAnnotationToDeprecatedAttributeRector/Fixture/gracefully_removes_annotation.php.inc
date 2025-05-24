@@ -2,12 +2,13 @@
 
 namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 
-/**
- * @deprecated some reason.
- * @see https://getrector.com
- */
 final class GracefullyRemovesAnnotation
 {
+    /**
+     * @deprecated some reason.
+     * @see https://getrector.com
+     */
+    public const FOO = 'foo';
 }
 
 ?>
@@ -16,12 +17,13 @@ final class GracefullyRemovesAnnotation
 
 namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 
-/**
- * @see https://getrector.com
- */
-#[\Deprecated(message: 'some reason.')]
 final class GracefullyRemovesAnnotation
 {
+    /**
+     * @see https://getrector.com
+     */
+    #[\Deprecated(message: 'some reason.')]
+    public const FOO = 'foo';
 }
 
 ?>

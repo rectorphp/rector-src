@@ -6,13 +6,9 @@ namespace Rector\Php84\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Trait_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\DeprecatedTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -86,18 +82,14 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [
-            Function_::class,
-            ClassMethod::class,
-            ClassConst::class,
-        ];
+        return [Function_::class, ClassMethod::class, ClassConst::class];
     }
 
-        /**
-         * @param Class_|Interface_|Trait_|Property|ClassConst|Function_|ClassMethod $node
-         */
-        public function refactor(Node $node): ?Node
-        {
+    /**
+     * @param ClassConst|Function_|ClassMethod $node
+     */
+    public function refactor(Node $node): ?Node
+    {
 
         $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
