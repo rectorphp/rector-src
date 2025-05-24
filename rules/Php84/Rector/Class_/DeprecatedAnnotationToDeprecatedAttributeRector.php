@@ -92,19 +92,11 @@ CODE_SAMPLE
         ];
     }
 
-    public function refactor(Node $node): ?Node
-    {
-        if (
-            ! $node instanceof ClassConst
-            && ! $node instanceof ClassMethod
-            && ! $node instanceof Property
-            && ! $node instanceof Class_
-            && ! $node instanceof Interface_
-            && ! $node instanceof Trait_
-            && ! $node instanceof Function_
-        ) {
-            return null;
-        }
+        /**
+         * @param Class_|Interface_|Trait_|Property|ClassConst|Function_|ClassMethod $node
+         */
+        public function refactor(Node $node): ?Node
+        {
 
         $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
