@@ -291,11 +291,6 @@ final readonly class PropertyNaming
             return null;
         }
 
-        // custom namespaced DateTime
-        if (str_ends_with($className, '\DateTime')) {
-            return null;
-        }
-
         if ($type instanceof SelfObjectType) {
             return null;
         }
