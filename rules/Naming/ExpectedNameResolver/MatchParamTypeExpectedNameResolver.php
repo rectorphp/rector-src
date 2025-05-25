@@ -6,10 +6,8 @@ namespace Rector\Naming\ExpectedNameResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Param;
-use PHPStan\Type\ObjectType;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final readonly class MatchParamTypeExpectedNameResolver
@@ -17,7 +15,6 @@ final readonly class MatchParamTypeExpectedNameResolver
     public function __construct(
         private StaticTypeMapper $staticTypeMapper,
         private PropertyNaming $propertyNaming,
-        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
@@ -25,12 +22,6 @@ final readonly class MatchParamTypeExpectedNameResolver
     {
         // nothing to verify
         if (! $param->type instanceof Node) {
-            return null;
-        }
-
-        // include nullable too
-        // skip date time + date time interface, as should be kept
-        if ($this->nodeTypeResolver->isObjectType($param->type, new ObjectType('DateTimeInterface'))) {
             return null;
         }
 

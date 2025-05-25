@@ -4,7 +4,7 @@ namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixt
 
 final class KeepDateTime
 {
-    private ?DateTime $timestamp = null;
+    private ?\DateTime $timestamp = null;
 
     public function setValue(
         \DateTime $timestamp,

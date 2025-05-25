@@ -11,6 +11,7 @@ use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use Rector\Enum\ClassName;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\RectorNamingInflector;
 use Rector\Naming\ValueObject\ExpectedName;
@@ -71,6 +72,8 @@ final readonly class PropertyNaming
 
     public function getExpectedNameFromType(Type $type): ?ExpectedName
     {
+        $type = TypeCombinator::removeNull($type);
+
         // keep collections untouched
         if ($type instanceof ObjectType) {
             if ($type->isInstanceOf('Doctrine\Common\Collections\Collection')->yes()) {
@@ -78,6 +81,10 @@ final readonly class PropertyNaming
             }
 
             if ($type->isInstanceOf('Illuminate\Support\Collection')->yes()) {
+                return null;
+            }
+
+            if ($type->isInstanceOf(ClassName::DATE_TIME_INTERFACE)->yes()) {
                 return null;
             }
         }
@@ -278,7 +285,6 @@ final readonly class PropertyNaming
 
     private function resolveClassNameFromType(Type $type): ?string
     {
-        $type = TypeCombinator::removeNull($type);
         $className = ClassNameFromObjectTypeResolver::resolve($type);
 
         if ($className === null) {
