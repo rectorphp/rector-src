@@ -10,6 +10,7 @@ use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
 use Rector\Application\ApplicationFileProcessor;
+use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Console\ProcessConfigureDecorator;
@@ -42,6 +43,7 @@ final class WorkerCommand extends Command
     private const RESULT = 'result';
 
     public function __construct(
+        private readonly AdditionalAutoloader $additionalAutoloader,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly MemoryLimiter $memoryLimiter,
@@ -100,6 +102,7 @@ final class WorkerCommand extends Command
         Configuration $configuration,
         OutputInterface $output
     ): void {
+        $this->additionalAutoloader->autoloadPaths();
         $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
 
         if ($configuration->isDebug()) {
