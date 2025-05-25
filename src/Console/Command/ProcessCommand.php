@@ -96,7 +96,6 @@ EOF
         }
 
         $this->additionalAutoloader->autoloadInput($input);
-        $this->additionalAutoloader->autoloadPaths();
 
         $paths = $configuration->getPaths();
 
@@ -142,6 +141,13 @@ EOF
             );
 
             return ExitCode::FAILURE;
+        }
+
+        // autoload paths is register to DynamicSourceLocatorProvider,
+        // so check after arePathsEmpty() above
+        // check in no parallel since parallel will require register on its own process
+        if (! $configuration->isParallel()) {
+            $this->additionalAutoloader->autoloadPaths();
         }
 
         // show debug info
