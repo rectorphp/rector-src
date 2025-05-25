@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Param;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final readonly class MatchParamTypeExpectedNameResolver
@@ -16,7 +15,6 @@ final readonly class MatchParamTypeExpectedNameResolver
     public function __construct(
         private StaticTypeMapper $staticTypeMapper,
         private PropertyNaming $propertyNaming,
-        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
