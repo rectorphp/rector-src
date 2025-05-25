@@ -8,4 +8,6 @@ use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Tests\Issues\ChangeSwitchTernary\Source\AnotherExpressionRector;
 
 return RectorConfig::configure()
-    ->withRules([ChangeSwitchToMatchRector::class, TernaryFalseExpressionToIfRector::class, AnotherExpressionRector::class]);
+    ->withRules(
+        [ChangeSwitchToMatchRector::class, TernaryFalseExpressionToIfRector::class, AnotherExpressionRector::class]
+    );
