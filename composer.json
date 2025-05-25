@@ -40,7 +40,8 @@
         "symfony/process": "^6.4",
         "symplify/easy-parallel": "^11.2.2",
         "symplify/rule-doc-generator-contracts": "^11.2",
-        "webmozart/assert": "^1.11"
+        "webmozart/assert": "^1.11",
+        "symfony/service-contracts": "3.5.1"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.4",
