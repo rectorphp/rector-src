@@ -29,6 +29,7 @@ final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRect
 {
     /**
      * @see https://regex101.com/r/qNytVk/1
+     * @var string
      */
     private const VERSION_MATCH_REGEX = '/^(?:(\d+\.\d+\.\d+)\s+)?(.*)$/';
 
