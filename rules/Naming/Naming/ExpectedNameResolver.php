@@ -114,6 +114,10 @@ final readonly class ExpectedNameResolver
         }
 
         $returnedType = $this->nodeTypeResolver->getType($expr);
+        if (! $returnedType instanceof ObjectType) {
+            return null;
+        }
+
         $expectedName = $this->propertyNaming->getExpectedNameFromType($returnedType);
 
         if ($expectedName instanceof ExpectedName) {
