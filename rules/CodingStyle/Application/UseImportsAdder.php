@@ -60,6 +60,14 @@ final readonly class UseImportsAdder
             return [$fileWithoutNamespace];
         }
 
+        $stmts = array_values(array_filter($stmts, static function (Stmt $stmt): bool {
+            if (! $stmt instanceof Use_) {
+                return true;
+            }
+
+            return $stmt->uses !== [];
+        }));
+
         // place after declare strict_types
         foreach ($stmts as $key => $stmt) {
             // maybe just added a space
