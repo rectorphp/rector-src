@@ -15,6 +15,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
         'Some\Exception' => 'Some\Target\Exception',
         'DateTime' => 'DateTimeInterface',
+        'Phalcon\Logger' => 'Phalcon\Logger\Logger',
     ]);
     $rectorConfig->rule(TernaryToNullCoalescingRector::class);
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
