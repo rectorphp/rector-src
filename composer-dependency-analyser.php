@@ -17,9 +17,6 @@ return $config
     // ensure use version ^3.2.0
     ->ignoreErrorsOnPackage('composer/pcre', [ErrorType::UNUSED_DEPENDENCY])
 
-    // temporary pin to avoid downgrade error
-    ->ignoreErrorsOnPackage('symfony/service-contracts', [ErrorType::UNUSED_DEPENDENCY])
-
     ->ignoreErrorsOnPaths([
         __DIR__ . '/stubs',
         __DIR__ . '/tests',
