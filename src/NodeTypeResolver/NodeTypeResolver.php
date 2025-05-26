@@ -337,11 +337,11 @@ final class NodeTypeResolver
             return true;
         }
 
-        if ($classReflection->hasTraitUse($objectType->getClassName())) {
+        if ($classReflection->is($objectType->getClassName())) {
             return true;
         }
 
-        return $classReflection->is($objectType->getClassName());
+        return $classReflection->hasTraitUse($objectType->getClassName());
     }
 
     /**
