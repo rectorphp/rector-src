@@ -6,6 +6,9 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
 use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -16,9 +19,11 @@ use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
+use Rector\CodingStyle\Node\NameImporter;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierPhpDocTypeMapper;
@@ -33,12 +38,19 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private bool $hasChanged = false;
 
+    /**
+     * @var array<Use_|GroupUse>
+     */
+    private array $currentUses = [];
+
     public function __construct(
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper
+        private readonly IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper,
+        private readonly UseImportsResolver $useImportsResolver,
+        private readonly NameImporter $nameImporter
     ) {
     }
 
@@ -47,6 +59,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         if (! $this->currentPhpParserNode instanceof PhpParserNode) {
             throw new ShouldNotHappenException('Set "$currentPhpParserNode" first');
         }
+
+        $this->currentUses = $this->useImportsResolver->resolve();
     }
 
     public function enterNode(Node $node): ?Node
@@ -153,14 +167,22 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
-            $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
+        if (! $this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
+            return null;
+        }
+
+        $name = $this->nameImporter->resolveNameInUse(new FullyQualified($fullyQualifiedObjectType->getClassName()), $this->currentUses);
+        if (is_string($name)) {
+            $newNode->name = $name;
             $this->hasChanged = true;
 
             return $newNode;
         }
 
-        return null;
+        $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
+        $this->hasChanged = true;
+
+        return $newNode;
     }
 
     private function shouldImport(

@@ -47,11 +47,11 @@ final readonly class NameImporter
     /**
      * @param array<Use_|GroupUse> $currentUses
      */
-    private function resolveNameInUse(FullyQualified $fullyQualified, array $currentUses): ?Name
+    public function resolveNameInUse(FullyQualified $fullyQualified, array $currentUses): ?string
     {
         $aliasName = $this->aliasNameResolver->resolveByName($fullyQualified, $currentUses);
         if (is_string($aliasName)) {
-            return new Name($aliasName);
+            return $aliasName;
         }
 
         if (substr_count($fullyQualified->toCodeString(), '\\') === 1) {
@@ -65,8 +65,8 @@ final readonly class NameImporter
                     continue;
                 }
 
-                if ($useUse->alias instanceof Identifier && $useUse->alias->toString() !== $lastName) {
-                    return new Name($lastName);
+                if ($useUse->alias instanceof Identifier && $useUse->alias->toString() !== $lastName && $useUse->name->toString() !== $lastName) {
+                    return $lastName;
                 }
             }
         }
@@ -85,9 +85,10 @@ final readonly class NameImporter
     ): ?Name {
         // make use of existing use import
         $nameInUse = $this->resolveNameInUse($fullyQualified, $currentUses);
-        if ($nameInUse instanceof Name) {
-            $nameInUse->setAttribute(AttributeKey::NAMESPACED_NAME, $fullyQualified->toString());
-            return $nameInUse;
+        if (is_string($nameInUse)) {
+            $name = new Name($nameInUse);
+            $name->setAttribute(AttributeKey::NAMESPACED_NAME, $fullyQualified->toString());
+            return $name;
         }
 
         // the same end is already imported → skip

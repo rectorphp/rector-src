@@ -29,7 +29,6 @@ final readonly class AliasClassNameImportSkipVoter implements ClassNameImportSki
     public function shouldSkip(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType, Node $node): bool
     {
         $aliasedUses = $this->aliasUsesResolver->resolveFromNode($node, $file->getNewStmts());
-        $longNameLowered = strtolower($fullyQualifiedObjectType->getClassName());
         $shortNameLowered = $fullyQualifiedObjectType->getShortNameLowered();
 
         foreach ($aliasedUses as $aliasedUse) {
@@ -37,10 +36,6 @@ final readonly class AliasClassNameImportSkipVoter implements ClassNameImportSki
 
             // its aliased, we cannot just rename it
             if (\str_ends_with($aliasedUseLowered, '\\' . $shortNameLowered)) {
-                return true;
-            }
-
-            if ($aliasedUseLowered === $shortNameLowered && $longNameLowered === $shortNameLowered) {
                 return true;
             }
         }
