@@ -14,8 +14,11 @@ use PHPStan\BetterReflection\Reflection\ReflectionEnum;
 use PHPStan\BetterReflection\Reflector\DefaultReflector;
 use PHPStan\BetterReflection\Reflector\Exception\IdentifierNotFound;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Rector\AbstractRector;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -148,6 +151,29 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
         // ensure exactly ReflectionEnum
         if (! $classIdentifier instanceof ReflectionEnum) {
             return null;
+        }
+
+        // ensure not part of definition in ->withAutoloadPaths()
+        $fileTarget = $classIdentifier->getFileName();
+
+        // possibly native
+        if ($fileTarget === null) {
+            return null;
+        }
+
+        $autoloadPaths = SimpleParameterProvider::provideArrayParameter(Option::AUTOLOAD_PATHS);
+        $normalizedFileTarget = PathNormalizer::normalize((string) realpath($fileTarget));
+
+        foreach ($autoloadPaths as $autoloadPath) {
+            $normalizedAutoloadPath = PathNormalizer::normalize($autoloadPath);
+
+            if ($autoloadPath === $fileTarget) {
+                return null;
+            }
+
+            if (str_starts_with($normalizedFileTarget, $normalizedAutoloadPath . '/')) {
+                return null;
+            }
         }
 
         $pascalCaseName = $this->convertToPascalCase($constName);
