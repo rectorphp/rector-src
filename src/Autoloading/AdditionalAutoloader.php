@@ -40,6 +40,9 @@ final readonly class AdditionalAutoloader
     public function autoloadPaths(): void
     {
         $autoloadPaths = SimpleParameterProvider::provideArrayParameter(Option::AUTOLOAD_PATHS);
-        $this->dynamicSourceLocatorDecorator->addPaths($autoloadPaths);
+        $autoloadPaths = $this->dynamicSourceLocatorDecorator->addPaths($autoloadPaths);
+
+        // set values of Option::AUTOLOAD_PATHS with transformed paths
+        SimpleParameterProvider::setParameter(Option::AUTOLOAD_PATHS, $autoloadPaths);
     }
 }
