@@ -13,6 +13,7 @@ use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Enum\SomeE
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Foo;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\NewInterface;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SomeSubscriber;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SomeTrait;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
@@ -39,5 +40,8 @@ return static function (RectorConfig $rectorConfig): void {
 
         // enum method
         new MethodCallRename(SomeEnumWithMethod::class, 'oldEnumMethod', 'newEnumMethod'),
+
+        // trait method
+        new MethodCallRename(SomeTrait::class, '_test', 'test'),
     ]);
 };
