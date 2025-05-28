@@ -732,4 +732,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_GET_CLASS_WITHOUT_ARGS = PhpVersion::PHP_83;
+
+    /**
+     * @see https://wiki.php.net/rfc/deprecated_attribute
+     * @var int
+     */
+    public const DEPRECATED_ATTRIBUTE = PhpVersion::PHP_84;
 }
