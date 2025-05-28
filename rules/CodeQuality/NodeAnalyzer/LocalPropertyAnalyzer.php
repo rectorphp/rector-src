@@ -11,7 +11,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor;
@@ -135,7 +135,7 @@ final readonly class LocalPropertyAnalyzer
             return true;
         }
 
-        return $propertyFetch->name instanceof Variable;
+        return ! $propertyFetch->name instanceof Identifier;
     }
 
     /**
