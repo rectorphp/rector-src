@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\TryCatch\RemoveDeadCatchRector\Fixture;
 
-class EmptyTryAndCatch
+class SkipEmptyTryAndCatch
 {
     public function run()
     {
