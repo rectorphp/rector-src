@@ -26,18 +26,19 @@ final class DynamicClassConstFetchRector extends AbstractRector implements MinPh
         return new RuleDefinition(
             'constant(Example::class . \'::\' . $constName) to dynamic class const fetch Example::{$constName}',
             [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 constant(Example::class . '::' . $constName);
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 Example::{$constName};
 CODE_SAMPLE
-                ,
-            ),
+                    ,
+                ),
 
-        ]);
+            ]
+        );
     }
 
     public function getNodeTypes(): array
