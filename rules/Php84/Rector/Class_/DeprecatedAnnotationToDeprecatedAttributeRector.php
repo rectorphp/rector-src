@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\Class_;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\ClassConst;
@@ -91,14 +92,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-
         $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if ($phpDocInfo instanceof PhpDocInfo) {
-            $requiresAttributeGroups = $this->handleDeprecated($phpDocInfo);
-            if ($requiresAttributeGroups !== []) {
+            $deprecatedAttributeGroup = $this->handleDeprecated($phpDocInfo);
+            if ($deprecatedAttributeGroup instanceof AttributeGroup) {
                 $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-                $node->attrGroups = array_merge($node->attrGroups, $requiresAttributeGroups);
+                $node->attrGroups = array_merge($node->attrGroups, [$deprecatedAttributeGroup]);
                 $this->removeDeprecatedAnnotations($phpDocInfo);
                 $hasChanged = true;
             }
@@ -112,28 +112,27 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATED_ATTRIBUTE;
     }
 
-    /**
-     * @return list<AttributeGroup>
-     */
-    private function handleDeprecated(PhpDocInfo $phpDocInfo): array
+    private function handleDeprecated(PhpDocInfo $phpDocInfo): ?AttributeGroup
     {
-        $attributeGroups = [];
+        $attributeGroup = null;
         $desiredTagValueNodes = $phpDocInfo->getTagsByName('deprecated');
         foreach ($desiredTagValueNodes as $desiredTagValueNode) {
             if (! $desiredTagValueNode->value instanceof DeprecatedTagValueNode) {
                 continue;
             }
 
-            $attributeGroups[0] = $this->createAttributeGroup($desiredTagValueNode->value->description);
+            $attributeGroup = $this->createAttributeGroup($desiredTagValueNode->value->description);
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $desiredTagValueNode);
+
+            break;
         }
 
-        return $attributeGroups;
+        return $attributeGroup;
     }
 
     private function createAttributeGroup(string $annotationValue): AttributeGroup
     {
-        preg_match(self::VERSION_MATCH_REGEX, $annotationValue, $matches);
+        $matches = Strings::match($annotationValue, self::VERSION_MATCH_REGEX);
 
         $since = $matches[1] ?? null;
         $message = $matches[2] ?? null;
