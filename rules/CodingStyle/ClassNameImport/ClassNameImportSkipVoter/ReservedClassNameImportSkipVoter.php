@@ -38,10 +38,6 @@ final readonly class ReservedClassNameImportSkipVoter implements ClassNameImport
     {
         $shortName = $fullyQualifiedObjectType->getShortNameLowered();
 
-        return in_array(
-            $shortName,
-            self::RESERVED_CLASS_NAMES,
-            true
-        );
+        return in_array($shortName, self::RESERVED_CLASS_NAMES, true);
     }
 }

@@ -26,9 +26,10 @@ final readonly class MissConfigurationReporter
         $neverRegisteredSkippedRules = array_unique(array_diff($skippedRules, $registeredRules));
 
         // remove special PostRectorInterface rules, they are registered in a different way
-        $neverRegisteredSkippedRules = array_filter($neverRegisteredSkippedRules, function ($skippedRule) {
-            return ! is_a($skippedRule, PostRectorInterface::class, true);
-        });
+        $neverRegisteredSkippedRules = array_filter(
+            $neverRegisteredSkippedRules,
+            fn ($skippedRule): bool => ! is_a($skippedRule, PostRectorInterface::class, true)
+        );
 
         if ($neverRegisteredSkippedRules === []) {
             return;

@@ -146,7 +146,10 @@ CODE_SAMPLE
             return;
         }
 
-        if ($newType instanceof SimpleStaticType && $classMethod->returnType instanceof Name && $this->isName($classMethod->returnType, 'static')) {
+        if ($newType instanceof SimpleStaticType && $classMethod->returnType instanceof Name && $this->isName(
+            $classMethod->returnType,
+            'static'
+        )) {
             return;
         }
 

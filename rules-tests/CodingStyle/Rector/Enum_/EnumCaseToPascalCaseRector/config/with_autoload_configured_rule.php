@@ -7,6 +7,4 @@ use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()
     ->withRules([EnumCaseToPascalCaseRector::class])
-    ->withAutoloadPaths([
-        __DIR__ . '/../Source'
-    ]);
+    ->withAutoloadPaths([__DIR__ . '/../Source']);

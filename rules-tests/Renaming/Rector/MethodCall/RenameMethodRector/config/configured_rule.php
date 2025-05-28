@@ -30,18 +30,12 @@ return static function (RectorConfig $rectorConfig): void {
         new MethodCallRename(NewInterface::class, 'some_old', 'some_new'),
         new MethodCallRename(DifferentInterface::class, 'renameMe', 'toNewVersion'),
 
-        // reflection method name
         new MethodCallRename(ReflectionFunctionAbstract::class, 'getTentativeReturnType', 'getReturnType'),
 
-        // with array key
         new MethodCallRenameWithArrayKey('Nette\Utils\Html', 'addToArray', 'addToHtmlArray', 'hey'),
-        // never types
         new MethodCallRename('Symfony\\Component\\Workflow\\DefinitionBuilder', 'reset', 'clear'),
 
-        // enum method
         new MethodCallRename(SomeEnumWithMethod::class, 'oldEnumMethod', 'newEnumMethod'),
-
-        // trait method
         new MethodCallRename(SomeTrait::class, '_test', 'test'),
     ]);
 };
