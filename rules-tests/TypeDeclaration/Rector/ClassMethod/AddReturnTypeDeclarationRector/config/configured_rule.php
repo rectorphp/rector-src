@@ -12,6 +12,7 @@ use Rector\Config\RectorConfig;
 use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\ReturnOfStatic;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\ReturnTheMixed;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\SkipAlreadyStaticReturn;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\DataTransformerInterface;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\FileInterface;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\FolderInterface;
@@ -36,5 +37,10 @@ return static function (RectorConfig $rectorConfig): void {
             new AddReturnTypeDeclaration(DataTransformerInterface::class, 'transform', new MixedType()),
             new AddReturnTypeDeclaration(FormTypeInterface::class, 'getParent', $nullableStringType),
             new AddReturnTypeDeclaration(FolderInterface::class, 'create', $nullableObjectType),
+            new AddReturnTypeDeclaration(
+                SkipAlreadyStaticReturn::class,
+                'transform',
+                new SimpleStaticType(SkipAlreadyStaticReturn::class)
+            ),
         ]);
 };
