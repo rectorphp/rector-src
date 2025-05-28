@@ -30,7 +30,7 @@ class SomeClass
         try {
             // some code
         } catch (RuntimeException $exception) {
-            throw new InvavlidArgumentException($exception->getMessage());
+            throw new InvalidArgumentException($exception->getMessage());
         } catch (Throwable $throwable) {
             throw $throwable;
         }
@@ -46,7 +46,7 @@ class SomeClass
         try {
             // some code
         } catch (RuntimeException $exception) {
-            throw new InvavlidArgumentException($exception->getMessage());
+            throw new InvalidArgumentException($exception->getMessage());
         }
     }
 }
