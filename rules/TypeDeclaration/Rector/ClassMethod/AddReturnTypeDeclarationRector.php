@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;
 use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
@@ -40,7 +42,8 @@ final class AddReturnTypeDeclarationRector extends AbstractRector implements Con
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -146,11 +149,13 @@ CODE_SAMPLE
             return;
         }
 
-        if ($newType instanceof SimpleStaticType && $classMethod->returnType instanceof Name && $this->isName(
-            $classMethod->returnType,
-            'static'
-        )) {
-            return;
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        if ($classMethod->returnType instanceof Node && $newType instanceof SimpleStaticType) {
+            if (! $classReflection instanceof ClassReflection) {
+                return;
+            }
+
+            $newType = new StaticType($classReflection);
         }
 
         // already set and sub type or equal → no change

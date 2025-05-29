@@ -10,6 +10,7 @@ use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 use Rector\Config\RectorConfig;
 use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\ReturnDifferentOverStatic;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\ReturnOfStatic;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\ReturnTheMixed;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\SkipAlreadyStaticReturn;
@@ -41,6 +42,11 @@ return static function (RectorConfig $rectorConfig): void {
                 SkipAlreadyStaticReturn::class,
                 'transform',
                 new SimpleStaticType(SkipAlreadyStaticReturn::class)
+            ),
+            new AddReturnTypeDeclaration(
+                ReturnDifferentOverStatic::class,
+                'transform',
+                new SimpleStaticType(ReturnDifferentOverStatic::class)
             ),
         ]);
 };
