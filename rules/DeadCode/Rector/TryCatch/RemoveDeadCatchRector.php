@@ -69,6 +69,10 @@ CODE_SAMPLE
     public function refactor(Node $node)
     {
         $catches = $node->catches;
+        if (count($catches) === 1) {
+            return null;
+        }
+
         $hasChanged = false;
         foreach ($catches as $key => $catchItem) {
             if ($this->isEmpty($catchItem->stmts)) {
