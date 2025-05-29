@@ -198,7 +198,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($classReflection === null && $classOrInterface instanceof Trait_) {
+        if (!$classReflection instanceof ClassReflection && $classOrInterface instanceof Trait_) {
             return $this->hasClassNewClassMethod($classOrInterface, $methodCallRename);
         }
 
