@@ -14,6 +14,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -70,16 +71,16 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, NullsafeMethodCall::class, StaticCall::class, Class_::class, Interface_::class];
+        return [MethodCall::class, NullsafeMethodCall::class, StaticCall::class, Class_::class, Trait_::class, Interface_::class];
     }
 
     /**
-     * @param MethodCall|NullsafeMethodCall|StaticCall|Class_|Interface_ $node
+     * @param MethodCall|NullsafeMethodCall|StaticCall|Class_|Interface_|Trait_ $node
      */
     public function refactor(Node $node): ?Node
     {
         $scope = ScopeFetcher::fetch($node);
-        if ($node instanceof Class_ || $node instanceof Interface_) {
+        if ($node instanceof Class_ || $node instanceof Trait_ || $node instanceof Interface_) {
             return $this->refactorClass($node, $scope);
         }
 
@@ -124,7 +125,7 @@ CODE_SAMPLE
     }
 
     private function hasClassNewClassMethod(
-        Class_|Interface_ $classOrInterface,
+        Class_|Trait_|Interface_ $classOrInterface,
         MethodCallRenameInterface $methodCallRename
     ): bool {
         return (bool) $classOrInterface->getMethod($methodCallRename->getNewMethod());
@@ -149,12 +150,8 @@ CODE_SAMPLE
         );
     }
 
-    private function refactorClass(Class_|Interface_ $classOrInterface, Scope $scope): Class_|Interface_|null
+    private function refactorClass(Class_|Trait_|Interface_ $classOrInterface, Scope $scope): Class_|Trait_|Interface_|null
     {
-        if (! $scope->isInClass()) {
-            return null;
-        }
-
         $classReflection = $scope->getClassReflection();
 
         $hasChanged = false;
@@ -194,11 +191,15 @@ CODE_SAMPLE
         string $methodName,
         ClassMethod $classMethod,
         MethodCallRenameInterface $methodCallRename,
-        Class_|Interface_ $classOrInterface,
+        Class_|Trait_|Interface_ $classOrInterface,
         ?ClassReflection $classReflection
     ): bool {
         if (! $this->nodeNameResolver->isStringName($methodName, $methodCallRename->getOldMethod())) {
             return true;
+        }
+
+        if ($classReflection === null && $classOrInterface instanceof Trait_) {
+            return $this->hasClassNewClassMethod($classOrInterface, $methodCallRename);
         }
 
         if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
