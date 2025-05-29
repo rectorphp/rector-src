@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture\RenameTraitMethod;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\AbstractType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\DifferentInterface;
@@ -37,5 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
 
         new MethodCallRename(SomeEnumWithMethod::class, 'oldEnumMethod', 'newEnumMethod'),
         new MethodCallRename(SomeTrait::class, '_test', 'test'),
+        new MethodCallRename(RenameTraitMethod::class, 'run', 'execute'),
     ]);
 };
