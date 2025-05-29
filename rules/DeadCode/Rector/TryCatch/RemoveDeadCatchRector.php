@@ -69,6 +69,7 @@ CODE_SAMPLE
     public function refactor(Node $node)
     {
         $catches = $node->catches;
+        $hasChanged = false;
         foreach ($catches as $key => $catchItem) {
             if ($this->isEmpty($catchItem->stmts)) {
                 continue;
@@ -84,9 +85,10 @@ CODE_SAMPLE
             }
 
             unset($catches[$key]);
+            $hasChanged = true;
         }
 
-        if ($catches === [] || $catches === $node->catches) {
+        if (! $hasChanged || $catches === []) {
             return null;
         }
 
