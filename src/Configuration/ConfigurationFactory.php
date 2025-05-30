@@ -9,6 +9,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Configuration\ConfigurationFactoryTest
@@ -57,6 +58,13 @@ final readonly class ConfigurationFactory
         $shouldClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
 
         $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
+
+        $kaizenStepCount = $input->getOption(Option::KAIZEN);
+        if ($kaizenStepCount !== null) {
+            $kaizenStepCount = (int) $kaizenStepCount;
+            Assert::positiveInteger($kaizenStepCount, 'Change "--kaizen" value to a positive integer');
+        }
+
         $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);
 
         $showDiffs = $this->shouldShowDiffs($input);
@@ -105,7 +113,8 @@ final readonly class ConfigurationFactory
             $isReportingWithRealPath,
             $onlyRule,
             $onlySuffix,
-            $levelOverflows
+            $levelOverflows,
+            $kaizenStepCount
         );
     }
 
