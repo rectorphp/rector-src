@@ -71,7 +71,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, NullsafeMethodCall::class, StaticCall::class, Class_::class, Trait_::class, Interface_::class];
+        return [
+            MethodCall::class,
+            NullsafeMethodCall::class,
+            StaticCall::class,
+            Class_::class,
+            Trait_::class,
+            Interface_::class,
+        ];
     }
 
     /**
@@ -150,8 +157,10 @@ CODE_SAMPLE
         );
     }
 
-    private function refactorClass(Class_|Trait_|Interface_ $classOrInterface, Scope $scope): Class_|Trait_|Interface_|null
-    {
+    private function refactorClass(
+        Class_|Trait_|Interface_ $classOrInterface,
+        Scope $scope
+    ): Class_|Trait_|Interface_|null {
         $classReflection = $scope->getClassReflection();
 
         $hasChanged = false;
@@ -198,7 +207,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (!$classReflection instanceof ClassReflection && $classOrInterface instanceof Trait_) {
+        if (! $classReflection instanceof ClassReflection && $classOrInterface instanceof Trait_) {
             return $this->hasClassNewClassMethod($classOrInterface, $methodCallRename);
         }
 
