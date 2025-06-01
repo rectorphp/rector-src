@@ -22,7 +22,6 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\InterpolatedStringPart;
-use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\InterpolatedString;
@@ -428,21 +427,6 @@ final class BetterStandardPrinter extends Standard
             . $this->resolveIndentSpaces() . '->'
             . $this->pObjectProperty($methodCall->name)
             . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
-    }
-
-    /**
-     * Keep attributes on newlines
-     */
-    protected function pParam(Param $param): string
-    {
-        return $this->pAttrGroups($param->attrGroups)
-            . $this->pModifiers($param->flags)
-            . ($param->type instanceof Node ? $this->p($param->type) . ' ' : '')
-            . ($param->byRef ? '&' : '')
-            . ($param->variadic ? '...' : '')
-            . $this->p($param->var)
-            . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '')
-            . ($param->hooks !== [] ? ' {' . $this->pStmts($param->hooks) . $this->nl . '}' : '');
     }
 
     protected function pInfixOp(
