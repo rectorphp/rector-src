@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace Rector\Exception;
 
 use Exception;
-use Throwable;
 
 final class ShouldNotHappenException extends Exception
 {
     /**
      * @param int $code
      */
-    public function __construct(string $message = '', $code = 0, ?Throwable $throwable = null)
+    public function __construct(string $message = '', $code = 0)
     {
         if ($message === '') {
             $message = $this->createDefaultMessageWithLocation();
         }
 
-        parent::__construct($message, $code, $throwable);
+        parent::__construct($message, $code);
     }
 
     private function createDefaultMessageWithLocation(): string

@@ -56,7 +56,7 @@ final class BetterStandardPrinter extends Standard
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer
     ) {
-        parent::__construct([]);
+        parent::__construct();
     }
 
     /**
