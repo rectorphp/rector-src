@@ -314,15 +314,10 @@ final class BetterStandardPrinter extends Standard
     }
 
     /**
-     * Print arrays in short [] by default,
-     * to prevent manual explicit array shortening.
+     * Print new lined array items when newlined_array_print is set to true
      */
     protected function pExpr_Array(Array_ $array): string
     {
-        if (! $array->hasAttribute(AttributeKey::KIND)) {
-            $array->setAttribute(AttributeKey::KIND, Array_::KIND_SHORT);
-        }
-
         if ($array->getAttribute(AttributeKey::NEWLINED_ARRAY_PRINT) === true) {
             $printedArray = '[';
             $printedArray .= $this->pCommaSeparatedMultiline($array->items, true);
