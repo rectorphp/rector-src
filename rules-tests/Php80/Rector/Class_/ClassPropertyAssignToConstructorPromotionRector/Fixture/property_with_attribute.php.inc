@@ -36,10 +36,13 @@ use JetBrains\PhpStorm\Immutable;
 
 final class PropertyWithAttribute
 {
-    public function __construct(#[Immutable]
-    public float $latitude, #[Immutable]
-    #[Deprecated]
-    public float $longiture)
+    public function __construct(
+        #[Immutable]
+        public float $latitude,
+        #[Immutable]
+        #[Deprecated]
+        public float $longiture
+    )
     {
     }
 }

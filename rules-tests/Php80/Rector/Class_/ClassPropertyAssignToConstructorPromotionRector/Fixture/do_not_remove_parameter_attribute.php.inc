@@ -24,7 +24,9 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class DoNotRemoveParameterAttribute
 {
-    public function __construct(#[\SensitiveParameter]private string $password)
+    public function __construct(
+        #[\SensitiveParameter]private string $password
+    )
     {
     }
 }
