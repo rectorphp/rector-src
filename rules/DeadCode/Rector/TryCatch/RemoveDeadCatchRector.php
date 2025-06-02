@@ -84,6 +84,7 @@ CODE_SAMPLE
                 continue;
             }
 
+            /** @var FullyQualified */
             $type = $catchItem->types[0];
             if ($this->shouldSkipNextCatchClassParentWithSpecialTreatment($catches, $type, $key, $maxIndexCatches)) {
                 continue;
