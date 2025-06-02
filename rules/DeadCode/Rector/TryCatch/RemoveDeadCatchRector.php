@@ -6,7 +6,9 @@ namespace Rector\DeadCode\Rector\TryCatch;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\TryCatch;
@@ -74,17 +76,15 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $maxIndexCatches = count($catches) - 1;
+
         foreach ($catches as $key => $catchItem) {
-            if ($this->isEmpty($catchItem->stmts)) {
+            if (! $this->isJustThrowedSameVariable($catchItem)) {
                 continue;
             }
 
-            $catchItemStmt = $catchItem->stmts[0];
-            if (! ($catchItemStmt instanceof Expression && $catchItemStmt->expr instanceof Throw_)) {
-                continue;
-            }
-
-            if (! $this->nodeComparator->areNodesEqual($catchItem->var, $catchItemStmt->expr->expr)) {
+            $type = $catchItem->types[0];
+            if ($this->shouldSkipNextCatchClassParentWithSpecialTreatment($catches, $type, $key, $maxIndexCatches)) {
                 continue;
             }
 
@@ -99,6 +99,65 @@ CODE_SAMPLE
         $node->catches = $catches;
 
         return $node;
+    }
+
+    private function isJustThrowedSameVariable(Catch_ $catchItem): bool
+    {
+        if ($this->isEmpty($catchItem->stmts)) {
+            return false;
+        }
+
+        $catchItemStmt = $catchItem->stmts[0];
+        if (! ($catchItemStmt instanceof Expression && $catchItemStmt->expr instanceof Throw_)) {
+            return false;
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($catchItem->var, $catchItemStmt->expr->expr)) {
+            return false;
+        }
+
+        // too complex to check
+        if (count($catchItem->types) !== 1) {
+            return false;
+        }
+
+        $type = $catchItem->types[0];
+
+        return $type instanceof FullyQualified;
+    }
+
+    /**
+     * @param Catch_[] $catches
+     */
+    private function shouldSkipNextCatchClassParentWithSpecialTreatment(array $catches, FullyQualified $type, int $key, int $maxIndexCatches): bool
+    {
+        for ($index = $key + 1; $index <= $maxIndexCatches; ++$index) {
+            if (! isset($catches[$index])) {
+                continue;
+            }
+
+            $nextCatch = $catches[$index];
+
+            // too complex to check
+            if (count($nextCatch->types) !== 1) {
+                return true;
+            }
+
+            $nextCatchType = $nextCatch->types[0];
+            if (! $nextCatchType instanceof FullyQualified) {
+                return true;
+            }
+
+            if (! $this->isObjectType($type, new \PHPStan\Type\ObjectType($nextCatchType->toString()))) {
+                continue;
+            }
+
+            if (! $this->isJustThrowedSameVariable($nextCatch)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
