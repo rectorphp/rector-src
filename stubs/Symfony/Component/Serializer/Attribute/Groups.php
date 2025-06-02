@@ -10,6 +10,7 @@ if (class_exists('Symfony\Component\Serializer\Attribute\Groups')) {
     return;
 }
 
+#[\Attribute]
 class Groups
 {
 }

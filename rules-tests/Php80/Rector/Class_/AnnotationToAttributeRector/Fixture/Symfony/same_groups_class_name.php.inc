@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source;
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Symfony;
 
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -25,7 +25,7 @@ class Booking
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source;
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Symfony;
 
 use Symfony\Component\Serializer\Attribute\Groups;
 

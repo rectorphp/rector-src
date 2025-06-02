@@ -14,6 +14,7 @@ if (class_exists('Symfony\Component\Routing\Annotation\Route')) {
  * @Annotation
  * @Target({"CLASS", "METHOD"})
  */
+#[\Attribute]
 class Route
 {
     private $path;

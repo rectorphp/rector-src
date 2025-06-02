@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Symfony;
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Symfony\Validator;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,7 +23,7 @@ final class ValidationIntegerParameter
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Symfony;
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Symfony\Validator;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

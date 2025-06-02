@@ -8,6 +8,7 @@ if (class_exists('Doctrine\ORM\Mapping\Column')) {
     return;
 }
 
+#[\Attribute]
 final class Column
 {
 

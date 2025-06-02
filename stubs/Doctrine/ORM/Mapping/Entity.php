@@ -8,6 +8,7 @@ if (class_exists('Doctrine\ORM\Mapping\Entity')) {
     return;
 }
 
+#[\Attribute]
 final class Entity
 {
 

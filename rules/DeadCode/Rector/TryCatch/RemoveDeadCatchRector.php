@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\TryCatch;
 
-use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Name\FullyQualified;
@@ -13,6 +12,7 @@ use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\TryCatch;
+use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -84,7 +84,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var FullyQualified */
+            /** @var FullyQualified $type */
             $type = $catchItem->types[0];
             if ($this->shouldSkipNextCatchClassParentWithSpecialTreatment($catches, $type, $key, $maxIndexCatches)) {
                 continue;
@@ -131,8 +131,12 @@ CODE_SAMPLE
     /**
      * @param Catch_[] $catches
      */
-    private function shouldSkipNextCatchClassParentWithSpecialTreatment(array $catches, FullyQualified $fullyQualified, int $key, int $maxIndexCatches): bool
-    {
+    private function shouldSkipNextCatchClassParentWithSpecialTreatment(
+        array $catches,
+        FullyQualified $fullyQualified,
+        int $key,
+        int $maxIndexCatches
+    ): bool {
         for ($index = $key + 1; $index <= $maxIndexCatches; ++$index) {
             if (! isset($catches[$index])) {
                 continue;
