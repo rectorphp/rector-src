@@ -54,6 +54,7 @@ use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector;
 use Rector\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector;
 use Rector\DeadCode\Rector\Ternary\TernaryToBooleanOrFalseToBooleanAndRector;
+use Rector\DeadCode\Rector\TryCatch\RemoveDeadCatchRector;
 use Rector\DeadCode\Rector\TryCatch\RemoveDeadTryCatchRector;
 
 /**
@@ -117,6 +118,7 @@ final class DeadCodeLevel
         RemoveDuplicatedCaseInSwitchRector::class,
         RemoveDeadInstanceOfRector::class,
 
+        RemoveDeadCatchRector::class,
         RemoveDeadTryCatchRector::class,
         RemoveDeadIfForeachForRector::class,
         RemoveDeadStmtRector::class,
