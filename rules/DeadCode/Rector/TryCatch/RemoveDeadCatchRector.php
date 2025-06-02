@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\TryCatch;
 
+use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Name\FullyQualified;
@@ -68,7 +69,7 @@ CODE_SAMPLE
      * @param TryCatch $node
      * @return TryCatch|null
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?Node
     {
         $catches = $node->catches;
         if (count($catches) === 1) {
@@ -101,27 +102,27 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isJustThrowedSameVariable(Catch_ $catchItem): bool
+    private function isJustThrowedSameVariable(Catch_ $catch): bool
     {
-        if ($this->isEmpty($catchItem->stmts)) {
+        if ($this->isEmpty($catch->stmts)) {
             return false;
         }
 
-        $catchItemStmt = $catchItem->stmts[0];
+        $catchItemStmt = $catch->stmts[0];
         if (! ($catchItemStmt instanceof Expression && $catchItemStmt->expr instanceof Throw_)) {
             return false;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($catchItem->var, $catchItemStmt->expr->expr)) {
+        if (! $this->nodeComparator->areNodesEqual($catch->var, $catchItemStmt->expr->expr)) {
             return false;
         }
 
         // too complex to check
-        if (count($catchItem->types) !== 1) {
+        if (count($catch->types) !== 1) {
             return false;
         }
 
-        $type = $catchItem->types[0];
+        $type = $catch->types[0];
 
         return $type instanceof FullyQualified;
     }
@@ -129,7 +130,7 @@ CODE_SAMPLE
     /**
      * @param Catch_[] $catches
      */
-    private function shouldSkipNextCatchClassParentWithSpecialTreatment(array $catches, FullyQualified $type, int $key, int $maxIndexCatches): bool
+    private function shouldSkipNextCatchClassParentWithSpecialTreatment(array $catches, FullyQualified $fullyQualified, int $key, int $maxIndexCatches): bool
     {
         for ($index = $key + 1; $index <= $maxIndexCatches; ++$index) {
             if (! isset($catches[$index])) {
@@ -148,7 +149,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            if (! $this->isObjectType($type, new \PHPStan\Type\ObjectType($nextCatchType->toString()))) {
+            if (! $this->isObjectType($fullyQualified, new ObjectType($nextCatchType->toString()))) {
                 continue;
             }
 
@@ -168,6 +169,7 @@ CODE_SAMPLE
         if ($stmts === []) {
             return \true;
         }
+
         if (\count($stmts) > 1) {
             return \false;
         }
