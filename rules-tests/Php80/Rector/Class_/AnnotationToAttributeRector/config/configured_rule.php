@@ -16,10 +16,14 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribut
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\SameName;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericSingleImplicitAnnotation;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\NotAnAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
         new AnnotationToAttribute('Doctrine\ORM\Mapping\Embeddable'),
+
+        // not an attribute yet
+        new AnnotationToAttribute(NotAnAttribute::class),
 
         new AnnotationToAttribute(PastAnnotation::class, FutureAttribute::class),
         new AnnotationToAttribute(NestedPastAnnotation::class, NestedFutureAttribute::class),

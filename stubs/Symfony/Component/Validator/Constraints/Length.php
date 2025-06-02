@@ -8,6 +8,7 @@ if (class_exists('Symfony\Component\Validator\Constraints\Length')) {
 
 // @see https://github.com/symfony/validator/blob/94e7465b1271ba024bd96a424da037e3390184a5/Constraints/Length.php
 
+#[\Attribute]
 class Length
 {
     public function __construct(

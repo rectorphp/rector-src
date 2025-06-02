@@ -7,7 +7,7 @@ if (class_exists('Symfony\Component\Validator\Constraints\File')) {
 }
 
 // @see https://github.com/symfony/validator/blob/94e7465b1271ba024bd96a424da037e3390184a5/Constraints/File.php
-
+#[\Attribute]
 class File
 {
     public function __construct(
