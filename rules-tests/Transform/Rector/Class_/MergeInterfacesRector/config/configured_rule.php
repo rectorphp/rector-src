@@ -11,5 +11,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(MergeInterfacesRector::class, [
             SomeOldInterface::class => SomeInterface::class,
+            'App\Interfaces\SomeInterface' => 'App\Interfaces\SomeOtherInterface',
         ]);
 };
