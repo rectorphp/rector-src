@@ -38,6 +38,7 @@ use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Util\NewLineSplitter;
+use Rector\Util\StringUtils;
 
 /**
  * @see \Rector\Tests\PhpParser\Printer\BetterStandardPrinterTest
@@ -52,6 +53,12 @@ final class BetterStandardPrinter extends Standard
      * @var string
      */
     private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
+
+    /**
+     * @see https://regex101.com/r/UluSYL/1
+     * @var string
+     */
+    private const SPACED_NEW_START_REGEX = '#^new\s+#';
 
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer
@@ -150,7 +157,7 @@ final class BetterStandardPrinter extends Standard
 
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
-        if ($node instanceof New_ && $node->class instanceof AnonymousClassNode && ! str_starts_with($content, 'new')) {
+        if ($node instanceof New_ && $node->class instanceof AnonymousClassNode && ! StringUtils::isMatch($content, self::SPACED_NEW_START_REGEX)) {
             $content = 'new ' . $content;
         }
 
