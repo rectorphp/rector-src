@@ -38,6 +38,7 @@ use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Util\NewLineSplitter;
+use Rector\Util\StringUtils;
 
 /**
  * @see \Rector\Tests\PhpParser\Printer\BetterStandardPrinterTest
@@ -156,7 +157,7 @@ final class BetterStandardPrinter extends Standard
 
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
-        if ($node instanceof New_ && $node->class instanceof AnonymousClassNode && ! Strings::match($content, self::SPACED_NEW_START_REGEX)) {
+        if ($node instanceof New_ && $node->class instanceof AnonymousClassNode && ! StringUtils::isMatch($content, self::SPACED_NEW_START_REGEX)) {
             $content = 'new ' . $content;
         }
 
