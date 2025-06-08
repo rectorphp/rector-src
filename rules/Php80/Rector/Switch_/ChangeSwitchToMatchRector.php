@@ -10,17 +10,20 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
 use Rector\Php80\ValueObject\MatchResult;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -36,6 +39,8 @@ final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVe
         private readonly SwitchExprsResolver $switchExprsResolver,
         private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer,
         private readonly MatchFactory $matchFactory,
+        private readonly ValueResolver $valueResolver,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -122,6 +127,7 @@ CODE_SAMPLE
             $hasDefaultValue = $this->matchSwitchAnalyzer->hasDefaultValue($match);
 
             $this->castMatchCond($match);
+            $this->mirrorDynamicBoolExpr($match);
 
             if ($assignVar instanceof Expr) {
                 if (! $hasDefaultValue) {
@@ -201,6 +207,37 @@ CODE_SAMPLE
 
         if ($newMatchCond instanceof Cast) {
             $match->cond = $newMatchCond;
+        }
+    }
+
+    private function mirrorDynamicBoolExpr(Match_ $match): void
+    {
+        if ($this->valueResolver->isTrue($match->cond)) {
+            return;
+        }
+
+        $isChanged = false;
+        foreach ($match->arms as $arm) {
+            if ($arm->conds === null) {
+                continue;
+            }
+
+            foreach ($arm->conds as $key => $cond) {
+                if (! $this->exprAnalyzer->isDynamicExpr($cond)) {
+                    continue;
+                }
+
+                $type = $this->nodeTypeResolver->getNativeType($cond);
+                if ($type->isBoolean()->yes()) {
+                    $match->cond = $this->nodeFactory->createTrue();
+                    $isChanged = true;
+                    break;
+                }
+            }
+
+            if ($isChanged) {
+                break;
+            }
         }
     }
 
