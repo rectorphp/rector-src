@@ -231,6 +231,7 @@ CODE_SAMPLE
                 }
 
                 $isChanged = true;
+                // dont' stop lookup for dynamic conditions
                 // continue verify other condition, in case of mixed condition
             }
         }
