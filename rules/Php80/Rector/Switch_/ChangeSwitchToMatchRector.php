@@ -222,18 +222,16 @@ CODE_SAMPLE
             }
 
             foreach ($arm->conds as $cond) {
-                if (! $this->exprAnalyzer->isDynamicExpr($cond)) {
-                    continue;
-                }
-
                 $type = $this->nodeTypeResolver->getNativeType($cond);
-                if ($type->isBoolean()->yes()) {
-                    $isChanged = true;
-                } else {
+
+                if (! $this->exprAnalyzer->isDynamicExpr($cond) || ! $type->isBoolean()->yes()) {
                     // return early here, as condition is mixed
                     // we need another real use case for mixed conditions of dynamic + non-dynamic case expr
                     return;
                 }
+
+                $isChanged = true;
+                // continue verify other condition, in case of mixed condition
             }
         }
 
