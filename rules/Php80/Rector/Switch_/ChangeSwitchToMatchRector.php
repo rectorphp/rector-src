@@ -7,9 +7,11 @@ namespace Rector\Php80\Rector\Switch_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
@@ -222,22 +224,20 @@ CODE_SAMPLE
             }
 
             foreach ($arm->conds as $cond) {
-                $type = $this->nodeTypeResolver->getNativeType($cond);
+                if ($cond instanceof Instanceof_ || $cond instanceof CallLike) {
+                    $type = $this->nodeTypeResolver->getNativeType($cond);
 
-                if (
-                    ! $this->exprAnalyzer->isDynamicExpr($cond)
-                    || ! $type->isBoolean()
-                        ->yes()
-                    || is_bool($this->valueResolver->getValue($cond))
-                ) {
-                    // return early here, as condition is mixed
-                    // we need another real use case for mixed conditions of dynamic + non-dynamic case expr
-                    return;
+                    if ($type->isBoolean()->yes()) {
+                        // dont' stop lookup for dynamic conditions
+                        // continue verify other condition, in case of mixed condition
+                        $isChanged = true;
+                        continue;
+                    }
                 }
 
-                $isChanged = true;
-                // dont' stop lookup for dynamic conditions
-                // continue verify other condition, in case of mixed condition
+                // return early here, as condition is mixed
+                // we need another real use case for mixed conditions of dynamic + non-dynamic case expr
+                return;
             }
         }
 
