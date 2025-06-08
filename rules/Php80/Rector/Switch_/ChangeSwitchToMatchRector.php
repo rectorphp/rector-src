@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
@@ -222,7 +221,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            foreach ($arm->conds as $key => $cond) {
+            foreach ($arm->conds as $cond) {
                 if (! $this->exprAnalyzer->isDynamicExpr($cond)) {
                     continue;
                 }
