@@ -18,7 +18,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
@@ -40,8 +39,7 @@ final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVe
         private readonly SwitchExprsResolver $switchExprsResolver,
         private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer,
         private readonly MatchFactory $matchFactory,
-        private readonly ValueResolver $valueResolver,
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ValueResolver $valueResolver
     ) {
     }
 
