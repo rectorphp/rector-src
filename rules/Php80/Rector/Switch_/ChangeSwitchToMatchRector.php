@@ -228,15 +228,17 @@ CODE_SAMPLE
 
                 $type = $this->nodeTypeResolver->getNativeType($cond);
                 if ($type->isBoolean()->yes()) {
-                    $match->cond = $this->nodeFactory->createTrue();
                     $isChanged = true;
-                    break;
+                } else {
+                    // return early here, as condition is mixed
+                    // we need another real use case for mixed conditions of dynamic + non-dynamic case expr
+                    return;
                 }
             }
+        }
 
-            if ($isChanged) {
-                break;
-            }
+        if ($isChanged) {
+            $match->cond = $this->nodeFactory->createTrue();
         }
     }
 
