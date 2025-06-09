@@ -96,7 +96,7 @@ CODE_SAMPLE
     {
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
         if ($node instanceof ClassConstFetch) {
-            if ($node->class instanceof FullyQualified && $node->name instanceof Identifier) {
+            if ($node->class instanceof FullyQualified && $node->name instanceof Identifier && $this->reflectionProvider->hasClass($node->class->toString())) {
                 foreach ($oldToNewClasses as $oldClass => $newClass) {
                     if ($this->isName($node->class, $oldClass) && $this->reflectionProvider->hasClass($newClass)) {
                         $classReflection = $this->reflectionProvider->getClass($newClass);
@@ -104,7 +104,9 @@ CODE_SAMPLE
                             continue;
                         }
 
-                        if (! $classReflection->hasConstant($node->name->toString())) {
+                        $oldClassReflection = $this->reflectionProvider->getClass($oldClass);
+
+                        if ($oldClassReflection->hasConstant($node->name->toString()) && ! $classReflection->hasConstant($node->name->toString())) {
                             // no constant found on new interface? skip node below ClassConstFetch
                             return NodeVisitor::DONT_TRAVERSE_CHILDREN;
                         }
