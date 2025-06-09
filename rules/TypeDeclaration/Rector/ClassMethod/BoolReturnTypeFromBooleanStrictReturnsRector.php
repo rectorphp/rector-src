@@ -6,22 +6,9 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
-use PhpParser\Node\Expr\BinaryOp\BooleanOr;
-use PhpParser\Node\Expr\BinaryOp\Equal;
-use PhpParser\Node\Expr\BinaryOp\Greater;
-use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
-use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\NotEqual;
-use PhpParser\Node\Expr\BinaryOp\NotIdentical;
-use PhpParser\Node\Expr\BinaryOp\Smaller;
-use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
-use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -29,6 +16,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStan\ScopeFetcher;
@@ -50,7 +38,8 @@ final class BoolReturnTypeFromBooleanStrictReturnsRector extends AbstractRector 
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnAnalyzer $returnAnalyzer
+        private readonly ReturnAnalyzer $returnAnalyzer,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -149,7 +138,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            if ($this->isBooleanOp($return->expr)) {
+            if ($this->exprAnalyzer->isBoolExpr($return->expr, false)) {
                 continue;
             }
 
@@ -188,59 +177,6 @@ CODE_SAMPLE
         }
 
         return true;
-    }
-
-    private function isBooleanOp(Expr $expr): bool
-    {
-        if ($expr instanceof Smaller) {
-            return true;
-        }
-
-        if ($expr instanceof SmallerOrEqual) {
-            return true;
-        }
-
-        if ($expr instanceof Greater) {
-            return true;
-        }
-
-        if ($expr instanceof GreaterOrEqual) {
-            return true;
-        }
-
-        if ($expr instanceof BooleanOr) {
-            return true;
-        }
-
-        if ($expr instanceof BooleanAnd) {
-            return true;
-        }
-
-        if ($expr instanceof Identical) {
-            return true;
-        }
-
-        if ($expr instanceof NotIdentical) {
-            return true;
-        }
-
-        if ($expr instanceof Equal) {
-            return true;
-        }
-
-        if ($expr instanceof NotEqual) {
-            return true;
-        }
-
-        if ($expr instanceof Empty_) {
-            return true;
-        }
-
-        if ($expr instanceof Isset_) {
-            return true;
-        }
-
-        return $expr instanceof BooleanNot;
     }
 
     /**

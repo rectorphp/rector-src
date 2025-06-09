@@ -58,7 +58,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprAnalyzer
 {
-    public function isBoolExpr(Expr $expr): bool
+    public function isBoolExpr(Expr $expr, bool $includeCallLike = true): bool
     {
         if ($expr instanceof BooleanNot
             || $expr instanceof Empty_
@@ -81,7 +81,7 @@ final class ExprAnalyzer
                 return true;
             }
 
-        if ($expr instanceof CallLike) {
+        if ($includeCallLike && $expr instanceof CallLike) {
             $scope = $expr->getAttribute(AttributeKey::SCOPE);
             if (! $scope instanceof Scope) {
                 return false;
