@@ -9,9 +9,24 @@ use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BinaryOp\Equal;
+use PhpParser\Node\Expr\BinaryOp\Greater;
+use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
+use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
+use PhpParser\Node\Expr\BinaryOp\LogicalOr;
+use PhpParser\Node\Expr\BinaryOp\LogicalXor;
+use PhpParser\Node\Expr\BinaryOp\NotEqual;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\BinaryOp\Smaller;
+use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\BitwiseNot;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
+use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Clone_;
 use PhpParser\Node\Expr\ConstFetch;
@@ -21,6 +36,7 @@ use PhpParser\Node\Expr\Eval_;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\Print_;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Expr\UnaryMinus;
@@ -42,6 +58,42 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprAnalyzer
 {
+    public function isBoolExpr(Expr $expr): bool
+    {
+        if ($expr instanceof BooleanNot
+            || $expr instanceof Empty_
+            || $expr instanceof Isset_
+            || $expr instanceof Instanceof_
+            || $expr instanceof Bool_
+            || $expr instanceof Equal
+            || $expr instanceof NotEqual
+            || $expr instanceof Identical
+            || $expr instanceof NotIdentical
+            || $expr instanceof Greater
+            || $expr instanceof GreaterOrEqual
+            || $expr instanceof Smaller
+            || $expr instanceof SmallerOrEqual
+            || $expr instanceof BooleanAnd
+            || $expr instanceof BooleanOr
+            || $expr instanceof LogicalAnd
+            || $expr instanceof LogicalOr
+            || $expr instanceof LogicalXor) {
+                return true;
+            }
+
+        if ($expr instanceof CallLike) {
+            $scope = $expr->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                return false;
+            }
+
+            $nativeType = $scope->getNativeType($expr);
+            return $nativeType->isBoolean()->yes();
+        }
+
+        return false;
+    }
+
     /**
      * Verify that Expr has ->expr property that can be wrapped by parentheses
      */
