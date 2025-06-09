@@ -29,6 +29,11 @@ use Webmozart\Assert\Assert;
  */
 final class RenameClassRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const SKIPPED_AS_CLASS_CONST_FETCH_CLASS = 'skipped_as_class_const_fetch_class';
+
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ClassRenamer $classRenamer,
@@ -107,7 +112,11 @@ CODE_SAMPLE
                         $oldClassReflection = $this->reflectionProvider->getClass($oldClass);
 
                         if ($oldClassReflection->hasConstant($node->name->toString()) && ! $classReflection->hasConstant($node->name->toString())) {
-                            // no constant found on new interface? skip node below ClassConstFetch
+                            // used by ClassRenamer::renameNode()
+                            // that called on ClassRenamingPostRector PostRector
+                            $node->class->setAttribute(self::SKIPPED_AS_CLASS_CONST_FETCH_CLASS, true);
+
+                            // no constant found on new interface? skip node below ClassConstFetch on this rule
                             return NodeVisitor::DONT_TRAVERSE_CHILDREN;
                         }
                     }
