@@ -58,9 +58,9 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprAnalyzer
 {
-    public function isBoolExpr(Expr $expr, bool $includeCallLike = true): bool
+    public function isBoolExpr(Expr $expr): bool
     {
-        if ($expr instanceof BooleanNot
+        return $expr instanceof BooleanNot
             || $expr instanceof Empty_
             || $expr instanceof Isset_
             || $expr instanceof Instanceof_
@@ -77,21 +77,22 @@ final class ExprAnalyzer
             || $expr instanceof BooleanOr
             || $expr instanceof LogicalAnd
             || $expr instanceof LogicalOr
-            || $expr instanceof LogicalXor) {
-                return true;
-            }
+            || $expr instanceof LogicalXor;
+    }
 
-        if ($includeCallLike && $expr instanceof CallLike) {
-            $scope = $expr->getAttribute(AttributeKey::SCOPE);
-            if (! $scope instanceof Scope) {
-                return false;
-            }
-
-            $nativeType = $scope->getNativeType($expr);
-            return $nativeType->isBoolean()->yes();
+    public function isCallLikeReturnNativeBool(Expr $expr): bool
+    {
+        if (! $expr instanceof CallLike) {
+            return false;
         }
 
-        return false;
+        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return false;
+        }
+
+        $nativeType = $scope->getNativeType($expr);
+        return $nativeType->isBoolean()->yes();
     }
 
     /**

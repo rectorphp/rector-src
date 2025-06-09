@@ -138,7 +138,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            if ($this->exprAnalyzer->isBoolExpr($return->expr, false)) {
+            if ($this->exprAnalyzer->isBoolExpr($return->expr)) {
                 continue;
             }
 

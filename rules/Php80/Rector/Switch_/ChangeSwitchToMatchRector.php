@@ -224,7 +224,7 @@ CODE_SAMPLE
             }
 
             foreach ($arm->conds as $cond) {
-                if ($this->exprAnalyzer->isBoolExpr($cond)) {
+                if ($this->exprAnalyzer->isBoolExpr($cond) || $this->exprAnalyzer->isCallLikeReturnNativeBool($cond)) {
                     // dont' stop lookup for dynamic conditions
                     // continue verify other condition, in case of mixed condition
                     $isChanged = true;
