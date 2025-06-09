@@ -213,7 +213,9 @@ CODE_SAMPLE
 
     private function mirrorDynamicBoolExpr(Match_ $match): void
     {
-        if ($this->valueResolver->isTrue($match->cond)) {
+        // switch(true) already just use
+        // switch(false) is dead code that can be on purpose
+        if ($this->valueResolver->isTrueOrFalse($match->cond)) {
             return;
         }
 
