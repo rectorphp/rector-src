@@ -58,5 +58,9 @@ return static function (RectorConfig $rectorConfig): void {
              * @see https://github.com/rectorphp/rector-symfony/issues/535
              */
             'Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted' => 'Symfony\Component\Security\Http\Attribute\IsGranted',
+
+            // test skip rename class const fetch when target rename is interface
+            // and interface class const fetch not found
+            'Symfony\Component\Serializer\Normalizer\ObjectNormalizer' => 'Symfony\Component\Serializer\Normalizer\NormalizerInterface',
         ]);
 };
