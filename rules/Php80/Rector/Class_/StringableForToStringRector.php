@@ -13,11 +13,13 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeAnalyzer\ClassAnalyzer;
+use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
@@ -43,7 +45,8 @@ final class StringableForToStringRector extends AbstractRector implements MinPhp
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly TerminatedNodeAnalyzer $terminatedNodeAnalyzer
     ) {
     }
 
@@ -145,6 +148,13 @@ CODE_SAMPLE
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($toStringClassMethod, Return_::class);
         if (! $hasReturn) {
             $emptyStringReturn = new Return_(new String_(''));
+
+            $lastStmt = $toStringClassMethod->stmts[count($toStringClassMethod->stmts) - 1] ?? null;
+
+            if ($lastStmt instanceof Expression && $this->terminatedNodeAnalyzer->isAlwaysTerminated($toStringClassMethod, $lastStmt, $emptyStringReturn)) {
+                return;
+            }
+
             $toStringClassMethod->stmts[] = $emptyStringReturn;
 
             $this->hasChanged = true;
