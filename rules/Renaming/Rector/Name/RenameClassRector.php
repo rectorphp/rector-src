@@ -128,9 +128,9 @@ CODE_SAMPLE
      */
     private function processClassConstFetch(ClassConstFetch $classConstFetch, array $oldToNewClasses): int|null
     {
-        if (! $classConstFetch->class instanceof FullyQualified || ! $classConstFetch->name instanceof Identifier || ! $this->reflectionProvider->hasClass(
-            $classConstFetch->class->toString()
-        )) {
+        if (! $classConstFetch->class instanceof FullyQualified
+            || ! $classConstFetch->name instanceof Identifier
+            || ! $this->reflectionProvider->hasClass($classConstFetch->class->toString())) {
             return null;
         }
 
