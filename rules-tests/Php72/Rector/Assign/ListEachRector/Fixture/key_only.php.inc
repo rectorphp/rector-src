@@ -21,7 +21,7 @@ namespace Rector\Tests\Php72\Rector\Assign\ListEachRector\Fixture;
 function KeyOnly()
 {
     $values = [ 1 => 'value'];
-    list($key) = key($values);
+    $key = key($values);
 
     echo $key;
 }

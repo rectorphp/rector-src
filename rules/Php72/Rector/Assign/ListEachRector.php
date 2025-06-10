@@ -77,8 +77,9 @@ CODE_SAMPLE
         }
 
         // only key: list($key) = each($values);
-        // to be transformed to list($key) = key($values);
+        // to be transformed to $key = key($values);
         if (count($listAndEach->getList()->items) === 1) {
+            $node->expr->var = $listAndEach->getList()->items[0]->value;
             $node->expr->expr = $this->nodeFactory->createFuncCall('key', $listAndEach->getEachFuncCall()->args);
             return $node;
         }
