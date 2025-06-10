@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -19,7 +18,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeAnalyzer\ClassAnalyzer;
-use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -45,7 +43,6 @@ final class StringableForToStringRector extends AbstractRector implements MinPhp
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly TerminatedNodeAnalyzer $terminatedNodeAnalyzer,
         private readonly SilentVoidResolver $silentVoidResolver
     ) {
     }
@@ -147,17 +144,6 @@ CODE_SAMPLE
 
         if ($this->silentVoidResolver->hasSilentVoid($toStringClassMethod)) {
             $emptyStringReturn = new Return_(new String_(''));
-
-            $lastStmt = $toStringClassMethod->stmts[count($toStringClassMethod->stmts) - 1] ?? null;
-
-            if ($lastStmt instanceof Stmt && $this->terminatedNodeAnalyzer->isAlwaysTerminated(
-                $toStringClassMethod,
-                $lastStmt,
-                $emptyStringReturn
-            )) {
-                return;
-            }
-
             $toStringClassMethod->stmts[] = $emptyStringReturn;
 
             $this->hasChanged = true;
