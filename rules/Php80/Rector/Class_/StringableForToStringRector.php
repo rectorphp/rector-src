@@ -20,7 +20,6 @@ use PhpParser\NodeVisitor;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -46,7 +45,6 @@ final class StringableForToStringRector extends AbstractRector implements MinPhp
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly TerminatedNodeAnalyzer $terminatedNodeAnalyzer,
         private readonly SilentVoidResolver $silentVoidResolver
     ) {
@@ -147,14 +145,16 @@ CODE_SAMPLE
             return;
         }
 
-        $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($toStringClassMethod, Return_::class);
-
-        if (! $hasReturn || $this->silentVoidResolver->hasSilentVoid($toStringClassMethod)) {
+        if ($this->silentVoidResolver->hasSilentVoid($toStringClassMethod)) {
             $emptyStringReturn = new Return_(new String_(''));
 
             $lastStmt = $toStringClassMethod->stmts[count($toStringClassMethod->stmts) - 1] ?? null;
 
-            if ($lastStmt instanceof Stmt && $this->terminatedNodeAnalyzer->isAlwaysTerminated($toStringClassMethod, $lastStmt, $emptyStringReturn)) {
+            if ($lastStmt instanceof Stmt && $this->terminatedNodeAnalyzer->isAlwaysTerminated(
+                $toStringClassMethod,
+                $lastStmt,
+                $emptyStringReturn
+            )) {
                 return;
             }
 
