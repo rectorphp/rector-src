@@ -150,9 +150,8 @@ CODE_SAMPLE
 
             $oldClassReflection = $this->reflectionProvider->getClass($oldClass);
 
-            if ($oldClassReflection->hasConstant($classConstFetch->name->toString()) && ! $classReflection->hasConstant(
-                $classConstFetch->name->toString()
-            )) {
+            if ($oldClassReflection->hasConstant($classConstFetch->name->toString())
+                && ! $classReflection->hasConstant($classConstFetch->name->toString())) {
                 // no constant found on new interface? skip node below ClassConstFetch on this rule
                 return NodeVisitor::DONT_TRAVERSE_CHILDREN;
             }
