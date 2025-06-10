@@ -76,6 +76,13 @@ CODE_SAMPLE
             return null;
         }
 
+        // only key: list($key) = each($values);
+        // to be transformed to list($key) = key($values);
+        if (count($listAndEach->getList()->items) === 1) {
+            $node->expr->expr = $this->nodeFactory->createFuncCall('key', $listAndEach->getEachFuncCall()->args);
+            return $node;
+        }
+
         if ($this->shouldSkipAssign($listAndEach)) {
             return null;
         }
