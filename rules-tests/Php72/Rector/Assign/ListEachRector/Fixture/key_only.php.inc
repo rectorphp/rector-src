@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php72\Rector\Assign\ListEachRector\Fixture;
 
-// @see https://3v4l.org/CfUnf#v7.1.16
+// @see https://3v4l.org/dC7WR#v7.1.16
 function KeyOnly()
 {
     $values = [ 1 => 'value'];
@@ -17,7 +17,7 @@ function KeyOnly()
 
 namespace Rector\Tests\Php72\Rector\Assign\ListEachRector\Fixture;
 
-// @see https://3v4l.org/CfUnf#v7.1.16
+// @see https://3v4l.org/dC7WR#v7.1.16
 function KeyOnly()
 {
     $values = [ 1 => 'value'];
