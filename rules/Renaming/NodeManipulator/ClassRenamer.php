@@ -52,12 +52,12 @@ final class ClassRenamer
     {
         $oldToNewTypes = $this->createOldToNewTypes($oldToNewClasses);
 
-        // place FullyQualified before Name on purpose executed early before the Name as parent
+        // execute FullyQualified before Name on purpose so next Name check is pure Name node
         if ($node instanceof FullyQualified) {
             return $this->refactorName($node, $oldToNewClasses);
         }
 
-        // Name as parent of FullyQualified executed later for fallback annotation to attribute rename to Name
+        // Name as parent of FullyQualified executed for fallback annotation to attribute rename to Name
         if ($node instanceof Name) {
             $phpAttributeName = $node->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
             if (is_string($phpAttributeName)) {
