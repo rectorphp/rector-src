@@ -92,7 +92,8 @@ final class ExprAnalyzer
         }
 
         $nativeType = $scope->getNativeType($expr);
-        return $nativeType->isBoolean()->yes();
+        return $nativeType->isBoolean()
+            ->yes();
     }
 
     /**
