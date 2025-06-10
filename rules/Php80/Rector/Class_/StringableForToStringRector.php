@@ -23,6 +23,7 @@ use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
+use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -46,7 +47,8 @@ final class StringableForToStringRector extends AbstractRector implements MinPhp
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly TerminatedNodeAnalyzer $terminatedNodeAnalyzer
+        private readonly TerminatedNodeAnalyzer $terminatedNodeAnalyzer,
+        private readonly SilentVoidResolver $silentVoidResolver
     ) {
     }
 
@@ -146,7 +148,8 @@ CODE_SAMPLE
         }
 
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($toStringClassMethod, Return_::class);
-        if (! $hasReturn) {
+
+        if (! $hasReturn || $this->silentVoidResolver->hasSilentVoid($toStringClassMethod)) {
             $emptyStringReturn = new Return_(new String_(''));
 
             $lastStmt = $toStringClassMethod->stmts[count($toStringClassMethod->stmts) - 1] ?? null;
