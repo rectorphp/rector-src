@@ -176,7 +176,7 @@ CODE_SAMPLE
                             break;
                         }
 
-                        // next is not removed, then current can't be removed
+                        // on decrement loop, when next arg is not removed, then current can't be removed
                         if (isset($args[$index + 1])) {
                             break;
                         }
