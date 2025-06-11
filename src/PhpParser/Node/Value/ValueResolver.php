@@ -92,6 +92,18 @@ final class ValueResolver
         }
 
         if ($expr instanceof ConstFetch) {
+            if ($this->isNull($expr)) {
+                return null;
+            }
+
+            if ($this->isTrue($expr)) {
+                return true;
+            }
+
+            if ($this->isFalse($expr)) {
+                return false;
+            }
+
             return $this->nodeNameResolver->getName($expr);
         }
 
