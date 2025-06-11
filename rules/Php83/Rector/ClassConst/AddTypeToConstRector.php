@@ -224,7 +224,7 @@ CODE_SAMPLE
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool
     {
         // as classes marked as final just by pass final/private check
-        if (SimpleParameterProvider::provideBoolParameter(Option::TREAT_CLASSES_AS_FINAL) === true) {
+        if (SimpleParameterProvider::provideBoolParameter(Option::TREAT_CLASSES_AS_FINAL)) {
             return false;
         }
 
