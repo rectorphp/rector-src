@@ -147,12 +147,16 @@ CODE_SAMPLE
                 return false;
             }
 
-            foreach ($caller->getArgs() as $arg) {
+            foreach ($caller->getArgs() as $key => $arg) {
                 if ($arg->unpack) {
                     return false;
                 }
 
                 if ($arg->name instanceof Identifier) {
+                    if (isset($unusedParameters[$key]) && $unusedParameters[$key]->var->name === $arg->name->name) {
+                        continue;
+                    }
+
                     return false;
                 }
             }

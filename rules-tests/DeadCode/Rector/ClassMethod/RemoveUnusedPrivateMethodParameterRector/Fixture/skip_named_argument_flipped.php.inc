@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector\Fixture;
 
-class SkipNamedArgument
+class SkipNamedArgumentFlipped
 {
     public function run(bool $param): void
     {
