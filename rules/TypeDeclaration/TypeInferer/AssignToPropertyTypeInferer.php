@@ -36,11 +36,6 @@ use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
  */
 final readonly class AssignToPropertyTypeInferer
 {
-    /**
-     * @var string
-     */
-    public const JMS_TYPE = 'JMS\Serializer\Annotation\Type';
-
     public function __construct(
         private ConstructorAssignDetector $constructorAssignDetector,
         private PropertyAssignMatcher $propertyAssignMatcher,
