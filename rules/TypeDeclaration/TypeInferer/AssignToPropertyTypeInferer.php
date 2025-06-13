@@ -18,6 +18,7 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
+use Rector\Enum\ClassName;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -191,7 +192,7 @@ final readonly class AssignToPropertyTypeInferer
     {
         $assignedExprTypes = [];
 
-        $hasJmsType = $this->phpAttributeAnalyzer->hasPhpAttribute($property, self::JMS_TYPE);
+        $hasJmsType = $this->phpAttributeAnalyzer->hasPhpAttribute($property, ClassName::JMS_TYPE);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
             $propertyName,
             &$assignedExprTypes,
