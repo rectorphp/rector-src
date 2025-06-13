@@ -16,6 +16,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\Enum\ClassName;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -103,7 +104,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->phpAttributeAnalyzer->hasPhpAttribute($property, AssignToPropertyTypeInferer::JMS_TYPE)) {
+            if (! $this->phpAttributeAnalyzer->hasPhpAttribute($property, ClassName::JMS_TYPE)) {
                 continue;
             }
 
@@ -136,7 +137,7 @@ CODE_SAMPLE
             $typeValue = null;
             foreach ($property->attrGroups as $attrGroup) {
                 foreach ($attrGroup->attrs as $attr) {
-                    if ($attr->name->toString() === AssignToPropertyTypeInferer::JMS_TYPE) {
+                    if ($attr->name->toString() === ClassName::JMS_TYPE) {
                         $typeValue = $this->valueResolver->getValue($attr->args[0]->value);
                         break;
                     }
