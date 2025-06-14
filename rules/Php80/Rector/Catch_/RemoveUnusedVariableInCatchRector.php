@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\Catch_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
@@ -94,7 +95,7 @@ CODE_SAMPLE
                 $variableName = $this->getName($caughtVar);
 
                 $isFoundInCatchStmts = (bool) $this->betterNodeFinder->findFirst(
-                    $catch->stmts,
+                    array_merge($catch->stmts, $stmt->finally instanceof Finally_ ? $stmt->finally->stmts : []),
                     fn (Node $subNode): bool => $this->exprUsedInNodeAnalyzer->isUsed($subNode, $caughtVar)
                 );
 
