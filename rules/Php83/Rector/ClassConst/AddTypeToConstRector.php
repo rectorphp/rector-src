@@ -21,19 +21,35 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\AddTypeToConstRectorTest
  */
-final class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterface
+final class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
+    /**
+     * @api
+     * @var string
+     */
+    public const INLINE_PUBLIC = 'inline_public';
+
+    /**
+     * Default to false, which only apply changes:
+     *
+     *  private constant or final class constant
+     *
+     * Set to true will allow change public/protected constants even classes is not final
+     */
+    private bool $inlinePublic = false;
+
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly StaticTypeMapper $staticTypeMapper
@@ -43,7 +59,7 @@ final class AddTypeToConstRector extends AbstractRector implements MinPhpVersion
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add type to constants based on their value', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
@@ -58,8 +74,16 @@ final class SomeClass
 }
 CODE_SAMPLE
                 ,
+                [
+                    self::INLINE_PUBLIC => false,
+                ]
             ),
         ]);
+    }
+
+    public function configure(array $configuration): void
+    {
+        $this->inlinePublic = $configuration[self::INLINE_PUBLIC] ?? false;
     }
 
     public function getNodeTypes(): array
@@ -221,6 +245,10 @@ CODE_SAMPLE
 
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool
     {
+        if ($this->inlinePublic) {
+            return false;
+        }
+
         return ! $class->isFinal() && ! $classConst->isPrivate() && ! $classConst->isFinal();
     }
 }
