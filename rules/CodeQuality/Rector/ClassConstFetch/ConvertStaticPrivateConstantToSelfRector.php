@@ -113,12 +113,12 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($class->getConstants() as $constant) {
-            if (! $this->isName($constant, $constantName)) {
+        foreach ($class->getConstants() as $classConst) {
+            if (! $this->isName($classConst, $constantName)) {
                 continue;
             }
 
-            return $constant->isPrivate();
+            return $classConst->isPrivate();
         }
 
         return false;
