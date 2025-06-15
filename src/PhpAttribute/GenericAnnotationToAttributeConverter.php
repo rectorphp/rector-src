@@ -87,15 +87,11 @@ final readonly class GenericAnnotationToAttributeConverter
 
         $attributeGroups = $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes, $uses);
 
-        if (count($attributeGroups) !== 1) {
-            return null;
-        }
-
         foreach ($doctrineTagValueNodes as $doctrineTagValueNode) {
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineTagValueNode);
         }
 
-        return $attributeGroups[0];
+        return $attributeGroups[0] ?? null;
     }
 
     private function isExistingAttributeClass(AnnotationToAttribute $annotationToAttribute): bool
