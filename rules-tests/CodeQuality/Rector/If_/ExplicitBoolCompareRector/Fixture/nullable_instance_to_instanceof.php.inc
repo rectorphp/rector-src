@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class Nullable
+final class NullableInstanceToInstanceof
 {
     public function run(?\stdClass $item)
     {
@@ -14,17 +14,12 @@ final class Nullable
     public function go(?\stdClass $item)
     {
         if ($item) {
-            return 'not empty';
-        }
-    }
-
-    public function away(?string $item)
-    {
-        if (!$item) {
-            return 'empty';
+            return 'known';
         }
     }
 }
+
+
 
 ?>
 -----
@@ -32,7 +27,7 @@ final class Nullable
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class Nullable
+final class NullableInstanceToInstanceof
 {
     public function run(?\stdClass $item)
     {
@@ -44,16 +39,11 @@ final class Nullable
     public function go(?\stdClass $item)
     {
         if ($item instanceof \stdClass) {
-            return 'not empty';
-        }
-    }
-
-    public function away(?string $item)
-    {
-        if (!$item) {
-            return 'empty';
+            return 'known';
         }
     }
 }
+
+
 
 ?>
