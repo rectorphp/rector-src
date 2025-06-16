@@ -17,8 +17,10 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
@@ -115,11 +117,11 @@ CODE_SAMPLE
         }
 
         $binaryOp = $this->resolveNewConditionNode($conditionNode, $isNegated);
-        if (! $binaryOp instanceof BinaryOp) {
+        if (! $binaryOp instanceof Expr) {
             return null;
         }
 
-        if ($node instanceof If_ && $node->cond instanceof Assign && $binaryOp->left instanceof NotIdentical && $binaryOp->right instanceof NotIdentical) {
+        if ($node instanceof If_ && $node->cond instanceof Assign && $binaryOp instanceof BinaryOp && $binaryOp->left instanceof NotIdentical && $binaryOp->right instanceof NotIdentical) {
             $expression = new Expression($node->cond);
             $binaryOp->left->left = $node->cond->var;
             $binaryOp->right->left = $node->cond->var;
@@ -134,7 +136,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveNewConditionNode(Expr $expr, bool $isNegated): ?BinaryOp
+    private function resolveNewConditionNode(Expr $expr, bool $isNegated): BinaryOp|Instanceof_|BooleanNot|null
     {
         if ($expr instanceof FuncCall && $this->isName($expr, 'count')) {
             return $this->resolveCount($isNegated, $expr);
@@ -157,8 +159,9 @@ CODE_SAMPLE
             return $this->resolveFloat($isNegated, $expr);
         }
 
-        if ($this->nodeTypeResolver->isNullableTypeOfSpecificType($expr, ObjectType::class)) {
-            return $this->resolveNullable($isNegated, $expr);
+        $objectType = $this->nodeTypeResolver->matchNullableTypeOfSpecificType($expr, ObjectType::class);
+        if ($objectType instanceof ObjectType) {
+            return $this->resolveNullable($isNegated, $expr, $objectType);
         }
 
         return null;
@@ -215,7 +218,7 @@ CODE_SAMPLE
 
         // unknown value. may be from parameter
         if ($value === null) {
-            return $this->resolveZeroIdenticalstring($identical, $isNegated, $expr);
+            return $this->resolveZeroIdenticalString($identical, $isNegated, $expr);
         }
 
         $length = strlen((string) $value);
@@ -242,7 +245,7 @@ CODE_SAMPLE
         return $identical;
     }
 
-    private function resolveZeroIdenticalstring(
+    private function resolveZeroIdenticalString(
         Identical | NotIdentical $identical,
         bool $isNegated,
         Expr $expr
@@ -275,14 +278,14 @@ CODE_SAMPLE
         return new NotIdentical($expr, $float);
     }
 
-    private function resolveNullable(bool $isNegated, Expr $expr): Identical | NotIdentical
-    {
-        $constFetch = $this->nodeFactory->createNull();
+    private function resolveNullable(
+        bool $isNegated,
+        Expr $expr,
+        ObjectType $objectType
+    ): BooleanNot | Instanceof_ {
+        $fullyQualified = new FullyQualified($objectType->getClassName());
+        $instanceof = new Instanceof_($expr, $fullyQualified);
 
-        if ($isNegated) {
-            return new Identical($expr, $constFetch);
-        }
-
-        return new NotIdentical($expr, $constFetch);
+        return $isNegated ? new BooleanNot($instanceof) : $instanceof;
     }
 }

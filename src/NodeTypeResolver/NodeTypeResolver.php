@@ -299,22 +299,24 @@ final class NodeTypeResolver
     }
 
     /**
-     * @api
-     * @param class-string<Type> $desiredType
+     * @template TType as Type
+     *
+     * @param class-string<TType> $desiredType
+     * @return TType|null
      */
-    public function isNullableTypeOfSpecificType(Node $node, string $desiredType): bool
+    public function matchNullableTypeOfSpecificType(Expr $expr, string $desiredType): ?Type
     {
-        $nodeType = $this->getType($node);
+        $nodeType = $this->getType($expr);
         if (! $nodeType instanceof UnionType) {
-            return false;
-        }
-
-        if (! TypeCombinator::containsNull($nodeType)) {
-            return false;
+            return null;
         }
 
         $bareType = TypeCombinator::removeNull($nodeType);
-        return $bareType instanceof $desiredType;
+        if (! $bareType instanceof $desiredType) {
+            return null;
+        }
+
+        return $bareType;
     }
 
     public function getFullyQualifiedClassName(TypeWithClassName $typeWithClassName): string

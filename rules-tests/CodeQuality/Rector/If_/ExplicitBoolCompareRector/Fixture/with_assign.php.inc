@@ -32,7 +32,7 @@ final class WithAssign
 
     public function run(string $item)
     {
-        if (($expired = $this->getExpiredAt()) !== null) {
+        if (($expired = $this->getExpiredAt()) instanceof \Datetime) {
             echo $expired->format('Ymd');
         }
     }
