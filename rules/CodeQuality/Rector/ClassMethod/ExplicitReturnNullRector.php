@@ -118,6 +118,7 @@ CODE_SAMPLE
         ): int|null|Return_ {
             if ($node instanceof Node\Stmt\Goto_) {
                 $containsGoto = true;
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
             if ($node instanceof Class_ || $node instanceof Function_ || $node instanceof Closure) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
