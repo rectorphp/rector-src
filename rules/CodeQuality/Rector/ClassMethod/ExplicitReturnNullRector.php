@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
+use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
@@ -115,7 +116,7 @@ CODE_SAMPLE
 
         $hasGoto = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
             $node,
-            fn (Node $node): bool => $node instanceof Node\Stmt\Goto_
+            fn (Node $node): bool => $node instanceof Goto_
         );
 
         if ($hasGoto) {
