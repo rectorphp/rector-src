@@ -147,11 +147,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($node, $lastStmt, $lastStmt)) {
+        $return = new Return_(new ConstFetch(new Name('null')));
+
+        if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($node, $lastStmt, $return)) {
             return null;
         }
 
-        $node->stmts[] = new Return_(new ConstFetch(new Name('null')));
+        $node->stmts[] = $return;
 
         $this->transformDocUnionVoidToUnionNull($node);
 
