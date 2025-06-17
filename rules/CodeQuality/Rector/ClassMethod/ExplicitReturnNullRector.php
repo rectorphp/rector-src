@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -18,6 +19,8 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
@@ -36,7 +39,8 @@ final class ExplicitReturnNullRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly TypeFactory $typeFactory,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly ReturnTypeInferer $returnTypeInferer,
+        private readonly TerminatedNodeAnalyzer $terminatedNodeAnalyzer
     ) {
     }
 
@@ -134,6 +138,16 @@ CODE_SAMPLE
                 return $node;
             }
 
+            return null;
+        }
+
+        $lastStmt = $node->stmts[array_key_last($node->stmts)] ?? null;
+
+        if (! $lastStmt instanceof Stmt) {
+            return null;
+        }
+
+        if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($node, $lastStmt, $lastStmt)) {
             return null;
         }
 
