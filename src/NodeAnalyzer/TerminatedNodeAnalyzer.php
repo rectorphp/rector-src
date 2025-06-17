@@ -167,7 +167,7 @@ final class TerminatedNodeAnalyzer
         $lastNode = $stmts[$lastKey];
 
         if (isset($stmts[$lastKey - 1]) && ! $this->isTerminatedNode($stmts[$lastKey - 1], $node)) {
-            return false;
+            return ! $stmts[$lastKey - 1] instanceof StmtsAwareInterface;
         }
 
         if ($lastNode instanceof Goto_) {
