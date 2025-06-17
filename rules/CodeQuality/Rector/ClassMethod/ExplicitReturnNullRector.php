@@ -112,9 +112,13 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $containsGoto = false;
         $this->traverseNodesWithCallable((array) $node->stmts, static function (Node $node) use (
-            &$hasChanged
+            &$hasChanged, &$containsGoto
         ): int|null|Return_ {
+            if ($node instanceof Node\Stmt\Goto_) {
+                $containsGoto = true;
+            }
             if ($node instanceof Class_ || $node instanceof Function_ || $node instanceof Closure) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
@@ -127,6 +131,10 @@ CODE_SAMPLE
 
             return null;
         });
+
+        if ($containsGoto) {
+            return null;
+        }
 
         if (! $this->silentVoidResolver->hasSilentVoid($node)) {
             if ($hasChanged) {
