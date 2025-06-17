@@ -27,6 +27,7 @@ use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
+use Rector\Util\StringUtils;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -147,7 +148,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (!in_array(Strings::match($typeValue, '#DateTime\<(.*?)\>#'), [null, []], true)) {
+            if (StringUtils::isMatch($typeValue, '#DateTime\<(.*?)\>#')) {
                 // special case for DateTime, which is not a scalar type
                 $typeValue = 'DateTime';
             }
