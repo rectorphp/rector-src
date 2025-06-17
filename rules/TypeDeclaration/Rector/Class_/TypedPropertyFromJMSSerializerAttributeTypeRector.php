@@ -147,7 +147,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (Strings::match($typeValue, '#DateTime\<(.*?)\>#')) {
+            if (!in_array(Strings::match($typeValue, '#DateTime\<(.*?)\>#'), [null, []], true)) {
                 // special case for DateTime, which is not a scalar type
                 $typeValue = 'DateTime';
             }
