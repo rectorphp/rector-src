@@ -113,7 +113,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasGoto = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($node, fn (Node $node): bool => $node instanceof Node\Stmt\Goto_);
+        $hasGoto = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $node,
+            fn (Node $node): bool => $node instanceof Node\Stmt\Goto_
+        );
 
         if ($hasGoto) {
             return null;
