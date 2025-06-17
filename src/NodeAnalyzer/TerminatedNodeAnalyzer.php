@@ -166,12 +166,12 @@ final class TerminatedNodeAnalyzer
         $lastKey = array_key_last($stmts);
         $lastNode = $stmts[$lastKey];
 
-        if ($lastNode instanceof Goto_) {
-            return true;
-        }
-
         if (isset($stmts[$lastKey - 1]) && ! $this->isTerminatedNode($stmts[$lastKey - 1], $node)) {
             return false;
+        }
+
+        if ($lastNode instanceof Goto_) {
+            return true;
         }
 
         if ($lastNode instanceof Expression) {
