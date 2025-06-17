@@ -19,6 +19,7 @@ use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -36,7 +37,8 @@ final class ExplicitReturnNullRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly TypeFactory $typeFactory,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly ReturnTypeInferer $returnTypeInferer,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -108,6 +110,15 @@ CODE_SAMPLE
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
         if (! $returnType instanceof UnionType) {
+            return null;
+        }
+
+        $hasGoto = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $node,
+            fn (Node $node): bool => $node instanceof Node\Stmt\Goto_
+        );
+
+        if ($hasGoto) {
             return null;
         }
 
