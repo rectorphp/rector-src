@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector\Fixture;
 
-function retryGoto(int $retries, callable $fn)
+function skipRetryGoto(int $retries, callable $fn)
 {
     beginning:
     try {

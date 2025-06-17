@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector\Fixture;
 
-final class DoWhileMaybeReturned4
+final class SkipDoWhileMaybeReturned4
 {
     public function run(int $i)
     {
