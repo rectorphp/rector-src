@@ -25,7 +25,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSette
 
 final class RemoveDefaultNull
 {
-    private string $name;
+    private string $name = '';
 
     public function setName(string $name): void
     {
