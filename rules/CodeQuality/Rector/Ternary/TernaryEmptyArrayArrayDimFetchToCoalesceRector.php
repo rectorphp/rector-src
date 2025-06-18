@@ -66,38 +66,56 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): Ternary|Coalesce|null
     {
-        if (! $node->cond instanceof BooleanNot) {
-            return null;
-        }
-
-        $negagedExpr = $node->cond->expr;
-        if (! $negagedExpr instanceof Empty_) {
-            return null;
-        }
-
-        if (! $node->if instanceof ArrayDimFetch) {
-            return null;
-        }
-
-        $emptyExprType = $this->getType($negagedExpr->expr);
-        if ($emptyExprType->isArray()->yes()) {
-            $dimFetchVar = $node->if->var;
-            if (! $this->nodeComparator->areNodesEqual($negagedExpr->expr, $dimFetchVar)) {
+        if ($node->cond instanceof BooleanNot) {
+            $negagedExpr = $node->cond->expr;
+            if (! $negagedExpr instanceof Empty_) {
                 return null;
             }
 
-            return new Coalesce($node->if, $node->else);
+            return $this->refactorNegatedTernary($node, $negagedExpr);
         }
 
-        if (! $this->nodeComparator->areNodesEqual($negagedExpr->expr, $node->if)) {
+        if (! $node->cond instanceof Empty_) {
             return null;
         }
 
-        return new Ternary($node->if, null, $node->else);
+        $empty = $node->cond;
+        if (! $node->else instanceof ArrayDimFetch) {
+            return null;
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($empty->expr, $node->else)) {
+            return null;
+        }
+
+        return new Ternary($node->else, null, $node->if);
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NULL_COALESCE;
+    }
+
+    private function refactorNegatedTernary(Ternary $ternary, Empty_ $empty): Ternary|Coalesce|null
+    {
+        if (! $ternary->if instanceof ArrayDimFetch) {
+            return null;
+        }
+
+        $emptyExprType = $this->getType($empty->expr);
+        if ($emptyExprType->isArray()->yes()) {
+            $dimFetchVar = $ternary->if->var;
+            if (! $this->nodeComparator->areNodesEqual($empty->expr, $dimFetchVar)) {
+                return null;
+            }
+
+            return new Coalesce($ternary->if, $ternary->else);
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($empty->expr, $ternary->if)) {
+            return null;
+        }
+
+        return new Ternary($ternary->if, null, $ternary->else);
     }
 }
