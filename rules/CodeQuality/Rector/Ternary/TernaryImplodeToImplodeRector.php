@@ -92,6 +92,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->else->isFirstClassCallable()) {
+            return null;
+        }
+
         $function = $node->else;
         $secondArg = $function->getArgs()[1] ?? null;
 
