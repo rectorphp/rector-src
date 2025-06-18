@@ -41,7 +41,7 @@ class SomeClass
 {
     public function run(array $values)
     {
-        return implode('...', $values);
+        return implode(',', $values);
     }
 }
 CODE_SAMPLE
