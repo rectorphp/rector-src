@@ -113,7 +113,14 @@ final readonly class ParentClassMethodTypeOverrideGuard
                 continue;
             }
 
-            return $traitReflection->getNativeMethod($methodName);
+            $methodReflection = $traitReflection->getNativeMethod($methodName);
+
+            // any signature on non abstract trait method can be overridden
+            if ($methodReflection->isAbstract()) {
+                return $methodReflection;
+            }
+
+            return null;
         }
 
         return null;
