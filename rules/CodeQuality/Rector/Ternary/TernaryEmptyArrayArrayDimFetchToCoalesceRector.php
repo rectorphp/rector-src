@@ -11,13 +11,15 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Ternary;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector\TernaryEmptyArrayArrayDimFetchToCoalesceRectorTest
  */
-final class TernaryEmptyArrayArrayDimFetchToCoalesceRector extends AbstractRector
+final class TernaryEmptyArrayArrayDimFetchToCoalesceRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -62,7 +64,7 @@ CODE_SAMPLE
     /**
      * @param Ternary $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): Ternary|Coalesce|null
     {
         if (! $node->cond instanceof BooleanNot) {
             return null;
@@ -78,15 +80,24 @@ CODE_SAMPLE
         }
 
         $emptyExprType = $this->getType($negagedExpr->expr);
-        if (! $emptyExprType->isArray()->yes()) {
+        if ($emptyExprType->isArray()->yes()) {
+            $dimFetchVar = $node->if->var;
+            if (! $this->nodeComparator->areNodesEqual($negagedExpr->expr, $dimFetchVar)) {
+                return null;
+            }
+
+            return new Coalesce($node->if, $node->else);
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($negagedExpr->expr, $node->if)) {
             return null;
         }
 
-        $dimFetchVar = $node->if->var;
-        if (! $this->nodeComparator->areNodesEqual($negagedExpr->expr, $dimFetchVar)) {
-            return null;
-        }
+        return new Ternary($node->if, null, $node->else);
+    }
 
-        return new Coalesce($node->if, $node->else);
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NULL_COALESCE;
     }
 }
