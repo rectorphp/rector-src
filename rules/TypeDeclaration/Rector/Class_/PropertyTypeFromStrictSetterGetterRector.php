@@ -12,6 +12,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\FloatType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -213,8 +214,14 @@ CODE_SAMPLE
         bool $hasPropertyDefaultNull
     ): void {
         if (! TypeCombinator::containsNull($getterSetterPropertyType)) {
-            if ($hasPropertyDefaultNull) {
+            if ($getterSetterPropertyType instanceof FloatType) {
+                if (! $property->props[0]->default instanceof Expr) {
+                    // string is used, we need default value
+                    $property->props[0]->default = new Node\Scalar\DNumber(0.0);
+                }
+            }
 
+            if ($hasPropertyDefaultNull) {
                 if ($getterSetterPropertyType instanceof StringType) {
                     // string is used, we need default value
                     $property->props[0]->default = new String_('');
