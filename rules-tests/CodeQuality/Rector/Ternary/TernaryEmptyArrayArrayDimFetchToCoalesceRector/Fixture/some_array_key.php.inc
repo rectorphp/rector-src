@@ -24,7 +24,7 @@ final class SomeArrayKey
 
     public function run()
     {
-        return $this->items[0] ?: 'default';
+        return $this->items[0] ?? 'default';
     }
 }
 

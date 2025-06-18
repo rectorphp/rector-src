@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Ternary;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BooleanNot;
@@ -64,8 +65,12 @@ CODE_SAMPLE
     /**
      * @param Ternary $node
      */
-    public function refactor(Node $node): Ternary|Coalesce|null
+    public function refactor(Node $node): Coalesce|null
     {
+        if (! $node->if instanceof Expr) {
+            return null;
+        }
+
         if ($node->cond instanceof BooleanNot) {
             $negagedExpr = $node->cond->expr;
             if (! $negagedExpr instanceof Empty_) {
@@ -88,7 +93,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return new Ternary($node->else, null, $node->if);
+        return new Coalesce($node->else, $node->if);
     }
 
     public function provideMinPhpVersion(): int
@@ -96,7 +101,7 @@ CODE_SAMPLE
         return PhpVersionFeature::NULL_COALESCE;
     }
 
-    private function refactorNegatedTernary(Ternary $ternary, Empty_ $empty): Ternary|Coalesce|null
+    private function refactorNegatedTernary(Ternary $ternary, Empty_ $empty): Coalesce|null
     {
         if (! $ternary->if instanceof ArrayDimFetch) {
             return null;
@@ -116,6 +121,6 @@ CODE_SAMPLE
             return null;
         }
 
-        return new Ternary($ternary->if, null, $ternary->else);
+        return new Coalesce($ternary->if, $ternary->else);
     }
 }
