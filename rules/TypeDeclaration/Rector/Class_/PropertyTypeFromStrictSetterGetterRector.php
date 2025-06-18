@@ -8,11 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\FloatType;
+use PHPStan\Type\IntegerType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -140,6 +143,7 @@ CODE_SAMPLE
                 $getterSetterPropertyType,
                 TypeKind::PROPERTY
             );
+
             if (! $propertyTypeDeclaration instanceof Node) {
                 continue;
             }
@@ -205,6 +209,20 @@ CODE_SAMPLE
         }
 
         $defaultExprType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($defaultExpr);
+
+        // avoid constant vs variable type conflicts
+        if ($defaultExprType instanceof FloatType && $getterSetterPropertyType instanceof FloatType) {
+            return true;
+        }
+
+        if ($defaultExprType instanceof IntegerType && $getterSetterPropertyType instanceof IntegerType) {
+            return true;
+        }
+
+        if ($defaultExprType instanceof StringType && $getterSetterPropertyType instanceof StringType) {
+            return true;
+        }
+
         return $defaultExprType->equals($getterSetterPropertyType);
     }
 
@@ -217,7 +235,12 @@ CODE_SAMPLE
             if ($getterSetterPropertyType instanceof FloatType) {
                 if (! $property->props[0]->default instanceof Expr) {
                     // string is used, we need default value
-                    $property->props[0]->default = new Node\Scalar\DNumber(0.0);
+                    $property->props[0]->default = new DNumber(0.0);
+                }
+            } elseif ($getterSetterPropertyType instanceof IntegerType) {
+                if (! $property->props[0]->default instanceof Expr) {
+                    // string is used, we need default value
+                    $property->props[0]->default = new LNumber(0);
                 }
             }
 
