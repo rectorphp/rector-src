@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ValuesTraitAbstract;
 
-trait OverrideAbstractTraitMethod {
+trait MustFollowAbstractTraitMethod {
     use ValuesTraitAbstract;
 
     public function addValue() {
@@ -19,7 +19,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ValuesTraitAbstract;
 
-trait OverrideAbstractTraitMethod {
+trait MustFollowAbstractTraitMethod {
     use ValuesTraitAbstract;
 
     public function addValue(int $value) {
