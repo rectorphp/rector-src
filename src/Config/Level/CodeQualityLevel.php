@@ -71,6 +71,7 @@ use Rector\CodeQuality\Rector\Ternary\NumberCompareToMaxFuncCallRector;
 use Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector;
+use Rector\CodeQuality\Rector\Ternary\TernaryImplodeToImplodeRector;
 use Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
@@ -116,6 +117,7 @@ final class CodeQualityLevel
         SimplifyTautologyTernaryRector::class,
         SingleInArrayToCompareRector::class,
         SimplifyIfElseToTernaryRector::class,
+        TernaryImplodeToImplodeRector::class,
         JoinStringConcatRector::class,
         ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
         ExplicitBoolCompareRector::class,
