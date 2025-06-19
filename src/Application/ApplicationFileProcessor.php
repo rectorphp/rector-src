@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem as UtilsFileSystem;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Configuration\KaizenStepper;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\FileSystem\FilesFinder;
@@ -52,6 +53,7 @@ final class ApplicationFileProcessor
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
+        private readonly KaizenStepper $kaizenStepper
     ) {
     }
 
@@ -118,6 +120,10 @@ final class ApplicationFileProcessor
         ?callable $preFileCallback = null,
         ?callable $postFileCallback = null
     ): ProcessResult {
+        if ($configuration->isKaizenEnabled()) {
+            $this->kaizenStepper->setStepCount($configuration->getKaizenStepCount());
+        }
+
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
@@ -230,7 +236,7 @@ final class ApplicationFileProcessor
     private function runParallel(
         array $filePaths,
         InputInterface $input,
-        callable $postFileCallback
+        callable $postFileCallback,
     ): ProcessResult {
         $schedule = $this->scheduleFactory->create(
             $this->cpuCoreCountProvider->provide(),
