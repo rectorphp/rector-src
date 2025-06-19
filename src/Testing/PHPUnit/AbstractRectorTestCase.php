@@ -14,6 +14,7 @@ use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Autoloading\BootstrapFilesIncluder;
 use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Contract\Rector\RectorInterface;
@@ -59,6 +60,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
         SimpleParameterProvider::setParameter(Option::POLYFILL_PACKAGES, []);
         SimpleParameterProvider::setParameter(Option::NEW_LINE_ON_FLUENT_CALL, false);
+
+        FeatureFlags::reset();
     }
 
     protected function setUp(): void

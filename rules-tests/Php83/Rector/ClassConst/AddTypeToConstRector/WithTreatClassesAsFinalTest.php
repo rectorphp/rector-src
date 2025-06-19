@@ -6,19 +6,10 @@ namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class WithTreatClassesAsFinalTest extends AbstractRectorTestCase
 {
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        // reset feature flags to avoid side effects in other rules
-        FeatureFlags::reset();
-    }
-
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
