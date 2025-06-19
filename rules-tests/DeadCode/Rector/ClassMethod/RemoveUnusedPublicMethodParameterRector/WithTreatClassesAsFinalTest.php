@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -18,11 +18,11 @@ final class WithTreatClassesAsFinalTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureMarkedAsFinal');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureTreatClassesAsFinal');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/marked_classes_as_final.php';
+        return __DIR__ . '/config/configured_rule_with_treat_classes_as_final.php';
     }
 }
