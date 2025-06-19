@@ -97,7 +97,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // local variable is mostly fine, otherwise, just skip
+            // local variable is mostly fine, other dynamic, just skip
             if (! $arrayItem->key instanceof Variable && $this->exprAnalyzer->isDynamicExpr($arrayItem->key)) {
                 continue;
             }
