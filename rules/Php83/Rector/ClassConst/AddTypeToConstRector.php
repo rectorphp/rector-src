@@ -223,7 +223,7 @@ CODE_SAMPLE
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool
     {
         if (FeatureFlags::treatClassesAsFinal()) {
-            return false;
+            return $class->isAbstract();
         }
 
         return ! $class->isFinal() && ! $classConst->isPrivate() && ! $classConst->isFinal();
