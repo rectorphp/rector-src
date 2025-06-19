@@ -530,18 +530,6 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @deprecated Already included in withPhpSets(), no need to repeat
-     * make use of polyfill packages in composer.json
-     */
-    public function withPhpPolyfill(): never
-    {
-        throw new InvalidConfigurationException(sprintf(
-            'Method "%s()" is deprecated and is now part of ->withPhpSets() to avoid duplications and too granular configuration.',
-            __METHOD__,
-        ));
-    }
-
-    /**
      * What PHP sets should be applied? By default the same version
      * as composer.json has is used
      */
