@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Array_\RemoveDuplicatedArrayKeyRector\Fixture;
 
-class SkipMethodAndFunctCalls
+class SkipPropertyFetch
 {
     public function __get(string $name)
     {
