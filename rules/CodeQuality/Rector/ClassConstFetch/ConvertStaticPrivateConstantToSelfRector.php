@@ -85,7 +85,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $class->isFinal() && FeatureFlags::treatClassesAsFinal() === false && ! $this->isPrivateConstant(
+            if (! $class->isFinal() && ! $this->isPrivateConstant(
                 $node,
                 $class
             )) {
