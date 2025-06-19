@@ -152,6 +152,11 @@ CODE_SAMPLE
                 $typeValue = 'DateTime';
             }
 
+            // skip generic iterable types
+            if (str_starts_with($typeValue, 'iterable<')) {
+                continue;
+            }
+
             $type = $this->scalarStringToTypeMapper->mapScalarStringToType($typeValue);
             if ($type instanceof MixedType) {
                 // fallback to object type
