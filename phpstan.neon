@@ -76,9 +76,6 @@ parameters:
                 - src/Console/Notifier.php
                 - src/Util/FileHasher.php
 
-#        -
-#            identifier: argument.type
-
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'

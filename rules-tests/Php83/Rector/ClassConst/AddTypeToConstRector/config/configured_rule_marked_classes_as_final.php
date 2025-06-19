@@ -8,7 +8,7 @@ use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(AddTypeToConstRector::class);
-    $rectorConfig->treatClassesAsFinal(true);
+    $rectorConfig->treatClassesAsFinal();
 
     $rectorConfig->phpVersion(PhpVersion::PHP_83);
 };
