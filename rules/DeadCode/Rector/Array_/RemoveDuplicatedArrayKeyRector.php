@@ -8,10 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\PreDec;
 use PhpParser\Node\Expr\PreInc;
-use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
+use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -24,6 +24,7 @@ final class RemoveDuplicatedArrayKeyRector extends AbstractRector
 {
     public function __construct(
         private readonly BetterStandardPrinter $betterStandardPrinter,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -96,11 +97,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($arrayItem->key instanceof CallLike) {
-                continue;
-            }
-
-            if ($arrayItem->key instanceof PropertyFetch) {
+            // local variable is mostly fine, otherwise, just skip
+            if (! $arrayItem->key instanceof Variable && $this->exprAnalyzer->isDynamicExpr($arrayItem->key)) {
                 continue;
             }
 
