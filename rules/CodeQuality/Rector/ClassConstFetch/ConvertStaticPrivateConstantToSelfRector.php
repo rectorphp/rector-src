@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -84,7 +85,10 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $class->isFinal() && ! $this->isPrivateConstant($node, $class)) {
+            if (! $class->isFinal() && FeatureFlags::treatClassesAsFinal() === false && ! $this->isPrivateConstant(
+                $node,
+                $class
+            )) {
                 return null;
             }
 
