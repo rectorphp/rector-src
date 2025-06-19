@@ -6,10 +6,19 @@ namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class WithTreatClassesAsFinalTest extends AbstractRectorTestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        // reset feature flags to avoid side effects in other rules
+        FeatureFlags::reset();
+    }
+
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
@@ -23,6 +32,6 @@ final class WithTreatClassesAsFinalTest extends AbstractRectorTestCase
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/configured_rule_marked_classes_as_final.php';
+        return __DIR__ . '/config/marked_classes_as_final.php';
     }
 }

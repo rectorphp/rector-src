@@ -76,9 +76,6 @@ parameters:
                 - src/Console/Notifier.php
                 - src/Util/FileHasher.php
 
-#        -
-#            identifier: argument.type
-
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
@@ -262,7 +259,6 @@ parameters:
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             paths:
                  - src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
-                 - rules/Privatization/NodeManipulator/VisibilityManipulator.php
 
         # more advanced usage, but not always working
         # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110
@@ -272,9 +268,6 @@ parameters:
         -
             message: '#Fetching (deprecated )?class constant (.*?) of (deprecated )?class (Rector\\Set\\ValueObject\\DowngradeLevelSetList|Rector\\Symfony\\Set\\(.*?))#'
             path: src/Configuration/RectorConfigBuilder.php
-
-        # deprecated
-        - '#Register "Rector\\Php80\\Rector\\FunctionLike\\MixedTypeRector" service to "php80\.php" config set#'
 
         - '#::provideMinPhpVersion\(\) never returns \d+ so it can be removed from the return type#'
 

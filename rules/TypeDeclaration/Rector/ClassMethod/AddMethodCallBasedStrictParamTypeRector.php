@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\CallTypesResolver;
@@ -130,6 +131,8 @@ CODE_SAMPLE
             return true;
         }
 
-        return $class->isFinal() && ! $class->extends instanceof Name && $class->implements === [] && $classMethod->isProtected();
+        $isClassFinal = $class->isFinal() || FeatureFlags::treatClassesAsFinal();
+
+        return $isClassFinal && ! $class->extends instanceof Name && $class->implements === [] && $classMethod->isProtected();
     }
 }
