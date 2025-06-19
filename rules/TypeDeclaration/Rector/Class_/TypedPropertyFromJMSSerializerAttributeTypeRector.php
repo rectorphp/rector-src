@@ -153,7 +153,7 @@ CODE_SAMPLE
             }
 
             // skip generic iterable types
-            if (str_starts_with($typeValue, 'iterable<')) {
+            if (str_contains($typeValue, '<')) {
                 continue;
             }
 
