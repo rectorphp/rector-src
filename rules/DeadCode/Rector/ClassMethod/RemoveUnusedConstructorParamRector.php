@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use Rector\DeadCode\NodeManipulator\ClassMethodParamRemover;
-use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
@@ -22,7 +21,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedConstructorParamRector extends AbstractRector
 {
     public function __construct(
-        private readonly ParamAnalyzer $paramAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassMethodParamRemover $classMethodParamRemover
     ) {
@@ -79,10 +77,6 @@ CODE_SAMPLE
         }
 
         if ($constructorClassMethod->params === []) {
-            return null;
-        }
-
-        if ($this->paramAnalyzer->hasPropertyPromotion($constructorClassMethod->params)) {
             return null;
         }
 
