@@ -7,7 +7,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeR
 use Rector\ValueObject\PhpVersionFeature;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::UNION_TYPES - 1);
+    $rectorConfig->phpVersion(PhpVersionFeature::UNION_TYPES);
     $rectorConfig->rule(AddMethodCallBasedStrictParamTypeRector::class);
     $rectorConfig->treatClassesAsFinal();
 };
