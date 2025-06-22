@@ -112,6 +112,7 @@ CODE_SAMPLE
             if (! $valueParam instanceof Variable) {
                 continue;
             }
+
             $param = new Param($valueParam);
 
             $arrowFunction = new ArrowFunction([
