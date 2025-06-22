@@ -113,6 +113,7 @@ CODE_SAMPLE
             if (! $valueParam instanceof Variable) {
                 continue;
             }
+
             $param = new Param($valueParam);
 
             $negatedCondition = $condition instanceof BooleanNot ? $condition->expr : new BooleanNot($condition);

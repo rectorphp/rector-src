@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\Foreach_;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
@@ -116,6 +117,7 @@ CODE_SAMPLE
             if (! $valueParam instanceof Variable) {
                 continue;
             }
+
             $param = new Param($valueParam);
 
             $arrowFunction = new ArrowFunction([
@@ -147,7 +149,7 @@ CODE_SAMPLE
     private function isValidForeachStructure(Foreach_ $foreach, Variable $assignedVariable): bool
     {
         if (
-            $foreach->keyVar === null ||
+            !$foreach->keyVar instanceof Expr ||
             count($foreach->stmts) !== 1
         ) {
             return false;
