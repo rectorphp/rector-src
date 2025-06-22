@@ -82,10 +82,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->paramAnalyzer->hasPropertyPromotion($constructorClassMethod->params)) {
-            return null;
-        }
-
         if ($constructorClassMethod->isAbstract()) {
             return null;
         }
