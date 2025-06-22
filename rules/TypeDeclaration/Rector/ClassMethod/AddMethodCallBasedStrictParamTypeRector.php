@@ -131,7 +131,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $isClassFinal = $class->isFinal() || FeatureFlags::treatClassesAsFinal();
+        $isClassFinal = $class->isFinal() || (FeatureFlags::treatClassesAsFinal() && ! $class->isAbstract());
 
         return $isClassFinal && ! $class->extends instanceof Name && $class->implements === [] && $classMethod->isProtected();
     }
