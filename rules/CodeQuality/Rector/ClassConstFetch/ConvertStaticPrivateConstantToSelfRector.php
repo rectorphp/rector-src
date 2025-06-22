@@ -84,10 +84,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $class->isFinal() && ! $this->isPrivateConstant(
-                $node,
-                $class
-            )) {
+            if (! $class->isFinal() && ! $this->isPrivateConstant($node, $class)) {
                 return null;
             }
 
