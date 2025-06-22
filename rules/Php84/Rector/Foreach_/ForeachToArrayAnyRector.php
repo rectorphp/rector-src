@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Rector\Php84\Rector\Foreach_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Break_;
@@ -16,6 +14,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -27,6 +26,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ForeachToArrayAnyRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -85,7 +89,7 @@ CODE_SAMPLE
             $foreach = $stmt;
             $prevAssign = $prevStmt->expr;
 
-            if (! $this->isFalse($prevAssign->expr)) {
+            if (! $this->valueResolver->isFalse($prevAssign->expr)) {
                 continue;
             }
 
@@ -101,14 +105,6 @@ CODE_SAMPLE
 
             /** @var If_ $firstNodeInsideForeach */
             $firstNodeInsideForeach = $foreach->stmts[0];
-
-            /** @var Expression $assignmentStmt */
-            $assignmentStmt = $firstNodeInsideForeach->stmts[0];
-            /** @var Assign $assignment */
-            $assignment = $assignmentStmt->expr;
-
-            /** @var Break_ $breakStmt */
-            $breakStmt = $firstNodeInsideForeach->stmts[1];
 
             $condition = $firstNodeInsideForeach->cond;
             $valueParam = $foreach->valueVar;
@@ -175,24 +171,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->isTrue($assignment->expr);
-    }
-
-    private function isFalse(Expr $expr): bool
-    {
-        if (! $expr instanceof ConstFetch) {
-            return false;
-        }
-
-        return $this->isName($expr->name, 'false');
-    }
-
-    private function isTrue(Expr $expr): bool
-    {
-        if (! $expr instanceof ConstFetch) {
-            return false;
-        }
-
-        return $this->isName($expr->name, 'true');
+        return $this->valueResolver->isTrue($assignment->expr);
     }
 }
