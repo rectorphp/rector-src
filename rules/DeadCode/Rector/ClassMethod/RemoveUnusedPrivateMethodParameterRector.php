@@ -17,7 +17,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeCollector\UnusedParameterResolver;
-use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,7 +28,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedPrivateMethodParameterRector extends AbstractRector
 {
     public function __construct(
-        private readonly VariadicFunctionLikeDetector $variadicFunctionLikeDetector,
         private readonly UnusedParameterResolver $unusedParameterResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly DocBlockUpdater $docBlockUpdater,
@@ -84,7 +82,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
-            if ($this->shouldSkipClassMethod($classMethod)) {
+            if (! $classMethod->isPrivate()) {
                 continue;
             }
 
@@ -215,19 +213,6 @@ CODE_SAMPLE
 
             return $this->isName($subNode->name, $methodName);
         });
-    }
-
-    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
-    {
-        if (! $classMethod->isPrivate()) {
-            return true;
-        }
-
-        if ($classMethod->params === []) {
-            return true;
-        }
-
-        return $this->variadicFunctionLikeDetector->isVariadic($classMethod);
     }
 
     /**

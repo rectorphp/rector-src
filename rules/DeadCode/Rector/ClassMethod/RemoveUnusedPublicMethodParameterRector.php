@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\DeadCode\NodeManipulator\ClassMethodParamRemover;
-use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
 use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -23,7 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedPublicMethodParameterRector extends AbstractRector
 {
     public function __construct(
-        private readonly VariadicFunctionLikeDetector $variadicFunctionLikeDetector,
         private readonly ClassMethodParamRemover $classMethodParamRemover,
         private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
@@ -128,10 +126,6 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod)) {
-            return true;
-        }
-
-        return $this->variadicFunctionLikeDetector->isVariadic($classMethod);
+        return $this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod);
     }
 }

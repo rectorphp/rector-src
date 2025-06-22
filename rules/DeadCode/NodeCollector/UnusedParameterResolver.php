@@ -24,12 +24,6 @@ final readonly class UnusedParameterResolver
         $unusedParameters = [];
 
         foreach ($classMethod->params as $i => $param) {
-            // skip property promotion
-            /** @var Param $param */
-            if ($param->isPromoted()) {
-                continue;
-            }
-
             if ($this->paramAnalyzer->isParamUsedInClassMethod($classMethod, $param)) {
                 continue;
             }
