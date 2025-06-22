@@ -174,6 +174,7 @@ final readonly class ParamAnalyzer
         if (! $node instanceof FuncCall) {
             return false;
         }
+
         return $this->nodeNameResolver->isName($node, 'func_get_args');
     }
 }
