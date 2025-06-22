@@ -26,6 +26,11 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 
 final readonly class ParamAnalyzer
 {
+    /**
+     * @var string[]
+     */
+    private const VARIADIC_FUNCTION_NAMES = ['func_get_arg', 'func_get_args', 'func_num_args'];
+
     public function __construct(
         private NodeComparator $nodeComparator,
         private NodeNameResolver $nodeNameResolver,
@@ -37,6 +42,10 @@ final readonly class ParamAnalyzer
 
     public function isParamUsedInClassMethod(ClassMethod $classMethod, Param $param): bool
     {
+        if ($param->isPromoted()) {
+            return true;
+        }
+
         $isParamUsed = false;
 
         if ($param->var instanceof Error) {
@@ -47,16 +56,14 @@ final readonly class ParamAnalyzer
             &$isParamUsed,
             $param
         ): ?int {
-            if ($isParamUsed) {
-                return NodeVisitor::STOP_TRAVERSAL;
-            }
-
-            if ($this->isFuncGetArgsCall($node)) {
+            if ($this->isVariadicFuncCall($node)) {
                 $isParamUsed = true;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if ($this->isUsedAsArg($node, $param)) {
                 $isParamUsed = true;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             // skip nested anonymous class
@@ -66,14 +73,17 @@ final readonly class ParamAnalyzer
 
             if ($node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $param->var)) {
                 $isParamUsed = true;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if ($node instanceof Closure && $this->isVariableInClosureUses($node, $param->var)) {
                 $isParamUsed = true;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             if ($this->isParamUsed($node, $param)) {
                 $isParamUsed = true;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
 
             return null;
@@ -169,12 +179,12 @@ final readonly class ParamAnalyzer
         return $this->nodeNameResolver->isNames($param, $arguments);
     }
 
-    private function isFuncGetArgsCall(Node $node): bool
+    private function isVariadicFuncCall(Node $node): bool
     {
         if (! $node instanceof FuncCall) {
             return false;
         }
 
-        return $this->nodeNameResolver->isName($node, 'func_get_args');
+        return $this->nodeNameResolver->isNames($node, self::VARIADIC_FUNCTION_NAMES);
     }
 }
