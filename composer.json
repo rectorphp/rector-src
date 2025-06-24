@@ -1,6 +1,7 @@
 {
     "name": "rector/rector-src",
     "description": "Instant Upgrade and Automated Refactoring of any PHP code",
+    "homepage": "https://getrector.com",
     "bin": [
         "bin/rector"
     ],
@@ -10,7 +11,6 @@
         "automation",
         "migration"
     ],
-    "homepage": "https://getrector.com",
     "require": {
         "php": "^8.2",
         "clue/ndjson-react": "^1.3",
