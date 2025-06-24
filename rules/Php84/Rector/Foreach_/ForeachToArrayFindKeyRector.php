@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\Foreach_;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
@@ -149,7 +149,7 @@ CODE_SAMPLE
     private function isValidForeachStructure(Foreach_ $foreach, Variable $assignedVariable): bool
     {
         if (
-            !$foreach->keyVar instanceof Expr ||
+            ! $foreach->keyVar instanceof Expr ||
             count($foreach->stmts) !== 1
         ) {
             return false;
