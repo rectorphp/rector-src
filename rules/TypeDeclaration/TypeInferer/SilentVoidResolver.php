@@ -26,6 +26,7 @@ use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Label;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
@@ -86,6 +87,10 @@ final readonly class SilentVoidResolver
         foreach ($stmts as $stmt) {
             if ($this->neverFuncCallAnalyzer->isWithNeverTypeExpr($stmt)) {
                 return true;
+            }
+
+            if ($stmt instanceof Label) {
+                continue;
             }
 
             if ($this->isStopped($stmt)) {
