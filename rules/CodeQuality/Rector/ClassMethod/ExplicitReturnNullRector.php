@@ -19,7 +19,6 @@ use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -38,7 +37,6 @@ final class ExplicitReturnNullRector extends AbstractRector
         private readonly TypeFactory $typeFactory,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ReturnTypeInferer $returnTypeInferer,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
