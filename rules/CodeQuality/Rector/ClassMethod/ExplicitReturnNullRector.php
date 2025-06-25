@@ -12,7 +12,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\NullType;
@@ -20,7 +19,6 @@ use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -39,7 +37,6 @@ final class ExplicitReturnNullRector extends AbstractRector
         private readonly TypeFactory $typeFactory,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ReturnTypeInferer $returnTypeInferer,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -111,15 +108,6 @@ CODE_SAMPLE
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
         if (! $returnType instanceof UnionType) {
-            return null;
-        }
-
-        $hasGoto = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-            $node,
-            fn (Node $node): bool => $node instanceof Goto_
-        );
-
-        if ($hasGoto) {
             return null;
         }
 
