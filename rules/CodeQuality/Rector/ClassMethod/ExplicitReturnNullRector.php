@@ -12,7 +12,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\NullType;
@@ -111,15 +110,6 @@ CODE_SAMPLE
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
         if (! $returnType instanceof UnionType) {
-            return null;
-        }
-
-        $hasGoto = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-            $node,
-            fn (Node $node): bool => $node instanceof Goto_
-        );
-
-        if ($hasGoto) {
             return null;
         }
 

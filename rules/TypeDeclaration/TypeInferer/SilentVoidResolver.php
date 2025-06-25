@@ -185,7 +185,8 @@ final readonly class SilentVoidResolver
             || $stmt instanceof Exit_
             || ($stmt instanceof Return_ && $stmt->expr instanceof Expr)
             || $stmt instanceof Yield_
-            || $stmt instanceof YieldFrom;
+            || $stmt instanceof YieldFrom
+            || $stmt instanceof Goto_;
     }
 
     private function isSwitchWithAlwaysReturnOrExit(Switch_ $switch): bool
