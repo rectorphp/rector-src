@@ -84,13 +84,17 @@ final readonly class SilentVoidResolver
      */
     private function hasStmtsAlwaysReturnOrExit(array $stmts): bool
     {
-        foreach ($stmts as $stmt) {
+        // early label check
+        // as label can be defined later after goto
+        foreach ($stmts as $key => $stmt) {
+            if ($stmt instanceof Label && isset($stmts[$key + 1])) {
+                return $this->hasStmtsAlwaysReturnOrExit(array_slice($stmts, $key + 1));
+            }
+        }
+
+        foreach ($stmts as $key => $stmt) {
             if ($this->neverFuncCallAnalyzer->isWithNeverTypeExpr($stmt)) {
                 return true;
-            }
-
-            if ($stmt instanceof Label) {
-                continue;
             }
 
             if ($this->isStopped($stmt)) {
