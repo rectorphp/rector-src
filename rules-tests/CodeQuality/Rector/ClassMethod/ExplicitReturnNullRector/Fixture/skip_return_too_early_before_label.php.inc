@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector\Fixture;
 
-final class SkipExitTooEarlyBeforeLabel2
+final class SkipReturnTooEarlyBeforeLabel
 {
     public function run()
     {
