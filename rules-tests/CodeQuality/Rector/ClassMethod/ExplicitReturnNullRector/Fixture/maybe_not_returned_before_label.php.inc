@@ -11,7 +11,7 @@ final class MaybeNotReturnedBeforeLabel
         } elseif (rand(0, 2)) {
             return null;
         } else {
-            // nothing to to here...
+            // nothing to do here...
         }
 
         unusedLabel:
@@ -34,7 +34,7 @@ final class MaybeNotReturnedBeforeLabel
         } elseif (rand(0, 2)) {
             return null;
         } else {
-            // nothing to to here...
+            // nothing to do here...
         }
 
         unusedLabel:
