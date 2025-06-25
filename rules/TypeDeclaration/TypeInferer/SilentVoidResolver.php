@@ -92,7 +92,7 @@ final readonly class SilentVoidResolver
             }
         }
 
-        foreach ($stmts as $key => $stmt) {
+        foreach ($stmts as $stmt) {
             if ($this->neverFuncCallAnalyzer->isWithNeverTypeExpr($stmt)) {
                 return true;
             }
