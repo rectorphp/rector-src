@@ -4,7 +4,7 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAllRector\Fixture;
 
 class SkipNoBooleanInitialization
 {
-    public function checkWithoutBooleanInit($animals)
+    public function checkWithoutBooleanInit(array $animals)
     {
         $found = 'initial';
         foreach ($animals as $animal) {
@@ -16,7 +16,7 @@ class SkipNoBooleanInitialization
         return $found;
     }
 
-    public function checkWithFalseInit($animals)
+    public function checkWithFalseInit(array $animals)
     {
         $found = false;
         foreach ($animals as $animal) {

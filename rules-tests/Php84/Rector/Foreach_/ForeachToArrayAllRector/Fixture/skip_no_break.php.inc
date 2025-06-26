@@ -4,7 +4,7 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAllRector\Fixture;
 
 class SkipNoBreak
 {
-    public function checkWithoutBreak($animals)
+    public function checkWithoutBreak(array $animals)
     {
         $found = true;
         foreach ($animals as $animal) {
