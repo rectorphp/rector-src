@@ -35,7 +35,7 @@ jobs:
             # test various commands with options
             -   run: |
                     # other command
-                    bin/rector list-rules
+                    bin/rector help
                     php bin/rector list-rules
 
                     # with explicit "process" command
