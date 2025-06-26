@@ -4,7 +4,7 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
 class SkipMultipleStatements
 {
-    public function run($animals)
+    public function run(array $animals)
     {
         $found = false;
         foreach ($animals as $animal) {

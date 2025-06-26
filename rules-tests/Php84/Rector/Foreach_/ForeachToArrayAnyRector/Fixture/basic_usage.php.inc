@@ -4,7 +4,7 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
 class BasicUsage
 {
-    public function checkAnimal($animals)
+    public function checkAnimal(array $animals)
     {
         $found = false;
         foreach ($animals as $animal) {
@@ -16,7 +16,7 @@ class BasicUsage
         return $found;
     }
 
-    public function checkNumber($numbers)
+    public function checkNumber(array $numbers)
     {
         $exists = false;
         foreach ($numbers as $number) {
@@ -28,7 +28,7 @@ class BasicUsage
         return $exists;
     }
 
-    public function checkWithKey($items)
+    public function checkWithKey(array $items)
     {
         $hasMatch = false;
         foreach ($items as $key => $value) {
@@ -49,19 +49,19 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
 class BasicUsage
 {
-    public function checkAnimal($animals)
+    public function checkAnimal(array $animals)
     {
         $found = array_any($animals, fn($animal) => str_starts_with($animal, 'c'));
         return $found;
     }
 
-    public function checkNumber($numbers)
+    public function checkNumber(array $numbers)
     {
         $exists = array_any($numbers, fn($number) => $number > 10);
         return $exists;
     }
 
-    public function checkWithKey($items)
+    public function checkWithKey(array $items)
     {
         $hasMatch = array_any($items, fn($value) => $value === 'target');
         return $hasMatch;

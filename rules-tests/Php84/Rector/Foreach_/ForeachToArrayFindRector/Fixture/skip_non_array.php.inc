@@ -1,15 +1,15 @@
 <?php
 
-namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayFindRector\Fixture;
 
-class SkipNoBooleanInitialization
+class SkipNonArray
 {
-    public function run(array $animals)
+    public function findAnimal($animals)
     {
         $found = null;
         foreach ($animals as $animal) {
             if (str_starts_with($animal, 'c')) {
-                $found = true;
+                $found = $animal;
                 break;
             }
         }

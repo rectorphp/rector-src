@@ -4,7 +4,7 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAllRector\Fixture;
 
 class BasicUsage
 {
-    public function checkAllAnimalsStartWithC($animals)
+    public function checkAllAnimalsStartWithC(array $animals)
     {
         $found = true;
         foreach ($animals as $animal) {
@@ -16,7 +16,7 @@ class BasicUsage
         return $found;
     }
 
-    public function checkAllNumbersGreaterThanTen($numbers)
+    public function checkAllNumbersGreaterThanTen(array $numbers)
     {
         $allGreater = true;
         foreach ($numbers as $number) {
@@ -28,7 +28,7 @@ class BasicUsage
         return $allGreater;
     }
 
-    public function checkAllItemsEqualTarget($items)
+    public function checkAllItemsEqualTarget(array $items)
     {
         $allMatch = true;
         foreach ($items as $key => $value) {
@@ -49,19 +49,19 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAllRector\Fixture;
 
 class BasicUsage
 {
-    public function checkAllAnimalsStartWithC($animals)
+    public function checkAllAnimalsStartWithC(array $animals)
     {
         $found = array_all($animals, fn($animal) => str_starts_with($animal, 'c'));
         return $found;
     }
 
-    public function checkAllNumbersGreaterThanTen($numbers)
+    public function checkAllNumbersGreaterThanTen(array $numbers)
     {
         $allGreater = array_all($numbers, fn($number) => $number > 10);
         return $allGreater;
     }
 
-    public function checkAllItemsEqualTarget($items)
+    public function checkAllItemsEqualTarget(array $items)
     {
         $allMatch = array_all($items, fn($value) => $value === 'target');
         return $allMatch;

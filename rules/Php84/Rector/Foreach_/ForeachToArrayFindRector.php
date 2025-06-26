@@ -172,6 +172,11 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->nodeComparator->areNodesEqual($assignment->expr, $foreach->valueVar);
+        if (! $this->nodeComparator->areNodesEqual($assignment->expr, $foreach->valueVar)) {
+            return false;
+        }
+
+        $type = $this->nodeTypeResolver->getNativeType($foreach->expr);
+        return $type->isArray()->yes();
     }
 }

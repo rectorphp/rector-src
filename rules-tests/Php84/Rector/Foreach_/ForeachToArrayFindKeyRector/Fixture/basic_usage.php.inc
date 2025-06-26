@@ -4,7 +4,7 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayFindKeyRector\Fixture
 
 class BasicUsage
 {
-    public function findAnimalKey($animals)
+    public function findAnimalKey(array $animals)
     {
         $found = null;
         foreach ($animals as $idx => $animal) {
@@ -16,7 +16,7 @@ class BasicUsage
         return $found;
     }
 
-    public function findNumberKey($numbers)
+    public function findNumberKey(array $numbers)
     {
         $result = null;
         foreach ($numbers as $key => $number) {
@@ -37,13 +37,13 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayFindKeyRector\Fixture
 
 class BasicUsage
 {
-    public function findAnimalKey($animals)
+    public function findAnimalKey(array $animals)
     {
         $found = array_find_key($animals, fn($animal) => str_starts_with($animal, 'c'));
         return $found;
     }
 
-    public function findNumberKey($numbers)
+    public function findNumberKey(array $numbers)
     {
         $result = array_find_key($numbers, fn($number) => $number > 10);
         return $result;
