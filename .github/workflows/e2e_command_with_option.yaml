@@ -1,0 +1,47 @@
+name: End to End tests command with option
+
+on:
+    pull_request: null
+
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    code_analysis:
+        strategy:
+            fail-fast: false
+
+        name: End to End tests command with option
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            # see https://github.com/shivammathur/setup-php
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.2
+                    coverage: none
+
+            -   uses: "ramsey/composer-install@v3"
+
+            # test various commands with options
+            -   run: |
+                    # other command
+                    bin/rector list-rules
+
+                    # with explicit "process" command
+                    bin/rector process --kaizen 1 --dry-run
+                    bin/rector process --kaizen=1 --dry-run
+                    bin/rector process e2e/some_file.php --kaizen 1
+                    bin/rector process e2e/some_file.php --kaizen=1
+
+                    # with implicit process command
+                    bin/rector --kaizen 1 --dry-run
+                    bin/rector --kaizen=1 --dry-run
+
+                    bin/rector e2e/some_file.php --kaizen 1
+                    bin/rector e2e/some_file.php --kaizen=1
