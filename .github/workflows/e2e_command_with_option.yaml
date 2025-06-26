@@ -58,4 +58,3 @@ jobs:
                     bin/rector e2e/some_file.php --kaizen=1
                     php bin/rector e2e/some_file.php --kaizen 1
                     php bin/rector e2e/some_file.php --kaizen=1
-
