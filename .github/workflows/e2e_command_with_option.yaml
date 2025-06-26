@@ -33,28 +33,30 @@ jobs:
             -   uses: "ramsey/composer-install@v3"
 
             # test various commands with options
-            -   run: |
+            -   working-directory: e2e/command-with-option
+                run: |
                     # other command
-                    bin/rector help
-                    php bin/rector help
+                    ../../bin/rector help
+                    php ../../bin/rector help
 
                     # with explicit "process" command
-                    bin/rector process --kaizen 1 --dry-run
-                    bin/rector process --kaizen=1 --dry-run
-                    php bin/rector process --kaizen 1 --dry-run
-                    php bin/rector process --kaizen=1 --dry-run
-                    bin/rector process e2e/some_file.php --kaizen 1
-                    bin/rector process e2e/some_file.php --kaizen=1
-                    php bin/rector process e2e/some_file.php --kaizen 1
-                    php bin/rector process e2e/some_file.php --kaizen=1
+                    ../../bin/rector process --kaizen 1 --dry-run
+                    ../../bin/rector process --kaizen=1 --dry-run
+                    php ../../bin/rector process --kaizen 1 --dry-run
+                    php ../../bin/rector process --kaizen=1 --dry-run
+                    ../../bin/rector process some_file.php --kaizen 1
+                    ../../bin/rector process some_file.php --kaizen=1
+                    php ../../bin/rector process some_file.php --kaizen 1
+                    php ../../bin/rector process some_file.php --kaizen=1
 
                     # with implicit process command
-                    bin/rector --kaizen 1 --dry-run
-                    bin/rector --kaizen=1 --dry-run
-                    php bin/rector --kaizen 1 --dry-run
-                    php bin/rector --kaizen=1 --dry-run
+                    ../../bin/rector --kaizen 1 --dry-run
+                    ../../bin/rector --kaizen=1 --dry-run
+                    php ../../bin/rector --kaizen 1 --dry-run
+                    php ../../bin/rector --kaizen=1 --dry-run
 
-                    bin/rector e2e/some_file.php --kaizen 1
-                    bin/rector e2e/some_file.php --kaizen=1
-                    php bin/rector e2e/some_file.php --kaizen 1
-                    php bin/rector e2e/some_file.php --kaizen=1
+                    ../../bin/rector some_file.php --kaizen 1
+                    ../../bin/rector some_file.php --kaizen=1
+                    php ../../bin/rector some_file.php --kaizen 1
+                    php ../../bin/rector some_file.php --kaizen=1
+
