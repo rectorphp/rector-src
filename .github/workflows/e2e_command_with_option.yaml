@@ -36,16 +36,26 @@ jobs:
             -   run: |
                     # other command
                     bin/rector list-rules
+                    php bin/rector list-rules
 
                     # with explicit "process" command
                     bin/rector process --kaizen 1 --dry-run
                     bin/rector process --kaizen=1 --dry-run
+                    php bin/rector process --kaizen 1 --dry-run
+                    php bin/rector process --kaizen=1 --dry-run
                     bin/rector process e2e/some_file.php --kaizen 1
                     bin/rector process e2e/some_file.php --kaizen=1
+                    php bin/rector process e2e/some_file.php --kaizen 1
+                    php bin/rector process e2e/some_file.php --kaizen=1
 
                     # with implicit process command
                     bin/rector --kaizen 1 --dry-run
                     bin/rector --kaizen=1 --dry-run
+                    php bin/rector --kaizen 1 --dry-run
+                    php bin/rector --kaizen=1 --dry-run
 
                     bin/rector e2e/some_file.php --kaizen 1
                     bin/rector e2e/some_file.php --kaizen=1
+                    php bin/rector e2e/some_file.php --kaizen 1
+                    php bin/rector e2e/some_file.php --kaizen=1
+
