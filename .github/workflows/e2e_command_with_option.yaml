@@ -36,6 +36,7 @@ jobs:
             -   run: |
                     # other command
                     bin/rector help
+                    php bin/rector help
 
                     # with explicit "process" command
                     bin/rector process --kaizen 1 --dry-run
