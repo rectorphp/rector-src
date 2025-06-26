@@ -1,8 +1,12 @@
 name: End to End tests command with option
 
 on:
-    pull_request: null
-
+    pull_request:
+        branches:
+            - main
+    push:
+        branches:
+            - main
 env:
     # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
     COMPOSER_ROOT_VERSION: "dev-main"
