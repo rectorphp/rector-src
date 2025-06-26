@@ -74,7 +74,7 @@ final class ConsoleApplication extends Application
                 || isset($_SERVER['argv'][1])
                     && $commandName !== $_SERVER['argv'][1]
                     // ensure verify has parameter option, eg: --only
-                    && $input->hasParameterOption($commandName)
+                    && $input->hasParameterOption($_SERVER['argv'][1])
             )
         ) {
             // prepend command name if implicit
