@@ -4,7 +4,7 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayFindRector\Fixture;
 
 class BasicUsage
 {
-    public function findAnimal($animals)
+    public function findAnimal(array $animals)
     {
         $found = null;
         foreach ($animals as $animal) {
@@ -16,7 +16,7 @@ class BasicUsage
         return $found;
     }
 
-    public function findNumber($numbers)
+    public function findNumber(array $numbers)
     {
         $result = null;
         foreach ($numbers as $number) {
@@ -37,13 +37,13 @@ namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayFindRector\Fixture;
 
 class BasicUsage
 {
-    public function findAnimal($animals)
+    public function findAnimal(array $animals)
     {
         $found = array_find($animals, fn($animal) => str_starts_with($animal, 'c'));
         return $found;
     }
 
-    public function findNumber($numbers)
+    public function findNumber(array $numbers)
     {
         $result = array_find($numbers, fn($number) => $number > 10);
         return $result;

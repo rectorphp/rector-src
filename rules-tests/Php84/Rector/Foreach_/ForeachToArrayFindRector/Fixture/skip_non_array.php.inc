@@ -2,14 +2,13 @@
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayFindRector\Fixture;
 
-class SkipMultipleStatements
+class SkipNonArray
 {
-    public function findAnimal(array $animals)
+    public function findAnimal($animals)
     {
         $found = null;
         foreach ($animals as $animal) {
             if (str_starts_with($animal, 'c')) {
-                echo "Found: " . $animal;
                 $found = $animal;
                 break;
             }
