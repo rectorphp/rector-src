@@ -72,4 +72,3 @@ jobs:
             -   run: php ../e2eTestRunner.php
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory != 'e2e/parallel-custom-config' }}
-
