@@ -68,7 +68,15 @@ final class ConsoleApplication extends Application
         // bin/rector src
         // bin/rector --only "RemovePhpVersionIdCheckRector"
         // file_exists() can check directory and file
-        if (is_string($commandName) && (file_exists($commandName) || isset($_SERVER['argv'][1]) && $commandName !== $_SERVER['argv'][1])) {
+        if (is_string($commandName)
+            && (
+                file_exists($commandName)
+                || isset($_SERVER['argv'][1])
+                    && $commandName !== $_SERVER['argv'][1]
+                    // ensure verify has parameter option, eg: --only
+                    && $input->hasParameterOption($commandName)
+            )
+        ) {
             // prepend command name if implicit
             $privatesAccessor = new PrivatesAccessor();
             $tokens = $privatesAccessor->getPrivateProperty($input, 'tokens');
