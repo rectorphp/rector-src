@@ -72,3 +72,21 @@ jobs:
             -   run: php ../e2eTestRunner.php
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory != 'e2e/parallel-custom-config' }}
+
+            # test various commands with options
+            -   run: |
+                    # other command
+                    bin/rector list-rules
+
+                    # with explicit "process" command
+                    bin/rector process --kaizen 1 --dry-run
+                    bin/rector process --kaizen=1 --dry-run
+                    bin/rector process e2e/some_file.php --kaizen 1
+                    bin/rector process e2e/some_file.php --kaizen=1
+
+                    # with implicit process command
+                    bin/rector --kaizen 1 --dry-run
+                    bin/rector --kaizen=1 --dry-run
+
+                    bin/rector e2e/some_file.php --kaizen 1
+                    bin/rector e2e/some_file.php --kaizen=1
