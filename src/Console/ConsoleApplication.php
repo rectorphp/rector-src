@@ -77,11 +77,14 @@ final class ConsoleApplication extends Application
                     && $input->hasParameterOption($_SERVER['argv'][1])
             )
         ) {
-            // prepend command name if implicit
+            // prepend command name if implicit for tokens
             $privatesAccessor = new PrivatesAccessor();
             $tokens = $privatesAccessor->getPrivateProperty($input, 'tokens');
             $tokens = array_merge(['process'], $tokens);
             $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
+
+            // prepend command name if implicit for global $_SERVER['argv']
+            array_splice($_SERVER['argv'], 1, 0, 'process');
         }
 
         return parent::doRun($input, $output);
