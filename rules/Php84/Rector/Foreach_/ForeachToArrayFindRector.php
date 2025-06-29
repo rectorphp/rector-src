@@ -177,6 +177,7 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getNativeType($foreach->expr);
-        return $type->isArray()->yes();
+        return $type->isArray()
+            ->yes();
     }
 }
