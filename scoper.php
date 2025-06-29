@@ -34,6 +34,9 @@ return [
         'PHPUnit\Framework\Constraint\IsEqual',
         'PHPUnit\Framework\TestCase',
         'PHPUnit\Framework\ExpectationFailedException',
+
+        // native class on php 8.3+
+        'DateRangeError',
     ],
     'exclude-namespaces' => [
         '#^Rector#',
