@@ -89,22 +89,19 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ClassMethod|Function_|null|New_|MethodCall|StaticCall|FuncCall
     {
-        $scope = ScopeFetcher::fetch($node);
-
         if ($node instanceof ClassMethod || $node instanceof Function_) {
-            return $this->refactorClassMethodOrFunction($node, $scope);
+            return $this->refactorClassMethodOrFunction($node);
         }
 
         if ($node instanceof New_) {
-            return $this->refactorNew($node, $scope);
+            return $this->refactorNew($node);
         }
 
-        return $this->refactorMethodCallOrFuncCall($node, $scope);
+        return $this->refactorMethodCallOrFuncCall($node);
     }
 
     private function refactorClassMethodOrFunction(
-        ClassMethod|Function_ $node,
-        Scope $scope
+        ClassMethod|Function_ $node
     ): ClassMethod|Function_|null {
         if ($node->params === []) {
             return null;
@@ -114,6 +111,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         if ($node instanceof ClassMethod) {
             $reflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($node, $scope);
         } else {
@@ -138,7 +136,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function refactorNew(New_ $new, Scope $scope): ?New_
+    private function refactorNew(New_ $new): ?New_
     {
         if ($new->args === []) {
             return null;
@@ -153,6 +151,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($new);
         $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $new, $scope);
         if ($expectedArgOrParamOrder === null) {
             return null;
@@ -164,8 +163,7 @@ CODE_SAMPLE
     }
 
     private function refactorMethodCallOrFuncCall(
-        MethodCall|StaticCall|FuncCall $node,
-        Scope $scope
+        MethodCall|StaticCall|FuncCall $node
     ): MethodCall|StaticCall|FuncCall|null {
         if ($node->isFirstClassCallable()) {
             return null;
@@ -176,6 +174,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($reflection, $node, $scope);
         if ($expectedArgOrParamOrder === null) {
             return null;
@@ -215,6 +214,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $node, $scope);
         $expectedParameterReflections = $this->requireOptionalParamResolver->resolveFromParametersAcceptor(
             $parametersAcceptor
