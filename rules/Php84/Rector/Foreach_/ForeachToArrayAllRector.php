@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -28,7 +29,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ForeachToArrayAllRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly StmtsManipulator $stmtsManipulator
     ) {
     }
 
@@ -101,6 +103,10 @@ CODE_SAMPLE
             $assignedVariable = $prevAssign->var;
 
             if (! $this->isValidForeachStructure($foreach, $assignedVariable)) {
+                continue;
+            }
+
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, (string) $this->getName($foreach->valueVar))) {
                 continue;
             }
 
