@@ -59,11 +59,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         if (! $this->isName($node, 'get_called_class')) {
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         if (! $scope->isInClass()) {
             return null;
         }
