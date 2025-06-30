@@ -18,10 +18,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  *      - just re-printed but token start still >= 0
  *      - has above node skipped traverse children on current rule
  */
-final class RectifiedAnalyzer
+final readonly class RectifiedAnalyzer
 {
     public function __construct(
-        private readonly ScopeAnalyzer $scopeAnalyzer
+        private ScopeAnalyzer $scopeAnalyzer
     ) {
     }
 
