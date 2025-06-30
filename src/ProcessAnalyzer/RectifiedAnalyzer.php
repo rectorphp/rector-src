@@ -7,6 +7,7 @@ namespace Rector\ProcessAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -17,8 +18,13 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  *      - just re-printed but token start still >= 0
  *      - has above node skipped traverse children on current rule
  */
-final class RectifiedAnalyzer
+final readonly class RectifiedAnalyzer
 {
+    public function __construct(
+        private ScopeAnalyzer $scopeAnalyzer
+    ) {
+    }
+
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
@@ -81,10 +87,10 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        if ($node instanceof Stmt) {
-            return ! in_array(AttributeKey::SCOPE, array_keys($node->getAttributes()), true);
+        if (! $this->scopeAnalyzer->isRefreshable($node)) {
+            return false;
         }
 
-        return $node->getAttributes() === [];
+        return ! in_array(AttributeKey::SCOPE, array_keys($node->getAttributes()), true);
     }
 }

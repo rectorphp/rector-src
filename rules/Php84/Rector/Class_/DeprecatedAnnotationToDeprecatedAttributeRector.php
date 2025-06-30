@@ -157,8 +157,9 @@ CODE_SAMPLE
                         value: new String_($annotationValue, [
                             AttributeKey::KIND => String_::KIND_NOWDOC,
                             AttributeKey::DOC_LABEL => 'TXT',
-                    ]))]
-                )
+                        ])
+                    )]
+                ),
             ]);
         }
 
