@@ -84,7 +84,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         $classMethods = $node->getMethods();
 
         if ($classMethods === []) {
@@ -114,6 +113,7 @@ CODE_SAMPLE
         );
 
         $hasChanged = false;
+        $scope = ScopeFetcher::fetch($node);
         foreach ($privateMethods as $privateMethod) {
             if ($this->shouldSkip($privateMethod, $classReflection)) {
                 continue;

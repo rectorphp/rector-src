@@ -68,12 +68,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
-
         if ($this->isTestClassMethodWithFilledReturnType($node)) {
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         return $this->addNeverReturnType->add($node, $scope);
     }
 

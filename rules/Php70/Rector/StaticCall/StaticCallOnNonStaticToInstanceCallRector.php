@@ -103,7 +103,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         if ($node->name instanceof Expr) {
             return null;
         }
@@ -119,6 +118,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         if ($this->shouldSkip($methodName, $className, $node, $scope)) {
             return null;
         }

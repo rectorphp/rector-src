@@ -86,7 +86,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         if ($this->shouldSkip($node)) {
             return null;
         }
@@ -97,6 +96,8 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $scope = ScopeFetcher::fetch($node);
+
         foreach ($node->params as $param) {
             // already has type, skip
             if ($param->type !== null) {

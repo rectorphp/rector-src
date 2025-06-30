@@ -90,11 +90,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         if ($this->methodVisibilities === []) {
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         $parentClassName = $this->parentClassScopeResolver->resolveParentClassName($scope);
         if ($parentClassName === null) {
             return null;
