@@ -4,7 +4,7 @@ namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureForeachToArrayParam;
 
 use App\Entity\Url;
 
-class UrlBehavior
+class Fixture
 {
     /**
      * @param array<Url> $urls
