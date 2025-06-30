@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -151,9 +152,11 @@ CODE_SAMPLE
             return new AttributeGroup([
                 new Attribute(
                     new FullyQualified('Deprecated'),
-                    [new Arg(new String_($annotationValue, [
-                        AttributeKey::KIND => String_::KIND_NOWDOC,
-                        AttributeKey::DOC_LABEL => 'TXT',
+                    [new Arg(
+                        name: new Identifier('message'),
+                        value: new String_($annotationValue, [
+                            AttributeKey::KIND => String_::KIND_NOWDOC,
+                            AttributeKey::DOC_LABEL => 'TXT',
                     ]))]
                 )
             ]);
