@@ -6,7 +6,11 @@ namespace Rector\Php84\Rector\Class_;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -16,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -33,6 +38,12 @@ final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRect
      * @var string
      */
     private const VERSION_MATCH_REGEX = '/^(?:(\d+\.\d+\.\d+)\s+)?(.*)$/';
+
+    /**
+     * @see https://regex101.com/r/SVDPOB/1
+     * @var string
+     */
+    private const START_STAR_SPACED_REGEX = '#^ *\*#ms';
 
     public function __construct(
         private readonly PhpDocTagRemover $phpDocTagRemover,
@@ -133,6 +144,20 @@ CODE_SAMPLE
     private function createAttributeGroup(string $annotationValue): AttributeGroup
     {
         $matches = Strings::match($annotationValue, self::VERSION_MATCH_REGEX);
+
+        if ($matches === null) {
+            $annotationValue = Strings::replace($annotationValue, self::START_STAR_SPACED_REGEX, '');
+
+            return new AttributeGroup([
+                new Attribute(
+                    new FullyQualified('Deprecated'),
+                    [new Arg(new String_($annotationValue, [
+                        AttributeKey::KIND => String_::KIND_NOWDOC,
+                        AttributeKey::DOC_LABEL => 'TXT',
+                    ]))]
+                )
+            ]);
+        }
 
         $since = $matches[1] ?? null;
         $message = $matches[2] ?? null;
