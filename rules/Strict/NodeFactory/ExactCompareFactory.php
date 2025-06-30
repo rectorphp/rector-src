@@ -241,7 +241,10 @@ final readonly class ExactCompareFactory
             $truthyExpr = new BooleanOr($truthyExpr, $compareExpr);
         }
 
-        /** @var BooleanOr $truthyExpr */
+        if (! $truthyExpr instanceof BooleanOr) {
+            return null;
+        }
+
         return $truthyExpr;
     }
 
@@ -264,7 +267,10 @@ final readonly class ExactCompareFactory
             $truthyExpr = new BooleanAnd($truthyExpr, $compareExpr);
         }
 
-        /** @var BooleanAnd $truthyExpr */
+        if (! $truthyExpr instanceof BooleanAnd) {
+            return null;
+        }
+
         return $truthyExpr;
     }
 
