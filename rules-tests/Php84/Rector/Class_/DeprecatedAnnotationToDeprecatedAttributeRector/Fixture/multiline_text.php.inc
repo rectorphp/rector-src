@@ -21,7 +21,7 @@ namespace Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttri
 
 final class MultilineText
 {
-    #[\Deprecated(<<<'TXT'
+    #[\Deprecated(message: <<<'TXT'
     a reason of the deprecated
      written in two lines
     TXT)]
