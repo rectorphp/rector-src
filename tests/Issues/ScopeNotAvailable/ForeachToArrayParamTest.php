@@ -14,7 +14,7 @@ final class ForeachToArrayParamTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        $this->doTestFileExpectingWarningAboutRuleApplied($filePath, ArrayItemForeachValueRector::class);
+        $this->doTestFile($filePath);
     }
 
     public static function provideData(): Iterator

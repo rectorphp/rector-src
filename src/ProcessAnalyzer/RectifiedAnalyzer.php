@@ -7,6 +7,7 @@ namespace Rector\ProcessAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -19,6 +20,11 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class RectifiedAnalyzer
 {
+    public function __construct(
+        private readonly ScopeAnalyzer $scopeAnalyzer
+    ) {
+    }
+
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
@@ -81,10 +87,10 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        if ($node instanceof Stmt) {
-            return ! in_array(AttributeKey::SCOPE, array_keys($node->getAttributes()), true);
+        if (! $this->scopeAnalyzer->isRefreshable($node)) {
+            return false;
         }
 
-        return $node->getAttributes() === [];
+        return ! in_array(AttributeKey::SCOPE, array_keys($node->getAttributes()), true);
     }
 }
