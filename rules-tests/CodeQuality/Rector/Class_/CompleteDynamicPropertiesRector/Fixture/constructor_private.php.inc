@@ -18,7 +18,7 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector
 
 class ConstructorPrivate
 {
-    private $value;
+    private string $value;
     public function __construct()
     {
         $this->value = 'classStringCaseInSensitive';

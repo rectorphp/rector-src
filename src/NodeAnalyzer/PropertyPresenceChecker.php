@@ -11,10 +11,10 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
+use Rector\CodeQuality\ValueObject\DefinedPropertyWithType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\PhpParser\AstResolver;
-use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 /**
@@ -33,25 +33,27 @@ final readonly class PropertyPresenceChecker
     /**
      * Includes parent classes and traits
      */
-    public function hasClassContextProperty(Class_ $class, PropertyMetadata $propertyMetadata): bool
+    public function hasClassContextProperty(Class_ $class, DefinedPropertyWithType $definedPropertyWithType): bool
     {
-        $propertyOrParam = $this->getClassContextProperty($class, $propertyMetadata);
+        $propertyOrParam = $this->getClassContextProperty($class, $definedPropertyWithType);
         return $propertyOrParam !== null;
     }
 
-    public function getClassContextProperty(Class_ $class, PropertyMetadata $propertyMetadata): Property | Param | null
-    {
+    public function getClassContextProperty(
+        Class_ $class,
+        DefinedPropertyWithType $definedPropertyWithType
+    ): Property | Param | null {
         $className = $this->nodeNameResolver->getName($class);
         if ($className === null) {
             return null;
         }
 
-        $property = $class->getProperty($propertyMetadata->getName());
+        $property = $class->getProperty($definedPropertyWithType->getPropertyName());
         if ($property instanceof Property) {
             return $property;
         }
 
-        $property = $this->matchPropertyByParentNonPrivateProperties($className, $propertyMetadata);
+        $property = $this->matchPropertyByParentNonPrivateProperties($className, $definedPropertyWithType);
         if ($property instanceof Property || $property instanceof Param) {
             return $property;
         }
@@ -59,7 +61,7 @@ final readonly class PropertyPresenceChecker
         $promotedPropertyParams = $this->promotedPropertyResolver->resolveFromClass($class);
 
         foreach ($promotedPropertyParams as $promotedPropertyParam) {
-            if ($this->nodeNameResolver->isName($promotedPropertyParam, $propertyMetadata->getName())) {
+            if ($this->nodeNameResolver->isName($promotedPropertyParam, $definedPropertyWithType->getPropertyName())) {
                 return $promotedPropertyParam;
             }
         }
@@ -92,14 +94,14 @@ final readonly class PropertyPresenceChecker
     }
 
     private function matchPropertyByType(
-        PropertyMetadata $propertyMetadata,
+        DefinedPropertyWithType $definedPropertyWithType,
         PhpPropertyReflection $phpPropertyReflection
     ): Property | Param | null {
-        if (! $propertyMetadata->getType() instanceof Type) {
+        if (! $definedPropertyWithType->getType() instanceof Type) {
             return null;
         }
 
-        if (ClassNameFromObjectTypeResolver::resolve($propertyMetadata->getType()) === null) {
+        if (ClassNameFromObjectTypeResolver::resolve($definedPropertyWithType->getType()) === null) {
             return null;
         }
 
@@ -107,7 +109,7 @@ final readonly class PropertyPresenceChecker
             return null;
         }
 
-        $type = $propertyMetadata->getType();
+        $type = $definedPropertyWithType->getType();
         if (! $type->equals($phpPropertyReflection->getWritableType())) {
             return null;
         }
@@ -117,13 +119,13 @@ final readonly class PropertyPresenceChecker
 
     private function matchPropertyByParentNonPrivateProperties(
         string $className,
-        PropertyMetadata $propertyMetadata,
+        DefinedPropertyWithType $definedPropertyWithType,
     ): Property | Param | null {
         $availablePropertyReflections = $this->getParentClassNonPrivatePropertyReflections($className);
 
         foreach ($availablePropertyReflections as $availablePropertyReflection) {
             // 1. match type by priority
-            $property = $this->matchPropertyByType($propertyMetadata, $availablePropertyReflection);
+            $property = $this->matchPropertyByType($definedPropertyWithType, $availablePropertyReflection);
             if ($property instanceof Property || $property instanceof Param) {
                 return $property;
             }
