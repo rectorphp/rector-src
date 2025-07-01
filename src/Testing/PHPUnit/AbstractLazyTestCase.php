@@ -61,17 +61,17 @@ abstract class AbstractLazyTestCase extends TestCase
 
     private function includePreloadFilesAndScoperAutoload(): void
     {
-        if (file_exists(__DIR__ . '/../../../preload.php')) {
-            if (file_exists(__DIR__ . '/../../../vendor')) {
-                require_once __DIR__ . '/../../../preload.php';
-                // test case in rector split package
-            } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
-                require_once __DIR__ . '/../../../preload-split-package.php';
-            }
-        }
-
         if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
             require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
+        } else {
+            if (file_exists(__DIR__ . '/../../../preload.php')) {
+                if (file_exists(__DIR__ . '/../../../vendor')) {
+                    require_once __DIR__ . '/../../../preload.php';
+                    // test case in rector split package
+                } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
+                    require_once __DIR__ . '/../../../preload-split-package.php';
+                }
+            }
         }
     }
 }
