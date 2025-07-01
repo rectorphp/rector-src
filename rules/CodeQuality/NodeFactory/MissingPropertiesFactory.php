@@ -41,9 +41,7 @@ final readonly class MissingPropertiesFactory
 
             if ($this->isFromAlwaysDefinedMethod(
                 $definedPropertyWithType
-            ) && $this->phpVersionProvider->isAtLeastPhpVersion(
-                PhpVersionFeature::TYPED_PROPERTIES
-            )) {
+            ) && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
                 $propertyType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                     $definedPropertyWithType->getType(),
                     TypeKind::PROPERTY
