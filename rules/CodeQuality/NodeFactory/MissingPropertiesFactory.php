@@ -28,11 +28,11 @@ final readonly class MissingPropertiesFactory
      * @param DefinedPropertyWithType[] $definedPropertiesWithType
      * @return Property[]
      */
-    public function create(array $definedPropertiesWithType): array
+    public function create(array $definedPropertiesWithType, bool $privateOnInitialized): array
     {
         $newProperties = [];
         foreach ($definedPropertiesWithType as $definedPropertyWithType) {
-            $visibilityModifier = $this->isFromAlwaysDefinedMethod($definedPropertyWithType)
+            $visibilityModifier = $this->isFromAlwaysDefinedMethod($definedPropertyWithType, $privateOnInitialized)
                 ? Modifiers::PRIVATE
                 : Modifiers::PUBLIC;
 
@@ -41,7 +41,8 @@ final readonly class MissingPropertiesFactory
             ]);
 
             if ($this->isFromAlwaysDefinedMethod(
-                $definedPropertyWithType
+                $definedPropertyWithType,
+                $privateOnInitialized
             ) && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
                 $propertyType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                     $definedPropertyWithType->getType(),
@@ -64,12 +65,12 @@ final readonly class MissingPropertiesFactory
         return $newProperties;
     }
 
-    private function isFromAlwaysDefinedMethod(DefinedPropertyWithType $definedPropertyWithType): bool
+    private function isFromAlwaysDefinedMethod(DefinedPropertyWithType $definedPropertyWithType, bool $privateOnInitialized): bool
     {
         return in_array(
             $definedPropertyWithType->getDefinedInMethodName(),
             [MethodName::CONSTRUCT, MethodName::SET_UP],
             true
-        );
+        ) && $privateOnInitialized;
     }
 }

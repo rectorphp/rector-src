@@ -12,17 +12,29 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodeQuality\NodeAnalyzer\LocalPropertyAnalyzer;
 use Rector\CodeQuality\NodeAnalyzer\MissingPropertiesResolver;
 use Rector\CodeQuality\NodeFactory\MissingPropertiesFactory;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector\CompleteDynamicPropertiesRectorTest
  */
-final class CompleteDynamicPropertiesRector extends AbstractRector
+final class CompleteDynamicPropertiesRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const PRIVATE_ON_INITIALIZED = 'private_on_initialized';
+
+    /**
+     * To allow set to private on initialized on __construct and setUp methods
+     * default to true
+     */
+    private bool $privateOnInitialized = true;
+
     public function __construct(
         private readonly MissingPropertiesFactory $missingPropertiesFactory,
         private readonly LocalPropertyAnalyzer $localPropertyAnalyzer,
@@ -36,7 +48,7 @@ final class CompleteDynamicPropertiesRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add missing dynamic properties', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -61,6 +73,10 @@ class SomeClass
     }
 }
 CODE_SAMPLE
+                ,
+                [
+                    self::PRIVATE_ON_INITIALIZED => true,
+                ]
             ),
         ]);
     }
@@ -71,6 +87,11 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [Class_::class];
+    }
+
+    public function configure(array $configuration): void
+    {
+        $this->privateOnInitialized = $configuration[self::PRIVATE_ON_INITIALIZED] ?? true;
     }
 
     /**
@@ -98,7 +119,7 @@ CODE_SAMPLE
             $definedLocalPropertiesWithTypes
         );
 
-        $newProperties = $this->missingPropertiesFactory->create($propertiesToComplete);
+        $newProperties = $this->missingPropertiesFactory->create($propertiesToComplete, $this->privateOnInitialized);
         if ($newProperties === []) {
             return null;
         }
