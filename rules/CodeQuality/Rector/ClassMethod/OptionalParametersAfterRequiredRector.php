@@ -100,9 +100,8 @@ CODE_SAMPLE
         return $this->refactorMethodCallOrFuncCall($node);
     }
 
-    private function refactorClassMethodOrFunction(
-        ClassMethod|Function_ $node
-    ): ClassMethod|Function_|null {
+    private function refactorClassMethodOrFunction(ClassMethod|Function_ $node): ClassMethod|Function_|null
+    {
         if ($node->params === []) {
             return null;
         }
