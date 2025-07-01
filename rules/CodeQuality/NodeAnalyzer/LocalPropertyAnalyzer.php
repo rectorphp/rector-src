@@ -166,7 +166,7 @@ final readonly class LocalPropertyAnalyzer
     {
         $definedPropertiesWithTypesByPropertyName = [];
         foreach ($definedPropertiesWithTypes as $definedPropertyWithType) {
-            $definedPropertiesWithTypesByPropertyName[$definedPropertyWithType->getPropertyName()][] = $definedPropertyWithType;
+            $definedPropertiesWithTypesByPropertyName[$definedPropertyWithType->getName()][] = $definedPropertyWithType;
         }
 
         $normalizedDefinedPropertiesWithTypes = [];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\NodeFactory;
 
 use PhpParser\Modifiers;
+use PhpParser\Node;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Property;
 use Rector\CodeQuality\ValueObject\DefinedPropertyWithType;
@@ -36,7 +37,7 @@ final readonly class MissingPropertiesFactory
                 : Modifiers::PUBLIC;
 
             $property = new Property($visibilityModifier, [
-                new PropertyItem($definedPropertyWithType->getPropertyName()),
+                new PropertyItem($definedPropertyWithType->getName()),
             ]);
 
             if ($this->isFromAlwaysDefinedMethod(
@@ -46,7 +47,7 @@ final readonly class MissingPropertiesFactory
                     $definedPropertyWithType->getType(),
                     TypeKind::PROPERTY
                 );
-                if ($propertyType instanceof \PhpParser\Node) {
+                if ($propertyType instanceof Node) {
                     $property->type = $propertyType;
                     $newProperties[] = $property;
 

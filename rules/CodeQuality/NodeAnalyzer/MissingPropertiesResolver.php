@@ -9,11 +9,11 @@ use PHPStan\Reflection\ClassReflection;
 use Rector\CodeQuality\ValueObject\DefinedPropertyWithType;
 use Rector\NodeAnalyzer\PropertyPresenceChecker;
 
-final class MissingPropertiesResolver
+final readonly class MissingPropertiesResolver
 {
     public function __construct(
-        private readonly ClassLikeAnalyzer $classLikeAnalyzer,
-        private readonly PropertyPresenceChecker $propertyPresenceChecker,
+        private ClassLikeAnalyzer $classLikeAnalyzer,
+        private PropertyPresenceChecker $propertyPresenceChecker,
     ) {
     }
 
@@ -29,12 +29,12 @@ final class MissingPropertiesResolver
 
         foreach ($definedPropertiesWithTypes as $definedPropertyWithType) {
             // 1. property already exists, skip it
-            if (in_array($definedPropertyWithType->getPropertyName(), $existingPropertyNames, true)) {
+            if (in_array($definedPropertyWithType->getName(), $existingPropertyNames, true)) {
                 continue;
             }
 
             // 2. is part of class docblock or another magic, skip it
-            if ($classReflection->hasProperty($definedPropertyWithType->getPropertyName())) {
+            if ($classReflection->hasProperty($definedPropertyWithType->getName())) {
                 continue;
             }
 

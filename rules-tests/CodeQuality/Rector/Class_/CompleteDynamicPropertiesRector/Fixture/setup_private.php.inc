@@ -18,6 +18,7 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector
 
 final class SetupPrivate
 {
+    private int $initialValue;
     public function setUp()
     {
         $this->initialValue = 123;
