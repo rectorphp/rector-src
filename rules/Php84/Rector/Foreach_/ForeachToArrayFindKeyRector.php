@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeManipulator\StmtsManipulator;
+use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -31,6 +32,7 @@ final class ForeachToArrayFindKeyRector extends AbstractRector implements MinPhp
     public function __construct(
         private readonly ValueResolver $valueResolver,
         private readonly StmtsManipulator $stmtsManipulator,
+        private readonly ForeachKeyUsedInConditionalAnalyzer $foreachKeyUsedInConditionalAnalyzer
     ) {
     }
 
@@ -110,7 +112,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, (string) $this->getName($foreach->valueVar))) {
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt(
+                $node,
+                $key + 1,
+                (string) $this->getName($foreach->valueVar)
+            )) {
                 continue;
             }
 
@@ -124,10 +130,17 @@ CODE_SAMPLE
                 continue;
             }
 
-            $param = new Param($valueParam);
+            $params = [new Param($valueParam)];
+
+            if ($foreach->keyVar instanceof Variable && $this->foreachKeyUsedInConditionalAnalyzer->isUsed(
+                $foreach->keyVar,
+                $condition
+            )) {
+                $params[] = new Param(new Variable((string) $this->getName($foreach->keyVar)));
+            }
 
             $arrowFunction = new ArrowFunction([
-                'params' => [$param],
+                'params' => $params,
                 'expr' => $condition,
             ]);
 
