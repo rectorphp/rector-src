@@ -51,6 +51,10 @@ final class PreloadBuilder
 
 declare(strict_types=1);
 
+if (defined('__PHPSTAN_RUNNING__')) {
+    return;
+}
+
 
 CODE_SAMPLE;
 
