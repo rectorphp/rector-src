@@ -11,6 +11,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
@@ -42,7 +43,12 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         $namesInOriginalCase = $this->resolveUsedPhpAndDocNames($node);
         $namesInLowerCase = array_map(strtolower(...), $namesInOriginalCase);
 
+        $firstStmtKey = 0;
         foreach ($node->stmts as $key => $stmt) {
+            if ($stmt instanceof Declare_ && $key === 0) {
+                $firstStmtKey += 1;
+            }
+
             if (! $stmt instanceof Use_) {
                 continue;
             }
@@ -74,7 +80,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             if ($stmt->uses === []) {
                 $comments = $node->stmts[$key]->getComments();
 
-                if ($key === 0 && $comments !== []) {
+                if ($key === $firstStmtKey && $comments !== []) {
                     $node->stmts[$key] = new Nop();
                     $node->stmts[$key]->setAttribute(AttributeKey::COMMENTS, $comments);
                 } else {
