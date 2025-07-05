@@ -162,7 +162,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $promotionCandidates = $this->promotedPropertyCandidateResolver->resolveFromClass($node, $constructClassMethod, $this->allowModelBasedClasses);
+        $promotionCandidates = $this->promotedPropertyCandidateResolver->resolveFromClass(
+            $node,
+            $constructClassMethod,
+            $this->allowModelBasedClasses
+        );
         if ($promotionCandidates === []) {
             return null;
         }

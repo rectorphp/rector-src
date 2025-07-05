@@ -33,21 +33,14 @@ final readonly class PromotedPropertyCandidateResolver
     ) {
     }
 
-    private function hasModelTypeCheck(Class_|Property $node, string $modelType): bool
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if ($phpDocInfo instanceof PhpDocInfo && $phpDocInfo->hasByAnnotationClass($modelType)) {
-            return true;
-        }
-
-        return $this->phpAttributeAnalyzer->hasPhpAttribute($node, $modelType);
-    }
-
     /**
      * @return PropertyPromotionCandidate[]
      */
-    public function resolveFromClass(Class_ $class, ClassMethod $constructClassMethod, bool $allowModelBasedClasses): array
-    {
+    public function resolveFromClass(
+        Class_ $class,
+        ClassMethod $constructClassMethod,
+        bool $allowModelBasedClasses
+    ): array {
         if (! $allowModelBasedClasses && $this->hasModelTypeCheck($class, 'Doctrine\ORM\Mapping\Entity')) {
             return [];
         }
@@ -72,6 +65,16 @@ final readonly class PromotedPropertyCandidateResolver
         }
 
         return $propertyPromotionCandidates;
+    }
+
+    private function hasModelTypeCheck(Class_|Property $node, string $modelType): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if ($phpDocInfo instanceof PhpDocInfo && $phpDocInfo->hasByAnnotationClass($modelType)) {
+            return true;
+        }
+
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($node, $modelType);
     }
 
     private function matchPropertyPromotionCandidate(

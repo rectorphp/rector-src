@@ -46,7 +46,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         $firstStmtKey = 0;
         foreach ($node->stmts as $key => $stmt) {
             if ($stmt instanceof Declare_ && $key === 0) {
-                $firstStmtKey += 1;
+                ++$firstStmtKey;
             }
 
             if (! $stmt instanceof Use_) {
