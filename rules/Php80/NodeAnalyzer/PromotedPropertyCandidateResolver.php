@@ -13,6 +13,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\ValueObject\PropertyPromotionCandidate;
@@ -25,15 +27,31 @@ final readonly class PromotedPropertyCandidateResolver
         private NodeNameResolver $nodeNameResolver,
         private BetterNodeFinder $betterNodeFinder,
         private NodeComparator $nodeComparator,
-        private PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
+    }
+
+    private function hasModelTypeCheck(Class_|Property $node, string $modelType): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if ($phpDocInfo instanceof PhpDocInfo && $phpDocInfo->hasByAnnotationClass($modelType)) {
+            return true;
+        }
+
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($node, $modelType);
     }
 
     /**
      * @return PropertyPromotionCandidate[]
      */
-    public function resolveFromClass(Class_ $class, ClassMethod $constructClassMethod): array
+    public function resolveFromClass(Class_ $class, ClassMethod $constructClassMethod, bool $allowModelBasedClasses): array
     {
+        if (! $allowModelBasedClasses && $this->hasModelTypeCheck($class, 'Doctrine\ORM\Mapping\Entity')) {
+            return [];
+        }
+
         $propertyPromotionCandidates = [];
         foreach ($class->getProperties() as $property) {
             $propertyCount = count($property->props);
@@ -43,6 +61,10 @@ final readonly class PromotedPropertyCandidateResolver
 
             $propertyPromotionCandidate = $this->matchPropertyPromotionCandidate($property, $constructClassMethod);
             if (! $propertyPromotionCandidate instanceof PropertyPromotionCandidate) {
+                continue;
+            }
+
+            if (! $allowModelBasedClasses && $this->hasModelTypeCheck($property, 'JMS\Serializer\Annotation\Type')) {
                 continue;
             }
 

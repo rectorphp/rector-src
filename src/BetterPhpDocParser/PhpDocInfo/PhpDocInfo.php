@@ -227,9 +227,6 @@ final class PhpDocInfo
         return $doctrineAnnotationTagValueNodes[0] ?? null;
     }
 
-    /**
-     * @api used in tests, doctrine
-     */
     public function hasByAnnotationClass(string $class): bool
     {
         return $this->findByAnnotationClass($class) !== [];
