@@ -89,7 +89,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args = $this->sortNamedArguments($functionLikeReflection, $args);
+        $args = $this->sortNamedArguments($functionLikeReflection, $args);
+        if ($node->args === $args) {
+            return null;
+        }
+        $node->args = $args;
 
         return $node;
     }
