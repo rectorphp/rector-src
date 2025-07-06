@@ -158,6 +158,11 @@ CODE_SAMPLE;
             return null;
         }
 
+        if ($refactoredNode === []) {
+            $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
+            throw new ShouldNotHappenException($errorMessage);
+        }
+
         $isIntRefactoredNode = is_int($refactoredNode);
 
         /**
@@ -196,11 +201,6 @@ CODE_SAMPLE;
             return $refactoredNode === NodeVisitor::REMOVE_NODE
                 ? $originalNode
                 : $refactoredNode;
-        }
-
-        if ($refactoredNode === []) {
-            $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
-            throw new ShouldNotHappenException($errorMessage);
         }
 
         return $this->postRefactorProcess($originalNode, $node, $refactoredNode, $filePath);
@@ -340,7 +340,7 @@ CODE_SAMPLE;
     private function postRefactorProcess(
         Node $originalNode,
         Node $node,
-        Node|array|int $refactoredNode,
+        Node|array $refactoredNode,
         string $filePath
     ): Node {
         /** @var non-empty-array<Node>|Node $refactoredNode */
