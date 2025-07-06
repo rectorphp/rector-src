@@ -160,8 +160,10 @@ CODE_SAMPLE;
 
         $isIntRefactoredNode = is_int($refactoredNode);
 
-        // if below node and/or its children not traversed
-        // early return null with decorate current and children node with skipped by rector rule
+        /**
+         * If below node and/or its children not traversed on current rule
+         * early return null with decorate current and children node with skipped by "only" current rule
+         */
         if ($isIntRefactoredNode) {
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
