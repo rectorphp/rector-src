@@ -89,7 +89,12 @@ EOF
         $configuration = $this->configurationFactory->createFromInput($input);
         if ($configuration->isKaizenEnabled()) {
             $this->symfonyStyle->writeln(sprintf(
-                '<fg=yellow>[EXPERIMENTAL] Running Kaizen mode. Only first %d rule%s will be applied</>',
+                <<<'TXT'
+                <fg=yellow>[EXPERIMENTAL] Running Kaizen mode. Only first %d rule%s will be applied</>
+
+                <fg=yellow>Note: When running in parallel, each process starts from step 0. This can lead to different rule collections per process, up to the defined maximum Kaizen step count.</>
+                TXT
+                ,
                 $configuration->getKaizenStepCount(),
                 $configuration->getKaizenStepCount() > 1 ? 's' : ''
             ));
