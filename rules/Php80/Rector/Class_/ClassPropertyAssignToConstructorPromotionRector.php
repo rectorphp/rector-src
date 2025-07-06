@@ -59,6 +59,12 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
     public const RENAME_PROPERTY = 'rename_property';
 
     /**
+     * @api
+     * @var string
+     */
+    public const ALLOW_MODEL_BASED_CLASSES = 'allow_model_based_classes';
+
+    /**
      * Default to false, which only apply changes:
      *
      *  – private modifier property
@@ -72,6 +78,11 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
      * Set to false will skip property promotion when parameter and property have different names.
      */
     private bool $renameProperty = true;
+
+    /**
+     * Set to false will skip property promotion on model based classes
+     */
+    private bool $allowModelBasedClasses = true;
 
     public function __construct(
         private readonly PromotedPropertyCandidateResolver $promotedPropertyCandidateResolver,
@@ -119,6 +130,7 @@ CODE_SAMPLE
                     [
                         self::INLINE_PUBLIC => false,
                         self::RENAME_PROPERTY => true,
+                        self::ALLOW_MODEL_BASED_CLASSES => true,
                     ]
                 ),
             ]
@@ -129,6 +141,7 @@ CODE_SAMPLE
     {
         $this->inlinePublic = $configuration[self::INLINE_PUBLIC] ?? false;
         $this->renameProperty = $configuration[self::RENAME_PROPERTY] ?? true;
+        $this->allowModelBasedClasses = $configuration[self::ALLOW_MODEL_BASED_CLASSES] ?? true;
     }
 
     /**
@@ -149,7 +162,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $promotionCandidates = $this->promotedPropertyCandidateResolver->resolveFromClass($node, $constructClassMethod);
+        $promotionCandidates = $this->promotedPropertyCandidateResolver->resolveFromClass(
+            $node,
+            $constructClassMethod,
+            $this->allowModelBasedClasses
+        );
         if ($promotionCandidates === []) {
             return null;
         }
