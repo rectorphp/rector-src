@@ -126,8 +126,14 @@ CODE_SAMPLE
 
         usort(
             $toSortArgs,
-            // @phpstan-ignore-next-line
-            static fn (Arg $arg1, Arg $arg2): int => $order[$arg1->name->name] <=> $order[$arg2->name->name]
+            static function (Arg $arg1, Arg $arg2) use ($order): int {
+                /** @var Identifier $argName1 */
+                $argName1 = $arg1->name;
+                /** @var Identifier $argName2 */
+                $argName2 = $arg2->name;
+
+                return $order[$argName1->name] <=> $order[$argName2->name];
+            }
         );
 
         return [...$sortedArgs, ...$toSortArgs];
