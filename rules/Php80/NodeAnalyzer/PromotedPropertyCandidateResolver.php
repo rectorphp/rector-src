@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Enum\ClassName;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\ValueObject\PropertyPromotionCandidate;
@@ -41,7 +42,7 @@ final readonly class PromotedPropertyCandidateResolver
         ClassMethod $constructClassMethod,
         bool $allowModelBasedClasses
     ): array {
-        if (! $allowModelBasedClasses && $this->hasModelTypeCheck($class, 'Doctrine\ORM\Mapping\Entity')) {
+        if (! $allowModelBasedClasses && $this->hasModelTypeCheck($class, ClassName::DOCTRINE_ENTITY)) {
             return [];
         }
 
@@ -57,7 +58,7 @@ final readonly class PromotedPropertyCandidateResolver
                 continue;
             }
 
-            if (! $allowModelBasedClasses && $this->hasModelTypeCheck($property, 'JMS\Serializer\Annotation\Type')) {
+            if (! $allowModelBasedClasses && $this->hasModelTypeCheck($property, ClassName::JMS_TYPE)) {
                 continue;
             }
 

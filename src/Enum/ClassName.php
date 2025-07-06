@@ -25,4 +25,9 @@ final class ClassName
      * @var string
      */
     public const JMS_TYPE = 'JMS\Serializer\Annotation\Type';
+
+    /**
+     * @var string
+     */
+    public const DOCTRINE_ENTITY = 'Doctrine\ORM\Mapping\Entity';
 }
