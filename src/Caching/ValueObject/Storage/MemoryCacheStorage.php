@@ -22,6 +22,9 @@ final class MemoryCacheStorage implements CacheStorageInterface
      */
     public function load(string $key, string $variableKey): mixed
     {
+        // debug for e2e test
+        var_dump($key);
+
         if (! isset($this->storage[$key])) {
             return null;
         }
