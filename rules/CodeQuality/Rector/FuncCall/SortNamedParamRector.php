@@ -70,6 +70,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $args = $node->getArgs();
         if (! $this->argsAnalyzer->hasNamedArg($args)) {
             return null;
