@@ -158,9 +158,11 @@ CODE_SAMPLE;
             return null;
         }
 
+        $isIntRefactoredNode = is_int($refactoredNode);
+
         // if below node and/or its children not traversed
         // early return null with decorate current and children node with skipped by rector rule
-        if (is_int($refactoredNode)) {
+        if ($isIntRefactoredNode) {
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
             if (in_array(
@@ -178,7 +180,7 @@ CODE_SAMPLE;
             $this->kaizenStepper->recordAppliedRule(static::class);
         }
 
-        if (is_int($refactoredNode)) {
+        if ($isIntRefactoredNode) {
             // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
             if ($refactoredNode === NodeVisitor::REMOVE_NODE) {
                 // log here, so we can remove the node in leaveNode() method
