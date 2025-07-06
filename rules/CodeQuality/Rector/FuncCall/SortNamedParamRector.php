@@ -93,6 +93,7 @@ CODE_SAMPLE
         if ($node->args === $args) {
             return null;
         }
+
         $node->args = $args;
 
         return $node;
