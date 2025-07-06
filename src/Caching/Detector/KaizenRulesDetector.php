@@ -10,11 +10,11 @@ use Rector\Caching\Enum\CacheKey;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Util\FileHasher;
 
-final class KaizenRulesDetector
+final readonly class KaizenRulesDetector
 {
     public function __construct(
-        private readonly Cache $cache,
-        private readonly FileHasher $fileHasher
+        private Cache $cache,
+        private FileHasher $fileHasher
     ) {
     }
 
