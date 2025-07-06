@@ -159,7 +159,7 @@ CODE_SAMPLE;
         }
 
         // if below node and/or its children not traversed
-        // decorate to only skip below node on current rule
+        // early return null with decorate current and children node with skipped by rector rule
         if (is_int($refactoredNode)) {
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
