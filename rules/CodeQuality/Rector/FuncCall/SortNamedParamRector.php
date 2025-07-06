@@ -34,7 +34,7 @@ final class SortNamedParamRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change array_merge of non arrays to array directly',
+            'Sort named parameters usage in a function or method call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
