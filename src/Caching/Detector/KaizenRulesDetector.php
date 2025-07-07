@@ -23,12 +23,6 @@ final readonly class KaizenRulesDetector
         return CacheKey::KAIZEN_RULES . '_' . $this->fileHasher->hash(getcwd());
     }
 
-
-    public function clean(): void
-    {
-        $this->cache->clean(CacheKey::KAIZEN_RULES);
-    }
-
     public function addRule(string $rectorClass): void
     {
         $cachedValue = $this->loadRules();

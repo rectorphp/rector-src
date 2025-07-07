@@ -19,11 +19,6 @@ final class KaizenStepper
     ) {
     }
 
-    public function start(): void
-    {
-        $this->kaizenRulesDetector->clean();
-    }
-
     /**
      * @param positive-int $stepCount
      */
