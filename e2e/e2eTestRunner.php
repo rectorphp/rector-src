@@ -31,6 +31,10 @@ if (isset($argv[1]) && $argv[1] === '-a') {
     $e2eCommand .= ' -a ' . $argv[2];
 }
 
+if (isset($argv[1]) && $argv[1] === '--kaizen') {
+    $e2eCommand .= ' --kaizen ' . $argv[2];
+}
+
 $cliOptions = 'cli-options.txt';
 if (file_exists($cliOptions)) {
     $e2eCommand .= ' ' . trim(file_get_contents($cliOptions));

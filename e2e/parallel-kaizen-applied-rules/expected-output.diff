@@ -1,0 +1,36 @@
+[EXPERIMENTAL] Running Kaizen mode. Only first 1 rule will be applied
+
+2 files with changes
+====================
+
+1) src/File1.php:6
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class File1
+ {
+-    private $foo;
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnusedPrivatePropertyRector
+
+
+2) src/File3.php:6
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class File3
+ {
+-    private $foo;
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnusedPrivatePropertyRector
+
+
+ [OK] 2 files would have been changed (dry-run) by Rector
