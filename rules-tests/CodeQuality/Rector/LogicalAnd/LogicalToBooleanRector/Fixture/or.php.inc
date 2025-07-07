@@ -4,6 +4,10 @@ if ($f = false or true) {
     return $f;
 }
 
+if ($f = true or false) {
+    return $f;
+}
+
 if (false or true) {
     return $f;
 }
@@ -12,7 +16,11 @@ if (false or true) {
 -----
 <?php
 
-if ($f = false || true) {
+if (($f = false) || true) {
+    return $f;
+}
+
+if (($f = true) || false) {
     return $f;
 }
 
