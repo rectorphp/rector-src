@@ -37,7 +37,8 @@ final readonly class FilesFinder
         array $source,
         array $suffixes = [],
         bool $sortByName = true,
-        ?string $onlySuffix = null
+        ?string $onlySuffix = null,
+        bool $isKaizenEnabled = false
     ): array {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
@@ -102,6 +103,11 @@ final readonly class FilesFinder
         );
 
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
+
+        if ($isKaizenEnabled) {
+            return array_unique($filePaths);
+        }
+
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
@@ -120,6 +126,7 @@ final readonly class FilesFinder
             $configuration->getFileExtensions(),
             true,
             $configuration->getOnlySuffix(),
+            $configuration->isKaizenEnabled()
         );
     }
 
