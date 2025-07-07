@@ -75,6 +75,10 @@ CODE_SAMPLE
         }
 
         $args = $node->getArgs();
+        if (count($args) <= 1) {
+            return null;
+        }
+
         if (! $this->argsAnalyzer->hasNamedArg($args)) {
             return null;
         }
