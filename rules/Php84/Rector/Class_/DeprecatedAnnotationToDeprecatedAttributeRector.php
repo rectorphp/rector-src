@@ -153,11 +153,11 @@ CODE_SAMPLE
                 new Attribute(
                     new FullyQualified('Deprecated'),
                     [new Arg(
-                        name: new Identifier('message'),
                         value: new String_($annotationValue, [
                             AttributeKey::KIND => String_::KIND_NOWDOC,
                             AttributeKey::DOC_LABEL => 'TXT',
-                        ])
+                        ]),
+                        name: new Identifier('message')
                     )]
                 ),
             ]);

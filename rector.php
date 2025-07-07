@@ -14,10 +14,10 @@ return RectorConfig::configure()
         codingStyle: true,
         typeDeclarations: true,
         privatization: true,
-        strictBooleans: true,
+        naming: true,
         instanceOf: true,
         earlyReturn: true,
-        naming: true,
+        strictBooleans: true,
         rectorPreset: true,
         phpunitCodeQuality: true
     )
