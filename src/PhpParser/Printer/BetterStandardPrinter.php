@@ -6,6 +6,7 @@ namespace Rector\PhpParser\Printer;
 
 use Nette\Utils\Strings;
 use PhpParser\Comment;
+use PhpParser\Internal\TokenStream;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
@@ -466,7 +467,9 @@ final class BetterStandardPrinter extends Standard
             return;
         }
 
-        if ($node->left instanceof Assign) {
+        if ($node->left instanceof Assign
+            && $this->origTokens instanceof TokenStream
+            && $this->origTokens->haveParens($node->left->getStartTokenPos(), $node->right->getEndTokenPos())) {
             $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
