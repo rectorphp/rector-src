@@ -466,6 +466,10 @@ final class BetterStandardPrinter extends Standard
             return;
         }
 
+        if ($node->left instanceof Assign) {
+            $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
+
         if ($node->left instanceof BinaryOp &&
             $node->left->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
             $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
