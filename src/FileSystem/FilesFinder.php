@@ -103,12 +103,16 @@ final readonly class FilesFinder
         );
 
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
+        $changedFiles = $this->unchangedFilesFilter->filterFilePaths($filePaths);
 
-        if ($isKaizenEnabled) {
-            return array_unique($filePaths);
+        // no files changed, early return empty
+        if ($changedFiles === []) {
+            return [];
         }
 
-        return $this->unchangedFilesFilter->filterFilePaths($filePaths);
+        return $isKaizenEnabled
+            ? array_unique($filePaths)
+            : $changedFiles;
     }
 
     /**
