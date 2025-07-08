@@ -71,7 +71,7 @@ jobs:
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
 
-            -   run: php ../e2eTestRunner.php --kaizen 1
+            -   run: php -d apc.enable_cli=1 ../e2eTestRunner.php --kaizen 1
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory == 'e2e/parallel-kaizen-applied-rules' }}
 

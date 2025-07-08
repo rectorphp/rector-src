@@ -23,7 +23,7 @@ final class MemoryCacheStorage implements CacheStorageInterface
 
     public function __construct()
     {
-        $this->hasNativeCacheEngine = extension_loaded('apcu');
+        $this->hasNativeCacheEngine = extension_loaded('apcu') && ini_get('apc.enable_cli');
     }
 
     /**
@@ -31,8 +31,13 @@ final class MemoryCacheStorage implements CacheStorageInterface
      */
     public function load(string $key, string $variableKey): mixed
     {
-        if (!isset($this->storage[$key]) && $this->hasNativeCacheEngine && apcu_exists($key)) {
-            $this->storage[$key] = new CacheItem($variableKey, apcu_fetch($key));
+        if (!isset($this->storage[$key]) && $this->hasNativeCacheEngine) {
+            $success = false;
+            $data = apcu_fetch($key, $success);
+
+            if ($success) {
+                $this->storage[$key] = new CacheItem($variableKey, $data);
+            }
         }
 
         if (! isset($this->storage[$key])) {
