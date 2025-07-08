@@ -51,6 +51,7 @@ jobs:
                 with:
                     php-version: ${{ matrix.php_version }}
                     coverage: none
+                    extensions: apcu
 
             # run in root rector-src
             -   run: composer install --ansi
