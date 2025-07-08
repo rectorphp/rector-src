@@ -9,6 +9,8 @@ use Rector\Caching\ValueObject\CacheItem;
 
 /**
  * inspired by https://github.com/phpstan/phpstan-src/blob/560652088406d7461c2c4ad4897784e33f8ab312/src/Cache/MemoryCacheStorage.php
+ *
+ * On parallel, when no native cache engine, eg: "apcu", cache live independently in each per process run, not whole processes
  */
 final class MemoryCacheStorage implements CacheStorageInterface
 {
@@ -17,11 +19,24 @@ final class MemoryCacheStorage implements CacheStorageInterface
      */
     private array $storage = [];
 
+    private bool $hasNativeCacheEngine = false;
+
+    public function __construct()
+    {
+        $this->hasNativeCacheEngine = extension_loaded('apcu');
+    }
+
     /**
      * @return null|mixed
      */
     public function load(string $key, string $variableKey): mixed
     {
+        if (! isset($this->storage[$key])) {
+            if ($this->hasNativeCacheEngine && apcu_exists($key)) {
+                $this->storage[$key] = new CacheItem($variableKey, apcu_fetch($key));
+            }
+        }
+
         if (! isset($this->storage[$key])) {
             return null;
         }
@@ -37,11 +52,20 @@ final class MemoryCacheStorage implements CacheStorageInterface
     public function save(string $key, string $variableKey, mixed $data): void
     {
         $this->storage[$key] = new CacheItem($variableKey, $data);
+
+        if ($this->hasNativeCacheEngine) {
+            apcu_store($key, $data);
+            return;
+        }
     }
 
     public function clean(string $key): void
     {
         if (! isset($this->storage[$key])) {
+            if ($this->hasNativeCacheEngine && apcu_exists($key)) {
+                apcu_delete($key);
+            }
+
             return;
         }
 
@@ -51,5 +75,9 @@ final class MemoryCacheStorage implements CacheStorageInterface
     public function clear(): void
     {
         $this->storage = [];
+
+        if ($this->hasNativeCacheEngine) {
+            apcu_clear_cache();
+        }
     }
 }
