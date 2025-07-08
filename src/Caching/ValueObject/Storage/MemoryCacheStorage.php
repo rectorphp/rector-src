@@ -31,7 +31,7 @@ final class MemoryCacheStorage implements CacheStorageInterface
      */
     public function load(string $key, string $variableKey): mixed
     {
-        if (!isset($this->storage[$key]) && ($this->hasNativeCacheEngine && apcu_exists($key))) {
+        if (!isset($this->storage[$key]) && $this->hasNativeCacheEngine && apcu_exists($key)) {
             $this->storage[$key] = new CacheItem($variableKey, apcu_fetch($key));
         }
 
