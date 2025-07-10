@@ -55,7 +55,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->parts as $part) {
-            if (! $part instanceof Variable && ! $part instanceof ArrayDimFetch) {
+            if (! $part instanceof Variable && ! ($part instanceof ArrayDimFetch && $part->var instanceof Variable)) {
                 continue;
             }
 
@@ -69,10 +69,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($part instanceof ArrayDimFetch && $part->var instanceof Variable) {
-                $oldTokens[$startTokenPos]->text = '{$';
-            } else {
+            if ($part instanceof Variable) {
                 $part->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            } else {
+                $oldTokens[$startTokenPos]->text = '{$';
             }
 
             $hasChanged = true;
