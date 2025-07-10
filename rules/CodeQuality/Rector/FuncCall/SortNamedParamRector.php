@@ -6,11 +6,11 @@ namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -125,7 +125,7 @@ CODE_SAMPLE
         $sortedArgs = [];
         $toSortArgs = [];
         foreach ($currentArgs as $currentArg) {
-            if (!$currentArg->name instanceof Identifier) {
+            if (! $currentArg->name instanceof Identifier) {
                 $sortedArgs[] = $currentArg;
                 continue;
             }
