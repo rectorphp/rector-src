@@ -46,6 +46,11 @@ final class ClassConstFetchAnnotationToAttributeMapper implements AnnotationToAt
             return new String_($value);
         }
 
+        // class and constant can't have space, it must be string
+        if (str_contains($class, ' ') || str_contains($constant, ' ')) {
+            return new String_($value);
+        }
+
         return new ClassConstFetch(new Name($class), $constant);
     }
 }
