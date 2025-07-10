@@ -9,6 +9,8 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
+use Rector\Validation\RectorAssert;
+use Webmozart\Assert\InvalidArgumentException;
 
 /**
  * @implements AnnotationToAttributeMapperInterface<string>
@@ -46,8 +48,10 @@ final class ClassConstFetchAnnotationToAttributeMapper implements AnnotationToAt
             return new String_($value);
         }
 
-        // class and constant can't have space, it must be string
-        if (str_contains($class, ' ') || str_contains($constant, ' ')) {
+        try {
+            RectorAssert::className($class);
+            RectorAssert::propertyName($constant);
+        } catch (InvalidArgumentException) {
             return new String_($value);
         }
 
