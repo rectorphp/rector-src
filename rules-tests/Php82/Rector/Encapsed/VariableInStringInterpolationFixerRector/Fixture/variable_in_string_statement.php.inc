@@ -25,4 +25,5 @@ $array = [
 $c = "football";
 echo "I like playing {$c}";
 echo "I also like playing {$array['game']}";
+
 ?>
