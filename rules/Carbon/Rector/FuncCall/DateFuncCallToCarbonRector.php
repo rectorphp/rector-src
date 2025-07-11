@@ -13,7 +13,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -192,7 +192,7 @@ CODE_SAMPLE
     {
         $staticCall = new StaticCall(new FullyQualified('Carbon\\Carbon'), 'now');
         $methodName = 'sub' . ucfirst($timeUnit['unit']);
-        $methodCall = new MethodCall($staticCall, $methodName, [new Arg(new LNumber($timeUnit['value']))]);
+        $methodCall = new MethodCall($staticCall, $methodName, [new Arg(new Int_($timeUnit['value']))]);
         return new MethodCall($methodCall, 'getTimestamp');
     }
 
@@ -220,7 +220,7 @@ CODE_SAMPLE
 
     private function calculateProduct(Expr $expr): float|int|null
     {
-        if ($expr instanceof LNumber) {
+        if ($expr instanceof Int_) {
             return $expr->value;
         }
 
@@ -246,13 +246,13 @@ CODE_SAMPLE
             return $multipliers;
         }
 
-        if ($node->left instanceof LNumber) {
+        if ($node->left instanceof Int_) {
             $multipliers[] = $node->left->value;
         } elseif ($node->left instanceof Mul) {
             $multipliers = array_merge($multipliers, $this->extractMultipliers($node->left));
         }
 
-        if ($node->right instanceof LNumber) {
+        if ($node->right instanceof Int_) {
             $multipliers[] = $node->right->value;
         } elseif ($node->right instanceof Mul) {
             $multipliers = array_merge($multipliers, $this->extractMultipliers($node->right));

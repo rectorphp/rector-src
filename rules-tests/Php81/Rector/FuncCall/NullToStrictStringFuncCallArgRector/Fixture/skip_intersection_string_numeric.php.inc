@@ -3,13 +3,13 @@
 namespace Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
 
 use PhpParser\Node;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\Int_;
 
 final class SkipIntersectionStringNumeric
 {
     /**
-     * @param LNumber|DNumber $node
+     * @param Int_|Float_ $node
      */
     public function refactor(Node $node)
     {
