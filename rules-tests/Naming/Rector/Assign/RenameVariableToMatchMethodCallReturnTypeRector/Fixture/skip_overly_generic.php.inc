@@ -3,7 +3,7 @@
 namespace Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector\Fixture;
 
 use PhpParser\Node\Expr;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 
 final class SkipOverlyGeneric
@@ -19,6 +19,6 @@ final class SkipOverlyGeneric
             return new String_('hey');
         }
 
-        return new LNumber(1000);
+        return new Int_(1000);
     }
 }
