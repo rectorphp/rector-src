@@ -66,7 +66,7 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
-     * @return Stmt[]|null
+     * @return Stmt[]|null|int
      */
     public function refactor(Node $node): int|null|array
     {
