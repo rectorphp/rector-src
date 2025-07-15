@@ -67,4 +67,9 @@ final class MethodName
      * @var string
      */
     public const INVOKE = '__invoke';
+
+    /**
+     * @var string
+     */
+    public const ISSET = '__isset';
 }
