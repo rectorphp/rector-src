@@ -6,6 +6,7 @@ use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Config\RectorConfig;
 use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceInConstructor;
+use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceMethodArgumentWithConstant;
 use Rector\ValueObject\MethodName;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -18,6 +19,28 @@ return static function (RectorConfig $rectorConfig): void {
                 0,
                 'some value',
                 'SomeClass::SOME_CONSTANT'
+            ),
+            new ReplaceArgumentDefaultValue(
+                ReplaceInConstructor::class,
+                MethodName::CONSTRUCT,
+                0,
+                'some extra value',
+                'SomeClass::SOME_EXTRA_CONSTANT'
+            ),
+
+            new ReplaceArgumentDefaultValue(
+                ReplaceMethodArgumentWithConstant::class,
+                'setSomeMethod',
+                0,
+                'some value',
+                'SomeClass::SOME_CONSTANT'
+            ),
+            new ReplaceArgumentDefaultValue(
+                ReplaceMethodArgumentWithConstant::class,
+                'setSomeMethod',
+                0,
+                'some extra value',
+                'SomeClass::SOME_EXTRA_CONSTANT'
             ),
 
             new ReplaceArgumentDefaultValue('Symfony\Component\Yaml\Yaml', 'parse', 1, [
