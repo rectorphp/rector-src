@@ -26,6 +26,7 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -118,6 +119,10 @@ CODE_SAMPLE
 
             $classReflection = $this->matchPropertyTypeClassReflection($issetExpr);
             if (! $classReflection instanceof ClassReflection) {
+                continue;
+            }
+
+            if ($classReflection->hasNativeMethod(MethodName::ISSET)) {
                 continue;
             }
 
