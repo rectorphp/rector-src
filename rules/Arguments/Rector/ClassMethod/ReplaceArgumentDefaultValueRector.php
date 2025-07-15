@@ -77,8 +77,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): MethodCall | StaticCall | ClassMethod | New_ | null
     {
-        $hasChanged = false;
-
         if ($node instanceof New_) {
             return $this->refactorNew($node);
         }
@@ -88,29 +86,32 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
+        $currentNode = $node;
+
         foreach ($this->replaceArgumentDefaultValues as $replaceArgumentDefaultValue) {
             if (! $this->nodeNameResolver->isStringName($nodeName, $replaceArgumentDefaultValue->getMethod())) {
                 continue;
             }
 
             if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
-                $node,
+                $currentNode,
                 $replaceArgumentDefaultValue->getObjectType()
             )) {
                 continue;
             }
 
-            $replacedNode = $this->argumentDefaultValueReplacer->processReplaces($node, $replaceArgumentDefaultValue);
-            if ($replacedNode instanceof Node) {
+            $replacedNode = $this->argumentDefaultValueReplacer->processReplaces(
+                $currentNode,
+                $replaceArgumentDefaultValue
+            );
+            if ($replacedNode !== null && $replacedNode !== $currentNode) {
+                $currentNode = $replacedNode;
                 $hasChanged = true;
             }
         }
 
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
+        return $hasChanged ? $currentNode : null;
     }
 
     /**
@@ -125,18 +126,28 @@ CODE_SAMPLE
 
     private function refactorNew(New_ $new): ?New_
     {
+        $hasChanged = false;
+        $currentNode = $new;
+
         foreach ($this->replaceArgumentDefaultValues as $replaceArgumentDefaultValue) {
             if ($replaceArgumentDefaultValue->getMethod() !== MethodName::CONSTRUCT) {
                 continue;
             }
 
-            if (! $this->isObjectType($new, $replaceArgumentDefaultValue->getObjectType())) {
+            if (! $this->isObjectType($currentNode, $replaceArgumentDefaultValue->getObjectType())) {
                 continue;
             }
 
-            return $this->argumentDefaultValueReplacer->processReplaces($new, $replaceArgumentDefaultValue);
+            $replacedNode = $this->argumentDefaultValueReplacer->processReplaces(
+                $currentNode,
+                $replaceArgumentDefaultValue
+            );
+            if ($replacedNode !== null && $replacedNode !== $currentNode) {
+                $currentNode = $replacedNode;
+                $hasChanged = true;
+            }
         }
 
-        return null;
+        return $hasChanged ? $currentNode : null;
     }
 }
