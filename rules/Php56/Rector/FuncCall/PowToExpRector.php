@@ -7,6 +7,8 @@ namespace Rector\Php56\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Pow;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\UnaryMinus;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -51,6 +53,10 @@ final class PowToExpRector extends AbstractRector implements MinPhpVersionInterf
             ->value;
         $secondExpr = $node->getArgs()[1]
             ->value;
+
+        if ($firstExpr instanceof UnaryMinus) {
+            $firstExpr->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
 
         return new Pow($firstExpr, $secondExpr);
     }

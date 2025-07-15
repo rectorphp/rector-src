@@ -8,8 +8,6 @@ function powToExp()
 
     $result = pow(1.2, 2.3);
 
-    echo pow(-2, 3);
-
     pow($a--, ++$b);
 
     \a\pow(5, 6);
@@ -37,8 +35,6 @@ function powToExp()
     $result = 1 ** 2;
 
     $result = 1.2 ** 2.3;
-
-    echo -2 ** 3;
 
     $a-- ** ++$b;
 
