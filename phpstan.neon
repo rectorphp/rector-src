@@ -328,3 +328,7 @@ parameters:
         -
             identifier: symplify.seeAnnotationToTest
             path: utils/PHPStan/Rule/PreferDirectIsNameRule.php
+
+        -
+            identifier: arrayValues.list
+            path: rules/CodingStyle/Application/UseImportsAdder.php
