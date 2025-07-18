@@ -11,7 +11,11 @@ return static function (RectorConfig $rectorConfig): void {
         ->ruleWithConfiguration(RenameAttributeRector::class, [
             new RenameAttribute(
                 'Rector\Tests\Renaming\Rector\Class_\RenameAttributeRector\Source\SimpleRoute',
-                'Rector\Tests\Renaming\Rector\Class_\RenameAttributeRector\Source\NextRoute'
+                'Rector\Tests\Renaming\Rector\Class_\RenameAttributeRector\Source\NextRoute',
+            ),
+            new RenameAttribute(
+                'Rector\Tests\Renaming\Rector\Class_\RenameAttributeRector\Source\SimpleParamAttribute',
+                'Rector\Tests\Renaming\Rector\Class_\RenameAttributeRector\Source\NextParamAttribute',
             ),
         ]);
 };
