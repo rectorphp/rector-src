@@ -13,6 +13,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,7 +28,8 @@ final class RemoveUnusedForeachKeyRector extends AbstractRector
         private readonly NodeFinder $nodeFinder,
         private readonly StmtsManipulator $stmtsManipulator,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
     ) {
     }
 
@@ -83,7 +85,7 @@ CODE_SAMPLE
 
             $isNodeUsed = (bool) $this->nodeFinder->findFirst(
                 $stmt->stmts,
-                fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $keyVar)
+                fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $keyVar)
             );
 
             if ($isNodeUsed) {
