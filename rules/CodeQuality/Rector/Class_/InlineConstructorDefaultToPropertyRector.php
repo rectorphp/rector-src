@@ -174,7 +174,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            $comments = $classStmt->getComments();
             foreach ($classStmt->props as $propertyProperty) {
                 if (! $this->isName($propertyProperty, $propertyName)) {
                     continue;
