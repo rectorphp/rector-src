@@ -304,9 +304,12 @@ CODE_SAMPLE;
             }
         }
 
+        if (! $mergeExistingComments) {
+            $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);
+        }
+
         if (! $newNode instanceof Nop) {
             if (! $mergeExistingComments) {
-                $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);
                 $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
                 return;
             }
