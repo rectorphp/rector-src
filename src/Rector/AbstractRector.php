@@ -281,7 +281,7 @@ CODE_SAMPLE;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, $callable);
     }
 
-    protected function mirrorComments(Node $newNode, Node $oldNode): void
+    protected function mirrorComments(Node $newNode, Node $oldNode, bool $mergeExistingComments = false): void
     {
         if ($this->nodeComparator->areSameNode($newNode, $oldNode)) {
             return;
@@ -304,9 +304,25 @@ CODE_SAMPLE;
             }
         }
 
-        $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);
+        if (! $mergeExistingComments) {
+            $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);
+        } else {
+            // set null as mix multiple docs will require re-build
+            // on next call
+            $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, null);
+        }
+
         if (! $newNode instanceof Nop) {
-            $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
+            if (! $mergeExistingComments) {
+                $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
+                return;
+            }
+
+            $newComments = array_merge(
+                $newNode->getComments(),
+                $oldNode->getComments()
+            );
+            $newNode->setAttribute(AttributeKey::COMMENTS, $newComments);
         }
     }
 
