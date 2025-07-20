@@ -182,7 +182,9 @@ CODE_SAMPLE
                     AttributeKey::COMMENTS,
                     array_merge(
                         $classStmt->getComments(),
-                        $constructClassMethod->stmts[$key]->getComments(),
+                        isset($constructClassMethod->stmts[$key])
+                            ? $constructClassMethod->stmts[$key]->getComments()
+                            : [],
                     )
                 );
 
