@@ -4,6 +4,9 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPrope
 
 final class MirrorCommentMultipleProperties
 {
+    /**
+     * some existing comment
+     */
     private $thing1, $thing2, $thing3;
 
     public function __construct()
@@ -25,6 +28,9 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPrope
 
 final class MirrorCommentMultipleProperties
 {
+    /**
+     * some existing comment
+     */
     // first
     // second
     // third
