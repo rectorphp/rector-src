@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Property;
 use Rector\NodeAnalyzer\ExprAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -173,6 +174,7 @@ CODE_SAMPLE
                 continue;
             }
 
+            $comments = $classStmt->getComments();
             foreach ($classStmt->props as $propertyProperty) {
                 if (! $this->isName($propertyProperty, $propertyName)) {
                     continue;
@@ -180,14 +182,17 @@ CODE_SAMPLE
 
                 $propertyProperty->default = $defaultExpr;
 
+                $classStmt->setAttribute(
+                    AttributeKey::COMMENTS,
+                    array_merge(
+                        $classStmt->getComments(),
+                        $constructClassMethod->stmts[$key]->getComments(),
+                    )
+                );
+
                 // remove assign
                 unset($constructClassMethod->stmts[$key]);
 
-                $this->mirrorComments(
-                    $classStmt,
-                    $stmt,
-                    true
-                );
 
                 return true;
             }
