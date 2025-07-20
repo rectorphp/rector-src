@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -115,7 +116,8 @@ CODE_SAMPLE
                 $propertyName,
                 $defaultExpr,
                 $constructClassMethod,
-                $key
+                $key,
+                $stmt
             );
 
             if ($hasPropertyChanged) {
@@ -154,7 +156,8 @@ CODE_SAMPLE
         string $propertyName,
         Expr $defaultExpr,
         ClassMethod $constructClassMethod,
-        int $key
+        int $key,
+        Stmt $stmt
     ): bool {
         if ($class->isReadonly()) {
             return false;
@@ -179,6 +182,13 @@ CODE_SAMPLE
 
                 // remove assign
                 unset($constructClassMethod->stmts[$key]);
+
+                $this->mirrorComments(
+                    $classStmt,
+                    $stmt,
+                    true
+                );
+
                 return true;
             }
         }
