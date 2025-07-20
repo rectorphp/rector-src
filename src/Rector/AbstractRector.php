@@ -319,8 +319,8 @@ CODE_SAMPLE;
             }
 
             $newComments = array_merge(
-                (array) $newNode->getComments(),
-                (array) $oldNode->getComments()
+                $newNode->getComments(),
+                $oldNode->getComments()
             );
             $newNode->setAttribute(AttributeKey::COMMENTS, $newComments);
         }
