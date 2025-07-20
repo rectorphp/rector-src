@@ -306,6 +306,10 @@ CODE_SAMPLE;
 
         if (! $mergeExistingComments) {
             $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);
+        } else {
+            // set null as mix multiple docs will require re-build
+            // on next call
+            $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, null);
         }
 
         if (! $newNode instanceof Nop) {
@@ -313,10 +317,6 @@ CODE_SAMPLE;
                 $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
                 return;
             }
-
-            // set null as mix multiple docs will require re-build
-            // on next call
-            $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, null);
 
             $newComments = array_merge(
                 (array) $newNode->getComments(),
