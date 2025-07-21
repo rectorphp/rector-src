@@ -82,8 +82,6 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $scope = ScopeFetcher::fetch($node);
-
         foreach ($node->stmts as $key => $stmt) {
             if (! $stmt instanceof Foreach_) {
                 continue;
@@ -130,6 +128,7 @@ CODE_SAMPLE
                 continue;
             }
 
+            $scope = ScopeFetcher::fetch($stmt);
             if ($scope->hasVariableType($singularValueVarName)->yes()) {
                 continue;
             }
