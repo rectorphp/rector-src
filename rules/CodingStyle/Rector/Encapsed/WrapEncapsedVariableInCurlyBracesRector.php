@@ -7,6 +7,7 @@ namespace Rector\CodingStyle\Rector\Encapsed;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Token;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -50,18 +51,20 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $startTokenPos = $node->getStartTokenPos();
         $hasVariableBeenWrapped = false;
+        $oldTokens = $this->file->getOldTokens();
 
         foreach ($node->parts as $index => $nodePart) {
-            if ($nodePart instanceof Variable) {
-                $previousNode = $node->parts[$index - 1] ?? null;
-                $previousNodeEndTokenPosition = $previousNode instanceof Node ? $previousNode->getEndTokenPos() : $startTokenPos;
+            if ($nodePart instanceof Variable && $nodePart->getStartTokenPos() > 0) {
+                $start = $oldTokens[$nodePart->getStartTokenPos() - 1] ?? null;
+                $end = $oldTokens[$nodePart->getEndTokenPos() + 1] ?? null;
 
-                if ($previousNodeEndTokenPosition + 1 === $nodePart->getStartTokenPos()) {
-                    $hasVariableBeenWrapped = true;
-                    $node->parts[$index] = new Variable($nodePart->name);
+                if ($start instanceof Token && $end instanceof Token && $start->text === '{' && $end->text === '}') {
+                    continue;
                 }
+
+                $hasVariableBeenWrapped = true;
+                $node->parts[$index] = new Variable($nodePart->name);
             }
         }
 
