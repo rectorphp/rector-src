@@ -55,7 +55,7 @@ CODE_SAMPLE
         $oldTokens = $this->file->getOldTokens();
 
         foreach ($node->parts as $index => $nodePart) {
-            if ($nodePart instanceof Variable && $nodePart->getStartTokenPos() > 0) {
+            if ($nodePart instanceof Variable && $nodePart->getStartTokenPos() >= 0) {
                 $start = $oldTokens[$nodePart->getStartTokenPos() - 1] ?? null;
                 $end = $oldTokens[$nodePart->getEndTokenPos() + 1] ?? null;
 
