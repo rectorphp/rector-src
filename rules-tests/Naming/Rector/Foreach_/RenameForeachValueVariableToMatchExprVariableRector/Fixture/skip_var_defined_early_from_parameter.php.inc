@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector\Fixture;
 
-class SkipVarUsedAfterSwitch
+class SkipVarDefinedEarlyFromParameter
 {
     public function getNumber (array $numbers, int $number): int {
         $action = $_GET['action'] ?? 'something';
