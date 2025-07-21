@@ -40,7 +40,7 @@ final readonly class NeverFuncCallAnalyzer
             return false;
         }
 
-        $stmtType = $this->nodeTypeResolver->getNativeType($stmt);
+        $stmtType = $this->nodeTypeResolver->getType($stmt);
         return $stmtType instanceof NeverType;
     }
 }
