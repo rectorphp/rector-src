@@ -1,4 +1,7 @@
 <?php
+
+namespace Rector\Tests\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector\Fixture;
+
 class SwitchScopeCheck
 {
     public function getNumber (array $numbers, int $number): int {
