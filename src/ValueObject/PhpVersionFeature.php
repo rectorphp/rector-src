@@ -618,6 +618,12 @@ final class PhpVersionFeature
     public const RETURN_TYPE_WILL_CHANGE_ATTRIBUTE = PhpVersion::PHP_81;
 
     /**
+     * @see https://wiki.php.net/rfc/first_class_callable_syntax
+     * @var int
+     */
+    public const FIRST_CLASS_CALLABLE_SYNTAX = PhpVersion::PHP_81;
+
+    /**
      * @see https://wiki.php.net/rfc/deprecate_dynamic_properties
      * @var int
      */
