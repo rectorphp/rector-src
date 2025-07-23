@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Php81\Rector\MethodCall\RemoveReflectionSetAccessibleCallsRector;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
@@ -16,9 +17,9 @@ final class RemoveReflectionSetAccessibleCallsRectorTest extends AbstractRectorT
     }
 
     /**
-     * @return \Iterator<array<string>>
+     * @return Iterator<array<string>>
      */
-    public static function provideData(): \Iterator
+    public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }

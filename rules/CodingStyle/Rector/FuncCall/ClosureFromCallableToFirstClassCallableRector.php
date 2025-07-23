@@ -4,6 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\FuncCall;
 
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\VariadicPlaceholder;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Name;
+use PhpParser\Node\Identifier;
 use PhpParser\Node;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -26,9 +39,9 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
             'Change `Closure::fromCallable()` to first class callable syntax',
             [
                 new CodeSample('Closure::fromCallable([$obj, \'method\']);', '$obj->method(...);'),
-                new CodeSample('Closure::fromCallable(\'trim\');', 'trim(...);'),
+                new CodeSample("Closure::fromCallable('trim');", 'trim(...);'),
                 new CodeSample(
-                    'Closure::fromCallable([\'SomeClass\', \'staticMethod\']);',
+                    "Closure::fromCallable(['SomeClass', 'staticMethod']);",
                     'SomeClass::staticMethod(...);'
                 ),
             ]
@@ -41,11 +54,11 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
      */
     public function getNodeTypes(): array
     {
-        return [Node\Expr\StaticCall::class];
+        return [StaticCall::class];
     }
 
     /**
-     * @param Node\Expr\StaticCall $node
+     * @param StaticCall $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -54,52 +67,52 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
         }
 
         $arg = $node->args[0];
-        if (! $arg instanceof Node\Arg) {
+        if (! $arg instanceof Arg) {
             return null;
         }
 
-        if ($arg->value instanceof Node\Scalar\String_) {
-            return new Node\Expr\FuncCall(
+        if ($arg->value instanceof String_) {
+            return new FuncCall(
                 $this->toFullyQualified($arg->value->value),
-                [new Node\VariadicPlaceholder()],
+                [new VariadicPlaceholder()],
             );
         }
 
-        if ($arg->value instanceof Node\Expr\Array_) {
+        if ($arg->value instanceof Array_) {
             if (
                 ! array_key_exists(0, $arg->value->items)
                 || ! array_key_exists(1, $arg->value->items)
-                || ! $arg->value->items[1]->value instanceof Node\Scalar\String_
+                || ! $arg->value->items[1]->value instanceof String_
             ) {
                 return null;
             }
 
-            if ($arg->value->items[0]->value instanceof Node\Expr\Variable) {
-                return new Node\Expr\MethodCall(
+            if ($arg->value->items[0]->value instanceof Variable) {
+                return new MethodCall(
                     $arg->value->items[0]->value,
                     $arg->value->items[1]->value->value,
-                    [new Node\VariadicPlaceholder()],
+                    [new VariadicPlaceholder()],
                 );
             }
 
-            if ($arg->value->items[0]->value instanceof Node\Scalar\String_) {
-                $classNode = new Node\Name\FullyQualified($arg->value->items[0]->value->value);
-            } elseif ($arg->value->items[0]->value instanceof Node\Expr\ClassConstFetch) {
-                if ($arg->value->items[0]->value->class instanceof Node\Expr) {
+            if ($arg->value->items[0]->value instanceof String_) {
+                $classNode = new FullyQualified($arg->value->items[0]->value->value);
+            } elseif ($arg->value->items[0]->value instanceof ClassConstFetch) {
+                if ($arg->value->items[0]->value->class instanceof Expr) {
                     return null;
                 }
 
-                $classNode = new Node\Name\FullyQualified($arg->value->items[0]->value->class->name);
-            } elseif ($arg->value->items[0]->value instanceof Node\Name\FullyQualified) {
-                $classNode = new Node\Name\FullyQualified($arg->value->items[0]->value->name);
+                $classNode = new FullyQualified($arg->value->items[0]->value->class->name);
+            } elseif ($arg->value->items[0]->value instanceof FullyQualified) {
+                $classNode = new FullyQualified($arg->value->items[0]->value->name);
             } else {
                 return null;
             }
 
-            return new Node\Expr\StaticCall(
+            return new StaticCall(
                 $classNode,
                 $arg->value->items[1]->value->value,
-                [new Node\VariadicPlaceholder()],
+                [new VariadicPlaceholder()],
             );
         }
 
@@ -111,37 +124,33 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
         return PhpVersionFeature::FIRST_CLASS_CALLABLE_SYNTAX;
     }
 
-    public function shouldSkip(Node\Expr\StaticCall $node): bool
+    public function shouldSkip(StaticCall $staticCall): bool
     {
-        if (! $node->class instanceof Node\Name) {
+        if (! $staticCall->class instanceof Name) {
             return true;
         }
 
-        if (! $this->isName($node->class, 'Closure')) {
+        if (! $this->isName($staticCall->class, 'Closure')) {
             return true;
         }
 
-        if (! $node->name instanceof Node\Identifier || $node->name->name !== 'fromCallable') {
+        if (! $staticCall->name instanceof Identifier || $staticCall->name->name !== 'fromCallable') {
             return true;
         }
 
-        if ($node->isFirstClassCallable()) {
+        if ($staticCall->isFirstClassCallable()) {
             return true;
         }
 
-        $args = $node->getArgs();
-        if (count($args) !== 1) {
-            return true;
-        }
-
-        return false;
+        $args = $staticCall->getArgs();
+        return count($args) !== 1;
     }
 
-    public function toFullyQualified(string $functionName): Node\Name\FullyQualified
+    public function toFullyQualified(string $functionName): FullyQualified
     {
         // in case there's already a \ prefix, remove it
         $functionName = ltrim($functionName, '\\');
 
-        return new Node\Name\FullyQualified($functionName);
+        return new FullyQualified($functionName);
     }
 }

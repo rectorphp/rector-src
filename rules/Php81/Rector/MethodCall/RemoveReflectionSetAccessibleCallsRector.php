@@ -47,8 +47,8 @@ final class RemoveReflectionSetAccessibleCallsRector extends AbstractRector impl
             return null;
         }
 
-        if ($this->isObjectType($methodCall->var, new ObjectType('ReflectionProperty')) === true
-            || $this->isObjectType($methodCall->var, new ObjectType('ReflectionMethod')) === true
+        if ($this->isObjectType($methodCall->var, new ObjectType('ReflectionProperty'))
+            || $this->isObjectType($methodCall->var, new ObjectType('ReflectionMethod'))
         ) {
             return NodeVisitor::REMOVE_NODE;
         }
