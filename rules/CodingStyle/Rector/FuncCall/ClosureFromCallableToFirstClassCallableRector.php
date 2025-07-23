@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\FuncCall;
 
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\VariadicPlaceholder;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Name;
-use PhpParser\Node\Identifier;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\VariadicPlaceholder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -29,10 +29,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct()
-    {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -72,10 +68,7 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
         }
 
         if ($arg->value instanceof String_) {
-            return new FuncCall(
-                $this->toFullyQualified($arg->value->value),
-                [new VariadicPlaceholder()],
-            );
+            return new FuncCall($this->toFullyQualified($arg->value->value), [new VariadicPlaceholder()]);
         }
 
         if ($arg->value instanceof Array_) {
@@ -109,11 +102,7 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
                 return null;
             }
 
-            return new StaticCall(
-                $classNode,
-                $arg->value->items[1]->value->value,
-                [new VariadicPlaceholder()],
-            );
+            return new StaticCall($classNode, $arg->value->items[1]->value->value, [new VariadicPlaceholder()]);
         }
 
         return $node;
