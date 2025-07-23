@@ -191,7 +191,6 @@ CODE_SAMPLE
                 // remove assign
                 unset($constructClassMethod->stmts[$key]);
 
-
                 return true;
             }
         }
