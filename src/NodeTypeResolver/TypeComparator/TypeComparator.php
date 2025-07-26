@@ -101,7 +101,7 @@ final readonly class TypeComparator
             return false;
         }
 
-        if ($phpStanDocType instanceof UnionType || $phpParserNodeType instanceof IntersectionType) {
+        if ($phpStanDocType instanceof UnionType || $phpStanDocType instanceof IntersectionType) {
             foreach ($phpStanDocType->getTypes() as $type) {
                 if ($type instanceof TemplateObjectType) {
                     return false;
