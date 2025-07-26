@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
@@ -155,8 +156,16 @@ CODE_SAMPLE
 
     private function removePropertyAssigns(Class_ $class, string $propertyName): void
     {
-        $this->traverseNodesWithCallable($class, function (Node $node) use ($class, $propertyName): null|int|Return_ {
+        $this->traverseNodesWithCallable($class, function (Node $node) use ($class, $propertyName): null|int|Return_|Arg {
             if (! $node instanceof Expression && ! $node instanceof Return_) {
+                if ($node instanceof Arg && $node->value instanceof Assign) {
+                    $assign = $node->value;
+                    if ($this->propertyFetchFinder->isLocalPropertyFetchByName($assign->var, $class, $propertyName)) {
+                        $node->value = $assign->expr;
+                        return $node;
+                    }
+                }
+
                 return null;
             }
 
