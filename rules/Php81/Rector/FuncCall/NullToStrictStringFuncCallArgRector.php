@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
@@ -253,6 +252,7 @@ CODE_SAMPLE
         if ($this->isAnErrorType($expr, $nativeType, $scope)) {
             return true;
         }
+
         return $this->shouldSkipTrait($expr, $type, $isTrait);
     }
 
