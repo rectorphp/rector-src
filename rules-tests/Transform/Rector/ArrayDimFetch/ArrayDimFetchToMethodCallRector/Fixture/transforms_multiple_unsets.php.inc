@@ -3,10 +3,8 @@
 namespace Rector\Tests\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallRector\Fixture;
 
 /** @var \SomeClass $object */
-$object['key'];
-$object['key'] = 42;
-isset($object['key']);
-unset($object['key']);
+/** @var \SomeOtherClass $other */
+unset($object['key1'], $other['key'], $object['key2']);
 
 ?>
 -----
@@ -15,9 +13,9 @@ unset($object['key']);
 namespace Rector\Tests\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallRector\Fixture;
 
 /** @var \SomeClass $object */
-$object->get('key');
-$object->set('key', 42);
-$object->has('key');
-$object->unset('key');
+/** @var \SomeOtherClass $other */
+unset($other['key']);
+$object->unset('key1');
+$object->unset('key2');
 
 ?>
