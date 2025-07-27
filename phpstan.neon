@@ -332,3 +332,9 @@ parameters:
         -
             identifier: arrayValues.list
             path: rules/CodingStyle/Application/UseImportsAdder.php
+
+        - '#Parameter \#1 \$stmtsAware of method Rector\\NodeManipulator\\StmtsManipulator\:\:isVariableUsedInNextStmt\(\) expects Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface, (.*?) given#'
+
+        -
+            identifier: typePerfect.narrowPublicClassMethodParamType
+            path:  src/PhpParser/NodeTraverser/RectorNodeTraverser.php
