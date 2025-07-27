@@ -156,7 +156,10 @@ CODE_SAMPLE
 
     private function removePropertyAssigns(Class_ $class, string $propertyName): void
     {
-        $this->traverseNodesWithCallable($class, function (Node $node) use ($class, $propertyName): null|int|Return_|Arg {
+        $this->traverseNodesWithCallable($class, function (Node $node) use (
+            $class,
+            $propertyName
+        ): null|int|Return_|Arg {
             if (! $node instanceof Expression && ! $node instanceof Return_) {
                 if ($node instanceof Arg && $node->value instanceof Assign) {
                     $assign = $node->value;

@@ -7,7 +7,4 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 
 return RectorConfig::configure()
-    ->withRules([
-        RemoveUselessParamTagRector::class,
-        RemoveUselessReturnTagRector::class
-    ]);
+    ->withRules([RemoveUselessParamTagRector::class, RemoveUselessReturnTagRector::class]);
