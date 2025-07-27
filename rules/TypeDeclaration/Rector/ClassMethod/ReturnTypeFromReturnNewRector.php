@@ -118,6 +118,7 @@ CODE_SAMPLE
         }
 
         $returnedNewClassName = $this->strictReturnNewAnalyzer->matchAlwaysReturnVariableNew($node);
+
         if (is_string($returnedNewClassName)) {
             $node->returnType = new FullyQualified($returnedNewClassName);
 
