@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Reflection\ClassReflection;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\TryCatch;
+use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,8 +26,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AddReturnTypeFromTryCatchTypeRector extends AbstractRector
 {
     public function __construct(
-        private TypeComparator $typeComparator,
-        private StaticTypeMapper $staticTypeMapper,
+        private readonly TypeComparator $typeComparator,
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
     ) {
 
     }
@@ -78,24 +84,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // better nothing to do
-        if ($node->isAbstract()) {
+        $scope = ScopeFetcher::fetch($node);
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
             return null;
         }
 
         // already known type
-        if ($node->returnType instanceof \PhpParser\Node) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($node);
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        // skip interfaces and traits
-        if (! $classReflection->isClass()) {
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
@@ -103,7 +98,12 @@ CODE_SAMPLE
         $catchReturnTypes = [];
 
         foreach ((array) $node->stmts as $classMethodStmt) {
-            if (! $classMethodStmt instanceof Node\Stmt\TryCatch) {
+            if (! $classMethodStmt instanceof TryCatch) {
+                continue;
+            }
+
+            // skip if there is no catch
+            if ($classMethodStmt->catches === []) {
                 continue;
             }
 
@@ -114,7 +114,7 @@ CODE_SAMPLE
                 $currentCatchType = $this->matchReturnType($catch);
 
                 // each catch must have type
-                if (! $currentCatchType instanceof \PHPStan\Type\Type) {
+                if (! $currentCatchType instanceof Type) {
                     return null;
                 }
 
@@ -122,7 +122,7 @@ CODE_SAMPLE
             }
         }
 
-        if (! $tryReturnType instanceof \PHPStan\Type\Type) {
+        if (! $tryReturnType instanceof Type) {
             return null;
         }
 
@@ -133,7 +133,7 @@ CODE_SAMPLE
         }
 
         $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($tryReturnType, TypeKind::RETURN);
-        if (! $returnType instanceof \PhpParser\Node) {
+        if (! $returnType instanceof Node) {
             return null;
         }
 
@@ -141,14 +141,14 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function matchReturnType(Node\Stmt\TryCatch|Node\Stmt\Catch_ $tryOrCatch): ?\PHPStan\Type\Type
+    private function matchReturnType(TryCatch|Catch_ $tryOrCatch): ?Type
     {
         foreach ($tryOrCatch->stmts as $stmt) {
-            if (! $stmt instanceof Node\Stmt\Return_) {
+            if (! $stmt instanceof Return_) {
                 continue;
             }
 
-            if (! $stmt->expr instanceof Node\Expr) {
+            if (! $stmt->expr instanceof Expr) {
                 continue;
             }
 
