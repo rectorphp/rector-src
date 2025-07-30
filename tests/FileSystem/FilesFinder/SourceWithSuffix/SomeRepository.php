@@ -2,6 +2,6 @@
 
 namespace FileSystem\FilesFinder\SourceWithSuffix;
 
-class SomeRepository
+final class SomeRepository
 {
 }
