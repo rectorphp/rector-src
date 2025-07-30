@@ -10,6 +10,7 @@ use Rector\Transform\ValueObject\ArrayDimFetchToMethodCall;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(ArrayDimFetchToMethodCallRector::class, [
-            new ArrayDimFetchToMethodCall(new ObjectType('SomeClass'), 'make'),
+            new ArrayDimFetchToMethodCall(new ObjectType('SomeClass'), 'get', 'set', 'has', 'unset'),
+            new ArrayDimFetchToMethodCall(new ObjectType('Container'), 'get'),
         ]);
 };
