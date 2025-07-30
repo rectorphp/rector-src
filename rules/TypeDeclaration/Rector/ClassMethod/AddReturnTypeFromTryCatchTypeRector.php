@@ -160,7 +160,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            return $this->nodeTypeResolver->getType($stmt->expr);
+            return $this->nodeTypeResolver->getNativeType($stmt->expr);
         }
 
         return null;

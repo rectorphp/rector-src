@@ -101,16 +101,16 @@ CODE_SAMPLE
         $this->arrayDimFetchToMethodCalls = $configuration;
     }
 
-    private function handleIsset(Isset_ $node): Expr|int|null
+    private function handleIsset(Isset_ $isset): Expr|int|null
     {
         $issets = [];
         $exprs = [];
 
-        foreach ($node->vars as $var) {
+        foreach ($isset->vars as $var) {
             if ($var instanceof ArrayDimFetch) {
                 $methodCall = $this->getMethodCall($var, 'exists');
 
-                if ($methodCall !== null) {
+                if ($methodCall instanceof MethodCall) {
                     $exprs[] = $methodCall;
                     continue;
                 }
@@ -124,13 +124,13 @@ CODE_SAMPLE
         }
 
         if ($issets !== []) {
-            $node->vars = $issets;
-            array_unshift($exprs, $node);
+            $isset->vars = $issets;
+            array_unshift($exprs, $isset);
         }
 
         return array_reduce(
             $exprs,
-            fn (?Expr $carry, Expr $expr) => $carry === null ? $expr : new BooleanAnd($carry, $expr),
+            fn (?Expr $carry, Expr $expr): Isset_|MethodCall|BooleanAnd => $carry instanceof Expr ? new BooleanAnd($carry, $expr) : $expr,
             null,
         );
     }
@@ -138,16 +138,16 @@ CODE_SAMPLE
     /**
      * @return Stmt[]|int
      */
-    private function handleUnset(Unset_ $node): array|int
+    private function handleUnset(Unset_ $unset): array|int
     {
         $unsets = [];
         $stmts = [];
 
-        foreach ($node->vars as $var) {
+        foreach ($unset->vars as $var) {
             if ($var instanceof ArrayDimFetch) {
                 $methodCall = $this->getMethodCall($var, 'unset');
 
-                if ($methodCall !== null) {
+                if ($methodCall instanceof MethodCall) {
                     $stmts[] = new Expression($methodCall);
                     continue;
                 }
@@ -161,8 +161,8 @@ CODE_SAMPLE
         }
 
         if ($unsets !== []) {
-            $node->vars = $unsets;
-            array_unshift($stmts, $node);
+            $unset->vars = $unsets;
+            array_unshift($stmts, $unset);
         }
 
         return $stmts;
@@ -171,14 +171,14 @@ CODE_SAMPLE
     /**
      * @param 'get'|'set'|'exists'|'unset' $action
      */
-    private function getMethodCall(ArrayDimFetch $fetch, string $action, ?Expr $value = null): ?MethodCall
+    private function getMethodCall(ArrayDimFetch $arrayDimFetch, string $action, ?Expr $expr = null): ?MethodCall
     {
-        if (!$fetch->dim instanceof Node) {
+        if (!$arrayDimFetch->dim instanceof Node) {
             return null;
         }
 
         foreach ($this->arrayDimFetchToMethodCalls as $arrayDimFetchToMethodCall) {
-            if (!$this->isObjectType($fetch->var, $arrayDimFetchToMethodCall->getObjectType())) {
+            if (!$this->isObjectType($arrayDimFetch->var, $arrayDimFetchToMethodCall->getObjectType())) {
                 continue;
             }
 
@@ -193,13 +193,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            $args = [new Arg($fetch->dim)];
+            $args = [new Arg($arrayDimFetch->dim)];
 
-            if ($value instanceof Expr) {
-                $args[] = new Arg($value);
+            if ($expr instanceof Expr) {
+                $args[] = new Arg($expr);
             }
 
-            return new MethodCall($fetch->var, $method, $args);
+            return new MethodCall($arrayDimFetch->var, $method, $args);
         }
 
         return null;
