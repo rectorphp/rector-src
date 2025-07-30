@@ -9,7 +9,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * Dummy rector with same class name as an official one
  */
-class RemoveDoubleAssignRector extends AbstractRector
+final class RemoveDoubleAssignRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {

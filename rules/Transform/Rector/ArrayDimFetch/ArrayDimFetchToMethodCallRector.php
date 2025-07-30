@@ -28,7 +28,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallRector\ArrayDimFetchToMethodCallRectorTest
  */
-class ArrayDimFetchToMethodCallRector extends AbstractRector implements ConfigurableRectorInterface
+final class ArrayDimFetchToMethodCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
      * @var ArrayDimFetchToMethodCall[]
