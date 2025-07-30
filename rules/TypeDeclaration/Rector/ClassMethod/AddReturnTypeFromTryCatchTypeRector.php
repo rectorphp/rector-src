@@ -12,10 +12,12 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,8 +31,9 @@ final class AddReturnTypeFromTryCatchTypeRector extends AbstractRector
         private readonly TypeComparator $typeComparator,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnAnalyzer $returnAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
-
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -97,6 +100,11 @@ CODE_SAMPLE
         $tryReturnType = null;
         $catchReturnTypes = [];
 
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
+            return null;
+        }
+
         foreach ((array) $node->stmts as $classMethodStmt) {
             if (! $classMethodStmt instanceof TryCatch) {
                 continue;
@@ -152,7 +160,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            return $this->getType($stmt->expr);
+            return $this->nodeTypeResolver->getType($stmt->expr);
         }
 
         return null;
