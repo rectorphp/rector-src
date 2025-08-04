@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Transform\Rector\ArrayDimFetch;
 
 use PhpParser\Node;
-use PhpParser\NodeVisitor;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -14,10 +13,11 @@ use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\MethodCall;
-use PHPStan\Type\ObjectType;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Unset_;
+use PhpParser\NodeVisitor;
+use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
 use Rector\Transform\ValueObject\ArrayDimFetchToMethodCall;
@@ -83,7 +83,7 @@ CODE_SAMPLE
         }
 
         if ($node instanceof Assign) {
-            if (!$node->var instanceof ArrayDimFetch) {
+            if (! $node->var instanceof ArrayDimFetch) {
                 return null;
             }
 
@@ -130,7 +130,10 @@ CODE_SAMPLE
 
         return array_reduce(
             $exprs,
-            fn (?Expr $carry, Expr $expr): Isset_|MethodCall|BooleanAnd => $carry instanceof Expr ? new BooleanAnd($carry, $expr) : $expr,
+            fn (?Expr $carry, Expr $expr): Isset_|MethodCall|BooleanAnd => $carry instanceof Expr ? new BooleanAnd(
+                $carry,
+                $expr
+            ) : $expr,
             null,
         );
     }
@@ -173,12 +176,12 @@ CODE_SAMPLE
      */
     private function getMethodCall(ArrayDimFetch $arrayDimFetch, string $action, ?Expr $expr = null): ?MethodCall
     {
-        if (!$arrayDimFetch->dim instanceof Node) {
+        if (! $arrayDimFetch->dim instanceof Node) {
             return null;
         }
 
         foreach ($this->arrayDimFetchToMethodCalls as $arrayDimFetchToMethodCall) {
-            if (!$this->isObjectType($arrayDimFetch->var, $arrayDimFetchToMethodCall->getObjectType())) {
+            if (! $this->isObjectType($arrayDimFetch->var, $arrayDimFetchToMethodCall->getObjectType())) {
                 continue;
             }
 
