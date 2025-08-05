@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-class SkipInCompact
+class SkipInGetDefinedVars
 {
     public function run()
     {
