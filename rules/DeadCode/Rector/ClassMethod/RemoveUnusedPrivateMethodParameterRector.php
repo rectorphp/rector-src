@@ -199,10 +199,6 @@ CODE_SAMPLE
                 return false;
             }
 
-            if ($subNode->isFirstClassCallable()) {
-                return false;
-            }
-
             $nodeToCheck = $subNode instanceof MethodCall
                 ? $subNode->var
                 : $subNode->class;
