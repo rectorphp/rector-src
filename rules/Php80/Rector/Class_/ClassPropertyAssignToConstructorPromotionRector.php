@@ -206,6 +206,12 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($property->type instanceof Node
+                && $property->hooks !== []
+                && ! $this->nodeComparator->areNodesEqual($property->type, $param->type)) {
+                continue;
+            }
+
             $hasChanged = true;
 
             // remove property from class
