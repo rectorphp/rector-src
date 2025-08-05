@@ -207,6 +207,7 @@ CODE_SAMPLE
             }
 
             if ($property->type instanceof Node
+                && $param->type instanceof Node
                 && $property->hooks !== []
                 && ! $this->nodeComparator->areNodesEqual($property->type, $param->type)) {
                 continue;
