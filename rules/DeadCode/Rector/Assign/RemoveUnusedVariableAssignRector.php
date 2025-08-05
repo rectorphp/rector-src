@@ -154,7 +154,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->isName($node, 'compact');
+            return $this->isNames($node, ['compact', 'get_defined_vars']);
         });
     }
 
