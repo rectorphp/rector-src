@@ -29,7 +29,7 @@ final readonly class ParamAnalyzer
     /**
      * @var string[]
      */
-    private const VARIADIC_FUNCTION_NAMES = ['func_get_arg', 'func_get_args', 'func_num_args'];
+    private const VARIADIC_FUNCTION_NAMES = ['func_get_arg', 'func_get_args', 'func_num_args', 'get_defined_vars'];
 
     public function __construct(
         private NodeComparator $nodeComparator,
