@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
+use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
@@ -89,7 +90,7 @@ CODE_SAMPLE
         }
 
         /** @var ArrayType[] $types */
-        $types = array_filter(array_map(function ($arg): ?ArrayType {
+        $types = array_filter(array_map(function (Arg|VariadicPlaceholder $arg): ?ArrayType {
             if (! $arg instanceof Arg) {
                 return null;
             }
