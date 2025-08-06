@@ -65,12 +65,16 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
+        if (count($node->getArgs()) !== 2) {
+            return null;
+        }
+
         foreach (NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS as $functionName => $positions) {
             if (! $this->isName($node, $functionName)) {
-                continue;
-            }
-
-            if ($node->isFirstClassCallable()) {
                 continue;
             }
 
