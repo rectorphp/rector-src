@@ -23,10 +23,10 @@ use Rector\Reflection\ReflectionResolver;
 final readonly class SafeLeftTypeBooleanAndOrAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
+        private BetterNodeFinder $betterNodeFinder,
+        private ExprAnalyzer $exprAnalyzer,
+        private ReflectionResolver $reflectionResolver,
+        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 

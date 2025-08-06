@@ -44,7 +44,7 @@ final readonly class AnonymousFunctionFactory
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private SimplePhpParser $simplePhpParser,
         private InlineCodeParser $inlineCodeParser,
-        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
+        private ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
     ) {
     }
 
