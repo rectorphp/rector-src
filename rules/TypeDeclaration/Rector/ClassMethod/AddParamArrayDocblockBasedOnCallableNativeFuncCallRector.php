@@ -25,6 +25,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\Enum\NativeFuncCallPositions;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -33,28 +34,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends AbstractRector
 {
-    /**
-     * @var array<string, array<string, int>>
-     */
-    private const NATIVE_FUNC_CALLS_WITH_POSITION = [
-        'array_walk' => [
-            'array' => 0,
-            'callback' => 1,
-        ],
-        'array_map' => [
-            'array' => 1,
-            'callback' => 0,
-        ],
-        'usort' => [
-            'array' => 0,
-            'callback' => 1,
-        ],
-        'array_filter' => [
-            'array' => 0,
-            'callback' => 1,
-        ],
-    ];
-
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ArgsAnalyzer $argsAnalyzer,
@@ -70,8 +49,8 @@ final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends Abs
                 <<<'CODE_SAMPLE'
 function process(array $items): void
 {
-	array_walk($items, function (stdClass $item) {
-		echo $item->value;
+    array_walk($items, function (stdClass $item) {
+        echo $item->value;
     });
 }
 CODE_SAMPLE
@@ -82,8 +61,8 @@ CODE_SAMPLE
  */
 function process(array $items): void
 {
-	array_walk($items, function (stdClass $item) {
-		echo $item->value;
+    array_walk($items, function (stdClass $item) {
+        echo $item->value;
     });
 }
 CODE_SAMPLE
@@ -131,7 +110,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $this->isNames($subNode, array_keys(self::NATIVE_FUNC_CALLS_WITH_POSITION))) {
+                if (! $this->isNames($subNode, array_keys(NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS))) {
                     return null;
                 }
 
@@ -150,7 +129,7 @@ CODE_SAMPLE
 
                 $funcCallName = (string) $this->getName($subNode);
 
-                $arrayArgValue = $args[self::NATIVE_FUNC_CALLS_WITH_POSITION[$funcCallName]['array']]->value;
+                $arrayArgValue = $args[NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS[$funcCallName]['array']]->value;
                 if (! $arrayArgValue instanceof Variable) {
                     return null;
                 }
@@ -167,7 +146,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $callbackArgValue = $args[self::NATIVE_FUNC_CALLS_WITH_POSITION[$funcCallName]['callback']]->value;
+                $callbackArgValue = $args[NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS[$funcCallName]['callback']]->value;
 
                 if (! $callbackArgValue instanceof ArrowFunction && ! $callbackArgValue instanceof Closure) {
                     return null;

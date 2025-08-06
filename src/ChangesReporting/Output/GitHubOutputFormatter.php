@@ -125,10 +125,13 @@ final readonly class GitHubOutputFormatter implements OutputFormatterInterface
         // TODO: Should be removed once github will have fixed it issue.
         unset($annotationProperties['endLine']);
 
-        $nonNullProperties = array_filter($annotationProperties, static fn ($value): bool => $value !== null);
+        $nonNullProperties = array_filter(
+            $annotationProperties,
+            static fn (int|string|null $value): bool => $value !== null
+        );
 
         $sanitizedProperties = array_map(
-            fn ($key, $value): string => sprintf('%s=%s', $key, $this->sanitizeAnnotationProperty($value)),
+            fn (string $key, $value): string => sprintf('%s=%s', $key, $this->sanitizeAnnotationProperty($value)),
             array_keys($nonNullProperties),
             $nonNullProperties
         );
