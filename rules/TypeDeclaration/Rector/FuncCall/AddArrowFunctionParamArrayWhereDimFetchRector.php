@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\FuncCall;
 
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PHPStan\Type\ArrayType;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\Enum\NativeFuncCallPositions;
@@ -85,6 +86,9 @@ CODE_SAMPLE
                 continue;
             }
 
+            $arrayPosition = $positions['array'];
+            $closureItems = $node->getArgs()[$arrayPosition]->value;
+
             $isArrayVariableNames = $this->resolveIsArrayVariables($closureExpr);
             $instanceofVariableNames = $this->resolveInstanceofVariables($closureExpr);
             $skippedVariableNames = array_merge($isArrayVariableNames, $instanceofVariableNames);
@@ -103,6 +107,11 @@ CODE_SAMPLE
                 }
 
                 if (! $this->isNames($closureParam->var, $dimFetchVariableNames)) {
+                    continue;
+                }
+
+                $type = $this->getType($closureItems);
+                if ($type instanceof ArrayType && $type->getItemType()->isObject()->yes()) {
                     continue;
                 }
 
