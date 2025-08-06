@@ -768,4 +768,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const ARRAY_ANY = PhpVersion::PHP_84;
+
+    /**
+     * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_debuginfo_returning_null
+     * @var int
+     */
+    public const DEPRECATED_NULL_DEBUG_INFO_RETURN = PhpVersion::PHP_85;
 }
