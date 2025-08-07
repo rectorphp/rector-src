@@ -12,6 +12,7 @@ use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
+use Rector\CodeQuality\Rector\Class_\RemoveReadonlyPropertyVisibilityOnReadonlyClassRector;
 use Rector\CodeQuality\Rector\Class_\StaticToSelfStaticMethodCallOnFinalClassRector;
 use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
 use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
@@ -173,6 +174,7 @@ final class CodeQualityLevel
         RemoveUselessIsObjectCheckRector::class,
         StaticToSelfStaticMethodCallOnFinalClassRector::class,
         SortNamedParamRector::class,
+        RemoveReadonlyPropertyVisibilityOnReadonlyClassRector::class,
     ];
 
     /**
