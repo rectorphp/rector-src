@@ -431,6 +431,12 @@ final class PhpVersionFeature
     public const DEPRECATE_HEBREVC = PhpVersion::PHP_74;
 
     /**
+     * @see https://wiki.php.net/rfc/named_params
+     * @var int
+     */
+    public const NAMED_ARGUMENTS = PhpVersion::PHP_80;
+
+    /**
      * @var int
      */
     public const UNION_TYPES = PhpVersion::PHP_80;

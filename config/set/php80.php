@@ -18,6 +18,7 @@ use Rector\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector;
 use Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector;
 use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
+use Rector\Php80\Rector\FuncCall\ConvertAssignToNamedArgumentRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
@@ -34,6 +35,7 @@ return static function (RectorConfig $rectorConfig): void {
         StrEndsWithRector::class,
         StringableForToStringRector::class,
         ClassOnObjectRector::class,
+        ConvertAssignToNamedArgumentRector::class,
         GetDebugTypeRector::class,
         RemoveUnusedVariableInCatchRector::class,
         ClassPropertyAssignToConstructorPromotionRector::class,
