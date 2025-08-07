@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\FuncCall;
 
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
