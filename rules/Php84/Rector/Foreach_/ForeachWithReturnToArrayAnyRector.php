@@ -167,9 +167,11 @@ CODE_SAMPLE
         $type = $this->nodeTypeResolver->getNativeType($foreach->expr);
 
         if ($this->allowIterable) {
-            return $type->isIterable()->yes();
+            return $type->isIterable()
+                ->yes();
         }
 
-        return $type->isArray()->yes();
+        return $type->isArray()
+            ->yes();
     }
 }
