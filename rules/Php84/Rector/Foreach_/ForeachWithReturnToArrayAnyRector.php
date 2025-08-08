@@ -97,8 +97,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            /** @var If_ $firstNodeInsideForeach */
             $firstNodeInsideForeach = $foreach->stmts[0];
             $condition = $firstNodeInsideForeach->cond;
+
             $params = [];
 
             if ($foreach->valueVar instanceof Variable) {
