@@ -106,6 +106,7 @@ CODE_SAMPLE
             if (! $singlePassedExprType instanceof Type) {
                 continue;
             }
+
             if ($singlePassedExprType instanceof MixedType) {
                 continue;
             }
