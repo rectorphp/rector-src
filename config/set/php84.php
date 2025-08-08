@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php84\Rector\Foreach_\ForeachToArrayAllRector;
+use Rector\Php84\Rector\Foreach_\ForeachToArrayAnyCombinedRector;
 use Rector\Php84\Rector\Foreach_\ForeachToArrayAnyRector;
 use Rector\Php84\Rector\Foreach_\ForeachToArrayFindKeyRector;
 use Rector\Php84\Rector\Foreach_\ForeachToArrayFindRector;
@@ -27,6 +28,7 @@ return static function (RectorConfig $rectorConfig): void {
             ForeachToArrayAllRector::class,
             ForeachToArrayAnyRector::class,
             ForeachWithReturnToArrayAnyRector::class,
+            ForeachToArrayAnyCombinedRector::class,
         ]
     );
 };

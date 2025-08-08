@@ -29,7 +29,6 @@ final class ForeachWithReturnToArrayAnyRector extends AbstractRector implements 
     public function __construct(
         private readonly ValueResolver $valueResolver,
         private readonly ForeachKeyUsedInConditionalAnalyzer $foreachKeyUsedInConditionalAnalyzer,
-        private readonly bool $allowIterable = false
     ) {
     }
 
@@ -167,11 +166,6 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getNativeType($foreach->expr);
-
-        if ($this->allowIterable) {
-            return $type->isIterable()
-                ->yes();
-        }
 
         return $type->isArray()
             ->yes();
