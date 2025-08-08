@@ -34,7 +34,6 @@ class BasicUsage
         return false;
     }
 }
-
 ?>
 -----
 <?php

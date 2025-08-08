@@ -31,7 +31,7 @@ final class ForeachToArrayAnyRector extends AbstractRector implements MinPhpVers
     public function __construct(
         private readonly ValueResolver $valueResolver,
         private readonly StmtsManipulator $stmtsManipulator,
-        private readonly ForeachKeyUsedInConditionalAnalyzer $foreachKeyUsedInConditionalAnalyzer
+        private readonly ForeachKeyUsedInConditionalAnalyzer $foreachKeyUsedInConditionalAnalyzer,
     ) {
     }
 

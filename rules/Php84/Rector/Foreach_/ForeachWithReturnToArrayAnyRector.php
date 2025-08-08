@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Rector\Php84\Rector\Foreach_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Return_;use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use PhpParser\Node\Stmt\Return_;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -26,7 +28,8 @@ final class ForeachWithReturnToArrayAnyRector extends AbstractRector implements 
 {
     public function __construct(
         private readonly ValueResolver $valueResolver,
-        private readonly ForeachKeyUsedInConditionalAnalyzer $foreachKeyUsedInConditionalAnalyzer
+        private readonly ForeachKeyUsedInConditionalAnalyzer $foreachKeyUsedInConditionalAnalyzer,
+        private readonly bool $allowIterable = false
     ) {
     }
 
@@ -64,33 +67,33 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node) : ?Node
+    public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {
             return null;
         }
 
         foreach ($node->stmts as $key => $stmt) {
-            if ( ! $stmt instanceof Foreach_) {
+            if (! $stmt instanceof Foreach_) {
                 continue;
             }
 
             $foreach = $stmt;
             $nextStmt = $node->stmts[$key + 1] ?? null;
 
-            if ( ! $nextStmt instanceof Return_) {
+            if (! $nextStmt instanceof Return_) {
                 continue;
             }
 
-            if ( ! $nextStmt->expr instanceof Expr) {
+            if (! $nextStmt->expr instanceof Expr) {
                 continue;
             }
 
-            if ( ! $this->valueResolver->isFalse($nextStmt->expr)) {
+            if (! $this->valueResolver->isFalse($nextStmt->expr)) {
                 continue;
             }
 
-            if( !$this->isValidForeachStructure($foreach)){
+            if (! $this->isValidForeachStructure($foreach)) {
                 continue;
             }
 
@@ -126,13 +129,18 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isValidForeachStructure(Foreach_ $foreach) : bool
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ARRAY_FIND;
+    }
+
+    private function isValidForeachStructure(Foreach_ $foreach): bool
     {
         if (count($foreach->stmts) !== 1) {
             return false;
         }
 
-        if ( ! $foreach->stmts[0] instanceof If_) {
+        if (! $foreach->stmts[0] instanceof If_) {
             return false;
         }
 
@@ -142,25 +150,26 @@ CODE_SAMPLE
             return false;
         }
 
-        if ( ! $ifStmt->stmts[0] instanceof Return_) {
+        if (! $ifStmt->stmts[0] instanceof Return_) {
             return false;
         }
 
         $returnStmt = $ifStmt->stmts[0];
 
-        if ( ! $returnStmt->expr instanceof Expr) {
+        if (! $returnStmt->expr instanceof Expr) {
             return false;
         }
 
-        if ( ! $this->valueResolver->isTrue($returnStmt->expr)) {
+        if (! $this->valueResolver->isTrue($returnStmt->expr)) {
             return false;
         }
 
-        return true;
-    }
+        $type = $this->nodeTypeResolver->getNativeType($foreach->expr);
 
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::ARRAY_FIND;
+        if ($this->allowIterable) {
+            return $type->isIterable()->yes();
+        }
+
+        return $type->isArray()->yes();
     }
 }
