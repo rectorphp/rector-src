@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\Foreach_;
 
-use use PhpParser\Node;
+use PhpParser\Node;
 use PhpParser\Node\Expr;use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Break_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -24,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\ForeachToArrayAnyRectorTest
+ * @see \Rector\Tests\Php84\Rector\Foreach_\ForeachWithReturnToArrayAnyRector\ForeachWithReturnToArrayAnyRectorTest
  */
 final class ForeachWithReturnToArrayAnyRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -94,7 +90,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->isValidForeachStructure($foreach);
+            if( !$this->isValidForeachStructure($foreach)){
+                continue;
+            }
+
             $firstNodeInsideForeach = $foreach->stmts[0];
             $condition = $firstNodeInsideForeach->cond;
             $params = [];
