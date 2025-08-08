@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
-class SkipThrowenException
+class SkipThrownException
 {
     public function save(): void
     {

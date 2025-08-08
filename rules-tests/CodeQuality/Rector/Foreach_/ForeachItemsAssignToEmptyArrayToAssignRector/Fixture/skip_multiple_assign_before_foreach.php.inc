@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector\Fixture;
 
-class SkipMultipleAssignbeforeForeach
+class SkipMultipleAssignBeforeForeach
 {
     public function run(array $items)
     {

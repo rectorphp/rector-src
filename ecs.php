@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\Casing\LowercaseKeywordsFixer;
 use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
@@ -34,5 +35,7 @@ return ECSConfig::configure()
             // bug remove @author annotation
             __DIR__ . '/src/Util/ArrayParametersMerger.php',
         ],
+
+        LowercaseKeywordsFixer::class => [__DIR__ . '/src/ValueObject/Visibility.php'],
     ])
     ->withRootFiles();

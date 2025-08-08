@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Utils\Path\WhildcardNested;
+namespace Rector\Utils\Path\WildcardNested;
 
 final class YetAnotherFile
 {

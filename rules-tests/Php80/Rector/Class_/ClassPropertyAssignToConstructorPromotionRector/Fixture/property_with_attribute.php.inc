@@ -14,12 +14,12 @@ final class PropertyWithAttribute
 
     #[Immutable]
     #[Deprecated]
-    public float $longiture;
+    public float $longitude;
 
-    public function __construct(float $latitude, float $longiture)
+    public function __construct(float $latitude, float $longitude)
     {
         $this->latitude = $latitude;
-        $this->longiture = $longiture;
+        $this->longitude = $longitude;
 
     }
 }
@@ -41,7 +41,7 @@ final class PropertyWithAttribute
         public float $latitude,
         #[Immutable]
         #[Deprecated]
-        public float $longiture
+        public float $longitude
     )
     {
     }

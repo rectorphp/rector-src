@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector\Fixture;
 
-class FixturNotIdentical
+class FixtureNotIdentical
 {
     public function run()
     {
@@ -25,7 +25,7 @@ class FixturNotIdentical
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector\Fixture;
 
-class FixturNotIdentical
+class FixtureNotIdentical
 {
     public function run()
     {

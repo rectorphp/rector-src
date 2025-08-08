@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Concat\JoinStringConcatRector\Fixture;
 
-class SkipMultiplelines
+class SkipMultipleLines
 {
     public function run()
     {

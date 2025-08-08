@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector\Fixture;
 
-function break_missplaced_return()
+function break_misplaced_return()
 {
     if (true == $objWebsite ) {
         $arrobjProperties = (array) $objWebsite->fetchProperties( );
@@ -21,7 +21,7 @@ function break_missplaced_return()
 
 namespace Rector\Tests\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector\Fixture;
 
-function break_missplaced_return()
+function break_misplaced_return()
 {
     if (true == $objWebsite ) {
         $arrobjProperties = (array) $objWebsite->fetchProperties( );

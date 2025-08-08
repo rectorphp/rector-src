@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Issues\IssueDoubleNestedAnnotatoinDocBlock;
+namespace Rector\Tests\Issues\IssueDoubleNestedAnnotationDocBlock;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class IssueDoubleNestedAnnotatoinDocBlockTest extends AbstractRectorTestCase
+final class IssueDoubleNestedAnnotationDocBlockTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

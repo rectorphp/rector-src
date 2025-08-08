@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector\Fixture;
 
-function break_missplaced_function()
+function break_misplaced_function()
 {
     $zhrs = abs($gmt)/3600;
     $hrs = floor($zhrs);
@@ -13,7 +13,7 @@ function break_missplaced_function()
     break;
 }
 
-function break_missplace_again()
+function break_misplace_again()
 {
     $errors = [];
     if (isset($errors)) {
@@ -32,7 +32,7 @@ function break_missplace_again()
 
 namespace Rector\Tests\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector\Fixture;
 
-function break_missplaced_function()
+function break_misplaced_function()
 {
     $zhrs = abs($gmt)/3600;
     $hrs = floor($zhrs);
@@ -42,7 +42,7 @@ function break_missplaced_function()
         return sprintf('%s%02d%02d',($gmt<0)?'+':'-',floor($zhrs),($zhrs-$hrs)*60);
 }
 
-function break_missplace_again()
+function break_misplace_again()
 {
     $errors = [];
     if (isset($errors)) {

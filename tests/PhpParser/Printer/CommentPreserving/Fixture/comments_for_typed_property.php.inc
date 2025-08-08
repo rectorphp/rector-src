@@ -13,7 +13,7 @@ use Rector\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher
  */
 
 /**
- * Another dockblock.
+ * Another docblock.
  *
  *
  * first_function()
@@ -51,7 +51,7 @@ use Rector\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher
  */
 
 /**
- * Another dockblock.
+ * Another docblock.
  *
  *
  * first_function()

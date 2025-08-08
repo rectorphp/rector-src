@@ -4,7 +4,7 @@ namespace Rector\Tests\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMerg
 
 use stdClass;
 
-class SkipSpreadyArrayMerge
+class SkipSpreadArrayMerge
 {
     public function run()
     {
