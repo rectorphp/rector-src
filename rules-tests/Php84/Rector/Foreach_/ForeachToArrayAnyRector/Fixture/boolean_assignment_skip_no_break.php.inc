@@ -1,16 +1,17 @@
 <?php
 
-namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyCombinedRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class SkipMultipleStatements
+class SkipNoBreak
 {
     public function run(array $animals)
     {
+        $found = false;
         foreach ($animals as $animal) {
             if (str_starts_with($animal, 'c')) {
-                return 'ok';
+                $found = true;
             }
         }
-        return false;
+        return $found;
     }
 }

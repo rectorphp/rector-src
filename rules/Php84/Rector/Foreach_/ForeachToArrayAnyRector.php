@@ -26,9 +26,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyCombinedRector\ForeachToArrayAnyCombinedRectorTest
+ * @see \Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\ForeachToArrayAnyRectorTest
  */
-final class ForeachToArrayAnyCombinedRector extends AbstractRector implements MinPhpVersionInterface
+final class ForeachToArrayAnyRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ValueResolver $valueResolver,

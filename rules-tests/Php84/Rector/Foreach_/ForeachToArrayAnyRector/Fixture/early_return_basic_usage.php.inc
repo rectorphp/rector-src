@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyCombinedRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
 class BasicUsage
 {
@@ -38,7 +38,7 @@ class BasicUsage
 -----
 <?php
 
-namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyCombinedRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
 class BasicUsage
 {

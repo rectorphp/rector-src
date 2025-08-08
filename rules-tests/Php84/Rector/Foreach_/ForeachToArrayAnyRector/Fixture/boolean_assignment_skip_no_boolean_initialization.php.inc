@@ -1,12 +1,12 @@
 <?php
 
-namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyCombinedRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class SkipNonArray
+class SkipNoBooleanInitialization
 {
-    public function checkAnimal(\ArrayIterator $animals)
+    public function run(array $animals)
     {
-        $found = false;
+        $found = null;
         foreach ($animals as $animal) {
             if (str_starts_with($animal, 'c')) {
                 $found = true;
