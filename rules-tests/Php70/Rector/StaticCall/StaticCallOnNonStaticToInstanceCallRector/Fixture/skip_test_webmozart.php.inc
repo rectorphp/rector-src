@@ -4,7 +4,7 @@ namespace Rector\Tests\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCa
 
 use Webmozart\Assert\Assert;
 
-final class SkipTestWebmozzart
+final class SkipTestWebmozart
 {
     public function doWork($values)
     {

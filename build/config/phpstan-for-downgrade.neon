@@ -3,5 +3,5 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
 
     scanDirectories:
-        # this is needed for symfony/dependendency-injection as it has hidden dependency on symfony/expression-language that we don't use here
+        # this is needed for symfony/dependency-injection as it has hidden dependency on symfony/expression-language that we don't use here
         - ../../stubs

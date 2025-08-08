@@ -356,7 +356,7 @@ final readonly class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof CallLike) {
-                $this->processCallike($node, $mutatingScope);
+                $this->processCallLike($node, $mutatingScope);
                 return;
             }
 
@@ -388,7 +388,7 @@ final readonly class PHPStanNodeScopeResolver
             if ($node instanceof MethodCallableNode || $node instanceof FunctionCallableNode || $node instanceof StaticMethodCallableNode || $node instanceof InstantiationCallableNode) {
                 $node->getOriginalNode()
                     ->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->processCallike($node->getOriginalNode(), $mutatingScope);
+                $this->processCallLike($node->getOriginalNode(), $mutatingScope);
 
                 return;
             }
@@ -468,7 +468,7 @@ final readonly class PHPStanNodeScopeResolver
         }
     }
 
-    private function processCallike(CallLike $callLike, MutatingScope $mutatingScope): void
+    private function processCallLike(CallLike $callLike, MutatingScope $mutatingScope): void
     {
         if ($callLike instanceof StaticCall) {
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);

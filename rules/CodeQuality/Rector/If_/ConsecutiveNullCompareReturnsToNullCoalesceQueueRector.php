@@ -148,7 +148,7 @@ CODE_SAMPLE
             unset($node->stmts[$key]);
         }
 
-        $node->stmts[] = $this->createCealesceReturn($coalescingExprs, $appendExpr);
+        $node->stmts[] = $this->createCoalesceReturn($coalescingExprs, $appendExpr);
 
         return $node;
     }
@@ -174,7 +174,7 @@ CODE_SAMPLE
     /**
      * @param Expr[] $coalescingExprs
      */
-    private function createCealesceReturn(array $coalescingExprs, ?Expr $appendExpr): Return_
+    private function createCoalesceReturn(array $coalescingExprs, ?Expr $appendExpr): Return_
     {
         /** @var Expr $leftExpr */
         $leftExpr = array_shift($coalescingExprs);

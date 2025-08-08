@@ -99,13 +99,13 @@ final readonly class BattleshipTernaryAnalyzer
         return $this->evaluateTernaryDesc($ternary);
     }
 
-    private function isValueOneAndMinusOne(Expr $firstExpr, Expr $seconcExpr): bool
+    private function isValueOneAndMinusOne(Expr $firstExpr, Expr $secondExpr): bool
     {
         if (! $this->valueResolver->isValue($firstExpr, 1)) {
             return false;
         }
 
-        return $this->valueResolver->isValue($seconcExpr, -1);
+        return $this->valueResolver->isValue($secondExpr, -1);
     }
 
     /**

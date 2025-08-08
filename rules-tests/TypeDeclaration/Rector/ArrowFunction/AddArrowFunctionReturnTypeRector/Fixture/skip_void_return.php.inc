@@ -4,13 +4,13 @@ namespace Rector\Tests\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionRetu
 
 final class SkipVoidReturn
 {
-    public function doNohing(string $a): void
+    public function doNothing(string $a): void
     {
         echo $a;
     }
 
     public function run()
     {
-        fn (string $a) => $this->doNohing($a);
+        fn (string $a) => $this->doNothing($a);
     }
 }

@@ -4,7 +4,7 @@ namespace Rector\Tests\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMerg
 
 use Symfony\Component\Finder\Finder;
 
-class SkipGetIreator
+class SkipGetIterator
 {
     public function run()
     {

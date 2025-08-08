@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector\Fixture;
 
-function break_missplaced_function_foreach()
+function break_misplaced_function_foreach()
 {
     $ip_block = [];
 
@@ -25,7 +25,7 @@ function break_missplaced_function_foreach()
 
 namespace Rector\Tests\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector\Fixture;
 
-function break_missplaced_function_foreach()
+function break_misplaced_function_foreach()
 {
     $ip_block = [];
 

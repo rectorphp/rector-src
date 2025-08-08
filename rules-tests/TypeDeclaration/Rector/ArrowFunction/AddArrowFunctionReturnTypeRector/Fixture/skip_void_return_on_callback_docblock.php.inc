@@ -2,16 +2,16 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector\Fixture;
 
-final class SkipVoidReturnOnCallbackDockblock
+final class SkipVoidReturnOnCallbackDocblock
 {
-    public function doNohing(string $a): void
+    public function doNothing(string $a): void
     {
         echo $a;
     }
 
     public function run()
     {
-        fn() => $this->executesCallback(fn() => $this->doNohing('a'));
+        fn() => $this->executesCallback(fn() => $this->doNothing('a'));
     }
 
     /**

@@ -80,7 +80,7 @@ CODE_SAMPLE
         $maxIndexCatches = count($catches) - 1;
 
         foreach ($catches as $key => $catchItem) {
-            if (! $this->isJustThrowedSameVariable($catchItem)) {
+            if (! $this->isJustThrownSameVariable($catchItem)) {
                 continue;
             }
 
@@ -103,7 +103,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isJustThrowedSameVariable(Catch_ $catch): bool
+    private function isJustThrownSameVariable(Catch_ $catch): bool
     {
         if ($this->isEmpty($catch->stmts)) {
             return false;
@@ -158,7 +158,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isJustThrowedSameVariable($nextCatch)) {
+            if (! $this->isJustThrownSameVariable($nextCatch)) {
                 return true;
             }
         }
