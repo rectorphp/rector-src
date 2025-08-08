@@ -128,7 +128,7 @@ CODE_SAMPLE
             return true;
         }
 
-        // empty, nothing to ifnd
+        // empty, nothing to find
         if ($functionLike->stmts === null || $functionLike->stmts === []) {
             return true;
         }

@@ -9,7 +9,7 @@ if (mt_rand(0, 1000)) {
 
 return 2;
 
-// it can be still autoloaded and used abvoe
+// it can be still autoloaded and used above
 class SkipClassUnder
 {
 }

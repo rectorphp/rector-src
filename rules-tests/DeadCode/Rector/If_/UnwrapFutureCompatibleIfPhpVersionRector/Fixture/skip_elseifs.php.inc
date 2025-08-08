@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector\Fixture;
 
-class SkipElsefis
+class SkipElseifs
 {
     public function run()
     {

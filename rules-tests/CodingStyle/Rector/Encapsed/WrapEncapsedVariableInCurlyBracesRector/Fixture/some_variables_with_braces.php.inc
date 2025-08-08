@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector\Fixture;
 
-function some_variales_with_braces($hello, $world)
+function some_variables_with_braces($hello, $world)
 {
     return "$hello {$world}!";
 }
@@ -13,7 +13,7 @@ function some_variales_with_braces($hello, $world)
 
 namespace Rector\Tests\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector\Fixture;
 
-function some_variales_with_braces($hello, $world)
+function some_variables_with_braces($hello, $world)
 {
     return "{$hello} {$world}!";
 }

@@ -28,7 +28,7 @@ final readonly class ConditionEvaluator
         }
 
         if ($condition instanceof BinaryToVersionCompareCondition) {
-            return $this->isEvaluedAsTrue($condition);
+            return $this->isEvaluatedAsTrue($condition);
         }
 
         return null;
@@ -56,7 +56,7 @@ final readonly class ConditionEvaluator
         );
     }
 
-    private function isEvaluedAsTrue(BinaryToVersionCompareCondition $binaryToVersionCompareCondition): bool
+    private function isEvaluatedAsTrue(BinaryToVersionCompareCondition $binaryToVersionCompareCondition): bool
     {
         $versionCompareResult = $this->evaluateVersionCompareCondition(
             $binaryToVersionCompareCondition->getVersionCompareCondition()

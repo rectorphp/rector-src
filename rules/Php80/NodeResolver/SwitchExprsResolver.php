@@ -144,7 +144,7 @@ final class SwitchExprsResolver
             return false;
         }
 
-        // throws expressoin
+        // throws expression
         if ($case->stmts[0] instanceof Throw_) {
             return true;
         }

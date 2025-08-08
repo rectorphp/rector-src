@@ -4,7 +4,7 @@ namespace Rector\Tests\Transform\Rector\FuncCall\FuncCallToMethodCallRector\Fixt
 
 use function Rector\Tests\Transform\Rector\FuncCall\FuncCallToMethodCallRector\Source\some_view_function;
 
-function anothehFunction()
+function anotherFunction()
 {
     some_view_function('template');
 }

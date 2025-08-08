@@ -4,7 +4,7 @@ namespace Rector\Tests\Issues\AliasedImportDouble\Fixture;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class CallbackWithCuryBraces
+final class CallbackWithCurlyBraces
 {
     /**
      * @Assert\Choice(callback={"Some\Random\Class_", "getChoices"})
@@ -20,7 +20,7 @@ namespace Rector\Tests\Issues\AliasedImportDouble\Fixture;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class CallbackWithCuryBraces
+final class CallbackWithCurlyBraces
 {
     /**
      * @Assert\Choice(callback={"Some\Other\Random\Class_", "getChoices"})
