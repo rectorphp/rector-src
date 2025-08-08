@@ -35,6 +35,10 @@ final readonly class DeadVarTagValueNodeAnalyzer
             return false;
         }
 
+        if ($varTagValueNode->type instanceof \PHPStan\PhpDocParser\Ast\Type\GenericTypeNode) {
+            return false;
+        }
+
         // is strict type superior to doc type? keep strict type only
         $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);

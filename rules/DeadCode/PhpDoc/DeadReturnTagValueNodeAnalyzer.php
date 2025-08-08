@@ -49,6 +49,10 @@ final readonly class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
+        if ($returnTagValueNode->type instanceof \PHPStan\PhpDocParser\Ast\Type\GenericTypeNode) {
+            return false;
+        }
+
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $returnTagValueNode->type,
             $functionLike
