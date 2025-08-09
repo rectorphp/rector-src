@@ -92,6 +92,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (count($firstArgExpr->getParams()) !== 1) {
+                continue;
+            }
+
             $arrowFunction = $firstArgExpr;
             $arrowFunctionParam = $arrowFunction->getParams()[0];
 
