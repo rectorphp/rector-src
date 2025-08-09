@@ -534,8 +534,6 @@ final class RectorConfigBuilder
      * as composer.json has is used
      */
     public function withPhpSets(
-        bool $php85 = false,
-        bool $php84 = false,
         bool $php83 = false,
         bool $php82 = false,
         bool $php81 = false,
@@ -549,6 +547,9 @@ final class RectorConfigBuilder
         bool $php55 = false,
         bool $php54 = false,
         bool $php53 = false,
+        // place on later as BC break when used in php 7.x without named arg
+        bool $php84 = false,
+        bool $php85 = false,
     ): self {
         if ($this->isWithPhpSetsUsed === true) {
             throw new InvalidConfigurationException(sprintf(
