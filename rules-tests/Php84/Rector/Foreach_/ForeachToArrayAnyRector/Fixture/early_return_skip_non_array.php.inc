@@ -2,17 +2,15 @@
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class SkipNoBooleanInitialization
+class EarlyReturnSkipNonArray
 {
-    public function run(array $animals)
+    public function checkAnimal(\ArrayIterator $animals)
     {
-        $found = null;
         foreach ($animals as $animal) {
             if (str_starts_with($animal, 'c')) {
-                $found = true;
-                break;
+                return true;
             }
         }
-        return $found;
+        return false;
     }
 }

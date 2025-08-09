@@ -2,18 +2,16 @@
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class WithKey
+class EarlyReturnWithKey
 {
     public function checkAnimal(array $animals)
     {
-        $found = false;
         foreach ($animals as $key => $animal) {
             if (str_starts_with($animal, 'c') && $key === 1) {
-                $found = true;
-                break;
+                return true;
             }
         }
-        return $found;
+        return false;
     }
 }
 
@@ -23,12 +21,11 @@ class WithKey
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class WithKey
+class EarlyReturnWithKey
 {
     public function checkAnimal(array $animals)
     {
-        $found = array_any($animals, fn($animal, $key) => str_starts_with($animal, 'c') && $key === 1);
-        return $found;
+        return array_any($animals, fn($animal, $key) => str_starts_with($animal, 'c') && $key === 1);
     }
 }
 

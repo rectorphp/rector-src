@@ -2,70 +2,59 @@
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class BasicUsage
+class EarlyReturnBasicUsage
 {
     public function checkAnimal(array $animals)
     {
-        $found = false;
         foreach ($animals as $animal) {
             if (str_starts_with($animal, 'c')) {
-                $found = true;
-                break;
+                return true;
             }
         }
-        return $found;
+        return false;
     }
 
     public function checkNumber(array $numbers)
     {
-        $exists = false;
         foreach ($numbers as $number) {
             if ($number > 10) {
-                $exists = true;
-                break;
+                return true;
             }
         }
-        return $exists;
+        return false;
     }
 
     public function checkWithKey(array $items)
     {
-        $hasMatch = false;
         foreach ($items as $key => $value) {
             if ($value === 'target') {
-                $hasMatch = true;
-                break;
+                return true;
             }
         }
-        return $hasMatch;
+        return false;
     }
 }
-
 ?>
 -----
 <?php
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class BasicUsage
+class EarlyReturnBasicUsage
 {
     public function checkAnimal(array $animals)
     {
-        $found = array_any($animals, fn($animal) => str_starts_with($animal, 'c'));
-        return $found;
+        return array_any($animals, fn($animal) => str_starts_with($animal, 'c'));
     }
 
     public function checkNumber(array $numbers)
     {
-        $exists = array_any($numbers, fn($number) => $number > 10);
-        return $exists;
+        return array_any($numbers, fn($number) => $number > 10);
     }
 
     public function checkWithKey(array $items)
     {
-        $hasMatch = array_any($items, fn($value) => $value === 'target');
-        return $hasMatch;
+        return array_any($items, fn($value) => $value === 'target');
     }
 }
-
 ?>
