@@ -3,12 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        ArrayFirstLastRector::class,
-        NullDebugInfoReturnRector::class,
-    ]);
+    $rectorConfig->rule(NullDebugInfoReturnRector::class);
 };
