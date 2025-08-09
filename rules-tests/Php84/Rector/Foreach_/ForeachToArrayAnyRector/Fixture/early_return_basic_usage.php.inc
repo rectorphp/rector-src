@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class BasicUsage
+class EarlyReturnBasicUsage
 {
     public function checkAnimal(array $animals)
     {
@@ -40,7 +40,7 @@ class BasicUsage
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class BasicUsage
+class EarlyReturnBasicUsage
 {
     public function checkAnimal(array $animals)
     {

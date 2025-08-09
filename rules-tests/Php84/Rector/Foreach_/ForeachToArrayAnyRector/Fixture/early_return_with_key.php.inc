@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class WithKey
+class EarlyReturnWithKey
 {
     public function checkAnimal(array $animals)
     {
@@ -21,7 +21,7 @@ class WithKey
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class WithKey
+class EarlyReturnWithKey
 {
     public function checkAnimal(array $animals)
     {

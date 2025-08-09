@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\Fixture;
 
-class SkipNonArray
+class EarlyReturnSkipNonArray
 {
     public function checkAnimal(\ArrayIterator $animals)
     {
