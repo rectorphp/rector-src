@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FuncCall\AddArrayFunctionClosureParamTypeRector\Fixture;
 
-final class SkipDirectCallableOnlySingleArg
+final class SkipDirectCallableWithRange2ndArg
 {
     public function getRandomData(): array
     {
