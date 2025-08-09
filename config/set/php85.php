@@ -13,15 +13,15 @@ use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([ArrayFirstLastRector::class]);
 
-    // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_exclude_disabled_parameter_of_get_defined_functions
     $rectorConfig->ruleWithConfiguration(
         RemoveFuncCallArgRector::class,
         [
-            new RemoveFuncCallArg('get_defined_functions', 0),
             new RemoveFuncCallArg('openssl_pkey_derive', 2),
+            // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_exclude_disabled_parameter_of_get_defined_functions
+            new RemoveFuncCallArg('get_defined_functions', 0),
         ]
     );
-  
+
     // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_splobjectstoragecontains_splobjectstorageattach_and_splobjectstoragedetach
     $rectorConfig->ruleWithConfiguration(
         RenameMethodRector::class,
@@ -31,14 +31,14 @@ return static function (RectorConfig $rectorConfig): void {
             new MethodCallRename('SplObjectStorage', 'detach', 'offsetUnset'),
         ]
     );
-  
+
     $rectorConfig->ruleWithConfiguration(
         RenameFunctionRector::class,
         [
-            // https://wiki.php.net/rfc/deprecations_php_8_5#formally_deprecate_socket_set_timeout 
+            // https://wiki.php.net/rfc/deprecations_php_8_5#formally_deprecate_socket_set_timeout
             'socket_set_timeout' => 'stream_set_timeout',
-            
-            // https://wiki.php.net/rfc/deprecations_php_8_5#formally_deprecate_mysqli_execute 
+
+            // https://wiki.php.net/rfc/deprecations_php_8_5#formally_deprecate_mysqli_execute
             'mysqli_execute' => 'mysqli_stmt_execute',
         ]
     );
