@@ -9,10 +9,13 @@ use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([ArrayFirstLastRector::class]);
 
-    // https://wiki.php.net/rfc/deprecations_php_8_5#formally_deprecate_mysqli_execute
     $rectorConfig->ruleWithConfiguration(
         RenameFunctionRector::class,
         [
+            // https://wiki.php.net/rfc/deprecations_php_8_5#formally_deprecate_socket_set_timeout 
+            'socket_set_timeout' => 'stream_set_timeout',
+            
+            // https://wiki.php.net/rfc/deprecations_php_8_5#formally_deprecate_mysqli_execute 
             'mysqli_execute' => 'mysqli_stmt_execute',
         ]
     );
