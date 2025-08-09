@@ -534,6 +534,8 @@ final class RectorConfigBuilder
      * as composer.json has is used
      */
     public function withPhpSets(
+        bool $php85 = false,
+        bool $php84 = false,
         bool $php83 = false,
         bool $php82 = false,
         bool $php81 = false,
@@ -547,7 +549,6 @@ final class RectorConfigBuilder
         bool $php55 = false,
         bool $php54 = false,
         bool $php53 = false,
-        bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
         if ($this->isWithPhpSetsUsed === true) {
             throw new InvalidConfigurationException(sprintf(
@@ -637,6 +638,8 @@ final class RectorConfigBuilder
             $targetPhpVersion = PhpVersion::PHP_83;
         } elseif ($php84) {
             $targetPhpVersion = PhpVersion::PHP_84;
+        } elseif ($php85) {
+            $targetPhpVersion = PhpVersion::PHP_85;
         } else {
             throw new InvalidConfigurationException('Invalid PHP version set');
         }
