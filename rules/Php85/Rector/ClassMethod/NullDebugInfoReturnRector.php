@@ -75,7 +75,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = \false;
-        $this->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (&$hasChanged) {
+        $this->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (&$hasChanged): int|Return_|null {
             if ($node instanceof Class_ || $node instanceof Function_ || $node instanceof Closure) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
