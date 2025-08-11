@@ -51,10 +51,10 @@ final class RenameCastRector extends AbstractRector implements ConfigurableRecto
     {
         foreach ($this->renameCasts as $renameCast) {
             $expectedClassName = $renameCast->getFromCastExprClass();
-            if (
-                ! $node instanceof $expectedClassName
-                || $node->getAttribute(AttributeKey::KIND) !== $renameCast->getFromCastKind()
-            ) {
+            if (! $node instanceof $expectedClassName) {
+                continue;
+            }
+            if ($node->getAttribute(AttributeKey::KIND) !== $renameCast->getFromCastKind()) {
                 continue;
             }
 
