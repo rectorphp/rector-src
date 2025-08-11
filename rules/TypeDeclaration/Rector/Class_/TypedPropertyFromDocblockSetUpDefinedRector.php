@@ -13,6 +13,7 @@ use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -34,7 +35,8 @@ final class TypedPropertyFromDocblockSetUpDefinedRector extends AbstractRector i
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly DeadVarTagValueNodeAnalyzer $deadVarTagValueNodeAnalyzer
     ) {
     }
 
@@ -145,10 +147,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            $property->type = $nativePropertyTypeNode;
+
             // remove var tag
             $this->removeVarTag($propertyPhpDocInfo, $property);
 
-            $property->type = $nativePropertyTypeNode;
             $hasChanged = true;
         }
 
@@ -166,6 +169,16 @@ CODE_SAMPLE
 
     private function removeVarTag(PhpDocInfo $propertyPhpDocInfo, Property $property): void
     {
+        $varTagValueNode = $propertyPhpDocInfo->getVarTagValueNode();
+
+        if (! $varTagValueNode instanceof VarTagValueNode) {
+            return;
+        }
+
+        if (! $this->deadVarTagValueNodeAnalyzer->isDead($varTagValueNode, $property)) {
+            return;
+        }
+
         $propertyPhpDocInfo->removeByType(VarTagValueNode::class);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
     }
