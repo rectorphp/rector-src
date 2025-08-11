@@ -15,7 +15,9 @@ use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([ArrayFirstLastRector::class, RemoveFinfoBufferContextArgRector::class, NullDebugInfoReturnRector::class]);
+    $rectorConfig->rules(
+        [ArrayFirstLastRector::class, RemoveFinfoBufferContextArgRector::class, NullDebugInfoReturnRector::class]
+    );
 
     $rectorConfig->ruleWithConfiguration(
         RemoveFuncCallArgRector::class,

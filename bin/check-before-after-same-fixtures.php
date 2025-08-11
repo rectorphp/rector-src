@@ -41,7 +41,7 @@ final readonly class SameBeforeAfterFixtureDetector
         }
 
         if ($invalidFixturePaths === []) {
-            $this->symfonyStyle->success('All fixtures are valid');
+            $this->symfonyStyle->success(sprintf('All %d fixtures are valid', count($fixtureFiles)));
             return Command::SUCCESS;
         }
 
