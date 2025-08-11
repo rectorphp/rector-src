@@ -53,6 +53,14 @@ jobs:
                         run: vendor/bin/swiss-knife finalize-classes src tests --dry-run
 
                     -
+                        name: 'Check before/after test fixture on no-changes'
+                        run: php bin/check-before-after-same-fixtures.php
+
+                    -
+                        name: 'Check no "*.php" files in rules Fixture directory'
+                        run: php bin/no-php-file-in-fixtures.php
+
+                    -
                         name: 'Detect composer dependency issues'
                         run: vendor/bin/composer-dependency-analyser
 

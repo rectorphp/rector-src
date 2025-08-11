@@ -768,6 +768,12 @@ final class PhpVersionFeature
      * @var int
      */
     public const ARRAY_ANY = PhpVersion::PHP_84;
+    
+    /**
+     * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_context_parameter_for_finfo_buffer
+     * @var int
+     */
+    public const DEPRECATE_FINFO_BUFFER_CONTEXT = PhpVersion::PHP_85; 
 
     /**
      * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_debuginfo_returning_null
