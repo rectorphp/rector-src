@@ -29,7 +29,7 @@ use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromDocblockSetUpDef
 
 final class MagicSetupTestAssign extends TestCase
 {
-    private SomeDocblockType $someType;
+    private \Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromDocblockSetUpDefinedRector\Source\SomeDocblockType $someType;
 
     protected function setUp(): void
     {

@@ -104,12 +104,16 @@ CODE_SAMPLE
 
         foreach ($node->getProperties() as $property) {
             // already known type
-            if ($property->type instanceof \PhpParser\Node) {
+            if ($property->type instanceof Node) {
                 continue;
             }
 
             // some magic might be going on
-            if ($property->isStatic() || ! $property->isPrivate()) {
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            if (! $property->isPrivate()) {
                 continue;
             }
 
@@ -137,7 +141,7 @@ CODE_SAMPLE
                 $varType,
                 TypeKind::PROPERTY
             );
-            if (! $nativePropertyTypeNode instanceof \PhpParser\Node) {
+            if (! $nativePropertyTypeNode instanceof Node) {
                 continue;
             }
 
