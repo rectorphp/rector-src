@@ -2,16 +2,22 @@
 
 declare(strict_types=1);
 
+use PhpParser\Node\Expr\Cast\Bool_;
+use PhpParser\Node\Expr\Cast\Double;
+use PhpParser\Node\Expr\Cast\Int_;
+use PhpParser\Node\Expr\Cast\String_;
 use Rector\Config\RectorConfig;
 use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
+use Rector\Renaming\Rector\Cast\RenameCastRector;
 use Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
+use Rector\Renaming\ValueObject\RenameCast;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -152,6 +158,17 @@ return static function (RectorConfig $rectorConfig): void {
             new RenameClassAndConstFetch('PDO', 'SQLITE_OPEN_READONLY', 'Pdo\Sqlite', 'OPEN_READONLY'),
             new RenameClassAndConstFetch('PDO', 'SQLITE_OPEN_READWRITE', 'Pdo\Sqlite', 'OPEN_READWRITE'),
             new RenameClassAndConstFetch('PDO', 'SQLITE_OPEN_CREATE', 'Pdo\Sqlite', 'OPEN_CREATE'),
+        ]
+    );
+
+    // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_non-standard_cast_names
+    $rectorConfig->ruleWithConfiguration(
+        RenameCastRector::class,
+        [
+            new RenameCast(Int_::class, Int_::KIND_INTEGER, Int_::KIND_INT),
+            new RenameCast(Bool_::class, Bool_::KIND_BOOLEAN, Bool_::KIND_BOOL),
+            new RenameCast(Double::class, Double::KIND_DOUBLE, Double::KIND_FLOAT),
+            new RenameCast(String_::class, String_::KIND_BINARY, String_::KIND_STRING),
         ]
     );
 };
