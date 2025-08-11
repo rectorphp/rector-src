@@ -332,3 +332,9 @@ parameters:
         -
             identifier: arrayValues.list
             path: rules/CodingStyle/Application/UseImportsAdder.php
+
+        -
+            message: '#^Register "Rector\\Php74\\Rector\\Double\\RealToFloatTypeCastRector" service to "php74\.php" config set$#'
+            identifier: rector.upgradeDowngradeRegisteredInSet
+            count: 1
+            path: rules/Php74/Rector/Double/RealToFloatTypeCastRector.php
