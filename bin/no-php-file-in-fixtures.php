@@ -104,9 +104,6 @@ final readonly class NoPhpFileInFixturesDetector
     }
 }
 
-
 $noPhpFileInFixturesDetector = new NoPhpFileInFixturesDetector();
 
-exit($noPhpFileInFixturesDetector->run([
-    __DIR__ . '/../rules-tests',
-]));
+exit($noPhpFileInFixturesDetector->run([__DIR__ . '/../rules-tests']));

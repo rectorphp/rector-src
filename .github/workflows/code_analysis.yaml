@@ -57,6 +57,10 @@ jobs:
                         run: php bin/check-before-after-same-fixtures.php
 
                     -
+                        name: 'Check no "*.php" files in rules Fixture directory'
+                        run: php bin/no-php-file-in-fixtures.php
+
+                    -
                         name: 'Detect composer dependency issues'
                         run: vendor/bin/composer-dependency-analyser
 

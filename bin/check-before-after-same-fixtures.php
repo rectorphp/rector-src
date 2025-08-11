@@ -81,9 +81,5 @@ final readonly class SameBeforeAfterFixtureDetector
     }
 }
 
-
 $sameBeforeAfterFixtureDetector = new SameBeforeAfterFixtureDetector();
-exit($sameBeforeAfterFixtureDetector->run([
-    __DIR__ . '/../tests',
-    __DIR__ . '/../rules-tests',
-]));
+exit($sameBeforeAfterFixtureDetector->run([__DIR__ . '/../tests', __DIR__ . '/../rules-tests']));
