@@ -9,20 +9,33 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\Guard\OverrideByParentClassGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector\PrivatizeFinalClassMethodRectorTest
+ * @see \Rector\Tests\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector\CallbackTest
  */
-final class PrivatizeFinalClassMethodRector extends AbstractRector
+final class PrivatizeFinalClassMethodRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @api
+     * @var string
+     */
+    public const SHOULD_SKIP_CALLBACK = 'should_skip_callback';
+
+    /**
+     * @var ?callable(ClassMethod, ClassReflection): bool
+     */
+    private $shouldSkipCallback = null;
+
     public function __construct(
         private readonly ClassMethodVisibilityGuard $classMethodVisibilityGuard,
         private readonly VisibilityManipulator $visibilityManipulator,
@@ -36,8 +49,14 @@ final class PrivatizeFinalClassMethodRector extends AbstractRector
         return new RuleDefinition(
             'Change protected class method to private if possible',
             [
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
+final class SomeOtherClass
+{
+    protected function someMethod()
+    {
+    }
+}
 final class SomeClass
 {
     protected function someMethod()
@@ -47,6 +66,12 @@ final class SomeClass
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
+final class SomeOtherClass
+{
+    protected function someMethod()
+    {
+    }
+}
 final class SomeClass
 {
     private function someMethod()
@@ -54,9 +79,26 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
+                    ,
+                    [
+                        self::SHOULD_SKIP_CALLBACK => static function (
+                            ClassMethod $classMethod,
+                            ClassReflection $classReflection,
+                        ): bool {
+                            return $classReflection->is('SomeOtherClass');
+                        },
+                    ],
                 ),
             ]
         );
+    }
+
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $this->shouldSkipCallback = $configuration[self::SHOULD_SKIP_CALLBACK] ?? null;
     }
 
     /**
@@ -104,6 +146,13 @@ CODE_SAMPLE
                 $classMethod,
                 $classReflection
             )) {
+                continue;
+            }
+
+            if (
+                is_callable($this->shouldSkipCallback)
+                && call_user_func($this->shouldSkipCallback, $classMethod, $classReflection)
+            ) {
                 continue;
             }
 
