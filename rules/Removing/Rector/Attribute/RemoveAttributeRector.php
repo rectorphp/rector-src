@@ -6,7 +6,16 @@ namespace Rector\Removing\Rector\Attribute;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Param;
+use PhpParser\Node\PropertyHook;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Const_;
+use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
@@ -53,25 +62,26 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Node::class];
+        return [
+            ArrowFunction::class,
+            ClassConst::class,
+            ClassLike::class,
+            ClassMethod::class,
+            Closure::class,
+            Const_::class,
+            EnumCase::class,
+            Function_::class,
+            Param::class,
+            Property::class,
+            PropertyHook::class,
+        ];
     }
 
+    /**
+     * @param ArrowFunction|ClassConst|ClassLike|ClassMethod|Closure|Const_|EnumCase|Function_|Param|Property|PropertyHook $node
+     */
     public function refactor(Node $node): ?Node
     {
-        if (! in_array('attrGroups', $node->getSubNodeNames(), true)) {
-            return null;
-        }
-
-        if (! isset($node->attrGroups) || $node->attrGroups === null || $node->attrGroups === []) {
-            return null;
-        }
-
-        foreach ($node->attrGroups as $attrGroup) {
-            if (! $attrGroup instanceof AttributeGroup) {
-                return null;
-            }
-        }
-
         $nodeTypes = [$node::class];
         if ($node instanceof Param && $node->isPromoted()) {
             // An attribute removed from a parameter or property must be removed from a promoted property because an
