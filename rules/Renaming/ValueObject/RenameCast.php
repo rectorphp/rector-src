@@ -10,8 +10,10 @@ use Webmozart\Assert\Assert;
 
 final readonly class RenameCast
 {
+    /**
+     * @param class-string<Cast> $fromCastExprClass
+     */
     public function __construct(
-        /** @var class-string<Cast> */
         private string $fromCastExprClass,
         private int $fromCastKind,
         private int $toCastKind,
