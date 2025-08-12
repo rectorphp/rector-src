@@ -82,19 +82,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $nodeTypes = [$node::class];
-        if ($node instanceof Param && $node->isPromoted()) {
-            // An attribute removed from a parameter or property must be removed from a promoted property because an
-            // attribute on a promoted property applies to the constructor parameter and the object property.
-            $nodeTypes[] = Property::class;
-        }
-
         $relevantRemoveAttributes = [];
         foreach ($this->removeAttributes as $removeAttribute) {
-            if ($removeAttribute->getNodeTypes() === [] || array_intersect(
-                $nodeTypes,
-                $removeAttribute->getNodeTypes()
-            ) !== []) {
+            if ($removeAttribute->getNodeTypes() === [] || in_array(
+                $node::class,
+                $removeAttribute->getNodeTypes(),
+                true
+            )) {
                 $relevantRemoveAttributes[] = $removeAttribute;
             }
         }
