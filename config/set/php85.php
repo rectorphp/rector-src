@@ -8,7 +8,6 @@ use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
 use Rector\Config\RectorConfig;
 use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
-use Rector\DeadCode\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
 use Rector\DeadCode\ValueObject\WrapFuncCallWithPhpVersionIdChecker;
 use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
@@ -22,6 +21,7 @@ use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\RenameCast;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
+use Rector\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules(

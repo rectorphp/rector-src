@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\DeadCode\Rector\FuncCall;
+namespace Rector\Transform\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -21,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector\WrapFuncCallWithPhpVersionIdCheckerRectorTest
+ * @see \Rector\Tests\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector\WrapFuncCallWithPhpVersionIdCheckerRectorTest
  */
 final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector implements ConfigurableRectorInterface
 {
