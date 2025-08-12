@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
+namespace Rector\Tests\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

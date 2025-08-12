@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
 use Rector\DeadCode\ValueObject\WrapFuncCallWithPhpVersionIdChecker;
+use Rector\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
 
 return RectorConfig::configure()
     ->withConfiguredRule(

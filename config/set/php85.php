@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
 use Rector\DeadCode\ValueObject\WrapFuncCallWithPhpVersionIdChecker;
 use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
@@ -11,6 +10,7 @@ use Rector\Removing\ValueObject\RemoveFuncCallArg;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
+use Rector\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([ArrayFirstLastRector::class]);
