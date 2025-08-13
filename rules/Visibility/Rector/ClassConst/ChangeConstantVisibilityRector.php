@@ -34,7 +34,7 @@ final class ChangeConstantVisibilityRector extends AbstractRector implements Con
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change visibility of constant from parent class.',
+            'Change visibility of constant from parent class',
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'

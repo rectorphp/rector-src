@@ -30,7 +30,7 @@ final class ExceptionHandlerTypehintRector extends AbstractRector implements Min
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change typehint from `Exception` to `Throwable`.',
+            'Change typehint from `Exception` to `Throwable`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

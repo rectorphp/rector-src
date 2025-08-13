@@ -55,7 +55,7 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'This Rector adds new default arguments in calls of defined methods and class types.',
+            'Add new default arguments in calls of defined methods and class types',
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'

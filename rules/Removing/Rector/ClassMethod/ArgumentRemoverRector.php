@@ -38,7 +38,7 @@ final class ArgumentRemoverRector extends AbstractRector implements Configurable
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Removes defined arguments in defined methods and their calls.',
+            'Remove defined arguments in defined methods and their calls',
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'

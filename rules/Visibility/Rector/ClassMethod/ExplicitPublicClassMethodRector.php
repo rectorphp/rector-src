@@ -24,7 +24,7 @@ final class ExplicitPublicClassMethodRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add explicit public method visibility.',
+            'Add explicit public method visibility',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

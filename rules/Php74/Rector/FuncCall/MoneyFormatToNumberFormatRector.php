@@ -39,7 +39,7 @@ final class MoneyFormatToNumberFormatRector extends AbstractRector implements Mi
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change money_format() to equivalent number_format()',
+            'Change `money_format()` to equivalent `number_format()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -37,7 +37,7 @@ final class ReplaceArgumentDefaultValueRector extends AbstractRector implements 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replaces defined map of arguments in defined methods and their calls.',
+            'Replace defined map of arguments in defined methods and their calls',
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'

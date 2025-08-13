@@ -96,7 +96,7 @@ final class SensitiveConstantNameRector extends AbstractRector implements MinPhp
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes case insensitive constants to sensitive ones.',
+            'Change case insensitive constants to sensitive ones',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

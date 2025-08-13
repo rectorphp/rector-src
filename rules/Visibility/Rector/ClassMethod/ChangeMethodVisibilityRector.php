@@ -36,7 +36,7 @@ final class ChangeMethodVisibilityRector extends AbstractRector implements Confi
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change visibility of method from parent class.',
+            'Change visibility of method from parent class',
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'

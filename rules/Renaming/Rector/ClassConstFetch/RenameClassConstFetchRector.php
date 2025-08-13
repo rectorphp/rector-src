@@ -30,7 +30,7 @@ final class RenameClassConstFetchRector extends AbstractRector implements Config
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replaces defined class constants in their calls.',
+            'Replace defined class constants in their calls',
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
