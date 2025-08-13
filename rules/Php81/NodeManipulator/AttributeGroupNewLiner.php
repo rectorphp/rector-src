@@ -4,15 +4,24 @@ declare(strict_types=1);
 
 namespace Rector\Php81\NodeManipulator;
 
-use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Property;
+use PhpParser\Node;
+use PhpParser\Node\AttributeGroup;
 use Rector\ValueObject\Application\File;
+use Webmozart\Assert\Assert;
 
 final class AttributeGroupNewLiner
 {
-    public function newLine(File $file, Property|Param|Class_ $node): void
+    public function newLine(File $file, Node $node): void
     {
+        $attrGroups = $node->attrGroups ?? [];
+
+        if ($attrGroups === []) {
+            return;
+        }
+
+        Assert::allIsAOf($attrGroups, AttributeGroup::class);
+        Assert::isArray($attrGroups);
+
         $oldTokens = $file->getOldTokens();
         $startTokenPos = $node->getStartTokenPos();
 
@@ -25,13 +34,13 @@ final class AttributeGroupNewLiner
         }
 
         $iteration = 1;
-        $lastKey = array_key_last($node->attrGroups);
+        $lastKey = array_key_last($attrGroups);
 
         if ($lastKey === null) {
             return;
         }
 
-        $lastAttributeTokenPos = $node->attrGroups[$lastKey]->getEndTokenPos();
+        $lastAttributeTokenPos = $attrGroups[$lastKey]->getEndTokenPos();
 
         while (isset($oldTokens[$startTokenPos + $iteration])) {
             if ($startTokenPos + $iteration === $lastAttributeTokenPos) {
