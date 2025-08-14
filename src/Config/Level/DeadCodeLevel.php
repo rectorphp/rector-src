@@ -36,6 +36,7 @@ use Rector\DeadCode\Rector\For_\RemoveDeadLoopRector;
 use Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector;
 use Rector\DeadCode\Rector\FuncCall\RemoveFilterVarOnExactTypeRector;
 use Rector\DeadCode\Rector\FunctionLike\RemoveDeadReturnRector;
+use Rector\DeadCode\Rector\FunctionLike\TooWideReturnTypeRector;
 use Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
@@ -126,6 +127,7 @@ final class DeadCodeLevel
         RemoveParentCallWithoutParentRector::class,
         RemoveDeadConditionAboveReturnRector::class,
         RemoveDeadLoopRector::class,
+        TooWideReturnTypeRector::class,
 
         // removing methods could be risky if there is some magic loading them
         RemoveUnusedPromotedPropertyRector::class,
