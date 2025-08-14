@@ -35,7 +35,7 @@ final class WhileEachToForeachRector extends AbstractRector implements MinPhpVer
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'each() function is deprecated, use foreach() instead.',
+            'Use `foreach()` instead of deprecated `each()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

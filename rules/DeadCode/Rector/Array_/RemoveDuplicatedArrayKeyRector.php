@@ -30,7 +30,7 @@ final class RemoveDuplicatedArrayKeyRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove duplicated key in defined arrays.', [
+        return new RuleDefinition('Remove duplicated key in defined arrays', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 $item = [

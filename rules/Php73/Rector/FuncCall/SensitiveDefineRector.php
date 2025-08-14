@@ -25,7 +25,7 @@ final class SensitiveDefineRector extends AbstractRector implements MinPhpVersio
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes case insensitive constants to sensitive ones.',
+            'Change case insensitive constant definition to sensitive one',
             [new CodeSample(
                 <<<'CODE_SAMPLE'
 define('FOO', 42, true);
