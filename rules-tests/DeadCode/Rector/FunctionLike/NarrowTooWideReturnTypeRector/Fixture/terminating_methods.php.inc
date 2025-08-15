@@ -13,15 +13,6 @@ final class TerminatingMethods
         }
     }
 
-    public function alwaysThrows(): string|int|null
-    {
-        if (rand(0, 1)) {
-            throw new \Exception('error');
-        } else {
-            throw new \RuntimeException('runtime error');
-        }
-    }
-
     public function mixedTerminating(): string|int|null
     {
         if (rand(0, 1)) {
@@ -57,16 +48,6 @@ final class TerminatingMethods
         }
     }
 
-    public function alwaysExits(): string|int|null
-    {
-        exit(1);
-    }
-
-    public function noReturnStatements(): string|int
-    {
-        echo 'something';
-    }
-
     public function hasReturnButAlsoThrows(): string|int|null
     {
         if (rand(0, 1)) {
@@ -91,15 +72,6 @@ final class TerminatingMethods
             return 'text';
         } else {
             return 42;
-        }
-    }
-
-    public function alwaysThrows(): never
-    {
-        if (rand(0, 1)) {
-            throw new \Exception('error');
-        } else {
-            throw new \RuntimeException('runtime error');
         }
     }
 
@@ -136,16 +108,6 @@ final class TerminatingMethods
         } finally {
             return 'finally';
         }
-    }
-
-    public function alwaysExits(): never
-    {
-        exit(1);
-    }
-
-    public function noReturnStatements(): void
-    {
-        echo 'something';
     }
 
     public function hasReturnButAlsoThrows(): string

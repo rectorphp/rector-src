@@ -20,13 +20,6 @@ final class EdgeCases
         }
     }
 
-    public function noReturn(): string|int|null
-    {
-        if (rand(0, 1)) {
-            echo 'something';
-        }
-    }
-
     public function nullableReturn(): ?string
     {
         return 'something';
@@ -54,13 +47,6 @@ final class EdgeCases
     {
         if (rand(0, 1)) {
             return 'something';
-        }
-    }
-
-    public function noReturn(): void
-    {
-        if (rand(0, 1)) {
-            echo 'something';
         }
     }
 

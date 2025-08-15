@@ -23,7 +23,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
-use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -47,7 +46,6 @@ final class NarrowTooWideReturnTypeRector extends AbstractRector implements MinP
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly SilentVoidResolver $silentVoidResolver,
-        private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -91,7 +89,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::UNION_TYPES;
+        return PhpVersionFeature::NULLABLE_TYPE;
     }
 
     /**
@@ -119,15 +117,6 @@ CODE_SAMPLE
         $isAlwaysTerminating = ! $this->silentVoidResolver->hasSilentVoid($node);
 
         if ($returnStatements === [] && ! $node instanceof ArrowFunction) {
-            if ($isAlwaysTerminating) {
-                if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEVER_TYPE)) {
-                    return null;
-                }
-                $node->returnType = new Identifier('never');
-            } else {
-                $node->returnType = new Identifier('void');
-            }
-
             return null;
         }
 

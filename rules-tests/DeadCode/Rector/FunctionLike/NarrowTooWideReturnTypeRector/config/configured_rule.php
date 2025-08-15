@@ -8,5 +8,5 @@ use Rector\ValueObject\PhpVersionFeature;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(NarrowTooWideReturnTypeRector::class);
-    $rectorConfig->phpVersion(PhpVersionFeature::NEVER_TYPE);
+    $rectorConfig->phpVersion(PhpVersionFeature::UNION_TYPES);
 };
