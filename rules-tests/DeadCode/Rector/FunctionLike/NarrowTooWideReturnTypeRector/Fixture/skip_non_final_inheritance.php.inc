@@ -1,13 +1,12 @@
 <?php
 
+
 namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Fixture;
 
-abstract class BaseClass
-{
-    abstract public function process(): string|int|array;
-}
+use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface;
+use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Sourcet\SomeAbstractClass;
 
-class SkipInheritance extends BaseClass
+class SkipInheritance extends SomeAbstractClass
 {
     public function process(): string|int|array
     {
@@ -17,11 +16,6 @@ class SkipInheritance extends BaseClass
 
         return 42;
     }
-}
-
-interface SomeInterface
-{
-    public function getData(): string|int|bool;
 }
 
 class SkipInterfaceImplementation implements SomeInterface
