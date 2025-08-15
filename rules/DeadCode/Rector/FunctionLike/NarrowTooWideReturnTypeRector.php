@@ -165,6 +165,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if (! $classReflection->isClass()) {
+            return true;
+        }
+
         return ! $classReflection->isFinalByKeyword();
     }
 
