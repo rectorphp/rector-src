@@ -34,7 +34,7 @@
         "rector/rector-phpunit": "dev-main",
         "rector/rector-symfony": "dev-main",
         "sebastian/diff": "^6.0",
-        "symfony/console": "^6.4",
+        "symfony/console": "^6.4.24",
         "symfony/filesystem": "^6.4",
         "symfony/finder": "^6.4",
         "symfony/process": "^6.4",
@@ -115,9 +115,6 @@
     },
     "extra": {
         "patches": {
-            "symfony/console": [
-                "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/symfony-console-helper-helper-php.patch"
-            ],
             "illuminate/container": [
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/illuminate-container-container-php.patch"
             ],
