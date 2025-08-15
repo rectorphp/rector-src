@@ -23,27 +23,30 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\NarrowTooWideReturnTypeRectorTest
  */
-final class NarrowTooWideReturnTypeRector extends AbstractRector
+final class NarrowTooWideReturnTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly SilentVoidResolver $silentVoidResolver,
+        private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -83,6 +86,11 @@ CODE_SAMPLE
                 ),
             ]
         );
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::UNION_TYPES;
     }
 
     /**
