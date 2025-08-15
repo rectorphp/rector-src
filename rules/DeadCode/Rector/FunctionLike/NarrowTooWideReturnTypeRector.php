@@ -140,7 +140,7 @@ CODE_SAMPLE
         $returnType = $node->returnType;
 
         if (! $returnType instanceof UnionType && ! $returnType instanceof NullableType) {
-            return false;
+            return true;
         }
 
         if ($this->hasYield($node)) {
