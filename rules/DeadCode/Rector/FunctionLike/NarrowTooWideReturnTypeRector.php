@@ -6,23 +6,23 @@ namespace Rector\DeadCode\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
-use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -30,6 +30,7 @@ use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -42,7 +43,7 @@ final class NarrowTooWideReturnTypeRector extends AbstractRector
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly TerminatedNodeAnalyzer $terminatedNodeAnalyzer
+        private readonly SilentVoidResolver $silentVoidResolver,
     ) {
     }
 
@@ -103,9 +104,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnStatements = $this->betterNodeFinder->findInstanceOf($node, Return_::class);
-        $isAlwaysTerminating = $node instanceof ArrowFunction
-            || $this->terminatedNodeAnalyzer->isAlwaysTerminating($node);
+        $returnStatements = $node instanceof ArrowFunction
+            ? []
+            : $this->betterNodeFinder->findReturnsScoped($node);
+        $isAlwaysTerminating = ! $this->silentVoidResolver->hasSilentVoid($node);
 
         if ($returnStatements === [] && ! $node instanceof ArrowFunction) {
             if ($isAlwaysTerminating) {
@@ -140,7 +142,9 @@ CODE_SAMPLE
 
     private function shouldSkipNode(ClassMethod|Function_|Closure|ArrowFunction $node, Scope $scope): bool
     {
-        if ($node->returnType === null) {
+        $returnType = $node->returnType;
+
+        if (! $returnType instanceof UnionType && ! $returnType instanceof NullableType) {
             return false;
         }
 
@@ -166,7 +170,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $classReflection->isFinal();
+        return ! $classReflection->isFinalByKeyword();
     }
 
     /**
@@ -179,7 +183,7 @@ CODE_SAMPLE
         bool $isAlwaysTerminating,
     ): array {
         if ($node instanceof ArrowFunction) {
-            return [$this->getType($node->expr)];
+            return [$this->nodeTypeResolver->getNativeType($node->expr)];
         }
 
         $returnTypes = [];
@@ -189,7 +193,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $returnTypes[] = $this->getType($returnStatement->expr);
+            $returnTypes[] = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
         }
 
         if (! $isAlwaysTerminating) {
@@ -210,11 +214,10 @@ CODE_SAMPLE
         $usedTypes = [];
 
         foreach ($types as $type) {
-            $declaredType = $this->getType($type);
-            if ($declaredType instanceof MixedType) {
-                // Mixed type covers all other types, so we should only keep mixed
-                return new Identifier('mixed');
-            }
+            $declaredType = $type instanceof Expr
+                ? $this->nodeTypeResolver->getNativeType($type)
+                : $this->getType($type);
+
             foreach ($actualReturnTypes as $actualType) {
                 if (! $declaredType->isSuperTypeOf($actualType)->no()) {
                     $usedTypes[] = $declaredType;
@@ -222,6 +225,8 @@ CODE_SAMPLE
                 }
             }
         }
+
+        $usedTypes = array_unique($usedTypes, SORT_REGULAR);
 
         if ($usedTypes === [] || count($usedTypes) === count($types)) {
             return null;
@@ -239,15 +244,9 @@ CODE_SAMPLE
             return false;
         }
 
-        $stmts = $node->stmts;
-
-        if ($stmts === null || $stmts === []) {
-            return false;
-        }
-
-        return (bool) $this->betterNodeFinder->findFirst(
-            $stmts,
-            fn (Node $subNode): bool => $subNode instanceof Yield_ || $subNode instanceof YieldFrom
+        return (bool) $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $node,
+            [Yield_::class, YieldFrom::class]
         );
     }
 }

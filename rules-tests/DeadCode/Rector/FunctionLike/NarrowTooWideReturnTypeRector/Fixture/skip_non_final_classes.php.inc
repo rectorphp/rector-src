@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Fixture;
 
-class NonFinalClass
+class SkipNonFinalClass
 {
     public function getData(): string|int|\DateTime
     {

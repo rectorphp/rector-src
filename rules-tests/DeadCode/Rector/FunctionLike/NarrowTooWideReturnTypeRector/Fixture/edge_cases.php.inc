@@ -26,11 +26,6 @@ final class EdgeCases
             echo 'something';
         }
     }
-
-    public function withMixed(): mixed|string|int
-    {
-        return 'text';
-    }
 }
 
 ?>
@@ -62,11 +57,6 @@ final class EdgeCases
         if (rand(0, 1)) {
             echo 'something';
         }
-    }
-
-    public function withMixed(): mixed
-    {
-        return 'text';
     }
 }
 
