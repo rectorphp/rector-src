@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Configuration\Parameter;
 
+use PhpParser\Node\Stmt\Class_;
 use Rector\Configuration\Option;
 
 /**
@@ -12,8 +13,14 @@ use Rector\Configuration\Option;
  */
 final class FeatureFlags
 {
-    public static function treatClassesAsFinal(): bool
+    public static function treatClassesAsFinal(Class_ $class): bool
     {
+        // abstract class never can be treated as "final"
+        // as always must be overridden
+        if ($class->isAbstract()) {
+            return false;
+        }
+
         return SimpleParameterProvider::provideBoolParameter(Option::TREAT_CLASSES_AS_FINAL);
     }
 }
