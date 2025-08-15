@@ -45,29 +45,6 @@ final class TerminatedNodeAnalyzer
      */
     private const ALLOWED_CONTINUE_CURRENT_STMTS = [InlineHTML::class, Nop::class];
 
-    public function isAlwaysTerminating(StmtsAwareInterface $stmtsAware): bool
-    {
-        $stmts = $stmtsAware->stmts;
-
-        if ($stmts === null || $stmts === []) {
-            return false;
-        }
-
-        foreach ($stmts as $key => $stmt) {
-            if (! isset($stmts[$key - 1])) {
-                continue;
-            }
-
-            $previousStmt = $stmts[$key - 1];
-
-            if ($this->isAlwaysTerminated($stmtsAware, $previousStmt, $stmt)) {
-                return true;
-            }
-        }
-
-        return $this->isTerminatedInLastStmts($stmts, $stmts[array_key_last($stmts)]);
-    }
-
     public function isAlwaysTerminated(StmtsAwareInterface $stmtsAware, Stmt $node, Stmt $currentStmt): bool
     {
         if (in_array($currentStmt::class, self::ALLOWED_CONTINUE_CURRENT_STMTS, true)) {
@@ -180,7 +157,7 @@ final class TerminatedNodeAnalyzer
     /**
      * @param Stmt[] $stmts
      */
-    private function isTerminatedInLastStmts(array $stmts, Stmt $stmt): bool
+    private function isTerminatedInLastStmts(array $stmts, Node $node): bool
     {
         if ($stmts === []) {
             return false;
@@ -189,7 +166,7 @@ final class TerminatedNodeAnalyzer
         $lastKey = array_key_last($stmts);
         $lastNode = $stmts[$lastKey];
 
-        if (isset($stmts[$lastKey - 1]) && ! $this->isTerminatedNode($stmts[$lastKey - 1], $stmt)) {
+        if (isset($stmts[$lastKey - 1]) && ! $this->isTerminatedNode($stmts[$lastKey - 1], $node)) {
             return false;
         }
 
@@ -197,22 +174,6 @@ final class TerminatedNodeAnalyzer
             return $lastNode->expr instanceof Exit_ || $lastNode->expr instanceof Throw_;
         }
 
-        if ($lastNode instanceof Return_) {
-            return true;
-        }
-
-        if ($lastNode instanceof If_) {
-            return $this->isTerminatedInLastStmtsIf($lastNode, $stmt);
-        }
-
-        if ($lastNode instanceof TryCatch) {
-            return $this->isTerminatedInLastStmtsTryCatch($lastNode, $stmt);
-        }
-
-        if ($lastNode instanceof Switch_) {
-            return $this->isTerminatedInLastStmtsSwitch($lastNode, $stmt);
-        }
-
-        return false;
+        return $lastNode instanceof Return_;
     }
 }
