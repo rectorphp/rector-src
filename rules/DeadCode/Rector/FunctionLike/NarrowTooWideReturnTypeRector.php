@@ -26,6 +26,7 @@ use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -33,9 +34,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\FunctionLike\TooWideReturnTypeRector\TooWideReturnTypeRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\NarrowTooWideReturnTypeRectorTest
  */
-final class TooWideReturnTypeRector extends AbstractRector
+final class NarrowTooWideReturnTypeRector extends AbstractRector
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -107,11 +108,16 @@ CODE_SAMPLE
             || $this->terminatedNodeAnalyzer->isAlwaysTerminating($node);
 
         if ($returnStatements === [] && ! $node instanceof ArrowFunction) {
-            $node->returnType = $isAlwaysTerminating
-                ? new Identifier('never')
-                : new Identifier('void');
+            if ($isAlwaysTerminating) {
+                if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEVER_TYPE)) {
+                    return null;
+                }
+                $node->returnType = new Identifier('never');
+            } else {
+                $node->returnType = new Identifier('void');
+            }
 
-            return $node;
+            return null;
         }
 
         $returnType = $node->returnType;
@@ -134,6 +140,10 @@ CODE_SAMPLE
 
     private function shouldSkipNode(ClassMethod|Function_|Closure|ArrowFunction $node, Scope $scope): bool
     {
+        if ($node->returnType === null) {
+            return false;
+        }
+
         if ($this->hasYield($node)) {
             return true;
         }

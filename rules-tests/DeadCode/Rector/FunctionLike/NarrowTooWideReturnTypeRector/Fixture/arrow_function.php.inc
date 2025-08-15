@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\FunctionLike\RemoveUnusedReturnTypeRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Fixture;
 
 $simple = fn($x): string|int|bool => $x > 5 ? 'high' : 10;
 
@@ -13,7 +13,7 @@ $cast = fn($input): int|string|array => (int) $input;
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\FunctionLike\RemoveUnusedReturnTypeRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Fixture;
 
 $simple = fn($x): string|int => $x > 5 ? 'high' : 10;
 

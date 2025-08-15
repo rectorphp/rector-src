@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DeadCode\Rector\FunctionLike\TooWideReturnTypeRector;
+namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class TooWideReturnTypeRectorTest extends AbstractRectorTestCase
+final class NarrowTooWideReturnTypeRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
