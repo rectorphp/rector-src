@@ -35,6 +35,7 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\NarrowTooWideReturnTypeRectorTest
@@ -131,10 +132,7 @@ CODE_SAMPLE
         }
 
         $returnType = $node->returnType;
-
-        if (! $returnType instanceof UnionType) {
-            return null;
-        }
+        Assert::isInstanceOfAny($returnType, [UnionType::class, NullableType::class]);
 
         $actualReturnTypes = $this->collectActualReturnTypes($node, $returnStatements, $isAlwaysTerminating);
         $newReturnType = $this->narrowUnionReturnType($returnType, $actualReturnTypes);
@@ -215,10 +213,12 @@ CODE_SAMPLE
      * @param Type[] $actualReturnTypes
      */
     private function narrowUnionReturnType(
-        UnionType $unionType,
+        UnionType|NullableType $returnType,
         array $actualReturnTypes
     ): ComplexType|Identifier|Name|null {
-        $types = $unionType->types;
+        $types = $returnType instanceof UnionType
+            ? $returnType->types
+            : [$returnType->type, new Identifier('null')];
         $usedTypes = [];
 
         foreach ($types as $type) {

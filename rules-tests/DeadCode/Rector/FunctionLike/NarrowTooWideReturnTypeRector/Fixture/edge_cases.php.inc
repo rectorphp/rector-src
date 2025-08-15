@@ -26,6 +26,11 @@ final class EdgeCases
             echo 'something';
         }
     }
+
+    public function nullableReturn(): ?string
+    {
+        return 'something';
+    }
 }
 
 ?>
@@ -57,6 +62,11 @@ final class EdgeCases
         if (rand(0, 1)) {
             echo 'something';
         }
+    }
+
+    public function nullableReturn(): string
+    {
+        return 'something';
     }
 }
 
