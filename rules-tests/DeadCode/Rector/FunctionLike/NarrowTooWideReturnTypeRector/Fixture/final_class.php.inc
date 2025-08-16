@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Fixture;
 
-final class ClassMethodCase
+final class FinalClass
 {
     public function getData(): string|int|\DateTime
     {
@@ -46,7 +46,7 @@ final class ClassMethodCase
 
 namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Fixture;
 
-final class ClassMethodCase
+final class FinalClass
 {
     public function getData(): string|int
     {
