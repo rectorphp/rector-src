@@ -20,13 +20,13 @@ final class PhpDocs
      * @param class-string<SomeInterface> $class
      * @return class-string<SomeInterface>|int
      */
-    public function bar($class): string|int
+    public function bar(string $class): string|int
     {
         return $class;
     }
 
     /** @return class-string<SomeInterface>|int */
-    public function baz($class): string|int
+    public function baz(string $class): string|int
     {
         return SomeInterface::class;
     }
@@ -85,13 +85,13 @@ final class PhpDocs
      * @param class-string<SomeInterface> $class
      * @return class-string<Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface>
      */
-    public function bar($class): string
+    public function bar(string $class): string
     {
         return $class;
     }
 
     /** @return class-string<Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface> */
-    public function baz($class): string
+    public function baz(string $class): string
     {
         return SomeInterface::class;
     }
