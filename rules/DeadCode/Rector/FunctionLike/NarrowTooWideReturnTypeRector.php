@@ -21,7 +21,6 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType as PHPStanUnionType;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -135,11 +134,6 @@ CODE_SAMPLE
         }
 
         $actualReturnTypes = $this->collectActualReturnTypes($node, $returnStatements, $isAlwaysTerminating);
-
-        if ($actualReturnTypes === null) {
-            return null;
-        }
-
         $newReturnType = $this->narrowReturnType($returnType, $actualReturnTypes);
 
         if ($newReturnType === null) {
@@ -197,15 +191,15 @@ CODE_SAMPLE
 
     /**
      * @param Return_[] $returnStatements
-     * @return Type[]|null
+     * @return Type[]
      */
     private function collectActualReturnTypes(
         ClassMethod|Function_|Closure|ArrowFunction $node,
         array $returnStatements,
         bool $isAlwaysTerminating,
-    ): ?array {
+    ): array {
         if ($node instanceof ArrowFunction) {
-            return [$this->getType($node->expr)];
+            return [$this->nodeTypeResolver->getNativeType($node->expr)];
         }
 
         $returnTypes = [];
@@ -215,13 +209,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $nativeReturnType = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
-
-            if ($nativeReturnType instanceof MixedType) {
-                return null;
-            }
-
-            $returnTypes[] = $this->getType($returnStatement->expr);
+            $returnTypes[] = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
         }
 
         if (! $isAlwaysTerminating) {
