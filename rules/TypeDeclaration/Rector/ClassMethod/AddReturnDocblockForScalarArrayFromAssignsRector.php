@@ -5,29 +5,30 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Return_;
+use PHPStan\Type\Type;
+use PhpParser\Node\Expr;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\FloatType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\PhpParser\Node\BetterNodeFinder;
+use PHPStan\Type\IntegerType;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Expr\Variable;
 use Rector\Rector\AbstractRector;
+use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnDocblockForScalarArrayFromAssignsRector\AddReturnDocblockForScalarArrayFromAssignsRectorTest
@@ -145,10 +146,6 @@ CODE_SAMPLE
             }
         }
 
-        if ($scalarArrayTypes === []) {
-            return null;
-        }
-
         $firstScalarType = $scalarArrayTypes[0];
         foreach ($scalarArrayTypes as $scalarArrayType) {
             if (! $firstScalarType->equals($scalarArrayType)) {
@@ -250,7 +247,7 @@ CODE_SAMPLE
         return $firstType;
     }
 
-    private function resolveScalarType(Node $expr): ?Type
+    private function resolveScalarType(Expr $expr): ?Type
     {
         if ($expr instanceof String_) {
             return new StringType();
