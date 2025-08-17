@@ -123,8 +123,9 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $hasReturnDocblock = (bool) $phpDocInfo?->hasByName('@return');
 
-        if ($phpDocInfo?->hasByName('@return')) {
+        if ($hasReturnDocblock) {
             $returnType = $phpDocInfo->getReturnType();
         } else {
             $returnType = $node->returnType;
@@ -144,7 +145,7 @@ CODE_SAMPLE
             TypeKind::RETURN
         );
 
-        if ($phpDocInfo instanceof PhpDocInfo) {
+        if ($hasReturnDocblock) {
             $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $newReturnType);
         }
 

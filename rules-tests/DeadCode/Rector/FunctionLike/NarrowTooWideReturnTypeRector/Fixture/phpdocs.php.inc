@@ -36,6 +36,14 @@ final class PhpDocs
     {
        return new \ArrayIterator([1]);
     }
+
+    /**
+     * @param int $a
+     */
+    function quux($a): int|string
+    {
+        return $a;
+    }
 }
 
 ?>
@@ -77,6 +85,14 @@ final class PhpDocs
     function qux(): \Iterator
     {
        return new \ArrayIterator([1]);
+    }
+
+    /**
+     * @param int $a
+     */
+    function quux($a): int
+    {
+        return $a;
     }
 }
 
