@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\FunctionLike;
 
+use PHPStan\Type\MixedType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -134,6 +135,11 @@ CODE_SAMPLE
         }
 
         $actualReturnTypes = $this->collectActualReturnTypes($node, $returnStatements, $isAlwaysTerminating);
+
+        if ($actualReturnTypes === null) {
+            return null;
+        }
+
         $newReturnType = $this->narrowReturnType($returnType, $actualReturnTypes);
 
         if ($newReturnType === null) {
@@ -164,12 +170,6 @@ CODE_SAMPLE
             return true;
         }
 
-        foreach ($node->params as $param) {
-            if (! $param->type instanceof Node) {
-                return true;
-            }
-        }
-
         if (! $node instanceof ClassMethod) {
             return false;
         }
@@ -197,13 +197,13 @@ CODE_SAMPLE
 
     /**
      * @param Return_[] $returnStatements
-     * @return Type[]
+     * @return Type[]|null
      */
     private function collectActualReturnTypes(
         ClassMethod|Function_|Closure|ArrowFunction $node,
         array $returnStatements,
         bool $isAlwaysTerminating,
-    ): array {
+    ): ?array {
         if ($node instanceof ArrowFunction) {
             return [$this->getType($node->expr)];
         }
@@ -213,6 +213,12 @@ CODE_SAMPLE
             if ($returnStatement->expr === null) {
                 $returnTypes[] = new NullType();
                 continue;
+            }
+
+            $nativeReturnType = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
+
+            if ($nativeReturnType instanceof MixedType) {
+                return null;
             }
 
             $returnTypes[] = $this->getType($returnStatement->expr);

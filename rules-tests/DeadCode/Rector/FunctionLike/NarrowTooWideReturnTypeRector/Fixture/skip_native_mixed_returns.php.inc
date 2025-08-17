@@ -12,6 +12,18 @@ final class SkipFunctionLikesWithoutParameterTypes
     {
         return $class;
     }
+
+    /**
+     * @return class-string<\stdClass>|int
+     */
+    public function skipMixedByDoc(): string|int
+    {
+        /**
+         * @var class-string<\stdClass> $class
+         */
+        $class = get();
+        return $class;
+    }
 }
 
 ?>
