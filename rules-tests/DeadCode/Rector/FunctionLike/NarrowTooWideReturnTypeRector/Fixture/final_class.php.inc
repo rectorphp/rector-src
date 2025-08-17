@@ -48,7 +48,7 @@ namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRecto
 
 final class FinalClass
 {
-    public function getData(): string|int
+    public function getData(): int|string
     {
         if (rand(0, 1)) {
             return 'text';

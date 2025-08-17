@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\FunctionLike;
 
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -20,8 +23,11 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType as PHPStanUnionType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
@@ -46,6 +52,8 @@ final class NarrowTooWideReturnTypeRector extends AbstractRector implements MinP
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly TypeFactory $typeFactory,
     ) {
     }
 
@@ -115,38 +123,40 @@ CODE_SAMPLE
             return null;
         }
 
-        $isAlwaysTerminating = ! $this->silentVoidResolver->hasSilentVoid($node);
+        $hasImplicitNullReturn = $this->silentVoidResolver->hasSilentVoid($node)
+            || $this->hasImplicitNullReturn($returnStatements);
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        $hasReturnDocblock = (bool) $phpDocInfo?->hasByName('@return');
+        $returnType = $node->returnType;
+        Assert::isInstanceOfAny($returnType, [UnionType::class, NullableType::class]);
 
-        if ($hasReturnDocblock) {
-            $returnType = $phpDocInfo->getReturnType();
-        } else {
-            $returnType = $node->returnType;
-            Assert::isInstanceOfAny($returnType, [UnionType::class, NullableType::class]);
-            $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+        $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+        $actualReturnTypes = $this->collectActualReturnTypes($returnStatements);
+
+        if ($hasImplicitNullReturn) {
+            $actualReturnTypes[] = new NullType();
         }
 
-        $actualReturnTypes = $this->collectActualReturnTypes($returnStatements, $isAlwaysTerminating);
-        $newReturnType = $this->narrowReturnType($returnType, $actualReturnTypes);
+        $unusedTypes = $this->getUnusedType($returnType, $actualReturnTypes);
 
-        if (! $newReturnType instanceof Type) {
+        if ($unusedTypes === []) {
             return null;
         }
 
-        // Standalone null return type is not allowed
-        if ($newReturnType instanceof NullType) {
-            return null;
-        }
-
-        $node->returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-            $newReturnType,
+        $newReturnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+            TypeCombinator::remove($returnType, TypeCombinator::union(...$unusedTypes)),
             TypeKind::RETURN
         );
 
-        if ($hasReturnDocblock) {
-            $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $newReturnType);
+        if ($newReturnType === null) {
+            return null;
+        }
+
+        $node->returnType = $newReturnType;
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+
+        if ($phpDocInfo?->hasByName('@return')) {
+            $this->changePhpDocReturnType($node, $phpDocInfo, $unusedTypes);
         }
 
         return $node;
@@ -191,25 +201,31 @@ CODE_SAMPLE
 
     /**
      * @param Return_[] $returnStatements
+     */
+    private function hasImplicitNullReturn(array $returnStatements): bool
+    {
+        foreach ($returnStatements as $returnStatement) {
+            if ($returnStatement->expr === null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Return_[] $returnStatements
      * @return Type[]
      */
-    private function collectActualReturnTypes(
-        array $returnStatements,
-        bool $isAlwaysTerminating,
-    ): array {
+    private function collectActualReturnTypes(array $returnStatements): array {
         $returnTypes = [];
 
         foreach ($returnStatements as $returnStatement) {
             if ($returnStatement->expr === null) {
-                $returnTypes[] = new NullType();
                 continue;
             }
 
             $returnTypes[] = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
-        }
-
-        if (! $isAlwaysTerminating) {
-            $returnTypes[] = new NullType();
         }
 
         return $returnTypes;
@@ -217,28 +233,24 @@ CODE_SAMPLE
 
     /**
      * @param Type[] $actualReturnTypes
+     * @return Type[]
      */
-    private function narrowReturnType(Type $returnType, array $actualReturnTypes): Type|null
+    private function getUnusedType(Type $returnType, array $actualReturnTypes): array
     {
         $types = $returnType instanceof PHPStanUnionType ? $returnType->getTypes() : [$returnType];
-        $usedTypes = [];
+        $unusedTypes = [];
 
         foreach ($types as $type) {
             foreach ($actualReturnTypes as $actualReturnType) {
                 if (! $type->isSuperTypeOf($actualReturnType)->no()) {
-                    $usedTypes[] = $type;
-                    break;
+                    continue 2;
                 }
             }
+
+            $unusedTypes[] = $type;
         }
 
-        $usedTypes = array_unique($usedTypes, SORT_REGULAR);
-
-        if ($usedTypes === [] || count($usedTypes) === count($types)) {
-            return null;
-        }
-
-        return TypeCombinator::union(...$usedTypes);
+        return $unusedTypes;
     }
 
     private function hasYield(FunctionLike $node): bool
@@ -247,5 +259,33 @@ CODE_SAMPLE
             $node,
             [Yield_::class, YieldFrom::class]
         );
+    }
+
+    /**
+     * @param Type[] $unusedTypes
+     */
+    private function changePhpDocReturnType(
+        FunctionLike $node,
+        PhpDocInfo $phpDocInfo,
+        array $unusedTypes,
+    ): void {
+        $returnTagValueNode = $phpDocInfo->getReturnTagValue();
+
+        if (! $returnTagValueNode instanceof ReturnTagValueNode) {
+            return;
+        }
+
+        $typeNode = $returnTagValueNode->type;
+
+        // Skip wildcards like CiDetector::CI_* as they are resolved to
+        // actual constant types like 'GitHubActions' or 'GitLabCI' and
+        // we can't replace the type while preserving the `CI_*` portion
+        if (preg_match('/::[_A-Z]*\*/', (string) $returnTagValueNode->type)) {
+            return;
+        }
+
+        $newReturnType = TypeCombinator::remove($phpDocInfo->getReturnType(), TypeCombinator::union(...$unusedTypes));
+
+        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $newReturnType);
     }
 }
