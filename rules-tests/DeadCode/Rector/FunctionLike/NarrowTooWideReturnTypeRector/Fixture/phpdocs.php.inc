@@ -37,6 +37,12 @@ final class PhpDocs
        return new \ArrayIterator([1]);
     }
 
+    /** @return \Iterator<int, int>|string */
+    function qax(): \Iterator|string
+    {
+       return 'text';
+    }
+
     /**
      * @param int $a
      */
@@ -94,6 +100,12 @@ final class PhpDocs
     function qux(): \Iterator
     {
        return new \ArrayIterator([1]);
+    }
+
+    /** @return string */
+    function qax(): string
+    {
+       return 'text';
     }
 
     /**
