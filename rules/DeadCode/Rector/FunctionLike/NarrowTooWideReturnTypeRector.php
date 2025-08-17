@@ -135,6 +135,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // Standalone null return type is not allowed
+        if ($newReturnType instanceof NullType) {
+            return null;
+        }
+
         $node->returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
             $newReturnType,
             TypeKind::RETURN
