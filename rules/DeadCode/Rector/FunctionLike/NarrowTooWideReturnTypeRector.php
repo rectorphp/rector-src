@@ -164,6 +164,12 @@ CODE_SAMPLE
             return true;
         }
 
+        foreach ($node->params as $param) {
+            if (! $param->type instanceof Node) {
+                return true;
+            }
+        }
+
         if (! $node instanceof ClassMethod) {
             return false;
         }

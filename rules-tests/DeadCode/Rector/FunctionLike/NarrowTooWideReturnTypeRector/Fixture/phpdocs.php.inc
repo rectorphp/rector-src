@@ -46,7 +46,7 @@ final class PhpDocs
     /**
      * @param int $a
      */
-    function quux($a): int|string
+    function quux(int $a): int|string
     {
         return $a;
     }
@@ -55,7 +55,7 @@ final class PhpDocs
      * @param int $a
      * @return int|string
      */
-    function mixedReturn($a): int|string
+    function mixedReturn(int $a): int|string
     {
         return $a;
     }
@@ -111,7 +111,7 @@ final class PhpDocs
     /**
      * @param int $a
      */
-    function quux($a): int
+    function quux(int $a): int
     {
         return $a;
     }
@@ -120,7 +120,7 @@ final class PhpDocs
      * @param int $a
      * @return int
      */
-    function mixedReturn($a): int
+    function mixedReturn(int $a): int
     {
         return $a;
     }
