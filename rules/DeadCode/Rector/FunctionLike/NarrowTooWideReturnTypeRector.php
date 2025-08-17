@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -108,14 +109,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnStatements = $node instanceof ArrowFunction
-            ? []
-            : $this->betterNodeFinder->findReturnsScoped($node);
-        $isAlwaysTerminating = ! $this->silentVoidResolver->hasSilentVoid($node);
+        $returnStatements = $this->betterNodeFinder->findReturnsScoped($node);
 
-        if ($returnStatements === [] && ! $node instanceof ArrowFunction) {
+        if ($returnStatements === []) {
             return null;
         }
+
+        $isAlwaysTerminating = ! $this->silentVoidResolver->hasSilentVoid($node);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         $hasReturnDocblock = (bool) $phpDocInfo?->hasByName('@return');
@@ -128,7 +128,7 @@ CODE_SAMPLE
             $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
         }
 
-        $actualReturnTypes = $this->collectActualReturnTypes($node, $returnStatements, $isAlwaysTerminating);
+        $actualReturnTypes = $this->collectActualReturnTypes($returnStatements, $isAlwaysTerminating);
         $newReturnType = $this->narrowReturnType($returnType, $actualReturnTypes);
 
         if (! $newReturnType instanceof Type) {
@@ -194,15 +194,11 @@ CODE_SAMPLE
      * @return Type[]
      */
     private function collectActualReturnTypes(
-        ClassMethod|Function_|Closure|ArrowFunction $node,
         array $returnStatements,
         bool $isAlwaysTerminating,
     ): array {
-        if ($node instanceof ArrowFunction) {
-            return [$this->nodeTypeResolver->getNativeType($node->expr)];
-        }
-
         $returnTypes = [];
+
         foreach ($returnStatements as $returnStatement) {
             if ($returnStatement->expr === null) {
                 $returnTypes[] = new NullType();
@@ -245,12 +241,8 @@ CODE_SAMPLE
         return TypeCombinator::union(...$usedTypes);
     }
 
-    private function hasYield(ClassMethod|Function_|Closure|ArrowFunction $node): bool
+    private function hasYield(FunctionLike $node): bool
     {
-        if ($node instanceof ArrowFunction) {
-            return false;
-        }
-
         return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
             $node,
             [Yield_::class, YieldFrom::class]

@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace Rector\PhpParser\Node;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor;
@@ -159,7 +156,7 @@ final readonly class BetterNodeFinder
      * @param array<class-string<T>>|class-string<T> $types
      */
     public function hasInstancesOfInFunctionLikeScoped(
-        ClassMethod | Function_ | Closure $functionLike,
+        FunctionLike $functionLike,
         string|array $types
     ): bool {
         if (is_string($types)) {
@@ -168,7 +165,7 @@ final readonly class BetterNodeFinder
 
         $isFoundNode = false;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $functionLike->stmts,
+            (array) $functionLike->getStmts(),
             static function (Node $subNode) use ($types, &$isFoundNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -191,12 +188,12 @@ final readonly class BetterNodeFinder
     /**
      * @return Return_[]
      */
-    public function findReturnsScoped(ClassMethod | Function_ | Closure $functionLike): array
+    public function findReturnsScoped(FunctionLike $functionLike): array
     {
         $returns = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $functionLike->stmts,
+            (array) $functionLike->getStmts(),
             function (Node $subNode) use (&$returns): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -268,7 +265,7 @@ final readonly class BetterNodeFinder
      * @return array<T>
      */
     public function findInstancesOfInFunctionLikeScoped(
-        ClassMethod | Function_ | Closure $functionLike,
+        FunctionLike $functionLike,
         string|array $types
     ): array {
         return $this->findInstancesOfScoped([$functionLike], $types);
@@ -278,13 +275,13 @@ final readonly class BetterNodeFinder
      * @param callable(Node $node): bool $filter
      */
     public function findFirstInFunctionLikeScoped(
-        ClassMethod | Function_ | Closure $functionLike,
-        callable $filter
+        FunctionLike $functionLike,
+        callable $filter,
     ): ?Node {
         $scopedNode = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $functionLike->stmts,
+            (array) $functionLike->getStmts(),
             function (Node $subNode) use (&$scopedNode, $filter): ?int {
                 if (! $filter($subNode)) {
                     if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
