@@ -44,6 +44,15 @@ final class PhpDocs
     {
         return $a;
     }
+
+    /**
+     * @param int $a
+     * @return int|string
+     */
+    function mixedReturn($a): int|string
+    {
+        return $a;
+    }
 }
 
 ?>
@@ -91,6 +100,15 @@ final class PhpDocs
      * @param int $a
      */
     function quux($a): int
+    {
+        return $a;
+    }
+
+    /**
+     * @param int $a
+     * @return int
+     */
+    function mixedReturn($a): int
     {
         return $a;
     }
