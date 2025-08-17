@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\FunctionLike;
 
-use PHPStan\Type\MixedType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -15,7 +14,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
@@ -24,7 +22,6 @@ use PHPStan\Type\UnionType as PHPStanUnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -107,9 +104,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
-
-        if ($this->shouldSkipNode($node, $scope)) {
+        if ($this->shouldSkipNode($node)) {
             return null;
         }
 
@@ -136,7 +131,7 @@ CODE_SAMPLE
         $actualReturnTypes = $this->collectActualReturnTypes($node, $returnStatements, $isAlwaysTerminating);
         $newReturnType = $this->narrowReturnType($returnType, $actualReturnTypes);
 
-        if ($newReturnType === null) {
+        if (! $newReturnType instanceof Type) {
             return null;
         }
 
@@ -152,7 +147,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkipNode(ClassMethod|Function_|Closure|ArrowFunction $node, Scope $scope): bool
+    private function shouldSkipNode(ClassMethod|Function_|Closure|ArrowFunction $node): bool
     {
         $returnType = $node->returnType;
 
@@ -228,8 +223,8 @@ CODE_SAMPLE
         $usedTypes = [];
 
         foreach ($types as $type) {
-            foreach ($actualReturnTypes as $actualType) {
-                if (! $type->isSuperTypeOf($actualType)->no()) {
+            foreach ($actualReturnTypes as $actualReturnType) {
+                if (! $type->isSuperTypeOf($actualReturnType)->no()) {
                     $usedTypes[] = $type;
                     break;
                 }
@@ -251,7 +246,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+        return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
             $node,
             [Yield_::class, YieldFrom::class]
         );
