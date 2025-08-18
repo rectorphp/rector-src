@@ -149,6 +149,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // mostly placeholder
+        if ($this->isName($newReturnType, 'null')) {
+            return null;
+        }
+
         $node->returnType = $newReturnType;
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
