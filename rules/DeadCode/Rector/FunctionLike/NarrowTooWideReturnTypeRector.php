@@ -7,7 +7,9 @@ namespace Rector\DeadCode\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -194,6 +196,16 @@ CODE_SAMPLE
 
         if (! $returnType instanceof UnionType && ! $returnType instanceof NullableType) {
             return true;
+        }
+
+        $types = $returnType instanceof UnionType
+            ? $returnType->types
+            : [new ConstFetch(new Name('null')), $returnType->type];
+
+        foreach ($types as $type) {
+            if ($this->isNames($type, ['true', 'false'])) {
+                return true;
+            }
         }
 
         if (! $node instanceof ClassMethod) {
