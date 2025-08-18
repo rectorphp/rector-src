@@ -155,10 +155,8 @@ final readonly class BetterNodeFinder
      * @template T of Node
      * @param array<class-string<T>>|class-string<T> $types
      */
-    public function hasInstancesOfInFunctionLikeScoped(
-        FunctionLike $functionLike,
-        string|array $types
-    ): bool {
+    public function hasInstancesOfInFunctionLikeScoped(FunctionLike $functionLike, string|array $types): bool
+    {
         if (is_string($types)) {
             $types = [$types];
         }
@@ -264,20 +262,16 @@ final readonly class BetterNodeFinder
      * @param array<class-string<T>>|class-string<T> $types
      * @return array<T>
      */
-    public function findInstancesOfInFunctionLikeScoped(
-        FunctionLike $functionLike,
-        string|array $types
-    ): array {
+    public function findInstancesOfInFunctionLikeScoped(FunctionLike $functionLike, string|array $types): array
+    {
         return $this->findInstancesOfScoped([$functionLike], $types);
     }
 
     /**
      * @param callable(Node $node): bool $filter
      */
-    public function findFirstInFunctionLikeScoped(
-        FunctionLike $functionLike,
-        callable $filter,
-    ): ?Node {
+    public function findFirstInFunctionLikeScoped(FunctionLike $functionLike, callable $filter): ?Node
+    {
         $scopedNode = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
