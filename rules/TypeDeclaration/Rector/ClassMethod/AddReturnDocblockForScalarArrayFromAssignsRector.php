@@ -123,9 +123,6 @@ CODE_SAMPLE
 
         $returnsScoped = $this->betterNodeFinder->findReturnsScoped($node);
 
-        if ($returnsScoped === []) {
-            return null;
-        }
 
         if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returnsScoped)) {
             return null;
