@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\FunctionLike;
 
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
@@ -26,8 +22,6 @@ use PHPStan\Type\UnionType as PHPStanUnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
@@ -52,8 +46,6 @@ final class NarrowTooWideReturnTypeRector extends AbstractRector implements MinP
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly TypeFactory $typeFactory,
     ) {
     }
 
@@ -147,7 +139,7 @@ CODE_SAMPLE
             TypeKind::RETURN
         );
 
-        if ($newReturnType === null) {
+        if (! $newReturnType instanceof Node) {
             return null;
         }
 
@@ -155,7 +147,7 @@ CODE_SAMPLE
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
 
-        if ($phpDocInfo?->hasByName('@return')) {
+        if ($phpDocInfo?->hasByName('@return') === true) {
             $this->changePhpDocReturnType($node, $phpDocInfo, $unusedTypes);
         }
 
@@ -167,10 +159,6 @@ CODE_SAMPLE
         $returnType = $node->returnType;
 
         if (! $returnType instanceof UnionType && ! $returnType instanceof NullableType) {
-            return true;
-        }
-
-        if ($this->hasYield($node)) {
             return true;
         }
 
@@ -217,7 +205,8 @@ CODE_SAMPLE
      * @param Return_[] $returnStatements
      * @return Type[]
      */
-    private function collectActualReturnTypes(array $returnStatements): array {
+    private function collectActualReturnTypes(array $returnStatements): array
+    {
         $returnTypes = [];
 
         foreach ($returnStatements as $returnStatement) {
@@ -253,19 +242,11 @@ CODE_SAMPLE
         return $unusedTypes;
     }
 
-    private function hasYield(FunctionLike $node): bool
-    {
-        return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
-            $node,
-            [Yield_::class, YieldFrom::class]
-        );
-    }
-
     /**
      * @param Type[] $unusedTypes
      */
     private function changePhpDocReturnType(
-        FunctionLike $node,
+        FunctionLike $functionLike,
         PhpDocInfo $phpDocInfo,
         array $unusedTypes,
     ): void {
@@ -274,8 +255,6 @@ CODE_SAMPLE
         if (! $returnTagValueNode instanceof ReturnTagValueNode) {
             return;
         }
-
-        $typeNode = $returnTagValueNode->type;
 
         // Skip wildcards like CiDetector::CI_* as they are resolved to
         // actual constant types like 'GitHubActions' or 'GitLabCI' and
@@ -286,6 +265,6 @@ CODE_SAMPLE
 
         $newReturnType = TypeCombinator::remove($phpDocInfo->getReturnType(), TypeCombinator::union(...$unusedTypes));
 
-        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $newReturnType);
+        $this->phpDocTypeChanger->changeReturnType($functionLike, $phpDocInfo, $newReturnType);
     }
 }
