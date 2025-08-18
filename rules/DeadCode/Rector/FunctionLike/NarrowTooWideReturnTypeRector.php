@@ -22,6 +22,7 @@ use PHPStan\Type\UnionType as PHPStanUnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
@@ -46,6 +47,7 @@ final class NarrowTooWideReturnTypeRector extends AbstractRector implements MinP
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly TypeFactory $typeFactory
     ) {
     }
 
@@ -109,6 +111,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkipByDocblock($node)) {
+            return null;
+        }
+
         $returnStatements = $this->betterNodeFinder->findReturnsScoped($node);
 
         if ($returnStatements === []) {
@@ -152,6 +158,29 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function shouldSkipByDocblock(ClassMethod|Function_|Closure|ArrowFunction $node): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return false;
+        }
+
+        $returnTag = $phpDocInfo->getReturnTagValue();
+
+        if (! $returnTag instanceof ReturnTagValueNode) {
+            return false;
+        }
+
+        $returnType = $phpDocInfo->getReturnType();
+        if (! $returnType instanceof \PHPStan\Type\UnionType) {
+            return false;
+        }
+
+        $type = $this->typeFactory->createMixedPassedOrUnionType($returnType->getTypes());
+        return ! $type->equals($returnType);
     }
 
     private function shouldSkipNode(ClassMethod|Function_|Closure|ArrowFunction $node): bool
@@ -256,15 +285,7 @@ CODE_SAMPLE
             return;
         }
 
-        // Skip wildcards like CiDetector::CI_* as they are resolved to
-        // actual constant types like 'GitHubActions' or 'GitLabCI' and
-        // we can't replace the type while preserving the `CI_*` portion
-        if (preg_match('/::[_A-Z]*\*/', (string) $returnTagValueNode->type)) {
-            return;
-        }
-
         $newReturnType = TypeCombinator::remove($phpDocInfo->getReturnType(), TypeCombinator::union(...$unusedTypes));
-
         $this->phpDocTypeChanger->changeReturnType($functionLike, $phpDocInfo, $newReturnType);
     }
 }
