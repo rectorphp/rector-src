@@ -11,6 +11,6 @@ final class SkipTrueFalseToBecomeBool
 
     public function run(): true|string
     {
-        return false;
+        return true;
     }
 }
