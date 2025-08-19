@@ -4,7 +4,12 @@ namespace Rector\Tests\Renaming\Rector\Cast\RenameCastRector\Fixture;
 
 final class KeepParentheses
 {
-    public function run(float $i): int
+    public function runInt(float $i): int
+    {
+        return (int) ($i * $i);
+    }
+
+    public function runInteger(float $i): int
     {
         return (integer) ($i * $i);
     }
@@ -18,7 +23,12 @@ namespace Rector\Tests\Renaming\Rector\Cast\RenameCastRector\Fixture;
 
 final class KeepParentheses
 {
-    public function run(float $i): int
+    public function runInt(float $i): int
+    {
+        return (int) ($i * $i);
+    }
+
+    public function runInteger(float $i): int
     {
         return (int) ($i * $i);
     }
