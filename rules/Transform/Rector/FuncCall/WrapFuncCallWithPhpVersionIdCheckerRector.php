@@ -12,6 +12,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\NodeVisitor;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\ValueObject\WrapFuncCallWithPhpVersionIdChecker;
 use Rector\Rector\AbstractRector;
@@ -57,32 +59,49 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
      */
     public function getNodeTypes(): array
     {
-        return [Expression::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Expression $node
+     * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): null|Node|int
     {
-        if (! $node->expr instanceof FuncCall) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $funcCall = $node->expr;
+        if ($this->isWrappedFuncCall($node)) {
+            return NodeVisitor::DONT_TRAVERSE_CHILDREN;
+        }
 
-        foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
-            if ($this->getName($funcCall) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()) {
+        $hasChanged = false;
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Expression || ! $stmt->expr instanceof FuncCall) {
                 continue;
             }
 
-            $phpVersionIdConst = new ConstFetch(new Name('PHP_VERSION_ID'));
-            $if = new If_(new Smaller($phpVersionIdConst, new Int_(
-                $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
-            )));
-            $if->stmts = [$node];
+            $funcCall = $stmt->expr;
 
-            return $if;
+            foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
+                if ($this->getName($funcCall) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()) {
+                    continue;
+                }
+
+                $phpVersionIdConst = new ConstFetch(new Name('PHP_VERSION_ID'));
+                $if = new If_(new Smaller($phpVersionIdConst, new Int_(
+                    $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
+                )));
+                $if->stmts = [$stmt];
+
+                $node->stmts[$key] = $if;
+
+                $hasChanged = true;
+            }
+        }
+
+        if ($hasChanged) {
+            return $node;
         }
 
         return null;
@@ -93,5 +112,47 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         Assert::allIsInstanceOf($configuration, WrapFuncCallWithPhpVersionIdChecker::class);
 
         $this->wrapFuncCallWithPhpVersionIdCheckers = $configuration;
+    }
+
+    private function isWrappedFuncCall(StmtsAwareInterface $node): bool
+    {
+        if (! $node instanceof If_) {
+            return false;
+        }
+
+        if (! $node->cond instanceof Smaller) {
+            return false;
+        }
+
+        if (! $node->cond->left instanceof ConstFetch || ! $this->isName($node->cond->left->name, 'PHP_VERSION_ID')) {
+            return false;
+        }
+
+        if (! $node->cond->right instanceof Int_) {
+            return false;
+        }
+
+        if (count($node->stmts) !== 1) {
+            return false;
+        }
+
+        $childStmt = $node->stmts[0];
+
+        if (! $childStmt instanceof Expression || ! $childStmt->expr instanceof FuncCall) {
+            return false;
+        }
+
+        foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
+            if (
+                $this->getName($childStmt->expr) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()
+                || $node->cond->right->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
+            ) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
