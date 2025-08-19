@@ -33,7 +33,9 @@ final class ServiceValueResolver
         } catch (\RuntimeException $e) {
 
             $r = new \ReflectionProperty($e, 'message');
-            $r->setAccessible(true);
+            if (PHP_VERSION_ID < 80100) {
+                $r->setAccessible(true);
+            }
             $r->setValue($e, $message);
 
             throw $e;
