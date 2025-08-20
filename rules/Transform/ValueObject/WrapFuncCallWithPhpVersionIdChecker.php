@@ -1,6 +1,8 @@
 <?php
 
-namespace Rector\DeadCode\ValueObject;
+declare(strict_types=1);
+
+namespace Rector\Transform\ValueObject;
 
 final readonly class WrapFuncCallWithPhpVersionIdChecker
 {
