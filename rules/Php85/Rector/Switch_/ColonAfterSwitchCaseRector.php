@@ -69,7 +69,7 @@ CODE_SAMPLE
                 ? (
                     isset($node->cases[$key + 1])
                     ? $node->cases[$key + 1]->getStartTokenPos()
-                    : 0
+                    : $node->getEndTokenPos()
                 )
                 : $case->stmts[0]->getStartTokenPos();
 
