@@ -97,7 +97,8 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                 }
 
                 if (isset($node->getArgs()[0])) {
-                    return $node->getArgs()[0]->value instanceof Variable;
+                    return $node->getArgs()[0]
+                        ->value instanceof Variable;
                 }
 
                 return false;
