@@ -84,9 +84,11 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
             if (! $stmt instanceof Expression) {
                 continue;
             }
+
             if (! $stmt->expr instanceof FuncCall) {
                 continue;
             }
+
             $funcCall = $stmt->expr;
 
             foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
@@ -148,9 +150,11 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
             if ($this->getName($childStmt->expr) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()) {
                 continue;
             }
+
             if ($phpVersionId->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()) {
                 continue;
             }
+
             return true;
         }
 
