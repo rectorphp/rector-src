@@ -7,6 +7,7 @@ use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
 use Rector\Config\RectorConfig;
+use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
@@ -22,7 +23,12 @@ use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules(
-        [ArrayFirstLastRector::class, RemoveFinfoBufferContextArgRector::class, NullDebugInfoReturnRector::class]
+        [
+            ArrayFirstLastRector::class,
+            RemoveFinfoBufferContextArgRector::class,
+            NullDebugInfoReturnRector::class,
+            DeprecatedAnnotationToDeprecatedAttributeRector::class,
+        ]
     );
 
     $rectorConfig->ruleWithConfiguration(
