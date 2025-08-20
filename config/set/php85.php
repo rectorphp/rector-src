@@ -7,9 +7,9 @@ use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
 use Rector\Config\RectorConfig;
-use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
+use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
@@ -20,6 +20,8 @@ use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\RenameCast;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
+use Rector\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
+use Rector\Transform\ValueObject\WrapFuncCallWithPhpVersionIdChecker;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules(
@@ -178,6 +180,18 @@ return static function (RectorConfig $rectorConfig): void {
             new RenameCast(Bool_::class, Bool_::KIND_BOOLEAN, Bool_::KIND_BOOL),
             new RenameCast(Double::class, Double::KIND_DOUBLE, Double::KIND_FLOAT),
             new RenameCast(String_::class, String_::KIND_BINARY, String_::KIND_STRING),
+        ]
+    );
+
+    // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_no-op_functions_from_the_resource_to_object_conversion
+    $rectorConfig->ruleWithConfiguration(
+        WrapFuncCallWithPhpVersionIdCheckerRector::class,
+        [
+            new WrapFuncCallWithPhpVersionIdChecker('curl_close', 80500),
+            new WrapFuncCallWithPhpVersionIdChecker('curl_share_close', 80500),
+            new WrapFuncCallWithPhpVersionIdChecker('finfo_close', 80500),
+            new WrapFuncCallWithPhpVersionIdChecker('imagedestroy', 80500),
+            new WrapFuncCallWithPhpVersionIdChecker('xml_parser_free', 80500),
         ]
     );
 };
