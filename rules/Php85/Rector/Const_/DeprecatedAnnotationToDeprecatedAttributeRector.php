@@ -18,7 +18,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
-
     public function __construct(
         private readonly DeprecatedAnnotationToDeprecatedAttributeConverter $converter,
     ) {
