@@ -13,11 +13,6 @@ final class Fixture
     {
         return empty($values) && is_array($values);
     }
-
-    public function functionCallInsideEmpty($values): bool
-    {
-        return is_array($values) && empty(array_filter($values));
-    }
 }
 
 ?>
@@ -36,11 +31,6 @@ final class Fixture
     public function isEmptyArray2($values): bool
     {
         return $values === [];
-    }
-
-    public function functionCallInsideEmpty($values): bool
-    {
-        return array_filter($values) === [];
     }
 }
 
