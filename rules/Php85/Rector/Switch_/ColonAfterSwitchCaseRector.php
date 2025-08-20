@@ -59,7 +59,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $endTokenPos = $case->cond->getEndTokenPos();
+            $endTokenPos = $cond->getEndTokenPos();
 
             if ($endTokenPos < 0) {
                 continue;
