@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace Rector\Transform\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitor;
@@ -89,9 +94,12 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
                 }
 
                 $phpVersionIdConst = new ConstFetch(new Name('PHP_VERSION_ID'));
-                $if = new If_(new Smaller($phpVersionIdConst, new Int_(
-                    $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
-                )));
+                $if = new If_(new BooleanAnd(
+                    new FuncCall(new Name('function_exists'), [new Arg(new String_(
+                        $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()
+                    ))]),
+                    new Smaller($phpVersionIdConst, new Int_($wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId())),
+                ));
                 $if->stmts = [$stmt];
 
                 $node->stmts[$key] = $if;
@@ -120,17 +128,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
             return false;
         }
 
-        if (! $node->cond instanceof Smaller) {
-            return false;
-        }
-
-        if (! $node->cond->left instanceof ConstFetch || ! $this->isName($node->cond->left->name, 'PHP_VERSION_ID')) {
-            return false;
-        }
-
-        if (! $node->cond->right instanceof Int_) {
-            return false;
-        }
+        $phpVersionIdComparison = $this->getPhpVersionIdComparison($node->cond);
 
         if (count($node->stmts) !== 1) {
             return false;
@@ -145,7 +143,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
             if (
                 $this->getName($childStmt->expr) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()
-                || $node->cond->right->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
+                || $phpVersionIdComparison->right->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
             ) {
                 continue;
             }
@@ -154,5 +152,26 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         }
 
         return false;
+    }
+
+    private function getPhpVersionIdComparison(Expr $expr): ?Smaller
+    {
+        if ($expr instanceof BooleanAnd) {
+            return $this->getPhpVersionIdComparison($expr->left) ?? $this->getPhpVersionIdComparison($expr->right);
+        }
+
+        if (! $expr instanceof Smaller) {
+            return null;
+        }
+
+        if (! $expr->left instanceof ConstFetch || ! $this->isName($expr->left->name, 'PHP_VERSION_ID')) {
+            return null;
+        }
+
+        if (! $expr->right instanceof Int_) {
+            return null;
+        }
+
+        return $expr;
     }
 }
