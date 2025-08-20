@@ -81,10 +81,12 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
 
         $hasChanged = false;
         foreach ($node->stmts as $key => $stmt) {
-            if (! $stmt instanceof Expression || ! $stmt->expr instanceof FuncCall) {
+            if (! $stmt instanceof Expression) {
                 continue;
             }
-
+            if (! $stmt->expr instanceof FuncCall) {
+                continue;
+            }
             $funcCall = $stmt->expr;
 
             foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
@@ -121,35 +123,34 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         $this->wrapFuncCallWithPhpVersionIdCheckers = $configuration;
     }
 
-    private function isWrappedFuncCall(StmtsAwareInterface $node): bool
+    private function isWrappedFuncCall(StmtsAwareInterface $stmtsAware): bool
     {
-        if (! $node instanceof If_) {
+        if (! $stmtsAware instanceof If_) {
             return false;
         }
 
-        $phpVersionId = $this->getPhpVersionId($node->cond);
-        if ($phpVersionId === null) {
+        $phpVersionId = $this->getPhpVersionId($stmtsAware->cond);
+        if (!$phpVersionId instanceof Int_) {
             return false;
         }
 
-        if (count($node->stmts) !== 1) {
+        if (count($stmtsAware->stmts) !== 1) {
             return false;
         }
 
-        $childStmt = $node->stmts[0];
+        $childStmt = $stmtsAware->stmts[0];
 
         if (! $childStmt instanceof Expression || ! $childStmt->expr instanceof FuncCall) {
             return false;
         }
 
         foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
-            if (
-                $this->getName($childStmt->expr) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()
-                || $phpVersionId->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
-            ) {
+            if ($this->getName($childStmt->expr) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()) {
                 continue;
             }
-
+            if ($phpVersionId->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()) {
+                continue;
+            }
             return true;
         }
 
