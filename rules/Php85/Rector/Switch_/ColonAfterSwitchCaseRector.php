@@ -78,11 +78,7 @@ CODE_SAMPLE
             }
 
             $nextTokenPos = $endTokenPos;
-            while (++$nextTokenPos > 0) {
-                if ($nextTokenPos === $startCaseStmtsPos) {
-                    break;
-                }
-
+            while (++$nextTokenPos < $startCaseStmtsPos) {
                 if (! isset($oldTokens[$nextTokenPos])) {
                     continue 2;
                 }
