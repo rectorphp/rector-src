@@ -13,6 +13,14 @@ final class Fixture
                 echo 'baz';
         }
     }
+
+    public function spaceBeforeSemiColon()
+    {
+        switch ($value) {
+            case 'baz' ;
+                echo 'baz';
+        }
+    }
 }
 
 ?>
@@ -29,6 +37,14 @@ final class Fixture
     {
         switch ($value) {
             case 'baz':
+                echo 'baz';
+        }
+    }
+
+    public function spaceBeforeSemiColon()
+    {
+        switch ($value) {
+            case 'baz' :
                 echo 'baz';
         }
     }

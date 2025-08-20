@@ -95,7 +95,7 @@ CODE_SAMPLE
                 if ($nextToken->text === ';') {
                     $hasChanged = true;
                     $nextToken->text = ':';
-                    break;
+                    continue 2;
                 }
             }
         }
