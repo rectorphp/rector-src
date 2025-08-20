@@ -11,6 +11,7 @@ use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
 use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
+use Rector\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
 use Rector\Renaming\Rector\Cast\RenameCastRector;
@@ -30,6 +31,7 @@ return static function (RectorConfig $rectorConfig): void {
             RemoveFinfoBufferContextArgRector::class,
             NullDebugInfoReturnRector::class,
             DeprecatedAnnotationToDeprecatedAttributeRector::class,
+            ColonAfterSwitchCaseRector::class,
         ]
     );
 
