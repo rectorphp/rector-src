@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php84\Rector\Class_;
+namespace Rector\Php85\Rector\Const_;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassConst;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Const_;
 use Rector\PhpAttribute\DeprecatedAnnotationToDeprecatedAttributeConverter;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -16,10 +14,11 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector\DeprecatedAnnotationToDeprecatedAttributeRectorTest
+ * @see \Rector\Tests\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector\DeprecatedAnnotationToDeprecatedAttributeRectorTest
  */
 final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
+
     public function __construct(
         private readonly DeprecatedAnnotationToDeprecatedAttributeConverter $converter,
     ) {
@@ -31,35 +30,14 @@ final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRect
             new CodeSample(
                 <<<'CODE_SAMPLE'
 /**
- * @deprecated 1.0.0 Use SomeOtherClass instead
+ * @deprecated 1.0.0 Use SomeOtherConstant instead
  */
-class SomeClass
-{
-}
+const SomeConstant = 'irrelevant';
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-#[\Deprecated(message: 'Use SomeOtherClass instead', since: '1.0.0')]
-class SomeClass
-{
-}
-CODE_SAMPLE
-            ),
-            new CodeSample(
-                <<<'CODE_SAMPLE'
-/**
- * @deprecated 1.0.0 Use SomeOtherFunction instead
- */
-function someFunction()
-{
-}
-CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
-#[\Deprecated(message: 'Use SomeOtherFunction instead', since: '1.0.0')]
-function someFunction()
-{
-}
+#[\Deprecated(message: 'Use SomeOtherConstant instead', since: '1.0.0')]
+const SomeConstant = 'irrelevant';
 CODE_SAMPLE
             ),
         ]);
@@ -67,11 +45,11 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [Function_::class, ClassMethod::class, ClassConst::class];
+        return [Const_::class];
     }
 
     /**
-     * @param ClassConst|Function_|ClassMethod $node
+     * @param Const_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -80,6 +58,6 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATED_ATTRIBUTE;
+        return PhpVersionFeature::DEPRECATED_ATTRIBUTE_ON_CONSTANT;
     }
 }
