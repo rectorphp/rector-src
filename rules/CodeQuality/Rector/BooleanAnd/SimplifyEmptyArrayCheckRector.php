@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Variable;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Rector\Rector\AbstractRector;
@@ -95,7 +96,11 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                     return false;
                 }
 
-                return isset($node->getArgs()[0]);
+                if (isset($node->getArgs()[0])) {
+                    return $node->getArgs()[0]->value instanceof Variable;
+                }
+
+                return false;
             },
             // empty(...)
             function (Node $node): bool {
@@ -103,19 +108,7 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                     return false;
                 }
 
-                if ($node->expr instanceof FuncCall) {
-                    if ($node->expr->isFirstClassCallable()) {
-                        return false;
-                    }
-
-                    if (! $this->isName($node->expr, 'array_filter')) {
-                        return false;
-                    }
-
-                    return isset($node->expr->getArgs()[0]);
-                }
-
-                return true;
+                return $node->expr instanceof Variable;
             }
         );
     }
