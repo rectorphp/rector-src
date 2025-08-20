@@ -47,7 +47,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
 
                     ,
                     <<<'CODE_SAMPLE'
-    if (PHP_VERSION_ID < 80500) {
+    if (function_exists('no_op_function') && PHP_VERSION_ID < 80500) {
         no_op_function();
     }
     CODE_SAMPLE
