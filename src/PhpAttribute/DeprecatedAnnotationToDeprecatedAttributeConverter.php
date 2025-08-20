@@ -25,7 +25,7 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 
-final class DeprecatedAnnotationToDeprecatedAttributeConverter
+final readonly class DeprecatedAnnotationToDeprecatedAttributeConverter
 {
     /**
      * @see https://regex101.com/r/qNytVk/1
@@ -40,10 +40,10 @@ final class DeprecatedAnnotationToDeprecatedAttributeConverter
     private const START_STAR_SPACED_REGEX = '#^ *\*#ms';
 
     public function __construct(
-        private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private PhpDocTagRemover $phpDocTagRemover,
+        private PhpAttributeGroupFactory $phpAttributeGroupFactory,
+        private DocBlockUpdater $docBlockUpdater,
+        private PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
+namespace Rector\Tests\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class WrapFuncCallWithPhpVersionIdCheckerRectorTest extends AbstractRectorTestCase
+final class ColonAfterSwitchCaseRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly DeprecatedAnnotationToDeprecatedAttributeConverter $converter,
+        private readonly DeprecatedAnnotationToDeprecatedAttributeConverter $deprecatedAnnotationToDeprecatedAttributeConverter,
     ) {
     }
 
@@ -75,7 +75,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        return $this->converter->convert($node);
+        return $this->deprecatedAnnotationToDeprecatedAttributeConverter->convert($node);
     }
 
     public function provideMinPhpVersion(): int
