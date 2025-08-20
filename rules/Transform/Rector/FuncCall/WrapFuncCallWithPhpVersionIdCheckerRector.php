@@ -127,7 +127,10 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
             return false;
         }
 
-        $phpVersionIdComparison = $this->getPhpVersionIdComparison($node->cond);
+        $phpVersionId = $this->getPhpVersionId($node->cond);
+        if ($phpVersionId === null) {
+            return false;
+        }
 
         if (count($node->stmts) !== 1) {
             return false;
@@ -142,7 +145,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         foreach ($this->wrapFuncCallWithPhpVersionIdCheckers as $wrapFuncCallWithPhpVersionIdChecker) {
             if (
                 $this->getName($childStmt->expr) !== $wrapFuncCallWithPhpVersionIdChecker->getFunctionName()
-                || $phpVersionIdComparison->right->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
+                || $phpVersionId->value !== $wrapFuncCallWithPhpVersionIdChecker->getPhpVersionId()
             ) {
                 continue;
             }
@@ -153,10 +156,10 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         return false;
     }
 
-    private function getPhpVersionIdComparison(Expr $expr): ?Smaller
+    private function getPhpVersionId(Expr $expr): ?Int_
     {
         if ($expr instanceof BooleanAnd) {
-            return $this->getPhpVersionIdComparison($expr->left) ?? $this->getPhpVersionIdComparison($expr->right);
+            return $this->getPhpVersionId($expr->left) ?? $this->getPhpVersionId($expr->right);
         }
 
         if (! $expr instanceof Smaller) {
@@ -171,6 +174,6 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
             return null;
         }
 
-        return $expr;
+        return $expr->right;
     }
 }
