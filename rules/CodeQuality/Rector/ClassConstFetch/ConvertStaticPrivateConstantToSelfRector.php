@@ -56,35 +56,6 @@ class Foo
 }
 CODE_SAMPLE
                 ),
-                new CodeSample(
-                    <<<'CODE_SAMPLE'
-final class Foo
-{
-    private const BAR = 'bar';
-    public const BAZ = 'baz';
-
-    public function run()
-    {
-        $bar = static::BAR;
-        $baz = static::BAZ;
-    }
-}
-CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
-final class Foo
-{
-    private const BAR = 'bar';
-    public const BAZ = 'baz';
-
-    public function run()
-    {
-        $bar = self::BAR;
-        $baz = self::BAZ;
-    }
-}
-CODE_SAMPLE
-                ),
             ],
         );
     }
