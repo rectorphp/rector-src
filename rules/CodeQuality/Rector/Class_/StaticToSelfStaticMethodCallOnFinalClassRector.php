@@ -105,10 +105,10 @@ CODE_SAMPLE
                 return null;
             }
 
-            $methodReflection = $classReflection->getNativeMethod($methodName);
+            $extendedMethodReflection = $classReflection->getNativeMethod($methodName);
 
             // avoid overlapped change
-            if (! $methodReflection->isStatic()) {
+            if (! $extendedMethodReflection->isStatic()) {
                 return null;
             }
 
