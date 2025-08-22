@@ -69,7 +69,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Class_
     {
         throw new ShouldNotHappenException(sprintf(
-            'The % rule is deprecated. Use %s instead',
+            'The %s rule is deprecated. Use %s instead',
             self::class,
             ConvertStaticToSelfRector::class,
         ));
