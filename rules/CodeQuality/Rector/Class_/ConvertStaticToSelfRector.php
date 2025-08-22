@@ -6,7 +6,6 @@ namespace Rector\CodeQuality\Rector\Class_;
 
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassConstantReflection;
-use PHPStan\TrinaryLogic;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\StaticCall;
