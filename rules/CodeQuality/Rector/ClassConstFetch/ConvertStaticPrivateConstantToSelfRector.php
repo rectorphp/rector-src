@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\ClassConstFetch;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\CodeQuality\Rector\Class_\ConvertStaticToSelfRector;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -16,11 +17,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ConvertStaticPrivateConstantToSelfRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ConvertStaticToSelfRector $convertStaticToSelfRector
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -72,6 +68,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Class_
     {
-        return $this->convertStaticToSelfRector->refactor($node);
+        throw new ShouldNotHappenException(sprintf(
+            'The % rule is deprecated. Use %s instead',
+            self::class,
+            ConvertStaticToSelfRector::class,
+        ));
     }
 }
