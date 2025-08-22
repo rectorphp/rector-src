@@ -47,7 +47,7 @@ CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 $items = [1, 2, 3];
-$result = array_filter($items, fn (int $item) => $item > 1
+$result = array_filter($items, fn (int $item) => $item > 1);
 CODE_SAMPLE
                 ),
 
