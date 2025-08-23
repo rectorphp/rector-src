@@ -6,16 +6,16 @@ class NonFinalClassFinalMembers
 {
     final public const BAR = 1;
 
-    final public static string $privateProperty = 'test';
+    final public static string $publicProperty = 'test';
 
-    final public static function privateMethod(): void
+    final public static function publicMethod(): void
     {
     }
 
     public function run()
     {
-        static::$privateProperty;
-        static::privateMethod();
+        static::$publicProperty;
+        static::publicMethod();
         static::BAR;
     }
 }
@@ -30,16 +30,16 @@ class NonFinalClassFinalMembers
 {
     final public const BAR = 1;
 
-    final public static string $privateProperty = 'test';
+    final public static string $publicProperty = 'test';
 
-    final public static function privateMethod(): void
+    final public static function publicMethod(): void
     {
     }
 
     public function run()
     {
-        self::$privateProperty;
-        self::privateMethod();
+        self::$publicProperty;
+        self::publicMethod();
         self::BAR;
     }
 }

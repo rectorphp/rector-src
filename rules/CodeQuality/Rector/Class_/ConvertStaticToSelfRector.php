@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Class_;
 
+use PHPStan\Reflection\RealClassClassConstantReflection;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassConstantReflection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\StaticCall;
@@ -163,9 +163,9 @@ CODE_SAMPLE
         }
 
         if (! $isFinal) {
-            $memberIsFinal = $reflection instanceof ClassConstantReflection
+            $memberIsFinal = $reflection instanceof RealClassClassConstantReflection
                 ? $reflection->isFinal()
-                : $reflection->isFinal()->yes();
+                : $reflection->isFinalByKeyword()->yes();
 
             // Final native members can be safely converted
             if ($memberIsFinal) {
