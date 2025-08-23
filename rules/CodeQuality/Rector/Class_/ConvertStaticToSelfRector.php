@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Class_;
 
-use PHPStan\Reflection\RealClassClassConstantReflection;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassConstantReflection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\StaticCall;
@@ -163,7 +163,7 @@ CODE_SAMPLE
         }
 
         if (! $isFinal) {
-            $memberIsFinal = $reflection instanceof RealClassClassConstantReflection
+            $memberIsFinal = $reflection instanceof ClassConstantReflection
                 ? $reflection->isFinal()
                 : $reflection->isFinalByKeyword()->yes();
 
