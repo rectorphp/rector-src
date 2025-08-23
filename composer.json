@@ -62,9 +62,7 @@
         "tracy/tracy": "^2.10"
     },
     "replace": {
-        "rector/rector": "self.version",
-        "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-intl-grapheme": "*"
+        "rector/rector": "self.version"
     },
     "autoload": {
         "psr-4": {
