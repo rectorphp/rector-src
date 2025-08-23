@@ -165,7 +165,7 @@ CODE_SAMPLE
         if (! $isFinal) {
             $memberIsFinal = $reflection instanceof ClassConstantReflection
                 ? $reflection->isFinal()
-                : $reflection->isFinal()->yes();
+                : $reflection->isFinalByKeyword()->yes();
 
             // Final native members can be safely converted
             if ($memberIsFinal) {
