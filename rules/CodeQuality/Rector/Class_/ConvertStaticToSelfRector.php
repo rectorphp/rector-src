@@ -179,7 +179,13 @@ CODE_SAMPLE
                 $nativeReflectionClass = $declaringClass->getNativeReflection();
                 $constantName = $reflection->getName();
 
-                if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::FINAL_CLASS_CONSTANTS)) {
+                if (
+                    // by feature config
+                    $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::FINAL_CLASS_CONSTANTS) &&
+                    // ensure native ->isFinal() exists
+                    // @see https://3v4l.org/korKr#v8.0.11
+                    PHP_VERSION_ID >= PhpVersionFeature::FINAL_CLASS_CONSTANTS
+                ) {
                     // PHP 8.1+
                     $nativeReflection = $nativeReflectionClass->getReflectionConstant($constantName);
                     $memberIsFinal = $nativeReflection instanceof ReflectionClassConstant && $nativeReflection->isFinal();
