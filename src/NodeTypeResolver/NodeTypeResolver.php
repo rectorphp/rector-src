@@ -259,9 +259,8 @@ final class NodeTypeResolver
     {
         $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
         $type = $this->genericClassStringTypeCorrector->correct($type);
-        $type = $this->accessoryNonEmptyArrayTypeCorrector->correct($type);
 
-        return $type;
+        return $this->accessoryNonEmptyArrayTypeCorrector->correct($type);
     }
 
     public function getNativeType(Expr $expr): Type
