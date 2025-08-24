@@ -132,7 +132,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         }
 
         $phpVersionId = $this->getPhpVersionId($stmtsAware->cond);
-        if (!$phpVersionId instanceof Int_) {
+        if (! $phpVersionId instanceof Int_) {
             return false;
         }
 
