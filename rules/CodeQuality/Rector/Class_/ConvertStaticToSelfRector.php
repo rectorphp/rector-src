@@ -171,6 +171,8 @@ CODE_SAMPLE
         }
 
         if (! $isFinal) {
+            // init
+            $memberIsFinal = false;
             if ($reflection instanceof ClassConstantReflection) {
                 // Get the native ReflectionClassConstant
                 $declaringClass = $reflection->getDeclaringClass();
@@ -181,9 +183,6 @@ CODE_SAMPLE
                     // PHP 8.1+
                     $nativeReflection = $nativeReflectionClass->getReflectionConstant($constantName);
                     $memberIsFinal = $nativeReflection instanceof ReflectionClassConstant && $nativeReflection->isFinal();
-                } else {
-                    // On PHP < 8.1, class constants can't be final
-                    $memberIsFinal = false;
                 }
             } else {
                 $memberIsFinal = $reflection->isFinalByKeyword()
