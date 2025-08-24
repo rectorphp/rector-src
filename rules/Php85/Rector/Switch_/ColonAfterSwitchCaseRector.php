@@ -66,7 +66,7 @@ CODE_SAMPLE
             }
 
             if (count($case->stmts) === 0) {
-                $startCaseStmtsPos  = isset($node->cases[$key + 1])
+                $startCaseStmtsPos = isset($node->cases[$key + 1])
                     ? $node->cases[$key + 1]->getStartTokenPos()
                     : $node->getEndTokenPos();
             } else {
