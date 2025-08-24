@@ -16,8 +16,11 @@ use PHPStan\Reflection\ClassConstantReflection;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Enum\ObjectReference;
+use Rector\Php\PhpVersionProvider;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\PhpVersionFeature;
+use ReflectionClassConstant;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -31,6 +34,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ConvertStaticToSelfRector extends AbstractRector
 {
+    public function __construct(
+        private readonly PhpVersionProvider $phpVersionProvider
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change `static::*` to `self::*` on final class or private static members', [
@@ -163,10 +171,24 @@ CODE_SAMPLE
         }
 
         if (! $isFinal) {
-            $memberIsFinal = $reflection instanceof ClassConstantReflection
-                ? $reflection->isFinal()
-                : $reflection->isFinalByKeyword()
+            if ($reflection instanceof ClassConstantReflection) {
+                // Get the native ReflectionClassConstant
+                $declaringClass = $reflection->getDeclaringClass();
+                $nativeReflectionClass = $declaringClass->getNativeReflection();
+                $constantName = $reflection->getName();
+
+                if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::FINAL_CLASS_CONSTANTS)) {
+                    // PHP 8.1+
+                    $nativeReflection = $nativeReflectionClass->getReflectionConstant($constantName);
+                    $memberIsFinal = $nativeReflection instanceof ReflectionClassConstant && $nativeReflection->isFinal();
+                } else {
+                    // On PHP < 8.1, class constants can't be final
+                    $memberIsFinal = false;
+                }
+            } else {
+                $memberIsFinal = $reflection->isFinalByKeyword()
                     ->yes();
+            }
 
             // Final native members can be safely converted
             if ($memberIsFinal) {
