@@ -4,6 +4,9 @@ composer.lock
 # PHPStorm meta files
 .idea/
 
+# VS Code files
+.vscode
+
 .phpunit.result.cache
 # since PHPUnit 10
 .phpunit.cache
