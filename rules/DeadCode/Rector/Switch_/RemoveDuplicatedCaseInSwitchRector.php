@@ -23,7 +23,8 @@ final class RemoveDuplicatedCaseInSwitchRector extends AbstractRector
 
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter
-    ) {}
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
