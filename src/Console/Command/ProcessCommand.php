@@ -119,8 +119,8 @@ EOF
         if ($setAndRulesDuplicatedRegistrations !== []) {
             $this->symfonyStyle->warning(sprintf(
                 'These rules are registered in both sets and "withRules()". Remove them from "withRules()" to avoid duplications: %s* %s',
-                PHP_EOL . PHP_EOL,
-                implode(' * ', $setAndRulesDuplicatedRegistrations) . PHP_EOL
+                "\n\n",
+                implode(' * ', $setAndRulesDuplicatedRegistrations) . "\n"
             ));
         }
 
@@ -145,8 +145,8 @@ EOF
                     $isSingular ? 'es' : '',
                     $isSingular ? '' : 's',
                     $isSingular ? 'y' : 'ies',
-                    PHP_EOL . PHP_EOL . ' - ',
-                    implode(PHP_EOL . ' - ', $paths)
+                    "\n\n" . ' - ',
+                    implode("\n" . ' - ', $paths)
                 )
             );
 
@@ -253,7 +253,7 @@ EOF
             $levelOverflow->getConfigurationName(),
             $levelOverflow->getRuleCount(),
             $levelOverflow->getLevel(),
-            PHP_EOL,
+            "\n",
             $suggestedSetMethod,
         ));
     }

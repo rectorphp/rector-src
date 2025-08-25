@@ -42,7 +42,7 @@ final class SetupCICommand extends Command
 
         $noteMessage = sprintf(
             'Only GitHub and GitLab are currently supported.%s Contribute your CI template to Rector to make this work: %s',
-            PHP_EOL,
+            "\n",
             'https://github.com/rectorphp/rector-src/'
         );
 

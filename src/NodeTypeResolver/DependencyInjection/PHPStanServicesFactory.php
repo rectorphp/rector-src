@@ -58,7 +58,7 @@ MESSAGE_ERROR;
         } catch (Throwable $throwable) {
             if ($throwable->getMessage() === "File 'phar://phpstan.phar/conf/bleedingEdge.neon' is missing or is not readable.") {
                 $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
-                $symfonyStyle->error(sprintf(self::INVALID_BLEEDING_EDGE_PATH_MESSAGE, $throwable->getMessage()));
+                $symfonyStyle->error(str_replace("\r\n", "\n", sprintf(self::INVALID_BLEEDING_EDGE_PATH_MESSAGE, $throwable->getMessage())));
 
                 exit(-1);
             }

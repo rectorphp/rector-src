@@ -115,6 +115,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
         foreach ($errors as $error) {
             $errorMessage = $error->getMessage();
             $errorMessage = $this->normalizePathsToRelativeWithLine($errorMessage);
+            $errorMessage = str_replace("\r\n", "\n", $errorMessage);
 
             $filePath = $absoluteFilePath ? $error->getAbsoluteFilePath() : $error->getRelativeFilePath();
 
@@ -122,7 +123,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
                 'Could not process %s%s, due to: %s"%s".',
                 $filePath !== null ? '"' . $filePath . '" file' : 'some files',
                 $error->getRectorClass() !== null ? ' by "' . $error->getRectorClass() . '"' : '',
-                PHP_EOL,
+                "\n",
                 $errorMessage
             );
 
