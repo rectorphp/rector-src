@@ -199,6 +199,6 @@ CODE_SAMPLE
 
     private function areSwitchStmtsEqualsConsideringComments(Case_ $currentCase, Case_ $nextCase): bool
     {
-        return $this->betterStandardPrinter->print($currentCase) === $this->betterStandardPrinter->print($nextCase);
+        return $this->betterStandardPrinter->print($currentCase->stmts) === $this->betterStandardPrinter->print($nextCase->stmts);
     }
 }
