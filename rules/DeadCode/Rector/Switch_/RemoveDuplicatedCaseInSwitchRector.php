@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
+use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,6 +20,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveDuplicatedCaseInSwitchRector extends AbstractRector
 {
     private bool $hasChanged = false;
+
+    public function __construct(
+        private BetterStandardPrinter $betterStandardPrinter
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -96,65 +102,84 @@ CODE_SAMPLE
 
     private function removeDuplicatedCases(Switch_ $switch): void
     {
-        $totalKeys = count($switch->cases);
-        $conds = [];
+        /** @var Case_[] */
+        $result = [];
 
-        foreach (array_keys($switch->cases) as $key) {
-            if (isset($switch->cases[$key - 1]) && $switch->cases[$key - 1]->stmts === []) {
+        /** @var int[] */
+        $processedCasesNumbers = [];
+
+        foreach ($switch->cases as $outerCaseKey => $outerCase) {
+            if (in_array($outerCaseKey, $processedCasesNumbers)) {
                 continue;
             }
 
-            $nextCases = [];
-            for ($jumpToKey = $key + 1; $jumpToKey < $totalKeys; ++$jumpToKey) {
-                if (! isset($switch->cases[$jumpToKey])) {
-                    continue;
-                }
+            $processedCasesNumbers[] = $outerCaseKey;
 
-                if (! $this->areSwitchStmtsEqualsAndWithBreak($switch->cases[$key], $switch->cases[$jumpToKey])) {
-                    continue;
-                }
-
-                $nextCase = $switch->cases[$jumpToKey];
-
-                if (isset($switch->cases[$jumpToKey - 1]) && $switch->cases[$jumpToKey - 1]->stmts === []) {
-                    $nextCases[] = $switch->cases[$jumpToKey - 1];
-                    $conds[] = $switch->cases[$jumpToKey - 1]->cond;
-                }
-
-                unset($switch->cases[$jumpToKey]);
-
-                $nextCases[] = $nextCase;
-
-                $this->hasChanged = true;
-            }
-
-            if ($nextCases === []) {
+            if ($outerCase->stmts === []) {
+                $result[] = $outerCase;
                 continue;
             }
 
-            array_splice($switch->cases, $key + 1, 0, $nextCases);
+            /** @var array<int, Case_> */
+            $casesWithoutStmts = [];
 
-            for ($jumpToKey = $key; $jumpToKey < $key + count($nextCases); ++$jumpToKey) {
-                $switch->cases[$jumpToKey]->stmts = [];
-            }
+            /** @var Case_[] */
+            $equalCases = [];
 
-            $key += count($nextCases);
-        }
+            foreach ($switch->cases as $innerCaseKey => $innerCase) {
+                if (in_array($innerCaseKey, $processedCasesNumbers)) {
+                    continue;
+                }
 
-        foreach ($conds as $keyCond => $cond) {
-            foreach (array_reverse($switch->cases, true) as $keyCase => $case) {
-                if ($this->nodeComparator->areNodesEqual($cond, $case->cond)) {
-                    unset($switch->cases[$keyCase]);
-                    unset($conds[$keyCond]);
+                if ($innerCase->stmts === []) {
+                    $casesWithoutStmts[$innerCaseKey] = $innerCase;
+                    continue;
+                }
 
-                    continue 2;
+                if ($this->areSwitchStmtsEqualsAndWithBreak($outerCase, $innerCase)) {
+                    if ($casesWithoutStmts !== []) {
+                        foreach ($casesWithoutStmts as $caseWithoutStmtsKey => $caseWithoutStmts) {
+                            $equalCases[] = $caseWithoutStmts;
+                            $processedCasesNumbers[] = $caseWithoutStmtsKey;
+                        }
+
+                        $casesWithoutStmts = [];
+                    }
+
+                    $innerCase->stmts = [];
+                    $equalCases[] = $innerCase;
+                    $processedCasesNumbers[] = $innerCaseKey;
+
+                    $this->hasChanged = true;
+                } else {
+                    $casesWithoutStmts = [];
                 }
             }
+
+            if ($equalCases === []) {
+                $result[] = $outerCase;
+                continue;
+            }
+
+            $equalCases[array_key_last($equalCases)]->stmts = $outerCase->stmts;
+            $outerCase->stmts = [];
+
+            $result = array_merge($result, [$outerCase, ...$equalCases]);
         }
+
+        $switch->cases = $result;
     }
 
     private function areSwitchStmtsEqualsAndWithBreak(Case_ $currentCase, Case_ $nextCase): bool
     {
+        /**
+         * Skip multi no stmts
+         * @see rules-tests/DeadCode/Rector/Switch_/RemoveDuplicatedCaseInSwitchRector/Fixture/skip_multi_no_stmts.php.inc
+         */
+        if ($currentCase->stmts[0] instanceof Break_ && $nextCase->stmts[0] instanceof Break_) {
+            return $this->areSwitchStmtsEqualsConsideringComments($currentCase, $nextCase);
+        }
+
         if (! $this->nodeComparator->areNodesEqual($currentCase->stmts, $nextCase->stmts)) {
             return false;
         }
@@ -170,5 +195,10 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function areSwitchStmtsEqualsConsideringComments(Case_ $currentCase, Case_ $nextCase): bool
+    {
+        return $this->betterStandardPrinter->print($currentCase->stmts) === $this->betterStandardPrinter->print($nextCase->stmts);
     }
 }
