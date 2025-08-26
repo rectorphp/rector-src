@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FuncCall\AddArrowFunctionParamArrayWhereDimFetchRector\Fixture;
 
-final class SkipFilledType
+final class SkipIntegerIndexOnString
 {
     public function run()
     {
