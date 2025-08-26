@@ -69,11 +69,6 @@ final readonly class CallTypesResolver
             return new MixedType();
         }
 
-        $type = $this->nodeTypeResolver->getType($arg->value);
-        if (! $type->equals($argValueType) && $this->typeComparator->isSubtype($type, $argValueType)) {
-            return $type;
-        }
-
         return $argValueType;
     }
 
