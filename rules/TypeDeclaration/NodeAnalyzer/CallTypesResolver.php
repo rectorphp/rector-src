@@ -16,7 +16,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class CallTypesResolver
@@ -24,8 +23,7 @@ final readonly class CallTypesResolver
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
         private TypeFactory $typeFactory,
-        private ReflectionProvider $reflectionProvider,
-        private TypeComparator $typeComparator
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
