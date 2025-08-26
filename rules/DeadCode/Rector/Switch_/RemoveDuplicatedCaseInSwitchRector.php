@@ -22,7 +22,7 @@ final class RemoveDuplicatedCaseInSwitchRector extends AbstractRector
     private bool $hasChanged = false;
 
     public function __construct(
-        private BetterStandardPrinter $betterStandardPrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
