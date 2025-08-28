@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Naming\ExpectedNameResolver\MatchParamTypeExpectedNameResolver;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Naming\ExpectedNameResolver;
@@ -17,6 +18,8 @@ use Rector\Naming\ParamRenamer\ParamRenamer;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\Naming\ValueObjectFactory\ParamRenameFactory;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -33,7 +36,8 @@ final class RenameParamToMatchTypeRector extends AbstractRector
         private readonly ExpectedNameResolver $expectedNameResolver,
         private readonly MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver,
         private readonly ParamRenameFactory $paramRenameFactory,
-        private readonly ParamRenamer $paramRenamer
+        private readonly ParamRenamer $paramRenamer,
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -85,6 +89,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($node instanceof ClassMethod && $this->shouldSkipClassMethodFromVendor($node)) {
+                return null;
+            }
+
             $expectedName = $this->expectedNameResolver->resolveForParamIfNotYet($param);
             if ($expectedName === null) {
                 continue;
@@ -113,6 +121,38 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function shouldSkipClassMethodFromVendor(ClassMethod $classMethod): bool
+    {
+        if ($classMethod->isPrivate()) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        $ancestors = array_filter(
+            $classReflection->getAncestors(),
+            fn (ClassReflection $ancestorClassReflection): bool =>
+            $classReflection->getName() !== $ancestorClassReflection->getName()
+        );
+
+        foreach ($ancestors as $ancestor) {
+            // internal
+            if ($ancestor->getFileName() === null) {
+                continue;
+            }
+
+            $path = PathNormalizer::normalize($ancestor->getFileName());
+            if (str_contains($path, '/vendor/')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function shouldSkipParam(
