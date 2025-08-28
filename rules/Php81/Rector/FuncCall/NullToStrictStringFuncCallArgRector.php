@@ -13,12 +13,10 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
-use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php81\Enum\NameNullToStrictNullFunctionMap;
 use Rector\Php81\NodeManipulator\NullToStrictStringConverter;
-use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
@@ -34,8 +32,6 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly ValueResolver $valueResolver,
         private readonly NullToStrictStringConverter $nullToStrictStringConverter
     ) {
     }

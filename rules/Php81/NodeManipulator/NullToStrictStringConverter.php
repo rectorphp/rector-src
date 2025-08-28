@@ -24,12 +24,12 @@ use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class NullToStrictStringConverter
+final readonly class NullToStrictStringConverter
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private ValueResolver $valueResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
     ) {
     }
 
@@ -47,15 +47,18 @@ final class NullToStrictStringConverter
         if (! isset($args[$position])) {
             return null;
         }
+
         $argValue = $args[$position]->value;
         if ($this->valueResolver->isNull($argValue)) {
             $args[$position]->value = new String_('');
             $funcCall->args = $args;
             return $funcCall;
         }
+
         if ($this->shouldSkipValue($argValue, $scope, $isTrait)) {
             return null;
         }
+
         $parameter = $parametersAcceptor->getParameters()[$position] ?? null;
         if ($parameter instanceof ExtendedNativeParameterReflection && $parameter->getType() instanceof UnionType) {
             $parameterType = $parameter->getType();
@@ -63,16 +66,19 @@ final class NullToStrictStringConverter
                 return null;
             }
         }
+
         if ($argValue instanceof Ternary && ! $this->shouldSkipValue($argValue->else, $scope, $isTrait)) {
             if ($this->valueResolver->isNull($argValue->else)) {
                 $argValue->else = new String_('');
             } else {
                 $argValue->else = new CastString_($argValue->else);
             }
+
             $args[$position]->value = $argValue;
             $funcCall->args = $args;
             return $funcCall;
         }
+
         $args[$position]->value = new CastString_($argValue);
         $funcCall->args = $args;
         return $funcCall;
@@ -115,12 +121,15 @@ final class NullToStrictStringConverter
             if ($childType->isString()->yes()) {
                 continue;
             }
+
             if ($childType->isInteger()->yes()) {
                 continue;
             }
+
             if ($childType->isNull()->yes()) {
                 continue;
             }
+
             return false;
         }
 
