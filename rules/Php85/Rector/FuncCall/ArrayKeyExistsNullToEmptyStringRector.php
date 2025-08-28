@@ -38,11 +38,11 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-        array_key_exists($key, $array);
+        array_key_exists(null, $array);
         CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-        array_key_exists((string)$key, $array);
+        array_key_exists('', $array);
         CODE_SAMPLE
                 ),
             ]
