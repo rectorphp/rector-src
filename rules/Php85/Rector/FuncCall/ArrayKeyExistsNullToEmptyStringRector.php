@@ -83,7 +83,6 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         }
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
-        $isChanged = false;
 
         $result = $this->nullToStrictStringConverter->convertIfNull(
             $node,
@@ -94,12 +93,7 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             $parametersAcceptor
         );
         if ($result instanceof Node) {
-            $node = $result;
-            $isChanged = true;
-        }
-
-        if ($isChanged) {
-            return $node;
+            return $result;
         }
 
         return null;
