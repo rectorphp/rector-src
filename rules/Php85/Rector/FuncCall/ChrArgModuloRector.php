@@ -13,7 +13,10 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-
+/**
+ * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_passing_integers_outside_the_interval_0_255_to_chr
+ * @see \Rector\Tests\Php85\Rector\FuncCall\ChrArgModuloRector\ChrArgModuloRectorTest
+ */
 final class ChrArgModuloRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
