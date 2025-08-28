@@ -73,7 +73,7 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             return null;
         }
 
-        if ($this->nodeNameResolver->isName($keyExpr, 'null')) {
+        if ($this->isName($keyExpr, 'null')) {
             $args[0]->value = new String_('');
             return $node;
         }
