@@ -8,17 +8,21 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Cast\Double;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_non-standard_cast_names
+ * @see \Rector\Tests\Php85\Rector\Double\DoubleToFloatCastRector\DoubleToFloatCastRectorTest
+ */
 final class DoubleToFloatCastRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function getRuleDefinition(): RuleDefinition
+    public function getRuleDefinition(): RuleDefinition 
     {
         return new RuleDefinition(
-            'Replace (double) cast with (float)',
+            'Replace deprecated (double) cast with (float)',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -37,9 +41,9 @@ CODE_SAMPLE
     {
         return [Double::class];
     }
-
+    
     /**
-     * @param double $node
+     * @param Double $node
      */
     public function refactor(Node $node): ?Node
     {
