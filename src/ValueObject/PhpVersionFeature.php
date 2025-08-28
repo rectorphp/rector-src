@@ -798,4 +798,6 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION = PhpVersion::PHP_85;
+
+    public const DEPRECATE_DOUBLE_CAST = PhpVersion::PHP_85;
 }
