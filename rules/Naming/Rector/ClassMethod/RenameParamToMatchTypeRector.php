@@ -140,9 +140,14 @@ CODE_SAMPLE
             $classReflection->getName() !== $ancestorClassReflection->getName()
         );
 
+        $methodName = $this->getName($classMethod);
         foreach ($ancestors as $ancestor) {
             // internal
             if ($ancestor->getFileName() === null) {
+                continue;
+            }
+
+            if (! $ancestor->hasNativeMethod($methodName)) {
                 continue;
             }
 
