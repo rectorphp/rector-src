@@ -23,7 +23,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
@@ -43,7 +42,6 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ValueResolver $valueResolver
     ) {
@@ -74,6 +72,10 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
 
     public function refactor(Node $node): ?Node
     {
+        if(!$node instanceof FuncCall){
+            return null;
+        }
+        
         if ($node->isFirstClassCallable()) {
             return null;
         }
