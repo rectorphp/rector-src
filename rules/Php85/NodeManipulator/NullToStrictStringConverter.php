@@ -8,12 +8,12 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\InterpolatedString;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ExtendedNativeParameterReflection;
+use PHPStan\Reflection\Native\ExtendedNativeParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
@@ -40,7 +40,7 @@ final class NullToStrictStringConverter
     public function convertIfNull(
         FuncCall $funcCall,
         array $args,
-        $position,
+        int $position,
         bool $isTrait,
         Scope $scope,
         ParametersAcceptor $parametersAcceptor
