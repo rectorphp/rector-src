@@ -35,12 +35,12 @@ final class NullToStrictStringConverter
 
     /**
      * @param Arg[] $args
-     * @param int|string $position
+     * @param int $position
      */
     public function convertIfNull(
         FuncCall $funcCall,
         array $args,
-        int|string $position,
+        int $position,
         bool $isTrait,
         Scope $scope,
         ParametersAcceptor $parametersAcceptor
