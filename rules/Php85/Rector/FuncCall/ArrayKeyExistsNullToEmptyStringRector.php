@@ -78,7 +78,7 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             return $node;
         }
 
-        if (! $keyExpr instanceof Coalesce && ! ($keyExpr instanceof String_ && $keyExpr->value === '')) {
+        if (! $keyExpr instanceof Coalesce) {
             $args[0]->value = new Coalesce($keyExpr, new String_(''));
             return $node;
         }
