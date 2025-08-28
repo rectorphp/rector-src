@@ -35,7 +35,6 @@ final class NullToStrictStringConverter
 
     /**
      * @param Arg[] $args
-     * @param int $position
      */
     public function convertIfNull(
         FuncCall $funcCall,
