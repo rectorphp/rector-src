@@ -794,7 +794,7 @@ final class PhpVersionFeature
     public const COLON_AFTER_SWITCH_CASE = PhpVersion::PHP_85;
 
     /**
-     * @see https://wiki.php.net/rfc/deprecations_php_8_5#https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_using_values_null_as_an_array_offset_and_when_calling_array_key_exists
+     * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_using_values_null_as_an_array_offset_and_when_calling_array_key_exists
      * @var int
      */
     public const DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION = PhpVersion::PHP_85;
