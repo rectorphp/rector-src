@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector\Fixture;
 
-array_key_exists(null, $array);
+array_key_exists(array: $array, key: null);
 
 ?>
 -----
@@ -10,6 +10,6 @@ array_key_exists(null, $array);
 
 namespace Rector\Tests\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector\Fixture;
 
-array_key_exists('', $array);
+array_key_exists(array: $array, key: '');
 
 ?>
