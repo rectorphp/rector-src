@@ -162,6 +162,10 @@ CODE_SAMPLE
             return $class->extends instanceof FullyQualified;
         }
 
+        if ($this->isName($classMethod, MethodName::CLONE)) {
+            return ! $classMethod->isPublic();
+        }
+
         return $this->isName($classMethod, MethodName::INVOKE);
     }
 
