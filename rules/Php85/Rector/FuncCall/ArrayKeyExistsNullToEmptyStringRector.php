@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
@@ -92,7 +93,7 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         $result = $this->nullToStrictStringConverter->convertIfNull(
             $node,
             $args,
-            $this->resolvePosition($node),
+            $this->resolvePosition($args),
             $isTrait,
             $scope,
             $parametersAcceptor
@@ -104,10 +105,11 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         return null;
     }
 
-    private function resolvePosition(FuncCall $funcCall): int
+    /**
+     * @param Arg[] $args
+     */
+    private function resolvePosition(array $args): int
     {
-        $args = $funcCall->getArgs();
-
         foreach ($args as $position => $arg) {
             if ($arg->name instanceof Identifier && $arg->name->toString() === 'key') {
                 return $position;
