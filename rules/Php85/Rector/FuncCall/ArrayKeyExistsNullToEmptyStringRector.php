@@ -15,6 +15,10 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_using_values_null_as_an_array_offset_and_when_calling_array_key_exists
+ * @see \Rector\Tests\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector\RemoveFinfoBufferContextArgRectorTest
+ */
 final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
@@ -43,7 +47,12 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
     public function refactor(Node $node): ?Node
     {
 
-        if ($node instanceof FuncCall && ! $this->isName($node->name, 'array_key_exists')) {
+
+        if (! $node instanceof FuncCall) {
+            return null;
+        }
+
+        if (! $this->isName($node->name, 'array_key_exists')) {
             return null;
         }
 
