@@ -285,4 +285,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_FIRST_LEVEL_STATEMENT = 'first_level_stmt';
+
+    /**
+     * @var string
+     */
+    public const HAS_MERGED_COMMENTS = 'has_merged_comments';
 }
