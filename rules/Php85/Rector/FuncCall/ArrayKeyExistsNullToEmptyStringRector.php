@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php85\Rector\FuncCall;
 
-
-
-
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -14,14 +11,12 @@ use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\Native\ExtendedNativeParameterReflection;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
@@ -39,7 +34,6 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-
 
 /**
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_using_values_null_as_an_array_offset_and_when_calling_array_key_exists
@@ -118,11 +112,11 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             $node = $result;
             $isChanged = true;
         }
-        
+
         if ($isChanged) {
             return $node;
         }
-        
+
         return null;
     }
 
@@ -130,13 +124,20 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
     {
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION;
     }
+
     /**
      * @param Arg[] $args
      * @param int|string $position
      */
-    private function processNullToStrictStringOnNodePosition(FuncCall $funcCall, array $args, $position, bool $isTrait, Scope $scope, ParametersAcceptor $parametersAcceptor) : ?FuncCall
-    {
-        if (!isset($args[$position])) {
+    private function processNullToStrictStringOnNodePosition(
+        FuncCall $funcCall,
+        array $args,
+        $position,
+        bool $isTrait,
+        Scope $scope,
+        ParametersAcceptor $parametersAcceptor
+    ): ?FuncCall {
+        if (! isset($args[$position])) {
             return null;
         }
         $argValue = $args[$position]->value;
@@ -144,18 +145,18 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             $args[$position]->value = new String_('');
             $funcCall->args = $args;
             return $funcCall;
-        }  
+        }
         if ($this->shouldSkipValue($argValue, $scope, $isTrait)) {
             return null;
-        } 
+        }
         $parameter = $parametersAcceptor->getParameters()[$position] ?? null;
         if ($parameter instanceof ExtendedNativeParameterReflection && $parameter->getType() instanceof UnionType) {
             $parameterType = $parameter->getType();
-            if (!$this->isValidUnionType($parameterType)) {
+            if (! $this->isValidUnionType($parameterType)) {
                 return null;
             }
         }
-        if ($argValue instanceof Ternary && !$this->shouldSkipValue($argValue->else, $scope, $isTrait)) {
+        if ($argValue instanceof Ternary && ! $this->shouldSkipValue($argValue->else, $scope, $isTrait)) {
             if ($this->valueResolver->isNull($argValue->else)) {
                 $argValue->else = new String_('');
             } else {
@@ -169,7 +170,8 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         $funcCall->args = $args;
         return $funcCall;
     }
-    private function shouldSkipValue(Expr $expr, Scope $scope, bool $isTrait) : bool
+
+    private function shouldSkipValue(Expr $expr, Scope $scope, bool $isTrait): bool
     {
         $type = $this->nodeTypeResolver->getType($expr);
         if ($type->isString()->yes()) {
@@ -190,9 +192,10 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         }
         return $this->shouldSkipTrait($expr, $type, $isTrait);
     }
-    private function isValidUnionType(Type $type) : bool
+
+    private function isValidUnionType(Type $type): bool
     {
-        if (!$type instanceof UnionType) {
+        if (! $type instanceof UnionType) {
             return \false;
         }
         foreach ($type->getTypes() as $childType) {
@@ -209,27 +212,31 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         }
         return \true;
     }
-    private function shouldSkipType(Type $type) : bool
+
+    private function shouldSkipType(Type $type): bool
     {
-        return !$type instanceof MixedType && !$type->isNull()->yes() && !$this->isValidUnionType($type);
+        return ! $type instanceof MixedType && ! $type->isNull()
+            ->yes() && ! $this->isValidUnionType($type);
     }
-    private function shouldSkipTrait(Expr $expr, Type $type, bool $isTrait) : bool
+
+    private function shouldSkipTrait(Expr $expr, Type $type, bool $isTrait): bool
     {
-        if (!$type instanceof MixedType) {
+        if (! $type instanceof MixedType) {
             return \false;
         }
-        if (!$isTrait) {
+        if (! $isTrait) {
             return \false;
         }
         if ($type->isExplicitMixed()) {
             return \false;
         }
-        if (!$expr instanceof MethodCall) {
+        if (! $expr instanceof MethodCall) {
             return $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr);
         }
         return \true;
     }
-    private function isAnErrorType(Expr $expr, Type $type, Scope $scope) : bool
+
+    private function isAnErrorType(Expr $expr, Type $type, Scope $scope): bool
     {
         if ($type instanceof ErrorType) {
             return \true;
@@ -238,6 +245,6 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         if ($parentScope instanceof Scope) {
             return $parentScope->getType($expr) instanceof ErrorType;
         }
-        return $type instanceof MixedType && !$type->isExplicitMixed() && $type->getSubtractedType() instanceof NullType;
+        return $type instanceof MixedType && ! $type->isExplicitMixed() && $type->getSubtractedType() instanceof NullType;
     }
 }
