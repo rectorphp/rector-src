@@ -54,12 +54,11 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         return [FuncCall::class];
     }
 
+    /**
+     * @param FuncCall $node
+     */
     public function refactor(Node $node): ?Node
     {
-        if (! $node instanceof FuncCall) {
-            return null;
-        }
-
         if ($node->isFirstClassCallable()) {
             return null;
         }
