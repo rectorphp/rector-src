@@ -105,6 +105,11 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         return null;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION;
+    }
+
     /**
      * @param Arg[] $args
      */
@@ -117,10 +122,5 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         }
 
         return 0;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION;
     }
 }
