@@ -80,10 +80,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($argExpr instanceof Mod) {
-            return null;
-        }
-
         if ( $value >= 0 && $value <= 255) {
             return null;
         }
