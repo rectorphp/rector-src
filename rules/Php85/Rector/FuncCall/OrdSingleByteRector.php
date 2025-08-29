@@ -72,6 +72,11 @@ CODE_SAMPLE
         $argExpr = $args[0]->value;
 
         $value = $this->valueResolver->getValue($argExpr);
+
+        if ($value === null) {
+            return null;
+        }
+
         $isInt = is_int($value);
         $value = (string) $value;
         $byte = $value[0] ?? '';
