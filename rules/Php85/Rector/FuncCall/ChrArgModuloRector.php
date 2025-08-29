@@ -6,7 +6,6 @@ namespace Rector\Php85\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Mod;
-use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
 use Rector\PhpParser\Node\Value\ValueResolver;
