@@ -30,7 +30,6 @@ final class SomeAttributeTargetRector extends AbstractRector
      */
     public function refactor(Node $node): Node
     {
-        $node->setAttribute('some_key', 'some_value');
         $node->name = new FullyQualified('SomeNewAttribute');
 
         return $node;
