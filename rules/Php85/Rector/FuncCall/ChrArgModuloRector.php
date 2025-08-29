@@ -6,19 +6,28 @@ namespace Rector\Php85\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Mod;
+use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+
 /**
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_passing_integers_outside_the_interval_0_255_to_chr
  * @see \Rector\Tests\Php85\Rector\FuncCall\ChrArgModuloRector\ChrArgModuloRectorTest
  */
 final class ChrArgModuloRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ){
+
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -47,6 +56,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->isName($node, 'chr')) {
             return null;
         }
@@ -63,7 +76,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $args[0]->value = new Mod($argExpr, new LNumber(256));
+        $value = $this->valueResolver->getValue($argExpr);
+        if (! is_int($value)) {
+            return null;
+        }
+
+        $modValue = $value % 256;
+
+        $modValue = new \PhpParser\Node\Scalar\Int_($modValue);
+
+        $args[0]->value = $modValue;
         $node->args = $args;
 
         return $node;
