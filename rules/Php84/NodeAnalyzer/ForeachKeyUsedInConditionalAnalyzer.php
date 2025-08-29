@@ -7,7 +7,6 @@ namespace Rector\Php84\NodeAnalyzer;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
 final readonly class ForeachKeyUsedInConditionalAnalyzer
