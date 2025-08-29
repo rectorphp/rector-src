@@ -81,11 +81,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $modValue = $value % 256;
+        if ($argExpr instanceof Mod) {
+            return null;
+        }
 
-        $modValue = new \PhpParser\Node\Scalar\Int_($modValue);
+        if ( $value >= 0 && $value <= 255) {
+            return null;
+        }
 
-        $args[0]->value = $modValue;
+        $args[0]->value = new Mod($argExpr, new LNumber(256));
         $node->args = $args;
 
         return $node;

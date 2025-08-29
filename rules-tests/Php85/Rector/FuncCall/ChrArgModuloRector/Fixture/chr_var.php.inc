@@ -9,5 +9,5 @@ echo chr($n);
 namespace Rector\Tests\Php85\Rector\FuncCall\ChrArgModuloRector\Fixture;
 
 $n = 400;
-echo chr(144);
+echo chr($n % 256);
 ?>
