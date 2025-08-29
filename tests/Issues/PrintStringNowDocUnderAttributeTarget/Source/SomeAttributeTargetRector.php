@@ -10,7 +10,7 @@ use PhpParser\Node\Name\FullyQualified;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class SomeAttributeTargetRector extends AbstractRector
+final class SomeAttributeTargetRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
