@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php83\Rector\BooleanAnd;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
@@ -128,7 +129,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param PhpParser\Node\Arg[] $args
+     * @param Arg[] $args
+     * @return array<string, int>  Maps argument name to its position
      */
     private function resolveArgPositions(array $args): array
     {
