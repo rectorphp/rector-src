@@ -705,7 +705,7 @@ final class PhpVersionFeature
     /**
      * @var int
      */
-    public const JSON_VALIDATE = PhpVersion::PHP_80;
+    public const JSON_VALIDATE = PhpVersion::PHP_83;
 
     /**
      * @see https://wiki.php.net/rfc/deprecate-implicitly-nullable-types
