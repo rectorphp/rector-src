@@ -19,6 +19,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveGetClassGetParentClassNoArgsRector::class,
         ReadOnlyAnonymousClassRector::class,
         DynamicClassConstFetchRector::class,
-        JsonValidateRector::class
+        JsonValidateRector::class,
     ]);
 };

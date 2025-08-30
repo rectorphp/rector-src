@@ -24,7 +24,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class JsonValidateRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
-
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::STR_CONTAINS;
