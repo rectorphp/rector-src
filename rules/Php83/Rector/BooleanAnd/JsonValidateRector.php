@@ -22,11 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php80\Rector\BooleanAnd\JsonValidate\JsonValidateTest
  */
-final class JsonValidate extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
+final class JsonValidateRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
-    public function __construct()
-    {
-    }
 
     public function provideMinPhpVersion(): int
     {

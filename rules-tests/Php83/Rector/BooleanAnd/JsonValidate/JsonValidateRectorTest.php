@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidate;
+namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class JsonValidateTest extends AbstractRectorTestCase
+final class JsonValidateRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

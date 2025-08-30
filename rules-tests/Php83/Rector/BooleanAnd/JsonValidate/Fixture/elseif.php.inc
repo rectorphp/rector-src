@@ -1,5 +1,5 @@
 <?php
-namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidate\Fixture;
+namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector\Fixture;
 
 if ($flag) {
     echo "skip";
@@ -8,7 +8,7 @@ if ($flag) {
 }
 -----
 <?php
-namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidate\Fixture;
+namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector\Fixture;
 
 if ($flag) {
     echo "skip";

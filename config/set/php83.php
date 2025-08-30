@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php83\Rector\BooleanAnd\JsonValidateRector;
 use Rector\Php83\Rector\Class_\ReadOnlyAnonymousClassRector;
 use Rector\Php83\Rector\ClassConst\AddTypeToConstRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
@@ -18,5 +19,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveGetClassGetParentClassNoArgsRector::class,
         ReadOnlyAnonymousClassRector::class,
         DynamicClassConstFetchRector::class,
+        JsonValidateRector::class
     ]);
 };
