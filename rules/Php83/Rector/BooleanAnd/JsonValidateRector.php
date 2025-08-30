@@ -26,7 +26,7 @@ final class JsonValidateRector extends AbstractRector implements MinPhpVersionIn
 {
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::STR_CONTAINS;
+        return PhpVersionFeature::JSON_VALIDATE;
     }
 
     public function getRuleDefinition(): RuleDefinition
