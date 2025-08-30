@@ -701,6 +701,11 @@ final class PhpVersionFeature
      * @var int
      */
     public const DYNAMIC_CLASS_CONST_FETCH = PhpVersion::PHP_83;
+    
+    /**
+     * @var int
+     */
+    public const JSON_VALIDATE = PhpVersion::PHP_83;
 
     /**
      * @see https://wiki.php.net/rfc/deprecate-implicitly-nullable-types
