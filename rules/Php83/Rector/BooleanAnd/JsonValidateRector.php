@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php83\Rector\BooleanAnd;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -76,7 +74,12 @@ CODE_SAMPLE
         }
 
         $args = $funcCall->getArgs();
-        $argPositions = $this->resolveArgPositions($args);
+        $argPositions = [
+            'json' => 0,
+            'associative' => 1,
+            'depth' => 2,
+            'flags' => 3,
+        ];
 
         $funcCall->name = new Name('json_validate');
         $funcCall->args = [];
@@ -126,30 +129,5 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    /**
-     * @param Arg[] $args
-     * @return array<string, int>  Maps argument name to its position
-     */
-    private function resolveArgPositions(array $args): array
-    {
-        $positions = [];
-        $expectedNames = ['json', 'associative', 'depth', 'flags'];
-        foreach ($args as $position => $arg) {
-            if ($arg->name instanceof Identifier) {
-                $name = $arg->name->toString();
-                if (in_array($name, $expectedNames, true)) {
-                    $positions[$name] = $position;
-                }
-            }
-        }
-
-        return [
-            'json' => 0,
-            'associative' => 1,
-            'depth' => 2,
-            'flags' => 3,
-        ];
     }
 }
