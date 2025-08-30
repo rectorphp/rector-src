@@ -525,11 +525,6 @@ final class PhpVersionFeature
     /**
      * @var int
      */
-    public const JSON_VALIDATE = PhpVersion::PHP_80;
-
-    /**
-     * @var int
-     */
     public const GET_DEBUG_TYPE = PhpVersion::PHP_80;
 
     /**
@@ -803,10 +798,4 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION = PhpVersion::PHP_85;
-    
-    /**
-     * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_passing_string_which_are_not_one_byte_long_to_ord
-     * @var int
-     */
-    public const DEPRECATE_ORD_WITH_MULTIBYTE_STRING = PhpVersion::PHP_85;
 }
