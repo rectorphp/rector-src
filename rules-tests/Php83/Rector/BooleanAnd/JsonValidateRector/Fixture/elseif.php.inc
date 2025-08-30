@@ -12,6 +12,6 @@ namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector\Fixture;
 
 if ($flag) {
     echo "skip";
-} elseif (json_validate($config)) {
+} elseif (json_validate($config, true)) {
     echo "valid config";
 }
