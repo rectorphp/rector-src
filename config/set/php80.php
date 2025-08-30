@@ -20,7 +20,6 @@ use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
-use Rector\Php80\Rector\NotIdentical\MbStrContainsRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php80\Rector\Ternary\GetDebugTypeRector;
@@ -46,7 +45,6 @@ return static function (RectorConfig $rectorConfig): void {
         ClassOnThisVariableObjectRector::class,
         ConsistentImplodeRector::class,
         OptionalParametersAfterRequiredRector::class,
-        MbStrContainsRector::class,
     ]);
 
     $rectorConfig
