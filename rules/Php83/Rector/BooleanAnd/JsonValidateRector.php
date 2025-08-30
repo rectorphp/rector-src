@@ -20,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php80\Rector\BooleanAnd\JsonValidate\JsonValidateTest
+ * @see \Rector\Tests\Php83\Rector\BooleanAnd\JsonValidate\JsonValidateTest
  */
 final class JsonValidateRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
