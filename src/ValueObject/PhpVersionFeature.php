@@ -525,6 +525,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const JSON_VALIDATE = PhpVersion::PHP_80;
+
+    /**
+     * @var int
+     */
     public const GET_DEBUG_TYPE = PhpVersion::PHP_80;
 
     /**
