@@ -75,21 +75,21 @@ CODE_SAMPLE
 
         $args = $funcCall->getArgs();
         $argPositions = [
-            'json' => 0,
-            'associative' => 1,
-            'depth' => 2,
-            'flags' => 3,
+            'json',
+            'associative',
+            'depth',
+            'flags',
         ];
 
         $funcCall->name = new Name('json_validate');
         $funcCall->args = [];
 
-        foreach ($argPositions as $argPosition) {
-            if (! isset($args[$argPosition])) {
+        foreach ($argPositions as $position => $argKey) {
+            if (! isset($args[$position])) {
                 continue;
             }
 
-            $funcCall->args[$argPosition] = $args[$argPosition];
+            $funcCall->args[$position] = $args[$position];
         }
 
         return $funcCall;
