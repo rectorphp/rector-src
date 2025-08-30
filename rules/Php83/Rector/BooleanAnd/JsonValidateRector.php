@@ -84,7 +84,7 @@ CODE_SAMPLE
 
     public function providePolyfillPackage(): string
     {
-        return PolyfillPackage::PHP_80;
+        return PolyfillPackage::PHP_83;
     }
 
     public function matchJsonValidateArg(BooleanAnd $booleanAnd): ?FuncCall
