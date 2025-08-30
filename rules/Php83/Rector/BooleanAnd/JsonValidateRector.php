@@ -76,15 +76,16 @@ CODE_SAMPLE
 
         $args = $funcCall->getArgs();
         $argPositions = $this->resolveArgPositions($args);
-        
+
         $funcCall->name = new Name('json_validate');
         $funcCall->args = [];
 
-        foreach($argPositions as $position){
-            if(! isset($args[$position])){
+        foreach ($argPositions as $argPosition) {
+            if (! isset($args[$argPosition])) {
                 continue;
             }
-            $funcCall->args[$position] = $args[$position];
+
+            $funcCall->args[$argPosition] = $args[$argPosition];
         }
 
         return $funcCall;
@@ -93,30 +94,6 @@ CODE_SAMPLE
     public function providePolyfillPackage(): string
     {
         return PolyfillPackage::PHP_83;
-    }
-
-    /**
-     * @param Arg[] $args
-     */
-    private function resolveArgPositions(array $args): array
-    {   
-        $positions = [];
-        $expectedNames = ['json', 'associative', 'depth', 'flags'];
-        foreach ($args as $position => $arg) {
-            if ($arg->name instanceof Identifier) {
-                $name = $arg->name->toString();
-                if (in_array($name, $expectedNames, true)) {
-                    $positions[$name] = $position;
-                }
-            }
-        }
-
-        return [
-            'json' => 0,
-            'associative' => 1, 
-            'depth' => 2,
-            'flags' => 3
-        ];
     }
 
     public function matchJsonValidateArg(BooleanAnd $booleanAnd): ?FuncCall
@@ -148,5 +125,29 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * @param PhpParser\Node\Arg[] $args
+     */
+    private function resolveArgPositions(array $args): array
+    {
+        $positions = [];
+        $expectedNames = ['json', 'associative', 'depth', 'flags'];
+        foreach ($args as $position => $arg) {
+            if ($arg->name instanceof Identifier) {
+                $name = $arg->name->toString();
+                if (in_array($name, $expectedNames, true)) {
+                    $positions[$name] = $position;
+                }
+            }
+        }
+
+        return [
+            'json' => 0,
+            'associative' => 1,
+            'depth' => 2,
+            'flags' => 3,
+        ];
     }
 }
