@@ -356,7 +356,7 @@ CODE_SAMPLE;
             $firstNode = current($refactoredNode);
 
             if ($firstNode->getAttribute(AttributeKey::HAS_MERGED_COMMENTS, false) === false) {
-               $this->mirrorComments($firstNode, $originalNode);
+                $this->mirrorComments($firstNode, $originalNode);
             }
 
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
