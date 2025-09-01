@@ -91,27 +91,47 @@ CODE_SAMPLE
         if ($booleanAnd->left instanceof NotIdentical) {
             $notIdentical = $booleanAnd->left;
 
-            if ($notIdentical->left instanceof FuncCall
-                && $this->isName($notIdentical->left->name, 'json_decode')
-                && $notIdentical->right instanceof ConstFetch
-                && $this->isName($notIdentical->right->name, 'null')) {
+            $jsonDecodeCall = $this->getJsonNode($notIdentical);
 
-                // right side: json_last_error() === JSON_ERROR_NONE
-                if (! $booleanAnd->right instanceof Identical) {
-                    return null;
-                }
-
-                $identical = $booleanAnd->right;
-
-                if ($identical->left instanceof FuncCall
-                    && $this->isName($identical->left->name, 'json_last_error')
-                    && $identical->right instanceof ConstFetch
-                    && $this->isName($identical->right->name, 'JSON_ERROR_NONE')) {
-
-                    return $notIdentical->left; // return json_decode(...) call
-                }
+            if (! $booleanAnd->right instanceof Identical) {
+                return null;
             }
 
+            $identical = $booleanAnd->right;
+
+            if ($identical->left instanceof \PhpParser\Node\Expr\FuncCall
+                && $this->isName($identical->left->name, 'json_last_error')
+                && $identical->right instanceof ConstFetch
+                && $this->isName($identical->right->name, 'JSON_ERROR_NONE')) {
+                return $jsonDecodeCall; // return json_decode(...) call
+            }
+
+            if (
+                $identical->left instanceof ConstFetch
+                && $this->isName($identical->left->name, 'JSON_ERROR_NONE')
+                && $identical->right instanceof \PhpParser\Node\Expr\FuncCall
+                && $this->isName($identical->right->name, 'json_last_error')
+            ) {
+                return $jsonDecodeCall; // return json_decode(...) call
+            }
+
+        }
+        return null;
+    }
+
+    protected function getJsonNode(NotIdentical $notIdentical): ?FuncCall
+    {
+
+        if ($notIdentical->left instanceof FuncCall
+            && $this->isName($notIdentical->left->name, 'json_decode')
+        ) {
+            return $notIdentical->left;
+        }
+
+        if ($notIdentical->right instanceof FuncCall
+        && $this->isName($notIdentical->right->name, 'json_decode')
+        ) {
+            return $notIdentical->right;
         }
 
         return null;
