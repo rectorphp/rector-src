@@ -504,15 +504,15 @@ final class RectorConfigBuilder
         }
 
         if ($fosRest || $all) {
-            $this->sets[] = __DIR__ . '/../vendor/rector/rector-symfony/config/sets/fosrest/annotations_to_attributes.php';
+            $this->sets[] = __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/fosrest/annotations-to-attributes.php';
         }
 
         if ($jms || $all) {
-            $this->sets[] = __DIR__ . '/../vendor/rector/rector-symfony/config/sets/jms/annotations_to_attributes.php';
+            $this->sets[] = __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/jms/annotations-to-attributes.php';
         }
 
         if ($sensiolabs || $all) {
-            $this->sets[] = __DIR__ . '/../vendor/rector/rector-symfony/config/sets/sensiolabs/annotations_to_attributes.php';
+            $this->sets[] = __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/sensiolabs/annotations-to-attributes.php';
         }
 
         if ($phpunit || $all) {
