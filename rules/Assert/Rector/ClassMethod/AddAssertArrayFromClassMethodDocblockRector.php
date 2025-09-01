@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Assert\Rector\ClassMethod;
 
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -118,7 +119,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $param->var instanceof Expr\Variable) {
+            if (! $param->var instanceof Variable) {
                 continue;
             }
 
