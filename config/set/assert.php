@@ -6,7 +6,5 @@ use Rector\Assert\Rector\ClassMethod\AddAssertArrayFromClassMethodDocblockRector
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        AddAssertArrayFromClassMethodDocblockRector::class,
-    ]);
+    $rectorConfig->rules([AddAssertArrayFromClassMethodDocblockRector::class]);
 };
