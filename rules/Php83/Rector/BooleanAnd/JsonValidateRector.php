@@ -75,7 +75,6 @@ CODE_SAMPLE
 
         $args = $funcCall->getArgs();
         $funcCall->name = new Name('json_validate');
-        $funcCall->args = [];
         $funcCall->args = $args;
 
         return $funcCall;
