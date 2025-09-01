@@ -23,7 +23,7 @@ final class ChrArgModuloRector extends AbstractRector implements MinPhpVersionIn
 {
     public function __construct(
         private readonly ValueResolver $valueResolver
-    ){
+    ) {
 
     }
 
@@ -80,7 +80,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ( $value >= 0 && $value <= 255) {
+        if ($value >= 0 && $value <= 255) {
             return null;
         }
 
