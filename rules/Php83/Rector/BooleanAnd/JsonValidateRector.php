@@ -11,8 +11,6 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use Rector\NodeManipulator\BinaryOpManipulator;
-use Rector\Php71\ValueObject\TwoNodeMatch;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\ValueObject\PolyfillPackage;
@@ -26,11 +24,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class JsonValidateRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
-    public function __construct(
-        private readonly BinaryOpManipulator $binaryOpManipulator
-    ) {
-    }
-
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::JSON_VALIDATE;
@@ -94,42 +87,52 @@ CODE_SAMPLE
 
     public function matchJsonValidateArg(BooleanAnd $booleanAnd): ?FuncCall
     {
-        // match: json_decode(...) !== null   OR   null !== json_decode(...)
-        if (!($booleanAnd->left instanceof NotIdentical)) {
-            return null;
+        if ($booleanAnd->left instanceof NotIdentical) {
+            $notIdentical = $booleanAnd->left;
+
+            $jsonDecodeCall = $this->getJsonNode($notIdentical);
+
+            if (! $booleanAnd->right instanceof Identical) {
+                return null;
+            }
+
+            $identical = $booleanAnd->right;
+
+            if ($identical->left instanceof \PhpParser\Node\Expr\FuncCall
+                && $this->isName($identical->left->name, 'json_last_error')
+                && $identical->right instanceof ConstFetch
+                && $this->isName($identical->right->name, 'JSON_ERROR_NONE')) {
+                return $jsonDecodeCall; // return json_decode(...) call
+            }
+
+            if (
+                $identical->left instanceof ConstFetch
+                && $this->isName($identical->left->name, 'JSON_ERROR_NONE')
+                && $identical->right instanceof \PhpParser\Node\Expr\FuncCall
+                && $this->isName($identical->right->name, 'json_last_error')
+            ) {
+                return $jsonDecodeCall; // return json_decode(...) call
+            }
+
+        }
+        return null;
+    }
+
+    protected function getJsonNode(NotIdentical $notIdentical): ?FuncCall
+    {
+
+        if ($notIdentical->left instanceof FuncCall
+            && $this->isName($notIdentical->left->name, 'json_decode')
+        ) {
+            return $notIdentical->left;
         }
 
-        $decodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
-            $booleanAnd->left,
-            fn($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_decode'),
-            fn($node) => $node instanceof ConstFetch && $this->isName($node->name, 'null')
-        );
-
-        if (! $decodeMatch instanceof TwoNodeMatch) {
-            return null;
+        if ($notIdentical->right instanceof FuncCall
+        && $this->isName($notIdentical->right->name, 'json_decode')
+        ) {
+            return $notIdentical->right;
         }
 
-        // match: json_last_error() === JSON_ERROR_NONE   OR   JSON_ERROR_NONE === json_last_error()
-        if (!($booleanAnd->right instanceof Identical)) {
-            return null;
-        }
-
-        $errorMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
-            $booleanAnd->right,
-            fn($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_last_error'),
-            fn($node) => $node instanceof ConstFetch && $this->isName($node->name, 'JSON_ERROR_NONE')
-        );
-
-        if (! $errorMatch instanceof TwoNodeMatch) {
-            return null;
-        }
-
-        // always return the json_decode(...) call
-        $funcCall = $decodeMatch->getFirstExpr();
-        if(!$funcCall instanceof FuncCall){
-            return null;
-        }
-
-        return $funcCall;
+        return null;
     }
 }
