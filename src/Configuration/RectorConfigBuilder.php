@@ -503,6 +503,18 @@ final class RectorConfigBuilder
             $this->sets[] = DoctrineSetList::GEDMO_ANNOTATIONS_TO_ATTRIBUTES;
         }
 
+        if ($fosRest || $all) {
+            $this->sets[] = __DIR__ . '/../vendor/rector/rector-symfony/config/sets/fosrest/annotations_to_attributes.php';
+        }
+
+        if ($jms || $all) {
+            $this->sets[] = __DIR__ . '/../vendor/rector/rector-symfony/config/sets/jms/annotations_to_attributes.php';
+        }
+
+        if ($sensiolabs || $all) {
+            $this->sets[] = __DIR__ . '/../vendor/rector/rector-symfony/config/sets/sensiolabs/annotations_to_attributes.php';
+        }
+
         if ($phpunit || $all) {
             $this->sets[] = PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES;
         }
