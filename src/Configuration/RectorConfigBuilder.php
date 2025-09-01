@@ -31,9 +31,6 @@ use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\Symfony\Set\FOSRestSetList;
-use Rector\Symfony\Set\JMSSetList;
-use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\PhpVersion;
@@ -508,18 +505,6 @@ final class RectorConfigBuilder
 
         if ($phpunit || $all) {
             $this->sets[] = PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES;
-        }
-
-        if ($fosRest || $all) {
-            $this->sets[] = FOSRestSetList::ANNOTATIONS_TO_ATTRIBUTES;
-        }
-
-        if ($jms || $all) {
-            $this->sets[] = JMSSetList::ANNOTATIONS_TO_ATTRIBUTES;
-        }
-
-        if ($sensiolabs || $all) {
-            $this->sets[] = SensiolabsSetList::ANNOTATIONS_TO_ATTRIBUTES;
         }
 
         if ($behat || $all) {
