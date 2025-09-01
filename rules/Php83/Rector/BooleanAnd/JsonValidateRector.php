@@ -94,29 +94,31 @@ CODE_SAMPLE
 
     public function matchJsonValidateArg(BooleanAnd $booleanAnd): ?FuncCall
     {
-        $decodeMatch = null;
-        $errorMatch = null;
-
         // match: json_decode(...) !== null   OR   null !== json_decode(...)
-        if ($booleanAnd->left instanceof NotIdentical) {
-            $decodeMatch = $this->decodeMatch($booleanAnd->left);
+        if (!($booleanAnd->left instanceof NotIdentical)) {
+            return null;
         }
 
-        if ($booleanAnd->right instanceof NotIdentical) {
-            $decodeMatch = $this->decodeMatch($booleanAnd->right);
-        }
+        $decodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
+            $booleanAnd->left,
+            fn($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_decode'),
+            fn($node) => $node instanceof ConstFetch && $this->isName($node->name, 'null')
+        );
 
         if (! $decodeMatch instanceof TwoNodeMatch) {
             return null;
         }
 
         // match: json_last_error() === JSON_ERROR_NONE   OR   JSON_ERROR_NONE === json_last_error()
-        if ($booleanAnd->right instanceof Identical) {
-            $errorMatch = $this->errorMatch($booleanAnd->right);
+        if (!($booleanAnd->right instanceof Identical)) {
+            return null;
         }
-        if ($booleanAnd->left instanceof Identical) {
-            $errorMatch = $this->errorMatch($booleanAnd->left);
-        }
+
+        $errorMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
+            $booleanAnd->right,
+            fn($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_last_error'),
+            fn($node) => $node instanceof ConstFetch && $this->isName($node->name, 'JSON_ERROR_NONE')
+        );
 
         if (! $errorMatch instanceof TwoNodeMatch) {
             return null;
@@ -124,28 +126,27 @@ CODE_SAMPLE
 
         // always return the json_decode(...) call
         $funcCall = $decodeMatch->getFirstExpr();
-        if (! $funcCall instanceof FuncCall) {
+        if(!$funcCall instanceof FuncCall){
             return null;
         }
-
         return $funcCall;
     }
 
-    protected function decodeMatch(NotIdentical $notIdentical): ?TwoNodeMatch
+    protected function getJsonNode(NotIdentical $notIdentical): ?FuncCall
     {
-        return $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
-            $notIdentical,
-            fn ($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_decode'),
-            fn ($node) => $node instanceof ConstFetch && $this->isName($node->name, 'null')
-        );
-    }
 
-    protected function errorMatch(Identical $identical): ?TwoNodeMatch
-    {
-        return $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
-            $identical,
-            fn ($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_last_error'),
-            fn ($node) => $node instanceof ConstFetch && $this->isName($node->name, 'JSON_ERROR_NONE')
-        );
+        if ($notIdentical->left instanceof FuncCall
+            && $this->isName($notIdentical->left->name, 'json_decode')
+        ) {
+            return $notIdentical->left;
+        }
+
+        if ($notIdentical->right instanceof FuncCall
+        && $this->isName($notIdentical->right->name, 'json_decode')
+        ) {
+            return $notIdentical->right;
+        }
+
+        return null;
     }
 }
