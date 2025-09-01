@@ -125,24 +125,11 @@ CODE_SAMPLE
         }
 
         // always return the json_decode(...) call
-        return $decodeMatch->getFirstExpr();
-    }
-
-    protected function getJsonNode(NotIdentical $notIdentical): ?FuncCall
-    {
-
-        if ($notIdentical->left instanceof FuncCall
-            && $this->isName($notIdentical->left->name, 'json_decode')
-        ) {
-            return $notIdentical->left;
+        $funcCall = $decodeMatch->getFirstExpr();
+        if(!$funcCall instanceof FuncCall){
+            return null;
         }
 
-        if ($notIdentical->right instanceof FuncCall
-        && $this->isName($notIdentical->right->name, 'json_decode')
-        ) {
-            return $notIdentical->right;
-        }
-
-        return null;
+        return $funcCall;
     }
 }
