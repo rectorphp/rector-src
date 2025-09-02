@@ -18,6 +18,7 @@ use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
 use Rector\Renaming\Rector\Cast\RenameCastRector;
 use Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector;
+use Rector\Renaming\Rector\ConstFetch\RenameConstantRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
@@ -198,6 +199,14 @@ return static function (RectorConfig $rectorConfig): void {
             new WrapFuncCallWithPhpVersionIdChecker('finfo_close', 80500),
             new WrapFuncCallWithPhpVersionIdChecker('imagedestroy', 80500),
             new WrapFuncCallWithPhpVersionIdChecker('xml_parser_free', 80500),
+        ]
+    );
+
+    // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_filter_default_constant
+    $rectorConfig->ruleWithConfiguration(
+        RenameConstantRector::class,
+        [
+            'FILTER_DEFAULT' => 'FILTER_UNSAFE_RAW',
         ]
     );
 };
