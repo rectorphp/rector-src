@@ -9,13 +9,14 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_sleep_and_wakeup_magic_methods
@@ -23,11 +24,17 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
  */
 final class SleepToSerializeRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private BetterNodeFinder $betterNodeFinder,
+        private ReturnAnalyzer $returnAnalyzer
+    ) {
+    }
+
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DEPRECATED_METHOD_SLEEP;
     }
-    
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -44,7 +51,7 @@ class User {
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 class User {
     private $id;
@@ -58,7 +65,7 @@ class User {
     }
 }
 CODE_SAMPLE
-                )
+                ),
             ]
         );
     }
@@ -80,17 +87,22 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->name = new Identifier('__serialize');
-        $node->returnType = new Identifier('array');
-
-        if(!is_array($node->stmts)){
+        if (! $this->isName($node->name, '__sleep')) {
             return null;
         }
 
-        foreach ($node->stmts as $stmt) {
-            if ($stmt instanceof Node\Stmt\Return_ && $stmt->expr instanceof Array_) {
-                $newItems = [];
-                foreach ($stmt->expr->items as $item) {
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
+            return null;
+        }
+
+        foreach ($returns as $return) {
+            if (! $return->expr instanceof Array_) {
+                return null;
+            }
+            if (! empty($return->expr->items)) {
+
+                foreach ($return->expr->items as $item) {
                     if ($item !== null && $item->value instanceof Node\Scalar\String_) {
                         $propName = $item->value->value;
                         $newItems[] = new ArrayItem(
@@ -99,9 +111,13 @@ CODE_SAMPLE
                         );
                     }
                 }
-                $stmt->expr->items = $newItems;
+                $return->expr->items = $newItems;
             }
+
         }
+
+        $node->name = new Identifier('__serialize');
+        $node->returnType = new Identifier('array');
 
         return $node;
     }
