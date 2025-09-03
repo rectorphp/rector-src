@@ -183,7 +183,7 @@ CODE_SAMPLE
                 if ($depth <= 0) {
                     return false;
                 }
-                if ($depth > static::JSON_MAX_DEPTH) {
+                if ($depth > self::JSON_MAX_DEPTH) {
                     return false;
                 }
             }
@@ -205,7 +205,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isNames($arg->name, static::ARG_NAMES)) {
+            if (! $this->isNames($arg->name, self::ARG_NAMES)) {
                 continue;
             }
 
@@ -234,7 +234,7 @@ CODE_SAMPLE
         $positions = [];
 
         foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
-            if (in_array($parameterReflection->getName(), static::ARG_NAMES, true)) {
+            if (in_array($parameterReflection->getName(), self::ARG_NAMES, true)) {
                 $positions[] = $position;
             }
         }
