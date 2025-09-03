@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Cast\String_;
 use Rector\Config\RectorConfig;
 use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
+use Rector\Php85\Rector\ClassMethod\SleepToSerializeRector;
 use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector;
 use Rector\Php85\Rector\FuncCall\ChrArgModuloRector;
@@ -37,6 +38,7 @@ return static function (RectorConfig $rectorConfig): void {
             ColonAfterSwitchCaseRector::class,
             ArrayKeyExistsNullToEmptyStringRector::class,
             ChrArgModuloRector::class,
+            SleepToSerializeRector::class,
         ]
     );
 
