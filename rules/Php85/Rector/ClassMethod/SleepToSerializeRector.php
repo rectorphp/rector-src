@@ -87,7 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isName($node->name, '__sleep')) {
+        if ($node->returnType instanceof Identifier && $this->isName($node->returnType, 'array')) { 
             return null;
         }
 
@@ -97,11 +97,13 @@ CODE_SAMPLE
         }
 
         foreach ($returns as $return) {
-            if (! $return->expr instanceof Array_) {
+            if (! $return->expr instanceof Array_ ) {
                 return null;
             }
-            if (! empty($return->expr->items)) {
 
+            if (count($return->expr->items) > 0) {
+                $newItems = [];
+                $hasChanged = false;
                 foreach ($return->expr->items as $item) {
                     if ($item !== null && $item->value instanceof Node\Scalar\String_) {
                         $propName = $item->value->value;
@@ -111,14 +113,19 @@ CODE_SAMPLE
                         );
                     }
                 }
-                $return->expr->items = $newItems;
+                if (count($newItems) > 0) {
+                    $hasChanged = true;
+                    $return->expr->items = $newItems;
+                }
             }
-
         }
 
-        $node->name = new Identifier('__serialize');
-        $node->returnType = new Identifier('array');
+        if($hasChanged){
+            $node->name = new Identifier('__serialize');
+            $node->returnType = new Identifier('array');
+            return $node;
+        }
 
-        return $node;
+        return null;
     }
 }
