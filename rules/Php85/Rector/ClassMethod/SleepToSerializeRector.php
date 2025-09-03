@@ -12,6 +12,8 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 
@@ -19,8 +21,13 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_sleep_and_wakeup_magic_methods
  * @see \Rector\Tests\Php85\Rector\MethodCall\SleepToSerializeRector\SleepToSerializeRectorTest
  */
-final class SleepToSerializeRector extends AbstractRector
+final class SleepToSerializeRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DEPRECATED_METHOD_SLEEP;
+    }
+    
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -75,6 +82,10 @@ CODE_SAMPLE
 
         $node->name = new Identifier('__serialize');
         $node->returnType = new Identifier('array');
+
+        if(!is_array($node->stmts)){
+            return null;
+        }
 
         foreach ($node->stmts as $stmt) {
             if ($stmt instanceof Node\Stmt\Return_ && $stmt->expr instanceof Array_) {
