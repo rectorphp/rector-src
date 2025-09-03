@@ -6,6 +6,7 @@
     colors="true"
     executionOrder="defects"
     defaultTestSuite="main"
+             stopOnError="true"
     displayDetailsOnTestsThatTriggerWarnings="true"
     displayDetailsOnPhpunitDeprecations="true"
 >
