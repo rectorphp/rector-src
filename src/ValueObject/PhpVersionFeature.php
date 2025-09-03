@@ -704,6 +704,7 @@ final class PhpVersionFeature
     
     /**
      * @var int
+     * @see https://wiki.php.net/rfc/json_validate
      */
     public const JSON_VALIDATE = PhpVersion::PHP_83;
 
