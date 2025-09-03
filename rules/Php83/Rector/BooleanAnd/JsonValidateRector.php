@@ -81,10 +81,29 @@ CODE_SAMPLE
         }
 
         $args = $funcCall->getArgs();
+
+        if(!$this->validateFlag($args)){
+            return null;
+        }
+
         $funcCall->name = new Name('json_validate');
         $funcCall->args = $args;
 
         return $funcCall;
+    }
+
+    protected function validateFlag(array $args){
+         if (0 !== $flags && \defined('JSON_INVALID_UTF8_IGNORE') && \JSON_INVALID_UTF8_IGNORE !== $flags) {
+            throw new \ValueError('json_validate(): Argument #3 ($flags) must be a valid flag (allowed flags: JSON_INVALID_UTF8_IGNORE)');
+        }
+
+        if ($depth <= 0) {
+            throw new \ValueError('json_validate(): Argument #2 ($depth) must be greater than 0');
+        }
+
+        if ($depth > self::JSON_MAX_DEPTH) {
+            throw new \ValueError(sprintf('json_validate(): Argument #2 ($depth) must be less than %d', self::JSON_MAX_DEPTH));
+        }
     }
 
     public function providePolyfillPackage(): string
@@ -132,21 +151,4 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    protected function getJsonNode(NotIdentical $notIdentical): ?FuncCall
-    {
-
-        if ($notIdentical->left instanceof FuncCall
-            && $this->isName($notIdentical->left->name, 'json_decode')
-        ) {
-            return $notIdentical->left;
-        }
-
-        if ($notIdentical->right instanceof FuncCall
-        && $this->isName($notIdentical->right->name, 'json_decode')
-        ) {
-            return $notIdentical->right;
-        }
-
-        return null;
-    }
 }
