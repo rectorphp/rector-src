@@ -17,9 +17,9 @@ use Webmozart\Assert\Assert;
 final class InstalledPackageResolver
 {
     /**
-     * @var InstalledPackage[]
+     * @var null|InstalledPackage[]
      */
-    private array $resolvedInstalledPackages = [];
+    private ?array $resolvedInstalledPackages = null;
 
     public function __construct(
         private readonly ?string $projectDirectory = null
@@ -37,8 +37,8 @@ final class InstalledPackageResolver
      */
     public function resolve(): array
     {
-        // cache
-        if ($this->resolvedInstalledPackages !== []) {
+        // already cached, even only empty array
+        if ($this->resolvedInstalledPackages !== null) {
             return $this->resolvedInstalledPackages;
         }
 
