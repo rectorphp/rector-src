@@ -11,18 +11,13 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
-use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\ValueObject\PolyfillPackage;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -41,8 +36,6 @@ final class JsonValidateRector extends AbstractRector implements MinPhpVersionIn
 
     public function __construct(
         private readonly BinaryOpManipulator $binaryOpManipulator,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer,
         private ValueResolver $valueResolver,
     ) {
     }
@@ -102,15 +95,12 @@ CODE_SAMPLE
         }
 
         $args = $funcCall->getArgs();
-        $positions = $this->argsAnalyzer->hasNamedArg($args)
-            ? $this->resolveNamedPositions($args)
-            : $this->resolveOriginalPositions($funcCall, $scope);
 
-        if ($positions === []) {
+        if ($args === []) {
             return null;
         }
 
-        if (! $this->validateArgs($args, $positions)) {
+        if (! $this->validateArgs($funcCall)) {
             return null;
         }
         $funcCall->name = new Name('json_validate');
@@ -164,81 +154,25 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    /**
-     * @param Arg[] $args
-     * @param int[]|string[] $positions
-     */
-    protected function validateArgs(array $args, array $positions): bool
+    protected function validateArgs(FuncCall $funcCall): bool
     {
-        foreach ($positions as $position) {
-            $arg = $args[$position] ?? '';
-            if ($arg instanceof Arg && $arg->name instanceof Identifier && $arg->name->toString() === 'flags') {
-                $flags = $this->valueResolver->getValue($arg);
-                if ($flags !== JSON_INVALID_UTF8_IGNORE) {
-                    return false;
-                }
+        $depth = $funcCall->getArg('depth', 2);
+        $flags = $funcCall->getArg('flags', 3);
+
+        if ($flags instanceof Arg) {
+            $flagsValue = $this->valueResolver->getValue($flags);
+            if ($flagsValue !== JSON_INVALID_UTF8_IGNORE) {
+                return false;
             }
-            if ($arg instanceof Arg && $arg->name instanceof Identifier && $arg->name->toString() === 'depth') {
-                $depth = $this->valueResolver->getValue($arg);
-                if ($depth <= 0) {
-                    return false;
-                }
-                if ($depth > self::JSON_MAX_DEPTH) {
-                    return false;
-                }
+        }
+
+        if ($depth instanceof Arg) {
+            $depthValue = $this->valueResolver->getValue($depth);
+            if ($depthValue <= 0 || $depthValue > self::JSON_MAX_DEPTH) {
+                return false;
             }
         }
 
         return true;
-    }
-
-    /**
-     * @param Arg[] $args
-     * @return int[]|string[]
-     */
-    private function resolveNamedPositions(array $args): array
-    {
-        $positions = [];
-
-        foreach ($args as $position => $arg) {
-            if (! $arg->name instanceof Identifier) {
-                continue;
-            }
-
-            if (! $this->isNames($arg->name, self::ARG_NAMES)) {
-                continue;
-            }
-
-            $positions[] = $position;
-        }
-
-        return $positions;
-    }
-
-    /**
-     * @return int[]|string[]
-     */
-    private function resolveOriginalPositions(FuncCall $funcCall, Scope $scope): array
-    {
-        $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($funcCall);
-        if (! $functionReflection instanceof NativeFunctionReflection) {
-            return [];
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionReflection,
-            $funcCall,
-            $scope
-        );
-
-        $positions = [];
-
-        foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
-            if (in_array($parameterReflection->getName(), self::ARG_NAMES, true)) {
-                $positions[] = $position;
-            }
-        }
-
-        return $positions;
     }
 }
