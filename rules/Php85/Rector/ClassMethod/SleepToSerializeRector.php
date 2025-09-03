@@ -95,7 +95,8 @@ CODE_SAMPLE
         if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
             return null;
         }
-
+        
+        $hasChanged = false;
         foreach ($returns as $return) {
             if (! $return->expr instanceof Array_ ) {
                 return null;
@@ -103,7 +104,6 @@ CODE_SAMPLE
 
             if (count($return->expr->items) > 0) {
                 $newItems = [];
-                $hasChanged = false;
                 foreach ($return->expr->items as $item) {
                     if ($item !== null && $item->value instanceof Node\Scalar\String_) {
                         $propName = $item->value->value;
