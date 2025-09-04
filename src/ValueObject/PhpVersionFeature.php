@@ -642,6 +642,12 @@ final class PhpVersionFeature
     public const READONLY_ANONYMOUS_CLASS = PhpVersion::PHP_83;
 
     /**
+     * @var int
+     * @see https://wiki.php.net/rfc/json_validate
+     */
+    public const JSON_VALIDATE = PhpVersion::PHP_83;
+
+    /**
      * @see https://wiki.php.net/rfc/mixed_type_v2
      * @var int
      */
