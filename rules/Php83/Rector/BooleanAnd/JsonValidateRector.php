@@ -57,7 +57,7 @@ CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 if (json_validate($json)) {
-}    
+}
 CODE_SAMPLE
                 ),
             ]
@@ -117,8 +117,8 @@ CODE_SAMPLE
 
         $decodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
             $booleanAnd->left,
-            fn ($node): bool => $node instanceof FuncCall && $this->isName($node->name, 'json_decode'),
-            fn ($node): bool => $node instanceof ConstFetch && $this->isName($node->name, 'null')
+            fn (Node $node): bool => $node instanceof FuncCall && $this->isName($node->name, 'json_decode'),
+            fn (Node $node): bool => $node instanceof ConstFetch && $this->isName($node->name, 'null')
         );
 
         if (! $decodeMatch instanceof TwoNodeMatch) {
@@ -132,8 +132,8 @@ CODE_SAMPLE
 
         $errorMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
             $booleanAnd->right,
-            fn ($node): bool => $node instanceof FuncCall && $this->isName($node->name, 'json_last_error'),
-            fn ($node): bool => $node instanceof ConstFetch && $this->isName($node->name, 'JSON_ERROR_NONE')
+            fn (Node $node): bool => $node instanceof FuncCall && $this->isName($node->name, 'json_last_error'),
+            fn (Node $node): bool => $node instanceof ConstFetch && $this->isName($node->name, 'JSON_ERROR_NONE')
         );
 
         if (! $errorMatch instanceof TwoNodeMatch) {
