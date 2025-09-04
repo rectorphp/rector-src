@@ -9,6 +9,8 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\Guard\OverrideByParentClassGuard;
@@ -28,6 +30,7 @@ final class PrivatizeFinalClassMethodRector extends AbstractRector
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly OverrideByParentClassGuard $overrideByParentClassGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
     ) {
     }
 
@@ -135,6 +138,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($this->shouldSkipClassMethodLaravel($classMethod)) {
+            return true;
+        }
+
         // if has parent call, its probably overriding parent one → skip it
         $hasParentCall = (bool) $this->betterNodeFinder->findFirst(
             (array) $classMethod->stmts,
@@ -148,5 +155,45 @@ CODE_SAMPLE
         );
 
         return $hasParentCall;
+    }
+
+    private function shouldSkipClassMethodLaravel(ClassMethod $classMethod): bool
+    {
+        $classReflection = ScopeFetcher::fetch($classMethod)->getClassReflection();
+
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        if (! $classReflection->is('Illuminate\Database\Eloquent\Model')) {
+            return false;
+        }
+
+        $name = (string) $this->getName($classMethod->name);
+        $returnType = $classMethod->returnType;
+
+        // Model attributes should be protected
+        if (
+            (bool) preg_match('/^[gs]et.+Attribute$/', $name)
+            || ($returnType instanceof Node && $this->isObjectType(
+                $returnType,
+                new ObjectType('Illuminate\Database\Eloquent\Casts\Attribute')
+            ))
+        ) {
+            return true;
+        }
+
+        // Model scopes should be protected
+        if (
+            (bool) preg_match('/^scope.+$/', $name)
+            || $this->phpAttributeAnalyzer->hasPhpAttribute(
+                $classMethod,
+                'Illuminate\Database\Eloquent\Attributes\Scope'
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
