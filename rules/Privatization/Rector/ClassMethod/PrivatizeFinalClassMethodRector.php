@@ -31,6 +31,7 @@ final class PrivatizeFinalClassMethodRector extends AbstractRector
      * @see https://regex101.com/r/Dx0WN5/2
      */
     private const LARAVEL_MODEL_ATTRIBUTE_REGEX = '/^[gs]et.+Attribute$/';
+
     /**
      * @var string
      * @see https://regex101.com/r/hxOGeN/2
@@ -104,7 +105,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
-            if ($this->shouldSkipClassMethod($classMethod)) {
+            if ($this->shouldSkipClassMethod($classReflection, $classMethod)) {
                 continue;
             }
 
@@ -133,7 +134,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
+    private function shouldSkipClassMethod(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
         // edge case in nette framework
         /** @var string $methodName */
@@ -150,7 +151,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->shouldSkipClassMethodLaravel($classMethod)) {
+        if ($this->shouldSkipClassMethodLaravel($classReflection, $classMethod)) {
             return true;
         }
 
@@ -169,14 +170,8 @@ CODE_SAMPLE
         return $hasParentCall;
     }
 
-    private function shouldSkipClassMethodLaravel(ClassMethod $classMethod): bool
+    private function shouldSkipClassMethodLaravel(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
-        $classReflection = ScopeFetcher::fetch($classMethod)->getClassReflection();
-
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
         if (! $classReflection->is('Illuminate\Database\Eloquent\Model')) {
             return false;
         }
