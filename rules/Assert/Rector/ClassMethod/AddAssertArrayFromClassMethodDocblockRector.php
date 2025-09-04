@@ -26,18 +26,22 @@ use Rector\Assert\Enum\AssertClassName;
 use Rector\Assert\NodeAnalyzer\ExistingAssertStaticCallResolver;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @experimental Check generic array key/value types in runtime with assert. Generics for impatient people.
  *
  * @see \Rector\Tests\Assert\Rector\ClassMethod\AddAssertArrayFromClassMethodDocblockRector\AddAssertArrayFromClassMethodDocblockRectorTest
  */
-final class AddAssertArrayFromClassMethodDocblockRector extends AbstractRector
+final class AddAssertArrayFromClassMethodDocblockRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    private string $assertClass = AssertClassName::WEBMOZART;
+
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ExistingAssertStaticCallResolver $existingAssertStaticCallResolver
@@ -46,9 +50,11 @@ final class AddAssertArrayFromClassMethodDocblockRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add key and value assert based on docblock @param type declarations', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Add key and value assert based on docblock @param type declarations (pick from "webmozart" or "beberlei" asserts)',
+            [
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
 <?php
 
 class SomeClass
@@ -62,11 +68,13 @@ class SomeClass
 }
 
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 <?php
 
-use Webmozart\Assert\Assert;class SomeClass
+use Webmozart\Assert\Assert;
+
+class SomeClass
 {
     /**
      * @param int[] $items
@@ -77,8 +85,12 @@ use Webmozart\Assert\Assert;class SomeClass
     }
 }
 CODE_SAMPLE
-            ),
-        ]);
+                    ,
+                    [AssertClassName::WEBMOZART]
+                ),
+
+            ]
+        );
     }
 
     public function getNodeTypes(): array
@@ -118,7 +130,7 @@ CODE_SAMPLE
             }
 
             // handle arrays only
-            if ($param->type->name !== 'array') {
+            if (! $this->isName($param->type, 'array')) {
                 continue;
             }
 
@@ -168,9 +180,27 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @param array<string> $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        if ($configuration === []) {
+            // default
+            return;
+        }
+
+        Assert::count($configuration, 1);
+        Assert::inArray($configuration[0], [AssertClassName::BEBERLEI, AssertClassName::WEBMOZART]);
+
+        $this->assertClass = $configuration[0];
+    }
+
     private function createAssertExpression(Expr $expr, string $methodName): Expression
     {
-        $staticCall = new StaticCall(new FullyQualified(AssertClassName::ASSERT), $methodName, [new Arg($expr)]);
+        $assertFullyQualified = new FullyQualified($this->assertClass);
+
+        $staticCall = new StaticCall($assertFullyQualified, $methodName, [new Arg($expr)]);
 
         return new Expression($staticCall);
     }
