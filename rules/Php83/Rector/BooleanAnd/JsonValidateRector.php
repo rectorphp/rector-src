@@ -34,7 +34,7 @@ final class JsonValidateRector extends AbstractRector implements MinPhpVersionIn
 
     public function __construct(
         private readonly BinaryOpManipulator $binaryOpManipulator,
-        private ValueResolver $valueResolver,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -57,7 +57,7 @@ CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 if (json_validate($json)) {
-}    
+}
 CODE_SAMPLE
                 ),
             ]
@@ -89,13 +89,14 @@ CODE_SAMPLE
 
         $args = $funcCall->getArgs();
 
-        if (count($args) < 1 ){
+        if (count($args) < 1) {
             return null;
         }
 
         if (! $this->validateArgs($funcCall)) {
             return null;
         }
+
         $funcCall->name = new Name('json_validate');
         $funcCall->args = $args;
 
@@ -116,8 +117,8 @@ CODE_SAMPLE
 
         $decodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
             $booleanAnd->left,
-            fn ($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_decode'),
-            fn ($node) => $node instanceof ConstFetch && $this->isName($node->name, 'null')
+            fn (Node $node): bool => $node instanceof FuncCall && $this->isName($node->name, 'json_decode'),
+            fn (Node $node): bool => $node instanceof ConstFetch && $this->isName($node->name, 'null')
         );
 
         if (! $decodeMatch instanceof TwoNodeMatch) {
@@ -131,8 +132,8 @@ CODE_SAMPLE
 
         $errorMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
             $booleanAnd->right,
-            fn ($node) => $node instanceof FuncCall && $this->isName($node->name, 'json_last_error'),
-            fn ($node) => $node instanceof ConstFetch && $this->isName($node->name, 'JSON_ERROR_NONE')
+            fn (Node $node): bool => $node instanceof FuncCall && $this->isName($node->name, 'json_last_error'),
+            fn (Node $node): bool => $node instanceof ConstFetch && $this->isName($node->name, 'JSON_ERROR_NONE')
         );
 
         if (! $errorMatch instanceof TwoNodeMatch) {
@@ -140,14 +141,15 @@ CODE_SAMPLE
         }
 
         // always return the json_decode(...) call
-        $funcCall = $decodeMatch->getFirstExpr();
-        if (! $funcCall instanceof FuncCall) {
+        $expr = $decodeMatch->getFirstExpr();
+        if (! $expr instanceof FuncCall) {
             return null;
         }
-        return $funcCall;
+
+        return $expr;
     }
 
-    protected function validateArgs(FuncCall $funcCall): bool
+    private function validateArgs(FuncCall $funcCall): bool
     {
         $depth = $funcCall->getArg('depth', 2);
         $flags = $funcCall->getArg('flags', 3);
