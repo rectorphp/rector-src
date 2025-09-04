@@ -12,7 +12,7 @@ final class DontRenameDifferentNamespacedFunction
 -----
 <?php
 
-use Psl\Str\split;
+use function Psl\Str\split;
 
 final class DontRenameDifferentNamespacedFunction
 {
@@ -21,5 +21,3 @@ final class DontRenameDifferentNamespacedFunction
         $addressParts = split($addressLine, $houseNumber);
     }
 }
-
-?>
