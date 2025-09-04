@@ -39,7 +39,11 @@ final class ExistingAssertStaticCallResolver
                 continue;
             }
 
-            if ($staticCall->class->toString() !== AssertClassName::ASSERT) {
+            if (! in_array(
+                $staticCall->class->toString(),
+                [AssertClassName::WEBMOZART, AssertClassName::BEBERLEI],
+                true
+            )) {
                 continue;
             }
 

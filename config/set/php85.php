@@ -203,10 +203,7 @@ return static function (RectorConfig $rectorConfig): void {
     );
 
     // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_filter_default_constant
-    $rectorConfig->ruleWithConfiguration(
-        RenameConstantRector::class,
-        [
-            'FILTER_DEFAULT' => 'FILTER_UNSAFE_RAW',
-        ]
-    );
+    $rectorConfig->ruleWithConfiguration(RenameConstantRector::class, [
+        'FILTER_DEFAULT' => 'FILTER_UNSAFE_RAW',
+    ]);
 };
