@@ -1,0 +1,27 @@
+<?php
+
+namespace Rector\Tests\Php80\Rector\NotIdentical\MbStrContainsRector\Fixture;
+
+class OffsetVariableStrpos
+{
+    public function run()
+    {
+        $offset = 1;
+        $isMatch = mb_strpos('abc', 'a', $offset) !== false;
+    }
+}
+?>
+-----
+<?php
+
+namespace Rector\Tests\Php80\Rector\NotIdentical\MbStrContainsRector\Fixture;
+
+class OffsetVariableStrpos
+{
+    public function run()
+    {
+        $offset = 1;
+        $isMatch = str_contains(mb_substr('abc', $offset), 'a');
+    }
+}
+?>

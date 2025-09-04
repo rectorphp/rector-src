@@ -218,6 +218,8 @@ parameters:
 
         - '#Register "Rector\\Php81\\Rector\\ClassMethod\\NewInInitializerRector" service to "php81\.php" config set#'
 
+        - '#Register "Rector\\Php80\\Rector\\NotIdentical\\MbStrContainsRector" service to "php80\.php" config set#'
+
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
 
