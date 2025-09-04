@@ -55,7 +55,7 @@ class SomeClass
 {
     public function run()
     {
-        return strpos('abc', 'a') !== false;
+        return mb_strpos('abc', 'a') !== false;
     }
 }
 CODE_SAMPLE
