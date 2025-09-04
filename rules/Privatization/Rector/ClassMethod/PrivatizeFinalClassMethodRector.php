@@ -17,6 +17,7 @@ use Rector\Privatization\Guard\OverrideByParentClassGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
 use Rector\Rector\AbstractRector;
+use Rector\Util\StringUtils;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,6 +26,17 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class PrivatizeFinalClassMethodRector extends AbstractRector
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/Dx0WN5/2
+     */
+    private const LARAVEL_MODEL_ATTRIBUTE_REGEX = '/^[gs]et.+Attribute$/';
+    /**
+     * @var string
+     * @see https://regex101.com/r/hxOGeN/2
+     */
+    private const LARAVEL_MODEL_SCOPE_REGEX = '/^scope.+$/';
+
     public function __construct(
         private readonly ClassMethodVisibilityGuard $classMethodVisibilityGuard,
         private readonly VisibilityManipulator $visibilityManipulator,
@@ -174,7 +186,7 @@ CODE_SAMPLE
 
         // Model attributes should be protected
         if (
-            (bool) preg_match('/^[gs]et.+Attribute$/', $name)
+            StringUtils::isMatch($name, self::LARAVEL_MODEL_ATTRIBUTE_REGEX)
             || ($returnType instanceof Node && $this->isObjectType(
                 $returnType,
                 new ObjectType('Illuminate\Database\Eloquent\Casts\Attribute')
@@ -185,7 +197,7 @@ CODE_SAMPLE
 
         // Model scopes should be protected
         if (
-            (bool) preg_match('/^scope.+$/', $name)
+            StringUtils::isMatch($name, self::LARAVEL_MODEL_SCOPE_REGEX)
             || $this->phpAttributeAnalyzer->hasPhpAttribute(
                 $classMethod,
                 'Illuminate\Database\Eloquent\Attributes\Scope'
