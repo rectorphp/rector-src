@@ -75,10 +75,10 @@ CODE_SAMPLE
         $argExpr = $args[0]->value;
         $type = $this->nodeTypeResolver->getNativeType($argExpr);
 
-        if (! $type->isInteger()->yes() && ! $type->isString()->yes()) {
+        if (! $type->isString()->yes()) {
             return null;
         }
-        
+
         $args[0]->value = new ArrayDimFetch($argExpr, new Int_(0));;
         $node->args = $args;
 
