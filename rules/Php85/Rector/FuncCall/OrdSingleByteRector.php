@@ -70,6 +70,11 @@ CODE_SAMPLE
         }
 
         $argExpr = $args[0]->value;
+        $type = $this->nodeTypeResolver->getNativeType($argExpr);
+
+        if (! $type->isInteger()->yes() && ! $type->isString()->yes()) {
+            return null;
+        }
 
         $value = $this->valueResolver->getValue($argExpr);
 
