@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
+use Rector\Privatization\Guard\LaravelModelGuard;
 use Rector\Privatization\Guard\OverrideByParentClassGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
@@ -28,6 +29,7 @@ final class PrivatizeFinalClassMethodRector extends AbstractRector
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly OverrideByParentClassGuard $overrideByParentClassGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly LaravelModelGuard $laravelModelGuard,
     ) {
     }
 
@@ -90,6 +92,10 @@ CODE_SAMPLE
 
         foreach ($node->getMethods() as $classMethod) {
             if ($this->shouldSkipClassMethod($classMethod)) {
+                continue;
+            }
+
+            if ($this->laravelModelGuard->isProtectedMethod($classReflection, $classMethod)) {
                 continue;
             }
 
