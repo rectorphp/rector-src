@@ -7,7 +7,10 @@ namespace Rector\Php85\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\String_;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -20,6 +23,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class OrdSingleByteRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -27,12 +36,11 @@ final class OrdSingleByteRector extends AbstractRector implements MinPhpVersionI
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-$str = 'abc';
-echo ord($str);
+echo ord('abc');
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-echo ord($str[0]);
+echo ord('a');
 CODE_SAMPLE
                 ),
             ]
@@ -66,11 +74,35 @@ CODE_SAMPLE
         $argExpr = $args[0]->value;
         $type = $this->nodeTypeResolver->getNativeType($argExpr);
 
-        if (! $type->isString()->yes()) {
+        if ($type->isString()->no() && $type->isInteger()->no()) {
             return null;
         }
 
-        $args[0]->value = new ArrayDimFetch($argExpr, new Int_(0));;
+        $value = $this->valueResolver->getValue($argExpr);
+        $isInt = is_int($value);
+
+        if ($argExpr instanceof Variable) {
+
+            if ($isInt) {
+                return null;
+            }
+
+            $args[0]->value = new ArrayDimFetch($argExpr, new Int_(0));
+            $node->args = $args;
+
+            return $node;
+        }
+
+        if ($value === null) {
+            return null;
+        }
+
+        $value = (string) $value;
+        $byte = $value[0] ?? '';
+
+        $byteValue = $isInt ? new Int_((int) $byte) : new String_($byte);
+
+        $args[0]->value = $byteValue;
         $node->args = $args;
 
         return $node;
