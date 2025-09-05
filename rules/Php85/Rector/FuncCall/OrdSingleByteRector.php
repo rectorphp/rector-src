@@ -7,7 +7,6 @@ namespace Rector\Php85\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -81,7 +80,7 @@ CODE_SAMPLE
         $value = $this->valueResolver->getValue($argExpr);
         $isInt = is_int($value);
 
-        if ($argExpr instanceof Variable) {
+        if (! $argExpr instanceof Int_) {
 
             if ($isInt) {
                 return null;
