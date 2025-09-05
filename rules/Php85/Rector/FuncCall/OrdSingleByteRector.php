@@ -92,10 +92,6 @@ CODE_SAMPLE
             return $node;
         }
 
-        if ($value === null) {
-            return null;
-        }
-
         $value = (string) $value;
         $byte = $value[0] ?? '';
 
