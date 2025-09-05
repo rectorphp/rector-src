@@ -1,9 +1,11 @@
 <?php 
 namespace Rector\Tests\Php85\Rector\FuncCall\OrdSingleByteRector\Fixture;
-echo ord('abc');
+$a = 'abc';
+echo ord($a);
 ?>
 -----
 <?php 
 namespace Rector\Tests\Php85\Rector\FuncCall\OrdSingleByteRector\Fixture;
-echo ord('a');
+$a = 'abc';
+echo ord($a[0]);
 ?>

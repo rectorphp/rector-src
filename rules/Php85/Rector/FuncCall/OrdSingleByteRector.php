@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Expression;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -34,11 +36,12 @@ final class OrdSingleByteRector extends AbstractRector implements MinPhpVersionI
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-echo ord('abc');
+$str = 'abc';
+echo ord($str);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-echo ord('a');
+echo ord($str[0]);
 CODE_SAMPLE
                 ),
             ]
@@ -75,20 +78,8 @@ CODE_SAMPLE
         if (! $type->isInteger()->yes() && ! $type->isString()->yes()) {
             return null;
         }
-
-        $value = $this->valueResolver->getValue($argExpr);
-
-        if ($value === null) {
-            return null;
-        }
-
-        $isInt = is_int($value);
-        $value = (string) $value;
-        $byte = $value[0] ?? '';
-
-        $byteValue = $isInt ? new Int_((int) $byte) : new String_($byte);
-
-        $args[0]->value = $byteValue;
+        
+        $args[0]->value = new ArrayDimFetch($argExpr, new Int_(0));;
         $node->args = $args;
 
         return $node;
