@@ -8,9 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Expression;
-use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -23,12 +20,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class OrdSingleByteRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(
-        private readonly ValueResolver $valueResolver
-    ) {
-
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
