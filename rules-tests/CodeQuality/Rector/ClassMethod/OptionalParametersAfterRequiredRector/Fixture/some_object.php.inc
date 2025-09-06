@@ -17,7 +17,7 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 class SomeObject
 {
-    public function run($required, $optional = 1)
+    public function run($optional = 1, $required = null)
     {
     }
 }

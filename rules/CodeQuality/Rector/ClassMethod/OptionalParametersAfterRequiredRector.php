@@ -5,23 +5,15 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
-use Rector\CodingStyle\Reflection\VendorLocationDetector;
-use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\Php80\NodeResolver\ArgumentSorter;
-use Rector\Php80\NodeResolver\RequireOptionalParamResolver;
-use Rector\PHPStan\ScopeFetcher;
+use PhpParser\Node\UnionType;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,22 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class OptionalParametersAfterRequiredRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const HAS_SWAPPED_PARAMS = 'has_swapped_params';
-
-    public function __construct(
-        private readonly RequireOptionalParamResolver $requireOptionalParamResolver,
-        private readonly ArgumentSorter $argumentSorter,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly VendorLocationDetector $vendorLocationDetector
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Move required parameters after optional ones', [
+        return new RuleDefinition('Add null default value when a required parameter follows an optional one', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeObject
@@ -60,7 +39,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeObject
 {
-    public function run($required, $optional = 1)
+    public function run($optional = 1, $required = null)
     {
     }
 }
@@ -74,155 +53,54 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [
-            ClassMethod::class,
-            Function_::class,
-            New_::class,
-            MethodCall::class,
-            StaticCall::class,
-            FuncCall::class,
-        ];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|New_|MethodCall|StaticCall|FuncCall $node
+     * @param ClassMethod|Function_ $node
      */
-    public function refactor(Node $node): ClassMethod|Function_|null|New_|MethodCall|StaticCall|FuncCall
-    {
-        if ($node instanceof ClassMethod || $node instanceof Function_) {
-            return $this->refactorClassMethodOrFunction($node);
-        }
-
-        if ($node instanceof New_) {
-            return $this->refactorNew($node);
-        }
-
-        return $this->refactorMethodCallOrFuncCall($node);
-    }
-
-    private function refactorClassMethodOrFunction(ClassMethod|Function_ $node): ClassMethod|Function_|null
+    public function refactor(Node $node): ClassMethod|Function_|null
     {
         if ($node->params === []) {
             return null;
         }
 
-        if ($node->getAttribute(self::HAS_SWAPPED_PARAMS, false) === true) {
-            return null;
+        $hasChanged = false;
+        foreach ($node->params as $key => $param) {
+            if ($param->default instanceof Expr) {
+                continue;
+            }
+
+            if ($param->variadic) {
+                continue;
+            }
+
+            $previousParam = $node->params[$key - 1] ?? null;
+            if ($previousParam instanceof Param && $previousParam->default instanceof Expr) {
+                $hasChanged = false;
+
+                $param->default = new ConstFetch(new Name('null'));
+                $paramType = $param->type;
+
+                if (! $paramType instanceof Node) {
+                    continue;
+                }
+
+                if ($paramType instanceof NullableType) {
+                    continue;
+                }
+
+                if ($paramType instanceof UnionType) {
+                    $paramType->types[] = new ConstFetch(new Name('null'));
+                    $paramType->types = array_unique($paramType->types, SORT_REGULAR);
+
+                    continue;
+                }
+
+                $paramType = new NullableType($paramType);
+            }
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if ($node instanceof ClassMethod) {
-            $reflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($node, $scope);
-        } else {
-            $reflection = $this->reflectionResolver->resolveFunctionReflectionFromFunction($node);
-        }
-
-        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
-            return null;
-        }
-
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($reflection, $node, $scope);
-        if ($expectedArgOrParamOrder === null) {
-            return null;
-        }
-
-        $node->params = $this->argumentSorter->sortArgsByExpectedParamOrder(
-            $node->params,
-            $expectedArgOrParamOrder
-        );
-
-        $node->setAttribute(self::HAS_SWAPPED_PARAMS, true);
-        return $node;
-    }
-
-    private function refactorNew(New_ $new): ?New_
-    {
-        if ($new->args === []) {
-            return null;
-        }
-
-        if ($new->isFirstClassCallable()) {
-            return null;
-        }
-
-        $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($new);
-        if (! $methodReflection instanceof MethodReflection) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($new);
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $new, $scope);
-        if ($expectedArgOrParamOrder === null) {
-            return null;
-        }
-
-        $new->args = $this->argumentSorter->sortArgsByExpectedParamOrder($new->getArgs(), $expectedArgOrParamOrder);
-
-        return $new;
-    }
-
-    private function refactorMethodCallOrFuncCall(
-        MethodCall|StaticCall|FuncCall $node
-    ): MethodCall|StaticCall|FuncCall|null {
-        if ($node->isFirstClassCallable()) {
-            return null;
-        }
-
-        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($node);
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($reflection, $node, $scope);
-        if ($expectedArgOrParamOrder === null) {
-            return null;
-        }
-
-        $newArgs = $this->argumentSorter->sortArgsByExpectedParamOrder($node->getArgs(), $expectedArgOrParamOrder);
-
-        if ($node->args === $newArgs) {
-            return null;
-        }
-
-        $node->args = $newArgs;
-        return $node;
-    }
-
-    /**
-     * @return int[]|null
-     */
-    private function resolveExpectedArgParamOrderIfDifferent(
-        MethodReflection|FunctionReflection $reflection,
-        New_|MethodCall|ClassMethod|Function_|StaticCall|FuncCall $node,
-        Scope $scope
-    ): ?array {
-        if ($reflection instanceof NativeFunctionReflection) {
-            return null;
-        }
-
-        if ($reflection instanceof MethodReflection && $this->vendorLocationDetector->detectMethodReflection(
-            $reflection
-        )) {
-            return null;
-        }
-
-        if ($reflection instanceof FunctionReflection && $this->vendorLocationDetector->detectFunctionReflection(
-            $reflection
-        )) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($node);
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $node, $scope);
-        $expectedParameterReflections = $this->requireOptionalParamResolver->resolveFromParametersAcceptor(
-            $parametersAcceptor
-        );
-
-        if ($expectedParameterReflections === $parametersAcceptor->getParameters()) {
-            return null;
-        }
-
-        return array_keys($expectedParameterReflections);
+        return $hasChanged ? $node : null;
     }
 }

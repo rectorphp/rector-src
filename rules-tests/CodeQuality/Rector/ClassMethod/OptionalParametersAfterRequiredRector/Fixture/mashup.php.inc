@@ -17,7 +17,7 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 class Mashup
 {
-    public function run($required, $yetRequired, $optional = 1, $anotherOptional = false)
+    public function run($optional = 1, $required = null, $anotherOptional = false, $yetRequired = null)
     {
     }
 }
