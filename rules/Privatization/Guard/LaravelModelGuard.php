@@ -47,6 +47,7 @@ final readonly class LaravelModelGuard
         if ($this->isAttributeMethod($name, $classMethod)) {
             return true;
         }
+
         return $this->isScopeMethod($name, $classMethod);
     }
 
