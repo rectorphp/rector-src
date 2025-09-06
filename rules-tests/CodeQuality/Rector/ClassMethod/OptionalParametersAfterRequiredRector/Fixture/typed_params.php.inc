@@ -15,6 +15,10 @@ class TypedParams
     function run3($optional = 1, null|int $required)
     {
     }
+
+    function run4($optional = 1, A&B $required)
+    {
+    }
 }
 
 ?>
@@ -34,6 +38,10 @@ class TypedParams
     }
 
     function run3($optional = 1, null|int $required = null)
+    {
+    }
+
+    function run4($optional = 1, (A&B)|null $required = null)
     {
     }
 }
