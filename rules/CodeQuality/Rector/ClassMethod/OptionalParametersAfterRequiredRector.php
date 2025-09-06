@@ -108,7 +108,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $paramType = new NullableType($paramType);
+                $param->type = new NullableType($paramType);
             }
         }
 
