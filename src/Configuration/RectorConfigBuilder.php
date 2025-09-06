@@ -1169,6 +1169,8 @@ final class RectorConfigBuilder
     }
 
     public function withDowngradeSets(
+        bool $php84 = false,
+        bool $php83 = false,
         bool $php82 = false,
         bool $php81 = false,
         bool $php80 = false,
@@ -1184,7 +1186,11 @@ final class RectorConfigBuilder
             );
         }
 
-        if ($php82) {
+        if ($php84) {
+            $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_84;
+        } elseif ($php83) {
+            $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_83;
+        } elseif ($php82) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_82;
         } elseif ($php81) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_81;
