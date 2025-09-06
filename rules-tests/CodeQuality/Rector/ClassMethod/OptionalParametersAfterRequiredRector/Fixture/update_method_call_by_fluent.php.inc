@@ -32,7 +32,7 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 final class UpdateMethodCallByFluent
 {
-    public function run($required, $optional = 1)
+    public function run($optional = 1, $required = null)
     {
         return $this;
     }
@@ -43,7 +43,7 @@ final class UpdateMethodCallByFluent
 
     public function process()
     {
-        $this->run(5, 1)
+        $this->run(1, 5)
              ->execute();
     }
 }

@@ -26,13 +26,13 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 final class NewTheConstructor
 {
-    public function __construct($required, $optional = 1)
+    public function __construct($optional = 1, $required = null)
     {
     }
 
     public function create()
     {
-        return new self(5, 1);
+        return new self(1, 5);
     }
 }
 

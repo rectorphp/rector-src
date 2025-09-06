@@ -44,9 +44,11 @@ final readonly class LaravelModelGuard
         }
 
         $name = (string) $this->nodeNameResolver->getName($classMethod->name);
+        if ($this->isAttributeMethod($name, $classMethod)) {
+            return true;
+        }
 
-        return $this->isAttributeMethod($name, $classMethod)
-            || $this->isScopeMethod($name, $classMethod);
+        return $this->isScopeMethod($name, $classMethod);
     }
 
     private function isAttributeMethod(string $name, ClassMethod $classMethod): bool

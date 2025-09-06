@@ -14,10 +14,10 @@ foo($optional, $required);
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\Fixture;
 
-function foo($required, $optional = 1)
+function foo($optional = 1, $required = null)
 {
 }
 
-foo($required, $optional);
+foo($optional, $required);
 
 ?>

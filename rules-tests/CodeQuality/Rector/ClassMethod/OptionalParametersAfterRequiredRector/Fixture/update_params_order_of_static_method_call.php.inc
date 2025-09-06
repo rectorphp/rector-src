@@ -24,12 +24,12 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 final class WebUtil
 {
-    public static function radioList($name, $selected, $items = [], $class = "", $groupingCount = 0, $groupingClass = "", $required = false)
+    public static function radioList($name, $items = [], $selected = null, $class = "", $groupingCount = 0, $groupingClass = "", $required = false)
     {
 
     }
 }
 
-WebUtil::radioList("inPersonOrVirtual", $selected, $inPersonOrVirtualItems, "", 1, "col-sm-3 margin-bottom-10");
+WebUtil::radioList("inPersonOrVirtual", $inPersonOrVirtualItems, $selected, "", 1, "col-sm-3 margin-bottom-10");
 
 ?>
