@@ -17,13 +17,15 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\UnionType;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\OptionalParametersAfterRequiredRectorTest
  */
-final class OptionalParametersAfterRequiredRector extends AbstractRector
+final class OptionalParametersAfterRequiredRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -113,5 +115,10 @@ CODE_SAMPLE
         }
 
         return $hasChanged ? $node : null;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NULLABLE_TYPE;
     }
 }
