@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -77,7 +80,7 @@ CODE_SAMPLE
 
             $previousParam = $node->params[$key - 1] ?? null;
             if ($previousParam instanceof Param && $previousParam->default instanceof Expr) {
-                $hasChanged = false;
+                $hasChanged = true;
 
                 $param->default = new ConstFetch(new Name('null'));
                 $paramType = $param->type;
@@ -90,10 +93,18 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($paramType instanceof UnionType) {
-                    $paramType->types[] = new ConstFetch(new Name('null'));
-                    $paramType->types = array_unique($paramType->types, SORT_REGULAR);
+                if ($paramType instanceof UnionType || $paramType instanceof IntersectionType) {
+                    foreach ($paramType->types as $unionedType) {
+                        if ($unionedType instanceof Identifier && $this->isName($unionedType, 'null')) {
+                            continue 2;
+                        }
+                    }
 
+                    $paramType->types[] = new Identifier('null');
+                    continue;
+                }
+
+                if ($paramType instanceof ComplexType) {
                     continue;
                 }
 
