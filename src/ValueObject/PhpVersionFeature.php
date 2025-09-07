@@ -810,7 +810,7 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_OUTSIDE_INTERVEL_VAL_IN_CHR_FUNCTION = PhpVersion::PHP_85;
-    
+
     /**
      * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_passing_string_which_are_not_one_byte_long_to_ord
      * @var int
