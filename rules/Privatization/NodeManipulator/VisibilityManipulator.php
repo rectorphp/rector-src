@@ -68,11 +68,15 @@ final class VisibilityManipulator
      */
     public function makeNonFinal(Class_ | ClassMethod | Param $node): void
     {
-        if (! $node->isFinal()) {
+        if (! $this->isFinal($node)) {
             return;
         }
 
         $node->flags -= Modifiers::FINAL;
+    }
+
+    public function isFinal(Class_ | ClassMethod | Param $node): bool {
+        return (bool) ($node->flags & Modifiers::FINAL);
     }
 
     public function changeNodeVisibility(ClassMethod | Property | ClassConst $node, int $visibility): void
