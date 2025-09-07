@@ -188,7 +188,7 @@ CODE_SAMPLE
 
         $reasonableValue = $this->mapReasonableParamValue([$param->type]);
         if ($this->valueResolver->isNull($reasonableValue)) {
-            if (! $param->type instanceof Identifier || ! $this->isName($param->type, 'null')) {
+            if (! $param->type instanceof Identifier || ! $this->isNames($param->type, ['null', 'mixed'])) {
                 $param->type = new NullableType($param->type);
             }
 

@@ -35,6 +35,10 @@ class TypedParams
     function run8($optional = 1, null $required)
     {
     }
+
+    function run9($optional = 1, mixed $required)
+    {
+    }
 }
 
 ?>
@@ -74,6 +78,10 @@ class TypedParams
     }
 
     function run8($optional = 1, null $required = null)
+    {
+    }
+
+    function run9($optional = 1, mixed $required = null)
     {
     }
 }
