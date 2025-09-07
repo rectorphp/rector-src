@@ -10,6 +10,7 @@ use Rector\Config\RectorConfig;
 use Rector\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector;
 use Rector\Php85\Rector\ClassMethod\NullDebugInfoReturnRector;
 use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
+use Rector\Php85\Rector\Expression\ReplaceHttpResponseHeaderRector;
 use Rector\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector;
 use Rector\Php85\Rector\FuncCall\ChrArgModuloRector;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
@@ -39,6 +40,7 @@ return static function (RectorConfig $rectorConfig): void {
             ArrayKeyExistsNullToEmptyStringRector::class,
             ChrArgModuloRector::class,
             OrdSingleByteRector::class,
+            ReplaceHttpResponseHeaderRector::class,
         ]
     );
 

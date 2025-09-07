@@ -64,7 +64,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Variable $node
+     * @param Node $node
+     * @return array<int, Node>
      */
     public function refactor(Node $node): ?Array
     {  
