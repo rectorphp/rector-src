@@ -23,6 +23,18 @@ class TypedParams
     function run5($optional = 1, array $required)
     {
     }
+
+    function run6($optional = 1, true $required)
+    {
+    }
+
+    function run7($optional = 1, false $required)
+    {
+    }
+
+    function run8($optional = 1, null $required)
+    {
+    }
 }
 
 ?>
@@ -50,6 +62,18 @@ class TypedParams
     }
 
     function run5($optional = 1, array $required = [])
+    {
+    }
+
+    function run6($optional = 1, true $required = true)
+    {
+    }
+
+    function run7($optional = 1, false $required = false)
+    {
+    }
+
+    function run8($optional = 1, null $required = null)
     {
     }
 }

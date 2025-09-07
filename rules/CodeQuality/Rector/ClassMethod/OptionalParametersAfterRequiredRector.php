@@ -132,6 +132,14 @@ CODE_SAMPLE
             if ($this->isName($type, 'array')) {
                 return $this->nodeFactory->createArray([]);
             }
+
+            if ($this->isName($type, 'true')) {
+                return $this->nodeFactory->createTrue();
+            }
+
+            if ($this->isName($type, 'false')) {
+                return $this->nodeFactory->createFalse();
+            }
         }
 
         return new ConstFetch(new Name('null'));
@@ -180,7 +188,10 @@ CODE_SAMPLE
 
         $reasonableValue = $this->mapReasonableParamValue([$param->type]);
         if ($this->valueResolver->isNull($reasonableValue)) {
-            $param->type = new NullableType($param->type);
+            if (! $param->type instanceof Identifier || ! $this->isName($param->type, 'null')) {
+                $param->type = new NullableType($param->type);
+            }
+
             $param->default = new ConstFetch(new Name('null'));
             return;
         }
