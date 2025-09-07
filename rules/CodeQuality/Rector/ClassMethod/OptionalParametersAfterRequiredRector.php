@@ -39,12 +39,12 @@ final class OptionalParametersAfterRequiredRector extends AbstractRector impleme
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add null default value when a required parameter follows an optional one', [
+        return new RuleDefinition('Add reasonable default value when a required parameter follows an optional one', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeObject
 {
-    public function run($optional = 1, $required)
+    public function run($optional = 1, int $required)
     {
     }
 }
@@ -54,7 +54,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeObject
 {
-    public function run($optional = 1, $required = null)
+    public function run($optional = 1, int $required = 0)
     {
     }
 }
