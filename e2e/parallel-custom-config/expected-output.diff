@@ -9,6 +9,9 @@
  {
      public function __construct(
 -        private readonly \stdClass $stdClass
++        /**
++         * @readonly
++         */
 +        private \stdClass $stdClass
      )
      {
