@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\MethodCall\FinalPropertyPromotionRector;
+namespace Rector\Tests\Php85\Rector\Class_\FinalPropertyPromotionRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

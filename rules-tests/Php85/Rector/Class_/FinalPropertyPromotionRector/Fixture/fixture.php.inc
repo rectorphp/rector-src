@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\MethodCall\FinalPropertyPromotionRector\Fixture;
+namespace Rector\Tests\Php85\Rector\Class_\FinalPropertyPromotionRector\Fixture;
 
-final class FinalPropertyPromotion
+class FinalPropertyPromotion
 {
     public function __construct(
         /** @final */
@@ -18,9 +18,9 @@ final class FinalPropertyPromotion
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\MethodCall\FinalPropertyPromotionRector\Fixture;
+namespace Rector\Tests\Php85\Rector\Class_\FinalPropertyPromotionRector\Fixture;
 
-final class FinalPropertyPromotion
+class FinalPropertyPromotion
 {
     public function __construct(
         final public string $id

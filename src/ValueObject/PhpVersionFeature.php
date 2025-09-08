@@ -791,6 +791,12 @@ final class PhpVersionFeature
      * @see https://wiki.php.net/rfc/attributes-on-constants
      * @var int
      */
+    public const FINAL_PROPERTY_PROMOTION = PhpVersion::PHP_85;
+
+    /**
+     * @see https://wiki.php.net/rfc/attributes-on-constants
+     * @var int
+     */
     public const DEPRECATED_ATTRIBUTE_ON_CONSTANT = PhpVersion::PHP_85;
 
     /**
