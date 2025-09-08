@@ -220,6 +220,8 @@ parameters:
 
         - '#Register "Rector\\Php80\\Rector\\NotIdentical\\MbStrContainsRector" service to "php80\.php" config set#'
 
+        - '#Register "Rector\\Php85\\Rector\\ClassMethod\\FinalPropertyPromotionRector" service to "php85\.php" config set#'
+
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
 

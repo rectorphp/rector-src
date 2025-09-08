@@ -22,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php85\Rector\ClassMethod\FinalPropertyPromotionRector\FinalPropertyPromotionRectorTest
+ * @see \Rector\Tests\Php85\Rector\MethodCall\FinalPropertyPromotionRector\FinalPropertyPromotionRectorTest
  */
 final class FinalPropertyPromotionRector extends AbstractRector implements MinPhpVersionInterface
 {
