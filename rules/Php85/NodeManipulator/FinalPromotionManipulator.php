@@ -201,7 +201,7 @@ final readonly class FinalPromotionManipulator
     private function shouldSkipParams(array $params): bool
     {
         foreach ($params as $param) {
-            // has non-readonly property promotion
+            // has non-final property promotion
             if ($this->visibilityManipulator->hasVisibility($param, Visibility::FINAL) && $param->isPromoted()) {
                 return true;
             }
