@@ -35,7 +35,6 @@ final readonly class FinalPromotionManipulator
         private VisibilityManipulator $visibilityManipulator,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private ReflectionProvider $reflectionProvider,
-        private AttributeGroupNewLiner $attributeGroupNewLiner,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
@@ -61,23 +60,12 @@ final readonly class FinalPromotionManipulator
                 continue;
             }
             $this->visibilityManipulator->makeFinal($param);
-            $this->removePhpDocTag($param);
+            
+            $phpDocInfo->removeByName(self::TAGNAME);
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
         }
 
         return $class;
-    }
-
-    private function removePhpDocTag(Property|Param $node): bool
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        if (!$phpDocInfo->hasByName(self::TAGNAME)) {
-            return false;
-        }
-
-        $phpDocInfo->removeByName(self::TAGNAME);
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-        return true;
     }
 
     /**
