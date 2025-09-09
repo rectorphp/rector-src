@@ -9,6 +9,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
+use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -90,6 +91,12 @@ final readonly class NameImporter
             return $nameInUse;
         }
 
+        $nameInNamespacedScope = $this->resolveNameInNamespacedScope($fullyQualified);
+        if ($nameInNamespacedScope instanceof Name) {
+            $nameInNamespacedScope->setAttribute(AttributeKey::NAMESPACED_NAME, $fullyQualified->toString());
+            return $nameInNamespacedScope;
+        }
+
         // the same end is already imported → skip
         if ($this->classNameImportSkipper->shouldSkipNameForFullyQualifiedObjectType(
             $file,
@@ -109,6 +116,29 @@ final readonly class NameImporter
 
         $this->addUseImport($file, $fullyQualified, $fullyQualifiedObjectType);
         return $fullyQualifiedObjectType->getShortNameNode();
+    }
+
+    private function resolveNameInNamespacedScope(FullyQualified $fullyQualified): ?Name
+    {
+        $scope = $fullyQualified->getAttribute(AttributeKey::SCOPE);
+
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        $namespace = $scope->getNamespace();
+        if ($namespace === null) {
+            return null;
+        }
+
+        $shortName = $fullyQualified->getLast();
+        $namepaceFullyQualifiedName = substr($fullyQualified->toString(), 0, -strlen($shortName) - 1);
+
+        if ($namepaceFullyQualifiedName === $namespace) {
+            return new Name($shortName);
+        }
+
+        return null;
     }
 
     private function addUseImport(
