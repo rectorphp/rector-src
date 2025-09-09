@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -39,7 +38,6 @@ final class FinalPropertyPromotionRector extends AbstractRector implements MinPh
     public function __construct(
         private VisibilityManipulator $visibilityManipulator,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private ReflectionProvider $reflectionProvider,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
@@ -163,7 +161,6 @@ CODE_SAMPLE
     private function shouldSkipParams(array $params): bool
     {
         foreach ($params as $param) {
-            // has non-final property promotion
             if ($this->visibilityManipulator->hasVisibility($param, Visibility::FINAL) && $param->isPromoted()) {
                 return true;
             }
