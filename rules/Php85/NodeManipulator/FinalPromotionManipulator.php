@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php85\NodeManipulator;
 
-use PhpParser\Builder\Property;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -17,10 +16,8 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
-use Rector\Php81\NodeManipulator\AttributeGroupNewLiner;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
-use Rector\ValueObject\Application\File;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\Visibility;
 
@@ -60,7 +57,7 @@ final readonly class FinalPromotionManipulator
                 continue;
             }
             $this->visibilityManipulator->makeFinal($param);
-            $phpDocInfo->removeByName(self::TAGNAME); echo $param->var->name;
+            $phpDocInfo->removeByName(self::TAGNAME);
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
         }
 
