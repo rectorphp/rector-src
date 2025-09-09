@@ -121,7 +121,7 @@ final readonly class NameImporter
     private function resolveNameInNamespacedScope(FullyQualified $fullyQualified): ?Name
     {
         /**
-         * Note: Don't use ScopeFetcher::fetch(),
+         * Note: Don't use ScopeFetcher::fetch() on Name instance,
          * Scope can be null on Name
          * This is part of ScopeAnalyzer::NON_REFRESHABLE_NODES
          * @see https://github.com/rectorphp/rector-src/blob/9929af7c0179929b4fde6915cb7a06c3141dde6c/src/NodeAnalyzer/ScopeAnalyzer.php#L17
