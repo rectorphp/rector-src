@@ -60,8 +60,7 @@ final readonly class FinalPromotionManipulator
                 continue;
             }
             $this->visibilityManipulator->makeFinal($param);
-            
-            $phpDocInfo->removeByName(self::TAGNAME);
+            $phpDocInfo->removeByName(self::TAGNAME); echo $param->var->name;
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
         }
 
@@ -103,7 +102,7 @@ final readonly class FinalPromotionManipulator
         }
 
         foreach ($parents as $parent) {
-            if (! $parent->isFinal()) {
+            if ($parent->isFinal()) {
                 return true;
             }
         }
@@ -177,7 +176,7 @@ final readonly class FinalPromotionManipulator
         if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, AttributeName::ALLOW_DYNAMIC_PROPERTIES)) {
             return true;
         }
-
+        
         return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
             $class->extends->toString()
         );
