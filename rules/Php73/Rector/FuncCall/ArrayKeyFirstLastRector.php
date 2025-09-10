@@ -147,6 +147,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (! isset(self::PREVIOUS_TO_NEW_FUNCTIONS[$this->getName($stmt->expr)])) {
+                continue;
+            }
+
             $newName = self::PREVIOUS_TO_NEW_FUNCTIONS[$this->getName($stmt->expr)];
             $keyFuncCall->name = new Name($newName);
 

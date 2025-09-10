@@ -129,7 +129,9 @@ CODE_SAMPLE
                 continue;
             }
 
+            /** @var Stmt $stmt */
             $endLine = $stmt->getEndLine();
+            /** @var Stmt $nextStmt */
             $line = $nextStmt->getStartLine();
             $rangeLine = $line - $endLine;
 

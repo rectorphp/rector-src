@@ -340,3 +340,7 @@ parameters:
             identifier: rector.upgradeDowngradeRegisteredInSet
             count: 1
             path: rules/Php74/Rector/Double/RealToFloatTypeCastRector.php
+
+        -
+            message: '#Offset float\|int\|string might not exist on string#'
+            path: rules/Php70/EregToPcreTransformer.php
