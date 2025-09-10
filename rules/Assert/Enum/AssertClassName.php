@@ -9,5 +9,10 @@ final class AssertClassName
     /**
      * @var string
      */
-    public const ASSERT = 'Webmozart\Assert\Assert';
+    public const WEBMOZART = 'Webmozart\Assert\Assert';
+
+    /**
+     * @var string
+     */
+    public const BEBERLEI = 'Assert\Assertion';
 }

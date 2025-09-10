@@ -13,6 +13,7 @@ use Rector\Php85\Rector\ClassMethod\SleepToSerializeRector;
 use Rector\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector;
 use Rector\Php85\Rector\FuncCall\ChrArgModuloRector;
+use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
 use Rector\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
@@ -39,6 +40,7 @@ return static function (RectorConfig $rectorConfig): void {
             ArrayKeyExistsNullToEmptyStringRector::class,
             ChrArgModuloRector::class,
             SleepToSerializeRector::class,
+            OrdSingleByteRector::class,
         ]
     );
 
@@ -205,10 +207,7 @@ return static function (RectorConfig $rectorConfig): void {
     );
 
     // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_filter_default_constant
-    $rectorConfig->ruleWithConfiguration(
-        RenameConstantRector::class,
-        [
-            'FILTER_DEFAULT' => 'FILTER_UNSAFE_RAW',
-        ]
-    );
+    $rectorConfig->ruleWithConfiguration(RenameConstantRector::class, [
+        'FILTER_DEFAULT' => 'FILTER_UNSAFE_RAW',
+    ]);
 };

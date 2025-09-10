@@ -49,6 +49,10 @@ final readonly class FuncCallNameResolver implements NodeNameResolverInterface
             }
         }
 
+        if (is_string($namespaceName)) {
+            return $namespaceName;
+        }
+
         return (string) $node->name;
     }
 }

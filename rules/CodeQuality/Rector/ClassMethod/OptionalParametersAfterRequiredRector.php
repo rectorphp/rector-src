@@ -5,52 +5,46 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
+use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
-use Rector\CodingStyle\Reflection\VendorLocationDetector;
-use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\Php80\NodeResolver\ArgumentSorter;
-use Rector\Php80\NodeResolver\RequireOptionalParamResolver;
-use Rector\PHPStan\ScopeFetcher;
+use PhpParser\Node\UnionType;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\OptionalParametersAfterRequiredRectorTest
  */
-final class OptionalParametersAfterRequiredRector extends AbstractRector
+final class OptionalParametersAfterRequiredRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const HAS_SWAPPED_PARAMS = 'has_swapped_params';
-
     public function __construct(
-        private readonly RequireOptionalParamResolver $requireOptionalParamResolver,
-        private readonly ArgumentSorter $argumentSorter,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly VendorLocationDetector $vendorLocationDetector
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Move required parameters after optional ones', [
+        return new RuleDefinition('Add reasonable default value when a required parameter follows an optional one', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeObject
 {
-    public function run($optional = 1, $required)
+    public function run($optional = 1, int $required)
     {
     }
 }
@@ -60,7 +54,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeObject
 {
-    public function run($required, $optional = 1)
+    public function run($optional = 1, int $required = 0)
     {
     }
 }
@@ -74,155 +68,134 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [
-            ClassMethod::class,
-            Function_::class,
-            New_::class,
-            MethodCall::class,
-            StaticCall::class,
-            FuncCall::class,
-        ];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_|New_|MethodCall|StaticCall|FuncCall $node
+     * @param ClassMethod|Function_|Closure $node
      */
-    public function refactor(Node $node): ClassMethod|Function_|null|New_|MethodCall|StaticCall|FuncCall
-    {
-        if ($node instanceof ClassMethod || $node instanceof Function_) {
-            return $this->refactorClassMethodOrFunction($node);
-        }
-
-        if ($node instanceof New_) {
-            return $this->refactorNew($node);
-        }
-
-        return $this->refactorMethodCallOrFuncCall($node);
-    }
-
-    private function refactorClassMethodOrFunction(ClassMethod|Function_ $node): ClassMethod|Function_|null
+    public function refactor(Node $node): ClassMethod|Function_|Closure|null
     {
         if ($node->params === []) {
             return null;
         }
 
-        if ($node->getAttribute(self::HAS_SWAPPED_PARAMS, false) === true) {
-            return null;
+        $hasChanged = false;
+        foreach ($node->params as $key => $param) {
+            if ($param->default instanceof Expr) {
+                continue;
+            }
+
+            if ($param->variadic) {
+                continue;
+            }
+
+            $previousParam = $node->params[$key - 1] ?? null;
+            if ($previousParam instanceof Param && $previousParam->default instanceof Expr) {
+                $hasChanged = true;
+                $this->processParam($param);
+            }
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if ($node instanceof ClassMethod) {
-            $reflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($node, $scope);
-        } else {
-            $reflection = $this->reflectionResolver->resolveFunctionReflectionFromFunction($node);
-        }
-
-        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
-            return null;
-        }
-
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($reflection, $node, $scope);
-        if ($expectedArgOrParamOrder === null) {
-            return null;
-        }
-
-        $node->params = $this->argumentSorter->sortArgsByExpectedParamOrder(
-            $node->params,
-            $expectedArgOrParamOrder
-        );
-
-        $node->setAttribute(self::HAS_SWAPPED_PARAMS, true);
-        return $node;
+        return $hasChanged ? $node : null;
     }
 
-    private function refactorNew(New_ $new): ?New_
+    public function provideMinPhpVersion(): int
     {
-        if ($new->args === []) {
-            return null;
-        }
-
-        if ($new->isFirstClassCallable()) {
-            return null;
-        }
-
-        $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($new);
-        if (! $methodReflection instanceof MethodReflection) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($new);
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $new, $scope);
-        if ($expectedArgOrParamOrder === null) {
-            return null;
-        }
-
-        $new->args = $this->argumentSorter->sortArgsByExpectedParamOrder($new->getArgs(), $expectedArgOrParamOrder);
-
-        return $new;
-    }
-
-    private function refactorMethodCallOrFuncCall(
-        MethodCall|StaticCall|FuncCall $node
-    ): MethodCall|StaticCall|FuncCall|null {
-        if ($node->isFirstClassCallable()) {
-            return null;
-        }
-
-        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($node);
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($reflection, $node, $scope);
-        if ($expectedArgOrParamOrder === null) {
-            return null;
-        }
-
-        $newArgs = $this->argumentSorter->sortArgsByExpectedParamOrder($node->getArgs(), $expectedArgOrParamOrder);
-
-        if ($node->args === $newArgs) {
-            return null;
-        }
-
-        $node->args = $newArgs;
-        return $node;
+        return PhpVersionFeature::NULLABLE_TYPE;
     }
 
     /**
-     * @return int[]|null
+     * Look first found type reasonable value
+     *
+     * @param Node[] $types
      */
-    private function resolveExpectedArgParamOrderIfDifferent(
-        MethodReflection|FunctionReflection $reflection,
-        New_|MethodCall|ClassMethod|Function_|StaticCall|FuncCall $node,
-        Scope $scope
-    ): ?array {
-        if ($reflection instanceof NativeFunctionReflection) {
-            return null;
+    private function mapReasonableParamValue(array $types): Expr
+    {
+        foreach ($types as $type) {
+            if ($this->isName($type, 'string')) {
+                return new String_('');
+            }
+
+            if ($this->isName($type, 'int')) {
+                return new Int_(0);
+            }
+
+            if ($this->isName($type, 'float')) {
+                return new Float_(0.0);
+            }
+
+            if ($this->isName($type, 'bool')) {
+                return $this->nodeFactory->createFalse();
+            }
+
+            if ($this->isName($type, 'array')) {
+                return $this->nodeFactory->createArray([]);
+            }
+
+            if ($this->isName($type, 'true')) {
+                return $this->nodeFactory->createTrue();
+            }
+
+            if ($this->isName($type, 'false')) {
+                return $this->nodeFactory->createFalse();
+            }
         }
 
-        if ($reflection instanceof MethodReflection && $this->vendorLocationDetector->detectMethodReflection(
-            $reflection
-        )) {
-            return null;
+        return new ConstFetch(new Name('null'));
+    }
+
+    private function processParam(Param $param): void
+    {
+        if (! $param->type instanceof Node) {
+            $param->default = new ConstFetch(new Name('null'));
+            return;
         }
 
-        if ($reflection instanceof FunctionReflection && $this->vendorLocationDetector->detectFunctionReflection(
-            $reflection
-        )) {
-            return null;
+        if ($param->type instanceof NullableType) {
+            $param->default = new ConstFetch(new Name('null'));
+            return;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $node, $scope);
-        $expectedParameterReflections = $this->requireOptionalParamResolver->resolveFromParametersAcceptor(
-            $parametersAcceptor
-        );
-
-        if ($expectedParameterReflections === $parametersAcceptor->getParameters()) {
-            return null;
+        if ($param->type instanceof IntersectionType) {
+            $param->default = new ConstFetch(new Name('null'));
+            $param->type = new UnionType([$param->type, new Identifier('null')]);
+            return;
         }
 
-        return array_keys($expectedParameterReflections);
+        if ($param->type instanceof UnionType) {
+            foreach ($param->type->types as $unionedType) {
+                if ($unionedType instanceof Identifier && $this->isName($unionedType, 'null')) {
+                    $param->default = new ConstFetch(new Name('null'));
+                    return;
+                }
+            }
+
+            $reasonableValue = $this->mapReasonableParamValue($param->type->types);
+            if ($this->valueResolver->isNull($reasonableValue)) {
+                $param->default = new ConstFetch(new Name('null'));
+                $param->type->types[] = new Identifier('null');
+                return;
+            }
+
+            $param->default = $reasonableValue;
+            return;
+        }
+
+        if ($param->type instanceof ComplexType) {
+            return;
+        }
+
+        $reasonableValue = $this->mapReasonableParamValue([$param->type]);
+        if ($this->valueResolver->isNull($reasonableValue)) {
+            if (! $param->type instanceof Identifier || ! $this->isNames($param->type, ['null', 'mixed'])) {
+                $param->type = new NullableType($param->type);
+            }
+
+            $param->default = new ConstFetch(new Name('null'));
+            return;
+        }
+
+        $param->default = $reasonableValue;
     }
 }

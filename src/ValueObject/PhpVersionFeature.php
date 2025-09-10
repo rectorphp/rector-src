@@ -642,6 +642,12 @@ final class PhpVersionFeature
     public const READONLY_ANONYMOUS_CLASS = PhpVersion::PHP_83;
 
     /**
+     * @var int
+     * @see https://wiki.php.net/rfc/json_validate
+     */
+    public const JSON_VALIDATE = PhpVersion::PHP_83;
+
+    /**
      * @see https://wiki.php.net/rfc/mixed_type_v2
      * @var int
      */
@@ -810,4 +816,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATED_METHOD_SLEEP = PhpVersion::PHP_85;
+  
+    /**
+     * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_passing_string_which_are_not_one_byte_long_to_ord
+     * @var int
+     */
+    public const DEPRECATE_ORD_WITH_MULTIBYTE_STRING = PhpVersion::PHP_85;
 }

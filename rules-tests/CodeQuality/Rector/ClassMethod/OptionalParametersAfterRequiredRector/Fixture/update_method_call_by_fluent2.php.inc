@@ -38,7 +38,7 @@ final class UpdateMethodCallByFluent2
         return $this;
     }
 
-    public function run($required, $optional = 1)
+    public function run($optional = 1, $required = null)
     {
         return $this;
     }
@@ -46,7 +46,7 @@ final class UpdateMethodCallByFluent2
     public function process()
     {
         $this->execute()
-             ->run(5, 1);
+             ->run(1, 5);
     }
 }
 

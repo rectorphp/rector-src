@@ -15,7 +15,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
-use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Php80\NodeResolver\StrFalseComparisonResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\ValueObject\PolyfillPackage;
@@ -35,7 +35,7 @@ final class StrContainsRector extends AbstractRector implements MinPhpVersionInt
     private const OLD_STR_NAMES = ['strpos', 'strstr'];
 
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private readonly StrFalseComparisonResolver $strFalseComparisonResolver
     ) {
     }
 
@@ -87,7 +87,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $funcCall = $this->matchIdenticalOrNotIdenticalToFalse($node);
+        $funcCall = $this->strFalseComparisonResolver->resolve($node, self::OLD_STR_NAMES);
 
         if (! $funcCall instanceof FuncCall) {
             return null;
@@ -122,39 +122,6 @@ CODE_SAMPLE
     public function providePolyfillPackage(): string
     {
         return PolyfillPackage::PHP_80;
-    }
-
-    private function matchIdenticalOrNotIdenticalToFalse(Identical | NotIdentical | Equal | NotEqual $expr): ?FuncCall
-    {
-        if ($this->valueResolver->isFalse($expr->left)) {
-            if (! $expr->right instanceof FuncCall) {
-                return null;
-            }
-
-            if (! $this->isNames($expr->right, self::OLD_STR_NAMES)) {
-                return null;
-            }
-
-            /** @var FuncCall $funcCall */
-            $funcCall = $expr->right;
-            return $funcCall;
-        }
-
-        if ($this->valueResolver->isFalse($expr->right)) {
-            if (! $expr->left instanceof FuncCall) {
-                return null;
-            }
-
-            if (! $this->isNames($expr->left, self::OLD_STR_NAMES)) {
-                return null;
-            }
-
-            /** @var FuncCall $funcCall */
-            $funcCall = $expr->left;
-            return $funcCall;
-        }
-
-        return null;
     }
 
     private function isIntegerZero(Expr $expr): bool

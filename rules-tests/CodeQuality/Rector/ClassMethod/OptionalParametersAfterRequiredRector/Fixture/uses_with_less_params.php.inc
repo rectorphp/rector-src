@@ -27,14 +27,14 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 final class UsesWithLess
 {
-    public function blah($required, $optional = 1, $optional_2 = 2)
+    public function blah($optional = 1, $required = null, $optional_2 = 2)
     {
     }
 
     public function process()
     {
-        $this->blah(5, 1);
-        $this->blah(5, 1, 2);
+        $this->blah(1, 5);
+        $this->blah(1, 5, 2);
     }
 }
 
