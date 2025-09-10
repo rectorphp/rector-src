@@ -215,7 +215,7 @@ final class EregToPcreTransformer
         } else {
             $position = $i + 1;
             [$t, $ii] = $this->_ere2pcre($content, $position);
-            if ($ii >= $l || ! isset($content[$ii]) || $content[$ii] !== ')') {
+            if ($ii >= $l || $content[$ii] !== ')') {
                 throw new InvalidEregException('"(" does not have a matching ")"');
             }
 
@@ -265,7 +265,7 @@ final class EregToPcreTransformer
             }
 
             $start = false;
-        } while ($i < $l && isset($s[$i]) && $s[$i] !== ']');
+        } while ($i < $l && $s[$i] !== ']');
 
         return [$cls, $i];
     }
