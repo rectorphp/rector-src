@@ -8,13 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
-use Rector\Php81\Enum\AttributeName;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
@@ -73,8 +69,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
-        if ($this->shouldSkip($node, $scope)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -103,52 +98,23 @@ CODE_SAMPLE
         return PhpVersionFeature::FINAL_PROPERTY_PROMOTION;
     }
 
-    /**
-     * @return ClassReflection[]
-     */
-    private function resolveParentClassReflections(Scope $scope): array
+    private function shouldSkip(Class_ $class): bool
     {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return [];
-        }
-
-        return $classReflection->getParents();
-    }
-
-    private function shouldSkip(Class_ $class, Scope $scope): bool
-    {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
-        if ($this->shouldSkipClass($class)) {
-            return true;
-        }
-
-        $parents = $this->resolveParentClassReflections($scope);
-
-        if ($class->isFinal()) {
-            return true;
-        }
-
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
             return false;
         }
         $params = $constructClassMethod->getParams();
 
-        return $this->shouldSkipParams($params);
-    }
+        if ($this->shouldSkipParams($params)) {
+            return true;
+        }
 
-    private function shouldSkipClass(Class_ $class): bool
-    {
         if ($this->visibilityManipulator->hasVisibility($class, Visibility::FINAL)) {
             return true;
         }
 
-        if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, AttributeName::ALLOW_DYNAMIC_PROPERTIES)) {
+        if ($class->isFinal()) {
             return true;
         }
 
@@ -162,11 +128,6 @@ CODE_SAMPLE
     {
         foreach ($params as $param) {
             if ($this->visibilityManipulator->hasVisibility($param, Visibility::FINAL) && $param->isPromoted()) {
-                return true;
-            }
-
-            // type is missing, invalid syntax
-            if ($param->type === null) {
                 return true;
             }
         }
