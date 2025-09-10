@@ -19,6 +19,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @see https://3v4l.org/51uu0
+ * @see https://3v4l.org/ktJnk
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_sleep_and_wakeup_magic_methods
  * @see \Rector\Tests\Php85\Rector\MethodCall\SleepToSerializeRector\SleepToSerializeRectorTest
  */

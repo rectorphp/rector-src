@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Php85\Rector\MethodCall\NullDebugInfoReturnRector\Fixture;
 
-class User {
+class SkipSleepNull {
     private $id;
     private $name;
 
