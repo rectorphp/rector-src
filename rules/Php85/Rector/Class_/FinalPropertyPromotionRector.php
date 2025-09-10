@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
@@ -33,7 +32,6 @@ final class FinalPropertyPromotionRector extends AbstractRector implements MinPh
 
     public function __construct(
         private VisibilityManipulator $visibilityManipulator,
-        private PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
