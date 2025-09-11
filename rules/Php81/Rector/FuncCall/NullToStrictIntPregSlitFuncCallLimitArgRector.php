@@ -11,11 +11,9 @@ use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\Php81\Enum\NameNullToStrictNullFunctionMap;
 use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -25,9 +23,10 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\NullToStrictStringFuncCallArgRectorTest
+ * @see https://3v4l.org/cVPim
+ * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictIntPregSlitFuncCallLimitArgRector\NullToStrictIntPregSlitFuncCallLimitArgRectorTest
  */
-final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
+final class NullToStrictIntPregSlitFuncCallLimitArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
@@ -39,7 +38,7 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change null to strict string defined function call args',
+            'Change null to strict int defined preg_split limit arg function call argument',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -47,7 +46,7 @@ class SomeClass
 {
     public function run()
     {
-        preg_split("#a#", null);
+        preg_split('/\s/', $output, NULL, PREG_SPLIT_NO_EMPTY)
     }
 }
 CODE_SAMPLE
@@ -57,7 +56,7 @@ class SomeClass
 {
     public function run()
     {
-        preg_split("#a#", '');
+        preg_split('/\s/', $output, 0, PREG_SPLIT_NO_EMPTY)
     }
 }
 CODE_SAMPLE
@@ -89,11 +88,15 @@ CODE_SAMPLE
         }
 
         $args = $node->getArgs();
-        $positions = $this->argsAnalyzer->hasNamedArg($args)
-            ? $this->resolveNamedPositions($node, $args)
-            : $this->resolveOriginalPositions($node, $scope);
+        $position = $this->argsAnalyzer->hasNamedArg($args)
+            ? $this->resolveNamedPosition($args)
+            : 2;
 
-        if ($positions === []) {
+        if ($position === null) {
+            return null;
+        }
+
+        if (! isset($args[$position])) {
             return null;
         }
 
@@ -106,25 +109,18 @@ CODE_SAMPLE
         }
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
-        $isChanged = false;
+        $result = $this->nullToStrictStringIntConverter->convertIfNull(
+            $node,
+            $args,
+            $position,
+            $isTrait,
+            $scope,
+            $parametersAcceptor,
+            'int'
+        );
 
-        foreach ($positions as $position) {
-            $result = $this->nullToStrictStringIntConverter->convertIfNull(
-                $node,
-                $args,
-                (int) $position,
-                $isTrait,
-                $scope,
-                $parametersAcceptor
-            );
-            if ($result instanceof Node) {
-                $node = $result;
-                $isChanged = true;
-            }
-        }
-
-        if ($isChanged) {
-            return $node;
+        if ($result instanceof Node) {
+            return $result;
         }
 
         return null;
@@ -137,61 +133,27 @@ CODE_SAMPLE
 
     /**
      * @param Arg[] $args
-     * @return int[]|string[]
      */
-    private function resolveNamedPositions(FuncCall $funcCall, array $args): array
+    private function resolveNamedPosition(array $args): ?int
     {
-        $functionName = $this->getName($funcCall);
-        $argNames = NameNullToStrictNullFunctionMap::FUNCTION_TO_PARAM_NAMES[$functionName] ?? [];
-        $positions = [];
-
         foreach ($args as $position => $arg) {
             if (! $arg->name instanceof Identifier) {
                 continue;
             }
 
-            if (! $this->isNames($arg->name, $argNames)) {
+            if (! $this->isName($arg->name, 'limit')) {
                 continue;
             }
 
-            $positions[] = $position;
+            return $position;
         }
 
-        return $positions;
-    }
-
-    /**
-     * @return int[]|string[]
-     */
-    private function resolveOriginalPositions(FuncCall $funcCall, Scope $scope): array
-    {
-        $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($funcCall);
-        if (! $functionReflection instanceof NativeFunctionReflection) {
-            return [];
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionReflection,
-            $funcCall,
-            $scope
-        );
-        $functionName = $functionReflection->getName();
-        $argNames = NameNullToStrictNullFunctionMap::FUNCTION_TO_PARAM_NAMES[$functionName];
-        $positions = [];
-
-        foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
-            if (in_array($parameterReflection->getName(), $argNames, true)) {
-                $positions[] = $position;
-            }
-        }
-
-        return $positions;
+        return null;
     }
 
     private function shouldSkip(FuncCall $funcCall): bool
     {
-        $functionNames = array_keys(NameNullToStrictNullFunctionMap::FUNCTION_TO_PARAM_NAMES);
-        if (! $this->isNames($funcCall, $functionNames)) {
+        if (! $this->isName($funcCall, 'preg_split')) {
             return true;
         }
 
