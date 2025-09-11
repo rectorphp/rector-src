@@ -11,11 +11,9 @@ use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\Php81\Enum\NameNullToStrictNullFunctionMap;
 use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -25,6 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @see https://3v4l.org/cVPim
  * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictIntPregSlitFuncCallLimitArgRector\NullToStrictIntPregSlitFuncCallLimitArgRectorTest
  */
 final class NullToStrictIntPregSlitFuncCallLimitArgRector extends AbstractRector implements MinPhpVersionInterface
@@ -32,7 +31,7 @@ final class NullToStrictIntPregSlitFuncCallLimitArgRector extends AbstractRector
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly NullToStrictStringIntConverter $nullToStrictStringConverter
+        private readonly NullToStrictStringIntConverter $nullToStrictStringIntConverter
     ) {
     }
 
@@ -106,10 +105,10 @@ CODE_SAMPLE
         }
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
-        $result = $this->nullToStrictStringConverter->convertIfNull(
+        $result = $this->nullToStrictStringIntConverter->convertIfNull(
             $node,
             $args,
-            (int) $position,
+            $position,
             $isTrait,
             $scope,
             $parametersAcceptor,
@@ -130,7 +129,6 @@ CODE_SAMPLE
 
     /**
      * @param Arg[] $args
-     * @return ?int
      */
     private function resolveNamedPosition(array $args): ?int
     {
@@ -147,34 +145,6 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    /**
-     * @return int[]|string[]
-     */
-    private function resolveOriginalPositions(FuncCall $funcCall, Scope $scope): array
-    {
-        $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($funcCall);
-        if (! $functionReflection instanceof NativeFunctionReflection) {
-            return [];
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionReflection,
-            $funcCall,
-            $scope
-        );
-        $functionName = $functionReflection->getName();
-        $argNames = NameNullToStrictNullFunctionMap::FUNCTION_TO_PARAM_NAMES[$functionName];
-        $positions = [];
-
-        foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
-            if (in_array($parameterReflection->getName(), $argNames, true)) {
-                $positions[] = $position;
-            }
-        }
-
-        return $positions;
     }
 
     private function shouldSkip(FuncCall $funcCall): bool

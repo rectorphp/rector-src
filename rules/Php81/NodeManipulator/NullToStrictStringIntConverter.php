@@ -82,7 +82,7 @@ final readonly class NullToStrictStringIntConverter
             return $funcCall;
         }
 
-        $args[$position]->value = new CastString_($argValue);
+        $args[$position]->value = $type === 'string' ? new CastString_($argValue) : new CastInt_($argValue);
         $funcCall->args = $args;
         return $funcCall;
     }

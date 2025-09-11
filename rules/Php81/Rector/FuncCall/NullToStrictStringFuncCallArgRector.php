@@ -16,7 +16,6 @@ use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php81\Enum\NameNullToStrictNullFunctionMap;
-use Rector\Php81\NodeManipulator\NullToStrictStringConverter;
 use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -33,7 +32,7 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly NullToStrictStringIntConverter $nullToStrictStringConverter
+        private readonly NullToStrictStringIntConverter $nullToStrictStringIntConverter
     ) {
     }
 
@@ -110,7 +109,7 @@ CODE_SAMPLE
         $isChanged = false;
 
         foreach ($positions as $position) {
-            $result = $this->nullToStrictStringConverter->convertIfNull(
+            $result = $this->nullToStrictStringIntConverter->convertIfNull(
                 $node,
                 $args,
                 (int) $position,
