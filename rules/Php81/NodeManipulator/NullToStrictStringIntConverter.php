@@ -45,7 +45,7 @@ final readonly class NullToStrictStringIntConverter
         bool $isTrait,
         Scope $scope,
         ParametersAcceptor $parametersAcceptor,
-        string $type = 'string'
+        string $targetType = 'string'
     ): ?FuncCall {
         if (! isset($args[$position])) {
             return null;
@@ -53,12 +53,12 @@ final readonly class NullToStrictStringIntConverter
 
         $argValue = $args[$position]->value;
         if ($this->valueResolver->isNull($argValue)) {
-            $args[$position]->value = $type === 'string' ? new String_('') : new Int_(0);
+            $args[$position]->value = $targetType === 'string' ? new String_('') : new Int_(0);
             $funcCall->args = $args;
             return $funcCall;
         }
 
-        if ($this->shouldSkipValue($argValue, $scope, $isTrait, $type)) {
+        if ($this->shouldSkipValue($argValue, $scope, $isTrait, $targetType)) {
             return null;
         }
 
@@ -70,11 +70,11 @@ final readonly class NullToStrictStringIntConverter
             }
         }
 
-        if ($argValue instanceof Ternary && ! $this->shouldSkipValue($argValue->else, $scope, $isTrait, $type)) {
+        if ($argValue instanceof Ternary && ! $this->shouldSkipValue($argValue->else, $scope, $isTrait, $targetType)) {
             if ($this->valueResolver->isNull($argValue->else)) {
-                $argValue->else = $type === 'string' ? new String_('') : new Int_(0);
+                $argValue->else = $targetType === 'string' ? new String_('') : new Int_(0);
             } else {
-                $argValue->else = $type === 'string' ? new CastString_($argValue->else) : new CastInt_($argValue->else);
+                $argValue->else = $targetType === 'string' ? new CastString_($argValue->else) : new CastInt_($argValue->else);
             }
 
             $args[$position]->value = $argValue;
@@ -82,28 +82,28 @@ final readonly class NullToStrictStringIntConverter
             return $funcCall;
         }
 
-        $args[$position]->value = $type === 'string' ? new CastString_($argValue) : new CastInt_($argValue);
+        $args[$position]->value = $targetType === 'string' ? new CastString_($argValue) : new CastInt_($argValue);
         $funcCall->args = $args;
         return $funcCall;
     }
 
-    private function shouldSkipValue(Expr $expr, Scope $scope, bool $isTrait, string $type): bool
+    private function shouldSkipValue(Expr $expr, Scope $scope, bool $isTrait, string $targetType): bool
     {
         $type = $this->nodeTypeResolver->getType($expr);
-        if ($type->isString()->yes() && $type === 'string') {
+        if ($type->isString()->yes() && $targetType === 'string') {
             return true;
         }
 
-        if ($type->isInteger()->yes() && $type === 'int') {
+        if ($type->isInteger()->yes() && $targetType === 'int') {
             return true;
         }
 
         $nativeType = $this->nodeTypeResolver->getNativeType($expr);
-        if ($nativeType->isString()->yes() && $type === 'string') {
+        if ($nativeType->isString()->yes() && $targetType === 'string') {
             return true;
         }
 
-        if ($nativeType->isInteger()->yes() && $type === 'int') {
+        if ($nativeType->isInteger()->yes() && $targetType === 'int') {
             return true;
         }
 

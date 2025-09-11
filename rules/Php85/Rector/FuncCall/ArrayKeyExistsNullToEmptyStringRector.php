@@ -14,6 +14,7 @@ use PHPStan\Reflection\FunctionReflection;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php81\NodeManipulator\NullToStrictStringConverter;
+use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
@@ -29,7 +30,7 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly NullToStrictStringConverter $nullToStrictStringConverter
+        private readonly NullToStrictStringIntConverter $nullToStrictStringConverter
     ) {
     }
 
