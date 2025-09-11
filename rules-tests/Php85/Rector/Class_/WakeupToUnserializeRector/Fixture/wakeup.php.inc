@@ -7,7 +7,7 @@ class User {
     private $id;
     private $name;
 
-    public function __wakeup(): void{
+    public function __wakeup(){
         $this->id = 1;
     }
 }

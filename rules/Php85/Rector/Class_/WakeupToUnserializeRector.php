@@ -70,12 +70,9 @@ CODE_SAMPLE
         if (! $classMethod instanceof ClassMethod) {
             return null;
         }
-
-        if ($classMethod->returnType instanceof Identifier && $this->isName($classMethod->returnType, 'array')) {
-            return null;
-        }
          
         $classMethod->name = new Identifier('__unserialize');
+        $classMethod->returnType = new Identifier('void');
         return $node;
     }
 }
