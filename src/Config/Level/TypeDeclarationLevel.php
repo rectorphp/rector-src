@@ -18,7 +18,6 @@ use Rector\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttribute
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnDocblockForScalarArrayFromAssignsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeFromTryCatchTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
@@ -145,6 +144,5 @@ final class TypeDeclarationLevel
         // possibly based on docblocks, but also helpful, intentionally last
         AddArrayFunctionClosureParamTypeRector::class,
         TypedPropertyFromDocblockSetUpDefinedRector::class,
-        AddReturnDocblockForScalarArrayFromAssignsRector::class,
     ];
 }
