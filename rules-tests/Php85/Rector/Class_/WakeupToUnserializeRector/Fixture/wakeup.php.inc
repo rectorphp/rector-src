@@ -23,7 +23,11 @@ class User {
     private $name;
 
     public function __unserialize(array $data): void{
-        $this->id = 1;
+        foreach ($data as $property => $value) {
+            if (property_exists($this, $property)) {
+                $this->{$property} = $value;
+            }
+        }
     }
 }
 ?>

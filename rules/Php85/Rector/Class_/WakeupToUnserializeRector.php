@@ -5,11 +5,18 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\If_;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -83,6 +90,37 @@ CODE_SAMPLE
         );
 
         $classMethod->params[] = $param;
+
+        $classMethod->stmts = [$this->assignProperties()];
+        
         return $node;
+    }
+
+    protected function  assignProperties(): Foreach_{
+        $assign = new Assign(
+            new PropertyFetch(new Variable('this'), new Variable('property')),
+            new Variable('value')
+        );
+
+        $if = new If_(
+            new FuncCall(new Name('property_exists'), [
+                new Node\Arg(new Variable('this')),
+                new Node\Arg(new Variable('property')),
+            ]),
+            [
+                'stmts' => [new Expression($assign)],
+            ]
+        );
+
+        $foreach = new Foreach_(
+            new Variable('data'),
+            new Variable('value'),
+            [
+                'keyVar' => new Variable('property'),
+                'stmts'  => [$if],
+            ]
+        );
+
+        return $foreach;
     }
 }
