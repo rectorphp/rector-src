@@ -96,6 +96,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! isset($args[$position])) {
+            return null;
+        }
+
         $classReflection = $scope->getClassReflection();
         $isTrait = $classReflection instanceof ClassReflection && $classReflection->isTrait();
 
