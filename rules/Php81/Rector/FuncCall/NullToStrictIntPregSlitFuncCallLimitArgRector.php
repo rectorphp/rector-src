@@ -88,10 +88,6 @@ CODE_SAMPLE
         $args = $node->getArgs();
         $position = $this->argsAnalyzer->resolveArgPosition($args, 'limit', 2);
 
-        if ($position === null) {
-            return null;
-        }
-
         if (! isset($args[$position])) {
             return null;
         }
