@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
-use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -18,6 +17,7 @@ use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
@@ -150,10 +150,8 @@ CODE_SAMPLE
         return new MixedType();
     }
 
-    private function createArrayGenericTypeNode(
-        Type $keyType,
-        Type $itemType
-    ): GenericTypeNode {
+    private function createArrayGenericTypeNode(Type $keyType, Type $itemType): GenericTypeNode
+    {
         $keyDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($keyType);
         $itemDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($itemType);
 
