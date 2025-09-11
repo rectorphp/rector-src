@@ -12,6 +12,7 @@ use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockGetterReturnArray
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         DocblockVarFromParamDocblockInConstructorRector::class,
+        DocblockVarFromParamDocblockInConstructorRector::class,
         DocblockGetterReturnArrayFromPropertyDocblockVarRector::class,
     ]);
 };
