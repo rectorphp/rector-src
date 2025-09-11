@@ -145,6 +145,11 @@ final class SetList
     /**
      * @var string
      */
+    public const TYPE_DECLARATION_DOCBLOCKS = __DIR__ . '/../../../config/set/type-declaration-docblocks.php';
+
+    /**
+     * @var string
+     */
     public const EARLY_RETURN = __DIR__ . '/../../../config/set/early-return.php';
 
     /**
