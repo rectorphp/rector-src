@@ -22,7 +22,7 @@ class User {
     private $id;
     private $name;
 
-    public function __unserialize(): void{
+    public function __unserialize(array $data): void{
         $this->id = 1;
     }
 }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Rector\AbstractRector;
@@ -15,6 +17,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @see https://3v4l.org/NS419
+ * @see https://3v4l.org/nMOpl
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_sleep_and_wakeup_magic_methods
  * @see \Rector\Tests\Php85\Rector\Class_\WakeupToUnserializeRector\WakeupToUnserializeRectorTest
  */
@@ -73,6 +77,12 @@ CODE_SAMPLE
          
         $classMethod->name = new Identifier('__unserialize');
         $classMethod->returnType = new Identifier('void');
+          $param = new Param(
+            var: new Variable('data'),
+            type: new Identifier('array')
+        );
+
+        $classMethod->params[] = $param;
         return $node;
     }
 }
