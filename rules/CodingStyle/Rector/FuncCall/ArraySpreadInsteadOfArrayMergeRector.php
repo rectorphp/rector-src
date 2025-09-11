@@ -12,9 +12,6 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\Constant\ConstantArrayType;
-use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -29,7 +26,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ArraySpreadInsteadOfArrayMergeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ArrayTypeAnalyzer $arrayTypeAnalyzer,
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
@@ -117,7 +113,7 @@ CODE_SAMPLE
             }
 
             $value = $arg->value;
-            if ($this->shouldSkipArrayForInvalidTypeOrKeys($value)) {
+            if ($this->shouldSkipArrayForInvalidKeys($value)) {
                 return null;
             }
 
@@ -134,29 +130,16 @@ CODE_SAMPLE
         return $array;
     }
 
-    private function shouldSkipArrayForInvalidTypeOrKeys(Expr $expr): bool
+    private function shouldSkipArrayForInvalidKeys(Expr $expr): bool
     {
-        // we have no idea what it is → cannot change it
-        if (! $this->arrayTypeAnalyzer->isArrayType($expr)) {
-            return true;
-        }
+        $type = $this->getType($expr);
 
-        $arrayStaticType = $this->getType($expr);
-        if (! $arrayStaticType instanceof ArrayType && ! $arrayStaticType instanceof ConstantArrayType) {
-            return true;
-        }
-
-        return ! $this->isArrayKeyTypeAllowed($arrayStaticType);
-    }
-
-    private function isArrayKeyTypeAllowed(ArrayType|ConstantArrayType $arrayType): bool
-    {
-        if ($arrayType->getIterableKeyType()->isInteger()->yes()) {
-            return true;
+        if ($type->getIterableKeyType()->isInteger()->yes()) {
+            return false;
         }
 
         // php 8.1+ allow mixed key: int, string, and null
-        return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS);
+        return ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS);
     }
 
     private function resolveValue(Expr $expr): Expr
