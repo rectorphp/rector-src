@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
+use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -43,9 +44,11 @@ final class DocblockReturnArrayFromDirectArrayInstanceRector extends AbstractRec
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add @return array docblock based on direct single level direct return of []', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Add simple @return array docblock based on direct single level direct return of []',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 class SomeClass
 {
     public function getItems(): array
@@ -56,8 +59,8 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 class SomeClass
 {
     /**
@@ -71,8 +74,10 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-            ),
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**
@@ -80,14 +85,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->returnType instanceof Node) {
-            return null;
-        }
-
-        if (! $this->isName($node->returnType, 'array')) {
-            return null;
-        }
-
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         // return tag is already given
@@ -95,7 +92,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($node->stmts) !== 1) {
+        if ($node->stmts === null || count($node->stmts) !== 1) {
             return null;
         }
 
@@ -131,7 +128,7 @@ CODE_SAMPLE
     /**
      * covers constant types too and makes them more generic
      */
-    private function constantToGenericType(\PHPStan\Type\Type $type): \PHPStan\Type\Type
+    private function constantToGenericType(Type $type): Type
     {
         if ($type instanceof StringType) {
             return new StringType();
@@ -154,8 +151,8 @@ CODE_SAMPLE
     }
 
     private function createArrayGenericTypeNode(
-        \PHPStan\Type\Type $keyType,
-        \PHPStan\Type\Type $itemType
+        Type $keyType,
+        Type $itemType
     ): GenericTypeNode {
         $keyDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($keyType);
         $itemDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($itemType);
