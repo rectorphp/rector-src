@@ -816,6 +816,12 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATED_METHOD_SLEEP = PhpVersion::PHP_85;
+    
+    /**
+     * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_sleep_and_wakeup_magic_methods
+     * @var int
+     */
+    public const DEPRECATED_METHOD_WAKEUP = PhpVersion::PHP_85;
   
     /**
      * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_passing_string_which_are_not_one_byte_long_to_ord
