@@ -8,10 +8,10 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ArgsAnalyzer
+final readonly class ArgsAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 
