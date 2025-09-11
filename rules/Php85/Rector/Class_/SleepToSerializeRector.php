@@ -95,7 +95,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($classMethod->returnType instanceof Identifier && $this->isName($classMethod->returnType, 'array')) { 
+        if ($classMethod->returnType instanceof Identifier && $this->isName($classMethod->returnType, 'array')) {
             return null;
         }
 
@@ -103,10 +103,10 @@ CODE_SAMPLE
         if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($classMethod, $returns)) {
             return null;
         }
-        
+
         $hasChanged = false;
         foreach ($returns as $return) {
-            if (! $return->expr instanceof Array_ ) {
+            if (! $return->expr instanceof Array_) {
                 return null;
             }
 
@@ -128,7 +128,7 @@ CODE_SAMPLE
             }
         }
 
-        if($hasChanged){
+        if ($hasChanged) {
             $classMethod->name = new Identifier('__serialize');
             $classMethod->returnType = new Identifier('array');
             return $node;
