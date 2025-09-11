@@ -88,9 +88,7 @@ CODE_SAMPLE
         }
 
         $args = $node->getArgs();
-        $position = $this->argsAnalyzer->hasNamedArg($args)
-            ? $this->resolveNamedPosition($args)
-            : 2;
+        $position = $this->argsAnalyzer->resolveArgPosition($args, 'limit', 2);
 
         if ($position === null) {
             return null;

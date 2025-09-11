@@ -6,9 +6,15 @@ namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
+use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ArgsAnalyzer
 {
+    public function __construct(
+        private readonly NodeNameResolver $nodeNameResolver
+    ) {
+    }
+
     /**
      * @param Arg[] $args
      */
@@ -21,5 +27,25 @@ final class ArgsAnalyzer
         }
 
         return false;
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    public function resolveArgPosition(array $args, string $name, int $defaultPosition): int
+    {
+        foreach ($args as $position => $arg) {
+            if (! $arg->name instanceof Identifier) {
+                continue;
+            }
+
+            if (! $this->nodeNameResolver->isName($arg->name, $name)) {
+                continue;
+            }
+
+            return $position;
+        }
+
+        return $defaultPosition;
     }
 }
