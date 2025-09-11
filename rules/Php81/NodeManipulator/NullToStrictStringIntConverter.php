@@ -74,7 +74,9 @@ final readonly class NullToStrictStringIntConverter
             if ($this->valueResolver->isNull($argValue->else)) {
                 $argValue->else = $targetType === 'string' ? new String_('') : new Int_(0);
             } else {
-                $argValue->else = $targetType === 'string' ? new CastString_($argValue->else) : new CastInt_($argValue->else);
+                $argValue->else = $targetType === 'string' ? new CastString_($argValue->else) : new CastInt_(
+                    $argValue->else
+                );
             }
 
             $args[$position]->value = $argValue;
