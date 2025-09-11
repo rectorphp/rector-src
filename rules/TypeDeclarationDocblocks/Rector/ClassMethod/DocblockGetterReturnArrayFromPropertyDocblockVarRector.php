@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\TypeDeclaration\Rector\ClassMethod;
+namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -17,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\DocblockGetterReturnArrayFromPropertyDocblockVarRector\DocblockGetterReturnArrayFromPropertyDocblockVarRectorTest
+ * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockGetterReturnArrayFromPropertyDocblockVarRector\DocblockGetterReturnArrayFromPropertyDocblockVarRectorTest
  */
 final class DocblockGetterReturnArrayFromPropertyDocblockVarRector extends AbstractRector
 {
@@ -31,61 +31,6 @@ final class DocblockGetterReturnArrayFromPropertyDocblockVarRector extends Abstr
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
-    }
-
-    /**
-     * @param ClassMethod $node
-     */
-    public function refactor(Node $node): ?Node
-    {
-        if (! $node->returnType instanceof Node) {
-            return null;
-        }
-
-        if (! $this->isName($node->returnType, 'array')) {
-            return null;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        // return tag is already given
-        if ($phpDocInfo->getReturnTagValue() instanceof ReturnTagValueNode) {
-            return null;
-        }
-
-        if ($node->stmts === null) {
-            return null;
-        }
-
-        // we need exactly one statement of return
-        if (count($node->stmts) !== 1) {
-            return null;
-        }
-
-        $onlyStmt = $node->stmts[0];
-        if (! $onlyStmt instanceof Return_) {
-            return null;
-        }
-
-        if (! $onlyStmt->expr instanceof PropertyFetch) {
-            return null;
-        }
-
-        $propertyFetch = $onlyStmt->expr;
-        if (! $this->isName($propertyFetch->var, 'this')) {
-            return null;
-        }
-
-        $propertyFetchType = $this->getType($propertyFetch);
-
-        $propertyFetchDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($propertyFetchType);
-
-        $returnTagValueNode = new ReturnTagValueNode($propertyFetchDocTypeNode, '');
-        $phpDocInfo->addTagValueNode($returnTagValueNode);
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-
-        return $node;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -126,5 +71,65 @@ class SomeClass
 CODE_SAMPLE
             ),
         ]);
+    }
+
+    /**
+     * @param ClassMethod $node
+     */
+    public function refactor(Node $node): ?Node
+    {
+        if (! $node->returnType instanceof Node) {
+            return null;
+        }
+
+        if (! $this->isName($node->returnType, 'array')) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        // return tag is already given
+        if ($phpDocInfo->getReturnTagValue() instanceof ReturnTagValueNode) {
+            return null;
+        }
+
+        $propertyFetch = $this->matchReturnLocalPropertyFetch($node);
+        if (! $propertyFetch instanceof PropertyFetch) {
+            return null;
+        }
+
+        $propertyFetchType = $this->getType($propertyFetch);
+        $propertyFetchDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($propertyFetchType);
+
+        $returnTagValueNode = new ReturnTagValueNode($propertyFetchDocTypeNode, '');
+        $phpDocInfo->addTagValueNode($returnTagValueNode);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+
+        return $node;
+    }
+
+    private function matchReturnLocalPropertyFetch(ClassMethod $classMethod): ?PropertyFetch
+    {
+        // we need exactly one statement of return
+        if ($classMethod->stmts === null || count($classMethod->stmts) !== 1) {
+            return null;
+        }
+
+        $onlyStmt = $classMethod->stmts[0];
+        if (! $onlyStmt instanceof Return_) {
+            return null;
+        }
+
+        if (! $onlyStmt->expr instanceof PropertyFetch) {
+            return null;
+        }
+
+        $propertyFetch = $onlyStmt->expr;
+        if (! $this->isName($propertyFetch->var, 'this')) {
+            return null;
+        }
+
+        return $propertyFetch;
     }
 }

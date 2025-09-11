@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector\Fixture;
+namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector\Fixture;
 
 final class SomeClass
 {
@@ -19,7 +19,7 @@ final class SomeClass
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector\Fixture;
+namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector\Fixture;
 
 final class SomeClass
 {

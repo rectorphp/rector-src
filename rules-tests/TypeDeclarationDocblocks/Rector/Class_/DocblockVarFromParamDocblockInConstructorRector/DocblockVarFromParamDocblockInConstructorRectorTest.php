@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector;
+namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
