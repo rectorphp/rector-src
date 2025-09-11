@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\Class_\NullDebugInfoReturnRector\Fixture;
+namespace Rector\Tests\Php85\Rector\Class_\SleepToSerializeRector\Fixture;
 
 class SkipSleepEmpty {
     private $id;
