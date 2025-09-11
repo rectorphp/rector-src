@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\MethodCall\NullDebugInfoReturnRector\Fixture;
+namespace Rector\Tests\Php85\Rector\Class_\NullDebugInfoReturnRector\Fixture;
 
 class User {
     private $id;
@@ -16,7 +16,7 @@ class User {
 <?php
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\MethodCall\NullDebugInfoReturnRector\Fixture;
+namespace Rector\Tests\Php85\Rector\Class_\NullDebugInfoReturnRector\Fixture;
 
 class User {
     private $id;

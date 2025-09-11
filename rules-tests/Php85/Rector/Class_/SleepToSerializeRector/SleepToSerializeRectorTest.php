@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\MethodCall\SleepToSerializeRector;
+namespace Rector\Tests\Php85\Rector\Class_\SleepToSerializeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

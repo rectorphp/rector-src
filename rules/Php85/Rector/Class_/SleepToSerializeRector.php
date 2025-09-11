@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php85\Rector\ClassMethod;
+namespace Rector\Php85\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
@@ -22,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://3v4l.org/51uu0
  * @see https://3v4l.org/ktJnk
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_sleep_and_wakeup_magic_methods
- * @see \Rector\Tests\Php85\Rector\MethodCall\SleepToSerializeRector\SleepToSerializeRectorTest
+ * @see \Rector\Tests\Php85\Rector\Class_\SleepToSerializeRector\SleepToSerializeRectorTest
  */
 final class SleepToSerializeRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -77,24 +78,29 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isName($node->name, '__sleep')) {
+        if ($node->getMethod('__serialize') instanceof ClassMethod) {
             return null;
         }
 
-        if ($node->returnType instanceof Identifier && $this->isName($node->returnType, 'array')) { 
+        $classMethod = $node->getMethod('__sleep');
+        if (! $classMethod instanceof ClassMethod) {
             return null;
         }
 
-        $returns = $this->betterNodeFinder->findReturnsScoped($node);
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
+        if ($classMethod->returnType instanceof Identifier && $this->isName($classMethod->returnType, 'array')) { 
+            return null;
+        }
+
+        $returns = $this->betterNodeFinder->findReturnsScoped($classMethod);
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($classMethod, $returns)) {
             return null;
         }
         
@@ -123,8 +129,8 @@ CODE_SAMPLE
         }
 
         if($hasChanged){
-            $node->name = new Identifier('__serialize');
-            $node->returnType = new Identifier('array');
+            $classMethod->name = new Identifier('__serialize');
+            $classMethod->returnType = new Identifier('array');
             return $node;
         }
 
