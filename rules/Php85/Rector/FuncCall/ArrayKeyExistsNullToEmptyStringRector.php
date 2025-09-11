@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
+use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
@@ -29,7 +28,8 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly NullToStrictStringIntConverter $nullToStrictStringIntConverter
+        private readonly NullToStrictStringIntConverter $nullToStrictStringIntConverter,
+        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -93,7 +93,7 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         $result = $this->nullToStrictStringIntConverter->convertIfNull(
             $node,
             $args,
-            $this->resolvePosition($args),
+            $this->argsAnalyzer->resolveArgPosition($args, 'key', 0),
             $isTrait,
             $scope,
             $parametersAcceptor
@@ -108,19 +108,5 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION;
-    }
-
-    /**
-     * @param Arg[] $args
-     */
-    private function resolvePosition(array $args): int
-    {
-        foreach ($args as $position => $arg) {
-            if ($arg->name instanceof Identifier && $arg->name->toString() === 'key') {
-                return $position;
-            }
-        }
-
-        return 0;
     }
 }
