@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 
 class ComplexArray
 {
-   public function getServiceOrderWithIncident(): array
+   public function run(): array
     {
         return [
             'id' => new \stdClass(),
@@ -33,7 +33,7 @@ class ComplexArray
    /**
     * @return array<string, mixed>
     */
-   public function getServiceOrderWithIncident(): array
+   public function run(): array
     {
         return [
             'id' => new \stdClass(),
