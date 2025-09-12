@@ -140,7 +140,8 @@ CODE_SAMPLE
             // @see https://3v4l.org/DuYHu#v7.4.33
             if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_ON_ARRAY_MERGE)) {
                 $nativeType = $this->nodeTypeResolver->getNativeType($expr);
-                return ! $nativeType->isArray()->yes();
+                return ! $nativeType->isArray()
+                    ->yes();
             }
 
             return false;

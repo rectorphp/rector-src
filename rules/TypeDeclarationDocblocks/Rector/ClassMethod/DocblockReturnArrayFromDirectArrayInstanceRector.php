@@ -7,6 +7,7 @@ namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -39,7 +40,7 @@ final class DocblockReturnArrayFromDirectArrayInstanceRector extends AbstractRec
 
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -81,7 +82,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactor(Node $node): ?Node
     {
