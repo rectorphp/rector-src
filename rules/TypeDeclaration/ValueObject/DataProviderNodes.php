@@ -10,7 +10,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 final readonly class DataProviderNodes
 {
     /**
-     * @param array<array-key, Attribute|PhpDocTagNode> $nodes
+     * @param array<Attribute|PhpDocTagNode> $nodes
      */
     public function __construct(
         public array $nodes,
