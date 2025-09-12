@@ -186,9 +186,9 @@ CODE_SAMPLE
     /**
      * @return UnionType|IntegerType|StringType|MixedType
      */
-    private function resolveKeyType(ConstantArrayType $returnedType): Type
+    private function resolveKeyType(ConstantArrayType $constantArrayType): Type
     {
-        $keyType = $returnedType->getKeyType();
+        $keyType = $constantArrayType->getKeyType();
 
         if ($keyType instanceof UnionType) {
             $types = [];
