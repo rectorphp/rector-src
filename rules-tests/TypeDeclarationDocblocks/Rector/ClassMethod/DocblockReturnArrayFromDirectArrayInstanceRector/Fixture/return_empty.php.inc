@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 
 class ReturnEmpty
 {
-   public function run(): array
+    public function run(): array
     {
         return [];
     }
@@ -18,7 +18,10 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 
 class ReturnEmpty
 {
-   public function run(): array
+    /**
+     * @return mixed[]
+     */
+    public function run(): array
     {
         return [];
     }
