@@ -39,7 +39,7 @@ final class FinalPropertyPromotionRector extends AbstractRector implements MinPh
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Promotes constructor properties in final classes', [
+        return new RuleDefinition('Add native final promoted properties in non-final class to avoid child to override the promoted properties based on `@final` tag', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 public function __construct(
