@@ -132,6 +132,13 @@ CODE_SAMPLE
                 return null;
             }
 
+            /**
+             * nested structure
+             */
+            if ($valueType->isArray()->yes()) {
+                return null;
+            }
+
             $referencedClasses = array_merge($referencedClasses, $valueType->getReferencedClasses());
         }
 

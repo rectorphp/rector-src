@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -86,22 +87,21 @@ CODE_SAMPLE
         if (! $classMethod instanceof ClassMethod) {
             return null;
         }
-         
+
         $classMethod->name = new Identifier('__unserialize');
         $classMethod->returnType = new Identifier('void');
-          $param = new Param(
-            var: new Variable('data'),
-            type: new Identifier('array')
-        );
+
+        $param = new Param(var: new Variable('data'), type: new Identifier('array'));
 
         $classMethod->params[] = $param;
 
         $classMethod->stmts = [$this->assignProperties()];
-        
+
         return $node;
     }
 
-    protected function  assignProperties(): Foreach_{
+    private function assignProperties(): Foreach_
+    {
         $assign = new Assign(
             new PropertyFetch(new Variable('this'), new Variable('property')),
             new Variable('value')
@@ -109,23 +109,21 @@ CODE_SAMPLE
 
         $if = new If_(
             new FuncCall(new Name('property_exists'), [
-                new Node\Arg(new Variable('this')),
-                new Node\Arg(new Variable('property')),
+                new Arg(new Variable('this')),
+                new Arg(new Variable('property')),
             ]),
             [
                 'stmts' => [new Expression($assign)],
             ]
         );
 
-        $foreach = new Foreach_(
+        return new Foreach_(
             new Variable('data'),
             new Variable('value'),
             [
                 'keyVar' => new Variable('property'),
-                'stmts'  => [$if],
+                'stmts' => [$if],
             ]
         );
-
-        return $foreach;
     }
 }
