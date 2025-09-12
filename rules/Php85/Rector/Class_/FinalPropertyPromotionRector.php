@@ -67,18 +67,25 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
-            return null;
-        }
-
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
 
         if (! $constructClassMethod instanceof ClassMethod) {
             return null;
         }
 
+        if ($this->shouldSkip($node)) {
+            return null;
+        }
+
         $hasChanged = false;
-        foreach ($constructClassMethod->getParams() as $param) {
+
+        $params = $constructClassMethod->getParams();
+
+        if ($this->shouldSkipParams($params)) {
+            return null;
+        }
+
+        foreach ($params as $param) {
             if (! $param->isPromoted()) {
                  continue;
             }
@@ -111,16 +118,6 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class): bool
     {
-        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
-        if (! $constructClassMethod instanceof ClassMethod) {
-            return false;
-        }
-        $params = $constructClassMethod->getParams();
-
-        if ($this->shouldSkipParams($params)) {
-            return true;
-        }
-
         if ($this->visibilityManipulator->hasVisibility($class, Visibility::FINAL)) {
             return true;
         }
