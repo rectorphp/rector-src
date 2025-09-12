@@ -152,6 +152,10 @@ CODE_SAMPLE
     {
         $genericKeyType = $this->constantToGenericType($constantArrayType->getKeyType());
 
+        if ($constantArrayType->getItemType() instanceof \PHPStan\Type\NeverType) {
+            $genericKeyType  = new IntegerType();
+        }
+
         $itemType = $constantArrayType->getItemType();
         if ($itemType instanceof ConstantArrayType) {
             $genericItemType = $this->createGenericArrayTypeFromConstantArrayType($itemType);
