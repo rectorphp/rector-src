@@ -67,13 +67,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isFinal()) {
+            return null;
+        }
+        
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
 
         if (! $constructClassMethod instanceof ClassMethod) {
-            return null;
-        }
-
-        if ($node->isFinal()) {
             return null;
         }
 
