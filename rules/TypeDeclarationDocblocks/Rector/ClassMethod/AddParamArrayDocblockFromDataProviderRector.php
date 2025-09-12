@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
@@ -83,66 +83,71 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->getParams() === []) {
-            return null;
-        }
-
-        if (! $this->testsNodeAnalyzer->isTestClassMethod($node)) {
-            return null;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        // nothing relevant here
-        $dataProviderNodes = $this->dataProviderMethodsFinder->findDataProviderNodes($node);
-        if ($dataProviderNodes->isEmpty()) {
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
         $hasChanged = false;
 
-        foreach ($node->getParams() as $param) {
-            if (! $param->type instanceof Node) {
+        foreach ($node->getMethods() as $classMethod) {
+            if ($classMethod->getParams() === []) {
                 continue;
             }
 
-            if (! $this->isName($param->type, 'array')) {
+            if (! $this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
                 continue;
             }
 
-            /** @var string $paramName */
-            $paramName = $this->getName($param->var);
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
-            $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
-
-            // already defined, lets skip it
-            if ($paramTagValueNode instanceof ParamTagValueNode) {
+            $dataProviderNodes = $this->dataProviderMethodsFinder->findDataProviderNodes($node, $classMethod);
+            if ($dataProviderNodes->getClassMethods() === []) {
                 continue;
             }
 
-            dump($dataProviderNodes);
-            die;
+            foreach ($classMethod->getParams() as $paramPosition => $param) {
+                // we are intersted only in array params
+                if (! $param->type instanceof Node || ! $this->isName($param->type, 'array')) {
+                    continue;
+                }
 
-            // @todo start here
-            //            $paramTagValueNode = $this->createParamTagValueNode($paramName, 'string');
-            //            $phpDocInfo->addTagValueNode($paramTagValueNode);
-            //            $hasChanged = true;
-            //            continue;
+                /** @var string $paramName */
+                $paramName = $this->getName($param->var);
+
+                $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
+
+                // already defined, lets skip it
+                if ($paramTagValueNode instanceof ParamTagValueNode) {
+                    continue;
+                }
+
+                foreach ($dataProviderNodes->getClassMethods() as $dataProviderClassMethod) {
+                    // try to resolve array type on position X
+                    dump($paramPosition);
+                    die;
+                }
+
+                // @todo start here
+                //            $paramTagValueNode = $this->createParamTagValueNode($paramName, 'string');
+                //            $phpDocInfo->addTagValueNode($paramTagValueNode);
+                //            $hasChanged = true;
+                //            continue;
+            }
+
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         }
 
-        //        if ($hasChanged === false) {
-        //            return null;
-        //        }
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+        if (! $hasChanged) {
+            return null;
+        }
 
         return $node;
     }
