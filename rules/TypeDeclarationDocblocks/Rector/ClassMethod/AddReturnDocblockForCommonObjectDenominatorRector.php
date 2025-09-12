@@ -12,7 +12,11 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Rector\AbstractRector;
@@ -30,7 +34,7 @@ final class AddReturnDocblockForCommonObjectDenominatorRector extends AbstractRe
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReturnNodeFinder $returnNodeFinder,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -167,13 +171,46 @@ CODE_SAMPLE
             return null;
         }
 
-        $objectTypeArrayType = new ArrayType(new MixedType(), new FullyQualifiedObjectType($firstSharedType));
+        $objectTypeArrayType = new ArrayType(
+            $this->resolveKeyType($returnedType),
+            new FullyQualifiedObjectType($firstSharedType)
+        );
         $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $objectTypeArrayType);
         if (! $hasChanged) {
             return null;
         }
 
         return $node;
+    }
+
+    /**
+     * @return UnionType|IntegerType|StringType|MixedType
+     */
+    private function resolveKeyType(ConstantArrayType $constantArrayType): Type
+    {
+        $keyType = $constantArrayType->getKeyType();
+
+        if ($keyType instanceof UnionType) {
+            $types = [];
+            foreach ($keyType->getTypes() as $type) {
+                if ($type->isString()->yes()) {
+                    $types[] = new StringType();
+                } elseif ($type->isInteger()->yes()) {
+                    $types[] = new IntegerType();
+                } else {
+                    return new MixedType();
+                }
+            }
+
+            $uniqueKeyTypes = array_unique($types, SORT_REGULAR);
+            if (count($uniqueKeyTypes) === 1) {
+                return $uniqueKeyTypes[0];
+            }
+
+            return new UnionType($uniqueKeyTypes);
+        }
+
+        return new MixedType();
     }
 
     /**
