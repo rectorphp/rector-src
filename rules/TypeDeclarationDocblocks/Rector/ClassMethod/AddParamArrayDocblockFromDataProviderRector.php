@@ -10,7 +10,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\TypeAnalyzer\ParameterTypeFromDataProviderResolver;
 use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -24,7 +27,10 @@ final class AddParamArrayDocblockFromDataProviderRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly DataProviderMethodsFinder $dataProviderMethodsFinder
+        private readonly DataProviderMethodsFinder $dataProviderMethodsFinder,
+        private readonly ParameterTypeFromDataProviderResolver $parameterTypeFromDataProviderResolver,
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly TypeNormalizer $typeNormalizer,
     ) {
     }
 
@@ -114,8 +120,12 @@ CODE_SAMPLE
             }
 
             foreach ($classMethod->getParams() as $paramPosition => $param) {
-                // we are intersted only in array params
-                if (! $param->type instanceof Node || ! $this->isName($param->type, 'array')) {
+                // we are interested only in array params
+                if (! $param->type instanceof Node) {
+                    continue;
+                }
+
+                if (! $this->isName($param->type, 'array')) {
                     continue;
                 }
 
@@ -129,20 +139,24 @@ CODE_SAMPLE
                     continue;
                 }
 
-                foreach ($dataProviderNodes->getClassMethods() as $dataProviderClassMethod) {
-                    // try to resolve array type on position X
-                    dump($paramPosition);
-                    die;
-                }
+                $parameterType = $this->parameterTypeFromDataProviderResolver->resolve(
+                    $paramPosition,
+                    $dataProviderNodes->getClassMethods()
+                );
 
-                // @todo start here
-                //            $paramTagValueNode = $this->createParamTagValueNode($paramName, 'string');
-                //            $phpDocInfo->addTagValueNode($paramTagValueNode);
-                //            $hasChanged = true;
-                //            continue;
+                $generalizedParameterType = $this->typeNormalizer->generalizeConstantBoolTypes($parameterType);
+
+                $parameterTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
+                    $generalizedParameterType
+                );
+
+                $paramTagValueNode = new ParamTagValueNode($parameterTypeNode, false, '$' . $paramName, '', false);
+                $phpDocInfo->addTagValueNode($paramTagValueNode);
+                $hasChanged = true;
+
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
             }
 
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         }
 
         if (! $hasChanged) {
