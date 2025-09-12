@@ -78,12 +78,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-
         $params = $constructClassMethod->getParams();
-
-        if ($this->shouldSkipParams($params)) {
-            return null;
-        }
 
         foreach ($params as $param) {
             if (! $param->isPromoted()) {
@@ -126,19 +121,6 @@ CODE_SAMPLE
             return true;
         }
 
-        return false;
-    }
-
-    /**
-     * @param Param[] $params
-     */
-    private function shouldSkipParams(array $params): bool
-    {
-        foreach ($params as $param) {
-            if ($this->visibilityManipulator->hasVisibility($param, Visibility::FINAL) && $param->isPromoted()) {
-                return true;
-            }
-        }
         return false;
     }
 }
