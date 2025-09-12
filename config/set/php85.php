@@ -42,7 +42,7 @@ return static function (RectorConfig $rectorConfig): void {
             ChrArgModuloRector::class,
             SleepToSerializeRector::class,
             OrdSingleByteRector::class,
-            WakeupToUnserializeRector::class
+            WakeupToUnserializeRector::class,
         ]
     );
 
