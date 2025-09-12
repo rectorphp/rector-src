@@ -51,7 +51,12 @@ CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 class User {
-    public function __unserialize(){
+    public function __unserialize(array $data): void{
+        foreach ($data as $property => $value) {
+            if (property_exists($this, $property)) {
+                $this->{$property} = $value;
+            }
+        }
     }
 }
 CODE_SAMPLE
