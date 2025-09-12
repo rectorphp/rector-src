@@ -73,7 +73,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($node)) {
+        if ($class->isFinal()) {
             return null;
         }
 
@@ -109,18 +109,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::FINAL_PROPERTY_PROMOTION;
-    }
-
-    private function shouldSkip(Class_ $class): bool
-    {
-        if ($this->visibilityManipulator->hasVisibility($class, Visibility::FINAL)) {
-            return true;
-        }
-
-        if ($class->isFinal()) {
-            return true;
-        }
-
-        return false;
     }
 }
