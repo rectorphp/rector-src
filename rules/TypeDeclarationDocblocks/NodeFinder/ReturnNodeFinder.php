@@ -25,6 +25,10 @@ final readonly class ReturnNodeFinder
             return null;
         }
 
+        if (count($returnsScoped) !== 1) {
+            return null;
+        }
+
         return $returnsScoped[0];
     }
 }
