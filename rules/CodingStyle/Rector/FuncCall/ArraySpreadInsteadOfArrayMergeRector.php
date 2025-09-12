@@ -136,6 +136,8 @@ CODE_SAMPLE
 
         if ($type->getIterableKeyType()->isInteger()->yes()) {
             // when on PHP 8.0+, pass non-array values already error on the first place
+            // this check avoid unpack non-array values that cause error on php 7.4 as well,
+            // @see https://3v4l.org/DuYHu#v7.4.33
             if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_ON_ARRAY_MERGE)) {
                 $nativeType = $this->nodeTypeResolver->getNativeType($expr);
                 return ! $nativeType->isArray()->yes();
