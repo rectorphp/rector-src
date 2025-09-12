@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblockBasedOnArrayMapRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnDocblockForScalarArrayFromAssignsRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector;
+use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForCommonObjectDenominatorRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockGetterReturnArrayFromPropertyDocblockVarRector;
 
 /**
@@ -18,5 +19,6 @@ return static function (RectorConfig $rectorConfig): void {
         DocblockVarFromParamDocblockInConstructorRector::class,
         DocblockVarFromParamDocblockInConstructorRector::class,
         DocblockGetterReturnArrayFromPropertyDocblockVarRector::class,
+        AddReturnDocblockForCommonObjectDenominatorRector::class,
     ]);
 };

@@ -1,0 +1,9 @@
+<?php
+
+namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForCommonObjectDenominatorRector\Source;
+
+use Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForCommonObjectDenominatorRector\Source\Contract\DifferentInterface;
+
+final class AnotherExtensionWithDifferentInterface implements DifferentInterface
+{
+}

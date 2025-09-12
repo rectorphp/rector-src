@@ -5,15 +5,19 @@ declare(strict_types=1);
 namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Return_;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -23,10 +27,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AddReturnDocblockForCommonObjectDenominatorRector extends AbstractRector
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReturnAnalyzer $returnAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReturnNodeFinder $returnNodeFinder,
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
 
@@ -35,8 +39,8 @@ final class AddReturnDocblockForCommonObjectDenominatorRector extends AbstractRe
         return new RuleDefinition(
             'Add @return docblock array of objects, that have common denominator interface/parent class',
             [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 final class ExtensionProvider
 {
     public function getExtensions(): array
@@ -56,8 +60,8 @@ class SecondExtension implements ExtensionInterface
 {
 }
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 final class ExtensionProvider
 {
     /**
@@ -80,9 +84,10 @@ class SecondExtension implements ExtensionInterface
 {
 }
 CODE_SAMPLE
-            ),
-        
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**
@@ -105,26 +110,71 @@ CODE_SAMPLE
             return null;
         }
 
-        dump(123);
-        die;
-
+        // definitely not an array return
         if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'array')) {
             return null;
         }
 
-        $returnsScoped = $this->betterNodeFinder->findReturnsScoped($node);
-
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returnsScoped)) {
+        $onlyReturnWithExpr = $this->returnNodeFinder->findOnlyReturnWithExpr($node);
+        if (! $onlyReturnWithExpr instanceof Return_ || ! $onlyReturnWithExpr->expr instanceof Expr) {
             return null;
         }
 
-        //        $arrayType = new ArrayType(new MixedType(), $firstScalarType);
-        //
-        //        $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $arrayType);
-        //        if ($hasChanged) {
-        //            return $node;
-        //        }
+        $returnedType = $this->getType($onlyReturnWithExpr->expr);
+        if (! $returnedType instanceof ConstantArrayType) {
+            return null;
+        }
 
-        return null;
+        $referencedClasses = [];
+        foreach ($returnedType->getValueTypes() as $valueType) {
+            // each item must refer some classes
+            if ($valueType->getReferencedClasses() === []) {
+                return null;
+            }
+
+            $referencedClasses = array_merge($referencedClasses, $valueType->getReferencedClasses());
+        }
+
+        // nothing to find here
+        if ($referencedClasses === []) {
+            return null;
+        }
+
+        $parentClassesAndInterfaces = [];
+
+        foreach ($referencedClasses as $referencedClass) {
+            $parentClassesAndInterfaces[] = $this->resolveParentClassesAndInterfaces($referencedClass);
+        }
+
+        $firstSharedTypes = array_intersect(...$parentClassesAndInterfaces);
+        $firstSharedType = $firstSharedTypes[0] ?? null;
+
+        if ($firstSharedType === null) {
+            return null;
+        }
+
+        $objectTypeArrayType = new ArrayType(new MixedType(), new FullyQualifiedObjectType($firstSharedType));
+        $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $objectTypeArrayType);
+        if (! $hasChanged) {
+            return null;
+        }
+
+        return $node;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveParentClassesAndInterfaces(string $className): array
+    {
+        $referenceClassReflection = $this->reflectionProvider->getClass($className);
+
+        $currentParentClassesAndInterfaces = $referenceClassReflection->getParentClassesNames();
+
+        foreach ($referenceClassReflection->getInterfaces() as $classReflection) {
+            $currentParentClassesAndInterfaces[] = $classReflection->getName();
+        }
+
+        return $currentParentClassesAndInterfaces;
     }
 }
