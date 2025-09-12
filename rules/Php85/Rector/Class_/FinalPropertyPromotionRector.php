@@ -77,18 +77,31 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
         foreach ($constructClassMethod->getParams() as $param) {
+            if (! $param->isPromoted()) {
+                 continue;
+            }
+
+            if ($this->visibilityManipulator->hasVisibility($param, Visibility::FINAL)) {
+                continue;
+            }
+
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
 
             if (! $phpDocInfo->hasByName(self::TAGNAME)) {
                 continue;
             }
+            $hasChanged = true;
             $this->visibilityManipulator->makeFinal($param);
             $phpDocInfo->removeByName(self::TAGNAME);
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
         }
-
-        return $node;
+        
+        if($hasChanged){
+            return $node;
+        }
+        return null;
     }
 
     public function provideMinPhpVersion(): int
