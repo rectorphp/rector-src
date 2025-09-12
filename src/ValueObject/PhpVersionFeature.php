@@ -654,6 +654,12 @@ final class PhpVersionFeature
     public const MIXED_TYPE = PhpVersion::PHP_80;
 
     /**
+     * @see https://3v4l.org/OWtO5
+     * @var int
+     */
+    public const ARRAY_ON_ARRAY_MERGE = PhpVersion::PHP_80;
+
+    /**
      * @var int
      */
     public const DEPRECATE_NULL_ARG_IN_STRING_FUNCTION = PhpVersion::PHP_81;
