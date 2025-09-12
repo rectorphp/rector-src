@@ -4,32 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
-use PhpParser\Node\ArrayItem;
-use PhpParser\Node\Attribute;
-use PhpParser\Node\AttributeGroup;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
-use PHPStan\Type\TypeCombinator;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\TypeAnalyzer\ParameterTypeFromDataProviderResolver;
 use Rector\TypeDeclaration\ValueObject\DataProviderNodes;
+use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -43,17 +28,10 @@ final class AddParamTypeBasedOnPHPUnitDataProviderRector extends AbstractRector
      */
     private const ERROR_MESSAGE = 'Adds param type declaration based on PHPUnit provider return type declaration';
 
-    /**
-     * @see https://regex101.com/r/hW09Vt/1
-     * @var string
-     */
-    private const METHOD_NAME_REGEX = '#^(?<method_name>\w+)(\(\))?#';
-
     public function __construct(
-        private readonly TypeFactory $typeFactory,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly DataProviderMethodsFinder $dataProviderMethodsFinder,
+        private readonly ParameterTypeFromDataProviderResolver $parameterTypeFromDataProviderResolver,
         private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
@@ -131,12 +109,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            $dataProviderNodes = $this->resolveDataProviderNodes($classMethod);
-            if ($dataProviderNodes->isEmpty()) {
+            $dataProviderNodes = $this->dataProviderMethodsFinder->findDataProviderNodes($node, $classMethod);
+            if ($dataProviderNodes->getClassMethods() === []) {
                 continue;
             }
 
-            $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $node, $dataProviderNodes->nodes);
+            $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $dataProviderNodes);
             if ($hasClassMethodChanged) {
                 $hasChanged = true;
             }
@@ -149,187 +127,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function inferParam(
-        Class_ $class,
-        int $parameterPosition,
-        PhpDocTagNode | Attribute $dataProviderNode
-    ): Type {
-        $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderNode);
-        if (! $dataProviderClassMethod instanceof ClassMethod) {
-            return new MixedType();
-        }
-
-        $returns = $this->betterNodeFinder->findReturnsScoped($dataProviderClassMethod);
-        if ($returns !== []) {
-            return $this->resolveReturnStaticArrayTypeByParameterPosition($returns, $parameterPosition);
-        }
-
-        /** @var Yield_[] $yields */
-        $yields = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($dataProviderClassMethod, Yield_::class);
-        return $this->resolveYieldStaticArrayTypeByParameterPosition($yields, $parameterPosition);
-    }
-
-    private function resolveDataProviderClassMethod(
-        Class_ $class,
-        Attribute | PhpDocTagNode $dataProviderNode
-    ): ?ClassMethod {
-        if ($dataProviderNode instanceof Attribute) {
-            $value = $dataProviderNode->args[0]->value;
-
-            if (! $value instanceof String_) {
-                return null;
-            }
-
-            $content = $value->value;
-        } elseif ($dataProviderNode->value instanceof GenericTagValueNode) {
-            $content = $dataProviderNode->value->value;
-        } else {
-            return null;
-        }
-
-        $match = Strings::match($content, self::METHOD_NAME_REGEX);
-        if ($match === null) {
-            return null;
-        }
-
-        $methodName = $match['method_name'];
-        return $class->getMethod($methodName);
-    }
-
-    /**
-     * @param Return_[] $returns
-     */
-    private function resolveReturnStaticArrayTypeByParameterPosition(array $returns, int $parameterPosition): Type
-    {
-        $firstReturnedExpr = $returns[0]->expr;
-
-        if (! $firstReturnedExpr instanceof Array_) {
-            return new MixedType();
-        }
-
-        $paramOnPositionTypes = $this->resolveParamOnPositionTypes($firstReturnedExpr, $parameterPosition);
-        if ($paramOnPositionTypes === []) {
-            return new MixedType();
-        }
-
-        return $this->typeFactory->createMixedPassedOrUnionType($paramOnPositionTypes);
-    }
-
-    /**
-     * @param Yield_[] $yields
-     */
-    private function resolveYieldStaticArrayTypeByParameterPosition(array $yields, int $parameterPosition): Type
-    {
-        $paramOnPositionTypes = [];
-
-        foreach ($yields as $yield) {
-            if (! $yield->value instanceof Array_) {
-                continue;
-            }
-
-            $type = $this->getTypeFromClassMethodYield($yield->value);
-
-            if (! $type instanceof ConstantArrayType) {
-                return $type;
-            }
-
-            foreach ($type->getValueTypes() as $position => $valueType) {
-                if ($position !== $parameterPosition) {
-                    continue;
-                }
-
-                $paramOnPositionTypes[] = $valueType;
-            }
-        }
-
-        if ($paramOnPositionTypes === []) {
-            return new MixedType();
-        }
-
-        return $this->typeFactory->createMixedPassedOrUnionType($paramOnPositionTypes);
-    }
-
-    private function getTypeFromClassMethodYield(Array_ $classMethodYieldArray): MixedType | ConstantArrayType
-    {
-        $arrayType = $this->nodeTypeResolver->getType($classMethodYieldArray);
-
-        // impossible to resolve
-        if (! $arrayType instanceof ConstantArrayType) {
-            return new MixedType();
-        }
-
-        return $arrayType;
-    }
-
-    /**
-     * @return Type[]
-     */
-    private function resolveParamOnPositionTypes(Array_ $array, int $parameterPosition): array
-    {
-        $paramOnPositionTypes = [];
-
-        foreach ($array->items as $singleDataProvidedSet) {
-            if (! $singleDataProvidedSet instanceof ArrayItem || ! $singleDataProvidedSet->value instanceof Array_) {
-                return [];
-            }
-
-            foreach ($singleDataProvidedSet->value->items as $position => $singleDataProvidedSetItem) {
-                if ($position !== $parameterPosition) {
-                    continue;
-                }
-
-                if (! $singleDataProvidedSetItem instanceof ArrayItem) {
-                    continue;
-                }
-
-                $paramOnPositionTypes[] = $this->nodeTypeResolver->getType($singleDataProvidedSetItem->value);
-            }
-        }
-
-        return $paramOnPositionTypes;
-    }
-
-    private function resolveDataProviderNodes(ClassMethod $classMethod): DataProviderNodes
-    {
-        $attributes = $this->getPhpDataProviderAttributes($classMethod);
-
-        $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
-
-        $phpdocNodes = $classMethodPhpDocInfo instanceof PhpDocInfo ?
-            $classMethodPhpDocInfo->getTagsByName('@dataProvider') : [];
-
-        return new DataProviderNodes([...$attributes, ...$phpdocNodes]);
-    }
-
-    /**
-     * @return array<array-key, Attribute>
-     */
-    private function getPhpDataProviderAttributes(ClassMethod $classMethod): array
-    {
-        $attributeName = 'PHPUnit\Framework\Attributes\DataProvider';
-
-        /** @var AttributeGroup[] $attrGroups */
-        $attrGroups = $classMethod->attrGroups;
-
-        $dataProviders = [];
-
-        foreach ($attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $attribute) {
-                if (! $this->isName($attribute->name, $attributeName)) {
-                    continue;
-                }
-
-                $dataProviders[] = $attribute;
-            }
-        }
-
-        return $dataProviders;
-    }
-
-    /**
-     * @param array<Attribute|PhpDocTagNode> $dataProviderNodes
-     */
-    private function refactorClassMethod(ClassMethod $classMethod, Class_ $class, array $dataProviderNodes): bool
+    private function refactorClassMethod(ClassMethod $classMethod, DataProviderNodes $dataProviderNodes): bool
     {
         $hasChanged = false;
 
@@ -342,20 +140,18 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramTypes = [];
-            foreach ($dataProviderNodes as $dataProviderNode) {
-                $paramTypes[] = $this->inferParam($class, $parameterPosition, $dataProviderNode);
-            }
-
-            $paramTypeDeclaration = TypeCombinator::union(...$paramTypes);
+            $paramTypeDeclaration = $this->parameterTypeFromDataProviderResolver->resolve(
+                $parameterPosition,
+                $dataProviderNodes->getClassMethods()
+            );
 
             if ($paramTypeDeclaration instanceof MixedType) {
                 continue;
             }
 
-            $type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramTypeDeclaration, TypeKind::PARAM);
-            if ($type instanceof Node) {
-                $param->type = $type;
+            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramTypeDeclaration, TypeKind::PARAM);
+            if ($typeNode instanceof Node) {
+                $param->type = $typeNode;
                 $hasChanged = true;
             }
         }
