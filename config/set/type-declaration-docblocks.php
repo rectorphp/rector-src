@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblockBasedOnArrayMapRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnDocblockForScalarArrayFromAssignsRector;
+use Rector\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamFromLocalCallsRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromDataProviderRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromDimFetchAccessRector;
@@ -24,5 +25,6 @@ return static function (RectorConfig $rectorConfig): void {
         AddReturnDocblockForCommonObjectDenominatorRector::class,
         AddParamArrayDocblockFromDimFetchAccessRector::class,
         AddParamArrayDocblockFromDataProviderRector::class,
+        ClassMethodArrayDocblockParamFromLocalCallsRector::class,
     ]);
 };
