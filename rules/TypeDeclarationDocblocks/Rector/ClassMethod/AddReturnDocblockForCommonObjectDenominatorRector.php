@@ -139,6 +139,13 @@ CODE_SAMPLE
                 return null;
             }
 
+            /**
+             * string class as Foo::class
+             */
+            if ($valueType->isString()->yes()) {
+                return null;
+            }
+
             $referencedClasses = array_merge($referencedClasses, $valueType->getReferencedClasses());
         }
 
