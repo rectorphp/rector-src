@@ -135,6 +135,7 @@ CODE_SAMPLE
         $type = $this->getType($expr);
 
         if ($type->getIterableKeyType()->isInteger()->yes()) {
+            // when on PHP 8.0+, pass non-array values already error on the first place
             if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_ON_ARRAY_MERGE)) {
                 $nativeType = $this->nodeTypeResolver->getNativeType($expr);
                 return ! $nativeType->isArray()->yes();
