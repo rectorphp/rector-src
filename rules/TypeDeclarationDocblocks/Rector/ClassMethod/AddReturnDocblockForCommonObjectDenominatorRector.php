@@ -133,16 +133,9 @@ CODE_SAMPLE
             }
 
             /**
-             * nested structure
+             * not an object, can be nested array, or string class as Foo::class
              */
-            if ($valueType->isArray()->yes()) {
-                return null;
-            }
-
-            /**
-             * string class as Foo::class
-             */
-            if ($valueType->isString()->yes()) {
+            if (! $valueType->isObject()->yes()) {
                 return null;
             }
 
