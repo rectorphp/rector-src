@@ -135,6 +135,11 @@ CODE_SAMPLE
         $type = $this->getType($expr);
 
         if ($type->getIterableKeyType()->isInteger()->yes()) {
+            if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS)) {
+                $nativeType = $this->nodeTypeResolver->getNativeType($expr);
+                return ! $nativeType->isArray()->yes();
+            }
+
             return false;
         }
 
