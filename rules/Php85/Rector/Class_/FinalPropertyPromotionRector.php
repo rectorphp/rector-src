@@ -73,7 +73,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($class->isFinal()) {
+        if ($node->isFinal()) {
             return null;
         }
 
