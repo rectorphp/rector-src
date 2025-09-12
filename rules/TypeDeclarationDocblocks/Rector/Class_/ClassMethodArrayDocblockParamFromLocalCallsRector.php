@@ -7,7 +7,6 @@ namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\Type\ArrayType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
@@ -95,6 +94,10 @@ CODE_SAMPLE
             $classMethodParameterTypes = $this->callTypesResolver->resolveStrictTypesFromCalls($methodCalls);
 
             foreach ($classMethod->getParams() as $parameterPosition => $param) {
+                if ($param->type === null || ! $this->isName($param->type, 'array')) {
+                    continue;
+                }
+
                 $parameterName = $this->getName($param);
                 $parameterTagValueNode = $classMethodPhpDocInfo->getParamTagValueByName($parameterName);
 
@@ -104,7 +107,7 @@ CODE_SAMPLE
                 }
 
                 $resolvedParameterType = $classMethodParameterTypes[$parameterPosition] ?? null;
-                if (! $resolvedParameterType instanceof ArrayType) {
+                if (! $resolvedParameterType instanceof \PHPStan\Type\Type) {
                     continue;
                 }
 
