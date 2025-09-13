@@ -20,7 +20,6 @@ return static function (RectorConfig $rectorConfig): void {
         AddReturnArrayDocblockBasedOnArrayMapRector::class,
         AddReturnDocblockForScalarArrayFromAssignsRector::class,
         DocblockVarFromParamDocblockInConstructorRector::class,
-        DocblockVarFromParamDocblockInConstructorRector::class,
         DocblockGetterReturnArrayFromPropertyDocblockVarRector::class,
         AddReturnDocblockForCommonObjectDenominatorRector::class,
         AddParamArrayDocblockFromDimFetchAccessRector::class,
