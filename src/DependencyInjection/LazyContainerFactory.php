@@ -29,6 +29,7 @@ use Rector\BetterPhpDocParser\PhpDocParser\ArrayItemClassNameDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\BetterPhpDocParser\PhpDocParser\ConstExprClassNameDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator;
+use Rector\BetterPhpDocParser\PhpDocParser\PhpDocTagGenericUsesDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\PlainValueParser;
@@ -316,6 +317,7 @@ final class LazyContainerFactory
         ConstExprClassNameDecorator::class,
         DoctrineAnnotationDecorator::class,
         ArrayItemClassNameDecorator::class,
+        PhpDocTagGenericUsesDecorator::class,
     ];
 
     /**
