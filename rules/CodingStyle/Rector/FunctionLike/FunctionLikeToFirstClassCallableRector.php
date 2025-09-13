@@ -77,20 +77,31 @@ CODE_SAMPLE
     ): bool {
         $params = $node->getParams();
         $args = $callLike->getArgs();
-
-        if (
-            $callLike->isFirstClassCallable()
-            || $this->isChainedCall($callLike)
-            || $this->isUsingNamedArgs($args)
-            || $this->isUsingByRef($params)
-            || $this->isNotUsingSameParamsForArgs($params, $args)
-            || $this->isDependantMethod($callLike, $params)
-            || $this->isUsingThisInNonObjectContext($callLike, $scope)
-        ) {
+        if ($callLike->isFirstClassCallable()) {
             return true;
         }
 
-        return false;
+        if ($this->isChainedCall($callLike)) {
+            return true;
+        }
+
+        if ($this->isUsingNamedArgs($args)) {
+            return true;
+        }
+
+        if ($this->isUsingByRef($params)) {
+            return true;
+        }
+
+        if ($this->isNotUsingSameParamsForArgs($params, $args)) {
+            return true;
+        }
+
+        if ($this->isDependantMethod($callLike, $params)) {
+            return true;
+        }
+
+        return $this->isUsingThisInNonObjectContext($callLike, $scope);
     }
 
     private function extractCallLike(Closure|ArrowFunction $node): FuncCall|MethodCall|StaticCall|null
@@ -99,6 +110,7 @@ CODE_SAMPLE
             if (count($node->stmts) !== 1 || ! $node->stmts[0] instanceof Return_) {
                 return null;
             }
+
             $callLike = $node->stmts[0]->expr;
         } else {
             $callLike = $node->expr;
@@ -198,6 +210,7 @@ CODE_SAMPLE
                 return true;
             }
         }
+
         return false;
     }
 
@@ -211,6 +224,7 @@ CODE_SAMPLE
                 return true;
             }
         }
+
         return false;
     }
 
@@ -220,10 +234,6 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $callLike->var instanceof CallLike) {
-            return false;
-        }
-
-        return true;
+        return $callLike->var instanceof CallLike;
     }
 }
