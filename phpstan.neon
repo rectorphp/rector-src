@@ -187,9 +187,6 @@ parameters:
             message: '#Function "(function_exists|dump_node)\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
-        # false positive on enums
-        - '#Method Rector\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
-
         # stmts aware/expression generics
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
 
@@ -271,8 +268,6 @@ parameters:
             message: '#Fetching (deprecated )?class constant (.*?) of (deprecated )?class (Rector\\Set\\ValueObject\\DowngradeLevelSetList|Rector\\Symfony\\Set\\(.*?))#'
             path: src/Configuration/RectorConfigBuilder.php
 
-        - '#::provideMinPhpVersion\(\) never returns \d+ so it can be removed from the return type#'
-
         # runtime comparison
         - '#Comparison operation ".*" between int<\d+, \d+> and \d+ is always true#'
 
@@ -280,7 +275,6 @@ parameters:
         - '#mapToPhpParserNode\(\) never returns PhpParser\\.* so it can be removed from the return#'
 
         # from constant string
-        - '#Method Rector\\.*::providePolyfillPackage\(\) never returns#'
         - '#Method Rector\\.*::filterPolyfillPackages\(\) should return array\<#'
 
         -
