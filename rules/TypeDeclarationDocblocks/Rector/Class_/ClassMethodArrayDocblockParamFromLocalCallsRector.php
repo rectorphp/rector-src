@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 
+use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
@@ -94,10 +95,12 @@ CODE_SAMPLE
             $classMethodParameterTypes = $this->callTypesResolver->resolveStrictTypesFromCalls($methodCalls);
 
             foreach ($classMethod->getParams() as $parameterPosition => $param) {
-                if ($param->type === null || ! $this->isName($param->type, 'array')) {
+                if ($param->type === null) {
                     continue;
                 }
-
+                if (! $this->isName($param->type, 'array')) {
+                    continue;
+                }
                 $parameterName = $this->getName($param);
                 $parameterTagValueNode = $classMethodPhpDocInfo->getParamTagValueByName($parameterName);
 
@@ -107,7 +110,7 @@ CODE_SAMPLE
                 }
 
                 $resolvedParameterType = $classMethodParameterTypes[$parameterPosition] ?? null;
-                if (! $resolvedParameterType instanceof \PHPStan\Type\Type) {
+                if (! $resolvedParameterType instanceof Type) {
                     continue;
                 }
 
