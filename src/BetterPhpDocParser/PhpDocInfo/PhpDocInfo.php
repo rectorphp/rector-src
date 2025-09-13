@@ -452,7 +452,11 @@ final class PhpDocInfo
 
         foreach ($genericTagValueNodes as $genericTagValueNode) {
             if ($genericTagValueNode->value !== '') {
-                $resolvedClasses[] = $genericTagValueNode->value;
+                if (str_contains($genericTagValueNode->value, '::') && $genericTagValueNode->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS) !== null) {
+                    $resolvedClasses[] = $genericTagValueNode->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS);
+                } else {
+                    $resolvedClasses[] = $genericTagValueNode->value;
+                }
             }
         }
 
