@@ -98,9 +98,11 @@ CODE_SAMPLE
                 if ($param->type === null) {
                     continue;
                 }
+
                 if (! $this->isName($param->type, 'array')) {
                     continue;
                 }
+
                 $parameterName = $this->getName($param);
                 $parameterTagValueNode = $classMethodPhpDocInfo->getParamTagValueByName($parameterName);
 
