@@ -73,6 +73,10 @@ CODE_SAMPLE
         if ($node->isFinal()) {
             return null;
         }
+
+        if ($node->isAnonymous()) {
+            return null;
+        }
         
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
 
