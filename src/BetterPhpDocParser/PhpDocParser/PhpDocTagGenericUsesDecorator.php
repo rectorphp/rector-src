@@ -17,6 +17,8 @@ use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 /**
  * Decorate node with fully qualified class name for generic annotations for @uses
  * e.g. @uses Direction::*
+ *
+ * @see https://docs.phpdoc.org/guide/references/phpdoc/tags/uses.html
  */
 final readonly class PhpDocTagGenericUsesDecorator implements PhpDocNodeDecoratorInterface
 {
