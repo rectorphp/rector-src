@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 
-use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
