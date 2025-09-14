@@ -144,7 +144,7 @@ CODE_SAMPLE
                     $dataProviderNodes->getClassMethods()
                 );
 
-                $generalizedParameterType = $this->typeNormalizer->generalizeConstantBoolTypes($parameterType);
+                $generalizedParameterType = $this->typeNormalizer->generalizeConstantTypes($parameterType);
 
                 $parameterTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
                     $generalizedParameterType

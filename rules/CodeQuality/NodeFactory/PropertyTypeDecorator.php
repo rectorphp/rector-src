@@ -22,7 +22,7 @@ final readonly class PropertyTypeDecorator
     public function decorateProperty(Property $property, Type $propertyType): void
     {
         // generalize false/true type to bool, as mostly default value but accepts both
-        $propertyType = $this->typeNormalizer->generalizeConstantBoolTypes($propertyType);
+        $propertyType = $this->typeNormalizer->generalizeConstantTypes($propertyType);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
         $phpDocInfo->makeMultiLined();
