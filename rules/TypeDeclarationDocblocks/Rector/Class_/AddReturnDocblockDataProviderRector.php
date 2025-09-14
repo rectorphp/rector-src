@@ -7,8 +7,11 @@ namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -17,6 +20,8 @@ use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
+use Rector\TypeDeclarationDocblocks\NodeFinder\YieldNodeFinder;
+use Rector\TypeDeclarationDocblocks\TypeResolver\YieldTypeResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -32,7 +37,9 @@ final class AddReturnDocblockDataProviderRector extends AbstractRector
         private readonly ReturnNodeFinder $returnNodeFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly TypeNormalizer $typeNormalizer
+        private readonly TypeNormalizer $typeNormalizer,
+        private readonly YieldTypeResolver $yieldTypeResolver,
+        private readonly YieldNodeFinder $yieldNodeFinder,
     ) {
     }
 
@@ -125,26 +132,30 @@ CODE_SAMPLE
             $soleReturn = $this->returnNodeFinder->findOnlyReturnWithExpr($dataProviderClassMethod);
 
             // unable to resolve type
-            if (! $soleReturn instanceof Return_) {
+            if ($soleReturn instanceof Return_) {
+                if (! $soleReturn->expr instanceof Expr) {
+                    continue;
+                }
+
+                $soleReturnType = $this->getType($soleReturn->expr);
+
+                $this->addGeneratedTypeReturnDocblockType(
+                    $soleReturnType,
+                    $classMethodPhpDocInfo,
+                    $dataProviderClassMethod
+                );
+
+                $hasChanged = true;
                 continue;
             }
 
-            if (! $soleReturn->expr instanceof Expr) {
-                continue;
+            $yields = $this->yieldNodeFinder->find($dataProviderClassMethod);
+            if ($yields !== []) {
+                $yieldType = $this->yieldTypeResolver->resolveFromYieldNodes($yields, $dataProviderClassMethod);
+
+                $this->addGeneratedTypeReturnDocblockType($yieldType, $classMethodPhpDocInfo, $dataProviderClassMethod);
+                $hasChanged = true;
             }
-
-            $soleReturnType = $this->getType($soleReturn->expr);
-
-            $generalizedReturnType = $this->typeNormalizer->generalizeConstantBoolTypes($soleReturnType);
-
-            // turn into rather generic short return type, to keep it open to extension later and readable to human
-            $docType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($generalizedReturnType);
-
-            $returnTagValueNode = new ReturnTagValueNode($docType, '');
-            $classMethodPhpDocInfo->addTagValueNode($returnTagValueNode);
-
-            $hasChanged = true;
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($dataProviderClassMethod);
         }
 
         if (! $hasChanged) {
@@ -152,5 +163,21 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function addGeneratedTypeReturnDocblockType(
+        Type $soleReturnType,
+        PhpDocInfo $classMethodPhpDocInfo,
+        ClassMethod $dataProviderClassMethod
+    ): void {
+        $generalizedReturnType = $this->typeNormalizer->generalizeConstantBoolTypes($soleReturnType);
+
+        // turn into rather generic short return type, to keep it open to extension later and readable to human
+        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($generalizedReturnType);
+
+        $returnTagValueNode = new ReturnTagValueNode($typeNode, '');
+        $classMethodPhpDocInfo->addTagValueNode($returnTagValueNode);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($dataProviderClassMethod);
     }
 }
