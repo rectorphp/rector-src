@@ -7,17 +7,21 @@ namespace Rector\CodingStyle\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
+use PhpParser\NodeVisitor;
+use PHPStan\Analyser\Scope;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\FunctionLikeToFirstClassCallableRectorTest
@@ -49,154 +53,175 @@ CODE_SAMPLE
     /**
      * @param ArrowFunction|Closure $node
      */
-    public function refactor(Node $node): null|StaticCall|MethodCall
+    public function refactor(Node $node): null|CallLike
     {
-        $extractedMethodCall = $this->extractMethodCallFromFuncLike($node);
+        $callLike = $this->extractCallLike($node);
 
-        if (! $extractedMethodCall instanceof MethodCall && ! $extractedMethodCall instanceof StaticCall) {
+        if ($callLike === null) {
             return null;
         }
 
-        if ($extractedMethodCall instanceof MethodCall) {
-            return new MethodCall($extractedMethodCall->var, $extractedMethodCall->name, [new VariadicPlaceholder()]);
+        if ($this->shouldSkip($node, $callLike, ScopeFetcher::fetch($node))) {
+            return null;
         }
 
-        return new StaticCall($extractedMethodCall->class, $extractedMethodCall->name, [new VariadicPlaceholder()]);
+        $callLike->args = [new VariadicPlaceholder()];
+
+        return $callLike;
     }
 
-    private function extractMethodCallFromFuncLike(Closure|ArrowFunction $node): MethodCall|StaticCall|null
+    private function shouldSkip(
+        ArrowFunction|Closure $node,
+        FuncCall|MethodCall|StaticCall $callLike,
+        Scope $scope
+    ): bool {
+        $params = $node->getParams();
+        $args = $callLike->getArgs();
+
+        if (
+            $callLike->isFirstClassCallable()
+            || $this->isChainedCall($callLike)
+            || $this->isUsingNamedArgs($args)
+            || $this->isUsingByRef($params)
+            || $this->isNotUsingSameParamsForArgs($params, $args)
+            || $this->isDependantMethod($callLike, $params)
+            || $this->isUsingThisInNonObjectContext($callLike, $scope)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function extractCallLike(Closure|ArrowFunction $node): FuncCall|MethodCall|StaticCall|null
     {
-        if ($node instanceof ArrowFunction) {
-            if (
-                ($node->expr instanceof MethodCall || $node->expr instanceof StaticCall) &&
-                ! $node->expr->isFirstClassCallable() &&
-                $this->notUsingNamedArgs($node->expr->getArgs()) &&
-                $this->notUsingByRef($node->getParams()) &&
-                $this->sameParamsForArgs($node->getParams(), $node->expr->getArgs()) &&
-                $this->isNonDependantMethod($node->expr, $node->getParams())
-            ) {
-                return $node->expr;
+        if ($node instanceof Closure) {
+            if (count($node->stmts) !== 1 || ! $node->stmts[0] instanceof Return_) {
+                return null;
             }
-
-            return null;
-        }
-
-        if (count($node->stmts) != 1 || ! $node->getStmts()[0] instanceof Return_) {
-            return null;
-        }
-
-        $callLike = $node->getStmts()[0]
-            ->expr;
-
-        if (! $callLike instanceof MethodCall && ! $callLike instanceof StaticCall) {
-            return null;
+            $callLike = $node->stmts[0]->expr;
+        } else {
+            $callLike = $node->expr;
         }
 
         if (
-            ! $callLike->isFirstClassCallable() &&
-            $this->notUsingNamedArgs($callLike->getArgs()) &&
-            $this->notUsingByRef($node->getParams()) &&
-            $this->sameParamsForArgs($node->getParams(), $callLike->getArgs()) &&
-            $this->isNonDependantMethod($callLike, $node->getParams())) {
-            return $callLike;
+            ! $callLike instanceof FuncCall
+            && ! $callLike instanceof MethodCall
+            && ! $callLike instanceof StaticCall
+        ) {
+            return null;
         }
 
-        return null;
+        return $callLike;
     }
 
     /**
-     * @param Node\Param[] $params
-     * @param Node\Arg[] $args
+     * @param Param[] $params
+     * @param Arg[] $args
      */
-    private function sameParamsForArgs(array $params, array $args): bool
+    private function isNotUsingSameParamsForArgs(array $params, array $args): bool
     {
-        Assert::allIsInstanceOf($args, Arg::class);
-        Assert::allIsInstanceOf($params, Param::class);
-
         if (count($args) > count($params)) {
-            return false;
+            return true;
         }
 
         if (count($args) === 1 && $args[0]->unpack) {
-            return $params[0]->variadic;
+            return ! $params[0]->variadic;
         }
 
         foreach ($args as $key => $arg) {
             if (! $this->nodeComparator->areNodesEqual($arg->value, $params[$key]->var)) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
-     * Makes sure the parameter isn't used to make the call e.g. in the var or class
-     *
      * @param Param[] $params
      */
-    private function isNonDependantMethod(StaticCall|MethodCall $expr, array $params): bool
+    private function isDependantMethod(StaticCall|MethodCall|FuncCall $expr, array $params): bool
     {
-        Assert::allIsInstanceOf($params, Param::class);
+        if ($expr instanceof FuncCall) {
+            return false;
+        }
+
+        $found = false;
+        $parentNode = $expr instanceof MethodCall ? $expr->var : $expr->class;
+
+        foreach ($params as $param) {
+            $this->traverseNodesWithCallable($parentNode, function (Node $node) use ($param, &$found) {
+                if ($this->nodeComparator->areNodesEqual($node, $param->var)) {
+                    $found = true;
+                    return NodeVisitor::STOP_TRAVERSAL;
+                }
+            });
+
+            if ($found) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isUsingThisInNonObjectContext(FuncCall|MethodCall|StaticCall $callLike, Scope $scope): bool
+    {
+        if (! $callLike instanceof MethodCall) {
+            return false;
+        }
+
+        if (in_array('this', $scope->getDefinedVariables(), true)) {
+            return false;
+        }
 
         $found = false;
 
-        foreach ($params as $param) {
-            if ($expr instanceof MethodCall) {
-                $this->traverseNodesWithCallable($expr->var, function (Node $node) use ($param, &$found): null {
-                    if ($this->nodeComparator->areNodesEqual($node, $param->var)) {
-                        $found = true;
-                    }
-
-                    return null;
-                });
+        $this->traverseNodesWithCallable($callLike, function (Node $node) use (&$found) {
+            if ($this->isName($node, 'this')) {
+                $found = true;
+                return NodeVisitor::STOP_TRAVERSAL;
             }
+        });
 
-            if ($expr instanceof StaticCall) {
-                $this->traverseNodesWithCallable($expr->class, function (Node $node) use ($param, &$found): null {
-                    if ($this->nodeComparator->areNodesEqual($node, $param->var)) {
-                        $found = true;
-                    }
-
-                    return null;
-                });
-            }
-
-            if ($found) {
-                return false;
-            }
-        }
-
-        return true;
+        return $found;
     }
 
     /**
      * @param Param[] $params
      */
-    private function notUsingByRef(array $params): bool
+    private function isUsingByRef(array $params): bool
     {
-        Assert::allIsInstanceOf($params, Param::class);
-
         foreach ($params as $param) {
             if ($param->byRef) {
-                return false;
+                return true;
             }
         }
-
-        return true;
+        return false;
     }
 
     /**
      * @param Arg[] $args
      */
-    private function notUsingNamedArgs(array $args): bool
+    private function isUsingNamedArgs(array $args): bool
     {
-        Assert::allIsInstanceOf($args, Arg::class);
-
         foreach ($args as $arg) {
             if ($arg->name instanceof Identifier) {
-                return false;
+                return true;
             }
+        }
+        return false;
+    }
+
+    private function isChainedCall(FuncCall|MethodCall|StaticCall $callLike): bool
+    {
+        if (! $callLike instanceof MethodCall) {
+            return false;
+        }
+
+        if (! $callLike->var instanceof CallLike) {
+            return false;
         }
 
         return true;
