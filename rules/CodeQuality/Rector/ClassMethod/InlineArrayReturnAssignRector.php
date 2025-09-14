@@ -215,6 +215,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($assign->expr->items !== []) {
+                continue;
+            }
+
             return $assign;
         }
 
