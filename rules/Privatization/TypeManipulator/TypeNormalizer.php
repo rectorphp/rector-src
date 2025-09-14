@@ -22,10 +22,19 @@ use PHPStan\Type\UnionType;
 final class TypeNormalizer
 {
     /**
+     * @deprecated This method is deprecated and will be removed in the next major release.
+     * Use @see generalizeConstantTypes() instead.
+     */
+    public function generalizeConstantBoolTypes(\PHPStan\Type\Type $type): Type
+    {
+        return $this->generalizeConstantTypes($type);
+    }
+
+    /**
      * Generalize false/true constantArrayType to bool,
      * as mostly default value but accepts both
      */
-    public function generalizeConstantBoolTypes(Type $type): Type
+    public function generalizeConstantTypes(Type $type): Type
     {
         return TypeTraverser::map($type, function (Type $type, callable $traverseCallback): BooleanType|Type {
             if ($type instanceof ConstantBooleanType) {

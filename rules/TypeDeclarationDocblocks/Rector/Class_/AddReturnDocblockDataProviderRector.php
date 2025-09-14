@@ -170,7 +170,7 @@ CODE_SAMPLE
         PhpDocInfo $classMethodPhpDocInfo,
         ClassMethod $dataProviderClassMethod
     ): void {
-        $generalizedReturnType = $this->typeNormalizer->generalizeConstantBoolTypes($soleReturnType);
+        $generalizedReturnType = $this->typeNormalizer->generalizeConstantTypes($soleReturnType);
 
         // turn into rather generic short return type, to keep it open to extension later and readable to human
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($generalizedReturnType);

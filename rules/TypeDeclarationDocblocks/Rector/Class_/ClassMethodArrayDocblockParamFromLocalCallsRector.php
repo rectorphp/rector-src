@@ -116,7 +116,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $normalizedResolvedParameterType = $this->typeNormalizer->generalizeConstantBoolTypes(
+                $normalizedResolvedParameterType = $this->typeNormalizer->generalizeConstantTypes(
                     $resolvedParameterType
                 );
                 $arrayDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
