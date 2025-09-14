@@ -76,11 +76,11 @@ CODE_SAMPLE
         Scope $scope
     ): bool {
         $params = $node->getParams();
-        $args = $callLike->getArgs();
         if ($callLike->isFirstClassCallable()) {
             return true;
         }
 
+        $args = $callLike->getArgs();
         if ($this->isChainedCall($callLike)) {
             return true;
         }
