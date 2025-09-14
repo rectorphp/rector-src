@@ -187,7 +187,28 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
 
     private function convertToPascalCase(string $name): string
     {
+        if ($this->isPascalCase($name)) {
+            return $name;
+        }
+
         $parts = explode('_', strtolower($name));
         return implode('', array_map(ucfirst(...), $parts));
+    }
+
+    private function isPascalCase(string $name): bool
+    {
+        if (! ctype_upper($name[0])) {
+            return false;
+        }
+
+        if (str_contains($name, '_')) {
+            return false;
+        }
+
+        if (strtoupper($name) === $name) {
+            return false;
+        }
+
+        return true;
     }
 }
