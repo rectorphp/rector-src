@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -15,10 +14,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\CodeQuality\NodeAnalyzer\VariableDimFetchAssignResolver;
-use Rector\CodeQuality\ValueObject\KeyAndExpr;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,7 +26,6 @@ final class InlineArrayReturnAssignRector extends AbstractRector
 {
     public function __construct(
         private readonly VariableDimFetchAssignResolver $variableDimFetchAssignResolver,
-        private readonly ValueResolver $valueResolver
     ) {
     }
 
@@ -77,90 +72,44 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $stmts = (array) $node->stmts;
+
+        // skip primitive cases, as may be on purpose
         if (count($stmts) < 3) {
             return null;
         }
 
-        $firstStmt = array_shift($stmts);
-        $variable = $this->matchVariableAssignOfEmptyArray($firstStmt);
-        if (! $variable instanceof Variable) {
+        $lastStmt = $node->stmts[count($stmts) - 1] ?? null;
+        if (! $lastStmt instanceof Return_) {
             return null;
         }
 
-        if (! $this->areAssignExclusiveToDimFetch($stmts)) {
+        if (! $lastStmt->expr instanceof Variable) {
             return null;
         }
 
-        $lastStmt = array_pop($stmts);
-        if (! $lastStmt instanceof Stmt) {
+        $returnedVariableName = $this->getName($lastStmt->expr);
+        if (! is_string($returnedVariableName)) {
             return null;
         }
 
-        if (! $this->isReturnOfVariable($lastStmt, $variable)) {
+        $emptyArrayAssign = $this->resolveDefaultEmptyArrayAssign($stmts, $returnedVariableName);
+        if (! $this->areAssignExclusiveToDimFetchVariable($stmts, $emptyArrayAssign, $returnedVariableName)) {
             return null;
         }
 
-        $keysAndExprs = $this->variableDimFetchAssignResolver->resolveFromStmtsAndVariable($stmts, $variable);
-        if ($keysAndExprs === []) {
+        $keysAndExprsByKey = $this->variableDimFetchAssignResolver->resolveFromStmtsAndVariable(
+            $stmts,
+            $emptyArrayAssign,
+        );
+
+        if ($keysAndExprsByKey === []) {
             return null;
         }
 
-        $array = $this->createArray($keysAndExprs);
+        $array = $this->nodeFactory->createArray($keysAndExprsByKey);
         $node->stmts = [new Return_($array)];
 
         return $node;
-    }
-
-    private function matchVariableAssignOfEmptyArray(Stmt $stmt): ?Variable
-    {
-        if (! $stmt instanceof Expression) {
-            return null;
-        }
-
-        if (! $stmt->expr instanceof Assign) {
-            return null;
-        }
-
-        $assign = $stmt->expr;
-
-        if (! $this->valueResolver->isValue($assign->expr, [])) {
-            return null;
-        }
-
-        if (! $assign->var instanceof Variable) {
-            return null;
-        }
-
-        return $assign->var;
-    }
-
-    private function isReturnOfVariable(Stmt $stmt, Variable $variable): bool
-    {
-        if (! $stmt instanceof Return_) {
-            return false;
-        }
-
-        if (! $stmt->expr instanceof Variable) {
-            return false;
-        }
-
-        return $this->nodeComparator->areNodesEqual($stmt->expr, $variable);
-    }
-
-    /**
-     * @param KeyAndExpr[] $keysAndExprs
-     */
-    private function createArray(array $keysAndExprs): Array_
-    {
-        $arrayItems = [];
-        foreach ($keysAndExprs as $keyAndExpr) {
-            $arrayItem = new ArrayItem($keyAndExpr->getExpr(), $keyAndExpr->getKeyExpr());
-            $arrayItem->setAttribute(AttributeKey::COMMENTS, $keyAndExpr->getComments());
-
-            $arrayItems[] = $arrayItem;
-        }
-
-        return new Array_($arrayItems);
     }
 
     /**
@@ -169,8 +118,11 @@ CODE_SAMPLE
      *
      * @param Stmt[] $stmts
      */
-    private function areAssignExclusiveToDimFetch(array $stmts): bool
-    {
+    private function areAssignExclusiveToDimFetchVariable(
+        array $stmts,
+        ?Assign $emptyArrayAssign,
+        string $variableName
+    ): bool {
         $lastKey = array_key_last($stmts);
 
         foreach ($stmts as $key => $stmt) {
@@ -189,6 +141,11 @@ CODE_SAMPLE
 
             $assign = $stmt->expr;
 
+            // skip initial assign
+            if ($assign === $emptyArrayAssign) {
+                continue;
+            }
+
             // skip new X instance with args to keep complex assign readable
             if ($assign->expr instanceof New_ && ! $assign->expr->isFirstClassCallable() && $assign->expr->getArgs() !== []) {
                 return false;
@@ -197,8 +154,56 @@ CODE_SAMPLE
             if (! $assign->var instanceof ArrayDimFetch) {
                 return false;
             }
+
+            $arrayDimFetch = $assign->var;
+
+            // traverse all nested variables up
+            while ($arrayDimFetch instanceof ArrayDimFetch) {
+                $arrayDimFetch = $arrayDimFetch->var;
+            }
+
+            if (! $arrayDimFetch instanceof Variable) {
+                return false;
+            }
+
+            if (! $this->isName($arrayDimFetch, $variableName)) {
+                return false;
+            }
         }
 
         return true;
+    }
+
+    /**
+     * @param Expression[] $stmts
+     */
+    private function resolveDefaultEmptyArrayAssign(array $stmts, string $returnedVariableName): ?Assign
+    {
+        foreach ($stmts as $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
+            }
+
+            if (! $stmt->expr instanceof Assign) {
+                continue;
+            }
+
+            $assign = $stmt->expr;
+            if (! $assign->var instanceof Variable) {
+                continue;
+            }
+
+            if (! $this->isName($assign->var, $returnedVariableName)) {
+                continue;
+            }
+
+            if (! $assign->expr instanceof Array_) {
+                continue;
+            }
+
+            return $assign;
+        }
+
+        return null;
     }
 }

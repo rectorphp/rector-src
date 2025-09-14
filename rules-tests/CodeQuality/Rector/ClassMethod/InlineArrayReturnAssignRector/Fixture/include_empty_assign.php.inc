@@ -2,14 +2,13 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector\Fixture;
 
-final class KeepComments
+final class IncludeEmptyAssign
 {
-    public function getPerson()
+    public function run($person2)
     {
         $person = [];
-        // name
-        $person['name'] = 'Timmy';
-        // surname
+
+        $person[] = 'Timmy';
         $person['surname'] = 'Back';
 
         return $person;
@@ -22,16 +21,11 @@ final class KeepComments
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector\Fixture;
 
-final class KeepComments
+final class IncludeEmptyAssign
 {
-    public function getPerson()
+    public function run($person2)
     {
-        return [
-            // name
-            'name' => 'Timmy',
-            // surname
-            'surname' => 'Back',
-        ];
+        return ['Timmy', 'surname' => 'Back'];
     }
 }
 

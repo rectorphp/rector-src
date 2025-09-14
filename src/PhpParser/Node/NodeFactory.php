@@ -396,6 +396,12 @@ final readonly class NodeFactory
             return $arrayItem;
         }
 
+        if ($item instanceof Expr\New_) {
+            $arrayItem = new ArrayItem($item);
+            $this->decorateArrayItemWithKey($key, $arrayItem);
+            return $arrayItem;
+        }
+
         $nodeClass = is_object($item) ? $item::class : $item;
         throw new NotImplementedYetException(sprintf(
             'Not implemented yet. Go to "%s()" and add check for "%s" node.',

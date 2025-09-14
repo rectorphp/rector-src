@@ -338,3 +338,7 @@ parameters:
         -
             message: '#Offset float\|int\|string might not exist on string#'
             path: rules/Php70/EregToPcreTransformer.php
+
+        -
+            identifier: symplify.noReference
+            message: '#Use explicit return value over magic &reference#'
