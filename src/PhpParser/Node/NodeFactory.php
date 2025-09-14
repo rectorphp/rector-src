@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
+use PhpParser\Node\Expr\New_;
 use PhpParser\Builder\Method;
 use PhpParser\Builder\Param as ParamBuilder;
 use PhpParser\Builder\Property as PropertyBuilder;
@@ -392,6 +393,12 @@ final readonly class NodeFactory
         }
 
         if ($arrayItem instanceof ArrayItem) {
+            $this->decorateArrayItemWithKey($key, $arrayItem);
+            return $arrayItem;
+        }
+
+        if ($item instanceof New_) {
+            $arrayItem = new ArrayItem($item);
             $this->decorateArrayItemWithKey($key, $arrayItem);
             return $arrayItem;
         }
