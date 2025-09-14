@@ -106,6 +106,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // init maybe from before if
+        if ($emptyArrayAssign === null && ! $node instanceof FunctionLike) {
+            return null;
+        }
+
         $keysAndExprsByKey = $this->variableDimFetchAssignResolver->resolveFromStmtsAndVariable(
             $stmts,
             $emptyArrayAssign,
