@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\Source;
+namespace Rector\Tests\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector\Source\Autoload;
 
 enum StatusEnum
 {

@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Enum_;
 
+use PHPStan\Reflection\ClassReflection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
-use PHPStan\BetterReflection\Reflection\ReflectionEnum;
-use PHPStan\BetterReflection\Reflector\DefaultReflector;
-use PHPStan\BetterReflection\Reflector\Exception\IdentifierNotFound;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Rector\AbstractRector;
 use Rector\Skipper\FileSystem\PathNormalizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,12 +23,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class EnumCaseToPascalCaseRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -122,67 +112,68 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
             return null;
         }
 
-        if ($this->nodeTypeResolver->getType($classConstFetch->class)->isEnum()->no()) {
-            return null;
-        }
-
         $constName = $classConstFetch->name->toString();
+        $pascalCaseName = $this->convertToPascalCase($constName);
 
-        // Skip "class" constant
-        if ($constName === 'class') {
+        // short circuit if already in pascal case
+        if ($constName === $pascalCaseName) {
             return null;
         }
 
-        $enumClassName = $classConstFetch->class->toString();
-        if (! $this->reflectionProvider->hasClass($enumClassName)) {
+        $classReflection = $this->nodeTypeResolver->getType($classConstFetch->class)
+            ->getObjectClassReflections()[0] ?? null;
+
+        if ($classReflection === null || ! $classReflection->isEnum()) {
             return null;
         }
 
-        $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
-        $defaultReflector = new DefaultReflector($sourceLocator);
-
-        try {
-            $classIdentifier = $defaultReflector->reflectClass($classConstFetch->class->toString());
-        } catch (IdentifierNotFound) {
-            // source is outside the paths defined in withPaths(), eg: vendor
+        if (! $this->isEnumCase($classReflection, $constName, $pascalCaseName)) {
             return null;
         }
 
-        // ensure exactly ReflectionEnum
-        if (! $classIdentifier instanceof ReflectionEnum) {
+        if ($this->isUsedOutsideOfProject($classReflection)) {
             return null;
         }
 
-        // ensure not part of definition in ->withAutoloadPaths()
-        $fileTarget = $classIdentifier->getFileName();
+        $classConstFetch->name = new Identifier($pascalCaseName);
+        return $classConstFetch;
+    }
+
+    private function isUsedOutsideOfProject(ClassReflection $classReflection): bool
+    {
+        $fileTarget = $classReflection->getFileName();
 
         // possibly native
         if ($fileTarget === null) {
-            return null;
+            return true;
         }
 
         $autoloadPaths = SimpleParameterProvider::provideArrayParameter(Option::AUTOLOAD_PATHS);
         $normalizedFileTarget = PathNormalizer::normalize((string) realpath($fileTarget));
 
+        if (str_contains($normalizedFileTarget, '/vendor/')) {
+            return true;
+        }
+
         foreach ($autoloadPaths as $autoloadPath) {
             $normalizedAutoloadPath = PathNormalizer::normalize($autoloadPath);
 
             if ($autoloadPath === $fileTarget) {
-                return null;
+                return true;
             }
 
             if (str_starts_with($normalizedFileTarget, $normalizedAutoloadPath . '/')) {
-                return null;
+                return true;
             }
         }
 
-        $pascalCaseName = $this->convertToPascalCase($constName);
-        if ($constName !== $pascalCaseName) {
-            $classConstFetch->name = new Identifier($pascalCaseName);
-            return $classConstFetch;
-        }
+        return false;
+    }
 
-        return null;
+    private function isEnumCase(ClassReflection $classReflection, string $name, string $pascalName): bool
+    {
+        // the enum case might have already been renamed, need to check both
+        return $classReflection->hasEnumCase($name) || $classReflection->hasEnumCase($pascalName);
     }
 
     private function convertToPascalCase(string $name): string

@@ -6,4 +6,5 @@ use Rector\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector;
 use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()
-    ->withRules([EnumCaseToPascalCaseRector::class]);
+    ->withRules([EnumCaseToPascalCaseRector::class])
+    ->withAutoloadPaths([__DIR__ . '/../Source/Autoload']);
