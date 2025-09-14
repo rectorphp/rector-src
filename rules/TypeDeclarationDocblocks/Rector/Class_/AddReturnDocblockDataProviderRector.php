@@ -18,6 +18,7 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
 use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Rector\TypeDeclarationDocblocks\NodeFinder\YieldNodeFinder;
@@ -152,6 +153,13 @@ CODE_SAMPLE
             $yields = $this->yieldNodeFinder->find($dataProviderClassMethod);
             if ($yields !== []) {
                 $yieldType = $this->yieldTypeResolver->resolveFromYieldNodes($yields, $dataProviderClassMethod);
+
+                if ($yieldType instanceof FullyQualifiedGenericObjectType) {
+                    if ($yieldType->getClassName() === 'Generator') {
+                        // most likely, a static iterator is used in data test fixtures
+                        $yieldType = new FullyQualifiedGenericObjectType('Iterator', $yieldType->getTypes());
+                    }
+                }
 
                 $this->addGeneratedTypeReturnDocblockType($yieldType, $classMethodPhpDocInfo, $dataProviderClassMethod);
                 $hasChanged = true;

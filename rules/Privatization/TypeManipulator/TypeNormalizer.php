@@ -36,7 +36,7 @@ final class TypeNormalizer
      */
     public function generalizeConstantTypes(Type $type): Type
     {
-        return TypeTraverser::map($type, function (Type $type, callable $traverseCallback): BooleanType|Type {
+        return TypeTraverser::map($type, function (Type $type, callable $traverseCallback): Type {
             if ($type instanceof ConstantBooleanType) {
                 return new BooleanType();
             }

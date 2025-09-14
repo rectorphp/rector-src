@@ -36,7 +36,7 @@ final class YieldProvider extends TestCase
     }
 
     /**
-     * @return \Iterator<int, string[]>
+     * @return \Iterator<array<int, string>>
      */
     public static function provideData()
     {
