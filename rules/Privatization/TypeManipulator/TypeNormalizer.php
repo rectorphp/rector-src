@@ -27,7 +27,7 @@ final readonly class TypeNormalizer
     /**
      * @var int
      */
-    private const MAX_PRINTED_UNION_DOC_LENGHT = 50;
+    private const MAX_PRINTED_UNION_DOC_LENGHT = 60;
 
     public function __construct(
         private TypeFactory $typeFactory,
@@ -78,6 +78,7 @@ final readonly class TypeNormalizer
 
                 // should be string[]
                 $itemType = $traverseCallback($type->getItemType(), $traverseCallback);
+
                 if ($itemType instanceof ConstantStringType) {
                     $itemType = new StringType();
                 }
