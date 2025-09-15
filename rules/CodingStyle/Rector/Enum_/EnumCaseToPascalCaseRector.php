@@ -195,6 +195,7 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
         if ($classReflection->hasEnumCase($name)) {
             return true;
         }
+
         return $classReflection->hasEnumCase($pascalName);
     }
 
