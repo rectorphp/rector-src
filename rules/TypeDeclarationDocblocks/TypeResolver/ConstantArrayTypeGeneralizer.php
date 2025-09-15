@@ -6,19 +6,12 @@ namespace Rector\TypeDeclarationDocblocks\TypeResolver;
 
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
-use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
-use PHPStan\Type\ObjectWithoutClassType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
-use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class ConstantArrayTypeGeneralizer
@@ -32,8 +25,8 @@ final class ConstantArrayTypeGeneralizer
     private int $currentNesting = 0;
 
     public function __construct(
-        private readonly TypeFactory $typeFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly TypeNormalizer $typeNormalizer
     ) {
     }
 
@@ -45,7 +38,7 @@ final class ConstantArrayTypeGeneralizer
             ++$this->currentNesting;
         }
 
-        $genericKeyType = $this->constantToGenericType($constantArrayType->getKeyType());
+        $genericKeyType = $this->typeNormalizer->generalizeConstantTypes($constantArrayType->getKeyType());
 
         if ($constantArrayType->getItemType() instanceof NeverType) {
             $genericKeyType = new IntegerType();
@@ -60,7 +53,12 @@ final class ConstantArrayTypeGeneralizer
                 $genericItemType = $this->generalize($itemType, false);
             }
         } else {
-            $genericItemType = $this->constantToGenericType($itemType);
+            $genericItemType = $this->typeNormalizer->generalizeConstantTypes($itemType);
+        }
+
+        // correct
+        if ($genericItemType instanceof NeverType) {
+            $genericItemType = new MixedType();
         }
 
         return $this->createArrayGenericTypeNode($genericKeyType, $genericItemType);
@@ -77,52 +75,5 @@ final class ConstantArrayTypeGeneralizer
         }
 
         return new GenericTypeNode(new IdentifierTypeNode('array'), [$keyDocTypeNode, $itemDocTypeNode]);
-    }
-
-    /**
-     * Covers constant types too and makes them more generic
-     */
-    private function constantToGenericType(Type $type): Type
-    {
-        if ($type->isString()->yes()) {
-            return new StringType();
-        }
-
-        if ($type->isInteger()->yes()) {
-            return new IntegerType();
-        }
-
-        if ($type->isBoolean()->yes()) {
-            return new BooleanType();
-        }
-
-        if ($type->isFloat()->yes()) {
-            return new FloatType();
-        }
-
-        if ($type->isObject()->yes()) {
-            return new ObjectWithoutClassType();
-        }
-
-        if ($type instanceof UnionType || $type instanceof IntersectionType) {
-            $genericComplexTypes = [];
-            foreach ($type->getTypes() as $splitType) {
-                $genericComplexTypes[] = $this->constantToGenericType($splitType);
-            }
-
-            $genericComplexTypes = $this->typeFactory->uniquateTypes($genericComplexTypes);
-            if (count($genericComplexTypes) > 1) {
-                return new UnionType($genericComplexTypes);
-            }
-
-            return $genericComplexTypes[0];
-        }
-
-        if ($type instanceof ConstantArrayType) {
-            return new ArrayType(new MixedType(), new MixedType());
-        }
-
-        // unclear
-        return new MixedType();
     }
 }
