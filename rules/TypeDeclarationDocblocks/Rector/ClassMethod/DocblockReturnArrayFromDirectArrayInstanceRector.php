@@ -10,7 +10,9 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\NeverType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
@@ -106,7 +108,12 @@ CODE_SAMPLE
 
         $genericTypeNode = $this->constantArrayTypeGeneralizer->generalize($returnedType);
 
-        $returnTagValueNode = new ReturnTagValueNode($genericTypeNode, '');
+        if ($returnedType->getItemType() instanceof NeverType) {
+            $returnTagValueNode = new ReturnTagValueNode(ArrayShapeNode::createSealed([]), '');
+        } else {
+            $returnTagValueNode = new ReturnTagValueNode($genericTypeNode, '');
+        }
+
         $phpDocInfo->addTagValueNode($returnTagValueNode);
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);

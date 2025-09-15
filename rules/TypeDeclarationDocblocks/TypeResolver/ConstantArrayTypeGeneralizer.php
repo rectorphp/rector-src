@@ -7,7 +7,6 @@ namespace Rector\TypeDeclarationDocblocks\TypeResolver;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
@@ -39,10 +38,6 @@ final class ConstantArrayTypeGeneralizer
         }
 
         $genericKeyType = $this->typeNormalizer->generalizeConstantTypes($constantArrayType->getKeyType());
-
-        if ($constantArrayType->getItemType() instanceof NeverType) {
-            $genericKeyType = new IntegerType();
-        }
 
         $itemType = $constantArrayType->getItemType();
 

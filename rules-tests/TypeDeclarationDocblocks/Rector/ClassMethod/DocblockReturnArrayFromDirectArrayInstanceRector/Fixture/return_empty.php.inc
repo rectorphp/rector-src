@@ -19,7 +19,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 class ReturnEmpty
 {
     /**
-     * @return array<int, mixed>
+     * @return array{}
      */
     public function run(): array
     {
