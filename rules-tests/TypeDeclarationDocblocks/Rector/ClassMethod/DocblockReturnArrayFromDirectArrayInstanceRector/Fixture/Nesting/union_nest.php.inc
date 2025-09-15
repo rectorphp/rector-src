@@ -103,7 +103,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 final class UnionNest
 {
     /**
-     * @return array<string, int|string|bool|string[]|array{field1: array<string, float>, field2: array<0, array{field1: float}>, field3: array<0, array{field1: float}>, field4: bool, field5: bool, field6: array<0, array{field1: string}>, field7: array<'field1', string>, field8: array<never, never>, field9: array<0, array{field1: float, field2: float, field3: float, field4: float, field5: float, field6: float, field7: float, field8: float, field9: float, field10: float}>, field10: array<never, never>, field11: array<string, string>, field12: string, field13: array<never, never>}[]>
+     * @return array<string, mixed>
      */
     public function getData(): array
     {
