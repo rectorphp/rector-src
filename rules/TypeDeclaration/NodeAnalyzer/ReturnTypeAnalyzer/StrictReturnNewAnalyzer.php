@@ -52,7 +52,12 @@ final readonly class StrictReturnNewAnalyzer
                 return null;
             }
 
-            $returnType = $this->nodeTypeResolver->getType($return->expr);
+            $returnType = $this->nodeTypeResolver->getNativeType($return->expr);
+            if ($returnType instanceof \PHPStan\Type\ObjectWithoutClassType) {
+                $alwaysReturnedClassNames[] = 'object';
+                continue;
+            }
+
             if (! $returnType instanceof ObjectType) {
                 return null;
             }
