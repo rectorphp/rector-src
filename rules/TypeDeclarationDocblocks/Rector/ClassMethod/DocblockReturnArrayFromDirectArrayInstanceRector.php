@@ -108,11 +108,7 @@ CODE_SAMPLE
 
         $genericTypeNode = $this->constantArrayTypeGeneralizer->generalize($returnedType);
 
-        if ($returnedType->getItemType() instanceof NeverType) {
-            $returnTagValueNode = new ReturnTagValueNode(ArrayShapeNode::createSealed([]), '');
-        } else {
-            $returnTagValueNode = new ReturnTagValueNode($genericTypeNode, '');
-        }
+        $returnTagValueNode = new ReturnTagValueNode($genericTypeNode, '');
 
         $phpDocInfo->addTagValueNode($returnTagValueNode);
 

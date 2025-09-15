@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\TypeResolver;
 
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -29,7 +30,7 @@ final class ConstantArrayTypeGeneralizer
     ) {
     }
 
-    public function generalize(ConstantArrayType $constantArrayType, bool $isFresh = true): GenericTypeNode
+    public function generalize(ConstantArrayType $constantArrayType, bool $isFresh = true): GenericTypeNode|ArrayShapeNode
     {
         if ($isFresh) {
             $this->currentNesting = 0;
@@ -40,6 +41,10 @@ final class ConstantArrayTypeGeneralizer
         $genericKeyType = $this->typeNormalizer->generalizeConstantTypes($constantArrayType->getKeyType());
 
         $itemType = $constantArrayType->getItemType();
+
+        if ($itemType instanceof NeverType) {
+            return ArrayShapeNode::createSealed([]);
+        }
 
         if ($itemType instanceof ConstantArrayType) {
             if ($this->currentNesting >= self::MAX_NESTING) {
