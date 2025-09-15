@@ -56,7 +56,7 @@ final class ConstantArrayTypeGeneralizer
             $genericItemType = $this->typeNormalizer->generalizeConstantTypes($itemType);
         }
 
-        // correct
+        // correction
         if ($genericItemType instanceof NeverType) {
             $genericItemType = new MixedType();
         }

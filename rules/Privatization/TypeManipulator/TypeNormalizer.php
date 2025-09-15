@@ -14,13 +14,28 @@ use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NeverType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class TypeNormalizer
 {
+    /**
+     * @var int
+     */
+    private const MAX_PRINTED_UNION_DOC_LENGHT = 50;
+
+    public function __construct(
+        private TypeFactory $typeFactory,
+        private StaticTypeMapper $staticTypeMapper
+    ) {
+
+    }
+
     /**
      * @deprecated This method is deprecated and will be removed in the next major release.
      * Use @see generalizeConstantTypes() instead.
@@ -58,7 +73,7 @@ final class TypeNormalizer
                 if ($this->isImplicitNumberedListKeyType($type)) {
                     $keyType = new MixedType();
                 } else {
-                    $keyType = $traverseCallback($type->getKeyType(), $traverseCallback);
+                    $keyType = $this->generalizeConstantTypes($type->getKeyType());
                 }
 
                 // should be string[]
@@ -67,10 +82,45 @@ final class TypeNormalizer
                     $itemType = new StringType();
                 }
 
+                if ($itemType instanceof ConstantArrayType) {
+                    $itemType = $this->generalizeConstantTypes($itemType);
+                }
+
                 return new ArrayType($keyType, $itemType);
             }
 
-            return $traverseCallback($type, $traverseCallback);
+            if ($type instanceof UnionType) {
+                $generalizedUnionedTypes = [];
+                foreach ($type->getTypes() as $unionedType) {
+                    $generalizedUnionedTypes[] = $this->generalizeConstantTypes($unionedType);
+                }
+
+                $uniqueGeneralizedUnionTypes = $this->typeFactory->uniquateTypes($generalizedUnionedTypes);
+
+                if (count($uniqueGeneralizedUnionTypes) > 1) {
+                    $generalizedUnionType = new UnionType($generalizedUnionedTypes);
+                    // avoid too huge print in docblock
+                    $unionedDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
+                        $generalizedUnionType
+                    );
+
+                    // too long
+                    if (strlen((string) $unionedDocType) > self::MAX_PRINTED_UNION_DOC_LENGHT) {
+                        return new MixedType();
+                    }
+
+                    return $generalizedUnionType;
+                }
+
+                return $uniqueGeneralizedUnionTypes[0];
+            }
+
+            $convertedType = $traverseCallback($type, $traverseCallback);
+            if ($convertedType instanceof NeverType) {
+                return new MixedType();
+            }
+
+            return $convertedType;
         });
     }
 

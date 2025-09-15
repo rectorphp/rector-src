@@ -62,7 +62,7 @@ use PHPUnit\Framework\TestCase;
 final class ComplexCase extends TestCase
 {
     /**
-     * @param array<string, array<'anotherKey', int>> $first
+     * @param array<string, array<string, int>> $first
      * @param array<string, int> $second
      */
     #[DataProvider('getData')]

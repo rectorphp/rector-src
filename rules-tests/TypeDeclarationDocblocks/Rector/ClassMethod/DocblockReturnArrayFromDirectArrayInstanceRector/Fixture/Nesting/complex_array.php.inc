@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Fixture;
+namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Fixture\Nesting;
 
 class ComplexArray
 {
@@ -26,12 +26,12 @@ class ComplexArray
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Fixture;
+namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Fixture\Nesting;
 
 class ComplexArray
 {
    /**
-    * @return array<string, \stdClass|array<string, int|string|array<string, string>>>
+    * @return array<string, mixed>
     */
    public function run(): array
     {
