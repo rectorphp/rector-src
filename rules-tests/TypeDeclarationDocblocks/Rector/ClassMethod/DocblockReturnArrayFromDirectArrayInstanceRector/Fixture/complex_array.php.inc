@@ -31,7 +31,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 class ComplexArray
 {
    /**
-    * @return array<string, object|mixed[]>
+    * @return array<string, \stdClass|array<string, int|string|array<string, string>>>
     */
    public function run(): array
     {
