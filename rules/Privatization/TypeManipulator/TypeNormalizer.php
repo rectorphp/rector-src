@@ -22,7 +22,7 @@ use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class TypeNormalizer
+final readonly class TypeNormalizer
 {
     /**
      * @var int
