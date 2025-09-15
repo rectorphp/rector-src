@@ -100,7 +100,6 @@ CODE_SAMPLE
 
         // resolve simple type
         $returnedType = $this->getType($soleReturn->expr);
-
         if (! $returnedType instanceof ConstantArrayType) {
             return null;
         }
