@@ -43,7 +43,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 final class StripEmptyCombine
 {
     /**
-     * @return array<string, string|bool|array<string, string>|null>
+     * @return array<string, string|bool|mixed[]|array<string, string>|null>
      */
     public function get(): array
     {
