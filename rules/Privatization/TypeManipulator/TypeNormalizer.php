@@ -98,7 +98,7 @@ final readonly class TypeNormalizer
                 $uniqueGeneralizedUnionTypes = $this->typeFactory->uniquateTypes($generalizedUnionedTypes);
 
                 if (count($uniqueGeneralizedUnionTypes) > 1) {
-                    $generalizedUnionType = new UnionType($generalizedUnionedTypes);
+                    $generalizedUnionType = new UnionType($uniqueGeneralizedUnionTypes);
                     // avoid too huge print in docblock
                     $unionedDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
                         $generalizedUnionType
