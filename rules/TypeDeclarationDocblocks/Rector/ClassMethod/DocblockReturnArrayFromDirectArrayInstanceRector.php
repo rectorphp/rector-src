@@ -105,8 +105,8 @@ CODE_SAMPLE
         }
 
         $genericTypeNode = $this->constantArrayTypeGeneralizer->generalize($returnedType);
-        $returnTagValueNode = new ReturnTagValueNode($genericTypeNode, '');
 
+        $returnTagValueNode = new ReturnTagValueNode($genericTypeNode, '');
         $phpDocInfo->addTagValueNode($returnTagValueNode);
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
