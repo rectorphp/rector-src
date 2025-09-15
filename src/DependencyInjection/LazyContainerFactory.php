@@ -46,6 +46,7 @@ use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\AliasClassNameIm
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\ClassLikeNameClassNameImportSkipVoter;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\FullyQualifiedNameClassNameImportSkipVoter;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\ReservedClassNameImportSkipVoter;
+use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\ShortClassImportSkipVoter;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\UsesClassNameImportSkipVoter;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Config\RectorConfig;
@@ -264,6 +265,7 @@ final class LazyContainerFactory
         FullyQualifiedNameClassNameImportSkipVoter::class,
         UsesClassNameImportSkipVoter::class,
         ReservedClassNameImportSkipVoter::class,
+        ShortClassImportSkipVoter::class,
     ];
 
     /**

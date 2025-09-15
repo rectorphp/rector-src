@@ -16,8 +16,6 @@ use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
-use Rector\Configuration\Option;
-use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -77,11 +75,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $staticType = $this->resolveFullyQualified($staticType);
 
         if (! $staticType instanceof FullyQualifiedObjectType) {
-            return null;
-        }
-
-        // Importing root namespace classes (like \DateTime) is optional
-        if ($this->shouldSkipShortClassName($staticType)) {
             return null;
         }
 
@@ -197,16 +190,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $namespaceParts = explode('\\', ltrim($firstPath, '\\'));
         return count($namespaceParts) > 1;
-    }
-
-    private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
-    {
-        $importShortClasses = SimpleParameterProvider::provideBoolParameter(Option::IMPORT_SHORT_CLASSES);
-        if ($importShortClasses) {
-            return false;
-        }
-
-        return substr_count($fullyQualifiedObjectType->getClassName(), '\\') === 0;
     }
 
     private function processDoctrineAnnotationTagValueNode(
