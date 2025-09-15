@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -120,7 +121,9 @@ CODE_SAMPLE
         $returnedNewClassName = $this->strictReturnNewAnalyzer->matchAlwaysReturnVariableNew($node);
 
         if (is_string($returnedNewClassName)) {
-            $node->returnType = new FullyQualified($returnedNewClassName);
+            $node->returnType = str_starts_with($returnedNewClassName, 'AnonymousClass')
+                ? new Identifier('object')
+                : new FullyQualified($returnedNewClassName);
 
             return $node;
         }

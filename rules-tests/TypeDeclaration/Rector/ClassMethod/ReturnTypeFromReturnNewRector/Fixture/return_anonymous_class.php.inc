@@ -10,6 +10,13 @@ final class ReturnAnonymousClass
     {
         return new class {};
     }
+
+    public function foo()
+    {
+        $data = new class {};
+
+        return $data;
+    }
 }
 
 ?>
@@ -25,6 +32,13 @@ final class ReturnAnonymousClass
     public function action(): object
     {
         return new class {};
+    }
+
+    public function foo(): object
+    {
+        $data = new class {};
+
+        return $data;
     }
 }
 
