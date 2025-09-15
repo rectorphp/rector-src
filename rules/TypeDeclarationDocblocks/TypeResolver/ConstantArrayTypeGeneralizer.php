@@ -64,7 +64,7 @@ final class ConstantArrayTypeGeneralizer
         return $this->createArrayGenericTypeNode($genericKeyType, $genericItemType);
     }
 
-    private function createArrayGenericTypeNode(Type $keyType, Type|GenericTypeNode $itemType): GenericTypeNode
+    private function createArrayGenericTypeNode(Type $keyType, Type|GenericTypeNode|ArrayShapeNode $itemType): GenericTypeNode
     {
         $keyDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($keyType);
 
