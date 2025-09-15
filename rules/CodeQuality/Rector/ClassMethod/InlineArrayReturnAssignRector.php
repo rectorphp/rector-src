@@ -107,7 +107,7 @@ CODE_SAMPLE
         }
 
         // init maybe from before if
-        if (!$emptyArrayAssign instanceof Assign && ! $node instanceof FunctionLike) {
+        if (! $emptyArrayAssign instanceof Assign && ! $node instanceof FunctionLike) {
             return null;
         }
 

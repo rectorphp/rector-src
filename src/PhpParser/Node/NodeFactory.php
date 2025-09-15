@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
-use PhpParser\Node\Expr\New_;
 use PhpParser\Builder\Method;
 use PhpParser\Builder\Param as ParamBuilder;
 use PhpParser\Builder\Property as PropertyBuilder;
@@ -27,6 +26,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
