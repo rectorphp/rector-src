@@ -205,6 +205,16 @@ final readonly class TypeFactory
                 $nestedFlattenKeyType = new MixedType();
             }
 
+            if ($nestedFlattenItemType instanceof ConstantArrayType) {
+                $innerArrayTypes = $this->unwrapConstantArrayTypes($nestedFlattenItemType);
+                foreach ($innerArrayTypes as $innerArrayType) {
+                    // preserve outer array -> inner array structure: array<outerKey, innerArray>
+                    $unwrappedTypes[] = new ArrayType($nestedFlattenKeyType, $innerArrayType);
+                }
+
+                continue;
+            }
+
             $unwrappedTypes[] = new ArrayType($nestedFlattenKeyType, $nestedFlattenItemType);
         }
 
