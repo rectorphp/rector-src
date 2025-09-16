@@ -40,7 +40,7 @@ final class MultiObjects extends TestCase
     }
 
     /**
-     * @return \Iterator<array<int, array<(\DateTime | \DateTimeImmutable | string)>>>
+     * @return \Iterator<array<int, array<int, (\DateTime | \DateTimeImmutable | string)>>>
      */
     public static function provideData(): iterable
     {

@@ -8,6 +8,7 @@ class ComplexArray
     {
         return [
             'id' => new \stdClass(),
+            'other' => false,
             'context' => [
                 'id' => 1,
                 'data' => [
@@ -17,6 +18,11 @@ class ComplexArray
             ],
             'values' => [
                 'name' => '111',
+                'age' => 1,
+            ],
+            'values_other' => [
+                'name' => '111',
+                'age' => 1,
             ],
         ];
     }
@@ -37,6 +43,7 @@ class ComplexArray
     {
         return [
             'id' => new \stdClass(),
+            'other' => false,
             'context' => [
                 'id' => 1,
                 'data' => [
@@ -46,6 +53,11 @@ class ComplexArray
             ],
             'values' => [
                 'name' => '111',
+                'age' => 1,
+            ],
+            'values_other' => [
+                'name' => '111',
+                'age' => 1,
             ],
         ];
     }
