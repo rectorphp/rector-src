@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
+use PHPStan\Type\ObjectWithoutClassType;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\New_;
@@ -53,7 +54,7 @@ final readonly class StrictReturnNewAnalyzer
             }
 
             $returnType = $this->nodeTypeResolver->getNativeType($return->expr);
-            if ($returnType instanceof \PHPStan\Type\ObjectWithoutClassType) {
+            if ($returnType instanceof ObjectWithoutClassType) {
                 $alwaysReturnedClassNames[] = 'object';
                 continue;
             }
