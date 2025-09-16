@@ -155,7 +155,7 @@ final readonly class PropertyManipulator
     public function hasTraitWithSamePropertyOrWritten(ClassReflection $classReflection, string $propertyName): bool
     {
         foreach ($classReflection->getTraits() as $traitUse) {
-            if ($traitUse->hasProperty($propertyName)) {
+            if ($traitUse->hasInstanceProperty($propertyName) || $traitUse->hasStaticProperty($propertyName)) {
                 return true;
             }
 

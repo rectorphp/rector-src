@@ -143,7 +143,7 @@ CODE_SAMPLE
         // native members.
         $hasMember = match (true) {
             $node instanceof StaticPropertyFetch => $isFinal
-                ? $classReflection->hasProperty($name)
+                ? $classReflection->hasStaticProperty($name)
                 : $classReflection->hasNativeProperty($name),
             $node instanceof StaticCall => $isFinal
                 ? $classReflection->hasMethod($name)
@@ -157,7 +157,7 @@ CODE_SAMPLE
 
         $reflection = match (true) {
             $node instanceof StaticPropertyFetch => $isFinal
-                ? $classReflection->getProperty($name, $scope)
+                ? $classReflection->getStaticProperty($name)
                 : $classReflection->getNativeProperty($name),
             $node instanceof StaticCall => $isFinal
                 ? $classReflection->getMethod($name, $scope)

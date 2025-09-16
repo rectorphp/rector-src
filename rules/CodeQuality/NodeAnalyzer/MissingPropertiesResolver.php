@@ -34,7 +34,7 @@ final readonly class MissingPropertiesResolver
             }
 
             // 2. is part of class docblock or another magic, skip it
-            if ($classReflection->hasProperty($definedPropertyWithType->getName())) {
+            if ($classReflection->hasInstanceProperty($definedPropertyWithType->getName())) {
                 continue;
             }
 
