@@ -131,7 +131,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $classReflection->hasProperty($propertyFetchName) || $classReflection->isBuiltin()) {
+            if (! $classReflection->hasInstanceProperty($propertyFetchName) || $classReflection->isBuiltin()) {
                 $newNodes[] = $this->replaceToPropertyExistsWithNullCheck(
                     $issetExpr->var,
                     $propertyFetchName,
