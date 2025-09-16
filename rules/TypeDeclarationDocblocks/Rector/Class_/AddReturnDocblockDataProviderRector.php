@@ -154,7 +154,7 @@ CODE_SAMPLE
             if ($yields !== []) {
                 $yieldType = $this->yieldTypeResolver->resolveFromYieldNodes($yields, $dataProviderClassMethod);
 
-                if ($yieldType instanceof FullyQualifiedGenericObjectType && $yieldType->getClassName() === 'Generator') {
+                if ($yieldType instanceof FullyQualifiedGenericObjectType && $yieldType->getClassName() === 'Generator' && ! $dataProviderClassMethod->returnType instanceof Node) {
                     // most likely, a static iterator is used in data test fixtures
                     $yieldType = new FullyQualifiedGenericObjectType('Iterator', $yieldType->getTypes());
                 }
