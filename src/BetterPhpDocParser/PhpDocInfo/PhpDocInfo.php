@@ -455,11 +455,13 @@ final class PhpDocInfo
                 continue;
             }
 
+            // add default original value
+            $resolvedClasses[] = $genericTagValueNode->value;
             if (! str_contains($genericTagValueNode->value, '::')) {
-                $resolvedClasses[] = $genericTagValueNode->value;
                 continue;
             }
 
+            // add resolved class name if any
             $resolvedClass = $genericTagValueNode->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS);
             if ($resolvedClass === null) {
                 $resolvedClasses[] = $genericTagValueNode->value;
