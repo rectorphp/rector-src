@@ -13,6 +13,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PostRector\Guard\AddUseStatementGuard;
 use Rector\Renaming\Collector\RenamedNameCollector;
 
 final class ClassRenamingPostRector extends AbstractPostRector
@@ -25,7 +26,8 @@ final class ClassRenamingPostRector extends AbstractPostRector
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly UseImportsRemover $useImportsRemover,
-        private readonly RenamedNameCollector $renamedNameCollector
+        private readonly RenamedNameCollector $renamedNameCollector,
+        private readonly AddUseStatementGuard $addUseStatementGuard,
     ) {
     }
 
@@ -69,6 +71,10 @@ final class ClassRenamingPostRector extends AbstractPostRector
     {
         $this->oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
 
-        return $this->oldToNewClasses !== [];
+        if ($this->oldToNewClasses === []) {
+            return false;
+        }
+
+        return $this->addUseStatementGuard->shouldTraverse($stmts, $this->getFile()->getFilePath());
     }
 }
