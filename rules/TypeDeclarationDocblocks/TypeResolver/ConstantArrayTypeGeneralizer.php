@@ -30,8 +30,10 @@ final class ConstantArrayTypeGeneralizer
     ) {
     }
 
-    public function generalize(ConstantArrayType $constantArrayType, bool $isFresh = true): GenericTypeNode|ArrayShapeNode
-    {
+    public function generalize(
+        ConstantArrayType $constantArrayType,
+        bool $isFresh = true
+    ): GenericTypeNode|ArrayShapeNode {
         if ($isFresh) {
             $this->currentNesting = 0;
         } else {
@@ -64,8 +66,10 @@ final class ConstantArrayTypeGeneralizer
         return $this->createArrayGenericTypeNode($genericKeyType, $genericItemType);
     }
 
-    private function createArrayGenericTypeNode(Type $keyType, Type|GenericTypeNode|ArrayShapeNode $itemType): GenericTypeNode
-    {
+    private function createArrayGenericTypeNode(
+        Type $keyType,
+        Type|GenericTypeNode|ArrayShapeNode $itemType
+    ): GenericTypeNode {
         $keyDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($keyType);
 
         if ($itemType instanceof Type) {

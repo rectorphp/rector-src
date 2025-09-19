@@ -10,6 +10,7 @@ use Rector\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamF
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromDataProviderRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromDimFetchAccessRector;
+use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForArrayDimAssignedObjectRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForCommonObjectDenominatorRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockGetterReturnArrayFromPropertyDocblockVarRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector;
@@ -32,6 +33,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddReturnArrayDocblockBasedOnArrayMapRector::class,
         AddReturnDocblockForScalarArrayFromAssignsRector::class,
         DocblockReturnArrayFromDirectArrayInstanceRector::class,
+        AddReturnDocblockForArrayDimAssignedObjectRector::class,
 
         // tests
         AddParamArrayDocblockFromDataProviderRector::class,
