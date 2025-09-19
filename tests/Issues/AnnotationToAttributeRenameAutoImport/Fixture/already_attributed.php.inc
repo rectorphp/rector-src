@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Issues\RenameAnnotationToAttributeAutoImport\Fixture;
+namespace Rector\Tests\Issues\AnnotationToAttributeRenameAutoImport\Fixture;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +15,7 @@ class WithExistingAttribute extends AbstractController
 -----
 <?php
 
-namespace Rector\Tests\Issues\RenameAnnotationToAttributeAutoImport\Fixture;
+namespace Rector\Tests\Issues\AnnotationToAttributeRenameAutoImport\Fixture;
 
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

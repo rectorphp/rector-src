@@ -1,0 +1,63 @@
+1 file with changes
+===================
+
+1) src/TestClass.php:4
+
+    ---------- begin diff ----------
+@@ @@
+
+ namespace E2e\Parallel\Print\Post\Rectors;
+
++use DateTime;
+ use PhpParser\Node\Name\FullyQualified;
+-use PhpParser\Node\Expr\New_;
+
+ class TestClass
+ {
+     /**
+-     * @var \PhpParser\Node\Name\FullyQualified|null
++     * @var FullyQualified|null
+      */
+     private $fullyQualified = null;
+
+@@ @@
+     private $cond1;
+
+     /**
+-     * @var \DateTime|null
++     * @var DateTime|null
+      */
+     private $dateTime = null;
+
+@@ @@
+     {
+         if ($this->cond1) {
+             $this->doSomething();
+-        } else {
+-            if ($this->dateTime !== null) {
+-                $this->doSomething();
+-            }
++        } elseif ($this->dateTime !== null) {
++            $this->doSomething();
+         }
+     }
+
+@@ @@
+     {
+     }
+
+-    public function getFullyQualified(\PhpParser\Node\Name\FullyQualified $fullyQualified): FullyQualified|null
++    public function getFullyQualified(FullyQualified $fullyQualified): FullyQualified|null
+     {
+         if ($this->fullyQualified === null) {
+             return $this->fullyQualified;
+    ----------- end diff -----------
+
+Applied rules:
+ * ShortenElseIfRector
+ * DocblockNameImportingPostRector
+ * NameImportingPostRector
+ * UnusedImportRemovingPostRector
+
+
+ [OK] 1 file would have been changed (dry-run) by Rector

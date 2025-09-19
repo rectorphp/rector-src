@@ -237,6 +237,7 @@ parameters:
             message: '#Avoid static access of constants, as they can change value\. Use interface and contract method instead#'
             paths:
                 # caching and message of specific child Rector rules
+                - src/PostRector/Rector/AbstractPostRector.php
                 - src/Rector/AbstractRector.php
                 # for cache
                 - src/Testing/PHPUnit/AbstractRectorTestCase.php

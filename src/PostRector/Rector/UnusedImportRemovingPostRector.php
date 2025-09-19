@@ -93,6 +93,9 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             return null;
         }
 
+        // notify this rule changing code
+        $this->addRectorClassWithLine($node);
+
         $node->stmts = array_values($node->stmts);
         return $node;
     }

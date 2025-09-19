@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Parallel\ValueObject\BridgeItem;
+use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
 
@@ -81,7 +82,7 @@ final readonly class FileDiff implements SerializableInterface
     }
 
     /**
-     * @return array<class-string<RectorInterface>>
+     * @return array<class-string<RectorInterface|PostRectorInterface>>
      */
     public function getRectorClasses(): array
     {

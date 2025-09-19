@@ -45,6 +45,10 @@ final class ClassRenamingPostRector extends AbstractPostRector
             if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
                 $removedUses = $this->renamedClassesDataCollector->getOldClasses();
                 $node->stmts = $this->useImportsRemover->removeImportsFromStmts($node->stmts, $removedUses);
+                if ($removedUses !== []) {
+                    // notify this rule changing code
+                    $this->addRectorClassWithLine($node);
+                }
 
                 break;
             }
