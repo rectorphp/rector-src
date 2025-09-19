@@ -17,7 +17,7 @@ final class WithStringKey
 }
 
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForCommonObjectDenominatorRector\Fixture;
@@ -40,4 +40,3 @@ final class WithStringKey
 }
 
 ?>
-    
