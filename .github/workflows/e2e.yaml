@@ -27,9 +27,7 @@ jobs:
                     - 'e2e/applied-polyfill-php80'
                     - 'e2e/applied-rule-change-docblock'
                     - 'e2e/applied-rule-removed-node'
-                    - 'e2e/applied-rule-removed-node-with-cache'
                     - 'e2e/applied-rule-return-array-nodes'
-                    #- 'e2e/command-with-option'
                     - 'e2e/different-path-over-skip-config'
                     - 'e2e/invalid-paths'
                     - 'e2e/no-parallel-reflection-resolver'
@@ -43,7 +41,6 @@ jobs:
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/parallel with space'
                     - 'e2e/print-new-node'
-                    - 'e2e/timeout-file-not-cached'
 
         name: End to end test - ${{ matrix.directory }}
 
