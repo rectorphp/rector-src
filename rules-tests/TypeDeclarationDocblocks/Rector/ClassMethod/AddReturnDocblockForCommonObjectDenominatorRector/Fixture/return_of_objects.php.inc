@@ -17,7 +17,7 @@ final class ReturnOfObjects
 }
 
 ?>
------
+    -----
 <?php
 
 namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForCommonObjectDenominatorRector\Fixture;
@@ -40,3 +40,4 @@ final class ReturnOfObjects
 }
 
 ?>
+    

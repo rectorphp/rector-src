@@ -128,7 +128,11 @@ final readonly class ParentPropertyLookupGuard
     private function isGuardedByParents(array $parentClassReflections, string $propertyName, string $className): bool
     {
         foreach ($parentClassReflections as $parentClassReflection) {
-            if ($parentClassReflection->hasInstanceProperty($propertyName) || $parentClassReflection->hasStaticProperty($propertyName)) {
+            if ($parentClassReflection->hasInstanceProperty($propertyName)) {
+                return false;
+            }
+
+            if ($parentClassReflection->hasStaticProperty($propertyName)) {
                 return false;
             }
 
