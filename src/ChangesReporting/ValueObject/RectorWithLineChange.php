@@ -22,18 +22,10 @@ final readonly class RectorWithLineChange implements SerializableInterface
     private const KEY_LINE = 'line';
 
     /**
-     * @var class-string<RectorInterface|PostRectorInterface>
-     */
-    private string $rectorClass;
-
-    /**
      * @param class-string<RectorInterface|PostRectorInterface> $rectorClass
      */
-    public function __construct(
-        string $rectorClass,
-        private int $line
-    ) {
-        $this->rectorClass = $rectorClass;
+    public function __construct(private string $rectorClass, private int $line)
+    {
     }
 
     /**
