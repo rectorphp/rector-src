@@ -27,12 +27,13 @@ final readonly class UseImportsRemover
                 continue;
             }
 
-            $stmt = $this->removeUseFromUse($removedUses, $stmt);
+            if ($this->removeUseFromUse($removedUses, $stmt)) {
+                $hasRemoved = true;
+            }
 
             // remove empty uses
             if ($stmt->uses === []) {
                 unset($node->stmts[$key]);
-                $hasRemoved = true;
             }
         }
 
@@ -46,8 +47,9 @@ final readonly class UseImportsRemover
     /**
      * @param string[] $removedUses
      */
-    private function removeUseFromUse(array $removedUses, Use_ $use): Use_
+    private function removeUseFromUse(array $removedUses, Use_ $use): bool
     {
+        $hasChanged = false;
         foreach ($use->uses as $usesKey => $useUse) {
             $useName = $useUse->name->toString();
             if (! in_array($useName, $removedUses, true)) {
@@ -59,8 +61,13 @@ final readonly class UseImportsRemover
             }
 
             unset($use->uses[$usesKey]);
+            $hasChanged = true;
         }
 
-        return $use;
+        if ($hasChanged) {
+            $use->uses = array_values($use->uses);
+        }
+
+        return $hasChanged;
     }
 }
