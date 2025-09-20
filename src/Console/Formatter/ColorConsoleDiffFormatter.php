@@ -36,9 +36,9 @@ final readonly class ColorConsoleDiffFormatter
 
     /**
      * @var string
-     * @see https://regex101.com/r/8MXnfa/1
+     * @see https://regex101.com/r/8MXnfa/2
      */
-    private const AT_DIFF_LINE_REGEX = '#^\<fg=cyan\>@@( \-\d+,\d+ \+\d+,\d+ )@@\<\/fg=cyan\>$#';
+    private const AT_DIFF_LINE_REGEX = '#^\<fg=cyan\>@@ \-\d+,\d+ \+\d+,\d+ @@\<\/fg=cyan\>$#';
 
     private string $template;
 
