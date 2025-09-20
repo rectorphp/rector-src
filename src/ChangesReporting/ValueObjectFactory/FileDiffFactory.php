@@ -33,13 +33,13 @@ final readonly class FileDiffFactory
         $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
 
         $diff = $shouldShowDiffs ? $this->defaultDiffer->diff($oldContent, $newContent) : '';
-        $conosoleDiff = $shouldShowDiffs ? $this->colorConsoleDiffFormatter->format($diff) : '';
+        $consoleDiff = $shouldShowDiffs ? $this->colorConsoleDiffFormatter->format($diff) : '';
 
         // always keep the most recent diff
         return new FileDiff(
             $relativeFilePath,
             $diff,
-            $conosoleDiff,
+            $consoleDiff,
             $rectorsWithLineChanges
         );
     }
