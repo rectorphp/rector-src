@@ -39,6 +39,7 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
             return null;
         }
 
+        $this->addRectorClassWithLine($node);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
     }

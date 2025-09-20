@@ -46,7 +46,7 @@ final class SetRectorsResolver
     {
         $rectorConfig = $this->loadRectorConfigFromFilePath($configFilePath);
 
-        $rectorClassesWithOptionalConfiguration = $rectorConfig->getRectorClasses();
+        $rectorClassesWithOptionalConfiguration = $rectorConfig->getMainRectorClasses();
 
         foreach ($rectorConfig->getRuleConfigurations() as $rectorClass => $configuration) {
             // remove from non-configurable, if added again with better config
