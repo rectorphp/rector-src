@@ -27,7 +27,7 @@ parameters:
         - rules-tests
         - utils
         - e2e/e2eTestRunnerWithCache.php
-        - e2e/e2e/e2eTestRunner.php
+        - e2e/e2eTestRunner.php
 
     scanDirectories:
         - stubs
