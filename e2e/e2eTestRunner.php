@@ -7,6 +7,7 @@
 use Rector\Console\Formatter\ColorConsoleDiffFormatter;
 use Rector\Console\Formatter\ConsoleDiffer;
 use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\Differ\DefaultDiffer;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 
@@ -62,8 +63,9 @@ if ($output === $expectedOutput) {
 }
 
 // print color diff, to make easy find the differences
-$consoleDiffer = new ConsoleDiffer(new ColorConsoleDiffFormatter());
-$diff = $consoleDiffer->diff($output, $expectedOutput);
+$defaultDiffer = new DefaultDiffer();
+$colorConsoleDiffFormatter = new ColorConsoleDiffFormatter();
+$diff = $colorConsoleDiffFormatter->format($consoleDiffer->diff($output, $expectedOutput));
 $symfonyStyle->writeln($diff);
 
 exit(Command::FAILURE);

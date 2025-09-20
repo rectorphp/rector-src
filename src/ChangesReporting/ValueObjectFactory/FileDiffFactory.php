@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\ChangesReporting\ValueObjectFactory;
 
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Console\Formatter\ConsoleDiffer;
+use Rector\Console\Formatter\ColorConsoleDiffFormatter;
 use Rector\Differ\DefaultDiffer;
 use Rector\FileSystem\FilePathHelper;
 use Rector\ValueObject\Application\File;
@@ -15,8 +15,8 @@ final readonly class FileDiffFactory
 {
     public function __construct(
         private DefaultDiffer $defaultDiffer,
-        private ConsoleDiffer $consoleDiffer,
         private FilePathHelper $filePathHelper,
+        private ColorConsoleDiffFormatter $colorConsoleDiffFormatter
     ) {
     }
 
@@ -32,11 +32,13 @@ final readonly class FileDiffFactory
     ): FileDiff {
         $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
 
+        $diff = $this->defaultDiffer->diff($oldContent, $newContent);
+
         // always keep the most recent diff
         return new FileDiff(
             $relativeFilePath,
-            $shouldShowDiffs ? $this->defaultDiffer->diff($oldContent, $newContent) : '',
-            $shouldShowDiffs ? $this->consoleDiffer->diff($oldContent, $newContent) : '',
+            $shouldShowDiffs ? $diff : '',
+            $shouldShowDiffs ? $this->colorConsoleDiffFormatter->format($diff) : '',
             $rectorsWithLineChanges
         );
     }

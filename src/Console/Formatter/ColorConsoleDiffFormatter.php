@@ -34,6 +34,12 @@ final readonly class ColorConsoleDiffFormatter
      */
     private const AT_START_REGEX = '#^(@.*)#';
 
+    /**
+     * @var string
+     * @see https://regex101.com/r/8MXnfa/1
+     */
+    private const AT_DIFF_LINE_REGEX = '#^\<fg=cyan\>@@( \-\d+,\d+ \+\d+,\d+ )@@\<\/fg=cyan\>$#';
+
     private string $template;
 
     public function __construct()
@@ -71,6 +77,7 @@ final readonly class ColorConsoleDiffFormatter
             $string = $this->makePlusLinesGreen($string);
             $string = $this->makeMinusLinesRed($string);
             $string = $this->makeAtNoteCyan($string);
+            $string = $this->normalizeLineAtDiff($string);
 
             if ($string === ' ') {
                 return '';
@@ -80,6 +87,14 @@ final readonly class ColorConsoleDiffFormatter
         }, $escapedDiffLines);
 
         return sprintf($template, implode(PHP_EOL, $coloredLines));
+    }
+
+    /**
+     * Remove number diff, eg; @@ -67,6 +67,8 @@ to become @@ @@
+     */
+    private function normalizeLineAtDiff(string $line): string
+    {
+        return Strings::replace($line, self::AT_DIFF_LINE_REGEX, '@@ @@');
     }
 
     private function makePlusLinesGreen(string $string): string
