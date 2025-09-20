@@ -108,7 +108,29 @@ final readonly class NameImporter
         }
 
         $this->addUseImport($file, $fullyQualified, $fullyQualifiedObjectType);
-        return $fullyQualifiedObjectType->getShortNameNode();
+        $name = $fullyQualifiedObjectType->getShortNameNode();
+
+        $oldTokens = $file->getOldTokens();
+        $startTokenPos = $fullyQualified->getStartTokenPos();
+
+        if (! isset($oldTokens[$startTokenPos])) {
+            return $name;
+        }
+
+        $tokenShortName = $oldTokens[$startTokenPos];
+        if (str_starts_with($tokenShortName->text, '\\')) {
+            return $name;
+        }
+
+        if (str_contains($tokenShortName->text, '\\')) {
+            return $name;
+        }
+
+        if ($name->toString() !== $tokenShortName->text) {
+            return $name;
+        }
+
+        return null;
     }
 
     private function addUseImport(
