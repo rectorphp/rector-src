@@ -65,7 +65,7 @@ if ($output === $expectedOutput) {
 // print color diff, to make easy find the differences
 $defaultDiffer = new DefaultDiffer();
 $colorConsoleDiffFormatter = new ColorConsoleDiffFormatter();
-$diff = $colorConsoleDiffFormatter->format($consoleDiffer->diff($output, $expectedOutput));
+$diff = $colorConsoleDiffFormatter->format($defaultDiffer->diff($output, $expectedOutput));
 $symfonyStyle->writeln($diff);
 
 exit(Command::FAILURE);
