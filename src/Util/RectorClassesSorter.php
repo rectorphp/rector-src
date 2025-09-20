@@ -30,7 +30,6 @@ final class RectorClassesSorter
             $rectorClasses,
             fn (string $rectorClass): bool => is_a($rectorClass, PostRectorInterface::class, true)
         );
-
         sort($postRector);
 
         return array_merge($mainRector, $postRector);
