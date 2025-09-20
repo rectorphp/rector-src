@@ -26,6 +26,7 @@ Applied rules:
  * DocblockNameImportingPostRector
  * NameImportingPostRector
  * UnusedImportRemovingPostRector
+ * UseAddingPostRector
 
 
  [OK] 1 file would have been changed (dry-run) by Rector

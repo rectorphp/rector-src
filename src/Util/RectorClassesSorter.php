@@ -6,6 +6,8 @@ namespace Rector\Util;
 
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
+use Rector\PostRector\Rector\NameImportingPostRector;
+use Rector\PostRector\Rector\UseAddingPostRector;
 
 /**
  * This class ensure the PostRectorInterface class names listed after main RectorInterface class names
@@ -25,10 +27,16 @@ final class RectorClassesSorter
             fn (string $rectorClass): bool => is_a($rectorClass, RectorInterface::class, true)
         );
         sort($mainRector);
+
         $postRector = array_filter(
             $rectorClasses,
             fn (string $rectorClass): bool => is_a($rectorClass, PostRectorInterface::class, true)
         );
+
+        if (in_array(NameImportingPostRector::class, $postRector, true)) {
+            $postRector[] = UseAddingPostRector::class;
+        }
+
         sort($postRector);
 
         return array_merge($mainRector, $postRector);
