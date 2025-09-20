@@ -31,7 +31,6 @@ final readonly class UseImportsAdder
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $useImportTypes
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $constantUseImportTypes
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
-     * @return Stmt[]
      */
     public function addImportsToStmts(
         FileWithoutNamespace $fileWithoutNamespace,
@@ -39,7 +38,7 @@ final readonly class UseImportsAdder
         array $useImportTypes,
         array $constantUseImportTypes,
         array $functionUseImportTypes
-    ): array {
+    ): bool {
         $usedImports = $this->usedImportsResolver->resolveForStmts($stmts);
         $existingUseImportTypes = $usedImports->getUseImports();
         $existingConstantUseImports = $usedImports->getConstantImports();
@@ -57,7 +56,7 @@ final readonly class UseImportsAdder
 
         $newUses = $this->createUses($useImportTypes, $constantUseImportTypes, $functionUseImportTypes, null);
         if ($newUses === []) {
-            return [$fileWithoutNamespace];
+            return false;
         }
 
         $stmts = array_values(array_filter($stmts, static function (Stmt $stmt): bool {
@@ -94,7 +93,7 @@ final readonly class UseImportsAdder
             $fileWithoutNamespace->stmts = $stmts;
             $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
-            return [$fileWithoutNamespace];
+            return true;
         }
 
         $this->mirrorUseComments($stmts, $newUses);
@@ -103,7 +102,7 @@ final readonly class UseImportsAdder
         $fileWithoutNamespace->stmts = array_merge($newUses, $this->resolveInsertNop($fileWithoutNamespace), $stmts);
         $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
-        return [$fileWithoutNamespace];
+        return true;
     }
 
     /**
@@ -116,7 +115,7 @@ final readonly class UseImportsAdder
         array $useImportTypes,
         array $constantUseImportTypes,
         array $functionUseImportTypes
-    ): void {
+    ): bool {
         $namespaceName = $this->getNamespaceName($namespace);
 
         $existingUsedImports = $this->usedImportsResolver->resolveForStmts($namespace->stmts);
@@ -141,13 +140,15 @@ final readonly class UseImportsAdder
         $newUses = $this->createUses($useImportTypes, $constantUseImportTypes, $functionUseImportTypes, $namespaceName);
 
         if ($newUses === []) {
-            return;
+            return false;
         }
 
         $this->mirrorUseComments($namespace->stmts, $newUses);
 
         $namespace->stmts = array_merge($newUses, $this->resolveInsertNop($namespace), $namespace->stmts);
         $namespace->stmts = array_values($namespace->stmts);
+
+        return true;
     }
 
     /**

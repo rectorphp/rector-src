@@ -250,7 +250,7 @@ final class RectorConfigBuilder
         }
 
         // log rules from sets and compare them with explicit rules
-        $setRegisteredRectorClasses = $rectorConfig->getRectorClasses();
+        $setRegisteredRectorClasses = $rectorConfig->getMainRectorClasses();
         SimpleParameterProvider::addParameter(Option::SET_REGISTERED_RULES, $setRegisteredRectorClasses);
 
         if ($this->paths !== []) {

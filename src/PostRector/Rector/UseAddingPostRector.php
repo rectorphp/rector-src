@@ -35,6 +35,9 @@ final class UseAddingPostRector extends AbstractPostRector
         }
 
         $rootNode = $this->resolveRootNode($nodes);
+        if (! $rootNode instanceof FileWithoutNamespace && ! $rootNode instanceof Namespace_) {
+            return $nodes;
+        }
 
         $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($this->getFile()->getFilePath());
         $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath(
@@ -52,22 +55,19 @@ final class UseAddingPostRector extends AbstractPostRector
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
+        $stmts = $rootNode instanceof FileWithoutNamespace ? $rootNode->stmts : $nodes;
 
-        if ($rootNode instanceof FileWithoutNamespace) {
-            $nodes = $rootNode->stmts;
-        }
-
-        if (! $rootNode instanceof FileWithoutNamespace && ! $rootNode instanceof Namespace_) {
-            return $nodes;
-        }
-
-        return $this->resolveNodesWithImportedUses(
-            $nodes,
+        if ($this->processStmtsWithImportedUses(
+            $stmts,
             $useImportTypes,
             $constantUseImportTypes,
             $functionUseImportTypes,
             $rootNode
-        );
+        )) {
+            $this->addRectorClassWithLine($rootNode);
+        }
+
+        return $nodes;
     }
 
     public function enterNode(Node $node): int
@@ -84,30 +84,27 @@ final class UseAddingPostRector extends AbstractPostRector
     }
 
     /**
-     * @param Stmt[] $nodes
+     * @param Stmt[] $stmts
      * @param FullyQualifiedObjectType[] $useImportTypes
      * @param FullyQualifiedObjectType[] $constantUseImportTypes
      * @param FullyQualifiedObjectType[] $functionUseImportTypes
-     * @return Stmt[]
      */
-    private function resolveNodesWithImportedUses(
-        array $nodes,
+    private function processStmtsWithImportedUses(
+        array $stmts,
         array $useImportTypes,
         array $constantUseImportTypes,
         array $functionUseImportTypes,
         FileWithoutNamespace|Namespace_ $namespace
-    ): array {
+    ): bool {
         // A. has namespace? add under it
         if ($namespace instanceof Namespace_) {
             // then add, to prevent adding + removing false positive of same short use
-            $this->useImportsAdder->addImportsToNamespace(
+            return $this->useImportsAdder->addImportsToNamespace(
                 $namespace,
                 $useImportTypes,
                 $constantUseImportTypes,
                 $functionUseImportTypes
             );
-
-            return $nodes;
         }
 
         // B. no namespace? add in the top
@@ -116,7 +113,7 @@ final class UseAddingPostRector extends AbstractPostRector
         // then add, to prevent adding + removing false positive of same short use
         return $this->useImportsAdder->addImportsToStmts(
             $namespace,
-            $nodes,
+            $stmts,
             $useImportTypes,
             $constantUseImportTypes,
             $functionUseImportTypes

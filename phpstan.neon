@@ -238,6 +238,7 @@ parameters:
             paths:
                 # caching and message of specific child Rector rules
                 - src/Rector/AbstractRector.php
+                - src/PostRector/Rector/AbstractPostRector.php
                 # for cache
                 - src/Testing/PHPUnit/AbstractRectorTestCase.php
 
