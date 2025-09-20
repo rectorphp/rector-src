@@ -38,7 +38,7 @@ if (isset($argv[1]) && $argv[1] === '--kaizen') {
 
 $cliOptions = 'cli-options.txt';
 if (file_exists($cliOptions)) {
-    $e2eCommand .= ' ' . trim(file_get_contents($cliOptions));
+    $e2eCommand .= ' ' . trim((string) file_get_contents($cliOptions));
 }
 
 
@@ -56,7 +56,7 @@ $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
 $symfonyStyle =  $symfonyStyleFactory->create();
 
 $matchedExpectedOutput = false;
-$expectedOutput = trim(file_get_contents($expectedDiff));
+$expectedOutput = trim((string) file_get_contents($expectedDiff));
 if ($output === $expectedOutput) {
     $symfonyStyle->success('End-to-end test successfully completed');
     exit(Command::SUCCESS);

@@ -34,7 +34,7 @@ $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
 $symfonyStyle =  $symfonyStyleFactory->create();
 
 $matchedExpectedOutput = false;
-$expectedOutput = trim(file_get_contents($expectedDiff));
+$expectedOutput = trim((string) file_get_contents($expectedDiff));
 if ($output === $expectedOutput) {
     $symfonyStyle->success('End-to-end test successfully completed');
     exit(Command::SUCCESS);
