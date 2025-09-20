@@ -33,6 +33,8 @@ final class RectorClassesSorter
             fn (string $rectorClass): bool => is_a($rectorClass, PostRectorInterface::class, true)
         );
 
+        // when NameImportingPostRector is applied
+        // the UseAddingPostRector mostly applied since it add into UseAddingPostRector
         if (in_array(NameImportingPostRector::class, $postRector, true)) {
             $postRector[] = UseAddingPostRector::class;
         }
