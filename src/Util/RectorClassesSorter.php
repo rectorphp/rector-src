@@ -20,9 +20,15 @@ final class RectorClassesSorter
     {
         $rectorClasses = array_unique($rectorClasses);
 
-        $mainRector = array_filter($rectorClasses, fn (string $rectorClass): bool => is_a($rectorClass, RectorInterface::class, true));
+        $mainRector = array_filter(
+            $rectorClasses,
+            fn (string $rectorClass): bool => is_a($rectorClass, RectorInterface::class, true)
+        );
         sort($mainRector);
-        $postRector = array_filter($rectorClasses, fn (string $rectorClass): bool => is_a($rectorClass, PostRectorInterface::class, true));
+        $postRector = array_filter(
+            $rectorClasses,
+            fn (string $rectorClass): bool => is_a($rectorClass, PostRectorInterface::class, true)
+        );
         sort($postRector);
 
         return array_merge($mainRector, $postRector);

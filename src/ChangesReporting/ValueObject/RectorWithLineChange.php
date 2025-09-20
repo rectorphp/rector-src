@@ -24,8 +24,10 @@ final readonly class RectorWithLineChange implements SerializableInterface
     /**
      * @param class-string<RectorInterface|PostRectorInterface> $rectorClass
      */
-    public function __construct(private string $rectorClass, private int $line)
-    {
+    public function __construct(
+        private string $rectorClass,
+        private int $line
+    ) {
     }
 
     /**
