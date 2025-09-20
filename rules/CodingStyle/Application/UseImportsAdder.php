@@ -15,6 +15,7 @@ use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PostRector\Rector\UseAddingPostRector;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
@@ -38,7 +39,8 @@ final readonly class UseImportsAdder
         array $stmts,
         array $useImportTypes,
         array $constantUseImportTypes,
-        array $functionUseImportTypes
+        array $functionUseImportTypes,
+        UseAddingPostRector $useAddingPostRector
     ): array {
         $usedImports = $this->usedImportsResolver->resolveForStmts($stmts);
         $existingUseImportTypes = $usedImports->getUseImports();
@@ -94,6 +96,8 @@ final readonly class UseImportsAdder
             $fileWithoutNamespace->stmts = $stmts;
             $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
+            $useAddingPostRector->addRectorClassWithLine($fileWithoutNamespace);
+
             return [$fileWithoutNamespace];
         }
 
@@ -102,6 +106,8 @@ final readonly class UseImportsAdder
         // make use stmts first
         $fileWithoutNamespace->stmts = array_merge($newUses, $this->resolveInsertNop($fileWithoutNamespace), $stmts);
         $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
+
+        $useAddingPostRector->addRectorClassWithLine($fileWithoutNamespace);
 
         return [$fileWithoutNamespace];
     }
@@ -115,7 +121,8 @@ final readonly class UseImportsAdder
         Namespace_ $namespace,
         array $useImportTypes,
         array $constantUseImportTypes,
-        array $functionUseImportTypes
+        array $functionUseImportTypes,
+        UseAddingPostRector $useAddingPostRector
     ): void {
         $namespaceName = $this->getNamespaceName($namespace);
 
@@ -148,6 +155,8 @@ final readonly class UseImportsAdder
 
         $namespace->stmts = array_merge($newUses, $this->resolveInsertNop($namespace), $namespace->stmts);
         $namespace->stmts = array_values($namespace->stmts);
+
+        $useAddingPostRector->addRectorClassWithLine($namespace);
     }
 
     /**

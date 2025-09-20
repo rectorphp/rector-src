@@ -36,7 +36,7 @@ abstract class AbstractPostRector extends NodeVisitorAbstract implements PostRec
         return $this->file;
     }
 
-    protected function addRectorClassWithLine(Node $node): void
+    public function addRectorClassWithLine(Node $node): void
     {
         Assert::isInstanceOf($this->file, File::class);
 

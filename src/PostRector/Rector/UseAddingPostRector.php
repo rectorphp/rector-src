@@ -104,7 +104,8 @@ final class UseAddingPostRector extends AbstractPostRector
                 $namespace,
                 $useImportTypes,
                 $constantUseImportTypes,
-                $functionUseImportTypes
+                $functionUseImportTypes,
+                $this
             );
 
             return $nodes;
@@ -119,7 +120,8 @@ final class UseAddingPostRector extends AbstractPostRector
             $nodes,
             $useImportTypes,
             $constantUseImportTypes,
-            $functionUseImportTypes
+            $functionUseImportTypes,
+            $this
         );
     }
 
