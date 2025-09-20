@@ -28,6 +28,7 @@ final readonly class UseImportsRemover
             }
 
             if ($this->removeUseFromUse($removedUses, $stmt)) {
+                $node->stmts[$key] = $stmt;
                 $hasRemoved = true;
             }
 
