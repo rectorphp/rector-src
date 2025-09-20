@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Fixture;
+
 class SkipTuple
 {
     /**
