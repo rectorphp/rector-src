@@ -34,7 +34,7 @@ final class RectorClassesSorter
         );
 
         // when NameImportingPostRector is applied
-        // the UseAddingPostRector mostly applied since it add into UseAddingPostRector
+        // the UseAddingPostRector mostly applied since it mostly add to use statement via UseAddingPostRector
         if (in_array(NameImportingPostRector::class, $postRector, true)) {
             $postRector[] = UseAddingPostRector::class;
         }
