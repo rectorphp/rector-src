@@ -8,7 +8,7 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 
 /**
- * This classes ensure the PostRectorInterface instance listed after main RectorInterface instance
+ * This class ensure the PostRectorInterface instances listed after main RectorInterface instances
  */
 final class RectorClassesSorter
 {
