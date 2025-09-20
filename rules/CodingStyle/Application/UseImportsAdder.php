@@ -15,7 +15,6 @@ use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\PostRector\Rector\UseAddingPostRector;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
@@ -32,16 +31,14 @@ final readonly class UseImportsAdder
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $useImportTypes
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $constantUseImportTypes
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
-     * @return Stmt[]
      */
     public function addImportsToStmts(
         FileWithoutNamespace $fileWithoutNamespace,
         array $stmts,
         array $useImportTypes,
         array $constantUseImportTypes,
-        array $functionUseImportTypes,
-        UseAddingPostRector $useAddingPostRector
-    ): array {
+        array $functionUseImportTypes
+    ): bool {
         $usedImports = $this->usedImportsResolver->resolveForStmts($stmts);
         $existingUseImportTypes = $usedImports->getUseImports();
         $existingConstantUseImports = $usedImports->getConstantImports();
@@ -59,7 +56,7 @@ final readonly class UseImportsAdder
 
         $newUses = $this->createUses($useImportTypes, $constantUseImportTypes, $functionUseImportTypes, null);
         if ($newUses === []) {
-            return [$fileWithoutNamespace];
+            return false;
         }
 
         $stmts = array_values(array_filter($stmts, static function (Stmt $stmt): bool {
@@ -96,9 +93,7 @@ final readonly class UseImportsAdder
             $fileWithoutNamespace->stmts = $stmts;
             $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
-            $useAddingPostRector->addRectorClassWithLine($fileWithoutNamespace);
-
-            return [$fileWithoutNamespace];
+            return true;
         }
 
         $this->mirrorUseComments($stmts, $newUses);
@@ -107,9 +102,7 @@ final readonly class UseImportsAdder
         $fileWithoutNamespace->stmts = array_merge($newUses, $this->resolveInsertNop($fileWithoutNamespace), $stmts);
         $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
-        $useAddingPostRector->addRectorClassWithLine($fileWithoutNamespace);
-
-        return [$fileWithoutNamespace];
+        return true;
     }
 
     /**
@@ -121,9 +114,8 @@ final readonly class UseImportsAdder
         Namespace_ $namespace,
         array $useImportTypes,
         array $constantUseImportTypes,
-        array $functionUseImportTypes,
-        UseAddingPostRector $useAddingPostRector
-    ): void {
+        array $functionUseImportTypes
+    ): bool {
         $namespaceName = $this->getNamespaceName($namespace);
 
         $existingUsedImports = $this->usedImportsResolver->resolveForStmts($namespace->stmts);
@@ -148,7 +140,7 @@ final readonly class UseImportsAdder
         $newUses = $this->createUses($useImportTypes, $constantUseImportTypes, $functionUseImportTypes, $namespaceName);
 
         if ($newUses === []) {
-            return;
+            return false;
         }
 
         $this->mirrorUseComments($namespace->stmts, $newUses);
@@ -156,7 +148,7 @@ final readonly class UseImportsAdder
         $namespace->stmts = array_merge($newUses, $this->resolveInsertNop($namespace), $namespace->stmts);
         $namespace->stmts = array_values($namespace->stmts);
 
-        $useAddingPostRector->addRectorClassWithLine($namespace);
+        return true;
     }
 
     /**

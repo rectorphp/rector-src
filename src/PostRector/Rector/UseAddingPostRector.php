@@ -61,13 +61,21 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
-        return $this->resolveNodesWithImportedUses(
+        if ($this->processNodesWithImportedUses(
             $nodes,
             $useImportTypes,
             $constantUseImportTypes,
             $functionUseImportTypes,
             $rootNode
-        );
+        )) {
+            $this->addRectorClassWithLine($rootNode);
+        }
+
+        if ($rootNode instanceof FileWithoutNamespace) {
+            return [$rootNode];
+        }
+
+        return $nodes;
     }
 
     public function enterNode(Node $node): int
@@ -88,27 +96,23 @@ final class UseAddingPostRector extends AbstractPostRector
      * @param FullyQualifiedObjectType[] $useImportTypes
      * @param FullyQualifiedObjectType[] $constantUseImportTypes
      * @param FullyQualifiedObjectType[] $functionUseImportTypes
-     * @return Stmt[]
      */
-    private function resolveNodesWithImportedUses(
+    private function processNodesWithImportedUses(
         array $nodes,
         array $useImportTypes,
         array $constantUseImportTypes,
         array $functionUseImportTypes,
         FileWithoutNamespace|Namespace_ $namespace
-    ): array {
+    ): bool {
         // A. has namespace? add under it
         if ($namespace instanceof Namespace_) {
             // then add, to prevent adding + removing false positive of same short use
-            $this->useImportsAdder->addImportsToNamespace(
+            return $this->useImportsAdder->addImportsToNamespace(
                 $namespace,
                 $useImportTypes,
                 $constantUseImportTypes,
-                $functionUseImportTypes,
-                $this
+                $functionUseImportTypes
             );
-
-            return $nodes;
         }
 
         // B. no namespace? add in the top
@@ -120,8 +124,7 @@ final class UseAddingPostRector extends AbstractPostRector
             $nodes,
             $useImportTypes,
             $constantUseImportTypes,
-            $functionUseImportTypes,
-            $this
+            $functionUseImportTypes
         );
     }
 
