@@ -60,7 +60,7 @@ final readonly class RectorWithLineChange implements SerializableInterface
     }
 
     /**
-     * @return array{rector_class: class-string<RectorInterface>, line: int}
+     * @return array{rector_class: class-string<RectorInterface|PostRectorInterface>, line: int}
      */
     public function jsonSerialize(): array
     {
