@@ -92,9 +92,9 @@ final readonly class ColorConsoleDiffFormatter
     /**
      * Remove number diff, eg; @@ -67,6 +67,8 @@ to become @@ @@
      */
-    private function normalizeLineAtDiff(string $line): string
+    private function normalizeLineAtDiff(string $string): string
     {
-        return Strings::replace($line, self::AT_DIFF_LINE_REGEX, '<fg=cyan>@@ @@</fg=cyan>');
+        return Strings::replace($string, self::AT_DIFF_LINE_REGEX, '<fg=cyan>@@ @@</fg=cyan>');
     }
 
     private function makePlusLinesGreen(string $string): string
