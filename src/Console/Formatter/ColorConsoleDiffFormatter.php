@@ -62,40 +62,34 @@ final readonly class ColorConsoleDiffFormatter
 
         $escapedDiffLines = NewLineSplitter::split($escapedDiff);
 
-        // remove description of added + remove; obvious on diffs
-        $changedOriginal = false;
-        $changedNew = false;
+        // remove description of added + remove, obvious on diffs
+        // decorize lines
         foreach ($escapedDiffLines as $key => $escapedDiffLine) {
-            // already found both, no need to continue
-            if ($changedOriginal && $changedNew) {
-                break;
-            }
-
             if ($escapedDiffLine === '--- Original') {
                 unset($escapedDiffLines[$key]);
-                $changedOriginal = true;
+                continue;
             }
 
             if ($escapedDiffLine === '+++ New') {
                 unset($escapedDiffLines[$key]);
-                $changedNew = true;
+                continue;
             }
+
+            if ($escapedDiffLine === ' ') {
+                $escapedDiffLines[$key] = '';
+                continue;
+            }
+
+            $escapedDiffLine = $this->makePlusLinesGreen($escapedDiffLine);
+            $escapedDiffLine = $this->makeMinusLinesRed($escapedDiffLine);
+            $escapedDiffLine = $this->makeAtNoteCyan($escapedDiffLine);
+            $escapedDiffLine = $this->normalizeLineAtDiff($escapedDiffLine);
+
+            // final decorized line
+            $escapedDiffLines[$key] = $escapedDiffLine;
         }
 
-        $coloredLines = array_map(function (string $string): string {
-            $string = $this->makePlusLinesGreen($string);
-            $string = $this->makeMinusLinesRed($string);
-            $string = $this->makeAtNoteCyan($string);
-            $string = $this->normalizeLineAtDiff($string);
-
-            if ($string === ' ') {
-                return '';
-            }
-
-            return $string;
-        }, $escapedDiffLines);
-
-        return sprintf($template, implode(PHP_EOL, $coloredLines));
+        return sprintf($template, implode(PHP_EOL, $escapedDiffLines));
     }
 
     /**
