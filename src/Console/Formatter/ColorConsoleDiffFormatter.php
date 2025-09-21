@@ -63,13 +63,22 @@ final readonly class ColorConsoleDiffFormatter
         $escapedDiffLines = NewLineSplitter::split($escapedDiff);
 
         // remove description of added + remove; obvious on diffs
+        $changedOriginal = false;
+        $changedNew = false;
         foreach ($escapedDiffLines as $key => $escapedDiffLine) {
+            // already found both, no need to continue
+            if ($changedOriginal && $changedNew) {
+                break;
+            }
+
             if ($escapedDiffLine === '--- Original') {
                 unset($escapedDiffLines[$key]);
+                $changedOriginal = true;
             }
 
             if ($escapedDiffLine === '+++ New') {
                 unset($escapedDiffLines[$key]);
+                $changedNew = true;
             }
         }
 
