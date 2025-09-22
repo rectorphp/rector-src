@@ -14,6 +14,7 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Rector\TypeDeclarationDocblocks\TypeResolver\ConstantArrayTypeGeneralizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,6 +28,7 @@ final class DocblockReturnArrayFromDirectArrayInstanceRector extends AbstractRec
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly ConstantArrayTypeGeneralizer $constantArrayTypeGeneralizer,
+        private readonly ReturnNodeFinder $returnNodeFinder,
     ) {
     }
 
@@ -85,11 +87,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === null || count($node->stmts) !== 1) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $soleReturn = $node->stmts[0];
+        $soleReturn = $this->returnNodeFinder->findOnlyReturnWithExpr($node);
         if (! $soleReturn instanceof Return_) {
             return null;
         }
