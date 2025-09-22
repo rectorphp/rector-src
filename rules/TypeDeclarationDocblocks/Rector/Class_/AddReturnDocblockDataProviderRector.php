@@ -7,18 +7,13 @@ namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Rector\TypeDeclarationDocblocks\NodeFinder\YieldNodeFinder;
@@ -36,11 +31,9 @@ final class AddReturnDocblockDataProviderRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DataProviderMethodsFinder $dataProviderMethodsFinder,
         private readonly ReturnNodeFinder $returnNodeFinder,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly TypeNormalizer $typeNormalizer,
         private readonly YieldTypeResolver $yieldTypeResolver,
         private readonly YieldNodeFinder $yieldNodeFinder,
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
     ) {
     }
 
@@ -140,11 +133,15 @@ CODE_SAMPLE
 
                 $soleReturnType = $this->getType($soleReturn->expr);
 
-                $this->addGeneratedTypeReturnDocblockType(
+                $hasClassMethodChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableReturnType(
                     $soleReturnType,
                     $classMethodPhpDocInfo,
                     $dataProviderClassMethod
                 );
+
+                if (! $hasClassMethodChanged) {
+                    continue;
+                }
 
                 $hasChanged = true;
                 continue;
@@ -159,7 +156,16 @@ CODE_SAMPLE
                     $yieldType = new FullyQualifiedGenericObjectType('Iterator', $yieldType->getTypes());
                 }
 
-                $this->addGeneratedTypeReturnDocblockType($yieldType, $classMethodPhpDocInfo, $dataProviderClassMethod);
+                $hasClassMethodChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableReturnType(
+                    $yieldType,
+                    $classMethodPhpDocInfo,
+                    $dataProviderClassMethod
+                );
+
+                if (! $hasClassMethodChanged) {
+                    continue;
+                }
+
                 $hasChanged = true;
             }
         }
@@ -169,21 +175,5 @@ CODE_SAMPLE
         }
 
         return $node;
-    }
-
-    private function addGeneratedTypeReturnDocblockType(
-        Type $soleReturnType,
-        PhpDocInfo $classMethodPhpDocInfo,
-        ClassMethod $dataProviderClassMethod
-    ): void {
-        $generalizedReturnType = $this->typeNormalizer->generalizeConstantTypes($soleReturnType);
-
-        // turn into rather generic short return type, to keep it open to extension later and readable to human
-        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($generalizedReturnType);
-
-        $returnTagValueNode = new ReturnTagValueNode($typeNode, '');
-        $classMethodPhpDocInfo->addTagValueNode($returnTagValueNode);
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($dataProviderClassMethod);
     }
 }

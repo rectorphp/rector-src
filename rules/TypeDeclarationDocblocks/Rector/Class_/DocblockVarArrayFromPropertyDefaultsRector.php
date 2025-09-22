@@ -89,7 +89,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->nodeDocblockTypeDecorator->decorateGenericIterableVarType($propertyDefaultType, $propertyPhpDocInfo, $property);
+            $this->nodeDocblockTypeDecorator->decorateGenericIterableVarType(
+                $propertyDefaultType,
+                $propertyPhpDocInfo,
+                $property
+            );
             $hasChanged = true;
         }
 

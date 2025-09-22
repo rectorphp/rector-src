@@ -7,19 +7,12 @@ namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\IntegerType;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
-use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeAnalyzer\CallTypesResolver;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,11 +23,9 @@ final class ClassMethodArrayDocblockParamFromLocalCallsRector extends AbstractRe
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CallTypesResolver $callTypesResolver,
         private readonly LocalMethodCallFinder $localMethodCallFinder,
-        private readonly TypeNormalizer $typeNormalizer
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -121,28 +112,16 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $normalizedResolvedParameterType = $this->typeNormalizer->generalizeConstantTypes(
-                    $resolvedParameterType
+                $hasClassMethodChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
+                    $resolvedParameterType,
+                    $classMethodPhpDocInfo,
+                    $classMethod,
+                    $parameterName
                 );
 
-                // most likely mixed, skip
-                if ($this->isArrayMixed($normalizedResolvedParameterType)) {
-                    continue;
+                if ($hasClassMethodChanged) {
+                    $hasChanged = true;
                 }
-
-                $arrayDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-                    $normalizedResolvedParameterType
-                );
-
-                if ($arrayDocTypeNode instanceof IdentifierTypeNode && $arrayDocTypeNode->name === 'mixed') {
-                    $arrayDocTypeNode = new ArrayTypeNode($arrayDocTypeNode);
-                }
-
-                $paramTagValueNode = new ParamTagValueNode($arrayDocTypeNode, false, '$' . $parameterName, '', false);
-                $classMethodPhpDocInfo->addTagValueNode($paramTagValueNode);
-
-                $hasChanged = true;
-                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
             }
         }
 
@@ -151,18 +130,5 @@ CODE_SAMPLE
         }
 
         return $node;
-    }
-
-    private function isArrayMixed(Type $type): bool
-    {
-        if (! $type instanceof ArrayType) {
-            return false;
-        }
-
-        if (! $type->getItemType() instanceof MixedType) {
-            return false;
-        }
-
-        return $type->getKeyType() instanceof IntegerType;
     }
 }

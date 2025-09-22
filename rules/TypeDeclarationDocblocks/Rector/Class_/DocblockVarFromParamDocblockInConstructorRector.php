@@ -11,10 +11,9 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\ArrayType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclarationDocblocks\NodeAnalyzer\ConstructorAssignedTypeResolver;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,9 +25,8 @@ final class DocblockVarFromParamDocblockInConstructorRector extends AbstractRect
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ConstructorAssignedTypeResolver $constructorAssignedTypeResolver,
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -109,14 +107,17 @@ CODE_SAMPLE
                 continue;
             }
 
-            $arrayDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($assignedType);
+            $hasPropertyChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableVarType(
+                $assignedType,
+                $propertyPhpDocInfo,
+                $property
+            );
 
-            $returnTagValueNode = new VarTagValueNode($arrayDocTypeNode, '', '');
-            $propertyPhpDocInfo->addTagValueNode($returnTagValueNode);
+            if (! $hasPropertyChanged) {
+                continue;
+            }
 
             $hasChanged = true;
-
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
         }
 
         if (! $hasChanged) {
