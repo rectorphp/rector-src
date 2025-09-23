@@ -77,6 +77,16 @@ CODE_SAMPLE
             return null;
         }
 
+        return $this->refactorBooleanAssignmentPattern($node);
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ARRAY_ALL;
+    }
+
+    private function refactorBooleanAssignmentPattern(StmtsAwareInterface $node): ?Node
+    {
         foreach ($node->stmts as $key => $stmt) {
             if (! $stmt instanceof Foreach_) {
                 continue;
@@ -156,11 +166,6 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::ARRAY_ALL;
     }
 
     private function isValidForeachStructure(Foreach_ $foreach, Variable $assignedVariable): bool
