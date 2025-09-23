@@ -15,6 +15,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
@@ -122,6 +123,10 @@ final readonly class NodeDocblockTypeDecorator
     {
         if (! $type instanceof ArrayType) {
             return false;
+        }
+
+        if ($type->getItemType() instanceof NeverType) {
+            return true;
         }
 
         if (! $type->getItemType() instanceof MixedType) {
