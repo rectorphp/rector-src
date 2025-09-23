@@ -13,6 +13,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
@@ -124,6 +125,11 @@ CODE_SAMPLE
         $arrayType = new ArrayType(new MixedType(), $returnType);
 
         $functionLikePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        $returnOriginalType = $functionLikePhpDocInfo->getReturnType();
+        if ($returnOriginalType instanceof IntersectionType && $returnOriginalType->isArray()->yes()) {
+            return null;
+        }
 
         $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $functionLikePhpDocInfo, $arrayType);
         if ($hasChanged) {
