@@ -31,7 +31,8 @@ final readonly class TypeNormalizer
 
     public function __construct(
         private TypeFactory $typeFactory,
-        private StaticTypeMapper $staticTypeMapper
+        private StaticTypeMapper $staticTypeMapper,
+        private ArrayTypeLeastCommonDenominatorResolver $arrayTypeLeastCommonDenominatorResolver
     ) {
 
     }
@@ -107,6 +108,11 @@ final readonly class TypeNormalizer
 
                     // too long
                     if (strlen((string) $unionedDocType) > self::MAX_PRINTED_UNION_DOC_LENGHT) {
+                        $alwaysKnownArrayType = $this->narrowToAlwaysKnownArrayType($generalizedUnionType);
+                        if ($alwaysKnownArrayType instanceof ArrayType) {
+                            return $alwaysKnownArrayType;
+                        }
+
                         return new MixedType();
                     }
 
@@ -144,5 +150,16 @@ final readonly class TypeNormalizer
         }
 
         return true;
+    }
+
+    private function narrowToAlwaysKnownArrayType(UnionType $unionType): ?ArrayType
+    {
+        // always an array?
+        if (count($unionType->getArrays()) !== count($unionType->getTypes())) {
+            return null;
+        }
+
+        $arrayUniqueKeyType = $this->arrayTypeLeastCommonDenominatorResolver->sharedArrayStructure(...$unionType->getTypes());
+        return new ArrayType($arrayUniqueKeyType, new MixedType());
     }
 }
