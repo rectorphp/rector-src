@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
@@ -38,13 +40,12 @@ final readonly class CallTypesResolver
 
         foreach ($calls as $call) {
             foreach ($call->args as $position => $arg) {
-                // there is first class callable usage, or argument unpack, or named arg
-                // simply returns array marks as unknown as can be anything and in any position
-                if (! $arg instanceof Arg || $arg->unpack || $arg->name instanceof Identifier) {
+                if ($this->shouldSkipArg($arg)) {
                     return [];
                 }
 
-                if ($arg->value instanceof Array_ && $arg->value->items === []) {
+                /** @var Arg $arg */
+                if ($this->isEmptyArray($arg->value)) {
                     // skip empty array, as it doesn't add any value
                     continue;
                 }
@@ -57,23 +58,46 @@ final readonly class CallTypesResolver
         return $this->unionToSingleType($staticTypesByArgumentPosition);
     }
 
+    /**
+     * @param MethodCall[]|StaticCall[] $calls
+     * @return array<int, Type>
+     */
+    public function resolveTypesFromCalls(array $calls): array
+    {
+        $staticTypesByArgumentPosition = [];
+
+        foreach ($calls as $call) {
+            foreach ($call->args as $position => $arg) {
+                if ($this->shouldSkipArg($arg)) {
+                    return [];
+                }
+
+                /** @var Arg $arg */
+                if ($this->isEmptyArray($arg->value)) {
+                    // skip empty array, as it doesn't add any value
+                    continue;
+                }
+
+                $staticTypesByArgumentPosition[$position][] = $this->resolveArgValueType($arg);
+            }
+        }
+
+        // unite to single type
+        return $this->unionToSingleType($staticTypesByArgumentPosition);
+    }
+
     private function resolveStrictArgValueType(Arg $arg): Type
     {
         $argValueType = $this->nodeTypeResolver->getNativeType($arg->value);
 
-        // "self" in another object is not correct, this make it independent
-        $argValueType = $this->correctSelfType($argValueType);
+        return $this->normalizeType($argValueType);
+    }
 
-        if (! $argValueType instanceof ObjectType) {
-            return $argValueType;
-        }
+    private function resolveArgValueType(Arg $arg): Type
+    {
+        $argValueType = $this->nodeTypeResolver->getType($arg->value);
 
-        // fix false positive generic type on string
-        if (! $this->reflectionProvider->hasClass($argValueType->getClassName())) {
-            return new MixedType();
-        }
-
-        return $argValueType;
+        return $this->normalizeType($argValueType);
     }
 
     private function correctSelfType(Type $argValueType): Type
@@ -148,5 +172,48 @@ final readonly class CallTypesResolver
         }
 
         return true;
+    }
+
+    private function normalizeType(Type $argValueType): MixedType|ObjectType|Type
+    {
+        // "self" in another object is not correct, this make it independent
+        $argValueType = $this->correctSelfType($argValueType);
+
+        if (! $argValueType instanceof ObjectType) {
+            return $argValueType;
+        }
+
+        // fix false positive generic type on string
+        if (! $this->reflectionProvider->hasClass($argValueType->getClassName())) {
+            return new MixedType();
+        }
+
+        return $argValueType;
+    }
+
+    /**
+     * There is first class callable usage, or argument unpack, or named expr
+     * simply returns array marks as unknown as can be anything and in any position
+     */
+    private function shouldSkipArg(Arg|VariadicPlaceholder $arg): bool
+    {
+        if ($arg instanceof VariadicPlaceholder) {
+            return true;
+        }
+
+        if ($arg->unpack) {
+            return true;
+        }
+
+        return $arg->name instanceof Identifier;
+    }
+
+    private function isEmptyArray(Expr $expr): bool
+    {
+        if (! $expr instanceof Array_) {
+            return false;
+        }
+
+        return $expr->items === [];
     }
 }
