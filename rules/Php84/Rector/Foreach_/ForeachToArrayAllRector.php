@@ -114,7 +114,7 @@ CODE_SAMPLE
 
             $assignedVariable = $prevAssign->var;
 
-            if (! $this->isValidForeachStructure($foreach, $assignedVariable)) {
+            if (! $this->isValidBooleanAssignmentForeachStructure($foreach, $assignedVariable)) {
                 continue;
             }
 
@@ -168,7 +168,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isValidForeachStructure(Foreach_ $foreach, Variable $assignedVariable): bool
+    private function isValidBooleanAssignmentForeachStructure(Foreach_ $foreach, Variable $assignedVariable): bool
     {
         if (count($foreach->stmts) !== 1) {
             return false;
