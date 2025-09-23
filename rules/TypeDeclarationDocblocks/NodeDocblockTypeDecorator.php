@@ -124,6 +124,10 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
+        if ($type->getItemType() instanceof \PHPStan\Type\NeverType) {
+            return true;
+        }
+
         if (! $type->getItemType() instanceof MixedType) {
             return false;
         }
