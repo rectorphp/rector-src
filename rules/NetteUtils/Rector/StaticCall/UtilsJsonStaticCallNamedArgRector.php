@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclarationDocblocks\Enum\NetteClassName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -49,7 +50,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isName($node->class, 'Nette\Utils\Json')) {
+        if (! $this->isName($node->class, NetteClassName::JSON)) {
             return null;
         }
 
