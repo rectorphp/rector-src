@@ -15,7 +15,7 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
-use Rector\TypeDeclarationDocblocks\NodeFinder\DimFetchFinder;
+use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,7 +26,7 @@ final class AddParamArrayDocblockFromDimFetchAccessRector extends AbstractRector
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DimFetchFinder $dimFetchFinder,
+        private readonly ArrayDimFetchFinder $arrayDimFetchFinder,
         private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
@@ -109,7 +109,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $dimFetches = $this->dimFetchFinder->findByVariableName($node, $paramName);
+            $dimFetches = $this->arrayDimFetchFinder->findByVariableName($node, $paramName);
             if ($dimFetches === []) {
                 continue;
             }
