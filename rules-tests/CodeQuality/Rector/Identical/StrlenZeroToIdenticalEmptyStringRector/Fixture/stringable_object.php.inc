@@ -2,22 +2,13 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector\Fixture;
 
-class Stringable {
-    private string $string = '';
-
-    public function __toString() : string {
-        return $this->string;
-    }
-}
+use Rector\Tests\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector\Source\Stringable;
 
 class StringableObject
 {
-    public function run()
+    public function run(Stringable $value)
     {
-        $value = new Stringable();
-
         $empty = strlen($value) === 0;
-
         $empty = 0 === strlen($value);
     }
 }
@@ -28,22 +19,13 @@ class StringableObject
 
 namespace Rector\Tests\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector\Fixture;
 
-class Stringable {
-    private string $string = '';
-
-    public function __toString() : string {
-        return $this->string;
-    }
-}
+use Rector\Tests\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector\Source\Stringable;
 
 class StringableObject
 {
-    public function run()
+    public function run(Stringable $value)
     {
-        $value = new Stringable();
-
         $empty = (string) $value === '';
-
         $empty = (string) $value === '';
     }
 }
