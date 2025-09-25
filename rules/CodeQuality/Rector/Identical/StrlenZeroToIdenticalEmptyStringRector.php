@@ -6,7 +6,10 @@ namespace Rector\CodeQuality\Rector\Identical;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -59,27 +62,24 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Identical::class];
+        return [Greater::class, Smaller::class, Identical::class];
     }
 
     /**
-     * @param Identical $node
+     * @param Greater|Smaller|Identical $node
      */
     public function refactor(Node $node): ?Node
     {
         if ($node->left instanceof FuncCall) {
-            return $this->processIdentical($node->right, $node->left);
+            $funcCall = $node->left;
+            $expr = $node->right;
+        } elseif ($node->right instanceof FuncCall) {
+            $expr = $node->left;
+            $funcCall = $node->right;
+        } else {
+            return null;
         }
 
-        if ($node->right instanceof FuncCall) {
-            return $this->processIdentical($node->left, $node->right);
-        }
-
-        return null;
-    }
-
-    private function processIdentical(Expr $expr, FuncCall $funcCall): ?Identical
-    {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
         }
@@ -89,6 +89,13 @@ CODE_SAMPLE
         }
 
         if (! $this->valueResolver->isValue($expr, 0)) {
+            return null;
+        }
+
+        if (
+            ($node instanceof Greater && $node->right instanceof FuncCall)
+            || ($node instanceof Smaller && $node->left instanceof FuncCall)
+        ) {
             return null;
         }
 
@@ -102,9 +109,11 @@ CODE_SAMPLE
             ->yes();
 
         if (! $isStringType) {
-            return new Identical(new Expr\Cast\String_($variable), new String_(''));
+            $variable = new Expr\Cast\String_($variable);
         }
 
-        return new Identical($variable, new String_(''));
+        return $node instanceof Identical
+            ? new Identical($variable, new String_(''))
+            : new NotIdentical($variable, new String_(''));
     }
 }
