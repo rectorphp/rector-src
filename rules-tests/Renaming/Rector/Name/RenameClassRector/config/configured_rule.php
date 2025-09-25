@@ -62,5 +62,13 @@ return static function (RectorConfig $rectorConfig): void {
             // test skip rename class const fetch when target rename is interface
             // and interface class const fetch not found
             'Symfony\Component\Serializer\Normalizer\ObjectNormalizer' => 'Symfony\Component\Serializer\Normalizer\NormalizerInterface',
+
+            /**
+             * // avoid error extends itself
+             * namespace MyNamespace;
+             *
+             * class MyMigration extends \MyNamespace\BaseMigration {}
+             */
+            'MyNamespace\AbstractMigration' => 'MyNamespace\BaseMigration',
         ]);
 };
