@@ -7,6 +7,7 @@ namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
@@ -109,6 +110,9 @@ CODE_SAMPLE
 
                 $resolvedParameterType = $classMethodParameterTypes[$parameterPosition] ?? null;
                 if (! $resolvedParameterType instanceof Type) {
+                    continue;
+                }
+                if ($resolvedParameterType instanceof MixedType) {
                     continue;
                 }
 
