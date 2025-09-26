@@ -34,13 +34,11 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ErrorType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -178,11 +176,6 @@ final class NodeTypeResolver
             if (! $type instanceof MixedType) {
                 return new UnionType([$type, new NullType()]);
             }
-        }
-
-        // correction for explode() that always returns array
-        if ($node instanceof FuncCall && $node->name instanceof Name && $node->name->toString() === 'explode') {
-            return new ArrayType(new IntegerType(), new StringType());
         }
 
         if ($node instanceof Ternary) {
