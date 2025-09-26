@@ -14,7 +14,6 @@ use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
@@ -136,6 +135,15 @@ final readonly class CallTypesResolver
             if ($staticTypeByArgumentPosition[$position]->isNull()->yes()) {
                 $staticTypeByArgumentPosition[$position] = new MixedType();
             }
+
+            if ($staticTypeByArgumentPosition[$position] instanceof UnionType) {
+                foreach ($staticTypeByArgumentPosition[$position]->getTypes() as $subType) {
+                    if ($subType instanceof MixedType) {
+                        $staticTypeByArgumentPosition[$position] = new MixedType();
+                        continue 2;
+                    }
+                }
+            }
         }
 
         return $staticTypeByArgumentPosition;
@@ -224,43 +232,13 @@ final readonly class CallTypesResolver
     private function isArrayMixedMixedType(Type $type): bool
     {
         if (! $type instanceof ArrayType) {
-            if ($type instanceof UnionType) {
-                $types = $type->getTypes();
-                $checkedType = $this->typeFactory->createMixedPassedOrUnionType($types);
-
-                if ($checkedType instanceof UnionType) {
-                    $types = $checkedType->getTypes();
-                    if (count($types) !== 2) {
-                        return false;
-                    }
-
-                    $hasMixedType = false;
-                    $hasMixedArrayType = false;
-
-                    foreach ($types as $unionedType) {
-                        if ($unionedType instanceof MixedType) {
-                            $hasMixedType = true;
-                            continue;
-                        }
-
-                        if ($this->isArrayMixedMixedType($unionedType)) {
-                            $hasMixedArrayType = true;
-                        }
-                    }
-
-                    if ($hasMixedType && $hasMixedArrayType) {
-                        return true;
-                    }
-                }
-            }
-
             return false;
         }
 
-        if (! $type->getItemType() instanceof MixedType && ! $type->getItemType() instanceof NeverType) {
+        if (! $type->getItemType() instanceof MixedType) {
             return false;
         }
 
-        return $type->getKeyType() instanceof MixedType || $type->getKeyType() instanceof NeverType;
+        return $type->getKeyType() instanceof MixedType;
     }
 }
