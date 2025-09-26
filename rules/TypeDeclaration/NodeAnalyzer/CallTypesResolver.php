@@ -228,9 +228,15 @@ final readonly class CallTypesResolver
                 $type = $this->typeFactory->createMixedPassedOrUnionType($type->getTypes());
 
                 if ($type instanceof UnionType) {
+                    $types = $type->getTypes();
+                    if (count($types) !== 2) {
+                        return false;
+                    }
+
                     $hasMixedType = false;
                     $hasMixedArrayType = false;
-                    foreach ($type->getTypes() as $unionedType) {
+
+                    foreach ($types as $unionedType) {
                         if ($unionedType instanceof MixedType) {
                             $hasMixedType = true;
                             continue;
