@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PostRector\Collector;
 
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name\FullyQualified;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -86,7 +85,6 @@ final class UseNodesToAddCollector
 
     public function hasImport(
         File $file,
-        FullyQualified $fullyQualified,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): bool {
         $useImports = $this->getUseImportTypesByNode($file);

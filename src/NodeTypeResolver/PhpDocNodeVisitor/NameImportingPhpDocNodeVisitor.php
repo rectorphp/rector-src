@@ -146,7 +146,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
+        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
             $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
             $this->hasChanged = true;
 
@@ -157,6 +157,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     }
 
     private function shouldImport(
+        File $file,
         IdentifierTypeNode $newNode,
         IdentifierTypeNode $identifierTypeNode,
         FullyQualifiedObjectType $fullyQualifiedObjectType
@@ -181,7 +182,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $firstPath = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
         if ($firstPath === null) {
-            return true;
+            return ! $this->useNodesToAddCollector->hasImport($file, $fullyQualifiedObjectType);
         }
 
         if ($firstPath === '') {

@@ -138,7 +138,7 @@ final readonly class NameImporter
         FullyQualified $fullyQualified,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): void {
-        if ($this->useNodesToAddCollector->hasImport($file, $fullyQualified, $fullyQualifiedObjectType)) {
+        if ($this->useNodesToAddCollector->hasImport($file, $fullyQualifiedObjectType)) {
             return;
         }
 
