@@ -32,7 +32,7 @@ final class ExtbaseAnnotationToAttributeRector extends AbstractRector implements
     /**
      * @var AnnotationToAttribute[]
      */
-    private array $annotationsToAttributes;
+    private readonly array $annotationsToAttributes;
 
     public function __construct(
         private readonly AttributeDecorator $attributeDecorator,
@@ -98,8 +98,8 @@ CODE_SAMPLE
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
-        foreach ($annotationAttributeGroups as $attributeGroup) {
-            foreach ($attributeGroup->attrs as $attr) {
+        foreach ($annotationAttributeGroups as $annotationAttributeGroup) {
+            foreach ($annotationAttributeGroup->attrs as $attr) {
                 $phpAttributeName = $attr->name->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
                 $this->attributeDecorator->decorate($phpAttributeName, $attr);
             }

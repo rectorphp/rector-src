@@ -14,24 +14,10 @@ use PhpParser\Node\Scalar\String_;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class ValidateAttributeDecorator implements AttributeDecoratorInterface
+final readonly class ValidateAttributeDecorator implements AttributeDecoratorInterface
 {
-    /**
-     * @readonly
-     */
-    private ValueResolver $valueResolver;
-
-    /**
-     * @readonly
-     */
-    private StringClassNameToClassConstantRector $stringClassNameToClassConstantRector;
-
-    public function __construct(
-        ValueResolver $valueResolver,
-        StringClassNameToClassConstantRector $stringClassNameToClassConstantRector
-    ) {
-        $this->valueResolver = $valueResolver;
-        $this->stringClassNameToClassConstantRector = $stringClassNameToClassConstantRector;
+    public function __construct(private ValueResolver $valueResolver, private StringClassNameToClassConstantRector $stringClassNameToClassConstantRector)
+    {
     }
 
     public function supports(string $phpAttributeName): bool
@@ -41,7 +27,7 @@ final class ValidateAttributeDecorator implements AttributeDecoratorInterface
 
     public function decorate(Attribute $attribute): void
     {
-        $newArguments = new Array_();
+        $array = new Array_();
 
         foreach ($attribute->args as $arg) {
             $key = $arg->name instanceof Identifier ? new String_($arg->name->toString()) : new String_('validator');
@@ -59,9 +45,9 @@ final class ValidateAttributeDecorator implements AttributeDecoratorInterface
                 $value = $arg->value;
             }
 
-            $newArguments->items[] = new ArrayItem($value, $key);
+            $array->items[] = new ArrayItem($value, $key);
         }
 
-        $attribute->args = [new Arg($newArguments)];
+        $attribute->args = [new Arg($array)];
     }
 }
