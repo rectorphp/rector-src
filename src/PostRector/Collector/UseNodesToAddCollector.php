@@ -86,7 +86,6 @@ final class UseNodesToAddCollector
 
     public function hasImport(
         File $file,
-        FullyQualified $fullyQualified,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): bool {
         $useImports = $this->getUseImportTypesByNode($file);
