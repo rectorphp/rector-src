@@ -30,7 +30,9 @@ final class AccessoryNonEmptyArrayTypeCorrector
 
             if ($type instanceof ArrayType
                 && $type->getIterableValueType() instanceof IntersectionType
-                && $type->getIterableValueType()->isString()->yes()) {
+                && $type->getIterableValueType()
+                    ->isString()
+                    ->yes()) {
                 return new ArrayType(new MixedType(), new StringType());
             }
         }
