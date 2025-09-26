@@ -8,6 +8,7 @@ use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 
 final class AccessoryNonEmptyArrayTypeCorrector
@@ -25,6 +26,12 @@ final class AccessoryNonEmptyArrayTypeCorrector
         foreach ($mainType->getTypes() as $type) {
             if ($type instanceof NonEmptyArrayType) {
                 return new ArrayType(new MixedType(), new MixedType());
+            }
+
+            if ($type instanceof ArrayType
+                && $type->getIterableValueType() instanceof IntersectionType
+                && $type->getIterableValueType()->isString()->yes()) {
+                return new ArrayType(new MixedType(), new StringType());
             }
         }
 
