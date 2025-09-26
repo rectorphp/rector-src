@@ -241,7 +241,9 @@ final readonly class CallTypesResolver
                         }
                     }
 
-                    return $hasMixedType && $hasMixedArrayType;
+                    if ($hasMixedType && $hasMixedArrayType) {
+                        return true;
+                    }
                 }
             }
 
