@@ -7,7 +7,6 @@ namespace Rector\Tests\Issues\Issue9388;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Rector\ValueObject\PhpVersionFeature;
 
 /**
  * @see https://github.com/rectorphp/rector/issues/9388
