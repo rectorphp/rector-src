@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Issues\Issue9388\Rule;
+namespace Rector\Tests\Issues\Issue9388\Source\Rule;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
@@ -21,7 +21,7 @@ use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\Rector\AbstractRector;
-use Rector\Tests\Issues\Issue9388\AnnotationToAttribute\AttributeDecorator;
+use Rector\Tests\Issues\Issue9388\Source\AnnotationToAttribute\AttributeDecorator;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;

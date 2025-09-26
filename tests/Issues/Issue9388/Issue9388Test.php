@@ -17,10 +17,6 @@ final class Issue9388Test extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        if (PHP_VERSION_ID < PhpVersionFeature::ATTRIBUTES) {
-            $this->markTestSkipped('Do not execute');
-        }
-
         $this->doTestFile($filePath);
     }
 

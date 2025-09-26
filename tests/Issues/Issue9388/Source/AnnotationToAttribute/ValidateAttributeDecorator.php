@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Issues\Issue9388\AnnotationToAttribute;
+namespace Rector\Tests\Issues\Issue9388\Source\AnnotationToAttribute;
 
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
