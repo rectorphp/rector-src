@@ -225,10 +225,10 @@ final readonly class CallTypesResolver
     {
         if (! $type instanceof ArrayType) {
             if ($type instanceof UnionType) {
-                $type = $this->typeFactory->createMixedPassedOrUnionType($type->getTypes());
+                $types = $type->getTypes();
+                $type = $this->typeFactory->createMixedPassedOrUnionType($types);
 
                 if ($type instanceof UnionType) {
-                    $types = $type->getTypes();
                     if (count($types) !== 2) {
                         return false;
                     }
