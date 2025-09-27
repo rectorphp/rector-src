@@ -40,7 +40,11 @@ final readonly class CallTypesResolver
         $staticTypesByArgumentPosition = [];
 
         foreach ($calls as $call) {
-            foreach ($call->args as $position => $arg) {
+            if ($call->isFirstClassCallable()) {
+                return [];
+            }
+
+            foreach ($call->getArgs() as $position => $arg) {
                 if ($this->shouldSkipArg($arg)) {
                     return [];
                 }
@@ -200,15 +204,11 @@ final readonly class CallTypesResolver
     }
 
     /**
-     * There is first class callable usage, or argument unpack, or named expr
+     * There is argument unpack, or named expr
      * simply returns array marks as unknown as can be anything and in any position
      */
-    private function shouldSkipArg(Arg|VariadicPlaceholder $arg): bool
+    private function shouldSkipArg(Arg $arg): bool
     {
-        if ($arg instanceof VariadicPlaceholder) {
-            return true;
-        }
-
         if ($arg->unpack) {
             return true;
         }
