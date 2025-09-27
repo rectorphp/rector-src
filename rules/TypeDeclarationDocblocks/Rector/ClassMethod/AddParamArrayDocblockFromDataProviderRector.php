@@ -151,6 +151,10 @@ CODE_SAMPLE
                     continue;
                 }
 
+                if ($parameterType instanceof MixedType) {
+                    continue;
+                }
+
                 $generalizedParameterType = $this->typeNormalizer->generalizeConstantTypes($parameterType);
 
                 $parameterTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
