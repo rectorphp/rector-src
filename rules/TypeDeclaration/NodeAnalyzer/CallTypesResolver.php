@@ -74,7 +74,6 @@ final readonly class CallTypesResolver
                     continue;
                 }
 
-                /** @var Arg $arg */
                 $staticTypesByArgumentPosition[$position][] = $this->resolveArgValueType($arg);
             }
         }
