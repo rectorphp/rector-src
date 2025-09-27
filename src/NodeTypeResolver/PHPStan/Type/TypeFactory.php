@@ -168,6 +168,12 @@ final readonly class TypeFactory
             return $types[0];
         }
 
+        foreach ($types as $type) {
+            if ($type instanceof MixedType) {
+                return new MixedType();
+            }
+        }
+
         return new UnionType($types);
     }
 
