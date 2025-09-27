@@ -224,8 +224,8 @@ final readonly class CallTypesResolver
 
     private function isArrayMixedMixedType(Type $type): bool
     {
-        if (! $type instanceof ArrayType) {
-            return $type instanceof ConstantArrayType && $type->getIterableKeyType() instanceof NeverType;
+        if (! $type instanceof ArrayType && ! $type instanceof ConstantArrayType) {
+            return false;
         }
 
         if (! $type->getItemType() instanceof MixedType && ! $type->getItemType() instanceof NeverType) {
