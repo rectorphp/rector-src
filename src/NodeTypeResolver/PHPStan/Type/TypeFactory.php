@@ -66,6 +66,7 @@ final readonly class TypeFactory
         foreach ($types as $type) {
             // mixed only allowed to be standalone
             if ($type instanceof MixedType) {
+                /** @var array<TType> */
                 return [new MixedType()];
             }
 
