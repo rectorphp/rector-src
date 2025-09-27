@@ -64,10 +64,8 @@ final readonly class TypeFactory
         $hasFalse = false;
         $hasTrue = false;
         foreach ($types as $type) {
-            // mixed only allowed to be standalone
             if ($type instanceof MixedType) {
-                /** @var array<TType> */
-                return [new MixedType()];
+                $type = new MixedType();
             }
 
             $type = $this->normalizeObjectType($totalTypes, $type);
@@ -168,6 +166,12 @@ final readonly class TypeFactory
 
         if (count($types) === 1) {
             return $types[0];
+        }
+
+        foreach ($types as $type) {
+            if ($type instanceof MixedType) {
+                return new MixedType();
+            }
         }
 
         return new UnionType($types);
