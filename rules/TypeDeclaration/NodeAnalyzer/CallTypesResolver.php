@@ -40,7 +40,7 @@ final readonly class CallTypesResolver
         $staticTypesByArgumentPosition = [];
 
         foreach ($calls as $call) {
-            foreach ($call->getArgs() as $position => $arg) {
+            foreach ($call->args as $position => $arg) {
                 if ($this->shouldSkipArg($arg)) {
                     return [];
                 }
