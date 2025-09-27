@@ -127,15 +127,9 @@ final readonly class CallTypesResolver
                 $unionedType
             );
 
-            if ($staticTypeByArgumentPosition[$position] instanceof UnionType) {
+            if ($removeMixedArray && $staticTypeByArgumentPosition[$position] instanceof UnionType) {
                 foreach ($staticTypeByArgumentPosition[$position]->getTypes() as $subType) {
-                    // has another type over mixed is not allowed, even on native type
-                    if ($subType instanceof MixedType) {
-                        $staticTypeByArgumentPosition[$position] = new MixedType();
-                        continue 2;
-                    }
-
-                    if ($removeMixedArray && $subType instanceof ArrayType && $this->isArrayMixedMixedType($subType)) {
+                    if ($subType instanceof ArrayType && $this->isArrayMixedMixedType($subType)) {
                         $staticTypeByArgumentPosition[$position] = new MixedType();
                         continue 2;
                     }
