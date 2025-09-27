@@ -44,6 +44,7 @@ final readonly class CallTypesResolver
             }
 
             foreach ($call->getArgs() as $position => $arg) {
+                /** @var Arg $arg */
                 if ($this->shouldSkipArg($arg)) {
                     return [];
                 }
