@@ -64,10 +64,6 @@ final readonly class TypeFactory
         $hasFalse = false;
         $hasTrue = false;
         foreach ($types as $type) {
-            if ($type instanceof MixedType) {
-                $type = new MixedType();
-            }
-
             $type = $this->normalizeObjectType($totalTypes, $type);
             $type = $this->normalizeBooleanType($hasFalse, $hasTrue, $type);
 
