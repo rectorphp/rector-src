@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
@@ -39,16 +40,12 @@ final readonly class CallTypesResolver
         $staticTypesByArgumentPosition = [];
 
         foreach ($calls as $call) {
-            if ($call->isFirstClassCallable()) {
-                return [];
-            }
-
             foreach ($call->getArgs() as $position => $arg) {
-                /** @var Arg $arg */
                 if ($this->shouldSkipArg($arg)) {
                     return [];
                 }
 
+                /** @var Arg $arg */
                 $staticTypesByArgumentPosition[$position][] = $this->resolveStrictArgValueType($arg);
             }
         }
@@ -77,6 +74,7 @@ final readonly class CallTypesResolver
                     continue;
                 }
 
+                /** @var Arg $arg */
                 $staticTypesByArgumentPosition[$position][] = $this->resolveArgValueType($arg);
             }
         }
@@ -204,11 +202,15 @@ final readonly class CallTypesResolver
     }
 
     /**
-     * There is argument unpack, or named expr
+     * There is first class callable usage, or argument unpack, or named expr
      * simply returns array marks as unknown as can be anything and in any position
      */
-    private function shouldSkipArg(Arg $arg): bool
+    private function shouldSkipArg(Arg|VariadicPlaceholder $arg): bool
     {
+        if ($arg instanceof VariadicPlaceholder) {
+            return true;
+        }
+
         if ($arg->unpack) {
             return true;
         }
