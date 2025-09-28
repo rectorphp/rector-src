@@ -107,7 +107,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $resolvedParameterType = $classMethodParameterTypes[$parameterPosition] ?? null;
+                $resolvedParameterType = $classMethodParameterTypes[$parameterPosition] ?? $classMethodParameterTypes[$parameterName] ?? null;
                 if (! $resolvedParameterType instanceof Type) {
                     continue;
                 }

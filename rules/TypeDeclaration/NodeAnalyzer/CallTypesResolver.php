@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
@@ -57,7 +58,7 @@ final readonly class CallTypesResolver
 
     /**
      * @param MethodCall[]|StaticCall[] $calls
-     * @return array<int, Type>
+     * @return array<int|string, Type>
      */
     public function resolveTypesFromCalls(array $calls): array
     {
@@ -75,7 +76,13 @@ final readonly class CallTypesResolver
                     continue;
                 }
 
-                $staticTypesByArgumentPosition[$position][] = $this->resolveArgValueType($arg);
+                if ($arg->name instanceof Identifier) {
+                    $positionOrName = $arg->name->toString();
+                } else {
+                    $positionOrName = $position;
+                }
+
+                $staticTypesByArgumentPosition[$positionOrName][] = $this->resolveArgValueType($arg);
             }
         }
 
