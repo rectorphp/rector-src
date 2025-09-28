@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
@@ -67,7 +66,7 @@ final readonly class CallTypesResolver
         foreach ($calls as $call) {
             foreach ($call->args as $position => $arg) {
                 if ($this->shouldSkipArg($arg)) {
-                    return [];
+                    continue;
                 }
 
                 /** @var Arg $arg */
@@ -206,11 +205,7 @@ final readonly class CallTypesResolver
             return true;
         }
 
-        if ($arg->unpack) {
-            return true;
-        }
-
-        return $arg->name instanceof Identifier;
+        return $arg->unpack;
     }
 
     private function isEmptyArray(Expr $expr): bool
