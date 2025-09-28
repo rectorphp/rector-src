@@ -75,6 +75,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
         }
 
         if ($itemType instanceof ArrayType && $this->isGenericArrayCandidate($itemType)) {
+
             return $this->createGenericArrayType($type, true);
         }
 
@@ -182,6 +183,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
         }
 
         $identifierTypeNode->setAttribute(self::HAS_GENERIC_TYPE_PARENT, $withKey);
+
         return new GenericTypeNode($identifierTypeNode, $genericTypes);
     }
 

@@ -108,7 +108,6 @@ CODE_SAMPLE
         $hasChanged = false;
 
         $dataProviderClassMethods = $this->dataProviderMethodsFinder->findDataProviderNodesInClass($node);
-
         if ($dataProviderClassMethods === []) {
             return null;
         }
