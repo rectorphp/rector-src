@@ -124,7 +124,10 @@ CODE_SAMPLE
 
                 $funcCallName = (string) $this->getName($subNode);
 
-                $arrayArg = $subNode->getArg('array', NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS[$funcCallName]['array']);
+                $arrayArg = $subNode->getArg(
+                    'array',
+                    NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS[$funcCallName]['array']
+                );
                 if (! $arrayArg instanceof Arg) {
                     return null;
                 }
@@ -146,7 +149,10 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $callbackArg = $subNode->getArg('callback', NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS[$funcCallName]['callback']);
+                $callbackArg = $subNode->getArg(
+                    'callback',
+                    NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS[$funcCallName]['callback']
+                );
                 if (! $callbackArg instanceof Arg) {
                     return null;
                 }

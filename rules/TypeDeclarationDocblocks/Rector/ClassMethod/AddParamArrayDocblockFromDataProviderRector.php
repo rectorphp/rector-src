@@ -127,7 +127,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if (! $this->isName($param->type, 'array')) {
+                if (! $this->isNames($param->type, ['array', 'iterable'])) {
                     continue;
                 }
 
