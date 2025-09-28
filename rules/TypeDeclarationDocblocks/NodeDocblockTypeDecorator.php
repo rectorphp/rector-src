@@ -62,12 +62,12 @@ final readonly class NodeDocblockTypeDecorator
         PhpDocInfo $classMethodPhpDocInfo,
         ClassMethod $classMethod
     ): bool {
-        $typeNode = $this->createTypeNode($type);
-
         if ($this->isBareMixedType($type)) {
             // no value
             return false;
         }
+
+        $typeNode = $this->createTypeNode($type);
 
         // no value iterable type
         if ($typeNode instanceof IdentifierTypeNode) {

@@ -76,11 +76,7 @@ final readonly class CallTypesResolver
                     continue;
                 }
 
-                if ($arg->name instanceof Identifier) {
-                    $positionOrName = $arg->name->toString();
-                } else {
-                    $positionOrName = $position;
-                }
+                $positionOrName = $arg->name instanceof Identifier ? $arg->name->toString() : $position;
 
                 $staticTypesByArgumentPosition[$positionOrName][] = $this->resolveArgValueType($arg);
             }
