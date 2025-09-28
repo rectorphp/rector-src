@@ -7,6 +7,8 @@ function FalseAndTrue()
     return [
         'first'  => [true],
         'second' => [false],
+        'third'  => [true],
+        'fourth' => [false],
     ];
 }
 
@@ -17,13 +19,15 @@ function FalseAndTrue()
 namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Fixture;
 
 /**
- * @return array<string, bool[]>
+ * @return array<string, true[]|false[]>
  */
 function FalseAndTrue()
 {
     return [
         'first'  => [true],
         'second' => [false],
+        'third'  => [true],
+        'fourth' => [false],
     ];
 }
 

@@ -32,7 +32,7 @@ final class TypeHasher
         if ($type instanceof ArrayType) {
             return $this->createTypeHash($type->getIterableValueType()) . $this->createTypeHash(
                 $type->getIterableKeyType()
-            ) . '[]';
+            ) . $type->getItemType()->describe(VerbosityLevel::precise()) . '[]';
         }
 
         if ($type instanceof GenericObjectType) {
