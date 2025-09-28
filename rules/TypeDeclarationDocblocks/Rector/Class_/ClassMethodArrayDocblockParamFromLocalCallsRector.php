@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -93,11 +95,7 @@ CODE_SAMPLE
             $classMethodParameterTypes = $this->callTypesResolver->resolveTypesFromCalls($methodCalls);
 
             foreach ($classMethod->getParams() as $parameterPosition => $param) {
-                if ($param->type === null) {
-                    continue;
-                }
-
-                if (! $this->isName($param->type, 'array')) {
+                if (! $this->hasParamArrayType($param)) {
                     continue;
                 }
 
@@ -115,6 +113,10 @@ CODE_SAMPLE
                 }
 
                 if ($resolvedParameterType instanceof MixedType) {
+                    continue;
+                }
+
+                if ($resolvedParameterType instanceof ArrayType && $resolvedParameterType->getItemType() instanceof MixedType && $resolvedParameterType->getKeyType() instanceof MixedType) {
                     continue;
                 }
 
@@ -139,5 +141,14 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function hasParamArrayType(Param $param): bool
+    {
+        if (! $param->type instanceof Node) {
+            return false;
+        }
+
+        return $this->isName($param->type, 'array');
     }
 }
