@@ -20,6 +20,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final readonly class TypeNormalizer
@@ -32,7 +33,8 @@ final readonly class TypeNormalizer
     public function __construct(
         private TypeFactory $typeFactory,
         private StaticTypeMapper $staticTypeMapper,
-        private ArrayTypeLeastCommonDenominatorResolver $arrayTypeLeastCommonDenominatorResolver
+        private ArrayTypeLeastCommonDenominatorResolver $arrayTypeLeastCommonDenominatorResolver,
+        private TypeHasher $typeHasher
     ) {
 
     }
@@ -94,7 +96,41 @@ final readonly class TypeNormalizer
             if ($type instanceof UnionType) {
                 $generalizedUnionedTypes = [];
                 foreach ($type->getTypes() as $unionedType) {
-                    $generalizedUnionedTypes[] = $this->generalizeConstantTypes($unionedType);
+                    $generalizedUnionedType = $this->generalizeConstantTypes($unionedType);
+
+                    if ($generalizedUnionedType instanceof ArrayType) {
+                        $keyType = $this->typeHasher->createTypeHash($generalizedUnionedType->getKeyType());
+
+                        foreach ($generalizedUnionedTypes as $key => $existingUnionedType) {
+                            if (! $existingUnionedType instanceof ArrayType) {
+                                continue;
+                            }
+
+                            $existingKeyType = $this->typeHasher->createTypeHash(
+                                $existingUnionedType->getKeyType()
+                            );
+
+                            if ($keyType !== $existingKeyType) {
+                                continue;
+                            }
+
+                            $uniqueTypes = $this->typeFactory->uniquateTypes(
+                                [$existingUnionedType->getItemType(), $generalizedUnionedType->getItemType()]
+                            );
+
+                            if (count($uniqueTypes) !== 1) {
+                                continue;
+                            }
+
+                            $generalizedUnionedTypes[$key] = new ArrayType(
+                                $existingUnionedType->getKeyType(),
+                                $uniqueTypes[0]
+                            );
+                            continue 2;
+                        }
+                    }
+
+                    $generalizedUnionedTypes[] = $generalizedUnionedType;
                 }
 
                 $uniqueGeneralizedUnionTypes = $this->typeFactory->uniquateTypes($generalizedUnionedTypes);
