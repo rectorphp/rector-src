@@ -62,6 +62,7 @@ final class UnionTypeMapper implements TypeMapperInterface
                 $unionedType = new ArrayType($unionedType->getKeyType(), new MixedType());
             }
 
+            // here to debug ...
             $unionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
         }
 
