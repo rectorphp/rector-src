@@ -37,6 +37,9 @@ final class SetManagerTest extends AbstractLazyTestCase
         $this->assertSame($expectedSets, $composerTriggeredSets);
     }
 
+    /**
+     * @return Iterator<(array<int, array<bool>>|array<int, array<int, bool>>|array<int, array<int, non-empty-string>>|array<int, string>)>
+     */
     public static function provideInstalledTwigData(): Iterator
     {
         // here we cannot used features coming up in 2.4, as we only have 2.0

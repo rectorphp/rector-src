@@ -57,6 +57,9 @@ final class PropertyNamingTest extends AbstractLazyTestCase
         $this->assertSame($expectedVariableName, $variableName);
     }
 
+    /**
+     * @return Iterator<array<int, string>>
+     */
     public static function provideDataPropertyName(): Iterator
     {
         yield ['SomeVariable', 'someVariable'];

@@ -36,6 +36,9 @@ final class PrivatesAccessorTest extends TestCase
         $this->assertSame($expectedResult, $result);
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideData(): Iterator
     {
         yield [SomeClassWithPrivateMethods::class, 'getNumber', [], 5];

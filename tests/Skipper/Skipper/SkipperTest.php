@@ -86,6 +86,9 @@ final class SkipperTest extends AbstractLazyTestCase
         $this->assertSame($expectedSkip, $resolvedSkip);
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideCheckerAndFile(): Iterator
     {
         yield [FifthElement::class, __DIR__ . '/Fixture', true];
@@ -97,6 +100,9 @@ final class SkipperTest extends AbstractLazyTestCase
         yield [NotSkippedClass::class, __DIR__ . '/Fixture/someOtherFile', false];
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideDataShouldSkipElement(): Iterator
     {
         yield [ThreeMan::class, false];

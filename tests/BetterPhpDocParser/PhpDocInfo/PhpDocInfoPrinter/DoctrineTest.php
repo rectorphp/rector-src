@@ -26,6 +26,9 @@ final class DoctrineTest extends AbstractPhpDocInfoPrinterTestCase
         $this->assertSame($docComment, $printedPhpDocInfo);
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideDataClass(): Iterator
     {
         yield [__DIR__ . '/Source/Doctrine/index_in_table.txt', IndexInTable::class];

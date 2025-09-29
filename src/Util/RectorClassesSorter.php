@@ -14,7 +14,7 @@ final class RectorClassesSorter
 {
     /**
      * @param array<class-string<RectorInterface|PostRectorInterface>> $rectorClasses
-     * @return array<class-string<RectorInterface|PostRectorInterface>>
+     * @return array<class-string<RectorInterface>>
      */
     public static function sortAndFilterOutPostRectors(array $rectorClasses): array
     {

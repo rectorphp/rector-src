@@ -27,6 +27,9 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         $this->assertSame($expectedSingularName, $singularValue);
     }
 
+    /**
+     * @return Iterator<array<int, string>>
+     */
     public static function provideData(): Iterator
     {
         yield ['psr4NamespacesToPaths', 'psr4NamespaceToPath'];

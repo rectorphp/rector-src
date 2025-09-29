@@ -56,6 +56,9 @@ final class UseAliasNameMatcherTest extends AbstractLazyTestCase
         $this->assertSame($expectedAttributeUseImportName, $useAliasMetadata->getUseImportName());
     }
 
+    /**
+     * @return Iterator<array<int, (AnnotationToAttribute|string)>>
+     */
     public static function provideData(): Iterator
     {
         yield [

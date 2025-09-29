@@ -29,6 +29,9 @@ final class VariableTypeResolverTest extends AbstractNodeTypeResolverTestCase
         $this->assertSame($expectedTypeWithClassName->getClassName(), $resolvedType->getClassName());
     }
 
+    /**
+     * @return Iterator<array<int, (int|ObjectType|string)>>
+     */
     public static function provideData(): Iterator
     {
         $anotherTypeObjectType = new ObjectType(AnotherType::class);

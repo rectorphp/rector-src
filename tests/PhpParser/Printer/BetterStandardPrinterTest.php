@@ -80,6 +80,9 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
         $this->assertSame($expectedPrintedNode, $printedNode);
     }
 
+    /**
+     * @return Iterator<array<int, (Yield_|Expression|string)>>
+     */
     public static function provideDataForYield(): Iterator
     {
         $yield = new Yield_(new String_('value'));
