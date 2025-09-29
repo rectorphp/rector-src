@@ -834,4 +834,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_ORD_WITH_MULTIBYTE_STRING = PhpVersion::PHP_85;
+
+    /**
+     * @see https://wiki.php.net/rfc/pipe-operator-v3
+     * @var int
+     */
+    public const PIPE_OPERATOER = PhpVersion::PHP_85;
 }
