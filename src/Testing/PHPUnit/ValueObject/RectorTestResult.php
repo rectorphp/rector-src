@@ -36,6 +36,6 @@ final readonly class RectorTestResult
             $rectorClasses = array_merge($rectorClasses, $fileDiff->getRectorClasses());
         }
 
-        return RectorClassesSorter::sort($rectorClasses);
+        return RectorClassesSorter::sortAndFilterOutPostRectors($rectorClasses);
     }
 }

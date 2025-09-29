@@ -93,7 +93,7 @@ final readonly class FileDiff implements SerializableInterface
             $rectorClasses[] = $rectorWithLineChange->getRectorClass();
         }
 
-        return RectorClassesSorter::sort($rectorClasses);
+        return RectorClassesSorter::sortAndFilterOutPostRectors($rectorClasses);
     }
 
     public function getFirstLineNumber(): ?int
