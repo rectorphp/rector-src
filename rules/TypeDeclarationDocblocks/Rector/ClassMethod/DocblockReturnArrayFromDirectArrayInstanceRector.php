@@ -9,12 +9,12 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Rector\TypeDeclarationDocblocks\TypeResolver\ConstantArrayTypeGeneralizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,9 +26,10 @@ final class DocblockReturnArrayFromDirectArrayInstanceRector extends AbstractRec
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstantArrayTypeGeneralizer $constantArrayTypeGeneralizer,
         private readonly ReturnNodeFinder $returnNodeFinder,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
     ) {
     }
 
@@ -80,14 +81,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        // return tag is already given
-        if ($phpDocInfo->getReturnTagValue() instanceof ReturnTagValueNode) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        if ($node->stmts === null) {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
             return null;
         }
 
@@ -107,11 +107,7 @@ CODE_SAMPLE
         }
 
         $genericTypeNode = $this->constantArrayTypeGeneralizer->generalize($returnedType);
-
-        $returnTagValueNode = new ReturnTagValueNode($genericTypeNode, '');
-        $phpDocInfo->addTagValueNode($returnTagValueNode);
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+        $this->phpDocTypeChanger->changeReturnTypeNode($node, $phpDocInfo, $genericTypeNode);
 
         return $node;
     }
