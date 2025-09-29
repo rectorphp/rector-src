@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Testing\PHPUnit\ValueObject;
 
 use Rector\Contract\Rector\RectorInterface;
-use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Util\RectorClassesSorter;
 use Rector\ValueObject\ProcessResult;
 
@@ -26,7 +25,7 @@ final readonly class RectorTestResult
     }
 
     /**
-     * @return array<class-string<RectorInterface|PostRectorInterface>>
+     * @return array<class-string<RectorInterface>>
      */
     public function getAppliedRectorClasses(): array
     {
