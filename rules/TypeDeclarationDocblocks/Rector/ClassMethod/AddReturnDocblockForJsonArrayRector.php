@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
@@ -22,6 +21,7 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\Enum\NetteClassName;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -34,7 +34,8 @@ final class AddReturnDocblockForJsonArrayRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReturnNodeFinder $returnNodeFinder,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
     ) {
     }
 
@@ -85,11 +86,6 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $returnType = $phpDocInfo->getReturnType();
-
-        if (! $returnType instanceof MixedType || $returnType->isExplicitMixed()) {
-            return null;
-        }
 
         // definitely not an array return
         if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'array')) {
@@ -111,8 +107,8 @@ CODE_SAMPLE
         }
 
         $classMethodDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        // already filled
-        if ($classMethodDocInfo->getReturnTagValue() instanceof ReturnTagValueNode) {
+
+        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($classMethodDocInfo->getReturnTagValue())) {
             return null;
         }
 
