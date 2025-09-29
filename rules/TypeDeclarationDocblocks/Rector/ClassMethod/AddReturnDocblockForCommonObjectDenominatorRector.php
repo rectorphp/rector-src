@@ -110,7 +110,7 @@ CODE_SAMPLE
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $returnType = $phpDocInfo->getReturnType();
 
-        if (! $returnType instanceof MixedType || $returnType->isExplicitMixed()) {
+        if ($returnType instanceof ArrayType && ! $returnType->getItemType() instanceof MixedType) {
             return null;
         }
 
@@ -175,6 +175,7 @@ CODE_SAMPLE
             $this->resolveKeyType($returnedType),
             new FullyQualifiedObjectType($firstSharedType)
         );
+
         $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $objectTypeArrayType);
         if (! $hasChanged) {
             return null;

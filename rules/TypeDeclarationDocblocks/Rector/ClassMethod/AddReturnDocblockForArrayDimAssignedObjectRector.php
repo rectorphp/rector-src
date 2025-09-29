@@ -23,8 +23,10 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -37,6 +39,8 @@ final class AddReturnDocblockForArrayDimAssignedObjectRector extends AbstractRec
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReturnNodeFinder $returnNodeFinder,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
     ) {
     }
 
@@ -101,7 +105,11 @@ CODE_SAMPLE
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $returnType = $phpDocInfo->getReturnType();
 
-        if (! $returnType instanceof MixedType || $returnType->isExplicitMixed()) {
+        if ($returnType instanceof ArrayType && ! $returnType->getItemType() instanceof MixedType) {
+            return null;
+        }
+
+        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
             return null;
         }
 
@@ -124,70 +132,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $isVariableExclusivelyArrayDimAssigned = true;
-
-        $this->traverseNodesWithCallable((array) $node->stmts, function ($node) use (
-            $returnedVariableName,
-            &$isVariableExclusivelyArrayDimAssigned
-        ): ?int {
-            if ($node instanceof Assign) {
-                if ($node->var instanceof ArrayDimFetch) {
-                    $arrayDimFetch = $node->var;
-
-                    if (! $arrayDimFetch->var instanceof Variable) {
-                        $isVariableExclusivelyArrayDimAssigned = false;
-                        return null;
-                    }
-
-                    if ($this->isName($arrayDimFetch->var, $returnedVariableName)) {
-                        if ($arrayDimFetch->dim instanceof Expr) {
-                            $isVariableExclusivelyArrayDimAssigned = false;
-                        }
-
-                        $assignedType = $this->getType($node->expr);
-                        if (! $assignedType instanceof ObjectType) {
-                            $isVariableExclusivelyArrayDimAssigned = false;
-                        }
-
-                        if ($assignedType instanceof NonExistingObjectType) {
-                            $isVariableExclusivelyArrayDimAssigned = false;
-                        }
-
-                        // ignore lower value
-                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                    }
-                }
-
-                if ($node->var instanceof Variable && $this->isName(
-                    $node->var,
-                    $returnedVariableName
-                ) && $node->expr instanceof Array_) {
-                    if ($node->expr->items === []) {
-                        // ignore empty array assignment
-                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                    }
-
-                    $isVariableExclusivelyArrayDimAssigned = false;
-                }
-            }
-
-            if ($node instanceof Return_ && $node->expr instanceof Variable) {
-                if ($this->isName($node->expr, $returnedVariableName)) {
-                    // ignore lower value
-                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                }
-
-                $isVariableExclusivelyArrayDimAssigned = false;
-            }
-
-            if ($node instanceof Variable && $this->isName($node, $returnedVariableName)) {
-                $isVariableExclusivelyArrayDimAssigned = false;
-            }
-
-            return null;
-        });
-
-        if ($isVariableExclusivelyArrayDimAssigned === false) {
+        if ($this->isVariableExclusivelyArrayDimAssigned($node, $returnedVariableName) === false) {
             return null;
         }
 
@@ -196,13 +141,9 @@ CODE_SAMPLE
             return null;
         }
 
-        //$arrayReturnDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($arrayObjectType);
-
         $objectTypeArrayType = new ArrayType(new MixedType(), $arrayObjectType);
-        $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $objectTypeArrayType);
-        if (! $hasChanged) {
-            return null;
-        }
+        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($objectTypeArrayType);
+        $this->phpDocTypeChanger->changeReturnTypeNode($node, $phpDocInfo, $returnTypeNode);
 
         return $node;
     }
@@ -224,5 +165,75 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isVariableExclusivelyArrayDimAssigned(
+        ClassMethod|Function_ $functionLike,
+        string $variableName
+    ): bool {
+        $isVariableExclusivelyArrayDimAssigned = true;
+
+        $this->traverseNodesWithCallable((array) $functionLike->stmts, function ($node) use (
+            $variableName,
+            &$isVariableExclusivelyArrayDimAssigned
+        ): ?int {
+            if ($node instanceof Assign) {
+                if ($node->var instanceof ArrayDimFetch) {
+                    $arrayDimFetch = $node->var;
+
+                    if (! $arrayDimFetch->var instanceof Variable) {
+                        $isVariableExclusivelyArrayDimAssigned = false;
+                        return null;
+                    }
+
+                    if ($this->isName($arrayDimFetch->var, $variableName)) {
+                        if ($arrayDimFetch->dim instanceof Expr) {
+                            $isVariableExclusivelyArrayDimAssigned = false;
+                        }
+
+                        $assignedType = $this->getType($node->expr);
+                        if (! $assignedType instanceof ObjectType) {
+                            $isVariableExclusivelyArrayDimAssigned = false;
+                        }
+
+                        if ($assignedType instanceof NonExistingObjectType) {
+                            $isVariableExclusivelyArrayDimAssigned = false;
+                        }
+
+                        // ignore lower value
+                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    }
+                }
+
+                if ($node->var instanceof Variable && $this->isName(
+                    $node->var,
+                    $variableName
+                ) && $node->expr instanceof Array_) {
+                    if ($node->expr->items === []) {
+                        // ignore empty array assignment
+                        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    }
+
+                    $isVariableExclusivelyArrayDimAssigned = false;
+                }
+            }
+
+            if ($node instanceof Return_ && $node->expr instanceof Variable) {
+                if ($this->isName($node->expr, $variableName)) {
+                    // ignore lower value
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                $isVariableExclusivelyArrayDimAssigned = false;
+            }
+
+            if ($node instanceof Variable && $this->isName($node, $variableName)) {
+                $isVariableExclusivelyArrayDimAssigned = false;
+            }
+
+            return null;
+        });
+
+        return $isVariableExclusivelyArrayDimAssigned;
     }
 }
