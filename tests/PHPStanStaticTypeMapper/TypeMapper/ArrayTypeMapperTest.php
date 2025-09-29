@@ -53,6 +53,9 @@ final class ArrayTypeMapperTest extends AbstractLazyTestCase
         yield [$arrayType, 'string[]'];
     }
 
+    /**
+     * @return Iterator<array<int, (ArrayType|string)>>
+     */
     public static function provideDataUnionedWithoutKeys(): Iterator
     {
         $stringAndIntegerUnionType = new UnionType([new StringType(), new IntegerType()]);
@@ -66,6 +69,9 @@ final class ArrayTypeMapperTest extends AbstractLazyTestCase
         yield [$evenMoreNestedUnionArrayType, 'string[][][]|int[][][]'];
     }
 
+    /**
+     * @return Iterator<array<int, (ArrayType|string)>>
+     */
     public static function provideDataWithKeys(): Iterator
     {
         $arrayMixedToStringType = new ArrayType(new MixedType(), new StringType());

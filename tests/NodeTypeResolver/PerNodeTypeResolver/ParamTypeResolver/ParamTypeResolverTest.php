@@ -25,6 +25,9 @@ final class ParamTypeResolverTest extends AbstractNodeTypeResolverTestCase
         $this->assertSame($resolvedType::class, $expectedType);
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/MethodParamTypeHint.php', 0, FullyQualifiedObjectType::class];

@@ -26,6 +26,9 @@ final class FilePathHelperTest extends TestCase
         $this->assertSame($expectedNormalizedPath, $normalizedPath);
     }
 
+    /**
+     * @return Iterator<array<int, string>>
+     */
     public static function provideData(): Iterator
     {
         // based on Linux

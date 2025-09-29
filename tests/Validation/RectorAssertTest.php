@@ -89,6 +89,9 @@ final class RectorAssertTest extends TestCase
         RectorAssert::functionName($functionName);
     }
 
+    /**
+     * @return Iterator<array<int, string>>
+     */
     public static function provideDataInvalidFunctionNames(): Iterator
     {
         yield ['35'];

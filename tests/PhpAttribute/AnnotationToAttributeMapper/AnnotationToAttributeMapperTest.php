@@ -42,6 +42,9 @@ final class AnnotationToAttributeMapperTest extends AbstractLazyTestCase
         }
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideData(): Iterator
     {
         yield [false, ConstFetch::class];

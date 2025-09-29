@@ -41,6 +41,9 @@ final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTestCase
         $this->assertSame($expectedTypeAsString, $resolvedTypeAsString);
     }
 
+    /**
+     * @return Iterator<array<int, (int|ObjectType|UnionType|string)>>
+     */
     public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/MethodParamDocBlock.php', 0, new ObjectType(Html::class)];
