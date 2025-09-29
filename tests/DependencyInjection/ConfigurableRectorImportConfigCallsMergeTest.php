@@ -30,6 +30,9 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractLazyTes
         $this->assertSame($expectedConfiguration, $renamedClassesDataCollector->getOldToNewClasses());
     }
 
+    /**
+     * @return Iterator<(array<int, array<string, string>>|array<int, string>)>
+     */
     public static function provideData(): Iterator
     {
         yield [
