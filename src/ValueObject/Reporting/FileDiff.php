@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Parallel\ValueObject\BridgeItem;
+use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Util\RectorClassesSorter;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
@@ -82,7 +83,7 @@ final readonly class FileDiff implements SerializableInterface
     }
 
     /**
-     * @return array<class-string<RectorInterface>>
+     * @return array<class-string<RectorInterface|PostRectorInterface>>
      */
     public function getRectorClasses(): array
     {
@@ -92,7 +93,7 @@ final readonly class FileDiff implements SerializableInterface
             $rectorClasses[] = $rectorWithLineChange->getRectorClass();
         }
 
-        return RectorClassesSorter::sortAndFilterOutPostRectors($rectorClasses);
+        return RectorClassesSorter::sort($rectorClasses);
     }
 
     public function getFirstLineNumber(): ?int

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Testing\PHPUnit\ValueObject;
 
 use Rector\Contract\Rector\RectorInterface;
+use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Util\RectorClassesSorter;
 use Rector\ValueObject\ProcessResult;
 
@@ -25,7 +26,7 @@ final readonly class RectorTestResult
     }
 
     /**
-     * @return array<class-string<RectorInterface>>
+     * @return array<class-string<RectorInterface|PostRectorInterface>>
      */
     public function getAppliedRectorClasses(): array
     {
@@ -35,6 +36,6 @@ final readonly class RectorTestResult
             $rectorClasses = array_merge($rectorClasses, $fileDiff->getRectorClasses());
         }
 
-        return RectorClassesSorter::sortAndFilterOutPostRectors($rectorClasses);
+        return RectorClassesSorter::sort($rectorClasses);
     }
 }

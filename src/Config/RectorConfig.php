@@ -451,4 +451,9 @@ final class RectorConfig extends Container
     {
         SimpleParameterProvider::addParameter(Option::LEVEL_OVERFLOWS, $levelOverflows);
     }
+
+    public function includePostRectorsInReports(bool $includePostRectorsInReports = true): void
+    {
+        SimpleParameterProvider::setParameter(Option::INCLUDE_POST_RECTORS_IN_REPORTS, $includePostRectorsInReports);
+    }
 }

@@ -327,4 +327,9 @@ final class Option
      * @var string
      */
     public const KAIZEN = 'kaizen';
+
+    /**
+     * @var string
+     */
+    public const INCLUDE_POST_RECTORS_IN_REPORTS = 'include_post_rectors_in_reports';
 }

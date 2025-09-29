@@ -177,6 +177,8 @@ final class RectorConfigBuilder
 
     private ?bool $isWithPhpLevelUsed = null;
 
+    private ?bool $includePostRectorsInReports = null;
+
     /**
      * @var array<class-string<SetProviderInterface>,bool>
      */
@@ -389,6 +391,10 @@ final class RectorConfigBuilder
 
         if ($this->levelOverflows !== []) {
             $rectorConfig->setOverflowLevels($this->levelOverflows);
+        }
+
+        if ($this->includePostRectorsInReports !== null) {
+            $rectorConfig->includePostRectorsInReports($this->includePostRectorsInReports);
         }
     }
 
@@ -1289,6 +1295,12 @@ final class RectorConfigBuilder
             $this->setProviders[$setProvider] = true;
         }
 
+        return $this;
+    }
+
+    public function withIncludePostRectorsInReports(bool $includePostRectorsInReports = true): self
+    {
+        $this->includePostRectorsInReports = $includePostRectorsInReports;
         return $this;
     }
 }

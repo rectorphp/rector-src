@@ -46,4 +46,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->reportingRealPath(false);
 
     $rectorConfig->treatClassesAsFinal(false);
+
+    $rectorConfig->includePostRectorsInReports(false);
 };
