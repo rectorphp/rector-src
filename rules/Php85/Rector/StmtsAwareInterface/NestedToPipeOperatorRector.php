@@ -5,9 +5,16 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Cast\Array_;
+use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\VariadicPlaceholder;
@@ -25,7 +32,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NestedToPipeOperatorRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
-    { 
+    {
         return new RuleDefinition(
             'Transform nested function calls and sequential assignments to pipe operator syntax',
             [
@@ -105,7 +112,7 @@ CODE_SAMPLE
 
     /**
      * @param array<int, Stmt> $statements
-     * @return array<int, Stmt>|null
+     * @return array<int, array{stmt: Stmt, assign: Expr, funcCall: Expr\FuncCall}>|null
      */
     private function findAssignmentChain(array $statements, int $startIndex): ?array
     {
@@ -122,22 +129,26 @@ CODE_SAMPLE
 
             $expr = $stmt->expr;
             if (! $expr instanceof Assign) {
-                break;
+                return null;
             }
 
             // Check if this is a simple function call with one argument
             if (! $expr->expr instanceof FuncCall) {
-                break;
+                return null;
             }
 
             $funcCall = $expr->expr;
             if (count($funcCall->args) !== 1) {
-                break;
+                return null;
             }
 
             $arg = $funcCall->args[0];
+            if (! $arg instanceof Arg) {
+                return null;
+            }
 
             if ($currentIndex === $startIndex) {
+
                 // First in chain - must be a variable or simple value
                 if (! $arg->value instanceof Variable && ! $this->isSimpleValue($arg->value)) {
                     return null;
@@ -152,9 +163,7 @@ CODE_SAMPLE
                 $previousAssign = $chain[count($chain) - 1]['assign'];
                 $previousVarName = $this->getName($previousAssign->var);
 
-                if (! $arg->value instanceof Variable || $this->getName(
-                    $arg->value
-                ) !== $previousVarName) {
+                if (! $arg->value instanceof Variable || $this->getName($arg->value) !== $previousVarName) {
                     break;
                 }
                 $chain[] = [
@@ -164,21 +173,25 @@ CODE_SAMPLE
                 ];
             }
 
-            $currentIndex += 1;
+            ++$currentIndex;
         }
 
         return $chain;
     }
 
-    private function isSimpleValue(Node $node): bool
+    private function isSimpleValue(Expr $expr): bool
     {
-        return $node instanceof Node\Scalar\String_
-            || $node instanceof Node\Scalar\LNumber
-            || $node instanceof Node\Scalar\DNumber
-            || $node instanceof Node\Expr\ConstFetch
-            || $node instanceof Node\Expr\Array_;
+        return $expr instanceof Variable
+            || $expr instanceof ConstFetch
+            || $expr instanceof String_
+            || $expr instanceof LNumber
+            || $expr instanceof DNumber
+            || $expr instanceof Array_;
     }
 
+    /**
+     * @param array<int, array{stmt: Stmt, assign: Expr, funcCall: Expr\FuncCall}> $chain
+     */
     private function processAssignmentChain(StmtsAwareInterface $node, array $chain, int $startIndex): void
     {
         $firstAssignment = $chain[0]['assign'];
@@ -186,7 +199,17 @@ CODE_SAMPLE
 
         // Get the initial value from the first function call's argument
         $firstFuncCall = $chain[0]['funcCall'];
-        $initialValue = $firstFuncCall->args[0]->value;
+
+        if (! $firstFuncCall instanceof FuncCall) {
+            return;
+        }
+
+        $firstArg = $firstFuncCall->args[0];
+        if (! $firstArg instanceof Arg) {
+            return;
+        }
+
+        $initialValue = $firstArg->value;
 
         // Build the pipe chain
         $pipeExpression = $initialValue;
@@ -197,6 +220,9 @@ CODE_SAMPLE
             $pipeExpression = new Node\Expr\BinaryOp\Pipe($pipeExpression, $placeholderCall);
         }
 
+        if (! $lastAssignment instanceof Assign) {
+            return;
+        }
         // Create the final assignment
         $finalAssignment = new Assign($lastAssignment->var, $pipeExpression);
         $finalExpression = new Expression($finalAssignment);
@@ -205,7 +231,7 @@ CODE_SAMPLE
         $endIndex = $startIndex + count($chain) - 1;
 
         // Remove all intermediate statements and replace with the final pipe expression
-        for ($i = $startIndex; $i <= $endIndex; $i++) {
+        for ($i = $startIndex; $i <= $endIndex; ++$i) {
             if ($i === $startIndex) {
                 $node->stmts[$i] = $finalExpression;
             } else {
@@ -240,6 +266,7 @@ CODE_SAMPLE
                 }
             } elseif ($expr instanceof FuncCall) {
                 $processedValue = $this->processNestedCalls($expr);
+
                 if ($processedValue !== null && $processedValue !== $expr) {
                     $stmt->expr = $processedValue;
                     $hasChanged = true;
@@ -250,7 +277,7 @@ CODE_SAMPLE
         return $hasChanged;
     }
 
-    private function processNestedCalls(Node $node): ?Node
+    private function processNestedCalls(Node $node): ?Expr
     {
         if (! $node instanceof FuncCall) {
             return null;
@@ -258,6 +285,9 @@ CODE_SAMPLE
 
         // Check if any argument is a function call
         foreach ($node->args as $arg) {
+            if (! $arg instanceof Arg) {
+                return null;
+            }
             if ($arg->value instanceof FuncCall) {
                 return $this->buildPipeExpression($node, $arg->value);
             }
