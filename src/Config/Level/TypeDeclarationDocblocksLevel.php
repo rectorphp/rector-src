@@ -20,7 +20,7 @@ use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForJsonA
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockGetterReturnArrayFromPropertyDocblockVarRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector;
 
-final class TypeDeclarationDocblockLevel
+final class TypeDeclarationDocblocksLevel
 {
     /**
      * @var array<class-string<RectorInterface>>

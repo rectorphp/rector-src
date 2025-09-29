@@ -11,6 +11,7 @@ use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\CodingStyleLevel;
 use Rector\Config\Level\DeadCodeLevel;
+use Rector\Config\Level\TypeDeclarationDocblocksLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
 use Rector\Config\RegisteredService;
@@ -742,6 +743,7 @@ final class RectorConfigBuilder
         bool $codeQuality = false,
         bool $codingStyle = false,
         bool $typeDeclarations = false,
+        bool $typeDeclarationDocblocks = false,
         bool $privatization = false,
         bool $naming = false,
         bool $instanceOf = false,
@@ -761,6 +763,7 @@ final class RectorConfigBuilder
             SetList::CODE_QUALITY => $codeQuality,
             SetList::CODING_STYLE => $codingStyle,
             SetList::TYPE_DECLARATION => $typeDeclarations,
+            SetList::TYPE_DECLARATION_DOCBLOCKS => $typeDeclarationDocblocks,
             SetList::PRIVATIZATION => $privatization,
             SetList::NAMING => $naming,
             SetList::INSTANCEOF => $instanceOf,
@@ -1011,6 +1014,33 @@ final class RectorConfigBuilder
                 $levelRulesCount,
                 'typeDeclarations',
                 'TYPE_DECLARATION'
+            );
+        }
+
+        $this->rules = array_merge($this->rules, $levelRules);
+
+        return $this;
+    }
+
+    /**
+     * Raise your type coverage docblock from the safest type rules
+     * to more affecting ones, one level at a time
+     */
+    public function withTypeCoverageDocblockLevel(int $level): self
+    {
+        Assert::natural($level);
+
+        $levelRules = LevelRulesResolver::resolve($level, TypeDeclarationDocblocksLevel::RULES, __METHOD__);
+
+        // too high
+        $levelRulesCount = count($levelRules);
+        if ($levelRulesCount + self::MAX_LEVEL_GAP < $level) {
+            $this->levelOverflows[] = new LevelOverflow(
+                __METHOD__,
+                $level,
+                $levelRulesCount,
+                'TypeDeclarationDocblocksLevel',
+                'TYPE_DECLARATION_DOCBLOCKS'
             );
         }
 
