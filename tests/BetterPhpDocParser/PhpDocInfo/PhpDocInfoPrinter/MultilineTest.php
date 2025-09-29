@@ -23,6 +23,9 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTestCase
         $this->assertSame($docComment, $printedPhpDocInfo);
     }
 
+    /**
+     * @return Iterator<array<int, string>>
+     */
     public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/Multiline/multiline2.txt'];

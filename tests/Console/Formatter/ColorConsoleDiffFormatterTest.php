@@ -28,6 +28,9 @@ final class ColorConsoleDiffFormatterTest extends TestCase
         $this->assertStringEqualsFile($expectedFormattedFileContent, $formattedContent);
     }
 
+    /**
+     * @return Iterator<array<int, string>>
+     */
     public static function provideData(): Iterator
     {
         yield ['...', __DIR__ . '/Source/expected/expected.txt'];
