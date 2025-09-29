@@ -43,6 +43,9 @@ final class StaticDoctrineAnnotationParserTest extends AbstractLazyTestCase
         $this->assertEquals($expectedValue, $value);
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideData(): Iterator
     {
         $curlyListNode = new CurlyListNode([

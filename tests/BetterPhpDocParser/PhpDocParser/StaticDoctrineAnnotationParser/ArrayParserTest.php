@@ -41,6 +41,9 @@ final class ArrayParserTest extends AbstractLazyTestCase
         $this->assertEquals($expectedArrayItemNodes, $arrayItemNodes);
     }
 
+    /**
+     * @return Iterator<array<int, (array<int, ArrayItemNode>|string)>>
+     */
     public static function provideData(): Iterator
     {
         yield ['{key: "value"}', [new ArrayItemNode(new StringNode('value'), 'key')]];

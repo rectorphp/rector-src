@@ -44,6 +44,9 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
         $this->assertInstanceOf($expectedType, $phpStanType);
     }
 
+    /**
+     * @return Iterator<array<array<int, mixed>, mixed>>
+     */
     public static function provideData(): Iterator
     {
         $genericTypeNode = new GenericTypeNode(new IdentifierTypeNode('Traversable'), []);
@@ -85,6 +88,9 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
         $this->assertInstanceOf($expectedType, $phpStanType);
     }
 
+    /**
+     * @return Iterator<array<int, (class-string<IterableType>|Identifier)>>
+     */
     public static function provideDataForMapPhpParserNodePHPStanType(): Iterator
     {
         yield [new Identifier('iterable'), IterableType::class];

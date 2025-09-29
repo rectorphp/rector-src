@@ -28,6 +28,9 @@ final class FnMatchPathNormalizerTest extends AbstractLazyTestCase
         $this->assertSame($expectedNormalizedPath, $normalizedPath);
     }
 
+    /**
+     * @return Iterator<array<int, string>>
+     */
     public static function providePaths(): Iterator
     {
         yield ['path/with/no/asterisk', 'path/with/no/asterisk'];
