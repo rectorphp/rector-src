@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\VariadicPlaceholder;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -24,7 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NestedToPipeOperatorRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
-    {
+    { 
         return new RuleDefinition(
             'Transform nested function calls and sequential assignments to pipe operator syntax',
             [
@@ -86,11 +87,12 @@ CODE_SAMPLE
     {
         $hasChanged = false;
         $statements = $node->stmts;
+        $totalStatements = count($statements) - 1;
 
-        for ($i = 0; $i < count($statements) - 1; $i++) {
+        for ($i = 0; $i < $totalStatements; ++$i) {
             $chain = $this->findAssignmentChain($statements, $i);
 
-            if ($chain !== null && count($chain) >= 2) {
+            if ($chain && count($chain) >= 2) {
                 $this->processAssignmentChain($node, $chain, $i);
                 $hasChanged = true;
                 // Skip processed statements
@@ -101,12 +103,17 @@ CODE_SAMPLE
         return $hasChanged;
     }
 
+    /**
+     * @param array<int, Stmt> $statements
+     * @return array<int, Stmt>|null
+     */
     private function findAssignmentChain(array $statements, int $startIndex): ?array
     {
         $chain = [];
         $currentIndex = $startIndex;
+        $totalStatements = count($statements);
 
-        while ($currentIndex < count($statements)) {
+        while ($currentIndex < $totalStatements) {
             $stmt = $statements[$currentIndex];
 
             if (! $stmt instanceof Expression) {
@@ -133,7 +140,7 @@ CODE_SAMPLE
             if ($currentIndex === $startIndex) {
                 // First in chain - must be a variable or simple value
                 if (! $arg->value instanceof Variable && ! $this->isSimpleValue($arg->value)) {
-                    break;
+                    return null;
                 }
                 $chain[] = [
                     'stmt' => $stmt,
@@ -157,10 +164,10 @@ CODE_SAMPLE
                 ];
             }
 
-            $currentIndex++;
+            $currentIndex += 1;
         }
 
-        return count($chain) >= 2 ? $chain : null;
+        return $chain;
     }
 
     private function isSimpleValue(Node $node): bool

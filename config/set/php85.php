@@ -16,6 +16,7 @@ use Rector\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector;
 use Rector\Php85\Rector\FuncCall\ChrArgModuloRector;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
+use Rector\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector;
 use Rector\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
@@ -43,6 +44,7 @@ return static function (RectorConfig $rectorConfig): void {
             SleepToSerializeRector::class,
             OrdSingleByteRector::class,
             WakeupToUnserializeRector::class,
+            NestedToPipeOperatorRector::class,
         ]
     );
 
