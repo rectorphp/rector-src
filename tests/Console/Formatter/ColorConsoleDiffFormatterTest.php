@@ -29,7 +29,7 @@ final class ColorConsoleDiffFormatterTest extends TestCase
     }
 
     /**
-     * @return Iterator<(array<int, string>|array<int, string>)>
+     * @return Iterator<array<int, string>>
      */
     public static function provideData(): Iterator
     {
