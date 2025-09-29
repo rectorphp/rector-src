@@ -9,12 +9,12 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Cast\Array_;
+use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\VariadicPlaceholder;
@@ -184,8 +184,8 @@ CODE_SAMPLE
         return $expr instanceof Variable
             || $expr instanceof ConstFetch
             || $expr instanceof String_
-            || $expr instanceof LNumber
-            || $expr instanceof DNumber
+            || $expr instanceof Float_
+            || $expr instanceof Int_
             || $expr instanceof Array_;
     }
 
