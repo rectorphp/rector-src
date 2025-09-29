@@ -23,7 +23,6 @@ return RectorConfig::configure()
     )
     ->withAttributesSets()
     ->withComposerBased(phpunit: true)
-    ->withSets([\Rector\Set\ValueObject\SetList::TYPE_DECLARATION_DOCBLOCKS])
     ->withPhpSets()
     ->withPaths([
         __DIR__ . '/bin',
