@@ -121,6 +121,9 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @param array<string, mixed> $configuration
+     */
     public function configure(array $configuration): void
     {
         Assert::keyExists($configuration, self::LIMIT);

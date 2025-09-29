@@ -68,6 +68,9 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements Min
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $configuration
+     */
     public function configure(array $configuration): void
     {
         $this->inlinePublic = $configuration[self::INLINE_PUBLIC] ?? (bool) current($configuration);
