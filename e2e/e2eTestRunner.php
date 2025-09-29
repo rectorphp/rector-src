@@ -7,6 +7,7 @@
 use Rector\Console\Formatter\ColorConsoleDiffFormatter;
 use Rector\Console\Formatter\ConsoleDiffer;
 use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\Differ\DefaultDiffer;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 
@@ -37,7 +38,7 @@ if (isset($argv[1]) && $argv[1] === '--kaizen') {
 
 $cliOptions = 'cli-options.txt';
 if (file_exists($cliOptions)) {
-    $e2eCommand .= ' ' . trim(file_get_contents($cliOptions));
+    $e2eCommand .= ' ' . trim((string) file_get_contents($cliOptions));
 }
 
 
@@ -55,15 +56,16 @@ $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
 $symfonyStyle =  $symfonyStyleFactory->create();
 
 $matchedExpectedOutput = false;
-$expectedOutput = trim(file_get_contents($expectedDiff));
+$expectedOutput = trim((string) file_get_contents($expectedDiff));
 if ($output === $expectedOutput) {
     $symfonyStyle->success('End-to-end test successfully completed');
     exit(Command::SUCCESS);
 }
 
 // print color diff, to make easy find the differences
-$consoleDiffer = new ConsoleDiffer(new ColorConsoleDiffFormatter());
-$diff = $consoleDiffer->diff($output, $expectedOutput);
+$defaultDiffer = new DefaultDiffer();
+$colorConsoleDiffFormatter = new ColorConsoleDiffFormatter();
+$diff = $colorConsoleDiffFormatter->format($defaultDiffer->diff($output, $expectedOutput));
 $symfonyStyle->writeln($diff);
 
 exit(Command::FAILURE);
