@@ -7,7 +7,6 @@ class ComplexArray
    public function run(): array
     {
         return [
-            'id' => new \stdClass(),
             'other' => false,
             'context' => [
                 'id' => 1,
@@ -37,12 +36,11 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 class ComplexArray
 {
    /**
-    * @return array<string, mixed>
+    * @return array<string, array<string, array<string, string>|int>|array<string, int|string>|bool>
     */
    public function run(): array
     {
         return [
-            'id' => new \stdClass(),
             'other' => false,
             'context' => [
                 'id' => 1,
