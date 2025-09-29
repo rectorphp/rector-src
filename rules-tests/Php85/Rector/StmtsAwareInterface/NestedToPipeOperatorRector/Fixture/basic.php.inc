@@ -13,9 +13,5 @@ $result = function1($result2);
 namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\Fixture;
 
 $value = "hello world";
-
-$result = $value
-    |> function3(...)
-    |> function2(...)
-    |> function1(...);
+$result = $value |> function3(...) |> function2(...) |> function1(...);
 ?>
