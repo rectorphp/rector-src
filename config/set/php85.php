@@ -16,7 +16,14 @@ use Rector\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector;
 use Rector\Php85\Rector\FuncCall\ChrArgModuloRector;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
+<<<<<<< HEAD
+<<<<<<< HEAD
 use Rector\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector;
+=======
+use Rector\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector;
+>>>>>>> 647c058cfc (pipe)
+=======
+>>>>>>> 07955913ad (init)
 use Rector\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallRector;
@@ -43,7 +50,14 @@ return static function (RectorConfig $rectorConfig): void {
             SleepToSerializeRector::class,
             OrdSingleByteRector::class,
             WakeupToUnserializeRector::class,
+<<<<<<< HEAD
+<<<<<<< HEAD
             ShellExecFunctionCallOverBackticksRector::class,
+=======
+            NestedToPipeOperatorRector::class,
+>>>>>>> 647c058cfc (pipe)
+=======
+>>>>>>> 07955913ad (init)
         ]
     );
 
