@@ -142,6 +142,8 @@ final class RectorConfigBuilder
      */
     private ?bool $isTypeCoverageLevelUsed = null;
 
+    private ?bool $isTypeCoverageDocblockLevelUsed = null;
+
     private ?bool $isDeadCodeLevelUsed = null;
 
     private ?bool $isCodeQualityLevelUsed = null;
@@ -221,6 +223,17 @@ final class RectorConfigBuilder
         if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
                 'Your config already enables type declarations set.%sRemove "->withTypeCoverageLevel()" as it only duplicates it, or remove type declaration set.',
+                PHP_EOL
+            ));
+        }
+
+        if (in_array(
+            SetList::TYPE_DECLARATION_DOCBLOCKS,
+            $uniqueSets,
+            true
+        ) && $this->isTypeCoverageDocblockLevelUsed === true) {
+            throw new InvalidConfigurationException(sprintf(
+                'Your config already enables type declarations set.%sRemove "->withTypeCoverageDocblockLevel()" as it only duplicates it, or remove type declaration set.',
                 PHP_EOL
             ));
         }
@@ -1029,6 +1042,8 @@ final class RectorConfigBuilder
     public function withTypeCoverageDocblockLevel(int $level): self
     {
         Assert::natural($level);
+
+        $this->isTypeCoverageDocblockLevelUsed = true;
 
         $levelRules = LevelRulesResolver::resolve($level, TypeDeclarationDocblocksLevel::RULES, __METHOD__);
 
