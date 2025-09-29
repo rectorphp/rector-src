@@ -106,7 +106,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($returnedType->getReferencedClasses()) > 1) {
+        if ($returnedType->getReferencedClasses() !== []) {
             // better handled by shared-interface/class rule, to avoid turning objects to mixed
             return null;
         }

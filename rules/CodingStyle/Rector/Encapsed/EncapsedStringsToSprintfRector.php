@@ -55,6 +55,9 @@ final class EncapsedStringsToSprintfRector extends AbstractRector implements Con
      */
     private array $argumentVariables = [];
 
+    /**
+     * @param array<string, mixed> $configuration
+     */
     public function configure(array $configuration): void
     {
         $this->always = $configuration[self::ALWAYS] ?? false;
