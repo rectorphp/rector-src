@@ -50,6 +50,9 @@ CODE_SAMPLE
         ]);
     }
 
+    /**
+     * @return array<int, class-string<Param>>
+     */
     public function getNodeTypes(): array
     {
         return [Param::class];

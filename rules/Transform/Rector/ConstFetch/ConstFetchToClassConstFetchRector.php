@@ -33,6 +33,9 @@ final class ConstFetchToClassConstFetchRector extends AbstractRector implements 
         ]);
     }
 
+    /**
+     * @return array<int, class-string<ConstFetch>>
+     */
     public function getNodeTypes(): array
     {
         return [ConstFetch::class];

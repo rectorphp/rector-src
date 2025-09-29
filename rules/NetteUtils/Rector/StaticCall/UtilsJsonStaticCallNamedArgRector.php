@@ -40,6 +40,9 @@ CODE_SAMPLE
         ]);
     }
 
+    /**
+     * @return array<int, class-string<StaticCall>>
+     */
     public function getNodeTypes(): array
     {
         return [StaticCall::class];

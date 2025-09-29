@@ -80,6 +80,9 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @return array<int, class-string<MethodCall>>
+     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class];

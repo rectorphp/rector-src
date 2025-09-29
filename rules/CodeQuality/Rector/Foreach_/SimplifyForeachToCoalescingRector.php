@@ -54,6 +54,7 @@ CODE_SAMPLE
 
     /**
      * @innerForeachReturn array<class-string<Node>>
+     * @return array<int, class-string<StmtsAwareInterface>>
      */
     public function getNodeTypes(): array
     {

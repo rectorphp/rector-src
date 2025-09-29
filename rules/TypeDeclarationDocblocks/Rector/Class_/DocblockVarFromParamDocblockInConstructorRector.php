@@ -30,6 +30,9 @@ final class DocblockVarFromParamDocblockInConstructorRector extends AbstractRect
     ) {
     }
 
+    /**
+     * @return array<int, class-string<Class_>>
+     */
     public function getNodeTypes(): array
     {
         return [Class_::class];

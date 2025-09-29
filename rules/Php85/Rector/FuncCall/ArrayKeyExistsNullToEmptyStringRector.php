@@ -51,6 +51,9 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         );
     }
 
+    /**
+     * @return array<int, class-string<FuncCall>>
+     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];

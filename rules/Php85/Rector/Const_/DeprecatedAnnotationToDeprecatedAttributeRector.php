@@ -42,6 +42,9 @@ CODE_SAMPLE
         ]);
     }
 
+    /**
+     * @return array<int, class-string<Const_>>
+     */
     public function getNodeTypes(): array
     {
         return [Const_::class];

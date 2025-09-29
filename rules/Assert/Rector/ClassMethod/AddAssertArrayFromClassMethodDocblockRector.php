@@ -93,6 +93,9 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @return array<int, class-string<ClassMethod>>
+     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];

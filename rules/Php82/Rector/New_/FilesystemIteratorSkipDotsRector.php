@@ -42,6 +42,9 @@ final class FilesystemIteratorSkipDotsRector extends AbstractRector implements M
         );
     }
 
+    /**
+     * @return array<int, class-string<New_>>
+     */
     public function getNodeTypes(): array
     {
         return [New_::class];

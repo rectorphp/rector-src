@@ -44,6 +44,9 @@ final class AddSensitiveParameterAttributeRector extends AbstractRector implemen
         $this->sensitiveParameters = (array) ($configuration[self::SENSITIVE_PARAMETERS] ?? []);
     }
 
+    /**
+     * @return array<int, class-string<Param>>
+     */
     public function getNodeTypes(): array
     {
         return [Param::class];

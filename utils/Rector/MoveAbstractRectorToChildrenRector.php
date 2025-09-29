@@ -41,6 +41,9 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
         return new RuleDefinition('Move parent class autowired dependency to constructor of children', []);
     }
 
+    /**
+     * @return array<int, class-string<Class_>>
+     */
     public function getNodeTypes(): array
     {
         return [Class_::class];

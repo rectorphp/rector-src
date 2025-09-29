@@ -41,6 +41,9 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @return array<int, class-string<FuncCall>>
+     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];

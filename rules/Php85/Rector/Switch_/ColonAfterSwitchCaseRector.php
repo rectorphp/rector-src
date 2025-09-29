@@ -39,6 +39,9 @@ CODE_SAMPLE
         ]);
     }
 
+    /**
+     * @return array<int, class-string<Switch_>>
+     */
     public function getNodeTypes(): array
     {
         return [Switch_::class];

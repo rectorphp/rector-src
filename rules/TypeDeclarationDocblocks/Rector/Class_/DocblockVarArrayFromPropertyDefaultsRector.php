@@ -26,6 +26,9 @@ final class DocblockVarArrayFromPropertyDefaultsRector extends AbstractRector
     ) {
     }
 
+    /**
+     * @return array<int, class-string<Class_>>
+     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
