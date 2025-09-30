@@ -46,15 +46,14 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $normalizedType = $this->typeNormalizer->generalizeConstantTypes($type);
-        $typeNode = $this->createTypeNode($normalizedType);
+        $typeNode = $this->createTypeNode($type);
 
         // no value iterable type
         if ($typeNode instanceof IdentifierTypeNode) {
             return false;
         }
 
-        $this->phpDocTypeChanger->changeParamType($classMethod, $phpDocInfo, $normalizedType, $param, $parameterName);
+        $this->phpDocTypeChanger->changeParamTypeNode($classMethod, $phpDocInfo, $param, $parameterName, $typeNode);
 
         return true;
     }
@@ -76,9 +75,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $returnTagValueNode = new ReturnTagValueNode($typeNode, '');
-
-        $this->addTagValueNodeAndUpdatePhpDocInfo($classMethodPhpDocInfo, $returnTagValueNode, $classMethod);
+        $this->phpDocTypeChanger->changeReturnTypeNode($classMethod, $classMethodPhpDocInfo, $typeNode);
 
         return true;
     }
