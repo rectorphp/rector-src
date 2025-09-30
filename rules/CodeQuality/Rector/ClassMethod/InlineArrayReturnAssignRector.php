@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\CodeQuality\NodeAnalyzer\VariableDimFetchAssignResolver;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Exception\NotImplementedYetException;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -111,12 +112,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $keysAndExprsByKey = $this->variableDimFetchAssignResolver->resolveFromStmtsAndVariable(
-            $stmts,
-            $emptyArrayAssign,
-        );
+        try {
+            $keysAndExprsByKey = $this->variableDimFetchAssignResolver->resolveFromStmtsAndVariable(
+                $stmts,
+                $emptyArrayAssign,
+            );
+        } catch (NotImplementedYetException $notImplementedYetException) {
+            // dim fetch assign of nested arrays is hard to resolve
+            return null;
+        }
 
         if ($keysAndExprsByKey === []) {
+
             return null;
         }
 
