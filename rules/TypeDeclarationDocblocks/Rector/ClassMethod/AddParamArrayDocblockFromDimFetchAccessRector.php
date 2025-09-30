@@ -198,7 +198,6 @@ CODE_SAMPLE
             new IdentifierTypeNode('mixed'),
         ]);
 
-        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
         if ($paramTagValueNode instanceof ParamTagValueNode) {
             $paramTagValueNode->type = $arrayGenericTypeNode;
         } else {
