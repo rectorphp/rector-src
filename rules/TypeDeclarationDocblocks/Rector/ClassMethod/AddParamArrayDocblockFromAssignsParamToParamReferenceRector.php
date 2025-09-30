@@ -103,7 +103,7 @@ CODE_SAMPLE
             $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
             // already defined, lets skip it
-            if ($paramTagValueNode instanceof ParamTagValueNode && $this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag(
+            if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag(
                 $paramTagValueNode
             )) {
                 continue;
