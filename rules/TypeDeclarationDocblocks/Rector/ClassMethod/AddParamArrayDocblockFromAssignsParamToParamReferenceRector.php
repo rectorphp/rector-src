@@ -11,9 +11,11 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\Rector\AbstractRector;
-use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,7 +27,9 @@ final class AddParamArrayDocblockFromAssignsParamToParamReferenceRector extends 
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ArrayDimFetchFinder $arrayDimFetchFinder,
-        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
+        private readonly TypeNormalizer $typeNormalizer,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -101,7 +105,9 @@ CODE_SAMPLE
             $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
             // already defined, lets skip it
-            if ($paramTagValueNode instanceof ParamTagValueNode) {
+            if ($paramTagValueNode instanceof ParamTagValueNode && $this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag(
+                $paramTagValueNode
+            )) {
                 continue;
             }
 
@@ -113,18 +119,11 @@ CODE_SAMPLE
             }
 
             $assignedExprType = $this->getType($exprs[0]);
-            $iterableType = new ArrayType(new MixedType(), $assignedExprType);
-
-            $hasParamTypeChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
-                $iterableType,
-                $phpDocInfo,
-                $node,
-                $paramName
+            $iterableType = $this->typeNormalizer->generalizeConstantTypes(
+                new ArrayType(new MixedType(), $assignedExprType)
             );
 
-            if (! $hasParamTypeChanged) {
-                continue;
-            }
+            $this->phpDocTypeChanger->changeParamType($node, $phpDocInfo, $iterableType, $param, $paramName);
 
             $hasChanged = true;
         }
