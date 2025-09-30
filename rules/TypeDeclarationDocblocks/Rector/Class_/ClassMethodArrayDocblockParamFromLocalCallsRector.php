@@ -127,6 +127,7 @@ CODE_SAMPLE
                     $resolvedParameterType,
                     $classMethodPhpDocInfo,
                     $classMethod,
+                    $param,
                     $parameterName
                 );
 

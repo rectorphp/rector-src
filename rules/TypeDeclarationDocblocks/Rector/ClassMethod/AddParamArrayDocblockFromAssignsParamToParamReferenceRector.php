@@ -14,6 +14,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,6 +26,7 @@ final class AddParamArrayDocblockFromAssignsParamToParamReferenceRector extends 
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ArrayDimFetchFinder $arrayDimFetchFinder,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
         private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
     ) {
     }
@@ -101,7 +103,9 @@ CODE_SAMPLE
             $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
             // already defined, lets skip it
-            if ($paramTagValueNode instanceof ParamTagValueNode) {
+            if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag(
+                $paramTagValueNode
+            )) {
                 continue;
             }
 
@@ -114,11 +118,11 @@ CODE_SAMPLE
 
             $assignedExprType = $this->getType($exprs[0]);
             $iterableType = new ArrayType(new MixedType(), $assignedExprType);
-
             $hasParamTypeChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
                 $iterableType,
                 $phpDocInfo,
                 $node,
+                $param,
                 $paramName
             );
 
