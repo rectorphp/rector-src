@@ -6,17 +6,13 @@ namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
-use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeAnalyzer\ParameterTypeFromDataProviderResolver;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -27,12 +23,11 @@ final class AddParamArrayDocblockFromDataProviderRector extends AbstractRector
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly DataProviderMethodsFinder $dataProviderMethodsFinder,
         private readonly ParameterTypeFromDataProviderResolver $parameterTypeFromDataProviderResolver,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly TypeNormalizer $typeNormalizer,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -137,7 +132,7 @@ CODE_SAMPLE
                 $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
                 // already defined, lets skip it
-                if ($paramTagValueNode instanceof ParamTagValueNode) {
+                if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($paramTagValueNode)) {
                     continue;
                 }
 
@@ -146,26 +141,19 @@ CODE_SAMPLE
                     $dataProviderNodes->getClassMethods()
                 );
 
-                // skip mixed type, as it is not informative
-                if ($parameterType instanceof ArrayType && $parameterType->getItemType() instanceof MixedType) {
-                    continue;
-                }
-
-                if ($parameterType instanceof MixedType) {
-                    continue;
-                }
-
-                $generalizedParameterType = $this->typeNormalizer->generalizeConstantTypes($parameterType);
-
-                $parameterTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-                    $generalizedParameterType
+                $hasParamTypeChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
+                    $parameterType,
+                    $phpDocInfo,
+                    $classMethod,
+                    $param,
+                    $paramName
                 );
 
-                $paramTagValueNode = new ParamTagValueNode($parameterTypeNode, false, '$' . $paramName, '', false);
-                $phpDocInfo->addTagValueNode($paramTagValueNode);
-                $hasChanged = true;
+                if (! $hasParamTypeChanged) {
+                    continue;
+                }
 
-                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
+                $hasChanged = true;
             }
 
         }
