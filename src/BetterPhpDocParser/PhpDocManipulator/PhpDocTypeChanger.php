@@ -113,6 +113,24 @@ final readonly class PhpDocTypeChanger
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
     }
 
+    public function changeParamTypeNode(
+        FunctionLike $functionLike,
+        PhpDocInfo $phpDocInfo,
+        Param $param,
+        string $paramName,
+        TypeNode $newTypeNode
+    ): void {
+        $existingParamTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
+        if ($existingParamTagValueNode instanceof ParamTagValueNode) {
+            $existingParamTagValueNode->type = $newTypeNode;
+        } else {
+            $paramTagValueNode = $this->paramPhpDocNodeFactory->create($newTypeNode, $param);
+            $phpDocInfo->addTagValueNode($paramTagValueNode);
+        }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
+    }
+
     public function changeReturnType(FunctionLike $functionLike, PhpDocInfo $phpDocInfo, Type $newType): bool
     {
         // better not touch this, can crash
