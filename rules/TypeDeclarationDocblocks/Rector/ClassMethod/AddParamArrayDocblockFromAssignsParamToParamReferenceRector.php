@@ -118,13 +118,17 @@ CODE_SAMPLE
 
             $assignedExprType = $this->getType($exprs[0]);
             $iterableType = new ArrayType(new MixedType(), $assignedExprType);
-            $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
+            $hasParamTypeChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
                 $iterableType,
                 $phpDocInfo,
                 $node,
                 $param,
                 $paramName
             );
+
+            if (! $hasParamTypeChanged) {
+                continue;
+            }
 
             $hasChanged = true;
         }
