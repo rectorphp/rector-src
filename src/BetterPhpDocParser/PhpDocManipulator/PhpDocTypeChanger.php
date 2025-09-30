@@ -115,7 +115,7 @@ final readonly class PhpDocTypeChanger
     }
 
     public function changeParamTypeNode(
-        ClassMethod $functionLike,
+        ClassMethod $classMethod,
         PhpDocInfo $phpDocInfo,
         Param $param,
         string $paramName,
@@ -129,7 +129,7 @@ final readonly class PhpDocTypeChanger
             $phpDocInfo->addTagValueNode($paramTagValueNode);
         }
 
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
     }
 
     public function changeReturnType(FunctionLike $functionLike, PhpDocInfo $phpDocInfo, Type $newType): bool
