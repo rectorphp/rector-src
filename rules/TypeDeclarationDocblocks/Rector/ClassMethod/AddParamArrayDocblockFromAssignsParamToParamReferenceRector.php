@@ -11,9 +11,8 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -28,8 +27,7 @@ final class AddParamArrayDocblockFromAssignsParamToParamReferenceRector extends 
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ArrayDimFetchFinder $arrayDimFetchFinder,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly TypeNormalizer $typeNormalizer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
     ) {
     }
 
@@ -119,11 +117,14 @@ CODE_SAMPLE
             }
 
             $assignedExprType = $this->getType($exprs[0]);
-            $iterableType = $this->typeNormalizer->generalizeConstantTypes(
-                new ArrayType(new MixedType(), $assignedExprType)
+            $iterableType = new ArrayType(new MixedType(), $assignedExprType);
+            $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
+                $iterableType,
+                $phpDocInfo,
+                $node,
+                $param,
+                $paramName
             );
-
-            $this->phpDocTypeChanger->changeParamType($node, $phpDocInfo, $iterableType, $param, $paramName);
 
             $hasChanged = true;
         }

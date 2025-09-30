@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks;
 
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
@@ -18,6 +19,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -28,6 +30,7 @@ final readonly class NodeDocblockTypeDecorator
         private TypeNormalizer $typeNormalizer,
         private StaticTypeMapper $staticTypeMapper,
         private DocBlockUpdater $docBlockUpdater,
+        private PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -35,6 +38,7 @@ final readonly class NodeDocblockTypeDecorator
         Type $type,
         PhpDocInfo $phpDocInfo,
         ClassMethod $classMethod,
+        Param $param,
         string $parameterName
     ): bool {
         if ($this->isBareMixedType($type)) {
@@ -50,9 +54,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $paramTagValueNode = new ParamTagValueNode($typeNode, false, '$' . $parameterName, '', false);
-
-        $this->addTagValueNodeAndUpdatePhpDocInfo($phpDocInfo, $paramTagValueNode, $classMethod);
+        $this->phpDocTypeChanger->changeParamType($classMethod, $phpDocInfo, $normalizedType, $param, $parameterName);
 
         return true;
     }
