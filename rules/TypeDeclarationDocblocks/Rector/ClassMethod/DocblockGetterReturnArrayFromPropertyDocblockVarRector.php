@@ -12,9 +12,8 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,9 +25,8 @@ final class DocblockGetterReturnArrayFromPropertyDocblockVarRector extends Abstr
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly StaticTypeMapper $staticTypeMapper,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -96,11 +94,6 @@ CODE_SAMPLE
             return null;
         }
 
-        //        // return tag is already given
-        //        if ($phpDocInfo->getReturnTagValue() instanceof ReturnTagValueNode) {
-        //            return null;
-        //        }
-
         $propertyFetch = $this->matchReturnLocalPropertyFetch($node);
         if (! $propertyFetch instanceof PropertyFetch) {
             return null;
@@ -118,14 +111,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $propertyFetchDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($propertyFetchType);
-
-        $this->phpDocTypeChanger->changeReturnTypeNode($node, $phpDocInfo, $propertyFetchDocTypeNode);
-
-        //        $returnTagValueNode = new ReturnTagValueNode($propertyFetchDocTypeNode, '');
-        //        $phpDocInfo->addTagValueNode($returnTagValueNode);
-        //
-        //        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+        if (! $this->nodeDocblockTypeDecorator->decorateGenericIterableReturnType(
+            $propertyFetchType,
+            $phpDocInfo,
+            $node
+        )) {
+            return null;
+        }
 
         return $node;
     }
