@@ -17,7 +17,7 @@ final readonly class CacheItem
     }
 
     /**
-     * @param mixed[] $properties
+     * @param array<string, mixed> $properties
      */
     public static function __set_state(array $properties): self
     {
