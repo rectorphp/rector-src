@@ -31,7 +31,7 @@ jobs:
                 run: sleep 20
 
             -
-                uses: actions/checkout@v4
+                uses: actions/checkout@v5
                 with:
                     fetch-depth: 0
 
@@ -84,7 +84,7 @@ jobs:
 
             # 6. clone remote repository, so we can push it
             -
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
                 with:
                     repository: rectorphp/rector
                     path: remote-repository
