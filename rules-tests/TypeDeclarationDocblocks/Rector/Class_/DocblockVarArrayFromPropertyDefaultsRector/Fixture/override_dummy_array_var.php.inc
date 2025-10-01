@@ -4,6 +4,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFr
 
 final class OverrideDummyArrayVar
 {
+    /** @var array */
     private array $names = ['Jim', 'Rohn'];
 }
 
