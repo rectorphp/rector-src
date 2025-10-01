@@ -7,9 +7,6 @@ namespace Rector\TypeDeclarationDocblocks;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -20,7 +17,6 @@ use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -29,7 +25,6 @@ final readonly class NodeDocblockTypeDecorator
     public function __construct(
         private TypeNormalizer $typeNormalizer,
         private StaticTypeMapper $staticTypeMapper,
-        private DocBlockUpdater $docBlockUpdater,
         private PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
@@ -94,9 +89,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $varTagValueNode = new VarTagValueNode($typeNode, '', '');
-
-        $this->addTagValueNodeAndUpdatePhpDocInfo($phpDocInfo, $varTagValueNode, $property);
+        $this->phpDocTypeChanger->changeVarTypeNode($property, $phpDocInfo, $typeNode);
 
         return true;
     }
@@ -113,16 +106,6 @@ final readonly class NodeDocblockTypeDecorator
         }
 
         return $typeNode;
-    }
-
-    private function addTagValueNodeAndUpdatePhpDocInfo(
-        PhpDocInfo $phpDocInfo,
-        ParamTagValueNode|VarTagValueNode|ReturnTagValueNode $tagValueNode,
-        Property|ClassMethod $stmt
-    ): void {
-        $phpDocInfo->addTagValueNode($tagValueNode);
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
     }
 
     private function isBareMixedType(Type $type): bool
