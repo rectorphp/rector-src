@@ -18,6 +18,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyRegexPatternRector extends AbstractRector
 {
     /**
+     * Using double quote "\d", "\w", "\s" to avoid unescaped issue on scoped build
+     * Reproduced with php-scoper 0.18.17, @see https://github.com/rectorphp/rector/issues/9395
+     *
      * @var array<string, string>
      */
     private const COMPLEX_PATTERN_TO_SIMPLE = [
