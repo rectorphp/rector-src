@@ -22,6 +22,6 @@ final class UsefulArrayTagNodeAnalyzer
             return true;
         }
 
-        return $type->name !== 'array';
+        return ! in_array($type->name, ['array', 'mixed'], true);
     }
 }
