@@ -204,7 +204,7 @@ final class EregToPcreTransformer
     }
 
     /**
-     * @param mixed[] $r
+     * @param array<int, mixed> $r
      */
     private function processBracket(string $content, int $i, int $l, array &$r, int $rr): int
     {
@@ -284,7 +284,7 @@ final class EregToPcreTransformer
     }
 
     /**
-     * @param mixed[] $r
+     * @param array<int, mixed> $r
      */
     private function processCurlyBracket(string $s, int $i, array &$r, int $rr): int
     {

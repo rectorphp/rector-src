@@ -36,7 +36,7 @@ final class AddSensitiveParameterAttributeRector extends AbstractRector implemen
     }
 
     /**
-     * @param mixed[] $configuration
+     * @param array<string, mixed> $configuration
      */
     public function configure(array $configuration): void
     {
