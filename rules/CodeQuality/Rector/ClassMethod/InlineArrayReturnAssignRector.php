@@ -117,7 +117,7 @@ CODE_SAMPLE
                 $stmts,
                 $emptyArrayAssign,
             );
-        } catch (NotImplementedYetException $notImplementedYetException) {
+        } catch (NotImplementedYetException) {
             // dim fetch assign of nested arrays is hard to resolve
             return null;
         }
