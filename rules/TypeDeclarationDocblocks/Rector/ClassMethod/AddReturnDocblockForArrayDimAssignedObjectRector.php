@@ -21,10 +21,9 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -38,9 +37,8 @@ final class AddReturnDocblockForArrayDimAssignedObjectRector extends AbstractRec
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReturnNodeFinder $returnNodeFinder,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -142,8 +140,13 @@ CODE_SAMPLE
         }
 
         $objectTypeArrayType = new ArrayType(new MixedType(), $arrayObjectType);
-        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($objectTypeArrayType);
-        $this->phpDocTypeChanger->changeReturnTypeNode($node, $phpDocInfo, $returnTypeNode);
+        if (! $this->nodeDocblockTypeDecorator->decorateGenericIterableReturnType(
+            $objectTypeArrayType,
+            $phpDocInfo,
+            $node
+        )) {
+            return null;
+        }
 
         return $node;
     }
