@@ -8,12 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\ArrayType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeAnalyzer\ConstructorAssignedTypeResolver;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,6 +26,7 @@ final class DocblockVarFromParamDocblockInConstructorRector extends AbstractRect
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ConstructorAssignedTypeResolver $constructorAssignedTypeResolver,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
         private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
@@ -96,7 +97,7 @@ CODE_SAMPLE
             $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
             // @var tag already given
-            if ($propertyPhpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
+            if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($propertyPhpDocInfo->getVarTagValueNode())) {
                 continue;
             }
 
