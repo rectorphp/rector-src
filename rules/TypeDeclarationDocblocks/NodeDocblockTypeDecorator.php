@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks;
 
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -56,7 +57,7 @@ final readonly class NodeDocblockTypeDecorator
     public function decorateGenericIterableReturnType(
         Type $type,
         PhpDocInfo $classMethodPhpDocInfo,
-        ClassMethod $classMethod
+        FunctionLike $functionLike
     ): bool {
         if ($this->isBareMixedType($type)) {
             // no value
@@ -70,7 +71,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $this->phpDocTypeChanger->changeReturnTypeNode($classMethod, $classMethodPhpDocInfo, $typeNode);
+        $this->phpDocTypeChanger->changeReturnTypeNode($functionLike, $classMethodPhpDocInfo, $typeNode);
 
         return true;
     }
