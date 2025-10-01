@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
-use PhpParser\Token;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
@@ -80,7 +79,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Token[] $oldTokens
+     * @param mixed[] $oldTokens
      */
     private function isIfConditionFollowedByOpeningCurlyBracket(If_|ElseIf_|Else_ $if, array $oldTokens): bool
     {

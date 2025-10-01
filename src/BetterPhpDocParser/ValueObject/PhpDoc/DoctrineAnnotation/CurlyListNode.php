@@ -27,7 +27,7 @@ final class CurlyListNode extends AbstractValuesAwareNode implements Stringable
     }
 
     /**
-     * @param ArrayItemNode[] $array
+     * @param mixed[] $array
      */
     private function implode(array $array): string
     {

@@ -63,7 +63,7 @@ final readonly class SystemError implements SerializableInterface
     }
 
     /**
-     * @param array<string, mixed> $json
+     * @param mixed[] $json
      */
     public static function decode(array $json): self
     {
