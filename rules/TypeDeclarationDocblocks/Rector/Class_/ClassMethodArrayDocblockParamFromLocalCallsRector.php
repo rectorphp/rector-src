@@ -7,6 +7,7 @@ namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -103,6 +104,13 @@ CODE_SAMPLE
 
                 // already known, skip
                 if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($parameterTagValueNode)) {
+                    continue;
+                }
+
+                if ($parameterTagValueNode instanceof ParamTagValueNode
+                    && $classMethod->isPublic() &&
+                    $this->usefulArrayTagNodeAnalyzer->isMixedArray($parameterTagValueNode->type)) {
+                    // on public method, skip if there is mixed[], as caller can be anything
                     continue;
                 }
 

@@ -27,7 +27,7 @@ final class UsefulArrayTagNodeAnalyzer
         return $type->name !== 'array';
     }
 
-    private function isMixedArray(TypeNode $typeNode): bool
+    public function isMixedArray(TypeNode $typeNode): bool
     {
         return $typeNode instanceof SpacingAwareArrayTypeNode && $typeNode->type instanceof IdentifierTypeNode && $typeNode->type->name === 'mixed';
     }
