@@ -9,11 +9,11 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\PropertyGetterFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,7 +25,8 @@ final class DocblockVarArrayFromGetterReturnRector extends AbstractRector
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly PropertyGetterFinder $propertyGetterFinder,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -98,7 +99,7 @@ CODE_SAMPLE
             $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
             // type is already known, skip it
-            if ($propertyPhpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
+            if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($propertyPhpDocInfo->getVarTagValueNode())) {
                 continue;
             }
 
@@ -113,11 +114,15 @@ CODE_SAMPLE
                 continue;
             }
 
-            $varTagValeNode = new VarTagValueNode($returnTagValueNode->type, '', '');
+            $isPropertyChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableVarType(
+                $classMethodDocInfo->getReturnType(),
+                $propertyPhpDocInfo,
+                $property
+            );
 
-            // find matching getter and its @return docblock
-            $propertyPhpDocInfo->addTagValueNode($varTagValeNode);
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+            if (! $isPropertyChanged) {
+                continue;
+            }
 
             $hasChanged = true;
         }

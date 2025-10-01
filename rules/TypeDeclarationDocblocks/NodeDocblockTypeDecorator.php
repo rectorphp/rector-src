@@ -94,9 +94,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $varTagValueNode = new VarTagValueNode($typeNode, '', '');
-
-        $this->addTagValueNodeAndUpdatePhpDocInfo($phpDocInfo, $varTagValueNode, $property);
+        $this->phpDocTypeChanger->changeVarTypeNode($property, $phpDocInfo, $typeNode);
 
         return true;
     }
