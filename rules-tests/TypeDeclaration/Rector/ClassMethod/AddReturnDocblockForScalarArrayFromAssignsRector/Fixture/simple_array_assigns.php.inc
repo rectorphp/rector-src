@@ -28,14 +28,6 @@ class SomeClass
         $numbers[] = 3;
         return $numbers;
     }
-
-    public function getFloatItems()
-    {
-        $floats = [];
-        $floats[] = 1.5;
-        $floats[] = 2.5;
-        return $floats;
-    }
 }
 
 function withNativeArrayType(): array
@@ -97,17 +89,6 @@ class SomeClass
         $numbers[] = 2;
         $numbers[] = 3;
         return $numbers;
-    }
-
-    /**
-     * @return float[]
-     */
-    public function getFloatItems()
-    {
-        $floats = [];
-        $floats[] = 1.5;
-        $floats[] = 2.5;
-        return $floats;
     }
 }
 
