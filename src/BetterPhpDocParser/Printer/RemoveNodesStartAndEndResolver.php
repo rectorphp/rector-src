@@ -13,7 +13,7 @@ use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 final class RemoveNodesStartAndEndResolver
 {
     /**
-     * @param mixed[] $tokens
+     * @param array<int, mixed> $tokens
      * @return StartAndEnd[]
      */
     public function resolve(PhpDocNode $originalPhpDocNode, PhpDocNode $currentPhpDocNode, array $tokens): array

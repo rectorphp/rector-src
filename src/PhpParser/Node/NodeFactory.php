@@ -117,7 +117,7 @@ final readonly class NodeFactory
     /**
      * Creates "($args)"
      *
-     * @param mixed[] $values
+     * @param Node[] $values
      * @return Arg[]
      */
     public function createArgs(array $values): array

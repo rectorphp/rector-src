@@ -873,7 +873,7 @@ final class RectorConfigBuilder
 
     /**
      * @param class-string<ConfigurableRectorInterface> $rectorClass
-     * @param mixed[] $configuration
+     * @param AnnotationToAttribute[] $configuration
      */
     public function withConfiguredRule(string $rectorClass, array $configuration): self
     {
