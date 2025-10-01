@@ -137,9 +137,11 @@ final class TypeDeclarationLevel
         AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
         ReturnTypeFromStrictFluentReturnRector::class,
         ReturnNeverTypeRector::class,
-        StrictArrayParamDimFetchRector::class,
         StrictStringParamConcatRector::class,
         TypedPropertyFromJMSSerializerAttributeTypeRector::class,
+
+        // array parameter from dim fetch assign inside
+        StrictArrayParamDimFetchRector::class,
 
         // possibly based on docblocks, but also helpful, intentionally last
         AddArrayFunctionClosureParamTypeRector::class,

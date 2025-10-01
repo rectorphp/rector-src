@@ -33,7 +33,7 @@ final class AddArrowFunctionParamArrayWhereDimFetchRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add function/closure param array type, if dim fetch is inside', [
+        return new RuleDefinition('Add closure and arrow function param array type, if dim fetch is used inside', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 $array = [['name' => 'John']];
