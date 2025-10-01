@@ -135,6 +135,7 @@ CODE_SAMPLE
         $scalarArrayTypes = [];
         foreach ($returnedVariableNames as $returnedVariableName) {
             $scalarType = $this->resolveScalarArrayTypeForVariable($node, $returnedVariableName);
+
             if ($scalarType instanceof Type) {
                 $scalarArrayTypes[] = $scalarType;
             } else {
@@ -219,6 +220,7 @@ CODE_SAMPLE
             $arrayHasDimAssigns = true;
 
             $scalarType = $this->resolveScalarType($assign->expr);
+
             if ($scalarType instanceof Type) {
                 $scalarTypes[] = $scalarType;
             } else {
@@ -256,6 +258,11 @@ CODE_SAMPLE
 
         if ($expr instanceof DNumber) {
             return new FloatType();
+        }
+
+        $exprType = $this->nodeTypeResolver->getNativeType($expr);
+        if ($exprType->isScalar()->yes()) {
+            return $exprType;
         }
 
         return null;
