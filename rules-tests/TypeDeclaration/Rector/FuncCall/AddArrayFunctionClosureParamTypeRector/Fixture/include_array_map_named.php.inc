@@ -26,7 +26,7 @@ final class IncludeArrayMapNamed
      */
     public function run(array $items)
     {
-        $result = array_map(array: $items, callback: fn ($item) => $item * 2);
+        $result = array_map(array: $items, callback: fn (int $item) => $item * 2);
     }
 }
 
