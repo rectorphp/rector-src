@@ -65,9 +65,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?FuncCall
     {
-        $identicals = $this->betterNodeFinder->findInstanceOf($node, Identical::class);
-        $equals = $this->betterNodeFinder->findInstanceOf($node, Equal::class);
-
         if (! $this->isEqualOrIdentical($node->right)) {
             return null;
         }
@@ -105,6 +102,9 @@ CODE_SAMPLE
         $array = $this->nodeFactory->createArray($valueExprs);
 
         $args = $this->nodeFactory->createArgs([$firstComparedExprAndValue->getComparedExpr(), $array]);
+
+        $identicals = $this->betterNodeFinder->findInstanceOf($node, Identical::class);
+        $equals = $this->betterNodeFinder->findInstanceOf($node, Equal::class);
 
         if ($identicals !== [] && $equals === []) {
             $args[] = new Arg(new ConstFetch(new Name('true')));
