@@ -9,6 +9,7 @@ use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
 use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
+use Rector\CodeQuality\Rector\BooleanOr\RepeatedOrEqualToInArrayRector;
 use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\ConvertStaticToSelfRector;
@@ -104,6 +105,7 @@ final class CodeQualityLevel
         SimplifyEmptyArrayCheckRector::class,
         ReplaceMultipleBooleanNotRector::class,
         ForeachToInArrayRector::class,
+        RepeatedOrEqualToInArrayRector::class,
         SimplifyForeachToCoalescingRector::class,
         SimplifyFuncGetArgsCountRector::class,
         SimplifyInArrayValuesRector::class,
