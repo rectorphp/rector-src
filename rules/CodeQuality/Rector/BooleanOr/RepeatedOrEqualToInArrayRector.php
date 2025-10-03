@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use Rector\CodeQuality\ValueObject\ComparedExprAndValueExpr;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -24,11 +23,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RepeatedOrEqualToInArrayRector extends AbstractRector
 {
-    public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -103,14 +97,32 @@ CODE_SAMPLE
 
         $args = $this->nodeFactory->createArgs([$firstComparedExprAndValue->getComparedExpr(), $array]);
 
-        $identicals = $this->betterNodeFinder->findInstanceOf($node, Identical::class);
-        $equals = $this->betterNodeFinder->findInstanceOf($node, Equal::class);
+        $identicals = $this->findIdenticalsOrEquals($node, Identical::class);
+        $equals = $this->findIdenticalsOrEquals($node, Equal::class);
 
         if ($identicals !== [] && $equals === []) {
             $args[] = new Arg(new ConstFetch(new Name('true')));
         }
 
         return new FuncCall(new Name('in_array'), $args);
+    }
+
+    private function findIdenticalsOrEquals(BooleanOr $booleanOr, string $type = Identical::class): array
+    {
+        $identicalsOrEquals = [];
+        if ($booleanOr->left instanceof $type) {
+            $identicalsOrEquals[] = $booleanOr->left;
+        }
+
+        if ($booleanOr->right instanceof BooleanOr) {
+            $identicalsOrEquals[] = $this->findIdenticalsOrEquals($booleanOr->right, $type);
+        }
+
+        if ($booleanOr->right instanceof $type) {
+            $identicalsOrEquals[] = $booleanOr->right;
+        }
+
+        return $identicalsOrEquals;
     }
 
     private function isEqualOrIdentical(Expr $expr): bool
