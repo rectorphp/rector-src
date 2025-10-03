@@ -6,8 +6,7 @@ final class SkipIdenticalNumericString
 {
     public function equal()
     {
-        $a = 1;
-        var_dump($a == '1'); // true
-        var_dump($a === '1'); // false
+        var_dump(true == '1'); // true
+        var_dump(true === '1'); // false
     }
 }
