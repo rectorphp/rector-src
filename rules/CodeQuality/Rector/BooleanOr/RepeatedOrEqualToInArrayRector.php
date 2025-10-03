@@ -106,7 +106,13 @@ CODE_SAMPLE
         $identicals = $this->betterNodeFinder->findInstanceOf($node, Identical::class);
         $equals = $this->betterNodeFinder->findInstanceOf($node, Equal::class);
 
-        if ($identicals !== [] && $equals === []) {
+        if ($identicals !== []) {
+            if ($equals !== []) {
+                // mix identical and equals, keep as is
+                // @see https://3v4l.org/24cFl
+                return null;
+            }
+
             $args[] = new Arg(new ConstFetch(new Name('true')));
         }
 
