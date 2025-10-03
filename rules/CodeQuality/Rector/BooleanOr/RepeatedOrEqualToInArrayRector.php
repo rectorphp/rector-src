@@ -108,7 +108,7 @@ CODE_SAMPLE
 
         if ($identicals !== []) {
             if ($equals !== []) {
-                // mix identical and equals, skip as is
+                // mix identical and equals, keep as is
                 // @see https://3v4l.org/24cFl
                 return null;
             }
