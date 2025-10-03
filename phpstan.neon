@@ -345,14 +345,3 @@ parameters:
         -
             identifier: symplify.noReference
             message: '#Use explicit return value over magic &reference#'
-
-        # known type
-        -
-            identifier: argument.type
-            message: '#Parameter \#1 \$expr of method Rector\\CodeQuality\\Rector\\BooleanOr\\RepeatedOrEqualToInArrayRector\:\:matchComparedExprAndValueExpr\(\) expects PhpParser\\Node\\Expr\\BinaryOp\\Equal\|PhpParser\\Node\\Expr\\BinaryOp\\Identical, PhpParser\\Node\\Expr given#'
-
-        -
-            path: rules/Renaming/Rector/Name/RenameClassRector.php
-            identifier: return.type
-
-        - '#Method Rector\\(.*?)Rector\:\:refactor\(\) never returns \d so it can be removed from the return type#'

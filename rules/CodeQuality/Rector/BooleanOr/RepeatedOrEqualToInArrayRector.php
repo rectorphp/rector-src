@@ -17,6 +17,7 @@ use Rector\CodeQuality\ValueObject\ComparedExprAndValueExpr;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\BooleanOr\RepeatedOrEqualToInArrayRector\RepeatedOrEqualToInArrayRectorTest
@@ -107,8 +108,13 @@ CODE_SAMPLE
         return new FuncCall(new Name('in_array'), $args);
     }
 
-    private function findIdenticalsOrEquals(BooleanOr $booleanOr, string $type = Identical::class): array
+    /**
+     * @return array<Identical|Equal>
+     */
+    private function findIdenticalsOrEquals(BooleanOr $booleanOr, string $type): array
     {
+        Assert::oneOf($type, [Identical::class, Equal::class]);
+
         $identicalsOrEquals = [];
         if ($booleanOr->left instanceof $type) {
             $identicalsOrEquals[] = $booleanOr->left;
@@ -122,6 +128,7 @@ CODE_SAMPLE
             $identicalsOrEquals[] = $booleanOr->right;
         }
 
+        /** @var array<Identical|Equal> $identicalsOrEquals */
         return $identicalsOrEquals;
     }
 
@@ -172,7 +179,9 @@ CODE_SAMPLE
                 return null;
             }
 
-            $comparedExprAndValueExprs[] = $this->matchComparedExprAndValueExpr($currentBooleanOr->left->right);
+            /** @var Identical|Equal $leftRight */
+            $leftRight = $currentBooleanOr->left->right;
+            $comparedExprAndValueExprs[] = $this->matchComparedExprAndValueExpr($leftRight);
             $currentBooleanOr = $currentBooleanOr->left;
         }
 
