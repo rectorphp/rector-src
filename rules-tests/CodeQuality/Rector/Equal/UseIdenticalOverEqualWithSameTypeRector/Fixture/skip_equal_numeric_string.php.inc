@@ -9,7 +9,10 @@ final class SkipIdenticalNumericStringCompareBool
 {
     public function equal()
     {
-        var_dump(true == '1');
-        var_dump('1' == true);
+        // maybe compare to numeric string
+        $value = rand(0, 1) ? '1' : null;
+
+        var_dump(true == $value);
+        var_dump($value == true);
     }
 }

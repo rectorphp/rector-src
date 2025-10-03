@@ -103,12 +103,13 @@ CODE_SAMPLE
 
     private function shouldSkipCompareNumericString(Type $leftStaticType, Type $rightStaticType): bool
     {
+        // use ! ->no() as to support both yes and maybe
         if ($leftStaticType instanceof BooleanType) {
-            return $rightStaticType->isNumericString()->yes();
+            return ! $rightStaticType->isNumericString()->no();
         }
 
         if ($rightStaticType instanceof BooleanType) {
-            return $leftStaticType->isNumericString()->yes();
+            return ! $leftStaticType->isNumericString()->no();
         }
 
         return false;
