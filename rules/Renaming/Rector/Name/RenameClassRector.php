@@ -95,6 +95,7 @@ CODE_SAMPLE
 
     /**
      * @param ClassConstFetch|FunctionLike|FullyQualified|Name|ClassLike|Expression|Property|If_ $node
+     * @return null|NodeVisitor::DONT_TRAVERSE_CHILDREN|Node
      */
     public function refactor(Node $node): int|null|Node
     {
@@ -125,6 +126,7 @@ CODE_SAMPLE
 
     /**
      * @param array<string, string> $oldToNewClasses
+     * @return null|NodeVisitor::DONT_TRAVERSE_CHILDREN
      */
     private function processClassConstFetch(ClassConstFetch $classConstFetch, array $oldToNewClasses): int|null
     {

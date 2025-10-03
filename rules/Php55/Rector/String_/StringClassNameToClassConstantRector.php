@@ -99,6 +99,7 @@ CODE_SAMPLE
 
     /**
      * @param String_|FuncCall|ClassConst $node
+     * @return Concat|ClassConstFetch|null|NodeVisitor::DONT_TRAVERSE_CHILDREN
      */
     public function refactor(Node $node): Concat|ClassConstFetch|null|int
     {

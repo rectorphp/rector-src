@@ -88,6 +88,7 @@ CODE_SAMPLE
 
     /**
      * @param Property|ClassConst|Array_ $node
+     * @return StaticCall|MethodCall|null|NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      */
     public function refactor(Node $node): int|null|StaticCall|MethodCall
     {

@@ -95,6 +95,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall|Expression|Assign|ArrayItem|Node\Arg $node
+     * @return null|NodeVisitor::DONT_TRAVERSE_CHILDREN|Expression|Assign|Cast
      */
     public function refactor(Node $node): null|int|Expression|Assign|Cast
     {
