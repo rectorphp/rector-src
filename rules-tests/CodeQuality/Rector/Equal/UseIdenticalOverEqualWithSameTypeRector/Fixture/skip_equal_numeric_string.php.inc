@@ -2,11 +2,14 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector\Fixture;
 
-final class SkipIdenticalNumericString
+/**
+ * @see https://3v4l.org/9XRF6
+ */
+final class SkipIdenticalNumericStringCompareBool
 {
     public function equal()
     {
-        var_dump(true == '1'); // true
-        var_dump(true === '1'); // false
+        var_dump(true == '1');
+        var_dump('1' == true);
     }
 }

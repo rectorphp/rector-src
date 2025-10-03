@@ -103,11 +103,15 @@ CODE_SAMPLE
 
     private function shouldSkipCompareNumericString(Type $leftStaticType, Type $rightStaticType): bool
     {
-        if ($leftStaticType->isString()->yes() && $rightStaticType->isNumericString()->yes()) {
-            return true;
+        if ($leftStaticType instanceof BooleanType) {
+            return $rightStaticType->isNumericString()->yes();
         }
 
-        return $rightStaticType->isString()->yes() && $leftStaticType->isNumericString()->yes();
+        if ($rightStaticType instanceof BooleanType) {
+            return $leftStaticType->isNumericString()->yes();
+        }
+
+        return false;
     }
 
     private function processIdenticalOrNotIdentical(Equal|NotEqual $node): Identical|NotIdentical
