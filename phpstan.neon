@@ -354,5 +354,3 @@ parameters:
         -
             path: rules/Renaming/Rector/Name/RenameClassRector.php
             identifier: return.type
-
-        - '#Method Rector\\(.*?)Rector\:\:refactor\(\) never returns \d so it can be removed from the return type#'
