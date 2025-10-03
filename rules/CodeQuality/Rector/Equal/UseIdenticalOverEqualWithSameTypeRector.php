@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -73,6 +74,10 @@ CODE_SAMPLE
         $leftStaticType = $this->nodeTypeResolver->getNativeType($node->left);
         $rightStaticType = $this->nodeTypeResolver->getNativeType($node->right);
 
+        if ($this->shouldSkipCompareNumericString($leftStaticType, $rightStaticType)) {
+            return null;
+        }
+
         // objects can be different by content
         if (! $leftStaticType->isObject()->no() || ! $rightStaticType->isObject()->no()) {
             return null;
@@ -94,6 +99,20 @@ CODE_SAMPLE
         }
 
         return $this->processIdenticalOrNotIdentical($node);
+    }
+
+    private function shouldSkipCompareNumericString(Type $leftStaticType, Type $rightStaticType): bool
+    {
+        // use ! ->no() as to support both yes and maybe
+        if ($leftStaticType instanceof BooleanType) {
+            return ! $rightStaticType->isNumericString()->no();
+        }
+
+        if ($rightStaticType instanceof BooleanType) {
+            return ! $leftStaticType->isNumericString()->no();
+        }
+
+        return false;
     }
 
     private function processIdenticalOrNotIdentical(Equal|NotEqual $node): Identical|NotIdentical
