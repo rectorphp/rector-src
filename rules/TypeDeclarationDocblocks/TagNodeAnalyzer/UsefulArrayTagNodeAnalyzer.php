@@ -24,7 +24,7 @@ final class UsefulArrayTagNodeAnalyzer
             return ! $this->isMixedArray($type);
         }
 
-        return ! in_array($type->name, ['array', 'mixed'], true);
+        return ! in_array($type->name, ['array', 'mixed', 'iterable'], true);
     }
 
     public function isMixedArray(TypeNode $typeNode): bool
