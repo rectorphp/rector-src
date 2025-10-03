@@ -21,6 +21,15 @@ interface RectorInterface extends NodeVisitor, DocumentedRuleInterface
     /**
      * Process Node of matched type
      * @return Node|Node[]|null|int
+     *
+     * For int return, choose:
+     *
+     *   ✔️ To decorate current node and its children to not be traversed on current rule, return one of:
+     *          - NodeVisitor::DONT_TRAVERSE_CHILDREN
+     *          - NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
+     *
+     *   ✔️ To remove node of Stmt and Param, return:
+     *          - NodeVisitor::REMOVE_NODE to remove Stmt or Param
      */
     public function refactor(Node $node);
 }
