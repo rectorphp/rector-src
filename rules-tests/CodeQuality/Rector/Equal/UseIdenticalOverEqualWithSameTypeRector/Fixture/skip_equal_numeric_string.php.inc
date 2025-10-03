@@ -10,6 +10,10 @@ final class SkipIdenticalNumericString
             return 'yes';
         }
 
+        if ('1' == $this->getValue()) {
+            return 'yes 2';
+        }
+
         return 'no';
     }
 
