@@ -29,7 +29,7 @@ interface RectorInterface extends NodeVisitor, DocumentedRuleInterface
      *          - NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      *
      *   ✔️ To remove node of Node\Stmt or Node\Param, return:
-     *          - NodeVisitor::REMOVE_NODE to remove Stmt or Param
+     *          - NodeVisitor::REMOVE_NODE
      */
     public function refactor(Node $node);
 }
