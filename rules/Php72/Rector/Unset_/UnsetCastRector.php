@@ -55,6 +55,7 @@ CODE_SAMPLE
 
     /**
      * @param Unset_|Assign|Expression $node
+     * @return NodeVisitor::REMOVE_NODE|Node|null
      */
     public function refactor(Node $node): int|null|Node
     {

@@ -87,6 +87,7 @@ CODE_SAMPLE
 
     /**
      * @param Switch_|Break_ $node
+     * @return Return_|null|NodeVisitor::REMOVE_NODE
      */
     public function refactor(Node $node): Return_|null|int
     {

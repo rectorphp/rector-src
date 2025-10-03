@@ -26,6 +26,7 @@ final class InfinityLoopRector extends AbstractRector
 
     /**
      * @param Assign|MethodCall $node
+     * @return Assign|int|null|NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      */
     public function refactor(Node $node): Assign|null|int
     {

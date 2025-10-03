@@ -68,6 +68,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
 
     /**
      * @param StmtsAwareInterface $node
+     * @return null|Node|NodeVisitor::DONT_TRAVERSE_CHILDREN
      */
     public function refactor(Node $node): null|Node|int
     {
