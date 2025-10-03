@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector\Fixture;
 
-final class SkipCoalesce
+final class SkipCoalesceWithoutDimFetch
 {
     public function run($productOptions)
     {
