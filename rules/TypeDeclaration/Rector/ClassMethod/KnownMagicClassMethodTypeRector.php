@@ -10,6 +10,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -20,6 +21,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class KnownMagicClassMethodTypeRector extends AbstractRector
 {
+    public function __construct(
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+    ){
+    }
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -68,18 +73,24 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->isName($classMethod, MethodName::CALL)) {
-                $firstParam = $classMethod->getParams()[0];
-                if (! $firstParam->type instanceof Node) {
-                    $firstParam->type = new Identifier('string');
-                    $hasChanged = true;
-                }
+            if (! $this->isName($classMethod, MethodName::CALL)) {
+                continue;
+            }
 
-                $secondParam = $classMethod->getParams()[1];
-                if (! $secondParam->type instanceof Node) {
-                    $secondParam->type = new Name('array');
-                    $hasChanged = true;
-                }
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
+                return null;
+            }
+
+            $firstParam = $classMethod->getParams()[0];
+            if (! $firstParam->type instanceof Node) {
+                $firstParam->type = new Identifier('string');
+                $hasChanged = true;
+            }
+
+            $secondParam = $classMethod->getParams()[1];
+            if (! $secondParam->type instanceof Node) {
+                $secondParam->type = new Name('array');
+                $hasChanged = true;
             }
         }
 
