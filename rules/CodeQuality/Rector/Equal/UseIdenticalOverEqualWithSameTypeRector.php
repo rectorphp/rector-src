@@ -93,6 +93,10 @@ CODE_SAMPLE
             return $this->processIdenticalOrNotIdentical($node);
         }
 
+        if ($leftStaticType->isFloat()->yes() && $rightStaticType->isFloat()->yes()) {
+            return $this->processIdenticalOrNotIdentical($node);
+        }
+
         // different types
         if (! $leftStaticType->equals($rightStaticType)) {
             return null;
