@@ -34,6 +34,7 @@ final readonly class ParentClassMethodTypeOverrideGuard
 
             return $parentClassMethod instanceof MethodReflection;
         } catch (UnresolvableClassException) {
+            dump('here');
             // we don't know all involved parents,
             // marking as parent exists which usually means the method is guarded against overrides.
             return true;

@@ -90,7 +90,8 @@
         "classmap": [
             "stubs",
             "rules-tests/CodingStyle/Rector/Namespace_/ImportFullyQualifiedNamesRector/Source",
-            "rules-tests/Renaming/Rector/Name/RenameClassRector/Source"
+            "rules-tests/Renaming/Rector/Name/RenameClassRector/Source",
+            "rules-tests/TypeDeclaration/Rector/ClassMethod/KnownMagicClassMethodTypeRector/Source"
         ],
         "files": [
             "tests/debug_functions.php",

@@ -80,7 +80,7 @@ CODE_SAMPLE
             }
 
             if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
-                return null;
+                continue;
             }
 
             if ($this->isNames($classMethod, [MethodName::CALL, MethodName::CALL_STATIC])) {
