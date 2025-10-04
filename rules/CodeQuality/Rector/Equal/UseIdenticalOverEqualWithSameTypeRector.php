@@ -105,11 +105,17 @@ CODE_SAMPLE
     {
         // use ! ->no() as to verify both yes and maybe
         if ($leftStaticType instanceof BooleanType) {
-            return ! $rightStaticType->isNumericString()->no() || ! $rightStaticType->isInteger()->no() ;
+            if (! $rightStaticType->isNumericString()->no()) {
+                return true;
+            }
+            return ! $rightStaticType->isInteger()->no();
         }
 
         if ($rightStaticType instanceof BooleanType) {
-            return ! $leftStaticType->isNumericString()->no() || ! $leftStaticType->isInteger()->no();
+            if (! $leftStaticType->isNumericString()->no()) {
+                return true;
+            }
+            return ! $leftStaticType->isInteger()->no();
         }
 
         return false;
