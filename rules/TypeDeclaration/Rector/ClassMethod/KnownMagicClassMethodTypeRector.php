@@ -8,9 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
+use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,12 +22,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see https://www.php.net/manual/en/language.oop5.overloading.php#object.call
  */
-final class KnownMagicClassMethodTypeRector extends AbstractRector
+final class KnownMagicClassMethodTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
-    ){
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly PhpVersionProvider $phpVersionProvider,
+    ) {
+
     }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -73,24 +79,45 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isName($classMethod, MethodName::CALL)) {
-                continue;
-            }
-
             if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
                 return null;
             }
 
-            $firstParam = $classMethod->getParams()[0];
-            if (! $firstParam->type instanceof Node) {
-                $firstParam->type = new Identifier('string');
-                $hasChanged = true;
+            if ($this->isNames($classMethod, [MethodName::CALL, MethodName::CALL_STATIC])) {
+                $secondParam = $classMethod->getParams()[1];
+                if (! $secondParam->type instanceof Node) {
+                    $secondParam->type = new Name('array');
+                    $hasChanged = true;
+                }
             }
 
-            $secondParam = $classMethod->getParams()[1];
-            if (! $secondParam->type instanceof Node) {
-                $secondParam->type = new Name('array');
-                $hasChanged = true;
+            // first arg string
+            if ($this->isNames(
+                $classMethod,
+                [
+                    MethodName::CALL,
+                    MethodName::CALL_STATIC,
+                    MethodName::__SET,
+                    MethodName::__GET,
+                    MethodName::ISSET,
+                    MethodName::UNSET,
+                ]
+            )) {
+                $firstParam = $classMethod->getParams()[0];
+                if (! $firstParam->type instanceof Node) {
+                    $firstParam->type = new Identifier('string');
+                    $hasChanged = true;
+                }
+            }
+
+            if ($this->isName($classMethod, MethodName::__SET) && $this->phpVersionProvider->isAtLeastPhpVersion(
+                PhpVersionFeature::MIXED_TYPE
+            )) {
+                $secondParam = $classMethod->getParams()[1];
+                if (! $secondParam->type instanceof Node) {
+                    $secondParam->type = new Identifier('mixed');
+                    $hasChanged = true;
+                }
             }
         }
 
@@ -99,5 +126,10 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SCALAR_TYPES;
     }
 }
