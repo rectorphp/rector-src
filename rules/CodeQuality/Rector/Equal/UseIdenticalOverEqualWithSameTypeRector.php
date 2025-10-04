@@ -109,7 +109,12 @@ CODE_SAMPLE
                 return true;
             }
 
-            return ! $rightStaticType->isInteger()
+            if (! $rightStaticType->isInteger()
+                ->no()) {
+                return true;
+            }
+
+            return ! $rightStaticType->isFloat()
                 ->no();
         }
 
@@ -118,7 +123,12 @@ CODE_SAMPLE
                 return true;
             }
 
-            return ! $leftStaticType->isInteger()
+            if (! $leftStaticType->isInteger()
+                ->no()) {
+                return true;
+            }
+
+            return ! $leftStaticType->isFloat()
                 ->no();
         }
 
