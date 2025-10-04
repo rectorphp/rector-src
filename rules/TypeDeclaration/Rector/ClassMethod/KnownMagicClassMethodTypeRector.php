@@ -10,7 +10,12 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
+<<<<<<< HEAD
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
+=======
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+>>>>>>> 971356b355 (add scalar types condition)
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see https://www.php.net/manual/en/language.oop5.overloading.php#object.call
  */
-final class KnownMagicClassMethodTypeRector extends AbstractRector
+final class KnownMagicClassMethodTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
@@ -99,5 +104,10 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SCALAR_TYPES;
     }
 }
