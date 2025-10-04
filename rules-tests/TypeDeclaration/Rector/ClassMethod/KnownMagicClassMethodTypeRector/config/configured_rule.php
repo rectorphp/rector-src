@@ -6,4 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector;
 
 return RectorConfig::configure()
-    ->withRules([KnownMagicClassMethodTypeRector::class]);
+    ->withRules([KnownMagicClassMethodTypeRector::class])
+    ->withPhpVersion(\Rector\ValueObject\PhpVersionFeature::MIXED_TYPE);
