@@ -103,7 +103,7 @@ CODE_SAMPLE
 
     private function shouldSkipCompareBoolToNumeric(Type $leftStaticType, Type $rightStaticType): bool
     {
-        // use ! ->no() as to support both yes and maybe
+        // use ! ->no() as to verify both yes and maybe
         if ($leftStaticType instanceof BooleanType) {
             return ! $rightStaticType->isNumericString()->no() || ! $rightStaticType->isInteger()->no() ;
         }
