@@ -61,6 +61,11 @@ final class MethodName
     /**
      * @var string
      */
+    public const CALL_STATIC = '__callStatic';
+
+    /**
+     * @var string
+     */
     public const TO_STRING = '__toString';
 
     /**

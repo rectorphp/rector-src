@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use Rector\Php\PhpVersionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 <<<<<<< HEAD
@@ -27,9 +28,17 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class KnownMagicClassMethodTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
+<<<<<<< HEAD
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ){
     }
+=======
+        private readonly PhpVersionProvider $phpVersionProvider
+    ) {
+
+    }
+
+>>>>>>> 3a091179f1 (add call static support, set and get)
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -78,9 +87,18 @@ CODE_SAMPLE
                 continue;
             }
 
+<<<<<<< HEAD
             if (! $this->isName($classMethod, MethodName::CALL)) {
                 continue;
             }
+=======
+            if ($this->isNames($classMethod, [MethodName::CALL, MethodName::CALL_STATIC])) {
+                $firstParam = $classMethod->getParams()[0];
+                if (! $firstParam->type instanceof Node) {
+                    $firstParam->type = new Identifier('string');
+                    $hasChanged = true;
+                }
+>>>>>>> 3a091179f1 (add call static support, set and get)
 
             if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
                 return null;
@@ -96,6 +114,30 @@ CODE_SAMPLE
             if (! $secondParam->type instanceof Node) {
                 $secondParam->type = new Name('array');
                 $hasChanged = true;
+            }
+
+            if ($this->isName($classMethod, MethodName::__GET)) {
+                $firstParam = $classMethod->getParams()[0];
+                if (! $firstParam->type instanceof Node) {
+                    $firstParam->type = new Identifier('string');
+                    $hasChanged = true;
+                }
+            }
+
+            if ($this->isName($classMethod, MethodName::__SET)) {
+                $firstParam = $classMethod->getParams()[0];
+                if (! $firstParam->type instanceof Node) {
+                    $firstParam->type = new Identifier('string');
+                    $hasChanged = true;
+                }
+
+                if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
+                    $secondParam = $classMethod->getParams()[1];
+                    if (! $secondParam->type instanceof Node) {
+                        $secondParam->type = new Identifier('mixed');
+                        $hasChanged = true;
+                    }
+                }
             }
         }
 
