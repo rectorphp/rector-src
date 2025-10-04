@@ -108,14 +108,18 @@ CODE_SAMPLE
             if (! $rightStaticType->isNumericString()->no()) {
                 return true;
             }
-            return ! $rightStaticType->isInteger()->no();
+
+            return ! $rightStaticType->isInteger()
+                ->no();
         }
 
         if ($rightStaticType instanceof BooleanType) {
             if (! $leftStaticType->isNumericString()->no()) {
                 return true;
             }
-            return ! $leftStaticType->isInteger()->no();
+
+            return ! $leftStaticType->isInteger()
+                ->no();
         }
 
         return false;
