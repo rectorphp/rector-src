@@ -10,6 +10,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -18,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see https://www.php.net/manual/en/language.oop5.overloading.php#object.call
  */
-final class KnownMagicClassMethodTypeRector extends AbstractRector
+final class KnownMagicClassMethodTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -88,5 +90,10 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SCALAR_TYPES;
     }
 }
