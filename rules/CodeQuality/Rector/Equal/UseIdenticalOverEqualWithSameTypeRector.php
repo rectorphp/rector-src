@@ -89,6 +89,10 @@ CODE_SAMPLE
             return $this->processIdenticalOrNotIdentical($node);
         }
 
+        if ($leftStaticType->isInteger()->yes() && $rightStaticType->isInteger()->yes()) {
+            return $this->processIdenticalOrNotIdentical($node);
+        }
+
         // different types
         if (! $leftStaticType->equals($rightStaticType)) {
             return null;
