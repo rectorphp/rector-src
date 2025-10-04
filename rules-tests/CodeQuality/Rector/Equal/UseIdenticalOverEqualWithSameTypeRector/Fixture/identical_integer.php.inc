@@ -6,7 +6,7 @@ final class IdenticalInteger
 {
     public function equal()
     {
-        if ($this->getValue() === 1) {
+        if ($this->getValue() == 1) {
             return 'yes';
         }
 
