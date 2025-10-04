@@ -9,7 +9,7 @@ final class SkipBoolEqualInteger
 {
     public function equal()
     {
-        // maybe compare to numeric string
+        // maybe compare to integer
         $value = rand(0, 1) ? 1 : null;
 
         var_dump(true == $value);

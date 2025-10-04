@@ -9,7 +9,7 @@ final class SkipBoolEqualFloat
 {
     public function equal()
     {
-        // maybe compare to numeric string
+        // maybe compare to float
         $value = rand(0, 1) ? 1.0 : null;
 
         var_dump(true == $value);
