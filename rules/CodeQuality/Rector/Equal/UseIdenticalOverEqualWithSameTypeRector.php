@@ -103,26 +103,31 @@ CODE_SAMPLE
 
     private function shouldSkipCompareBoolToNumeric(Type $leftStaticType, Type $rightStaticType): bool
     {
-        // use ! ->no() as to verify both yes and maybe
         if ($leftStaticType instanceof BooleanType) {
-            if (! $rightStaticType->isNumericString()->no()) {
-                return true;
-            }
-
-            return ! $rightStaticType->isInteger()
-                ->no();
+            return $this->shouldSkipNumericType($rightStaticType);
         }
 
         if ($rightStaticType instanceof BooleanType) {
-            if (! $leftStaticType->isNumericString()->no()) {
-                return true;
-            }
-
-            return ! $leftStaticType->isInteger()
-                ->no();
+            return $this->shouldSkipNumericType($leftStaticType);
         }
 
         return false;
+    }
+
+    private function shouldSkipNumericType(Type $type): bool
+    {
+        // use ! ->no() as to verify both yes and maybe
+        if (! $type->isNumericString()->no()) {
+            return true;
+        }
+
+        if (! $type->isInteger()
+            ->no()) {
+            return true;
+        }
+
+        return ! $type->isFloat()
+            ->no();
     }
 
     private function processIdenticalOrNotIdentical(Equal|NotEqual $node): Identical|NotIdentical
