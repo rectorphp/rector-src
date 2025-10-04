@@ -25,6 +25,7 @@ final class KnownMagicClassMethodTypeRector extends AbstractRector
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ){
     }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
