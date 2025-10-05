@@ -27,6 +27,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector;
+use Rector\DeadCode\Rector\Concat\RemoveUnusedClosureVariableUseRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Expression\SimplifyMirrorAssignRector;
@@ -115,6 +116,7 @@ final class DeadCodeLevel
         ReduceAlwaysFalseIfOrRector::class,
         RemoveUnusedPrivateClassConstantRector::class,
         RemoveUnusedPrivatePropertyRector::class,
+        RemoveUnusedClosureVariableUseRector::class,
 
         RemoveDuplicatedCaseInSwitchRector::class,
         RemoveDeadInstanceOfRector::class,
