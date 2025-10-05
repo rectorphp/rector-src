@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector\Source;
 
-abstract class ParentClassWithOtherMethod
+abstract class ParentClassOtherMethod
 {
     public function __invoke()
     {
