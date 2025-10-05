@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\DeadCode\Rector\Concat;
+namespace Rector\DeadCode\Rector\Closure;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
