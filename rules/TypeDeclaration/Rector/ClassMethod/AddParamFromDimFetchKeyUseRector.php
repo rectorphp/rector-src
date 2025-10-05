@@ -12,6 +12,7 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -22,7 +23,8 @@ final class AddParamFromDimFetchKeyUseRector extends AbstractRector
 {
     public function __construct(
         private readonly ArrayDimFetchFinder $arrayDimFetchFinder,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -84,6 +86,10 @@ CODE_SAMPLE
 
         foreach ($node->getMethods() as $classMethod) {
             if ($classMethod->params === []) {
+                continue;
+            }
+
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
                 continue;
             }
 
