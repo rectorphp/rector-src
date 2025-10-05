@@ -10,6 +10,11 @@ use PackageVersions\Versions;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+if (! class_exists(Versions::class)) {
+    echo 'You need to run `composer require ocramius/package-versions` first' . PHP_EOL;
+    exit(1);
+}
+
 $composerJsonFileContents = FileSystem::read(__DIR__ . '/../composer.json');
 
 $composerJson = Json::decode($composerJsonFileContents, forceArrays: true);

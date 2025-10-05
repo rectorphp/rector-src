@@ -32,6 +32,9 @@ wget https://github.com/humbug/php-scoper/releases/download/0.18.17/php-scoper.p
 
 # avoid phpstan/phpstan dependency duplicate
 note "Remove PHPStan to avoid duplicating it"
+
+composer require ocramius/package-versions --working-dir "$BUILD_DIRECTORY"
+
 php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
 
 composer remove phpstan/phpstan -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
