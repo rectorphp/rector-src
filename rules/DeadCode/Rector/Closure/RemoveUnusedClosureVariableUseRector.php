@@ -88,8 +88,6 @@ CODE_SAMPLE
         }
 
         if ($hasChanged) {
-            // reset keys, to keep as expected
-            $node->uses = array_values($node->uses);
             return $node;
         }
 
