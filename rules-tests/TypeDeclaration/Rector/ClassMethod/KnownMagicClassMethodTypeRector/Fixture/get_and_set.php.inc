@@ -21,7 +21,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodT
 
 final class GetAndSet
 {
-    public function __get(string $method)
+    public function __get(string $method): mixed
     {
     }
 

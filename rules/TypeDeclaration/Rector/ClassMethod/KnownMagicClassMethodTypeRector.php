@@ -110,6 +110,11 @@ CODE_SAMPLE
                 }
             }
 
+            if ($this->isName($classMethod, MethodName::__GET) && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE) && ! $classMethod->returnType instanceof Node) {
+                $classMethod->returnType = new Identifier('mixed');
+                $hasChanged = true;
+            }
+
             if ($this->isName($classMethod, MethodName::__SET) && $this->phpVersionProvider->isAtLeastPhpVersion(
                 PhpVersionFeature::MIXED_TYPE
             )) {
