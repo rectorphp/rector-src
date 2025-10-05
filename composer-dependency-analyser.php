@@ -21,6 +21,7 @@ return $config
         __DIR__ . '/stubs',
         __DIR__ . '/tests',
         __DIR__ . '/rules-tests',
+        __DIR__ . '/bin/add-phpstan-self-replace.php',
     ], [ErrorType::UNKNOWN_CLASS])
 
     ->disableExtensionsAnalysis();
