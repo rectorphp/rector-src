@@ -2,9 +2,9 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector\Fixture;
 
-use Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector\Source\ParentClassWithOtherMethod;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector\Source\ParentClassOtherMethod;
 
-final class WithOtherMethodFromParent extends ParentClassWithOtherMethod
+final class WithOtherMethodFromParent extends ParentClassOtherMethod
 {
     public function __invoke()
     {
@@ -21,9 +21,9 @@ final class WithOtherMethodFromParent extends ParentClassWithOtherMethod
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector\Fixture;
 
-use Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector\Source\ParentClassWithOtherMethod;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector\Source\ParentClassOtherMethod;
 
-final class WithOtherMethodFromParent extends ParentClassWithOtherMethod
+final class WithOtherMethodFromParent extends ParentClassOtherMethod
 {
     public function __invoke()
     {
