@@ -93,6 +93,12 @@ CODE_SAMPLE
             return $this->createMethodCall($firstArgValue, $secondArgValue);
         }
 
+        if ($firstArgValue instanceof MethodCall && $firstArgValue->isFirstClassCallable()) {
+            $firstArgValue->args = [$this->createUnpackedArg($secondArgValue)];
+
+            return $firstArgValue;
+        }
+
         return null;
     }
 
