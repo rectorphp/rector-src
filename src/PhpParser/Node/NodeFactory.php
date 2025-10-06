@@ -421,7 +421,7 @@ final readonly class NodeFactory
         }
 
         // fallback to other nodes
-        if (is_object($item)) {
+        if ($item instanceof Expr) {
             $arrayItem = new ArrayItem($item);
             $this->decorateArrayItemWithKey($key, $arrayItem);
 
