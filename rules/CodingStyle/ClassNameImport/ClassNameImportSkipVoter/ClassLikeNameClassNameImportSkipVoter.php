@@ -46,8 +46,9 @@ final readonly class ClassLikeNameClassNameImportSkipVoter implements ClassNameI
         $namespace = strtolower((string) $namespace);
 
         $shortNameLowered = $fullyQualifiedObjectType->getShortNameLowered();
+
         $fullyQualifiedObjectTypeNamespace = strtolower(
-            substr($fullyQualifiedObjectType->getClassName(), 0, -strlen($fullyQualifiedObjectType->getShortName()) - 1) ?: ''
+            (string) substr($fullyQualifiedObjectType->getClassName(), 0, -strlen($fullyQualifiedObjectType->getShortName()) - 1)
         );
 
         foreach ($classLikeNames as $classLikeName) {
