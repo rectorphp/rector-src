@@ -9,4 +9,5 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([__DIR__.'/src']);
 
     $rectorConfig->sets([SetList::PHP_53]);
+    $rectorConfig->importNames();
 };
