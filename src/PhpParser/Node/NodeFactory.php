@@ -423,11 +423,17 @@ final readonly class NodeFactory
 
         // fallback to other nodes
         if (is_object($item)) {
-            return new ArrayItem($item);
+            $arrayItem = new ArrayItem($item);
+            $this->decorateArrayItemWithKey($key, $arrayItem);
+
+            return $arrayItem;
         }
 
         $itemValue = BuilderHelpers::normalizeValue($item);
-        return new ArrayItem($itemValue);
+        $arrayItem = new ArrayItem($itemValue);
+        $this->decorateArrayItemWithKey($key, $arrayItem);
+
+        return $arrayItem;
     }
 
     private function decorateArrayItemWithKey(int | string | null $key, ArrayItem $arrayItem): void
