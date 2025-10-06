@@ -426,12 +426,8 @@ final readonly class NodeFactory
             return new ArrayItem($item);
         }
 
-        $nodeClass = $item;
-        throw new NotImplementedYetException(sprintf(
-            'Not implemented yet. Go to "%s()" and add check for "%s" node.',
-            __METHOD__,
-            (string) $nodeClass
-        ));
+        $itemValue = BuilderHelpers::normalizeValue($item);
+        return new ArrayItem($itemValue);
     }
 
     private function decorateArrayItemWithKey(int | string | null $key, ArrayItem $arrayItem): void
