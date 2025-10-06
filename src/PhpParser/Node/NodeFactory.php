@@ -48,7 +48,6 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Enum\ObjectReference;
-use Rector\Exception\NotImplementedYetException;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeDecorator\PropertyTypeDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
