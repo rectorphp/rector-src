@@ -23,10 +23,14 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Clone_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -377,6 +381,12 @@ final readonly class NodeFactory
             || $item instanceof Scalar
             || $item instanceof Cast
             || $item instanceof ConstFetch
+            || $item instanceof PropertyFetch
+            || $item instanceof StaticPropertyFetch
+            || $item instanceof NullsafePropertyFetch
+            || $item instanceof NullsafeMethodCall
+            || $item instanceof Clone_
+            || $item instanceof Instanceof_
         ) {
             $arrayItem = new ArrayItem($item);
         } elseif ($item instanceof Identifier) {
@@ -411,7 +421,12 @@ final readonly class NodeFactory
             return $arrayItem;
         }
 
-        $nodeClass = is_object($item) ? $item::class : $item;
+        // fallback to other nodes
+        if (is_object($item)) {
+            return new ArrayItem($item);
+        }
+
+        $nodeClass = $item;
         throw new NotImplementedYetException(sprintf(
             'Not implemented yet. Go to "%s()" and add check for "%s" node.',
             __METHOD__,
