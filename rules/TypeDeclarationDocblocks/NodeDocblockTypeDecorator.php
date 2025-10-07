@@ -33,7 +33,7 @@ final readonly class NodeDocblockTypeDecorator
     public function decorateGenericIterableParamType(
         Type $type,
         PhpDocInfo $phpDocInfo,
-        ClassMethod $classMethod,
+        FunctionLike $functionLike,
         Param $param,
         string $parameterName
     ): bool {
@@ -49,7 +49,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $this->phpDocTypeChanger->changeParamTypeNode($classMethod, $phpDocInfo, $param, $parameterName, $typeNode);
+        $this->phpDocTypeChanger->changeParamTypeNode($functionLike, $phpDocInfo, $param, $parameterName, $typeNode);
 
         return true;
     }
