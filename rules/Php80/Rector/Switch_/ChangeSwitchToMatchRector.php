@@ -83,7 +83,7 @@ CODE_SAMPLE
 
     /**
      * @param StmtsAwareInterface $node
-     * @return null|Node|Nodevisor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
+     * @return null|Node|NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      */
     public function refactor(Node $node): null|Node|int
     {
