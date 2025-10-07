@@ -253,7 +253,7 @@ CODE_SAMPLE;
      */
     private function createPreloadFileContent(array $fileInfos, bool $append = false): string
     {
-        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE;
+        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE . PHP_EOL . PHP_EOL;
 
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
@@ -272,7 +272,7 @@ CODE_SAMPLE;
      */
     private function createPreloadFileContentForSplitPackage(array $fileInfos, bool $append = false): string
     {
-        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE;
+        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE . PHP_EOL . PHP_EOL;
 
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
