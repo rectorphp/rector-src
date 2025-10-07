@@ -139,8 +139,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-
         return $node;
     }
 
