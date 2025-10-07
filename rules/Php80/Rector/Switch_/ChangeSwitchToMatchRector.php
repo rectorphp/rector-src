@@ -11,9 +11,11 @@ use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
+use PhpParser\NodeVisitor;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
@@ -81,11 +83,16 @@ CODE_SAMPLE
 
     /**
      * @param StmtsAwareInterface $node
+     * @return null|Node|Nodevisor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): null|Node|int
     {
         if (! is_array($node->stmts)) {
             return null;
+        }
+
+        if ($node instanceof FunctionLike && $node->returnsByRef()) {
+            return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         $hasChanged = false;
