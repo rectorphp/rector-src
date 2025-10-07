@@ -6,7 +6,6 @@ namespace Rector\TypeDeclarationDocblocks;
 
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
