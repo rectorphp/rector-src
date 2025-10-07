@@ -6,7 +6,6 @@ namespace Rector\TypeDeclarationDocblocks;
 
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -33,7 +32,7 @@ final readonly class NodeDocblockTypeDecorator
     public function decorateGenericIterableParamType(
         Type $type,
         PhpDocInfo $phpDocInfo,
-        ClassMethod $classMethod,
+        FunctionLike $functionLike,
         Param $param,
         string $parameterName
     ): bool {
@@ -49,7 +48,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        $this->phpDocTypeChanger->changeParamTypeNode($classMethod, $phpDocInfo, $param, $parameterName, $typeNode);
+        $this->phpDocTypeChanger->changeParamTypeNode($functionLike, $phpDocInfo, $param, $parameterName, $typeNode);
 
         return true;
     }

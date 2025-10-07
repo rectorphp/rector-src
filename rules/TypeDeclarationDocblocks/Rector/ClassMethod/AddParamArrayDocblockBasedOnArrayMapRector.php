@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
@@ -12,13 +11,12 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayMapClosureExprFinder;
+use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -31,8 +29,8 @@ final class AddParamArrayDocblockBasedOnArrayMapRector extends AbstractRector
         private readonly ArrayMapClosureExprFinder $arrayMapClosureExprFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
 
     }
@@ -112,21 +110,24 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($paramTypeNode);
-                $arrayParamType = new ArrayType(new MixedType(), $paramType);
-
-                if ($this->isAlreadyNonMixedParamType($functionPhpDocInfo, $paramName)) {
+                if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag(
+                    $functionPhpDocInfo->getParamTagValueByName($paramName)
+                )) {
                     continue;
                 }
 
-                $this->phpDocTypeChanger->changeParamType(
-                    $node,
-                    $functionPhpDocInfo,
+                $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($paramTypeNode);
+                $arrayParamType = new ArrayType(new MixedType(), $paramType);
+
+                if ($this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
                     $arrayParamType,
+                    $functionPhpDocInfo,
+                    $node,
                     $param,
                     $paramName
-                );
-                $hasChanged = true;
+                )) {
+                    $hasChanged = true;
+                }
             }
 
         }
@@ -134,8 +135,6 @@ CODE_SAMPLE
         if (! $hasChanged) {
             return null;
         }
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }
@@ -147,31 +146,5 @@ CODE_SAMPLE
         }
 
         return $this->isName($param->type, 'array');
-    }
-
-    private function isMixedArrayType(Type $type): bool
-    {
-        if (! $type instanceof ArrayType) {
-            return false;
-        }
-
-        if (! $type->getItemType() instanceof MixedType) {
-            return false;
-        }
-
-        return $type->getKeyType() instanceof MixedType;
-    }
-
-    private function isAlreadyNonMixedParamType(
-        PhpDocInfo $functionPhpDocInfo,
-        string $paramName
-    ): bool {
-        $currentParamType = $functionPhpDocInfo->getParamType($paramName);
-        if ($currentParamType instanceof MixedType) {
-            return false;
-        }
-
-        // has useful param type already?
-        return ! $this->isMixedArrayType($currentParamType);
     }
 }
