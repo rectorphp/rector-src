@@ -55,6 +55,12 @@ if (defined('__PHPSTAN_RUNNING__')) {
     return;
 }
 
+// edge case during Rector tests case, happens when
+// 1. phpstan autoload test case is triggered first,
+// 2. all php-parser classes are loaded,
+if (defined('PHPUNIT_COMPOSER_INSTALL') && class_exists(\PHPStan\Testing\PHPStanTestCase::class, false) && interface_exists(\PhpParser\Node::class, false)) {
+    return;
+}
 
 CODE_SAMPLE;
 

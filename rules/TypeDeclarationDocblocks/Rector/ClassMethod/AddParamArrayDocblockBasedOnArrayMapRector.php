@@ -11,6 +11,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
+<<<<<<< HEAD
+=======
+use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+>>>>>>> a264677ce8 ([autoload] Add workaround for phpstan + rector tests co-run to avoid duplicated php-parser loading error)
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -147,4 +152,31 @@ CODE_SAMPLE
 
         return $this->isName($param->type, 'array');
     }
+<<<<<<< HEAD
+=======
+
+    private function isMixedArrayType(Type $type): bool
+    {
+        if (! $type instanceof ArrayType) {
+            return false;
+        }
+
+        if (! $type->getItemType() instanceof MixedType) {
+            return false;
+        }
+
+        return $type->getKeyType() instanceof MixedType;
+    }
+
+    private function isAlreadyNonMixedParamType(PhpDocInfo $functionPhpDocInfo, string $paramName): bool
+    {
+        $currentParamType = $functionPhpDocInfo->getParamType($paramName);
+        if ($currentParamType instanceof MixedType) {
+            return false;
+        }
+
+        // has useful param type already?
+        return ! $this->isMixedArrayType($currentParamType);
+    }
+>>>>>>> a264677ce8 ([autoload] Add workaround for phpstan + rector tests co-run to avoid duplicated php-parser loading error)
 }
