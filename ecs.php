@@ -24,6 +24,9 @@ return ECSConfig::configure()
         '*/Fixture/*',
         '*/Expected/*',
 
+        // avoid re-running on build
+        __DIR__ . '/preload.php',
+
         PhpdocTypesFixer::class => [
             // double to Double false positive
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
