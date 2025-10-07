@@ -73,6 +73,7 @@ function isPHPStanTestPreloaded(): bool
 
     return interface_exists(Node::class, false);
 }
+
 CODE_SAMPLE;
 
     /**
