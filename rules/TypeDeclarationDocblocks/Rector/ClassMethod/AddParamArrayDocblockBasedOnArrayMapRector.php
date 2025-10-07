@@ -11,9 +11,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
@@ -31,7 +29,6 @@ final class AddParamArrayDocblockBasedOnArrayMapRector extends AbstractRector
         private readonly ArrayMapClosureExprFinder $arrayMapClosureExprFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
         private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
@@ -149,18 +146,5 @@ CODE_SAMPLE
         }
 
         return $this->isName($param->type, 'array');
-    }
-
-    private function isMixedArrayType(Type $type): bool
-    {
-        if (! $type instanceof ArrayType) {
-            return false;
-        }
-
-        if (! $type->getItemType() instanceof MixedType) {
-            return false;
-        }
-
-        return $type->getKeyType() instanceof MixedType;
     }
 }
