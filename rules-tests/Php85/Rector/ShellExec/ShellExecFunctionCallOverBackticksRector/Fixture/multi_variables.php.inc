@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector\Fixture;
 
-class MultiVariable
+class MultiVariables
 {
     public function run()
     {
@@ -20,7 +20,7 @@ class MultiVariable
 
 namespace Rector\Tests\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector\Fixture;
 
-class MultiVariable
+class MultiVariables
 {
     public function run()
     {
