@@ -39,6 +39,7 @@ use PHPStan\Type\NeverType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -55,9 +56,11 @@ use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyArrayTypeCorrecto
 use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
+use Rector\Php\PhpVersionProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
+use Rector\ValueObject\PhpVersion;
 
 final class NodeTypeResolver
 {
@@ -83,6 +86,7 @@ final class NodeTypeResolver
         private readonly AccessoryNonEmptyArrayTypeCorrector $accessoryNonEmptyArrayTypeCorrector,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly NodeNameResolver $nodeNameResolver,
+        private readonly PhpVersionProvider $phpVersionProvider,
         iterable $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
@@ -620,6 +624,10 @@ final class NodeTypeResolver
                 return $scope->getNativeType($expr);
             }
 
+            if ($this->isSubstrOnPHP74($expr)) {
+                return new UnionType([new StringType(), new ConstantBooleanType(false)]);
+            }
+
             return $scope->getType($expr);
         }
 
@@ -650,5 +658,21 @@ final class NodeTypeResolver
         }
 
         return $classReflection->getName() === $objectType->getClassName();
+    }
+
+    /**
+     * substr can return false on php 7.x and bellow
+     */
+    private function isSubstrOnPHP74(FuncCall $funcCall): bool
+    {
+        if ($funcCall->isFirstClassCallable()) {
+            return false;
+        }
+
+        if (! $this->nodeNameResolver->isName($funcCall, 'substr')) {
+            return false;
+        }
+
+        return ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80);
     }
 }

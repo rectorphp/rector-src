@@ -46,15 +46,13 @@ final readonly class ClassLikeNameClassNameImportSkipVoter implements ClassNameI
         $namespace = strtolower((string) $namespace);
 
         $shortNameLowered = $fullyQualifiedObjectType->getShortNameLowered();
-        /**
-         * on php 7.x, substr() result can return false, so force (string) is needed
-         * @see https://github.com/rectorphp/rector-src/pull/7436
-         */
-        $subClassName = (string) substr(
+
+        $subClassName = substr(
             $fullyQualifiedObjectType->getClassName(),
             0,
             -strlen($fullyQualifiedObjectType->getShortName()) - 1
         );
+
         $fullyQualifiedObjectTypeNamespace = strtolower($subClassName);
 
         foreach ($classLikeNames as $classLikeName) {
