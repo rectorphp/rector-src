@@ -8,4 +8,4 @@ use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
     ->withRules([RecastingRemovalRector::class])
-    ->withPhpVersion(PhpVersion::PHP_80);
+    ->withPhpVersion(PhpVersion::PHP_74);
