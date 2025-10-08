@@ -26,7 +26,7 @@ class MultiVariables
     {
         $a = 'X';
         $b = 'Y';
-        $output = shell_exec('echo ' . $a .  ' and ' . $b);
+        $output = shell_exec('echo ' . $a . ' \' and \' ' . $b);
 
         echo $output;
     }
