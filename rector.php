@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
@@ -52,10 +51,5 @@ return RectorConfig::configure()
             __DIR__ . '/src/Util/FileHasher.php',
             __DIR__ . '/src/Configuration/RectorConfigBuilder.php',
             __DIR__ . '/src/Console/Notifier.php',
-        ],
-
-        // on php 7.x, substr() result can return false, so force (string) is needed
-        RecastingRemovalRector::class => [
-            __DIR__ . '/rules/CodingStyle/ClassNameImport/ClassNameImportSkipVoter/ClassLikeNameClassNameImportSkipVoter.php',
         ],
     ]);
