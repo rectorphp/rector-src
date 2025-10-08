@@ -6,7 +6,6 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
-use Rector\CodingStyle\ClassNameImport\LastNamespaceResolver;
 use Rector\CodingStyle\ClassNameImport\NamespaceBeforeClassNameResolver;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
