@@ -6,6 +6,7 @@ namespace Rector\Renaming\Rector\PropertyFetch;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
@@ -46,11 +47,11 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
      */
     public function getNodeTypes(): array
     {
-        return [PropertyFetch::class, ClassLike::class];
+        return [PropertyFetch::class, StaticPropertyFetch::class, ClassLike::class];
     }
 
     /**
-     * @param PropertyFetch|ClassLike $node
+     * @param PropertyFetch|StaticPropertyFetch|ClassLike $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -110,7 +111,7 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
         $property->props[0]->name = new VarLikeIdentifier($newProperty);
     }
 
-    private function refactorPropertyFetch(PropertyFetch $propertyFetch): ?PropertyFetch
+    private function refactorPropertyFetch(PropertyFetch|StaticPropertyFetch $propertyFetch): null|PropertyFetch|StaticPropertyFetch
     {
         foreach ($this->renamedProperties as $renamedProperty) {
             $oldProperty = $renamedProperty->getOldProperty();
@@ -118,11 +119,12 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
                 continue;
             }
 
-            if (! $this->isObjectType($propertyFetch->var, $renamedProperty->getObjectType())) {
+            $varPropertyFetch = $propertyFetch instanceof PropertyFetch ? $propertyFetch->var : $propertyFetch->class;
+            if (! $this->isObjectType($varPropertyFetch, $renamedProperty->getObjectType())) {
                 continue;
             }
 
-            $propertyFetch->name = new Identifier($renamedProperty->getNewProperty());
+            $propertyFetch->name->name = $renamedProperty->getNewProperty();
             return $propertyFetch;
         }
 
