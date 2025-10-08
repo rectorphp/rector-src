@@ -59,9 +59,7 @@ CODE_SAMPLE
         $exprs = [];
         foreach ($node->parts as $part) {
             if ($part instanceof InterpolatedStringPart) {
-                // keep as single-quoted string literal and escape single quotes inside
-                $escaped = str_replace("'", "\\'", $part->value);
-                $exprs[] = new String_($escaped);
+                $exprs[] = new String_($part->value);
                 continue;
             }
 
