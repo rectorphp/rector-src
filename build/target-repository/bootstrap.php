@@ -11,7 +11,7 @@ use PHPUnit\Runner\Version;
  *      - nikic/php-parser
  *
  * They need to be loaded early to avoid conflict version between rector prefixed vendor and Project vendor
- * For example, a project may use phpstan/phpdoc-parser v1, while phpstan/phpdoc-parser uses v2, that will error as class or logic are different.
+ * For example, a project may use phpstan/phpdoc-parser v1, while rector uses phpstan/phpdoc-parser uses v2, that will error as class or logic are different.
  */
 if (
     // verify PHPUnit is running
