@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use Rector\CodingStyle\ClassNameImport\NamespaceBeforeClassNameResolver;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -24,7 +25,8 @@ use Rector\ValueObject\Application\File;
 final readonly class ClassLikeNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private ShortNameResolver $shortNameResolver
+        private ShortNameResolver $shortNameResolver,
+        private NamespaceBeforeClassNameResolver $namespaceBeforeClassNameResolver
     ) {
     }
 
@@ -46,13 +48,7 @@ final readonly class ClassLikeNameClassNameImportSkipVoter implements ClassNameI
         $namespace = strtolower((string) $namespace);
 
         $shortNameLowered = $fullyQualifiedObjectType->getShortNameLowered();
-
-        $subClassName = substr(
-            $fullyQualifiedObjectType->getClassName(),
-            0,
-            -strlen($fullyQualifiedObjectType->getShortName()) - 1
-        );
-
+        $subClassName = $this->namespaceBeforeClassNameResolver->resolve($fullyQualifiedObjectType);
         $fullyQualifiedObjectTypeNamespace = strtolower($subClassName);
 
         foreach ($classLikeNames as $classLikeName) {
