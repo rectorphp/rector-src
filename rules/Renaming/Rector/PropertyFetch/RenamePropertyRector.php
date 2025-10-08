@@ -111,8 +111,9 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
         $property->props[0]->name = new VarLikeIdentifier($newProperty);
     }
 
-    private function refactorPropertyFetch(PropertyFetch|StaticPropertyFetch $propertyFetch): null|PropertyFetch|StaticPropertyFetch
-    {
+    private function refactorPropertyFetch(
+        PropertyFetch|StaticPropertyFetch $propertyFetch
+    ): null|PropertyFetch|StaticPropertyFetch {
         foreach ($this->renamedProperties as $renamedProperty) {
             $oldProperty = $renamedProperty->getOldProperty();
             if (! $this->isName($propertyFetch, $oldProperty)) {
