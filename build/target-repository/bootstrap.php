@@ -2,6 +2,18 @@
 
 declare(strict_types = 1);
 
+/**
+ * The preload.php contains 2 dependencies
+ *      - phpstan/phpdoc-parser
+ *      - nikic/php-parser
+ *
+ * They need to be loaded early to avoid conflict version between rector prefixed vendor and Project vendor
+ * For example, a project may use PHPParser v4, while Rector uses v5, that will error as class or logic are different.
+ */
+if (defined('PHPUNIT_COMPOSER_INSTALL')) {
+    require_once __DIR__ . '/preload.php';
+}
+
 // inspired by https://github.com/phpstan/phpstan/blob/master/bootstrap.php
 spl_autoload_register(function (string $class): void {
     static $composerAutoloader;
