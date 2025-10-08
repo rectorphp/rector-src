@@ -1,8 +1,9 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use PHPParser\Node;
+use PHPUnit\Runner\Version;
 
 /**
  * The preload.php contains 2 dependencies
@@ -18,6 +19,10 @@ if (
 
     // no need to preload if Node interface exists
     && ! interface_exists(Node::class, false)
+
+    // ensure force autoload version with class_exists() with true argument as not yet loaded
+    // for phpunit 12+ only
+    && class_exists(Version::class, true) && (int) Version::id() >= 12
 ) {
     require_once __DIR__ . '/preload.php';
 }
