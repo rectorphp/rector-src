@@ -6,6 +6,7 @@ namespace Rector\Php85\Rector\ShellExec;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ShellExec;
 use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Scalar\String_;
@@ -49,17 +50,38 @@ CODE_SAMPLE
     /**
      * @param ShellExec $node
      */
-    public function refactor(Node $node): Node
+    public function refactor(Node $node): ?Node
     {
-        $args = array_map(function (Node $node): Node {
-            if ($node instanceof InterpolatedStringPart) {
-                return new Arg(new String_($node->value));
+        if ($node->parts === []) {
+            return null;
+        }
+
+        $exprs = [];
+        foreach ($node->parts as $part) {
+            if ($part instanceof InterpolatedStringPart) {
+                // keep as single-quoted string literal and escape single quotes inside
+                $escaped = str_replace("'", "\\'", $part->value);
+                $exprs[] = new String_($escaped);
+                continue;
             }
 
-            return new Arg($node);
-        }, $node->parts);
+            // other parts are Expr (variables, function calls, etc.)
+            // keep them as-is so they are concatenated
+            $exprs[] = $part;
+        }
 
-        return $this->nodeFactory->createFuncCall('shell_exec', $args);
+        // reduce to single concatenated expression
+        if (count($exprs) === 1) {
+            $argExpr = $exprs[0];
+        } else {
+            $argExpr = array_shift($exprs);
+            foreach ($exprs as $expr) {
+                $argExpr = new Concat($argExpr, $expr);
+            }
+        }
+
+        // create single Arg and call shell_exec
+        return $this->nodeFactory->createFuncCall('shell_exec', [new Arg($argExpr)]);
     }
 
     public function provideMinPhpVersion(): int
