@@ -69,13 +69,9 @@ CODE_SAMPLE
         }
 
         // reduce to single concatenated expression
-        if (count($exprs) === 1) {
-            $argExpr = $exprs[0];
-        } else {
-            $argExpr = array_shift($exprs);
-            foreach ($exprs as $expr) {
-                $argExpr = new Concat($argExpr, $expr);
-            }
+        $argExpr = array_shift($exprs);
+        foreach ($exprs as $expr) {
+            $argExpr = new Concat($argExpr, $expr);
         }
 
         // create single Arg and call shell_exec
