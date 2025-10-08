@@ -13,7 +13,7 @@ final class TrueInUnion
             return true;
         }
 
-        return strtoupper('warning');
+        return substr('warning', 1);
     }
 }
 
@@ -34,7 +34,7 @@ final class TrueInUnion
             return true;
         }
 
-        return strtoupper('warning');
+        return substr('warning', 1);
     }
 }
 
