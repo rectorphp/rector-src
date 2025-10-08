@@ -9,12 +9,10 @@ class WithVariable
         $dir = __DIR__;
         $var = 'example';
 
-        $output = `ls -al`;
-        $output2 = `ls $dir`;
-        $output3 = `echo "value: $var"`;
+        $output = `ls $dir`;
+        $output2 = `echo "value: $var"`;
         echo "<pre>$output</pre>";
         echo "<pre>$output2</pre>";
-        echo "<pre>$output3</pre>";
     }
 }
 
@@ -31,10 +29,8 @@ class WithVariable
         $dir = __DIR__;
         $var = 'example';
 
-        $output = shell_exec("ls -al");
         $output2 = shell_exec("ls $dir");
         $output3 = shell_exec("echo \"value: $var\"");
-        echo "<pre>$output</pre>";
         echo "<pre>$output2</pre>";
         echo "<pre>$output3</pre>";
     }
