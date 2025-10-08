@@ -3,21 +3,7 @@
 /**
  * no namespace on purpose to use short name
  */
-class ShortNameImportInClassName
+class SkipShortNameImportInClassName
 {
-    public \ShortNameImportInClassName $obj;
+    public \SkipShortNameImportInClassName $obj;
 }
-
-?>
------
-<?php
-
-/**
- * no namespace on purpose to use short name
- */
-class ShortNameImportInClassName
-{
-    public ShortNameImportInClassName $obj;
-}
-
-?>
