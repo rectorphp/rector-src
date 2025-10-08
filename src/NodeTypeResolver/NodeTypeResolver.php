@@ -663,13 +663,13 @@ final class NodeTypeResolver
     /**
      * substr can return false on php 7.x and bellow
      */
-    private function isSubstrOnPHP74(FuncCall $expr): bool
+    private function isSubstrOnPHP74(FuncCall $funcCall): bool
     {
-        if ($expr->isFirstClassCallable()) {
+        if ($funcCall->isFirstClassCallable()) {
             return false;
         }
 
-        if (! $this->nodeNameResolver->isName($expr, 'substr')) {
+        if (! $this->nodeNameResolver->isName($funcCall, 'substr')) {
             return false;
         }
 
