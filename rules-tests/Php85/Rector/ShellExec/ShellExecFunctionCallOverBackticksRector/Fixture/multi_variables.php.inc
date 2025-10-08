@@ -8,8 +8,11 @@ class MultiVariables
     {
         $a = 'X';
         $b = 'Y';
-        $output = `echo $a ' and ' $b`;
 
+        $output = `echo $a ' and ' $b`;
+        echo $output;
+
+        $output = `echo $a and $b`;
         echo $output;
     }
 }
@@ -26,8 +29,11 @@ class MultiVariables
     {
         $a = 'X';
         $b = 'Y';
-        $output = shell_exec('echo ' . $a . ' \' and \' ' . $b);
 
+        $output = shell_exec('echo ' . $a . ' \' and \' ' . $b);
+        echo $output;
+
+        $output = shell_exec('echo ' . $a . ' and ' . $b);
         echo $output;
     }
 }
