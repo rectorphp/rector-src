@@ -34,5 +34,10 @@ return static function (RectorConfig $rectorConfig): void {
                 'oldProperty',
                 'newProperty'
             ),
+            new RenameProperty(
+                'Rector\Tests\Renaming\Rector\PropertyFetch\RenamePropertyRector\Fixture\MyClass',
+                '_config',
+                'config'
+            ),
         ]);
 };
