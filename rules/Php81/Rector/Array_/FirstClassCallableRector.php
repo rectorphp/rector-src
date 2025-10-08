@@ -7,6 +7,7 @@ namespace Rector\Php81\Rector\Array_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
@@ -24,6 +25,7 @@ use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\Symfony\NodeAnalyzer\SymfonyPhpClosureDetector;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,7 +39,8 @@ final class FirstClassCallableRector extends AbstractRector implements MinPhpVer
     public function __construct(
         private readonly ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly SymfonyPhpClosureDetector $symfonyPhpClosureDetector
     ) {
     }
 
@@ -83,15 +86,23 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Property::class, ClassConst::class, Array_::class];
+        return [Property::class, ClassConst::class, Array_::class, Closure::class];
     }
 
     /**
-     * @param Property|ClassConst|Array_ $node
+     * @param Property|ClassConst|Array_|Closure $node
      * @return StaticCall|MethodCall|null|NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      */
     public function refactor(Node $node): int|null|StaticCall|MethodCall
     {
+        if ($node instanceof Closure) {
+            if ($this->symfonyPhpClosureDetector->detect($node)) {
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            return null;
+        }
+
         if ($node instanceof Property || $node instanceof ClassConst) {
             return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
