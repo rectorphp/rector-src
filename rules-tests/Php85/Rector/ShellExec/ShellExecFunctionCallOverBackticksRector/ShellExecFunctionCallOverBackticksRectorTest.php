@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\FuncCall\ShellExecFunctionCallOverBackticksRector;
+namespace Rector\Tests\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
