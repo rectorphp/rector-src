@@ -124,7 +124,9 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
                 continue;
             }
 
-            $propertyFetch->name->name = $renamedProperty->getNewProperty();
+            $propertyFetch->name = $propertyFetch instanceof PropertyFetch
+                ? new Identifier($renamedProperty->getNewProperty())
+                : new VarLikeIdentifier($renamedProperty->getNewProperty());
             return $propertyFetch;
         }
 
