@@ -83,14 +83,14 @@ final class PhpDocs
 
     /**
      * @param class-string<SomeInterface> $class
-     * @return class-string<Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface>
+     * @return class-string<\Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface>
      */
     public function bar(string $class): string
     {
         return $class;
     }
 
-    /** @return class-string<Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface> */
+    /** @return class-string<\Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface> */
     public function baz(string $class): string
     {
         return SomeInterface::class;
