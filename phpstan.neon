@@ -150,6 +150,8 @@ parameters:
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
                 - src/Validation/RectorConfigValidator.php
+                # for phpunit version check
+                - src/Testing/PHPUnit/AbstractLazyTestCase.php
 
         # use of internal phpstan classes
         -
