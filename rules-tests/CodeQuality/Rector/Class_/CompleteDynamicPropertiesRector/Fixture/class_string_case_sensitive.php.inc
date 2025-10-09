@@ -17,7 +17,7 @@ class ClassStringCaseSensitive
 class ClassStringCaseSensitive
 {
     /**
-     * @var class-string<ClassStringCaseSensitive>
+     * @var class-string<\ClassStringCaseSensitive>
      */
     public $value;
     public function set()
