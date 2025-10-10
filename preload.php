@@ -12,17 +12,10 @@ if (defined('__PHPSTAN_RUNNING__')) {
 // edge case during Rector tests case, happens when
 // 1. phpstan autoload test case is triggered first,
 // 2. all php-parser classes are loaded,
-if (defined('PHPUNIT_COMPOSER_INSTALL') && isPHPStanTestPreloaded()) {
+if (defined('PHPUNIT_COMPOSER_INSTALL')
+    && class_exists(PHPStanTestCase::class, false)
+    && interface_exists(Node::class, false)) {
     return;
-}
-
-function isPHPStanTestPreloaded(): bool
-{
-    if (! class_exists(PHPStanTestCase::class, false)) {
-        return false;
-    }
-
-    return interface_exists(Node::class, false);
 }
 
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node.php';
