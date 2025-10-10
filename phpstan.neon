@@ -345,3 +345,8 @@ parameters:
         -
             identifier: symplify.noReference
             message: '#Use explicit return value over magic &reference#'
+
+        # false positive
+        -
+            identifier: offsetAccess.invalidOffset
+            path: src/CustomRules/SimpleNodeDumper.php
