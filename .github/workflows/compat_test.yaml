@@ -1,0 +1,30 @@
+# builds the content of https://github.com/rectorphp/rector
+# inspiration from https://github.com/phpstan/phpstan-src/blob/master/.github/workflows/phar.yml
+name: PHPUnit and PHPStan Compat Test
+
+on:
+    push:
+        branches:
+            - main
+    pull_request: null
+
+jobs:
+    build_scoped_rector:
+        runs-on: ubuntu-latest
+
+        steps:
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.2
+                    coverage: none
+
+            - run: composer create-project "rector/rector-compat-tests:dev-main" .
+
+            - run: vendor/bin/phpunit tests/PHPStan
+
+            - run: vendor/bin/phpunit tests/Rector
+
+            - run:  vendor/bin/phpunit tests
+
+            - run:  vendor/bin/phpunit

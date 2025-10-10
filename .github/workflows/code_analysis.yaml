@@ -64,6 +64,12 @@ jobs:
                         name: 'Detect composer dependency issues'
                         run: vendor/bin/composer-dependency-analyser
 
+                    -
+                        name: "PHP Linter"
+                        run: |
+                            composer require php-parallel-lint/php-parallel-lint --ansi
+                            vendor/bin/parallel-lint src bin/rector config tests rules --colors
+
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
         timeout-minutes: 10
