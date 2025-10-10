@@ -16,13 +16,15 @@ if (defined('PHPUNIT_COMPOSER_INSTALL') && isPHPStanTestPreloaded()) {
     return;
 }
 
-function isPHPStanTestPreloaded(): bool
-{
-    if (! class_exists(PHPStanTestCase::class, false)) {
-        return false;
-    }
+if (! function_exists('isPHPStanTestPreloaded')) {
+    function isPHPStanTestPreloaded(): bool
+    {
+        if (! class_exists(PHPStanTestCase::class, false)) {
+            return false;
+        }
 
-    return interface_exists(Node::class, false);
+        return interface_exists(Node::class, false);
+    }
 }
 
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node.php';
