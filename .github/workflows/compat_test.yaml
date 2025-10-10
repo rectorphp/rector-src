@@ -1,5 +1,4 @@
-# builds the content of https://github.com/rectorphp/rector
-# inspiration from https://github.com/phpstan/phpstan-src/blob/master/.github/workflows/phar.yml
+# see https://github.com/rectorphp/rector/issues/9416
 name: PHPUnit and PHPStan Compat Test
 
 on:
