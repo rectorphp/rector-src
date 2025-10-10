@@ -30,15 +30,26 @@ note "Starts"
 note "Downloading php-scoper.phar"
 wget https://github.com/humbug/php-scoper/releases/download/0.18.17/php-scoper.phar -N --no-verbose
 
-# avoid phpstan/phpstan dependency duplicate
-note "Remove PHPStan to avoid duplicating it"
-
+# make PackageVersions exists
+# here while wait for PHP 8.5 compatible code
+# see https://github.com/Ocramius/PackageVersions/pull/270
+# to allow us on rector to create downgrade PHP 8.5 rules with define
+#
+#     #[RequiresPhp('>= 8.5')]
+#
+# On Downgrade PHP 8.5 rule, see https://github.com/rectorphp/rector-downgrade-php/pull/337
+#
 composer require ocramius/package-versions --working-dir "$BUILD_DIRECTORY"
 
 php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
 
+# avoid phpstan/phpstan and ocramius/package-versions dependency duplicate
+note "Remove PHPStan and PackageVersions to avoid duplicating it"
+
 composer remove phpstan/phpstan -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
 composer remove ocramius/package-versions -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
+
+note "PHPStan and PackageVersions now removed, safe to start php-scoper from here"
 
 # Work around possible PHP memory limits
 note "Running php-scoper on /bin, /config, /src, /rules and /vendor"
