@@ -768,6 +768,7 @@ final class RectorConfigBuilder
         bool $doctrineCodeQuality = false,
         bool $symfonyCodeQuality = false,
         bool $symfonyConfigs = false,
+        bool $all = false,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
@@ -789,6 +790,11 @@ final class RectorConfigBuilder
             SymfonySetList::SYMFONY_CODE_QUALITY => $symfonyCodeQuality,
             SymfonySetList::CONFIGS => $symfonyConfigs,
         ];
+
+        if ($all) {
+            $this->sets = array_keys($setMap);
+            return $this;
+        }
 
         foreach ($setMap as $setPath => $isEnabled) {
             if ($isEnabled) {
