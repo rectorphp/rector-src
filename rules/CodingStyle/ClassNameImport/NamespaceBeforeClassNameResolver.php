@@ -15,10 +15,6 @@ final class NamespaceBeforeClassNameResolver
 
         return $className === $shortName
             ? ''
-            : substr(
-                $className,
-                0,
-                -strlen($shortName) - 1
-        );
+            : substr($className, 0, -strlen($shortName) - 1);
     }
 }

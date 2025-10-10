@@ -21,6 +21,16 @@ use PhpParser\Node\UseItem;
 final class SimpleNodeDumper
 {
     /**
+     * @var array<int, string>
+     */
+    private const INCLUDE_TYPE_MAP = [
+        Include_::TYPE_INCLUDE => 'TYPE_INCLUDE',
+        Include_::TYPE_INCLUDE_ONCE => 'TYPE_INCLUDE_ONCE',
+        Include_::TYPE_REQUIRE => 'TYPE_REQUIRE',
+        Include_::TYPE_REQUIRE_ONCE => 'TYPE_REQUIRE_ONCE',
+    ];
+
+    /**
      * @param Node[]|Node|mixed[] $node
      */
     public static function dump(array|Node $node, bool $rootNode = true): string
@@ -120,18 +130,11 @@ final class SimpleNodeDumper
 
     private static function dumpIncludeType(int|float|string $type): string
     {
-        $map = [
-            Include_::TYPE_INCLUDE => 'TYPE_INCLUDE',
-            Include_::TYPE_INCLUDE_ONCE => 'TYPE_INCLUDE_ONCE',
-            Include_::TYPE_REQUIRE => 'TYPE_REQUIRE',
-            Include_::TYPE_REQUIRE_ONCE => 'TYPE_REQUIRE_ONCE',
-        ];
-
-        if (! isset($map[$type])) {
+        if (! isset(self::INCLUDE_TYPE_MAP[$type])) {
             return (string) $type;
         }
 
-        return $map[$type] . ' (' . $type . ')';
+        return self::INCLUDE_TYPE_MAP[$type] . ' (' . $type . ')';
     }
 
     private static function dumpUseType(mixed $type): string
