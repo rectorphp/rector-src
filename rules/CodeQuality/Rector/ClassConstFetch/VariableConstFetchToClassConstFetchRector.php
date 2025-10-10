@@ -7,6 +7,8 @@ namespace Rector\CodeQuality\Rector\ClassConstFetch;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -64,13 +66,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->name instanceof Node\Identifier) {
+        if (! $node->name instanceof Identifier) {
             return null;
         }
 
         $constantName = $this->getName($node->name);
+        if (! is_string($constantName)) {
+            return null;
+        }
 
-        $classObjectType = $this->getType($node->class);
+        $classObjectType = $this->nodeTypeResolver->getNativeType($node->class);
         if (! $classObjectType instanceof ObjectType) {
             return null;
         }
@@ -79,7 +84,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->class = new Node\Name\FullyQualified($classObjectType->getClassName());
+        $node->class = new FullyQualified($classObjectType->getClassName());
 
         return $node;
     }
