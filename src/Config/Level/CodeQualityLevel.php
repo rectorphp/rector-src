@@ -15,6 +15,7 @@ use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\ConvertStaticToSelfRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Class_\RemoveReadonlyPropertyVisibilityOnReadonlyClassRector;
+use Rector\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToClassConstFetchRector;
 use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
@@ -153,6 +154,7 @@ final class CodeQualityLevel
         IssetOnPropertyObjectToPropertyExistsRector::class,
         NewStaticToNewSelfRector::class,
         UnwrapSprintfOneArgumentRector::class,
+        VariableConstFetchToClassConstFetchRector::class,
         SwitchNegatedTernaryRector::class,
         SingularSwitchToIfRector::class,
         SimplifyIfNullableReturnRector::class,
