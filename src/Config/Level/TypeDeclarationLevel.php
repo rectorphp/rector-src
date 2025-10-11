@@ -17,6 +17,7 @@ use Rector\TypeDeclaration\Rector\Class_\TypedPropertyFromDocblockSetUpDefinedRe
 use Rector\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamFromDimFetchKeyUseRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddParamStringTypeFromSprintfUseRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
@@ -148,6 +149,7 @@ final class TypeDeclarationLevel
         // array parameter from dim fetch assign inside
         StrictArrayParamDimFetchRector::class,
         AddParamFromDimFetchKeyUseRector::class,
+        AddParamStringTypeFromSprintfUseRector::class,
 
         // possibly based on docblocks, but also helpful, intentionally last
         AddArrayFunctionClosureParamTypeRector::class,

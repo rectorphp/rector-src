@@ -43,15 +43,6 @@ final readonly class TypeNormalizer
     }
 
     /**
-     * @deprecated This method is deprecated and will be removed in the next major release.
-     * Use @see generalizeConstantTypes() instead.
-     */
-    public function generalizeConstantBoolTypes(Type $type): Type
-    {
-        return $this->generalizeConstantTypes($type);
-    }
-
-    /**
      * Generalize false/true constantArrayType to bool,
      * as mostly default value but accepts both
      */
