@@ -133,7 +133,7 @@ CODE_SAMPLE
         }
 
         // skip complex cases
-        if ($assign->expr instanceof MethodCall) {
+        if ($assign->expr instanceof MethodCall && $assign->expr->args !== []) {
             return null;
         }
 
