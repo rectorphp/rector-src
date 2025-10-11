@@ -128,6 +128,12 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($stmt instanceof Static_) {
+                foreach ($stmt->vars as $staticVar) {
+                    $extractValues[] = $this->getName($staticVar->var);
+                }
+            }
+
             if ($this->shouldSkip($node, $key, $stmt, $extractValues)) {
                 continue;
             }
