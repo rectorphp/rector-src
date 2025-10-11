@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassConstFetch;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
@@ -62,7 +62,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?ClassConstFetch
     {
-        if (! $node->class instanceof Expr) {
+        if (! $node->class instanceof Variable) {
             return null;
         }
 
