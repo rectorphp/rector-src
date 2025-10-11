@@ -38,7 +38,6 @@ jobs:
                     - 'e2e/only-option-quote-single-bsdouble'
                     - 'e2e/only-option-quote-single-equalnone'
                     - 'e2e/parallel-custom-config'
-                    - 'e2e/parallel-kaizen-applied-rules'
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/parallel with space'
                     - 'e2e/print-new-node'
@@ -71,10 +70,6 @@ jobs:
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
 
-            -   run: php ../e2eTestRunner.php --kaizen 1
-                working-directory: ${{ matrix.directory }}
-                if: ${{ matrix.directory == 'e2e/parallel-kaizen-applied-rules' }}
-
             -   run: php ../e2eTestRunner.php
                 working-directory: ${{ matrix.directory }}
-                if: ${{ matrix.directory != 'e2e/parallel-custom-config' && matrix.directory != 'e2e/parallel-kaizen-applied-rules' }}
+                if: ${{ matrix.directory != 'e2e/parallel-custom-config' }}

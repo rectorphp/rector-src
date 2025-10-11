@@ -53,7 +53,6 @@ use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterfac
 use Rector\Config\RectorConfig;
 use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\ConfigurationRuleFilter;
-use Rector\Configuration\KaizenStepper;
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Console\Command\CustomRuleCommand;
@@ -548,7 +547,6 @@ final class LazyContainerFactory
                     $container->get(CurrentFileProvider::class),
                     $container->get(CreatedByRuleDecorator::class),
                     $container->get(ChangedNodeScopeRefresher::class),
-                    $container->get(KaizenStepper::class),
                 );
             }
         );
