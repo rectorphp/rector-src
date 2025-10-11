@@ -133,7 +133,7 @@ CODE_SAMPLE
         }
 
         // skip complex cases
-        if ($assign->expr instanceof CallLike && $assign->expr->args !== []) {
+        if ($assign->expr instanceof CallLike && ! $assign->expr->isFirstClassCallable() && $assign->expr->getArgs() !== []) {
             return null;
         }
 
