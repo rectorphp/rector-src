@@ -40,23 +40,24 @@ jobs:
                     php ../../bin/rector help
 
                     # with explicit "process" command
-                    ../../bin/rector process --kaizen 1 --dry-run
-                    ../../bin/rector process --kaizen=1 --dry-run
-                    php ../../bin/rector process --kaizen 1 --dry-run
-                    php ../../bin/rector process --kaizen=1 --dry-run
-                    ../../bin/rector process some_file.php --kaizen 1
-                    ../../bin/rector process some_file.php --kaizen=1
-                    php ../../bin/rector process some_file.php --kaizen 1
-                    php ../../bin/rector process some_file.php --kaizen=1
+                    ../../bin/rector process --output-format json --dry-run
+                    ../../bin/rector process --output-format=json --dry-run
+                    php ../../bin/rector process --output-format json --dry-run
+                    php ../../bin/rector process --output-format=json --dry-run
+
+                    ../../bin/rector process some_file.php --output-format json
+                    ../../bin/rector process some_file.php --output-format=json
+                    php ../../bin/rector process some_file.php --output-format json
+                    php ../../bin/rector process some_file.php --output-format=json
 
                     # with implicit process command
-                    ../../bin/rector --kaizen 1 --dry-run
-                    ../../bin/rector --kaizen=1 --dry-run
-                    php ../../bin/rector --kaizen 1 --dry-run
-                    php ../../bin/rector --kaizen=1 --dry-run
+                    ../../bin/rector --output-format json --dry-run
+                    ../../bin/rector --output-format=json --dry-run
+                    php ../../bin/rector --output-format json --dry-run
+                    php ../../bin/rector --output-format=json --dry-run
 
-                    ../../bin/rector some_file.php --kaizen 1
-                    ../../bin/rector some_file.php --kaizen=1
-                    php ../../bin/rector some_file.php --kaizen 1
-                    php ../../bin/rector some_file.php --kaizen=1
+                    ../../bin/rector some_file.php --output-format json
+                    ../../bin/rector some_file.php --output-format=json
+                    php ../../bin/rector some_file.php --output-format json
+                    php ../../bin/rector some_file.php --output-format=json
 

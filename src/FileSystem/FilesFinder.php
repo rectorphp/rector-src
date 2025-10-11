@@ -38,7 +38,6 @@ final readonly class FilesFinder
         array $suffixes = [],
         bool $sortByName = true,
         ?string $onlySuffix = null,
-        bool $isKaizenEnabled = false
     ): array {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
@@ -110,14 +109,6 @@ final readonly class FilesFinder
             return [];
         }
 
-        if ($isKaizenEnabled) {
-            // enforce clear cache, because there is probably another files that
-            // incrementally need to apply change on kaizen run
-            $this->changedFilesDetector->clear();
-
-            return array_unique($filePaths);
-        }
-
         return $toBeChangedFiles;
     }
 
@@ -136,7 +127,6 @@ final readonly class FilesFinder
             $configuration->getFileExtensions(),
             true,
             $configuration->getOnlySuffix(),
-            $configuration->isKaizenEnabled()
         );
     }
 
