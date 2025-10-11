@@ -75,7 +75,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
+        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
             return null;
         }
 
