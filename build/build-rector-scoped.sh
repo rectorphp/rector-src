@@ -39,7 +39,7 @@ wget https://github.com/humbug/php-scoper/releases/download/0.18.17/php-scoper.p
 #
 # On Downgrade PHP 8.5 rule, see https://github.com/rectorphp/rector-downgrade-php/pull/337
 #
-composer require ocramius/package-versions --working-dir "$BUILD_DIRECTORY"
+composer require --no-dev ocramius/package-versions --working-dir "$BUILD_DIRECTORY"
 
 php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
 
