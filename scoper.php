@@ -33,7 +33,6 @@ return [
     'exclude-classes' => [
         'PHPUnit\Framework\Constraint\IsEqual',
         'PHPUnit\Framework\TestCase',
-        'PHPUnit\Runner\Version',
         'PHPUnit\Framework\ExpectationFailedException',
 
         // native class on php 8.3+
