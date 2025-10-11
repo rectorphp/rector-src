@@ -14,5 +14,3 @@ final class SkipAnyCallLikeWithArgs
         return $first <=> $second;
     }
 }
-
-?>
