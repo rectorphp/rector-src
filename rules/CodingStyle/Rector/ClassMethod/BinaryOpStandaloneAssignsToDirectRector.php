@@ -7,8 +7,8 @@ namespace Rector\CodingStyle\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -133,7 +133,7 @@ CODE_SAMPLE
         }
 
         // skip complex cases
-        if ($assign->expr instanceof MethodCall && $assign->expr->args !== []) {
+        if ($assign->expr instanceof CallLike && ! $assign->expr->isFirstClassCallable() && $assign->expr->getArgs() !== []) {
             return null;
         }
 
