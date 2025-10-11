@@ -130,7 +130,13 @@ CODE_SAMPLE
 
             if ($stmt instanceof Static_) {
                 foreach ($stmt->vars as $staticVar) {
-                    $extractValues[] = $this->getName($staticVar->var);
+                    $staticVarName = $this->getName($staticVar->var);
+
+                    if ($staticVarName === null) {
+                        continue;
+                    }
+
+                    $extractValues[] = $staticVarName;
                 }
             }
 
