@@ -792,7 +792,7 @@ final class RectorConfigBuilder
         ];
 
         if ($all) {
-            $this->sets = array_keys($setMap);
+            $this->sets = array_unique(array_merge($this->sets, array_keys($setMap)));
             return $this;
         }
 
