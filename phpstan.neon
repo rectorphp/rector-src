@@ -92,6 +92,10 @@ parameters:
             message: '#Function "var_dump\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
+        -
+            message: '#Function "class_exists\(\)" cannot be used/left in the code#'
+            path: bin/add-phpstan-self-replace.php
+
         # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
