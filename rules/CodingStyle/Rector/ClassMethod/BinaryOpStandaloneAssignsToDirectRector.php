@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -128,6 +129,11 @@ CODE_SAMPLE
 
         $assign = $stmt->expr;
         if (! $assign->var instanceof Variable) {
+            return null;
+        }
+
+        // skip complex cases
+        if ($assign->expr instanceof MethodCall) {
             return null;
         }
 
