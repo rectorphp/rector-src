@@ -137,6 +137,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($assign->expr instanceof BinaryOp) {
+            return null;
+        }
+
         return new VariableAndExprAssign($assign->var, $assign->expr);
     }
 }
