@@ -17,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\Stmt\RemoveEmptyArrayConditionReturnRector\RemoveEmptyArrayConditionReturnRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\Stmt\RemoveConditionExactReturnRector\RemoveConditionExactReturnRectorTest
  */
 final class RemoveConditionExactReturnRector extends AbstractRector
 {
