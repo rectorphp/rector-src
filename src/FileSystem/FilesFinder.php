@@ -102,14 +102,7 @@ final readonly class FilesFinder
         );
 
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
-        $toBeChangedFiles = $this->unchangedFilesFilter->filterFilePaths($filePaths);
-
-        // no files to be changed, early return empty
-        if ($toBeChangedFiles === []) {
-            return [];
-        }
-
-        return $toBeChangedFiles;
+        return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
     /**
