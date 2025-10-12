@@ -68,6 +68,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // at least 2 items are needed
+        if (count($node->stmts) < 2) {
+            return null;
+        }
+
         $originalStmts = $node->stmts;
         $cleanedStmts = $this->processCleanUpUnreachableStmts($node, $node->stmts);
 
