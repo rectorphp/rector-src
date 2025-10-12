@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,6 +23,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveConditionExactReturnRector extends AbstractRector
 {
+    public function __construct(
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -94,12 +100,8 @@ CODE_SAMPLE
             }
 
             $identicalOrEqual = $stmt->cond;
-            // skip obvious complexity
-            if ($identicalOrEqual->right instanceof MethodCall) {
-                continue;
-            }
 
-            if ($identicalOrEqual->right instanceof StaticCall) {
+            if ($this->sideEffectNodeDetector->detect($identicalOrEqual->right)) {
                 continue;
             }
 
