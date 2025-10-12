@@ -6,7 +6,6 @@ namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Stmt\If_;
@@ -23,9 +22,11 @@ final class RemoveConditionExactReturnRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove unused empty array condition and return value directly', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Remove if with condition and return with same expr, followed by compared expr return',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
     public function __construct(array $items)
@@ -39,8 +40,8 @@ final class SomeClass
 }
 CODE_SAMPLE
 
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
     public function __construct(array $items)
@@ -53,8 +54,10 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-            ),
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**
@@ -95,15 +98,11 @@ CODE_SAMPLE
             $identicalOrEqual = $stmt->cond;
             $return = $soleIfStmt;
 
-            if (! $this->isEmptyArray($identicalOrEqual->right)) {
+            if (! $this->nodeComparator->areNodesEqual($identicalOrEqual->right, $return->expr)) {
                 continue;
             }
 
             $comparedVariable = $identicalOrEqual->left;
-
-            if (! $this->isEmptyArray($return->expr)) {
-                continue;
-            }
 
             // next stmt must be return of the same var
             $nextStmt = $node->stmts[$key + 1] ?? null;
@@ -129,14 +128,5 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    private function isEmptyArray(?Expr $expr): bool
-    {
-        if (! $expr instanceof Array_) {
-            return false;
-        }
-
-        return $expr->items === [];
     }
 }
