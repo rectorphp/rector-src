@@ -64,7 +64,7 @@ function wrapToPreventPhpStanCallingMethods ()
 {
     foo();
     foo();
-    foo2();
     foo3();
+    foo2();
 }
 ?>

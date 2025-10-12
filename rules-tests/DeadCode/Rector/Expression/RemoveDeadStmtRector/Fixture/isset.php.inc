@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveDeadStmtRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Expression\RemoveDeadStmtRector\Fixture;
 
 function wrapToPreventPhpStanCallingMethods ($object)
 {
@@ -15,16 +15,16 @@ function wrapToPreventPhpStanCallingMethods ($object)
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveDeadStmtRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Expression\RemoveDeadStmtRector\Fixture;
 
 function wrapToPreventPhpStanCallingMethods ($object)
 {
     $a = isset($a);
     $b = isset($b, $c, $d);
-
-    func1();
     func2();
     func3();
     func4();
+
+    func1();
 }
 ?>
