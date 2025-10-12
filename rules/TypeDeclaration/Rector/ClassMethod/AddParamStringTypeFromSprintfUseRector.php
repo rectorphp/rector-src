@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Rector\AbstractRector;
@@ -82,6 +84,11 @@ CODE_SAMPLE
         $hasChanged = false;
         foreach ($node->getParams() as $param) {
             if ($param->type instanceof Node) {
+                continue;
+            }
+
+            // skip non string default value
+            if ($param->default instanceof Expr && ! $param->default instanceof String_) {
                 continue;
             }
 
