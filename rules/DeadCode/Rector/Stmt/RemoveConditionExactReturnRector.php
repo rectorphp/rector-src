@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -82,12 +84,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (count($stmt->stmts) !== 1) {
-                continue;
-            }
-
-            $soleIfStmt = $stmt->stmts[0];
-            if (! $soleIfStmt instanceof Return_) {
+            $soleIfReturn = $this->matchSoleIfReturn($stmt);
+            if (! $soleIfReturn instanceof Return_) {
                 continue;
             }
 
@@ -96,15 +94,22 @@ CODE_SAMPLE
             }
 
             $identicalOrEqual = $stmt->cond;
-            $return = $soleIfStmt;
+            // skip obvious complexity
+            if ($identicalOrEqual->right instanceof MethodCall) {
+                continue;
+            }
 
-            if (! $this->nodeComparator->areNodesEqual($identicalOrEqual->right, $return->expr)) {
+            if ($identicalOrEqual->right instanceof StaticCall) {
+                continue;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($identicalOrEqual->right, $soleIfReturn->expr)) {
                 continue;
             }
 
             $comparedVariable = $identicalOrEqual->left;
 
-            // next stmt must be return of the same var
+            // next if must be return of the same var
             $nextStmt = $node->stmts[$key + 1] ?? null;
             if (! $nextStmt instanceof Return_) {
                 continue;
@@ -118,7 +123,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // remove next stmt
+            // remove next if
             unset($node->stmts[$key + 1]);
 
             // replace if with return
@@ -128,5 +133,19 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function matchSoleIfReturn(If_ $if): ?Return_
+    {
+        if (count($if->stmts) !== 1) {
+            return null;
+        }
+
+        $soleIfStmt = $if->stmts[0];
+        if (! $soleIfStmt instanceof Return_) {
+            return null;
+        }
+
+        return $soleIfStmt;
     }
 }
