@@ -13,19 +13,3 @@ function wrapToPreventPhpStanCallingMethods ()
     bar()::${baz()}::${foo()};
 }
 ?>
------
-<?php
-
-namespace Rector\Tests\DeadCode\Rector\Expression\RemoveDeadStmtRector\Fixture;
-
-function wrapToPreventPhpStanCallingMethods ()
-{
-    $a = SomeClass::$a;
-
-    bar();
-
-    bar();
-    baz();
-    foo();
-}
-?>

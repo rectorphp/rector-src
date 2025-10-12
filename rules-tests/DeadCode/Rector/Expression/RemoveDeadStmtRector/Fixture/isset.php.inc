@@ -21,10 +21,10 @@ function wrapToPreventPhpStanCallingMethods ($object)
 {
     $a = isset($a);
     $b = isset($b, $c, $d);
-
-    func1();
     func2();
     func3();
     func4();
+
+    func1();
 }
 ?>

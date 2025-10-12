@@ -18,23 +18,3 @@ function wrapToPreventPhpStanCallingMethods ()
     ${methodCall1()}->{methodCall2()};
 }
 ?>
------
-<?php
-
-namespace Rector\Tests\CodeQuality\Rector\Stmt\DeadCodeRemovingRector\Fixture\PropertyFetch;
-
-function wrapToPreventPhpStanCallingMethods ()
-{
-    $var->prop = 1;
-
-    //comment
-    methodCall();
-
-    //comment
-    methodCall();
-
-    //comment
-    methodCall1();
-    methodCall2();
-}
-?>
