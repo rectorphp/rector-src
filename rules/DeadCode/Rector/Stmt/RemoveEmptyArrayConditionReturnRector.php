@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Rector\AbstractRector;
@@ -74,7 +75,7 @@ CODE_SAMPLE
         }
 
         foreach ($node->stmts as $key => $stmt) {
-            if (! $stmt instanceof Node\Stmt\If_) {
+            if (! $stmt instanceof If_) {
                 continue;
             }
 
