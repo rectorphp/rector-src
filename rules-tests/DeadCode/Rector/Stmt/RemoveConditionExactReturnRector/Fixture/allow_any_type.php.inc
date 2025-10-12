@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveEmptyArrayConditionReturnRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveConditionExactReturnRector\Fixture;
 
 final class AllowAnyType
 {
@@ -18,7 +18,7 @@ final class AllowAnyType
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveEmptyArrayConditionReturnRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveConditionExactReturnRector\Fixture;
 
 final class AllowAnyType
 {

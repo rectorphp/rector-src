@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveEmptyArrayConditionReturnRector;
+namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveConditionExactReturnRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RemoveEmptyArrayConditionReturnRectorTest extends AbstractRectorTestCase
+final class RemoveConditionExactReturnRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

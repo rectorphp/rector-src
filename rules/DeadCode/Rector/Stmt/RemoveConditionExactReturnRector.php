@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\DeadCode\Rector\Stmt\RemoveEmptyArrayConditionReturnRector\RemoveEmptyArrayConditionReturnRectorTest
  */
-final class RemoveEmptyArrayConditionReturnRector extends AbstractRector
+final class RemoveConditionExactReturnRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
