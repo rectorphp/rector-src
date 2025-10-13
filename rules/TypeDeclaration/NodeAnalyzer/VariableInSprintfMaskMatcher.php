@@ -75,7 +75,7 @@ final readonly class VariableInSprintfMaskMatcher
                     continue;
                 }
 
-                $type = $this->nodeTypeResolver->getType($arg->value);
+                $type = $this->nodeTypeResolver->getNativeType($arg->value);
                 if ($type instanceof MixedType && $type->getSubtractedType() instanceof UnionType) {
                     continue;
                 }
