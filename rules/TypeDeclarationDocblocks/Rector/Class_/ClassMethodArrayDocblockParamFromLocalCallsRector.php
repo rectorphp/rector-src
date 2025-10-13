@@ -115,6 +115,7 @@ CODE_SAMPLE
                 }
 
                 $resolvedParameterType = $classMethodParameterTypes[$parameterPosition] ?? $classMethodParameterTypes[$parameterName] ?? null;
+
                 if (! $resolvedParameterType instanceof Type) {
                     continue;
                 }

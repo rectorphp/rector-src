@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\UnionType;
+use PhpParser\Node\Stmt\Class_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
+use Rector\TypeDeclarationDocblocks\NodeFinder\GetterClassMethodPropertyFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,13 +25,17 @@ final class DocblockGetterReturnArrayFromPropertyDocblockVarRector extends Abstr
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
+        private readonly GetterClassMethodPropertyFinder $getterClassMethodPropertyFinder,
     ) {
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -76,73 +79,62 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->returnType instanceof Node) {
+        if ($node->isAnonymous()) {
             return null;
         }
 
-        if (! $this->isName($node->returnType, 'array')) {
-            return null;
+        $hasChanged = false;
+        foreach ($node->getMethods() as $classMethod) {
+            if (! $classMethod->returnType instanceof Node) {
+                continue;
+            }
+
+            if (! $this->isName($classMethod->returnType, 'array')) {
+                continue;
+            }
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+            if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
+                continue;
+            }
+
+            $propertyOrParam = $this->getterClassMethodPropertyFinder->find($classMethod, $node);
+            if (! $propertyOrParam instanceof Node) {
+                continue;
+            }
+
+            $propertyDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrParam);
+
+            $varTagValueNode = $propertyDocInfo->getVarTagValueNode();
+
+            if (! $varTagValueNode instanceof VarTagValueNode) {
+                continue;
+            }
+
+            // is type useful?
+            if (! $varTagValueNode->type instanceof GenericTypeNode && ! $varTagValueNode->type instanceof ArrayTypeNode) {
+                continue;
+            }
+
+            if (! $this->nodeDocblockTypeDecorator->decorateGenericIterableReturnType(
+                $varTagValueNode->type,
+                $phpDocInfo,
+                $classMethod
+            )) {
+                continue;
+            }
+
+            $hasChanged = true;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
-            return null;
-        }
-
-        $propertyFetch = $this->matchReturnLocalPropertyFetch($node);
-        if (! $propertyFetch instanceof PropertyFetch) {
-            return null;
-        }
-
-        $propertyFetchType = $this->getType($propertyFetch);
-        if ($propertyFetchType instanceof ArrayType
-            && $propertyFetchType->getKeyType() instanceof MixedType
-            && $propertyFetchType->getItemType() instanceof MixedType
-        ) {
-            return null;
-        }
-
-        if ($propertyFetchType instanceof UnionType) {
-            return null;
-        }
-
-        if (! $this->nodeDocblockTypeDecorator->decorateGenericIterableReturnType(
-            $propertyFetchType,
-            $phpDocInfo,
-            $node
-        )) {
+        if (! $hasChanged) {
             return null;
         }
 
         return $node;
-    }
-
-    private function matchReturnLocalPropertyFetch(ClassMethod $classMethod): ?PropertyFetch
-    {
-        // we need exactly one statement of return
-        if ($classMethod->stmts === null || count($classMethod->stmts) !== 1) {
-            return null;
-        }
-
-        $onlyStmt = $classMethod->stmts[0];
-        if (! $onlyStmt instanceof Return_) {
-            return null;
-        }
-
-        if (! $onlyStmt->expr instanceof PropertyFetch) {
-            return null;
-        }
-
-        $propertyFetch = $onlyStmt->expr;
-        if (! $this->isName($propertyFetch->var, 'this')) {
-            return null;
-        }
-
-        return $propertyFetch;
     }
 }

@@ -43,7 +43,7 @@ class AddPrefixBackslash extends LogicException
     }
 
     /**
-     * @return array<string, class-string<\App\Support\Benchmarking\Contracts\Metric>[]>
+     * @return array<string, array<int, class-string<Metric>>>
      */
     public function getDuplicateNames(): array
     {
