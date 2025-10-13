@@ -45,9 +45,7 @@ final readonly class ExpectedNameResolver
             return null;
         }
 
-        /** @var string $currentName */
-        $currentName = $this->nodeNameResolver->getName($param->var);
-
+        $currentName = $this->nodeNameResolver->getName($param);
         if ($currentName === $expectedName || str_ends_with($currentName, ucfirst($expectedName))) {
             return null;
         }

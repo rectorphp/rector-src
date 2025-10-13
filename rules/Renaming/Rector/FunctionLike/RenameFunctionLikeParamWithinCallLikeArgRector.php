@@ -126,7 +126,7 @@ CODE_SAMPLE
                 ($functionLike instanceof Closure || $functionLike instanceof ArrowFunction) &&
                 (
                     $this->breakingVariableRenameGuard->shouldSkipVariable(
-                        (string) $this->getName($param->var),
+                        $this->getName($param),
                         $renameFunctionLikeParamWithinCallLikeArg->getNewParamName(),
                         $functionLike,
                         $param->var

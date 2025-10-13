@@ -226,9 +226,8 @@ CODE_SAMPLE
             $assignStmtPosition = $promotionCandidate->getStmtPosition();
             unset($constructClassMethod->stmts[$assignStmtPosition]);
 
-            /** @var string $oldName */
-            $oldName = $this->getName($param->var);
-            $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldName, $propertyName, null);
+            $oldParamName = $this->getName($param);
+            $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldParamName, $propertyName);
 
             $paramTagValueNode = $constructorPhpDocInfo->getParamTagValueByName($paramName);
 

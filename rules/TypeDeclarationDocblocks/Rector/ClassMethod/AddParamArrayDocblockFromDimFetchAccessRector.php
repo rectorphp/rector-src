@@ -18,6 +18,7 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,7 +31,8 @@ final class AddParamArrayDocblockFromDimFetchAccessRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ArrayDimFetchFinder $arrayDimFetchFinder,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -102,9 +104,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var string $paramName */
-            $paramName = $this->getName($param->var);
-
+            $paramName = $this->getName($param);
             $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
             // already defined, lets skip it
@@ -114,6 +114,13 @@ CODE_SAMPLE
 
             $dimFetches = $this->arrayDimFetchFinder->findByVariableName($node, $paramName);
             if ($dimFetches === []) {
+                continue;
+            }
+
+            // skip for now, not to create more error on incompatible parent @param doc override
+            if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod(
+                $node
+            )) {
                 continue;
             }
 

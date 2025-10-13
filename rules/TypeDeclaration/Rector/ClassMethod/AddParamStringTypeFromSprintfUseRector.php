@@ -94,8 +94,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var string $variableName */
-            $variableName = $this->getName($param->var);
+            $variableName = $this->getName($param);
 
             if (! $this->variableInSprintfMaskMatcher->matchMask($node, $variableName, '%s')) {
                 continue;

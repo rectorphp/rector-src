@@ -27,10 +27,7 @@ final readonly class ParamTypeAddGuard
 
     public function isLegal(Param $param, ClassMethod $classMethod): bool
     {
-        $paramName = $this->nodeNameResolver->getName($param->var);
-        if ($paramName === null) {
-            return false;
-        }
+        $paramName = $this->nodeNameResolver->getName($param);
 
         $isLegal = true;
 
