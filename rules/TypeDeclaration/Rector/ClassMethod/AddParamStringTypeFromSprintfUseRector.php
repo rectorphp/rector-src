@@ -23,7 +23,7 @@ final class AddParamStringTypeFromSprintfUseRector extends AbstractRector
 {
     public function __construct(
         private readonly VariableInSprintfMaskMatcher $variableInSprintfMaskMatcher,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
     ) {
     }
 
