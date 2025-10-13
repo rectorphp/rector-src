@@ -24,5 +24,8 @@ return static function (RectorConfig $rectorConfig): void {
         ForeachToArrayFindKeyRector::class,
         ForeachToArrayAllRector::class,
         ForeachToArrayAnyRector::class,
+
+        // optional
+        // \Rector\Php84\Rector\Class_\PropertyHookRector::class,
     ]);
 };

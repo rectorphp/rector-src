@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
@@ -59,13 +58,16 @@ final readonly class ClassMethodAndPropertyAnalyzer
 
         $assign = $onlyClassMethodStmt->expr;
 
-        if (! $assign->expr instanceof Variable) {
-            return false;
-        }
+        //        if (! $assign->expr instanceof Variable) {
+        //            return false;
+        //        }
 
-        if (! $this->nodeNameResolver->isName($assign->expr, $propertyName)) {
-            return false;
-        }
+        //        if (! $this->nodeNameResolver->isName($assign->expr, $propertyName)) {
+        //            return false;
+        //        }
+        //
+        //        dump(33123);
+        //        die;
 
         $assignVar = $assign->var;
         if (! $assignVar instanceof PropertyFetch) {
