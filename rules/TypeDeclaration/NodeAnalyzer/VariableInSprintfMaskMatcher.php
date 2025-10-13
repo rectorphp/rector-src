@@ -8,17 +8,20 @@ use Nette\Utils\Strings;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PhpParser\Node\Value\ValueResolver;
 
 final readonly class VariableInSprintfMaskMatcher
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private NodeNameResolver $nodeNameResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private ValueResolver $valueResolver,
     ) {
 
     }
@@ -43,14 +46,16 @@ final readonly class VariableInSprintfMaskMatcher
 
             /** @var Arg $messageArg */
             $messageArg = array_shift($args);
-            if (! $messageArg->value instanceof String_) {
+
+            $type = $this->nodeTypeResolver->getType($messageArg->value);
+
+            $messageValue = $this->valueResolver->getValue($messageArg->value);
+            if (! is_string($messageValue)) {
                 continue;
             }
 
-            $string = $messageArg->value;
-
             // match all %s, %d types by position
-            $masks = Strings::match($string->value, '#%[sd]#');
+            $masks = Strings::match($messageValue, '#%[sd]#');
 
             foreach ($args as $position => $arg) {
                 if (! $arg->value instanceof Variable) {

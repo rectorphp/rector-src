@@ -6,7 +6,7 @@ final class ConstantVariable
 {
     public function test(string $input, $name)
     {
-        $message = $input . 'is %s';
+        $message = 'My name is %s';
         return sprintf($message, $name);
     }
 }
@@ -21,7 +21,7 @@ final class ConstantVariable
 {
     public function test(string $input, string $name)
     {
-        $message = $input . 'is %s';
+        $message = 'My name is %s';
         return sprintf($message, $name);
     }
 }
