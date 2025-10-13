@@ -95,13 +95,11 @@ CODE_SAMPLE
         }
 
         $varType = $this->getType($node->var);
-
         if (! $varType instanceof IntersectionType || ! $varType->isIterable()->yes()) {
             return null;
         }
 
         $className = $varType->getObjectClassNames()[0] ?? null;
-
         if ($className === null) {
             return null;
         }

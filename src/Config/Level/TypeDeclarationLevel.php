@@ -20,6 +20,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddParamFromDimFetchKeyUseRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamStringTypeFromSprintfUseRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromStrictMethodCallPassRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeFromTryCatchTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
@@ -149,6 +150,7 @@ final class TypeDeclarationLevel
         // array parameter from dim fetch assign inside
         StrictArrayParamDimFetchRector::class,
         AddParamFromDimFetchKeyUseRector::class,
+        AddParamTypeFromStrictMethodCallPassRector::class,
         AddParamStringTypeFromSprintfUseRector::class,
 
         // possibly based on docblocks, but also helpful, intentionally last
