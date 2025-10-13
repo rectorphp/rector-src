@@ -108,8 +108,6 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $paramTypeNode = null;
-
                 foreach ($dimFetches as $dimFetch) {
                     $dimFetchType = $this->getType($dimFetch->var);
 
