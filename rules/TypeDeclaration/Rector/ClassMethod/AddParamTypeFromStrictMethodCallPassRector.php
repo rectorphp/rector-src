@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -74,11 +75,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Node\Expr\Closure::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Node\Expr\Closure $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
