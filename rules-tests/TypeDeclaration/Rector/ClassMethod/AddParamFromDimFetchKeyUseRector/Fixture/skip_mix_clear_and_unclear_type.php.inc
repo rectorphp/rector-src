@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamFromDimFetchKeyUseRector\Fixture;
 
-final class Fixture
+final class SkipMixClearAndUnClearType
 {
     public function process($key, $unclearType)
     {
