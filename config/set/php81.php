@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector;
@@ -26,7 +27,10 @@ return static function (RectorConfig $rectorConfig): void {
         SpatieEnumMethodCallToEnumConstRector::class,
         NullToStrictStringFuncCallArgRector::class,
         NullToStrictIntPregSlitFuncCallLimitArgRector::class,
+        // array of local method call
         FirstClassCallableRector::class,
+        // closure/arrow function
+        FunctionLikeToFirstClassCallableRector::class,
         RemoveReflectionSetAccessibleCallsRector::class,
     ]);
 };

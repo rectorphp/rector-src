@@ -50,7 +50,7 @@ final readonly class SideEffectNodeDetector
 
         return (bool) $this->betterNodeFinder->findFirst(
             $expr,
-            fn (Node $subNode): bool => $this->detectCallExpr($subNode)
+            $this->detectCallExpr(...)
         );
     }
 

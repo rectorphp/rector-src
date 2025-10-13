@@ -18,7 +18,7 @@ final class ArrayParametersMerger
             return $this->mergeLeftToRightWithCallable(
                 $left,
                 $right,
-                fn ($leftValue, $rightValue): mixed => $this->merge($leftValue, $rightValue)
+                $this->merge(...)
             );
         }
 
