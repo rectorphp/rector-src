@@ -4,22 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\Type\Type;
-use PhpParser\Node;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
+use Rector\TypeDeclarationDocblocks\NodeFinder\GetterClassMethodPropertyFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -32,7 +25,8 @@ final class DocblockGetterReturnArrayFromPropertyDocblockVarRector extends Abstr
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
+        private readonly GetterClassMethodPropertyFinder $getterClassMethodPropertyFinder,
     ) {
     }
 
@@ -108,13 +102,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            // @todo add promoted proeprty
-            $property = $this->matchReturnLocalPropertyFetch($classMethod, $node);
-            if (! $property instanceof Property) {
+            $propertyOrParam = $this->getterClassMethodPropertyFinder->find($classMethod, $node);
+            if (! $propertyOrParam instanceof Node) {
                 continue;
             }
 
-            $propertyDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+            $propertyDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrParam);
 
             $varTagValueNode = $propertyDocInfo->getVarTagValueNode();
 
@@ -143,51 +136,5 @@ CODE_SAMPLE
         }
 
         return $node;
-    }
-
-    private function matchReturnLocalPropertyFetch(ClassMethod $classMethod, Class_ $class): ?Property
-    {
-        // we need exactly one statement of return
-        if ($classMethod->stmts === null || count($classMethod->stmts) !== 1) {
-            return null;
-        }
-
-        $onlyStmt = $classMethod->stmts[0];
-        if (! $onlyStmt instanceof Return_) {
-            return null;
-        }
-
-        if (! $onlyStmt->expr instanceof PropertyFetch) {
-            return null;
-        }
-
-        $propertyFetch = $onlyStmt->expr;
-        if (! $this->isName($propertyFetch->var, 'this')) {
-            return null;
-        }
-
-        $propertyName = $this->getName($propertyFetch->name);
-        if (! is_string($propertyName)) {
-            return null;
-        }
-
-        return $class->getProperty($propertyName);
-    }
-
-    private function isUsefulType(Type $type): bool
-    {
-        if ($type instanceof UnionType) {
-            return false;
-        }
-
-        if (! $type instanceof ArrayType) {
-            return true;
-        }
-
-        if (! $type->getKeyType() instanceof MixedType) {
-            return true;
-        }
-
-        return ! $type->getItemType() instanceof MixedType;
     }
 }

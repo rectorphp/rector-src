@@ -43,7 +43,7 @@ final readonly class NodeDocblockTypeDecorator
 
         $typeNode = $this->createTypeNode($type);
 
-        // no value iterable typeOrTypeNode
+        // no value iterable type
         if ($typeNode instanceof IdentifierTypeNode) {
             return false;
         }
@@ -55,8 +55,8 @@ final readonly class NodeDocblockTypeDecorator
 
     public function decorateGenericIterableReturnType(
         Type|TypeNode $typeOrTypeNode,
-        PhpDocInfo    $classMethodPhpDocInfo,
-        FunctionLike  $functionLike
+        PhpDocInfo $classMethodPhpDocInfo,
+        FunctionLike $functionLike
     ): bool {
         if ($typeOrTypeNode instanceof TypeNode) {
             $type = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($typeOrTypeNode, $functionLike);
@@ -75,7 +75,7 @@ final readonly class NodeDocblockTypeDecorator
             $typeNode = $this->createTypeNode($typeOrTypeNode);
         }
 
-        // no value iterable typeOrTypeNode
+        // no value iterable type
         if ($typeNode instanceof IdentifierTypeNode) {
             return false;
         }
@@ -94,7 +94,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        // no value iterable typeOrTypeNode
+        // no value iterable type
         if ($typeNode instanceof IdentifierTypeNode) {
             return false;
         }
