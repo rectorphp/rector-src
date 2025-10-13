@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 
 use Nette\Utils\Strings;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
@@ -29,9 +30,18 @@ final readonly class VariableInSprintfMaskMatcher
 
     }
 
-    public function matchMask(ClassMethod|Function_|Closure $functionLike, string $variableName, string $mask): bool
-    {
-        $funcCalls = $this->betterNodeFinder->findInstancesOfScoped((array) $functionLike->stmts, FuncCall::class);
+    public function matchMask(
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
+        string $variableName,
+        string $mask
+    ): bool {
+        if ($functionLike instanceof ArrowFunction) {
+            $stmts = [$functionLike->expr];
+        } else {
+            $stmts = (array) $functionLike->stmts;
+        }
+
+        $funcCalls = $this->betterNodeFinder->findInstancesOfScoped($stmts, FuncCall::class);
         $funcCalls = array_values(
             array_filter($funcCalls, fn (FuncCall $funcCall): bool => $this->nodeNameResolver->isName(
                 $funcCall->name,

@@ -131,7 +131,11 @@ final readonly class GitHubOutputFormatter implements OutputFormatterInterface
         );
 
         $sanitizedProperties = array_map(
-            fn (string $key, string|int|null $value): string => sprintf('%s=%s', $key, $this->sanitizeAnnotationProperty($value)),
+            fn (string $key, string|int|null $value): string => sprintf(
+                '%s=%s',
+                $key,
+                $this->sanitizeAnnotationProperty($value)
+            ),
             array_keys($nonNullProperties),
             $nonNullProperties
         );

@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
@@ -62,15 +63,15 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
-    public function refactor(Node $node): ClassMethod|Function_|Closure|null
+    public function refactor(Node $node): ClassMethod|Function_|Closure|ArrowFunction|null
     {
-        if ($node->stmts === null) {
+        if ($node instanceof ClassMethod && $node->stmts === null) {
             return null;
         }
 
