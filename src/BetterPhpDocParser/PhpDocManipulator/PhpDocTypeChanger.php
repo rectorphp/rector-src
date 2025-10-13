@@ -28,6 +28,7 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
@@ -104,6 +105,9 @@ final readonly class PhpDocTypeChanger
     ): void {
         $existingReturnTagValueNode = $phpDocInfo->getReturnTagValue();
         if ($existingReturnTagValueNode instanceof ReturnTagValueNode) {
+            // enforce reprint of copied type node
+            $newTypeNode->setAttribute('orig_node', null);
+
             $existingReturnTagValueNode->type = $newTypeNode;
         } else {
             $returnTagValueNode = new ReturnTagValueNode($newTypeNode, '');
