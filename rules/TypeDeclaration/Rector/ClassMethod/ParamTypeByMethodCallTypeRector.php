@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
-use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -97,7 +98,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
     /**
@@ -134,7 +135,7 @@ CODE_SAMPLE
 
     private function shouldSkipParam(
         Param $param,
-        ClassMethod|Function_|Closure $functionLike
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike
     ): bool {
         // already has type, skip
         if ($param->type instanceof Node) {
@@ -156,7 +157,7 @@ CODE_SAMPLE
      * @param array<StaticCall|MethodCall|FuncCall> $callers
      */
     private function refactorFunctionLike(
-        ClassMethod|Closure|Function_ $functionLike,
+        ClassMethod|Closure|Function_|ArrowFunction $functionLike,
         array $callers
     ): bool {
         $hasChanged = false;
