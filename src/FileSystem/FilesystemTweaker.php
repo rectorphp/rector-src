@@ -56,6 +56,6 @@ final class FilesystemTweaker
         /** @var string[] $paths */
         $paths = (array) glob($path);
 
-        return array_filter($paths, static fn (string $path): bool => file_exists($path));
+        return array_filter($paths, file_exists(...));
     }
 }

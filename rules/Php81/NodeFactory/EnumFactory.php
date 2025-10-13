@@ -221,7 +221,7 @@ final readonly class EnumFactory
      */
     private function getIdentifierTypeFromMappings(array $mapping): string
     {
-        $callableGetType = static fn ($value): string => gettype($value);
+        $callableGetType = gettype(...);
         $valueTypes = array_map($callableGetType, $mapping);
         $uniqueValueTypes = array_unique($valueTypes);
         if (count($uniqueValueTypes) === 1) {
