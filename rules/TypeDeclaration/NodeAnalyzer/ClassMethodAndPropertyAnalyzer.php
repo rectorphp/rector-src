@@ -58,17 +58,6 @@ final readonly class ClassMethodAndPropertyAnalyzer
 
         $assign = $onlyClassMethodStmt->expr;
 
-        //        if (! $assign->expr instanceof Variable) {
-        //            return false;
-        //        }
-
-        //        if (! $this->nodeNameResolver->isName($assign->expr, $propertyName)) {
-        //            return false;
-        //        }
-        //
-        //        dump(33123);
-        //        die;
-
         $assignVar = $assign->var;
         if (! $assignVar instanceof PropertyFetch) {
             return false;

@@ -2,14 +2,14 @@
 
 namespace Rector\Tests\Php84\Rector\Class_\PropertyHookRector\Fixture;
 
-use Rector\Tests\Php84\Rector\Class_\PropertyHookRector\Source\SomeParentContractInterface;
-
-final class SkipParentContract implements SomeParentContractInterface
+final class SkipMultiStmtsGetter
 {
     private string $name;
 
     public function getName(): string
     {
+        $item = 1000;
+
         return $this->name;
     }
 }

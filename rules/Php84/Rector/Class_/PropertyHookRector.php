@@ -12,6 +12,7 @@ use Rector\Doctrine\CodeQuality\Helper\SetterGetterFinder;
 use Rector\Php84\NodeFactory\PropertyHookFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -24,6 +25,7 @@ final class PropertyHookRector extends AbstractRector implements MinPhpVersionIn
     public function __construct(
         private readonly SetterGetterFinder $setterGetterFinder,
         private readonly PropertyHookFactory $propertyHookFactory,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -83,27 +85,30 @@ CODE_SAMPLE
         foreach ($node->getProperties() as $property) {
             $propertyName = $this->getName($property);
 
-            $candidateClassMethods = [];
-            $getterClassMethod = $this->setterGetterFinder->findGetterClassMethod($node, $propertyName);
-            if ($getterClassMethod instanceof ClassMethod) {
-                $candidateClassMethods[] = $getterClassMethod;
-            }
-
-            $setterClassMethod = $this->setterGetterFinder->findSetterClassMethod($node, $propertyName);
-            if ($setterClassMethod instanceof ClassMethod) {
-                $candidateClassMethods[] = $setterClassMethod;
-            }
+            $candidateClassMethods = $this->resolvePropertyHookCandidateClassMethods($node, $propertyName);
 
             foreach ($candidateClassMethods as $candidateClassMethod) {
-                if (count((array) $candidateClassMethod->stmts) === 1) {
-                    $propertyHook = $this->propertyHookFactory->create($candidateClassMethod, $propertyName);
-                    if (! $propertyHook instanceof PropertyHook) {
-                        continue;
-                    }
-
-                    $property->hooks[] = $propertyHook;
-                    $classMethodsToRemove[] = $candidateClassMethod;
+                if (count((array) $candidateClassMethod->stmts) !== 1) {
+                    continue;
                 }
+
+                // skip attributed methods
+                if ($candidateClassMethod->attrGroups !== []) {
+                    continue;
+                }
+
+                // avoid parent contract/method override
+                if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($candidateClassMethod)) {
+                    continue;
+                }
+
+                $propertyHook = $this->propertyHookFactory->create($candidateClassMethod, $propertyName);
+                if (! $propertyHook instanceof PropertyHook) {
+                    continue;
+                }
+
+                $property->hooks[] = $propertyHook;
+                $classMethodsToRemove[] = $candidateClassMethod;
             }
         }
 
@@ -129,5 +134,25 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::PROPERTY_HOOKS;
+    }
+
+    /**
+     * @return ClassMethod[]
+     */
+    private function resolvePropertyHookCandidateClassMethods(Class_ $class, string $propertyName): array
+    {
+        $candidateClassMethods = [];
+
+        $getterClassMethod = $this->setterGetterFinder->findGetterClassMethod($class, $propertyName);
+        if ($getterClassMethod instanceof ClassMethod) {
+            $candidateClassMethods[] = $getterClassMethod;
+        }
+
+        $setterClassMethod = $this->setterGetterFinder->findSetterClassMethod($class, $propertyName);
+        if ($setterClassMethod instanceof ClassMethod) {
+            $candidateClassMethods[] = $setterClassMethod;
+        }
+
+        return $candidateClassMethods;
     }
 }
