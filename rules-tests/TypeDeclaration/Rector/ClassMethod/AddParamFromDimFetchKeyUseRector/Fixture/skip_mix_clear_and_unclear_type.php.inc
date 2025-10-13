@@ -7,14 +7,14 @@ final class SkipMixClearAndUnClearType
     public function process($key, $unclearType)
     {
         if (rand(0, 1)) {
-            return $unclearType[$key];
+            $items = [
+                'first' => 'Firstitem',
+                'second' => 'Seconditem',
+            ];
+
+            return $items[$key];
         }
 
-        $items = [
-            'first' => 'Firstitem',
-            'second' => 'Seconditem',
-        ];
-
-        return $items[$key];
+        return $unclearType[$key];
     }
 }
