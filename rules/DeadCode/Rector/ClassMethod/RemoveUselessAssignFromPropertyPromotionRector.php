@@ -82,7 +82,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $variableNames[] = (string) $this->getName($param->var);
+            $variableNames[] = $this->getName($param);
         }
 
         if ($variableNames === []) {

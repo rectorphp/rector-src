@@ -26,11 +26,7 @@ final readonly class ParamRenameFactory
             return null;
         }
 
-        $currentName = $this->nodeNameResolver->getName($param->var);
-        if ($currentName === null) {
-            return null;
-        }
-
+        $currentName = $this->nodeNameResolver->getName($param);
         return new ParamRename($currentName, $expectedName, $param->var, $functionLike);
     }
 }

@@ -121,7 +121,7 @@ final readonly class ParamAnalyzer
 
     public function isParamReassign(ClassMethod $classMethod, Param $param): bool
     {
-        $paramName = (string) $this->nodeNameResolver->getName($param->var);
+        $paramName = $this->nodeNameResolver->getName($param);
         return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($classMethod, function (Node $node) use (
             $paramName
         ): bool {

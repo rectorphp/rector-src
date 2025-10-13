@@ -141,12 +141,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramName = $this->getName($param->var);
-            if ($paramName === null) {
-                continue;
-            }
-
-            $paramByRefVariables[] = $paramName;
+            $paramByRefVariables[] = $this->getName($param);
         }
 
         return $paramByRefVariables;

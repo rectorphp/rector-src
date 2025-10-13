@@ -100,8 +100,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                /** @var string $paramName */
-                $paramName = $this->getName($param->var);
+                $paramName = $this->getName($param);
 
                 $dimFetches = $this->arrayDimFetchFinder->findByDimName($classMethod, $paramName);
                 if ($dimFetches === []) {
