@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\PropertyHook;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Doctrine\CodeQuality\Helper\SetterGetterFinder;
 use Rector\Php84\NodeFactory\PropertyHookFactory;
 use Rector\Rector\AbstractRector;
@@ -75,6 +76,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // avoid breaking of child class getter/setter method use
+        if (! $node->isFinal() && FeatureFlags::treatClassesAsFinal($node) === false) {
+            return null;
+        }
+
         // nothing to hook to
         if ($node->getProperties() === []) {
             return null;
