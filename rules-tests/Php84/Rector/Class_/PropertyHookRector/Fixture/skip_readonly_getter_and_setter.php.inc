@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php84\Rector\Class_\PropertyHookRector\Fixture;
 
-final class SkipReadonly
+final class SkipReadonlyGetterAndSetter
 {
     private readonly string $name;
 
