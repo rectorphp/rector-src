@@ -51,6 +51,11 @@ final readonly class SetterAndGetterFinder
     public function findSetterClassMethod(Class_ $class, string $propertyName): ?ClassMethod
     {
         foreach ($class->getMethods() as $classMethod) {
+
+            if ($classMethod->isMagic()) {
+                continue;
+            }
+
             if (! $this->classMethodAndPropertyAnalyzer->hasOnlyPropertyAssign($classMethod, $propertyName)) {
                 continue;
             }

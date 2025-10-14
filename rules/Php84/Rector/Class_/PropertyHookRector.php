@@ -78,6 +78,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isReadonly()) {
+            return null;
+        }
+
         // avoid breaking of child class getter/setter method use
         if (! $node->isFinal() && FeatureFlags::treatClassesAsFinal($node) === false) {
             return null;
@@ -95,11 +99,11 @@ CODE_SAMPLE
         $classMethodsToRemove = [];
 
         foreach ($node->getProperties() as $property) {
+            $propertyName = $this->getName($property);
+
             if ($property->isReadonly()) {
                 continue;
             }
-
-            $propertyName = $this->getName($property);
 
             $candidateClassMethods = $this->setterAndGetterFinder->findGetterAndSetterClassMethods(
                 $node,
