@@ -15,11 +15,7 @@ final class ArrayParametersMerger
     public function merge(mixed $left, mixed $right): mixed
     {
         if (is_array($left) && is_array($right)) {
-            return $this->mergeLeftToRightWithCallable(
-                $left,
-                $right,
-                $this->merge(...)
-            );
+            return $this->mergeLeftToRightWithCallable($left, $right, $this->merge(...));
         }
 
         if ($left !== null) {

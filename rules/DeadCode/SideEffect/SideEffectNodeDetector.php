@@ -48,10 +48,7 @@ final readonly class SideEffectNodeDetector
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst(
-            $expr,
-            $this->detectCallExpr(...)
-        );
+        return (bool) $this->betterNodeFinder->findFirst($expr, $this->detectCallExpr(...));
     }
 
     public function detectCallExpr(Node $node): bool
