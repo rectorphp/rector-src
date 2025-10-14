@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFr
 use DateTime;
 use stdClass;
 
-class ArrayUnionType
+class ArrayUnionGenericSameType
 {
     protected array $dependencies = [
         stdClass::class,
@@ -22,7 +22,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFr
 use DateTime;
 use stdClass;
 
-class ArrayUnionType
+class ArrayUnionGenericSameType
 {
     /**
      * @var array<int, class-string<\stdClass>|class-string<\DateTime>>
