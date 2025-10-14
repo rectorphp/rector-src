@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\Class_;
 
+use PhpParser\Modifiers;
 use PhpParser\Node;
 use PhpParser\Node\PropertyHook;
 use PhpParser\Node\Stmt\Class_;
@@ -54,7 +55,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class Product
 {
-    private string $name
+    public string $name
     {
         get => $this->name;
         set($value) => $this->name = ucfirst($value);
@@ -114,6 +115,10 @@ CODE_SAMPLE
                 $propertyHook = $this->propertyHookFactory->create($candidateClassMethod, $propertyName);
                 if (! $propertyHook instanceof PropertyHook) {
                     continue;
+                }
+
+                if (! $property->isPublic()) {
+                    $property->flags = Modifiers::PUBLIC;
                 }
 
                 $property->hooks[] = $propertyHook;
