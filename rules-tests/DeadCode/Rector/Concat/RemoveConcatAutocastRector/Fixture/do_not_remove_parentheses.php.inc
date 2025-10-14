@@ -6,7 +6,7 @@ class DoNotRemoveParentheses
 {
     public function run($value)
     {
-        return "Hello, " . (string)($value['name'] ?? 'World');
+        return "Hello, " . (string) ($value['name'] ?? 'World');
     }
 }
 
