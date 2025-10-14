@@ -9,8 +9,8 @@ use PhpParser\Node\PropertyHook;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Configuration\Parameter\FeatureFlags;
-use Rector\Doctrine\CodeQuality\Helper\SetterGetterFinder;
 use Rector\Php84\NodeFactory\PropertyHookFactory;
+use Rector\Php84\NodeFinder\SetterAndGetterFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
@@ -24,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class PropertyHookRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly SetterGetterFinder $setterGetterFinder,
+        private readonly SetterAndGetterFinder $setterAndGetterFinder,
         private readonly PropertyHookFactory $propertyHookFactory,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
@@ -91,7 +91,10 @@ CODE_SAMPLE
         foreach ($node->getProperties() as $property) {
             $propertyName = $this->getName($property);
 
-            $candidateClassMethods = $this->setterGetterFinder->findGetterAndSetterClassMethods($node, $propertyName);
+            $candidateClassMethods = $this->setterAndGetterFinder->findGetterAndSetterClassMethods(
+                $node,
+                $propertyName
+            );
 
             foreach ($candidateClassMethods as $candidateClassMethod) {
                 if (count((array) $candidateClassMethod->stmts) !== 1) {
