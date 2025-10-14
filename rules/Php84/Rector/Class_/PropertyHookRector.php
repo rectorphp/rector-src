@@ -95,6 +95,10 @@ CODE_SAMPLE
         $classMethodsToRemove = [];
 
         foreach ($node->getProperties() as $property) {
+            if ($property->isReadonly()) {
+                continue;
+            }
+
             $propertyName = $this->getName($property);
 
             $candidateClassMethods = $this->setterAndGetterFinder->findGetterAndSetterClassMethods(
