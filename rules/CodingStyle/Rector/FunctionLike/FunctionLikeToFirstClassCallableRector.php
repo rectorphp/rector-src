@@ -74,6 +74,11 @@ CODE_SAMPLE
         return $callLike;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::FIRST_CLASS_CALLABLE_SYNTAX;
+    }
+
     private function shouldSkip(
         ArrowFunction|Closure $node,
         FuncCall|MethodCall|StaticCall $callLike,
@@ -239,10 +244,5 @@ CODE_SAMPLE
         }
 
         return $callLike->var instanceof CallLike;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::FIRST_CLASS_CALLABLE_SYNTAX;
     }
 }

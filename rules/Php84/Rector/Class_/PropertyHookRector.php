@@ -13,6 +13,7 @@ use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Php84\NodeFactory\PropertyHookFactory;
 use Rector\Php84\NodeFinder\SetterAndGetterFinder;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -82,6 +83,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->hasMagicGetSetMethod($node)) {
+            return null;
+        }
+
         // nothing to hook to
         if ($node->getProperties() === []) {
             return null;
@@ -148,5 +153,16 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::PROPERTY_HOOKS;
+    }
+
+    private function hasMagicGetSetMethod(Class_ $class): bool
+    {
+        $magicGetMethod = $class->getMethod(MethodName::__GET);
+        if ($magicGetMethod instanceof ClassMethod) {
+            return true;
+        }
+
+        $magicSetMethod = $class->getMethod(MethodName::__SET);
+        return $magicSetMethod instanceof ClassMethod;
     }
 }
