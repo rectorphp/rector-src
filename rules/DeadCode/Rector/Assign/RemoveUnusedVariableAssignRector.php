@@ -137,10 +137,7 @@ CODE_SAMPLE
 
     private function hasCallLikeInAssignExpr(Expr $expr): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst(
-            $expr,
-            $this->sideEffectNodeDetector->detectCallExpr(...)
-        );
+        return (bool) $this->betterNodeFinder->findFirst($expr, $this->sideEffectNodeDetector->detectCallExpr(...));
     }
 
     /**
