@@ -75,6 +75,13 @@ final class SpacingAwareArrayTypeNode extends ArrayTypeNode implements Stringabl
                 break;
             }
 
+            // ensure only check on base level
+            // avoid mix usage without [] added
+            if (count($unionedType->genericTypes) !== 1) {
+                $allGeneric = false;
+                break;
+            }
+
             // ensure all generic types has the same base type
             $currentTypeName = $unionedType->type->name;
 
