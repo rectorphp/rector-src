@@ -85,7 +85,7 @@ CODE_SAMPLE
         foreach ($node->getProperties() as $property) {
             $propertyName = $this->getName($property);
 
-            $candidateClassMethods = $this->resolvePropertyHookCandidateClassMethods($node, $propertyName);
+            $candidateClassMethods = $this->setterGetterFinder->findGetterAndSetterClassMethods($node, $propertyName);
 
             foreach ($candidateClassMethods as $candidateClassMethod) {
                 if (count((array) $candidateClassMethod->stmts) !== 1) {
@@ -134,25 +134,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::PROPERTY_HOOKS;
-    }
-
-    /**
-     * @return ClassMethod[]
-     */
-    private function resolvePropertyHookCandidateClassMethods(Class_ $class, string $propertyName): array
-    {
-        $candidateClassMethods = [];
-
-        $getterClassMethod = $this->setterGetterFinder->findGetterClassMethod($class, $propertyName);
-        if ($getterClassMethod instanceof ClassMethod) {
-            $candidateClassMethods[] = $getterClassMethod;
-        }
-
-        $setterClassMethod = $this->setterGetterFinder->findSetterClassMethod($class, $propertyName);
-        if ($setterClassMethod instanceof ClassMethod) {
-            $candidateClassMethods[] = $setterClassMethod;
-        }
-
-        return $candidateClassMethods;
     }
 }
