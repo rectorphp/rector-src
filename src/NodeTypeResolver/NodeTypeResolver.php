@@ -52,9 +52,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverAwareInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyArrayTypeCorrector;
-use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
-use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
 use Rector\Php\PhpVersionProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -80,10 +77,8 @@ final class NodeTypeResolver
     public function __construct(
         private readonly ObjectTypeSpecifier $objectTypeSpecifier,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly GenericClassStringTypeCorrector $genericClassStringTypeCorrector,
+        private readonly NodeTypeCorrector $nodeTypeCorrector,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
-        private readonly AccessoryNonEmptyArrayTypeCorrector $accessoryNonEmptyArrayTypeCorrector,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpVersionProvider $phpVersionProvider,
@@ -201,7 +196,7 @@ final class NodeTypeResolver
         $type = $this->resolveByNodeTypeResolvers($node);
 
         if ($type instanceof Type) {
-            $type = $this->correctType($type);
+            $type = $this->nodeTypeCorrector->correctType($type);
 
             if ($type instanceof ObjectType) {
                 $scope = $node->getAttribute(AttributeKey::SCOPE);
@@ -236,7 +231,7 @@ final class NodeTypeResolver
             return new MixedType();
         }
 
-        $type = $this->correctType($scope->getType($node));
+        $type = $this->nodeTypeCorrector->correctType($scope->getType($node));
 
         // hot fix for phpstan not resolving chain method calls
         if (! $node instanceof MethodCall) {
@@ -284,7 +279,7 @@ final class NodeTypeResolver
                 return new ObjectWithoutClassType();
             }
 
-            return $this->correctType($type);
+            return $this->nodeTypeCorrector->correctType($type);
         }
 
         return $this->resolveNativeUnionType($type);
@@ -370,14 +365,6 @@ final class NodeTypeResolver
         }
 
         return $classReflection->hasTraitUse($objectType->getClassName());
-    }
-
-    private function correctType(Type $type): Type
-    {
-        $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
-        $type = $this->genericClassStringTypeCorrector->correct($type);
-
-        return $this->accessoryNonEmptyArrayTypeCorrector->correct($type);
     }
 
     /**
