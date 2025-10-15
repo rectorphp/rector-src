@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\FixtureIntersection;
 
-final class CoverIntersection
+final class CoverIntersectionWithDocblock
 {
     public function run(array $values): void
     {
@@ -29,9 +29,9 @@ final class CoverIntersection
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\FixtureIntersection;
 
-final class CoverIntersection
+final class CoverIntersectionWithDocblock
 {
     public function run(array $values): void
     {
