@@ -7,7 +7,6 @@ namespace Rector\Php84\NodeFinder;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\TypeDeclaration\NodeAnalyzer\ClassMethodAndPropertyAnalyzer;
-use Rector\ValueObject\MethodName;
 
 final readonly class SetterAndGetterFinder
 {
@@ -22,16 +21,6 @@ final readonly class SetterAndGetterFinder
     public function findGetterAndSetterClassMethods(Class_ $class, string $propertyName): array
     {
         $classMethods = [];
-
-        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
-
-        if ($constructClassMethod instanceof ClassMethod) {
-            foreach ($constructClassMethod->params as $param) {
-                if ($param->isReadonly()) {
-                    return [];
-                }
-            }
-        }
 
         $getterClassMethod = $this->findGetterClassMethod($class, $propertyName);
         if ($getterClassMethod instanceof ClassMethod) {
