@@ -281,10 +281,6 @@ final class NodeTypeResolver
             $type = $this->resolveArrayDimFetchType($expr, $scope, $type);
         }
 
-        if ($type instanceof IntersectionType) {
-            $type = $this->cleanArrayIntersectionType($type);
-        }
-
         if (! $type instanceof UnionType) {
             if ($this->isAnonymousObjectType($type)) {
                 return new ObjectWithoutClassType();
@@ -382,6 +378,8 @@ final class NodeTypeResolver
     {
         $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
         $type = $this->genericClassStringTypeCorrector->correct($type);
+
+        $type = $this->cleanArrayIntersectionType($type);
 
         return $this->accessoryNonEmptyArrayTypeCorrector->correct($type);
     }
