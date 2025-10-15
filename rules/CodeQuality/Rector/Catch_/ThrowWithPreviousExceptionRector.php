@@ -210,9 +210,9 @@ CODE_SAMPLE
             $extendedMethodReflection->getVariants()
         );
 
-        foreach ($extendedParametersAcceptor->getParameters() as $position => $parameterReflectionWithPhpDoc) {
-            $parameterType = $parameterReflectionWithPhpDoc->getType();
-            $className = ClassNameFromObjectTypeResolver::resolve($parameterReflectionWithPhpDoc->getType());
+        foreach ($extendedParametersAcceptor->getParameters() as $position => $extendedParameterReflection) {
+            $parameterType = $extendedParameterReflection->getType();
+            $className = ClassNameFromObjectTypeResolver::resolve($extendedParameterReflection->getType());
 
             if ($className === null) {
                 continue;
