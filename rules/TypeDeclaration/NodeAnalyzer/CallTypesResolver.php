@@ -12,17 +12,13 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\Accessory\AccessoryArrayListType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeCombinator;
-use PHPStan\Type\TypeUtils;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -93,15 +89,6 @@ final readonly class CallTypesResolver
     private function resolveStrictArgValueType(Arg $arg): Type
     {
         $argValueType = $this->nodeTypeResolver->getNativeType($arg->value);
-
-        if ($argValueType instanceof IntersectionType) {
-            dump($argValueType);
-
-            $argValueType = TypeCombinator::remove($argValueType, new AccessoryArrayListType());
-
-            dump($argValueType);
-            die;
-        }
 
         return $this->normalizeType($argValueType);
     }

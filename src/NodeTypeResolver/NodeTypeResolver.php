@@ -29,11 +29,13 @@ use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\Accessory\AccessoryArrayListType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ErrorType;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\NullType;
@@ -277,6 +279,10 @@ final class NodeTypeResolver
         $type = $this->resolveNativeTypeWithBuiltinMethodCallFallback($expr, $scope);
         if ($expr instanceof ArrayDimFetch) {
             $type = $this->resolveArrayDimFetchType($expr, $scope, $type);
+        }
+
+        if ($type instanceof IntersectionType) {
+            $type = $this->cleanArrayIntersectionType($type);
         }
 
         if (! $type instanceof UnionType) {
@@ -674,5 +680,27 @@ final class NodeTypeResolver
         }
 
         return ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80);
+    }
+
+    private function cleanArrayIntersectionType(Type $type): Type
+    {
+        if (! $type instanceof IntersectionType) {
+            return $type;
+        }
+
+        $cleanTypes = [];
+        foreach ($type->getTypes() as $intersectionType) {
+            if ($intersectionType instanceof AccessoryArrayListType) {
+                continue;
+            }
+
+            $cleanTypes[] = $intersectionType;
+        }
+
+        if (count($cleanTypes) === 1) {
+            return $cleanTypes[0];
+        }
+
+        return new IntersectionType($cleanTypes);
     }
 }
