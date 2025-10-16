@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
@@ -98,6 +99,18 @@ CODE_SAMPLE
             foreach ($node->getParams() as $param) {
                 if ($this->isName($param->var, $returnedVariableName)) {
                     return null;
+                }
+            }
+
+            if ($node instanceof Closure) {
+                foreach ($node->uses as $use) {
+                    if (! $use->byRef) {
+                        continue;
+                    }
+
+                    if ($this->isName($use->var, $returnedVariableName)) {
+                        return null;
+                    }
                 }
             }
         }
