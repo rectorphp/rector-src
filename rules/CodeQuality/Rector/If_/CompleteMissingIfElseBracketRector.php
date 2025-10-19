@@ -84,7 +84,7 @@ CODE_SAMPLE
      */
     private function isIfConditionFollowedByOpeningCurlyBracket(If_|ElseIf_|Else_ $if, array $oldTokens): bool
     {
-        $startStmt = current($if->stmts);
+        $startStmt = current($if->getStmts());
         if (! $startStmt instanceof Stmt) {
             return true;
         }

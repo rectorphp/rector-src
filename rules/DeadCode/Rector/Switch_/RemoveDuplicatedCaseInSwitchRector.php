@@ -115,7 +115,7 @@ CODE_SAMPLE
 
             $processedCasesKeys[] = $outerCaseKey;
 
-            if ($outerCase->stmts === []) {
+            if ($outerCase->getStmts() === []) {
                 $result[] = $outerCase;
                 continue;
             }
@@ -131,7 +131,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($innerCase->stmts === []) {
+                if ($innerCase->getStmts() === []) {
                     $casesWithoutStmts[$innerCaseKey] = $innerCase;
                     continue;
                 }
@@ -172,15 +172,15 @@ CODE_SAMPLE
          * Skip multi no stmts
          * @see rules-tests/DeadCode/Rector/Switch_/RemoveDuplicatedCaseInSwitchRector/Fixture/skip_multi_no_stmts.php.inc
          */
-        if ($currentCase->stmts[0] instanceof Break_ && $nextCase->stmts[0] instanceof Break_) {
+        if ($currentCase->getStmts()[0] instanceof Break_ && $nextCase->getStmts()[0] instanceof Break_) {
             return $this->areSwitchStmtsEqualsConsideringComments($currentCase, $nextCase);
         }
 
-        if (! $this->nodeComparator->areNodesEqual($currentCase->stmts, $nextCase->stmts)) {
+        if (! $this->nodeComparator->areNodesEqual($currentCase->getStmts(), $nextCase->getStmts())) {
             return false;
         }
 
-        foreach ($currentCase->stmts as $stmt) {
+        foreach ($currentCase->getStmts() as $stmt) {
             if ($stmt instanceof Break_ || $stmt instanceof Return_) {
                 return true;
             }
@@ -191,8 +191,8 @@ CODE_SAMPLE
 
     private function areSwitchStmtsEqualsConsideringComments(Case_ $currentCase, Case_ $nextCase): bool
     {
-        $currentCasePrintResult = $this->betterStandardPrinter->print($currentCase->stmts);
-        $nextCasePrintResult = $this->betterStandardPrinter->print($nextCase->stmts);
+        $currentCasePrintResult = $this->betterStandardPrinter->print($currentCase->getStmts());
+        $nextCasePrintResult = $this->betterStandardPrinter->print($nextCase->getStmts());
 
         return $currentCasePrintResult === $nextCasePrintResult;
     }

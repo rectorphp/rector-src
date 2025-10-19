@@ -81,7 +81,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null || $node->stmts === []) {
+        if ($node->getStmts() === [] || $node->stmts === []) {
             return null;
         }
 
@@ -100,7 +100,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        foreach ((array) $constructClassMethod->stmts as $key => $stmt) {
+        foreach ($constructClassMethod->getStmts() as $key => $stmt) {
             foreach ($params as $param) {
                 $paramName = $this->getName($param);
 
@@ -122,7 +122,7 @@ CODE_SAMPLE
                 $param->type = $currentParamType->type;
                 $param->default = $coalesce->right;
 
-                unset($constructClassMethod->stmts[$key]);
+                unset($constructClassMethod->getStmts()[$key]);
                 $this->processPropertyPromotion($node, $param, $paramName);
 
                 $hasChanged = true;
@@ -194,7 +194,7 @@ CODE_SAMPLE
     private function matchConstructorParams(ClassMethod $classMethod): array
     {
         // skip empty constructor assigns, as we need those here
-        if ($classMethod->stmts === null || $classMethod->stmts === []) {
+        if ($classMethod->getStmts() === [] || $classMethod->getStmts() === []) {
             return [];
         }
 

@@ -87,7 +87,7 @@ CODE_SAMPLE
     {
         $scope = ScopeFetcher::fetch($node);
         // empty body, nothing to resolve
-        if ($node->stmts === null || $node->stmts === []) {
+        if ($node->getStmts() === [] || $node->getStmts() === []) {
             return null;
         }
 

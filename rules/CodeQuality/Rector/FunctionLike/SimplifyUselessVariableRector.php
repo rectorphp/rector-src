@@ -114,7 +114,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $stmts = $node->stmts;
+        $stmts = $node->getStmts();
         if ($stmts === null) {
             return null;
         }
@@ -152,7 +152,7 @@ CODE_SAMPLE
     }
 
     private function processSimplifyUselessVariable(
-        ContainsStmts $stmtsAware,
+        ContainsStmts $containsStmts,
         Return_ $return,
         Assign|AssignOp $assign,
         int $key
@@ -168,8 +168,8 @@ CODE_SAMPLE
             $return->expr = $assign->expr;
         }
 
-        unset($stmtsAware->stmts[$key - 1]);
-        return $stmtsAware;
+        unset($containsStmts->getStmts()[$key - 1]);
+        return $containsStmts;
     }
 
     private function shouldSkipStmt(Return_ $return, Stmt $previousStmt): bool

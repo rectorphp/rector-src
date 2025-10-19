@@ -168,7 +168,7 @@ CODE_SAMPLE
     ): bool {
         $isVariableExclusivelyArrayDimAssigned = true;
 
-        $this->traverseNodesWithCallable((array) $functionLike->stmts, function ($node) use (
+        $this->traverseNodesWithCallable($functionLike->getStmts(), function ($node) use (
             $variableName,
             &$isVariableExclusivelyArrayDimAssigned
         ): ?int {

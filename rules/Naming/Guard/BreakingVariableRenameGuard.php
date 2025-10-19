@@ -125,7 +125,7 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->getStmts(), function (Node $node) use (
+        return (bool) $this->betterNodeFinder->findFirst($classMethod->getStmts(), function (Node $node) use (
             $expectedName
         ): bool {
             if (! $node instanceof Variable) {
@@ -164,7 +164,7 @@ final readonly class BreakingVariableRenameGuard
         }
 
         return $this->betterNodeFinder->hasInstanceOfName(
-            [...(array) $functionLike->stmts, ...$functionLike->params],
+            [...$functionLike->getStmts(), ...$functionLike->params],
             Variable::class,
             $newName
         );

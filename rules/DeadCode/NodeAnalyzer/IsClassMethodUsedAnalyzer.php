@@ -190,7 +190,7 @@ final readonly class IsClassMethodUsedAnalyzer
 
             $callMethod = null;
             $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-                (array) $classMethod->stmts,
+                (array) $classMethod->getStmts(),
                 function (Node $subNode) use ($className, $classMethodName, &$callMethod): ?int {
                     if ($subNode instanceof Class_ || $subNode instanceof Function_) {
                         return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;

@@ -66,14 +66,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): array|null|int
     {
-        $isEmptyFinallyStmts = ! $node->finally instanceof Finally_ || $this->isEmpty($node->finally->stmts);
+        $isEmptyFinallyStmts = ! $node->finally instanceof Finally_ || $this->isEmpty($node->finally->getStmts());
 
         // not empty stmts on finally always executed
         if (! $isEmptyFinallyStmts) {
             return null;
         }
 
-        if ($this->isEmpty($node->stmts)) {
+        if ($this->isEmpty($node->getStmts())) {
             return NodeVisitor::REMOVE_NODE;
         }
 
@@ -82,11 +82,11 @@ CODE_SAMPLE
         }
 
         $onlyCatch = $node->catches[0];
-        if ($this->isEmpty($onlyCatch->stmts)) {
+        if ($this->isEmpty($onlyCatch->getStmts())) {
             return null;
         }
 
-        $onlyCatchStmt = $onlyCatch->stmts[0];
+        $onlyCatchStmt = $onlyCatch->getStmts()[0];
         if (! ($onlyCatchStmt instanceof Expression && $onlyCatchStmt->expr instanceof Throw_)) {
             return null;
         }
@@ -95,7 +95,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $node->stmts;
+        return $node->getStmts();
     }
 
     /**

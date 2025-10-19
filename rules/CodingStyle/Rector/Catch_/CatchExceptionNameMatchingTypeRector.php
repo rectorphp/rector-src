@@ -87,7 +87,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -192,7 +192,7 @@ CODE_SAMPLE
         array $stmts,
         ?Stmt $stmt
     ): void {
-        $this->traverseNodesWithCallable($catch->stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($catch->getStmts(), function (Node $node) use (
             $oldVariableName,
             $newVariableName
         ): null {

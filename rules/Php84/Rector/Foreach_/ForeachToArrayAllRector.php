@@ -89,7 +89,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -102,14 +102,14 @@ CODE_SAMPLE
         return PhpVersionFeature::ARRAY_ALL;
     }
 
-    private function refactorBooleanAssignmentPattern(ContainsStmts $stmtsAware): ?Node
+    private function refactorBooleanAssignmentPattern(ContainsStmts $containsStmts): ?Node
     {
-        foreach ($stmtsAware->stmts as $key => $stmt) {
+        foreach ($containsStmts->stmts as $key => $stmt) {
             if (! $stmt instanceof Foreach_) {
                 continue;
             }
 
-            $prevStmt = $stmtsAware->stmts[$key - 1] ?? null;
+            $prevStmt = $containsStmts->stmts[$key - 1] ?? null;
             if (! $prevStmt instanceof Expression) {
                 continue;
             }
@@ -136,7 +136,7 @@ CODE_SAMPLE
             }
 
             if ($this->stmtsManipulator->isVariableUsedInNextStmt(
-                $stmtsAware,
+                $containsStmts,
                 $key + 1,
                 (string) $this->getName($foreach->valueVar)
             )) {
@@ -174,26 +174,26 @@ CODE_SAMPLE
             $newAssign = new Assign($assignedVariable, $funcCall);
             $newExpression = new Expression($newAssign);
 
-            unset($stmtsAware->stmts[$key - 1]);
-            $stmtsAware->stmts[$key] = $newExpression;
+            unset($containsStmts->stmts[$key - 1]);
+            $containsStmts->stmts[$key] = $newExpression;
 
-            $stmtsAware->stmts = array_values($stmtsAware->stmts);
+            $containsStmts->stmts = array_values($containsStmts->stmts);
 
-            return $stmtsAware;
+            return $containsStmts;
         }
 
         return null;
     }
 
-    private function refactorEarlyReturnPattern(ContainsStmts $stmtsAware): ?Node
+    private function refactorEarlyReturnPattern(ContainsStmts $containsStmts): ?Node
     {
-        foreach ($stmtsAware->stmts as $key => $stmt) {
+        foreach ($containsStmts->stmts as $key => $stmt) {
             if (! $stmt instanceof Foreach_) {
                 continue;
             }
 
             $foreach = $stmt;
-            $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
+            $nextStmt = $containsStmts->stmts[$key + 1] ?? null;
 
             if (! $nextStmt instanceof Return_) {
                 continue;
@@ -236,11 +236,11 @@ CODE_SAMPLE
 
             $funcCall = $this->nodeFactory->createFuncCall('array_all', [$foreach->expr, $arrowFunction]);
 
-            $stmtsAware->stmts[$key] = new Return_($funcCall);
-            unset($stmtsAware->stmts[$key + 1]);
-            $stmtsAware->stmts = array_values($stmtsAware->stmts);
+            $containsStmts->stmts[$key] = new Return_($funcCall);
+            unset($containsStmts->stmts[$key + 1]);
+            $containsStmts->stmts = array_values($containsStmts->stmts);
 
-            return $stmtsAware;
+            return $containsStmts;
         }
 
         return null;
@@ -248,25 +248,25 @@ CODE_SAMPLE
 
     private function isValidEarlyReturnForeachStructure(Foreach_ $foreach): bool
     {
-        if (count($foreach->stmts) !== 1) {
+        if (count($foreach->getStmts()) !== 1) {
             return false;
         }
 
-        if (! $foreach->stmts[0] instanceof If_) {
+        if (! $foreach->getStmts()[0] instanceof If_) {
             return false;
         }
 
-        $ifStmt = $foreach->stmts[0];
+        $ifStmt = $foreach->getStmts()[0];
 
-        if (count($ifStmt->stmts) !== 1) {
+        if (count($ifStmt->getStmts()) !== 1) {
             return false;
         }
 
-        if (! $ifStmt->stmts[0] instanceof Return_) {
+        if (! $ifStmt->getStmts()[0] instanceof Return_) {
             return false;
         }
 
-        $returnStmt = $ifStmt->stmts[0];
+        $returnStmt = $ifStmt->getStmts()[0];
 
         if (! $returnStmt->expr instanceof Expr) {
             return false;
@@ -284,20 +284,20 @@ CODE_SAMPLE
 
     private function isValidBooleanAssignmentForeachStructure(Foreach_ $foreach, Variable $assignedVariable): bool
     {
-        if (count($foreach->stmts) !== 1) {
+        if (count($foreach->getStmts()) !== 1) {
             return false;
         }
 
-        $firstStmt = $foreach->stmts[0];
+        $firstStmt = $foreach->getStmts()[0];
         if (
             ! $firstStmt instanceof If_ ||
-            count($firstStmt->stmts) !== 2
+            count($firstStmt->getStmts()) !== 2
         ) {
             return false;
         }
 
-        $assignmentStmt = $firstStmt->stmts[0];
-        $breakStmt = $firstStmt->stmts[1];
+        $assignmentStmt = $firstStmt->getStmts()[0];
+        $breakStmt = $firstStmt->getStmts()[1];
 
         if (
             ! $assignmentStmt instanceof Expression ||

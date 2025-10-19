@@ -162,7 +162,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
         $paramStaticType = new ArrayType(new MixedType(), new MixedType());
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $classMethod->stmts,
+            $classMethod->getStmts(),
             function (Node $node) use ($propertyName, &$paramStaticType): ?int {
                 if (! $node instanceof Variable) {
                     return null;

@@ -82,7 +82,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($node->stmts === null) {
+                if ($node->getStmts() === []) {
                     continue;
                 }
 
@@ -110,12 +110,12 @@ CODE_SAMPLE
 
     private function wrap(ClassMethod $classMethod): bool
     {
-        if (! is_iterable($classMethod->stmts)) {
+        if (! is_iterable($classMethod->getStmts())) {
             return false;
         }
 
         $hasChanged = false;
-        foreach ($classMethod->stmts as $stmt) {
+        foreach ($classMethod->getStmts() as $stmt) {
             if ($stmt instanceof Return_ && $stmt->expr instanceof Expr
                 && ! $stmt->expr instanceof Array_) {
                 $stmt->expr = new Array_([new ArrayItem($stmt->expr)]);

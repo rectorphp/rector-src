@@ -69,7 +69,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?int
     {
-        if ($node->stmts !== []) {
+        if ($node->getStmts() !== []) {
             return null;
         }
 

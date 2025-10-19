@@ -78,13 +78,13 @@ CODE_SAMPLE
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {
-            $currentStmt = current($rootStmt->stmts);
+            $currentStmt = current($rootStmt->getStmts());
 
             if (! $currentStmt instanceof Stmt) {
                 return null;
             }
 
-            $nodes = $rootStmt->stmts;
+            $nodes = $rootStmt->getStmts();
             $stmt = $currentStmt;
         }
 

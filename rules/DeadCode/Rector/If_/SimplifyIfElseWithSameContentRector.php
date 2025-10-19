@@ -78,20 +78,20 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === []) {
+        if ($node->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        return $node->stmts;
+        return $node->getStmts();
     }
 
     private function isIfWithConstantReturns(If_ $if): bool
     {
         $possibleContents = [];
-        $possibleContents[] = $this->betterStandardPrinter->print($if->stmts);
+        $possibleContents[] = $this->betterStandardPrinter->print($if->getStmts());
 
         foreach ($if->elseifs as $elseif) {
-            $possibleContents[] = $this->betterStandardPrinter->print($elseif->stmts);
+            $possibleContents[] = $this->betterStandardPrinter->print($elseif->getStmts());
         }
 
         $else = $if->else;
@@ -99,7 +99,7 @@ CODE_SAMPLE
             throw new ShouldNotHappenException();
         }
 
-        $possibleContents[] = $this->betterStandardPrinter->print($else->stmts);
+        $possibleContents[] = $this->betterStandardPrinter->print($else->getStmts());
 
         $uniqueContents = array_unique($possibleContents);
 

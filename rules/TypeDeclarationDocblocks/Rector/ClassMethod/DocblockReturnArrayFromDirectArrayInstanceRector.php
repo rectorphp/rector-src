@@ -81,7 +81,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 

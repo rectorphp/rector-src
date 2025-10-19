@@ -105,11 +105,11 @@ CODE_SAMPLE
 
     private function isJustThrownSameVariable(Catch_ $catch): bool
     {
-        if ($this->isEmpty($catch->stmts)) {
+        if ($this->isEmpty($catch->getStmts())) {
             return false;
         }
 
-        $catchItemStmt = $catch->stmts[0];
+        $catchItemStmt = $catch->getStmts()[0];
         if (! ($catchItemStmt instanceof Expression && $catchItemStmt->expr instanceof Throw_)) {
             return false;
         }

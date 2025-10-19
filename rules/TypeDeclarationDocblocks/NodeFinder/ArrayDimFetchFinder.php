@@ -26,7 +26,7 @@ final readonly class ArrayDimFetchFinder
      */
     public function findDimFetchAssignToVariableName(ClassMethod $classMethod, string $variableName): array
     {
-        $assigns = $this->betterNodeFinder->findInstancesOfScoped((array) $classMethod->stmts, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstancesOfScoped($classMethod->getStmts(), Assign::class);
 
         $exprs = [];
         foreach ($assigns as $assign) {

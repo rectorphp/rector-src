@@ -117,7 +117,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            foreach ((array) $classMethod->stmts as $stmt) {
+            foreach ((array) $classMethod->getStmts() as $stmt) {
                 if (! $stmt instanceof Expression) {
                     continue;
                 }

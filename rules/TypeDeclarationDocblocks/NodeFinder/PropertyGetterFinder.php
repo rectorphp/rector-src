@@ -31,15 +31,15 @@ final readonly class PropertyGetterFinder
                 continue;
             }
 
-            if ($classMethod->stmts === null) {
+            if ($classMethod->getStmts() === []) {
                 continue;
             }
 
-            if (count($classMethod->stmts) !== 1) {
+            if (count($classMethod->getStmts()) !== 1) {
                 continue;
             }
 
-            $onlyStmt = $classMethod->stmts[0];
+            $onlyStmt = $classMethod->getStmts()[0];
             if (! $onlyStmt instanceof Return_) {
                 continue;
             }

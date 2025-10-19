@@ -81,7 +81,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
-            if ($classMethod->stmts === null) {
+            if ($classMethod->getStmts() === []) {
                 continue;
             }
 

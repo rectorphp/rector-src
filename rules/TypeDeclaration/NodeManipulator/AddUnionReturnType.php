@@ -32,7 +32,7 @@ final readonly class AddUnionReturnType
      */
     public function add(ClassMethod|Function_ $node, Scope $scope): ClassMethod|Function_|null
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 

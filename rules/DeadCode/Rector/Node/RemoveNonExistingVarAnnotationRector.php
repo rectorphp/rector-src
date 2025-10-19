@@ -106,7 +106,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -190,7 +190,7 @@ CODE_SAMPLE
     /**
      * @param string[] $extractValues
      */
-    private function shouldSkip(ContainsStmts $stmtsAware, int $key, Stmt $stmt, array $extractValues): bool
+    private function shouldSkip(ContainsStmts $containsStmts, int $key, Stmt $stmt, array $extractValues): bool
     {
         if (! in_array($stmt::class, self::NODE_TYPES, true)) {
             return true;
@@ -201,12 +201,12 @@ CODE_SAMPLE
         }
 
         foreach ($extractValues as $extractValue) {
-            if ($this->stmtsManipulator->isVariableUsedInNextStmt($stmtsAware, $key + 1, $extractValue)) {
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($containsStmts, $key + 1, $extractValue)) {
                 return true;
             }
         }
 
-        return isset($stmtsAware->stmts[$key + 1]) && $stmtsAware->stmts[$key + 1] instanceof InlineHTML;
+        return isset($containsStmts->getStmts()[$key + 1]) && $containsStmts->getStmts()[$key + 1] instanceof InlineHTML;
     }
 
     private function hasVariableName(Stmt $stmt, string $variableName): bool

@@ -106,7 +106,7 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ((array) $node->stmts as $classMethodStmt) {
+        foreach ((array) $node->getStmts() as $classMethodStmt) {
             if (! $classMethodStmt instanceof TryCatch) {
                 continue;
             }
@@ -159,7 +159,7 @@ CODE_SAMPLE
 
     private function matchReturnType(TryCatch|Catch_|Finally_ $tryOrCatchOrFinally): ?Type
     {
-        foreach ($tryOrCatchOrFinally->stmts as $stmt) {
+        foreach ($tryOrCatchOrFinally->getStmts() as $stmt) {
             if (! $stmt instanceof Return_) {
                 continue;
             }

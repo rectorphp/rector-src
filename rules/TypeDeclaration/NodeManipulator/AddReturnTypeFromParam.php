@@ -38,7 +38,7 @@ final readonly class AddReturnTypeFromParam
 
     public function add(ClassMethod|Function_ $functionLike, Scope $scope): ClassMethod|Function_|null
     {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return null;
         }
 
@@ -46,13 +46,13 @@ final readonly class AddReturnTypeFromParam
             return null;
         }
 
-        $return = $this->findCurrentScopeReturn($functionLike->stmts);
+        $return = $this->findCurrentScopeReturn($functionLike->getStmts());
         if (! $return instanceof Return_ || ! $return->expr instanceof Expr) {
             return null;
         }
 
         $returnName = $this->nodeNameResolver->getName($return->expr);
-        $stmts = $functionLike->stmts;
+        $stmts = $functionLike->getStmts();
 
         foreach ($functionLike->getParams() as $param) {
             if (! $param->type instanceof Node) {

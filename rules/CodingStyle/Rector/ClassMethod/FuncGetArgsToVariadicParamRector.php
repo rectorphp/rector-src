@@ -65,7 +65,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->params !== [] || $node->stmts === null) {
+        if ($node->params !== [] || $node->getStmts() === []) {
             return null;
         }
 
@@ -127,11 +127,11 @@ CODE_SAMPLE
         ClassMethod | Function_ | Closure $functionLike,
         Variable $variable
     ): bool {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use (
+        return (bool) $this->betterNodeFinder->findFirst($functionLike->getStmts(), function (Node $node) use (
             $variable
         ): bool {
             if (! $node instanceof Closure && ! $node instanceof Function_) {

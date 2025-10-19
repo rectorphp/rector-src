@@ -136,7 +136,7 @@ CODE_SAMPLE
         }
 
         // empty, nothing to find
-        if ($functionLike->stmts === null || $functionLike->stmts === []) {
+        if ($functionLike->getStmts() === [] || $functionLike->getStmts() === []) {
             return true;
         }
 

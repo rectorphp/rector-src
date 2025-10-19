@@ -100,7 +100,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $if->stmts;
+        return $if->getStmts();
     }
 
     /**
@@ -114,6 +114,6 @@ CODE_SAMPLE
         }
 
         // else is always used
-        return $if->else->stmts;
+        return $if->else->getStmts();
     }
 }

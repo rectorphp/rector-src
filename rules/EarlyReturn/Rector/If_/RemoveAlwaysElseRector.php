@@ -83,7 +83,7 @@ CODE_SAMPLE
         }
 
         if ($node->else instanceof Else_) {
-            $stmts = $node->else->stmts;
+            $stmts = $node->else->getStmts();
             $node->else = null;
 
             return [$node, ...$stmts];
@@ -143,7 +143,7 @@ CODE_SAMPLE
     {
         $statements = [];
         foreach ($if->elseifs as $key => $elseif) {
-            if ($this->doesLastStatementBreakFlow($elseif) && $elseif->stmts !== []) {
+            if ($this->doesLastStatementBreakFlow($elseif) && $elseif->getStmts() !== []) {
                 continue;
             }
 
@@ -156,7 +156,7 @@ CODE_SAMPLE
 
     private function doesLastStatementBreakFlow(If_ | ElseIf_ | Else_ $node): bool
     {
-        $lastStmt = end($node->stmts);
+        $lastStmt = end($node->getStmts());
 
         if ($lastStmt instanceof If_ && $lastStmt->else instanceof Else_) {
             if ($this->doesLastStatementBreakFlow($lastStmt) || $this->doesLastStatementBreakFlow($lastStmt->else)) {

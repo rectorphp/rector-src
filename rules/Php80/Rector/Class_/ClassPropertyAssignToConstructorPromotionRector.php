@@ -224,7 +224,7 @@ CODE_SAMPLE
 
             // remove assign in constructor
             $assignStmtPosition = $promotionCandidate->getStmtPosition();
-            unset($constructClassMethod->stmts[$assignStmtPosition]);
+            unset($constructClassMethod->getStmts()[$assignStmtPosition]);
 
             $oldParamName = $this->getName($param);
             $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldParamName, $propertyName);
@@ -265,7 +265,7 @@ CODE_SAMPLE
             );
 
             // update variable to property fetch references
-            $this->traverseNodesWithCallable((array) $constructClassMethod->stmts, function (Node $node) use (
+            $this->traverseNodesWithCallable($constructClassMethod->getStmts(), function (Node $node) use (
                 $promotionCandidate,
                 $propertyName
             ): null|int|PropertyFetch {

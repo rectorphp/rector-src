@@ -332,7 +332,7 @@ parameters:
 
         -
             identifier: symplify.seeAnnotationToTest
-            path: utils/PHPStan/Rule/PreferDirectIsNameRule.php
+            path: utils/
 
         -
             identifier: arrayValues.list
@@ -356,3 +356,7 @@ parameters:
         -
             identifier: offsetAccess.invalidOffset
             path: src/CustomRules/SimpleNodeDumper.php
+
+        -
+            message: '#Method Rector\\Utils\\Rector\\MakeUseOfContaintsStmtsRector\:\:refactor\(\) should return 4\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\MethodCall\|null but returns int\|null#'
+            path: utils/Rector/MakeUseOfContaintsStmtsRector.php

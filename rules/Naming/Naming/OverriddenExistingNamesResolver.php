@@ -41,7 +41,7 @@ final class OverriddenExistingNamesResolver
         ClassMethod|Function_|Closure|ArrowFunction $classMethod
     ): bool {
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $classMethod->getStmts(), Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf($classMethod->getStmts(), Assign::class);
 
         $usedVariableNames = [];
         foreach ($assigns as $assign) {
@@ -74,7 +74,7 @@ final class OverriddenExistingNamesResolver
         $currentlyUsedNames = [];
 
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->stmts, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf($functionLike->getStmts(), Assign::class);
 
         foreach ($assigns as $assign) {
             /** @var Variable $assignVariable */

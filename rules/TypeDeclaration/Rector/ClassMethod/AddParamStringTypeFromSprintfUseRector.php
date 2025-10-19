@@ -71,7 +71,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ClassMethod|Function_|Closure|ArrowFunction|null
     {
-        if ($node instanceof ClassMethod && $node->stmts === null) {
+        if ($node instanceof ClassMethod && $node->getStmts() === []) {
             return null;
         }
 

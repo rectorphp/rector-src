@@ -65,17 +65,17 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
-        if (count($node->stmts) !== 3) {
+        if (count($node->getStmts()) !== 3) {
             return null;
         }
 
-        $firstStmt = $node->stmts[0];
-        $secondStmt = $node->stmts[1];
-        $thirdStmt = $node->stmts[2];
+        $firstStmt = $node->getStmts()[0];
+        $secondStmt = $node->getStmts()[1];
+        $thirdStmt = $node->getStmts()[2];
 
         if (! $thirdStmt instanceof Return_) {
             return null;

@@ -177,11 +177,11 @@ CODE_SAMPLE
             return NodeVisitor::REMOVE_NODE;
         }
 
-        if ($if->stmts === []) {
+        if ($if->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        return $if->stmts;
+        return $if->getStmts();
     }
 
     private function isSkippedPropertyFetch(Class_ $class, PropertyFetch|StaticPropertyFetch $propertyFetch): bool

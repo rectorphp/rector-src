@@ -72,7 +72,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -162,11 +162,11 @@ CODE_SAMPLE
             return true;
         }
 
-        if (count($foreach->stmts) > 1) {
+        if (count($foreach->getStmts()) > 1) {
             return true;
         }
 
-        if (! $foreach->stmts[0] instanceof If_) {
+        if (! $foreach->getStmts()[0] instanceof If_) {
             return true;
         }
 
@@ -196,7 +196,7 @@ CODE_SAMPLE
 
     private function isIfBodyABoolReturnNode(If_ $if): bool
     {
-        $ifStatement = $if->stmts[0];
+        $ifStatement = $if->getStmts()[0];
         if (! $ifStatement instanceof Return_) {
             return false;
         }

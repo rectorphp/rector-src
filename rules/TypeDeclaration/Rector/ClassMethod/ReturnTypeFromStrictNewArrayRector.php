@@ -102,7 +102,7 @@ CODE_SAMPLE
         }
 
         // 1. is variable instantiated with array
-        $stmts = $node->stmts;
+        $stmts = $node->getStmts();
         if ($stmts === null) {
             return null;
         }

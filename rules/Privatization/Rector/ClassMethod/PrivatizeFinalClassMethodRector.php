@@ -143,7 +143,7 @@ CODE_SAMPLE
 
         // if has parent call, its probably overriding parent one → skip it
         $hasParentCall = (bool) $this->betterNodeFinder->findFirst(
-            (array) $classMethod->stmts,
+            $classMethod->getStmts(),
             function (Node $node): bool {
                 if (! $node instanceof StaticCall) {
                     return false;

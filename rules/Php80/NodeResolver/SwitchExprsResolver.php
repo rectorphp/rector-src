@@ -34,7 +34,7 @@ final class SwitchExprsResolver
         $this->moveDefaultCaseToLast($newSwitch);
 
         foreach ($newSwitch->cases as $key => $case) {
-            if ($case->stmts !== []) {
+            if ($case->getStmts() !== []) {
                 continue;
             }
 
@@ -46,11 +46,11 @@ final class SwitchExprsResolver
         }
 
         foreach ($newSwitch->cases as $key => $case) {
-            if ($case->stmts === []) {
+            if ($case->getStmts() === []) {
                 continue;
             }
 
-            $expr = $case->stmts[0];
+            $expr = $case->getStmts()[0];
             $comments = $expr->getComments();
             if ($expr instanceof Expression) {
                 $expr = $expr->expr;
@@ -108,12 +108,12 @@ final class SwitchExprsResolver
             }
 
             // current default has no stmt? keep as is as rely to next case
-            if ($case->stmts === []) {
+            if ($case->getStmts() === []) {
                 return;
             }
 
             for ($loop = $key - 1; $loop >= 0; --$loop) {
-                if ($switch->cases[$loop]->stmts !== []) {
+                if ($switch->cases[$loop]->getStmts() !== []) {
                     break;
                 }
 
@@ -131,26 +131,26 @@ final class SwitchExprsResolver
     private function isValidCase(Case_ $case): bool
     {
         // prepend to previous one
-        if ($case->stmts === []) {
+        if ($case->getStmts() === []) {
             return true;
         }
 
-        if (count($case->stmts) === 2 && $case->stmts[1] instanceof Break_) {
+        if (count($case->getStmts()) === 2 && $case->getStmts()[1] instanceof Break_) {
             return true;
         }
 
         // default throws stmts
-        if (count($case->stmts) !== 1) {
+        if (count($case->getStmts()) !== 1) {
             return false;
         }
 
         // throws expression
-        if ($case->stmts[0] instanceof Throw_) {
+        if ($case->getStmts()[0] instanceof Throw_) {
             return true;
         }
 
         // instant return
-        if ($case->stmts[0] instanceof Return_) {
+        if ($case->getStmts()[0] instanceof Return_) {
             return true;
         }
 

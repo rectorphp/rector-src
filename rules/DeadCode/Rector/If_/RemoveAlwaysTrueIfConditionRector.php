@@ -123,17 +123,19 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === []) {
+        if ($node->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        $node->stmts[0]->setAttribute(AttributeKey::COMMENTS, array_merge(
-            $node->getComments(),
-            $node->stmts[0]->getComments(),
-        ));
-        $node->stmts[0]->setAttribute(AttributeKey::HAS_MERGED_COMMENTS, true);
+        $node->getStmts()[0]
+            ->setAttribute(
+                AttributeKey::COMMENTS,
+                array_merge($node->getComments(), $node->getStmts()[0] ->getComments())
+            );
+        $node->getStmts()[0]
+            ->setAttribute(AttributeKey::HAS_MERGED_COMMENTS, true);
 
-        return $node->stmts;
+        return $node->getStmts();
     }
 
     private function shouldSkipFromVariable(Expr $expr): bool

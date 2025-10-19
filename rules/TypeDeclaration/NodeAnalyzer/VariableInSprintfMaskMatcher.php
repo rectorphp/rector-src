@@ -35,11 +35,7 @@ final readonly class VariableInSprintfMaskMatcher
         string $variableName,
         string $mask
     ): bool {
-        if ($functionLike instanceof ArrowFunction) {
-            $stmts = [$functionLike->expr];
-        } else {
-            $stmts = (array) $functionLike->stmts;
-        }
+        $stmts = $functionLike instanceof ArrowFunction ? [$functionLike->expr] : $functionLike->getStmts();
 
         $funcCalls = $this->betterNodeFinder->findInstancesOfScoped($stmts, FuncCall::class);
         $funcCalls = array_values(

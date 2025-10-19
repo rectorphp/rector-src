@@ -64,7 +64,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?ContainsStmts
     {
-        foreach ((array) $node->stmts as $key => $stmt) {
+        foreach ((array) $node->getStmts() as $key => $stmt) {
             if (! $stmt instanceof If_) {
                 continue;
             }
@@ -77,11 +77,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! isset($node->stmts[$key + 1])) {
+            if (! isset($node->getStmts()[$key + 1])) {
                 return null;
             }
 
-            $nextNode = $node->stmts[$key + 1];
+            $nextNode = $node->getStmts()[$key + 1];
             if (! $nextNode instanceof Return_) {
                 continue;
             }
@@ -91,7 +91,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $insideIfNode = $stmt->stmts[0];
+            $insideIfNode = $stmt->getStmts()[0];
             if (! $nextNode->expr instanceof Expr) {
                 continue;
             }
@@ -100,7 +100,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            unset($node->stmts[$key]);
+            unset($node->getStmts()[$key]);
             $node->stmts[$key + 1] = $insideIfNode;
 
             return $node;

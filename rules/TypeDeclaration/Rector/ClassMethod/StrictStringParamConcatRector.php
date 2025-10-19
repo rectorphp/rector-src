@@ -130,7 +130,7 @@ CODE_SAMPLE
         Param $param,
         ClassMethod|Function_|Closure $functionLike
     ): ?Variable {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return null;
         }
 
@@ -141,7 +141,7 @@ CODE_SAMPLE
         $paramName = $this->getName($param);
         $variableConcatted = null;
 
-        $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($functionLike->getStmts(), function (Node $node) use (
             $paramName,
             &$variableConcatted,
         ): int|null {

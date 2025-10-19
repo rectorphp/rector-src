@@ -267,13 +267,13 @@ CODE_SAMPLE
         }
 
         // has any stmts?
-        if ($parentClassMethod->stmts === null || $parentClassMethod->stmts === []) {
+        if ($parentClassMethod->getStmts() === [] || $parentClassMethod->getStmts() === []) {
             return true;
         }
 
-        if (count($parentClassMethod->stmts) === 1) {
+        if (count($parentClassMethod->getStmts()) === 1) {
             /** @var Stmt $soleStmt */
-            $soleStmt = $parentClassMethod->stmts[0];
+            $soleStmt = $parentClassMethod->getStmts()[0];
             // most likely, return null; is interface to be designed to override
             if ($soleStmt instanceof Return_ && $soleStmt->expr instanceof Expr && $this->valueResolver->isNull(
                 $soleStmt->expr

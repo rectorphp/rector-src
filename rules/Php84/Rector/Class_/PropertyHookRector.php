@@ -111,7 +111,7 @@ CODE_SAMPLE
             );
 
             foreach ($candidateClassMethods as $candidateClassMethod) {
-                if (count((array) $candidateClassMethod->stmts) !== 1) {
+                if (count((array) $candidateClassMethod->getStmts()) !== 1) {
                     continue;
                 }
 

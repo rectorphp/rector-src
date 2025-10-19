@@ -118,7 +118,7 @@ final readonly class UseImportsAdder
     ): bool {
         $namespaceName = $this->getNamespaceName($namespace);
 
-        $existingUsedImports = $this->usedImportsResolver->resolveForStmts($namespace->stmts);
+        $existingUsedImports = $this->usedImportsResolver->resolveForStmts($namespace->getStmts());
         $existingUseImportTypes = $existingUsedImports->getUseImports();
         $existingConstantUseImportTypes = $existingUsedImports->getConstantImports();
         $existingFunctionUseImportTypes = $existingUsedImports->getFunctionImports();
@@ -143,7 +143,7 @@ final readonly class UseImportsAdder
             return false;
         }
 
-        $this->mirrorUseComments($namespace->stmts, $newUses);
+        $this->mirrorUseComments($namespace->getStmts(), $newUses);
 
         $namespace->stmts = array_merge($newUses, $this->resolveInsertNop($namespace), $namespace->stmts);
         $namespace->stmts = array_values($namespace->stmts);
@@ -156,7 +156,7 @@ final readonly class UseImportsAdder
      */
     private function resolveInsertNop(FileWithoutNamespace|Namespace_ $namespace): array
     {
-        $currentStmt = $namespace->stmts[0] ?? null;
+        $currentStmt = $namespace->getStmts()[0] ?? null;
         if (! $currentStmt instanceof Stmt || $currentStmt instanceof Use_ || $currentStmt instanceof GroupUse) {
             return [];
         }

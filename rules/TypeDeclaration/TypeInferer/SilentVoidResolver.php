@@ -119,7 +119,7 @@ final readonly class SilentVoidResolver
     {
         $isFoundLoopControl = false;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $node->stmts,
+            $node->getStmts(),
             static function (Node $subNode) use (&$isFoundLoopControl) {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -145,7 +145,7 @@ final readonly class SilentVoidResolver
             return ! $this->isFoundLoopControl($stmt);
         }
 
-        if (! $this->hasStmtsAlwaysReturnOrExit($stmt->stmts, $withNativeNeverType)) {
+        if (! $this->hasStmtsAlwaysReturnOrExit($stmt->getStmts(), $withNativeNeverType)) {
             return false;
         }
 
@@ -159,7 +159,7 @@ final readonly class SilentVoidResolver
         }
 
         foreach ($stmt->elseifs as $elseIf) {
-            if (! $this->hasStmtsAlwaysReturnOrExit($elseIf->stmts, $withNativeNeverType)) {
+            if (! $this->hasStmtsAlwaysReturnOrExit($elseIf->getStmts(), $withNativeNeverType)) {
                 return false;
             }
         }
@@ -168,11 +168,11 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        if (! $this->hasStmtsAlwaysReturnOrExit($stmt->stmts, $withNativeNeverType)) {
+        if (! $this->hasStmtsAlwaysReturnOrExit($stmt->getStmts(), $withNativeNeverType)) {
             return false;
         }
 
-        return $this->hasStmtsAlwaysReturnOrExit($stmt->else->stmts, $withNativeNeverType);
+        return $this->hasStmtsAlwaysReturnOrExit($stmt->else->getStmts(), $withNativeNeverType);
     }
 
     private function isStopped(Stmt $stmt): bool
@@ -194,7 +194,7 @@ final readonly class SilentVoidResolver
 
         foreach ($switch->cases as $case) {
             if (! $case->cond instanceof Expr) {
-                $hasDefault = $case->stmts !== [];
+                $hasDefault = $case->getStmts() !== [];
                 break;
             }
         }
@@ -205,7 +205,7 @@ final readonly class SilentVoidResolver
 
         $casesWithReturnOrExitCount = $this->resolveReturnOrExitCount($switch, $withNativeNeverType);
 
-        $cases = array_filter($switch->cases, static fn (Case_ $case): bool => $case->stmts !== []);
+        $cases = array_filter($switch->cases, static fn (Case_ $case): bool => $case->getStmts() !== []);
 
         // has same amount of first return or exit nodes as switches
         return count($cases) === $casesWithReturnOrExitCount;
@@ -214,16 +214,16 @@ final readonly class SilentVoidResolver
     private function isTryCatchAlwaysReturnOrExit(TryCatch $tryCatch, bool $withNativeNeverType): bool
     {
         $hasReturnOrExitInFinally = $tryCatch->finally instanceof Finally_ && $this->hasStmtsAlwaysReturnOrExit(
-            $tryCatch->finally->stmts,
+            $tryCatch->finally->getStmts(),
             $withNativeNeverType
         );
 
-        if (! $this->hasStmtsAlwaysReturnOrExit($tryCatch->stmts, $withNativeNeverType)) {
+        if (! $this->hasStmtsAlwaysReturnOrExit($tryCatch->getStmts(), $withNativeNeverType)) {
             return $hasReturnOrExitInFinally;
         }
 
         foreach ($tryCatch->catches as $catch) {
-            if ($this->hasStmtsAlwaysReturnOrExit($catch->stmts, $withNativeNeverType)) {
+            if ($this->hasStmtsAlwaysReturnOrExit($catch->getStmts(), $withNativeNeverType)) {
                 continue;
             }
 
@@ -242,7 +242,7 @@ final readonly class SilentVoidResolver
         $casesWithReturnCount = 0;
 
         foreach ($switch->cases as $case) {
-            if ($this->hasStmtsAlwaysReturnOrExit($case->stmts, $withNativeNeverType)) {
+            if ($this->hasStmtsAlwaysReturnOrExit($case->getStmts(), $withNativeNeverType)) {
                 ++$casesWithReturnCount;
             }
         }

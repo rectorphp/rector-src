@@ -74,13 +74,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === [] || $node->stmts === null) {
+        if ($node->getStmts() === [] || $node->getStmts() === []) {
             return null;
         }
 
-        $lastStmtKey = array_key_last($node->stmts);
+        $lastStmtKey = array_key_last($node->getStmts());
 
-        $lastStmt = $node->stmts[$lastStmtKey];
+        $lastStmt = $node->getStmts()[$lastStmtKey];
 
         if ($lastStmt instanceof If_) {
             if (! $this->isBareIfWithOnlyStmtEmptyReturn($lastStmt)) {
@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        unset($node->stmts[$lastStmtKey]);
+        unset($node->getStmts()[$lastStmtKey]);
         return $node;
     }
 
@@ -113,11 +113,11 @@ CODE_SAMPLE
             return false;
         }
 
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return false;
         }
 
-        $onlyStmt = $if->stmts[0];
+        $onlyStmt = $if->getStmts()[0];
         if (! $onlyStmt instanceof Return_) {
             return false;
         }

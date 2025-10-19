@@ -91,12 +91,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $ifAssignVarExpr = $this->resolveOnlyStmtAssignVar($node->stmts);
+        $ifAssignVarExpr = $this->resolveOnlyStmtAssignVar($node->getStmts());
         if (! $ifAssignVarExpr instanceof Expr) {
             return null;
         }
 
-        $elseAssignExpr = $this->resolveOnlyStmtAssignVar($node->else->stmts);
+        $elseAssignExpr = $this->resolveOnlyStmtAssignVar($node->else->getStmts());
         if (! $elseAssignExpr instanceof Expr) {
             return null;
         }
@@ -105,8 +105,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $ternaryIfExpr = $this->resolveOnlyStmtAssignExpr($node->stmts);
-        $expr = $this->resolveOnlyStmtAssignExpr($node->else->stmts);
+        $ternaryIfExpr = $this->resolveOnlyStmtAssignExpr($node->getStmts());
+        $expr = $this->resolveOnlyStmtAssignExpr($node->else->getStmts());
         if (! $ternaryIfExpr instanceof Expr) {
             return null;
         }

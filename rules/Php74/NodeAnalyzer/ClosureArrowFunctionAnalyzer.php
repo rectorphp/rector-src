@@ -35,11 +35,11 @@ final readonly class ClosureArrowFunctionAnalyzer
 
     public function matchArrowFunctionExpr(Closure $closure): ?Expr
     {
-        if (count($closure->stmts) !== 1) {
+        if (count($closure->getStmts()) !== 1) {
             return null;
         }
 
-        $onlyStmt = $closure->stmts[0];
+        $onlyStmt = $closure->getStmts()[0];
         if (! $onlyStmt instanceof Return_) {
             return null;
         }

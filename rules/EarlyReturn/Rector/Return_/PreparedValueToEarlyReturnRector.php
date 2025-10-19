@@ -95,7 +95,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?ContainsStmts
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -185,11 +185,11 @@ CODE_SAMPLE
      * @param If_[] $ifs
      * @return BareSingleAssignIf[]
      */
-    private function getMatchingBareSingleAssignIfs(array $ifs, ContainsStmts $stmtsAware): array
+    private function getMatchingBareSingleAssignIfs(array $ifs, ContainsStmts $containsStmts): array
     {
         $bareSingleAssignIfs = [];
         foreach ($ifs as $key => $if) {
-            $bareSingleAssignIf = $this->matchBareSingleAssignIf($if, $key, $stmtsAware);
+            $bareSingleAssignIf = $this->matchBareSingleAssignIf($if, $key, $containsStmts);
 
             if (! $bareSingleAssignIf instanceof BareSingleAssignIf) {
                 return [];
@@ -233,18 +233,18 @@ CODE_SAMPLE
         return true;
     }
 
-    private function matchBareSingleAssignIf(Stmt $stmt, int $key, ContainsStmts $stmtsAware): ?BareSingleAssignIf
+    private function matchBareSingleAssignIf(Stmt $stmt, int $key, ContainsStmts $containsStmts): ?BareSingleAssignIf
     {
         if (! $stmt instanceof If_) {
             return null;
         }
 
         // is exactly single stmt
-        if (count($stmt->stmts) !== 1) {
+        if (count($stmt->getStmts()) !== 1) {
             return null;
         }
 
-        $onlyStmt = $stmt->stmts[0];
+        $onlyStmt = $stmt->getStmts()[0];
         if (! $onlyStmt instanceof Expression) {
             return null;
         }
@@ -258,15 +258,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($stmtsAware->stmts[$key + 1])) {
+        if (! isset($containsStmts->getStmts()[$key + 1])) {
             return null;
         }
 
-        if ($stmtsAware->stmts[$key + 1] instanceof If_) {
+        if ($containsStmts->getStmts()[$key + 1] instanceof If_) {
             return new BareSingleAssignIf($stmt, $expression->expr);
         }
 
-        if ($stmtsAware->stmts[$key + 1] instanceof Return_) {
+        if ($containsStmts->getStmts()[$key + 1] instanceof Return_) {
             return new BareSingleAssignIf($stmt, $expression->expr);
         }
 
@@ -277,14 +277,14 @@ CODE_SAMPLE
      * @param BareSingleAssignIf[] $bareSingleAssignIfs
      */
     private function refactorToDirectReturns(
-        ContainsStmts $stmtsAware,
+        ContainsStmts $containsStmts,
         int $initialAssignPosition,
         array $bareSingleAssignIfs,
         Assign $initialAssign,
         Return_ $return
     ): ContainsStmts {
         // 1. remove initial assign
-        unset($stmtsAware->stmts[$initialAssignPosition]);
+        unset($containsStmts->getStmts()[$initialAssignPosition]);
 
         // 2. make ifs early return
         foreach ($bareSingleAssignIfs as $bareSingleAssignIf) {
@@ -295,6 +295,6 @@ CODE_SAMPLE
         // 3. make return default value
         $return->expr = $initialAssign->expr;
 
-        return $stmtsAware;
+        return $containsStmts;
     }
 }

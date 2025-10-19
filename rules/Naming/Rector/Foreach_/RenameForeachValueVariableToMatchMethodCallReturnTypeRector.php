@@ -90,13 +90,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
         $hasRenamed = false;
         $this->traverseNodesWithCallable(
-            $node->stmts,
+            $node->getStmts(),
             function (Node $subNode) use ($node, &$hasRenamed): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Closure || $subNode instanceof Function_) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;

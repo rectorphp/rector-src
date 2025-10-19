@@ -104,12 +104,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
         $hasChanged = false;
-        foreach ($node->stmts as $stmt) {
+        foreach ($node->getStmts() as $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
             }

@@ -72,7 +72,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
      */
     public function refactor(Node $node): null|Node|int
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -126,22 +126,22 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         $this->wrapFuncCallWithPhpVersionIdCheckers = $configuration;
     }
 
-    private function isWrappedFuncCall(ContainsStmts $stmtsAware): bool
+    private function isWrappedFuncCall(ContainsStmts $containsStmts): bool
     {
-        if (! $stmtsAware instanceof If_) {
+        if (! $containsStmts instanceof If_) {
             return false;
         }
 
-        $phpVersionId = $this->getPhpVersionId($stmtsAware->cond);
+        $phpVersionId = $this->getPhpVersionId($containsStmts->cond);
         if (! $phpVersionId instanceof Int_) {
             return false;
         }
 
-        if (count($stmtsAware->stmts) !== 1) {
+        if (count($containsStmts->getStmts()) !== 1) {
             return false;
         }
 
-        $childStmt = $stmtsAware->stmts[0];
+        $childStmt = $containsStmts->getStmts()[0];
 
         if (! $childStmt instanceof Expression || ! $childStmt->expr instanceof FuncCall) {
             return false;

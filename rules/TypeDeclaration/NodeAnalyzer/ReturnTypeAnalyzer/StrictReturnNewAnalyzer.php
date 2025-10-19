@@ -32,7 +32,7 @@ final readonly class StrictReturnNewAnalyzer
 
     public function matchAlwaysReturnVariableNew(ClassMethod|Function_ $functionLike): ?string
     {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return null;
         }
 
@@ -93,7 +93,7 @@ final readonly class StrictReturnNewAnalyzer
         $createdVariablesToTypes = [];
 
         // what new is assigned to it?
-        foreach ((array) $functionLike->stmts as $stmt) {
+        foreach ($functionLike->getStmts() as $stmt) {
             $assignToVariable = $this->matchAssignToVariable($stmt);
             if (! $assignToVariable instanceof AssignToVariable) {
                 continue;

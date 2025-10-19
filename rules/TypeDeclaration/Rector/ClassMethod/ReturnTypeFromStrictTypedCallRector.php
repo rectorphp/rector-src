@@ -112,7 +112,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 

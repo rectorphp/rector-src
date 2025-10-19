@@ -107,7 +107,7 @@ CODE_SAMPLE
         }
 
         /** @var Foreach_ $foreach */
-        $foreach = $if->stmts[0];
+        $foreach = $if->getStmts()[0];
         $foreachExpr = $foreach->expr;
 
         if ($this->shouldSkipForeachExpr($foreachExpr, $scope)) {
@@ -151,24 +151,24 @@ CODE_SAMPLE
         return $this->countManipulator->isCounterHigherThanOne($booleanAnd->right, $foreachExpr);
     }
 
-    private function refactorStmtsAware(ContainsStmts $stmtsAware): ?ContainsStmts
+    private function refactorStmtsAware(ContainsStmts $containsStmts): ?ContainsStmts
     {
-        if ($stmtsAware->stmts === null) {
+        if ($containsStmts->getStmts() === []) {
             return null;
         }
 
-        foreach ($stmtsAware->stmts as $key => $stmt) {
+        foreach ($containsStmts->stmts as $key => $stmt) {
             if (! $stmt instanceof Foreach_) {
                 continue;
             }
 
-            $previousStmt = $stmtsAware->stmts[$key - 1] ?? null;
+            $previousStmt = $containsStmts->stmts[$key - 1] ?? null;
             if (! $previousStmt instanceof If_) {
                 continue;
             }
 
             // not followed by any stmts
-            $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
+            $nextStmt = $containsStmts->stmts[$key + 1] ?? null;
             if ($nextStmt instanceof Stmt) {
                 continue;
             }
@@ -193,8 +193,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            unset($stmtsAware->stmts[$key - 1]);
-            return $stmtsAware;
+            unset($containsStmts->stmts[$key - 1]);
+            return $containsStmts;
         }
 
         return null;
@@ -207,7 +207,7 @@ CODE_SAMPLE
         }
 
         /** @var Foreach_ $stmt */
-        $stmt = $if->stmts[0];
+        $stmt = $if->getStmts()[0];
 
         $ifComments = $if->getAttribute(AttributeKey::COMMENTS) ?? [];
         $stmtComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];

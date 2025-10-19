@@ -23,11 +23,11 @@ final readonly class GetterClassMethodPropertyFinder
     public function find(ClassMethod $classMethod, Class_ $class): Property|Param|null
     {
         // we need exactly one statement of return
-        if ($classMethod->stmts === null || count($classMethod->stmts) !== 1) {
+        if ($classMethod->getStmts() === [] || count($classMethod->getStmts()) !== 1) {
             return null;
         }
 
-        $onlyStmt = $classMethod->stmts[0];
+        $onlyStmt = $classMethod->getStmts()[0];
         if (! $onlyStmt instanceof Return_) {
             return null;
         }

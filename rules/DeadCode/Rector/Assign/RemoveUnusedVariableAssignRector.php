@@ -81,7 +81,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|ClassMethod|Function_
     {
-        $stmts = $node->stmts;
+        $stmts = $node->getStmts();
         if ($stmts === null || $stmts === []) {
             return null;
         }
@@ -113,7 +113,7 @@ CODE_SAMPLE
                 $this->mirrorComments($newExpression, $currentStmt);
                 $node->stmts[$stmtPosition] = $newExpression;
             } else {
-                unset($node->stmts[$stmtPosition]);
+                unset($node->getStmts()[$stmtPosition]);
             }
 
             $hasChanged = true;

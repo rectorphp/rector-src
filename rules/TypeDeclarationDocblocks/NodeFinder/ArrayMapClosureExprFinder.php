@@ -26,12 +26,12 @@ final readonly class ArrayMapClosureExprFinder
      */
     public function findByVariableName(ClassMethod|Function_ $functionLike, string $variableName): array
     {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return [];
         }
 
         /** @var FuncCall[] $funcCalls */
-        $funcCalls = $this->betterNodeFinder->findInstancesOfScoped($functionLike->stmts, FuncCall::class);
+        $funcCalls = $this->betterNodeFinder->findInstancesOfScoped($functionLike->getStmts(), FuncCall::class);
 
         $arrayMapClosures = [];
 

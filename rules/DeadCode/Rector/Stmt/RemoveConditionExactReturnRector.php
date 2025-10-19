@@ -75,7 +75,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -133,11 +133,11 @@ CODE_SAMPLE
 
     private function matchSoleIfReturn(If_ $if): ?Return_
     {
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return null;
         }
 
-        $soleIfStmt = $if->stmts[0];
+        $soleIfStmt = $if->getStmts()[0];
         if (! $soleIfStmt instanceof Return_) {
             return null;
         }

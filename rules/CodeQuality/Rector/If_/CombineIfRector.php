@@ -80,7 +80,7 @@ CODE_SAMPLE
         }
 
         /** @var If_ $subIf */
-        $subIf = $node->stmts[0];
+        $subIf = $node->getStmts()[0];
 
         if ($this->hasVarTag($subIf)) {
             return null;
@@ -117,7 +117,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return true;
         }
 
@@ -125,15 +125,16 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $if->stmts[0] instanceof If_) {
+        if (! $if->getStmts()[0] instanceof If_) {
             return true;
         }
 
-        if ($if->stmts[0]->else instanceof Else_) {
+        if ($if->getStmts()[0]->else instanceof Else_) {
             return true;
         }
 
-        return (bool) $if->stmts[0]->elseifs;
+        return (bool) $if->getStmts()[0]
+            ->elseifs;
     }
 
     private function hasVarTag(If_ $if): bool

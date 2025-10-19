@@ -101,7 +101,7 @@ CODE_SAMPLE
     {
         $node = clone $if;
         /** @var Continue_ $continue */
-        $continue = $if->stmts[0];
+        $continue = $if->getStmts()[0];
         $ifs = $this->createMultipleIfs($if->cond, $continue, []);
 
         // ensure ifs not removed by other rules

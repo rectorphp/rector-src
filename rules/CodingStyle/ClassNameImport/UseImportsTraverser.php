@@ -27,7 +27,7 @@ final readonly class UseImportsTraverser
     {
         foreach ($stmts as $stmt) {
             if ($stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace) {
-                $this->traverserStmts($stmt->stmts, $callable);
+                $this->traverserStmts($stmt->getStmts(), $callable);
                 continue;
             }
 

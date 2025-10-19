@@ -128,11 +128,11 @@ CODE_SAMPLE
             return false;
         }
 
-        if (count((array) $classMethod->stmts) !== 1) {
+        if (count($classMethod->getStmts()) !== 1) {
             return false;
         }
 
-        $onlyStmt = $classMethod->stmts[0] ?? null;
+        $onlyStmt = $classMethod->getStmts()[0] ?? null;
         return $onlyStmt instanceof Expression && $onlyStmt->expr instanceof Throw_;
     }
 
@@ -142,6 +142,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return $classMethod->stmts === [];
+        return $classMethod->getStmts() === [];
     }
 }

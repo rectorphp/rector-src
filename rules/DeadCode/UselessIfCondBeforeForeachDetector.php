@@ -39,15 +39,15 @@ final readonly class UselessIfCondBeforeForeachDetector
             return false;
         }
 
-        if ($if->stmts === []) {
+        if ($if->getStmts() === []) {
             return true;
         }
 
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return false;
         }
 
-        $stmt = $if->stmts[0];
+        $stmt = $if->getStmts()[0];
         return $stmt instanceof Return_ && ! $stmt->expr instanceof Expr;
     }
 

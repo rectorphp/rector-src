@@ -24,9 +24,9 @@ final class PropertyHookFactory
             return null;
         }
 
-        Assert::notNull($classMethod->stmts);
+        Assert::notNull($classMethod->getStmts());
 
-        $soleStmt = $classMethod->stmts[0];
+        $soleStmt = $classMethod->getStmts()[0];
 
         // use sole Expr
         if (($soleStmt instanceof Expression || $soleStmt instanceof Return_) && $methodName !== 'set') {

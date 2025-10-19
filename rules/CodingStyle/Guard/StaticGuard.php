@@ -28,7 +28,7 @@ final readonly class StaticGuard
         }
 
         $nodes = $node instanceof Closure
-            ? $node->stmts
+            ? $node->getStmts()
             : [$node->expr];
 
         return ! (bool) $this->betterNodeFinder->findFirst(

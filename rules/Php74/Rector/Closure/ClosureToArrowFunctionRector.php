@@ -86,9 +86,10 @@ CODE_SAMPLE
             $arrowFunction->static = true;
         }
 
-        $comments = $node->stmts[0]->getAttribute(AttributeKey::COMMENTS) ?? [];
+        $comments = $node->getStmts()[0]
+            ->getAttribute(AttributeKey::COMMENTS) ?? [];
         if ($comments !== []) {
-            $this->mirrorComments($arrowFunction->expr, $node->stmts[0]);
+            $this->mirrorComments($arrowFunction->expr, $node->getStmts()[0]);
             $arrowFunction->setAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED, true);
         }
 

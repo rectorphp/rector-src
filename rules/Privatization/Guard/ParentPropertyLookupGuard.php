@@ -77,7 +77,7 @@ final readonly class ParentPropertyLookupGuard
 
         $methods = $classLike->getMethods();
         foreach ($methods as $method) {
-            $isFound = $this->isFoundInMethodStmts((array) $method->stmts, $propertyName, $className);
+            $isFound = $this->isFoundInMethodStmts((array) $method->getStmts(), $propertyName, $className);
             if ($isFound) {
                 return true;
             }

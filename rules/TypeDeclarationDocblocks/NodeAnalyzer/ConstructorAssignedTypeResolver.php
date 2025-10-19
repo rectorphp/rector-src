@@ -30,11 +30,11 @@ final readonly class ConstructorAssignedTypeResolver
             return null;
         }
 
-        if ($constructorClassMethod->stmts === null) {
+        if ($constructorClassMethod->getStmts() === []) {
             return null;
         }
 
-        $assigns = $this->betterNodeFinder->findInstancesOfScoped($constructorClassMethod->stmts, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstancesOfScoped($constructorClassMethod->getStmts(), Assign::class);
         foreach ($assigns as $assign) {
             if (! $assign->var instanceof PropertyFetch) {
                 continue;

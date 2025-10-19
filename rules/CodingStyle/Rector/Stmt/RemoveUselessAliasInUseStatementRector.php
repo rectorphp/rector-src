@@ -51,7 +51,7 @@ CODE_SAMPLE
     public function refactor(Node $node): null|FileWithoutNamespace|Namespace_
     {
         $hasChanged = false;
-        foreach ($node->stmts as $stmt) {
+        foreach ($node->getStmts() as $stmt) {
             if (! $stmt instanceof Use_) {
                 continue;
             }

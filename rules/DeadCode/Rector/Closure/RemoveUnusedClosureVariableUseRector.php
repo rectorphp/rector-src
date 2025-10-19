@@ -75,7 +75,7 @@ CODE_SAMPLE
             }
 
             $isUseUsed = (bool) $this->betterNodeFinder->findFirst(
-                $node->stmts,
+                $node->getStmts(),
                 fn (Node $subNode): bool => $this->exprUsedInNodeAnalyzer->isUsed($subNode, $useVariable->var)
             );
             if ($isUseUsed) {

@@ -75,8 +75,8 @@ CODE_SAMPLE
                 break;
             }
 
-            $currentPrintedCatch = $this->betterStandardPrinter->print($catch->stmts);
-            $nextPrintedCatch = $this->betterStandardPrinter->print($node->catches[$key + 1]->stmts);
+            $currentPrintedCatch = $this->betterStandardPrinter->print($catch->getStmts());
+            $nextPrintedCatch = $this->betterStandardPrinter->print($node->catches[$key + 1]->getStmts());
 
             // already duplicated catch → remove it and join the type
             if ($currentPrintedCatch === $nextPrintedCatch) {

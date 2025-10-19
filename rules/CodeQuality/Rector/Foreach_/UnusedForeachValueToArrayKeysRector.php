@@ -79,7 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $stmts = $node->stmts;
+        $stmts = $node->getStmts();
 
         if ($stmts === null) {
             return null;
@@ -203,7 +203,7 @@ CODE_SAMPLE
     private function isVariableUsedInForeach(Variable $variable, Foreach_ $foreach): bool
     {
         return (bool) $this->betterNodeFinder->findFirst(
-            $foreach->stmts,
+            $foreach->getStmts(),
             fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
         );
     }

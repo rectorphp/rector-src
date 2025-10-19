@@ -25,7 +25,7 @@ final readonly class StrictNativeFunctionReturnTypeAnalyzer
      */
     public function matchAlwaysReturnNativeCallLikes(ClassMethod|Function_ $functionLike): ?array
     {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return null;
         }
 

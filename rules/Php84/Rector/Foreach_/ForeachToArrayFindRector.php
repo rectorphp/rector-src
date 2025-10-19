@@ -72,7 +72,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -162,20 +162,20 @@ CODE_SAMPLE
 
     private function isValidForeachStructure(Foreach_ $foreach, Variable $assignedVariable): bool
     {
-        if (count($foreach->stmts) !== 1) {
+        if (count($foreach->getStmts()) !== 1) {
             return false;
         }
 
-        $firstStmt = $foreach->stmts[0];
+        $firstStmt = $foreach->getStmts()[0];
         if (
             ! $firstStmt instanceof If_ ||
-            count($firstStmt->stmts) !== 2
+            count($firstStmt->getStmts()) !== 2
         ) {
             return false;
         }
 
-        $assignmentStmt = $firstStmt->stmts[0];
-        $breakStmt = $firstStmt->stmts[1];
+        $assignmentStmt = $firstStmt->getStmts()[0];
+        $breakStmt = $firstStmt->getStmts()[1];
 
         if (
             ! $assignmentStmt instanceof Expression ||

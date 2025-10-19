@@ -84,13 +84,13 @@ CODE_SAMPLE
             return $this->refactorClass($node);
         }
 
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
         $hasChanged = false;
         $this->traverseNodesWithCallable(
-            $node->stmts,
+            $node->getStmts(),
             function (Node $subNode) use (&$hasChanged, $node): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -173,7 +173,7 @@ CODE_SAMPLE
         Variable $variable,
         Namespace_|FileWithoutNamespace|ClassMethod|Function_|Closure $node
     ): array {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return [];
         }
 
@@ -184,7 +184,7 @@ CODE_SAMPLE
 
         $assignedArrayDimFetches = [];
 
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($node->getStmts(), function (Node $node) use (
             $variable,
             $variableName,
             &$assignedArrayDimFetches

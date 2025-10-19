@@ -124,7 +124,7 @@ CODE_SAMPLE
     private function getAssignsOfNew(ClassMethod $classMethod): array
     {
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $classMethod->stmts, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf($classMethod->getStmts(), Assign::class);
 
         return array_filter($assigns, static fn (Assign $assign): bool => $assign->expr instanceof New_);
     }

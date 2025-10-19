@@ -80,7 +80,10 @@ final readonly class SwitchAnalyzer
                 continue;
             }
 
-            $stmtsWithoutBreak = array_filter($case->stmts, static fn (Node $node): bool => ! $node instanceof Break_);
+            $stmtsWithoutBreak = array_filter(
+                $case->getStmts(),
+                static fn (Node $node): bool => ! $node instanceof Break_
+            );
 
             if (count($stmtsWithoutBreak) !== 1) {
                 return false;
@@ -95,7 +98,7 @@ final readonly class SwitchAnalyzer
         foreach ($switch->cases as $case) {
             if (! $case->cond instanceof Expr) {
                 $stmtsWithoutBreak = array_filter(
-                    $case->stmts,
+                    $case->getStmts(),
                     static fn (Node $node): bool => ! $node instanceof Break_
                 );
                 return count($stmtsWithoutBreak) === 1;
@@ -107,11 +110,11 @@ final readonly class SwitchAnalyzer
 
     private function hasBreakOrReturnOrEmpty(Case_ $case): bool
     {
-        if ($case->stmts === []) {
+        if ($case->getStmts() === []) {
             return true;
         }
 
-        foreach ($case->stmts as $caseStmt) {
+        foreach ($case->getStmts() as $caseStmt) {
             if ($caseStmt instanceof Break_) {
                 return true;
             }
@@ -126,7 +129,7 @@ final readonly class SwitchAnalyzer
 
     private function containsCaseReturn(Case_ $case): bool
     {
-        foreach ($case->stmts as $stmt) {
+        foreach ($case->getStmts() as $stmt) {
             if ($stmt instanceof Return_) {
                 return true;
             }

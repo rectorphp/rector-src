@@ -81,7 +81,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $stmts = (array) $node->stmts;
+        $stmts = (array) $node->getStmts();
 
         foreach ($stmts as $key => $stmt) {
             $returnVariable = $this->matchNextStmtReturnVariable($node, $key);
@@ -92,18 +92,18 @@ CODE_SAMPLE
             if ($stmt instanceof If_ && ! $stmt->else instanceof Else_ && $stmt->elseifs === []) {
                 // is single condition if
                 $if = $stmt;
-                if (count($if->stmts) !== 1) {
+                if (count($if->getStmts()) !== 1) {
                     continue;
                 }
 
-                $onlyIfStmt = $if->stmts[0];
+                $onlyIfStmt = $if->getStmts()[0];
                 $assignedExpr = $this->matchOnlyIfStmtReturnExpr($onlyIfStmt, $returnVariable);
                 if (! $assignedExpr instanceof Expr) {
                     continue;
                 }
 
                 $if->stmts[0] = new Return_($assignedExpr);
-                $this->mirrorComments($if->stmts[0], $onlyIfStmt);
+                $this->mirrorComments($if->getStmts()[0], $onlyIfStmt);
 
                 return $node;
             }
@@ -150,9 +150,9 @@ CODE_SAMPLE
         return $assign->expr;
     }
 
-    private function matchNextStmtReturnVariable(ContainsStmts $stmtsAware, int $key): Variable|null
+    private function matchNextStmtReturnVariable(ContainsStmts $containsStmts, int $key): Variable|null
     {
-        $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
+        $nextStmt = $containsStmts->getStmts()[$key + 1] ?? null;
 
         // last item → stop
         if (! $nextStmt instanceof Stmt) {

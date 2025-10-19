@@ -18,14 +18,14 @@ final class ExistingAssertStaticCallResolver
      */
     public function resolve(ClassMethod $classMethod): array
     {
-        if ($classMethod->stmts === null) {
+        if ($classMethod->getStmts() === []) {
             return [];
         }
 
         $existingAssertCallHashes = [];
         $standard = new Standard();
 
-        foreach ($classMethod->stmts as $currentStmt) {
+        foreach ($classMethod->getStmts() as $currentStmt) {
             if (! $currentStmt instanceof Expression) {
                 continue;
             }

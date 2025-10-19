@@ -22,7 +22,7 @@ final readonly class ReturnAnalyzer
      */
     public function hasOnlyReturnWithExpr(ClassMethod|Function_ $functionLike, array $returns): bool
     {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return false;
         }
 

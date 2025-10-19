@@ -73,7 +73,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -135,10 +135,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return null;
         }
 
-        return $if->stmts[0];
+        return $if->getStmts()[0];
     }
 }

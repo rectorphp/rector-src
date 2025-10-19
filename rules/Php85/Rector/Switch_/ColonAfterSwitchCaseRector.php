@@ -65,12 +65,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (count($case->stmts) === 0) {
+            if (count($case->getStmts()) === 0) {
                 $startCaseStmtsPos = isset($node->cases[$key + 1])
                     ? $node->cases[$key + 1]->getStartTokenPos()
                     : $node->getEndTokenPos();
             } else {
-                $startCaseStmtsPos = $case->stmts[0]->getStartTokenPos();
+                $startCaseStmtsPos = $case->getStmts()[0]
+                    ->getStartTokenPos();
             }
 
             if ($startCaseStmtsPos < 0) {

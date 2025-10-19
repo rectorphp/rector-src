@@ -113,19 +113,19 @@ CODE_SAMPLE
         if ($instanceof->expr instanceof Assign) {
             $instanceof->expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, false);
             $assignExpression = new Expression($instanceof->expr);
-            return array_merge([$assignExpression], $if->stmts);
+            return array_merge([$assignExpression], $if->getStmts());
         }
 
         if ($if->cond !== $instanceof) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        if ($if->stmts === []) {
+        if ($if->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
         // unwrap stmts
-        return $if->stmts;
+        return $if->getStmts();
     }
 
     private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool

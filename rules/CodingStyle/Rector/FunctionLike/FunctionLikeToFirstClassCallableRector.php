@@ -116,11 +116,12 @@ CODE_SAMPLE
     private function extractCallLike(Closure|ArrowFunction $node): FuncCall|MethodCall|StaticCall|null
     {
         if ($node instanceof Closure) {
-            if (count($node->stmts) !== 1 || ! $node->stmts[0] instanceof Return_) {
+            if (count($node->getStmts()) !== 1 || ! $node->getStmts()[0] instanceof Return_) {
                 return null;
             }
 
-            $callLike = $node->stmts[0]->expr;
+            $callLike = $node->getStmts()[0]
+                ->expr;
         } else {
             $callLike = $node->expr;
         }

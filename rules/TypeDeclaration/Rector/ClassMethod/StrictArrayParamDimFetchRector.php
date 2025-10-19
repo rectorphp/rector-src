@@ -124,14 +124,14 @@ CODE_SAMPLE
 
     private function isParamAccessedArrayDimFetch(Param $param, ClassMethod|Function_|Closure $functionLike): bool
     {
-        if ($functionLike->stmts === null) {
+        if ($functionLike->getStmts() === []) {
             return false;
         }
 
         $paramName = $this->getName($param);
 
         $isParamAccessedArrayDimFetch = false;
-        $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($functionLike->getStmts(), function (Node $node) use (
             $paramName,
             &$isParamAccessedArrayDimFetch,
         ): int|null {

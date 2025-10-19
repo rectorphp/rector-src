@@ -58,8 +58,8 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $modified = false;
-        while ($this->canRemoveLastStatement($node->stmts)) {
-            array_pop($node->stmts);
+        while ($this->canRemoveLastStatement($node->getStmts())) {
+            array_pop($node->getStmts());
             $modified = true;
         }
 

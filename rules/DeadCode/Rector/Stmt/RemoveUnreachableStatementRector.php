@@ -64,17 +64,17 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
         // at least 2 items are needed
-        if (count($node->stmts) < 2) {
+        if (count($node->getStmts()) < 2) {
             return null;
         }
 
-        $originalStmts = $node->stmts;
-        $cleanedStmts = $this->processCleanUpUnreachableStmts($node, $node->stmts);
+        $originalStmts = $node->getStmts();
+        $cleanedStmts = $this->processCleanUpUnreachableStmts($node, $node->getStmts());
 
         if ($cleanedStmts === $originalStmts) {
             return null;
@@ -88,7 +88,7 @@ CODE_SAMPLE
      * @param Stmt[] $stmts
      * @return Stmt[]
      */
-    private function processCleanUpUnreachableStmts(ContainsStmts $stmtsAware, array $stmts): array
+    private function processCleanUpUnreachableStmts(ContainsStmts $containsStmts, array $stmts): array
     {
         foreach ($stmts as $key => $stmt) {
             if (! isset($stmts[$key - 1])) {
@@ -99,7 +99,7 @@ CODE_SAMPLE
 
             // unset...
 
-            if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($stmtsAware, $previousStmt, $stmt)) {
+            if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($containsStmts, $previousStmt, $stmt)) {
                 array_splice($stmts, $key);
                 return $stmts;
             }

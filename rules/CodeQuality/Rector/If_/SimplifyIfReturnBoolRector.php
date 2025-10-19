@@ -71,7 +71,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -128,7 +128,7 @@ CODE_SAMPLE
         }
 
         /** @var Return_ $ifInnerNode */
-        $ifInnerNode = $if->stmts[0];
+        $ifInnerNode = $if->getStmts()[0];
 
         /** @var Expr $returnedExpr */
         $returnedExpr = $ifInnerNode->expr;
@@ -196,7 +196,7 @@ CODE_SAMPLE
 
     private function isIfWithSingleReturnExpr(If_ $if): bool
     {
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return false;
         }
 
@@ -204,7 +204,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $ifInnerNode = $if->stmts[0];
+        $ifInnerNode = $if->getStmts()[0];
         if (! $ifInnerNode instanceof Return_) {
             return false;
         }

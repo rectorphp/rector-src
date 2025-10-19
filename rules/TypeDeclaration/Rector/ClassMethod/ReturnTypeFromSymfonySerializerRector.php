@@ -81,7 +81,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -94,16 +94,17 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($node->stmts) !== 1) {
+        if (count($node->getStmts()) !== 1) {
             return null;
         }
 
-        if (! $node->stmts[0] instanceof Return_ || ! $node->stmts[0]->expr instanceof MethodCall) {
+        if (! $node->getStmts()[0] instanceof Return_ || ! $node->getStmts()[0]->expr instanceof MethodCall) {
             return null;
         }
 
         /** @var MethodCall $returnExpr */
-        $returnExpr = $node->stmts[0]->expr;
+        $returnExpr = $node->getStmts()[0]
+            ->expr;
         if (! $this->isName($returnExpr->name, 'deserialize')) {
             return null;
         }

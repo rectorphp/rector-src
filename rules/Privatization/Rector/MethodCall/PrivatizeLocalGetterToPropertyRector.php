@@ -138,7 +138,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $stmts = (array) $classMethod->stmts;
+        $stmts = $classMethod->getStmts();
         if (count($stmts) !== 1) {
             return null;
         }

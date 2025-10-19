@@ -77,7 +77,7 @@ CODE_SAMPLE
             return $this->refactorIf($node);
         }
 
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -167,11 +167,11 @@ CODE_SAMPLE
         }
 
         $binaryOp = $if->cond;
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return null;
         }
 
-        $onlyStmt = $if->stmts[0];
+        $onlyStmt = $if->getStmts()[0];
         if (! $onlyStmt instanceof Return_) {
             return null;
         }
@@ -207,11 +207,11 @@ CODE_SAMPLE
 
     private function matchElseOnlyStmtTernary(Else_ $else): Ternary|null
     {
-        if (count($else->stmts) !== 1) {
+        if (count($else->getStmts()) !== 1) {
             return null;
         }
 
-        $onlyElseStmt = $else->stmts[0];
+        $onlyElseStmt = $else->getStmts()[0];
         if (! $onlyElseStmt instanceof Return_) {
             return null;
         }

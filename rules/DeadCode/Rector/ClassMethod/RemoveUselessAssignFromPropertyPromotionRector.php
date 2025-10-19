@@ -66,7 +66,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === null || $node->stmts == []) {
+        if ($node->getStmts() === [] || $node->getStmts() == []) {
             return null;
         }
 
@@ -128,7 +128,7 @@ CODE_SAMPLE
         }
 
         foreach ($removeStmtKeys as $removeStmtKey) {
-            unset($node->stmts[$removeStmtKey]);
+            unset($node->getStmts()[$removeStmtKey]);
         }
 
         return $node;

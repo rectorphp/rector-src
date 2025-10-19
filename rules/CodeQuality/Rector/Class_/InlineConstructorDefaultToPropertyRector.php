@@ -81,7 +81,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($constructClassMethod->stmts === null) {
+        if ($constructClassMethod->getStmts() === []) {
             return null;
         }
 
@@ -182,14 +182,14 @@ CODE_SAMPLE
                     AttributeKey::COMMENTS,
                     array_merge(
                         $classStmt->getComments(),
-                        isset($constructClassMethod->stmts[$key])
-                            ? $constructClassMethod->stmts[$key]->getComments()
+                        isset($constructClassMethod->getStmts()[$key])
+                            ? $constructClassMethod->getStmts()[$key]->getComments()
                             : [],
                     )
                 );
 
                 // remove assign
-                unset($constructClassMethod->stmts[$key]);
+                unset($constructClassMethod->getStmts()[$key]);
 
                 return true;
             }

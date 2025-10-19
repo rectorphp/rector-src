@@ -91,7 +91,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -100,7 +100,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $this->traverseNodesWithCallable($node->stmts, function (Node $subNode) use (
+        $this->traverseNodesWithCallable($node->getStmts(), function (Node $subNode) use (
             &$hasChanged
         ): int|null|array|Return_ {
             if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {

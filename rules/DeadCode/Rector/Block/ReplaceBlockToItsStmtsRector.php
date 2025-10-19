@@ -56,10 +56,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): int|array
     {
-        if ($node->stmts === []) {
+        if ($node->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        return $node->stmts;
+        return $node->getStmts();
     }
 }

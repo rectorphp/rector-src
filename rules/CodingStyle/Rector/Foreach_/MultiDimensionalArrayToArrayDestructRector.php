@@ -110,7 +110,7 @@ CODE_SAMPLE
         $usedVariableNames = $this->getUsedVariableNamesInForeachTree($foreach);
         $createdDestructedVariables = [];
 
-        $this->traverseNodesWithCallable($foreach->stmts, function (Node $traverseNode) use (
+        $this->traverseNodesWithCallable($foreach->getStmts(), function (Node $traverseNode) use (
             $foreach,
             $usedVariableNames,
             &$createdDestructedVariables

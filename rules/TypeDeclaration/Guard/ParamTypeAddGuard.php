@@ -32,7 +32,7 @@ final readonly class ParamTypeAddGuard
         $isLegal = true;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $classMethod->stmts,
+            $classMethod->getStmts(),
             function (Node $subNode) use (&$isLegal, $paramName): ?int {
                 if ($subNode instanceof Assign && $subNode->var instanceof Variable && $this->nodeNameResolver->isName(
                     $subNode->var,

@@ -108,30 +108,30 @@ CODE_SAMPLE
         return PolyfillPackage::PHP_73;
     }
 
-    private function processArrayKeyFirstLast(ContainsStmts $stmtsAware, int $jumpToKey = 0): ?ContainsStmts
+    private function processArrayKeyFirstLast(ContainsStmts $containsStmts, int $jumpToKey = 0): ?ContainsStmts
     {
-        if ($stmtsAware->stmts === null) {
+        if ($containsStmts->getStmts() === []) {
             return null;
         }
 
         /** @var int $totalKeys */
-        $totalKeys = array_key_last($stmtsAware->stmts);
+        $totalKeys = array_key_last($containsStmts->getStmts());
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
-            if (! isset($stmtsAware->stmts[$key], $stmtsAware->stmts[$key + 1])) {
+            if (! isset($containsStmts->getStmts()[$key], $containsStmts->getStmts()[$key + 1])) {
                 break;
             }
 
-            if (! $stmtsAware->stmts[$key] instanceof Expression) {
+            if (! $containsStmts->getStmts()[$key] instanceof Expression) {
                 continue;
             }
 
             /** @var Expression $stmt */
-            $stmt = $stmtsAware->stmts[$key];
+            $stmt = $containsStmts->getStmts()[$key];
             if ($this->shouldSkip($stmt)) {
                 continue;
             }
 
-            $nextStmt = $stmtsAware->stmts[$key + 1];
+            $nextStmt = $containsStmts->getStmts()[$key + 1];
 
             /** @var FuncCall $resetOrEndFuncCall */
             $resetOrEndFuncCall = $stmt->expr;
@@ -141,7 +141,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->hasInternalPointerChangeNext($stmtsAware, $key + 1, $totalKeys, $keyFuncCall)) {
+            if ($this->hasInternalPointerChangeNext($containsStmts, $key + 1, $totalKeys, $keyFuncCall)) {
                 continue;
             }
 
@@ -152,36 +152,36 @@ CODE_SAMPLE
             $newName = self::PREVIOUS_TO_NEW_FUNCTIONS[$this->getName($stmt->expr)];
             $keyFuncCall->name = new Name($newName);
 
-            $this->changeNextKeyCall($stmtsAware, $key + 2, $resetOrEndFuncCall, $keyFuncCall->name);
+            $this->changeNextKeyCall($containsStmts, $key + 2, $resetOrEndFuncCall, $keyFuncCall->name);
 
-            unset($stmtsAware->stmts[$key]);
+            unset($containsStmts->getStmts()[$key]);
 
-            return $stmtsAware;
+            return $containsStmts;
         }
 
         return null;
     }
 
     private function changeNextKeyCall(
-        ContainsStmts $stmtsAware,
+        ContainsStmts $containsStmts,
         int $key,
         FuncCall $resetOrEndFuncCall,
         Name $newName
     ): void {
-        $counter = count($stmtsAware->stmts);
+        $counter = count($containsStmts->getStmts());
         for ($nextKey = $key; $nextKey < $counter; ++$nextKey) {
-            if (! isset($stmtsAware->stmts[$nextKey])) {
+            if (! isset($containsStmts->getStmts()[$nextKey])) {
                 break;
             }
 
-            if ($stmtsAware->stmts[$nextKey] instanceof Expression && ! $this->shouldSkip(
-                $stmtsAware->stmts[$nextKey]
+            if ($containsStmts->getStmts()[$nextKey] instanceof Expression && ! $this->shouldSkip(
+                $containsStmts->getStmts()[$nextKey]
             )) {
-                $this->processArrayKeyFirstLast($stmtsAware, $nextKey);
+                $this->processArrayKeyFirstLast($containsStmts, $nextKey);
                 break;
             }
 
-            $keyFuncCall = $this->resolveKeyFuncCall($stmtsAware->stmts[$nextKey], $resetOrEndFuncCall);
+            $keyFuncCall = $this->resolveKeyFuncCall($containsStmts->getStmts()[$nextKey], $resetOrEndFuncCall);
             if (! $keyFuncCall instanceof FuncCall) {
                 continue;
             }
@@ -217,18 +217,18 @@ CODE_SAMPLE
     }
 
     private function hasInternalPointerChangeNext(
-        ContainsStmts $stmtsAware,
+        ContainsStmts $containsStmts,
         int $nextKey,
         int $totalKeys,
         FuncCall $funcCall
     ): bool {
         for ($key = $nextKey; $key <= $totalKeys; ++$key) {
-            if (! isset($stmtsAware->stmts[$key])) {
+            if (! isset($containsStmts->getStmts()[$key])) {
                 continue;
             }
 
             $hasPrevCallNext = (bool) $this->betterNodeFinder->findFirst(
-                $stmtsAware->stmts[$key],
+                $containsStmts->getStmts()[$key],
                 function (Node $subNode) use ($funcCall): bool {
                     if (! $subNode instanceof FuncCall) {
                         return false;

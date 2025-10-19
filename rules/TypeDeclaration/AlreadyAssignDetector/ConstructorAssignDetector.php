@@ -58,7 +58,7 @@ final readonly class ConstructorAssignDetector
         StatementDepthAttributeDecorator::decorateClassMethods($initializeClassMethods);
 
         foreach ($initializeClassMethods as $initializeClassMethod) {
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $initializeClassMethod->stmts, function (
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $initializeClassMethod->getStmts(), function (
                 Node $node
             ) use ($propertyName, &$isAssignedInConstructor, $allowConditional): ?int {
                 if ($this->isIfElseAssign($node, $propertyName)) {
@@ -132,8 +132,8 @@ final readonly class ConstructorAssignDetector
             return false;
         }
 
-        return $this->isAssignedInStmts($node->stmts, $propertyName) && $this->isAssignedInStmts(
-            $node->else->stmts,
+        return $this->isAssignedInStmts($node->getStmts(), $propertyName) && $this->isAssignedInStmts(
+            $node->else->getStmts(),
             $propertyName
         );
     }

@@ -92,7 +92,7 @@ final readonly class PromotedPropertyCandidateResolver
         $firstParamAsVariable = $this->resolveFirstParamUses($constructClassMethod);
 
         // match property name to assign in constructor
-        foreach ((array) $constructClassMethod->stmts as $stmt) {
+        foreach ($constructClassMethod->getStmts() as $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
             }
@@ -142,7 +142,7 @@ final readonly class PromotedPropertyCandidateResolver
         foreach ($classMethod->params as $param) {
             $paramName = $this->nodeNameResolver->getName($param);
 
-            $firstParamVariable = $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node) use (
+            $firstParamVariable = $this->betterNodeFinder->findFirst($classMethod->getStmts(), function (Node $node) use (
                 $paramName
             ): bool {
                 if (! $node instanceof Variable) {

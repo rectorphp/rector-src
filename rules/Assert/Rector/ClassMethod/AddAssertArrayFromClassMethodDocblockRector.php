@@ -108,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === null || $node->isAbstract()) {
+        if ($node->getStmts() === [] || $node->isAbstract()) {
             return null;
         }
 

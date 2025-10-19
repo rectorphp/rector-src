@@ -20,7 +20,7 @@ final readonly class ClassMethodAndPropertyAnalyzer
 
     public function hasPropertyFetchReturn(ClassMethod $classMethod, string $propertyName): bool
     {
-        $stmts = (array) $classMethod->stmts;
+        $stmts = $classMethod->getStmts();
         if (count($stmts) !== 1) {
             return false;
         }
@@ -42,7 +42,7 @@ final readonly class ClassMethodAndPropertyAnalyzer
 
     public function hasOnlyPropertyAssign(ClassMethod $classMethod, string $propertyName): bool
     {
-        $stmts = (array) $classMethod->stmts;
+        $stmts = $classMethod->getStmts();
         if (count($stmts) !== 1) {
             return false;
         }

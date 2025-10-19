@@ -179,7 +179,7 @@ CODE_SAMPLE
 
     private function containsMethodCallNamed(ClassMethod $classMethod, string $desiredMethodName): bool
     {
-        return (bool) $this->nodeFinder->findFirst((array) $classMethod->stmts, static function (Node $node) use (
+        return (bool) $this->nodeFinder->findFirst($classMethod->getStmts(), static function (Node $node) use (
             $desiredMethodName
         ): bool {
             if (! $node instanceof MethodCall) {

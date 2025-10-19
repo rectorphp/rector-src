@@ -134,7 +134,7 @@ CODE_SAMPLE
             $hasChanged = true;
 
             // is variable used? only remove property, keep param
-            $variable = $this->betterNodeFinder->findVariableOfName((array) $constructClassMethod->stmts, $paramName);
+            $variable = $this->betterNodeFinder->findVariableOfName($constructClassMethod->getStmts(), $paramName);
             if ($variable instanceof Variable) {
                 $param->flags = 0;
                 continue;

@@ -115,7 +115,7 @@ CODE_SAMPLE
         }
 
         $foreach = new Foreach_($foreachedExpr, $arrayItem->value, [
-            'stmts' => $node->stmts,
+            'stmts' => $node->getStmts(),
         ]);
 
         $this->mirrorComments($foreach, $node);

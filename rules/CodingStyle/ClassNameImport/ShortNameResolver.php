@@ -80,7 +80,7 @@ final class ShortNameResolver
         $namespace = current($namespaces);
 
         /** @var ClassLike[] $classLikes */
-        $classLikes = $this->betterNodeFinder->findInstanceOf($namespace->stmts, ClassLike::class);
+        $classLikes = $this->betterNodeFinder->findInstanceOf($namespace->getStmts(), ClassLike::class);
 
         $shortClassLikeNames = [];
         foreach ($classLikes as $classLike) {

@@ -113,7 +113,7 @@ CODE_SAMPLE
             $psr4ConstructorMethod->name = new Identifier(MethodName::CONSTRUCT);
         }
 
-        $classMethodStmts = $psr4ConstructorMethod->stmts;
+        $classMethodStmts = $psr4ConstructorMethod->getStmts();
         if ($classMethodStmts === null) {
             return null;
         }
@@ -149,11 +149,11 @@ CODE_SAMPLE
 
     private function processClassMethodStatementsForParentConstructorCalls(ClassMethod $classMethod, Scope $scope): void
     {
-        if (! is_iterable($classMethod->stmts)) {
+        if (! is_iterable($classMethod->getStmts())) {
             return;
         }
 
-        foreach ($classMethod->stmts as $methodStmt) {
+        foreach ($classMethod->getStmts() as $methodStmt) {
             if (! $methodStmt instanceof Expression) {
                 continue;
             }

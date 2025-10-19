@@ -84,7 +84,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): Node|null
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -113,7 +113,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processIf(If_ $if, int $key, ContainsStmts $stmtsAware): void
+    private function processIf(If_ $if, int $key, ContainsStmts $containsStmts): void
     {
         if ($if->elseifs !== []) {
             return;
@@ -125,7 +125,7 @@ CODE_SAMPLE
                 return;
             }
 
-            unset($stmtsAware->stmts[$key]);
+            unset($containsStmts->getStmts()[$key]);
             $this->hasChanged = true;
             return;
         }
@@ -137,7 +137,7 @@ CODE_SAMPLE
         $this->hasChanged = true;
     }
 
-    private function processForForeach(For_|Foreach_ $for, int $key, ContainsStmts $stmtsAware): void
+    private function processForForeach(For_|Foreach_ $for, int $key, ContainsStmts $containsStmts): void
     {
         if ($for instanceof For_) {
             $variables = $this->betterNodeFinder->findInstanceOf(
@@ -146,7 +146,7 @@ CODE_SAMPLE
             );
             foreach ($variables as $variable) {
                 if ($this->stmtsManipulator->isVariableUsedInNextStmt(
-                    $stmtsAware,
+                    $containsStmts,
                     $key + 1,
                     (string) $this->getName($variable)
                 )) {
@@ -154,7 +154,7 @@ CODE_SAMPLE
                 }
             }
 
-            unset($stmtsAware->stmts[$key]);
+            unset($containsStmts->getStmts()[$key]);
             $this->hasChanged = true;
 
             return;
@@ -164,7 +164,7 @@ CODE_SAMPLE
         $variables = $this->betterNodeFinder->findInstanceOf($exprs, Variable::class);
         foreach ($variables as $variable) {
             if ($this->stmtsManipulator->isVariableUsedInNextStmt(
-                $stmtsAware,
+                $containsStmts,
                 $key + 1,
                 (string) $this->getName($variable)
             )) {
@@ -172,7 +172,7 @@ CODE_SAMPLE
             }
         }
 
-        unset($stmtsAware->stmts[$key]);
+        unset($containsStmts->getStmts()[$key]);
         $this->hasChanged = true;
     }
 

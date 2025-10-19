@@ -55,11 +55,7 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
                 continue;
             }
 
-            if ($newStmt->stmts === null) {
-                continue;
-            }
-
-            foreach ($newStmt->stmts as $stmt) {
+            foreach ($newStmt->getStmts() as $stmt) {
                 if (! $stmt instanceof Class_) {
                     continue;
                 }

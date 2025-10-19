@@ -79,11 +79,11 @@ CODE_SAMPLE
         }
 
         $else = $node->else;
-        if (count($else->stmts) !== 1) {
+        if (count($else->getStmts()) !== 1) {
             return null;
         }
 
-        $if = $else->stmts[0];
+        $if = $else->getStmts()[0];
         if (! $if instanceof If_) {
             return null;
         }
@@ -95,17 +95,17 @@ CODE_SAMPLE
             $if = $refactored;
         }
 
-        if ($if->stmts === []) {
+        if ($if->getStmts() === []) {
             $nop = new Nop();
             $nop->setAttribute(AttributeKey::COMMENTS, $if->getComments());
             $if->stmts[] = $nop;
         } else {
-            $currentStmt = current($if->stmts);
+            $currentStmt = current($if->getStmts());
             $mergedComments = array_merge($if->getComments(), $currentStmt->getComments());
             $currentStmt->setAttribute(AttributeKey::COMMENTS, $mergedComments);
         }
 
-        $node->elseifs[] = new ElseIf_($if->cond, $if->stmts);
+        $node->elseifs[] = new ElseIf_($if->cond, $if->getStmts());
 
         $node->else = $if->else;
 

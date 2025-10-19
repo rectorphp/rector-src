@@ -26,11 +26,11 @@ final readonly class ForeachAnalyzer
      */
     public function matchAssignItemsOnlyForeachArrayVariable(Foreach_ $foreach): ?Expr
     {
-        if (count($foreach->stmts) !== 1) {
+        if (count($foreach->getStmts()) !== 1) {
             return null;
         }
 
-        $onlyStatement = $foreach->stmts[0];
+        $onlyStatement = $foreach->getStmts()[0];
         if ($onlyStatement instanceof Expression) {
             $onlyStatement = $onlyStatement->expr;
         }

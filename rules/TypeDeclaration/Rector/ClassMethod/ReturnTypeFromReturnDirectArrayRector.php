@@ -105,7 +105,7 @@ CODE_SAMPLE
 
     private function hasReturnArray(ClassMethod|Function_ $functionLike): bool
     {
-        $stmts = $functionLike->stmts;
+        $stmts = $functionLike->getStmts();
 
         if (! is_array($stmts)) {
             return false;

@@ -124,7 +124,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $this->traverseNodesWithCallable((array) $node->stmts, static function (Node $node) use (
+        $this->traverseNodesWithCallable((array) $node->getStmts(), static function (Node $node) use (
             &$hasChanged
         ): int|null|Return_ {
             if ($node instanceof Class_ || $node instanceof Function_ || $node instanceof Closure) {

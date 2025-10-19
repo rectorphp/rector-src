@@ -90,7 +90,7 @@ final class ConflictingNameResolver
         $names = [];
 
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->getStmts(), Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf($functionLike->getStmts(), Assign::class);
         foreach ($assigns as $assign) {
             $name = $this->expectedNameResolver->resolveForAssignNew($assign);
             if ($name === null) {
@@ -111,7 +111,7 @@ final class ConflictingNameResolver
         $names = [];
 
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->getStmts(), Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf($functionLike->getStmts(), Assign::class);
         foreach ($assigns as $assign) {
             $name = $this->expectedNameResolver->resolveForAssignNonNew($assign);
             if ($name === null) {

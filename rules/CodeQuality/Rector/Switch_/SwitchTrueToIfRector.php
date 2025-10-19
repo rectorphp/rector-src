@@ -94,7 +94,7 @@ CODE_SAMPLE
         $defaultCase = null;
 
         foreach ($node->cases as $case) {
-            if (! end($case->stmts) instanceof Return_) {
+            if (! end($case->getStmts()) instanceof Return_) {
                 return null;
             }
 
@@ -110,7 +110,7 @@ CODE_SAMPLE
         }
 
         if ($defaultCase instanceof Case_) {
-            $newStmts = array_merge($newStmts, $defaultCase->stmts);
+            $newStmts = array_merge($newStmts, $defaultCase->getStmts());
         }
 
         if ($newStmts === []) {

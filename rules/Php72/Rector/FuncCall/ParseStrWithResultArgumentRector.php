@@ -64,21 +64,21 @@ CODE_SAMPLE
     }
 
     private function processStrWithResult(
-        ContainsStmts $stmtsAware,
+        ContainsStmts $containsStmts,
         bool $hasChanged,
         int $jumpToKey = 0
     ): null|ContainsStmts {
-        if ($stmtsAware->stmts === null) {
+        if ($containsStmts->getStmts() === []) {
             return null;
         }
 
-        $totalKeys = array_key_last($stmtsAware->stmts);
+        $totalKeys = array_key_last($containsStmts->getStmts());
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
-            if (! isset($stmtsAware->stmts[$key], $stmtsAware->stmts[$key + 1])) {
+            if (! isset($containsStmts->getStmts()[$key], $containsStmts->getStmts()[$key + 1])) {
                 break;
             }
 
-            $stmt = $stmtsAware->stmts[$key];
+            $stmt = $containsStmts->getStmts()[$key];
             if ($this->shouldSkip($stmt)) {
                 continue;
             }
@@ -89,7 +89,7 @@ CODE_SAMPLE
             $resultVariable = new Variable('result');
             $expr->args[1] = new Arg($resultVariable);
 
-            $nextExpression = $stmtsAware->stmts[$key + 1];
+            $nextExpression = $containsStmts->getStmts()[$key + 1];
             $this->traverseNodesWithCallable($nextExpression, function (Node $node) use (
                 $resultVariable,
                 &$hasChanged
@@ -106,11 +106,11 @@ CODE_SAMPLE
                 return $resultVariable;
             });
 
-            return $this->processStrWithResult($stmtsAware, $hasChanged, $key + 2);
+            return $this->processStrWithResult($containsStmts, $hasChanged, $key + 2);
         }
 
         if ($hasChanged) {
-            return $stmtsAware;
+            return $containsStmts;
         }
 
         return null;

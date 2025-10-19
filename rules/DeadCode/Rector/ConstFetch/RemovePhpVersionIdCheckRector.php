@@ -174,11 +174,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($if->stmts === []) {
+        if ($if->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        return $if->stmts;
+        return $if->getStmts();
     }
 
     /**
@@ -195,11 +195,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($if->stmts === []) {
+        if ($if->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        return $if->stmts;
+        return $if->getStmts();
     }
 
     private function refactorGreaterOrEqualRight(GreaterOrEqual $greaterOrEqual): ?int
@@ -246,11 +246,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($if->stmts === []) {
+        if ($if->getStmts() === []) {
             return NodeVisitor::REMOVE_NODE;
         }
 
-        return $if->stmts;
+        return $if->getStmts();
     }
 
     private function refactorGreaterRight(Greater $greater): ?int

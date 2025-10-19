@@ -65,7 +65,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -147,11 +147,11 @@ CODE_SAMPLE
      */
     private function matchForeachReturnOrAssign(Foreach_ $foreach): Expression|Return_|null
     {
-        if (count($foreach->stmts) !== 1) {
+        if (count($foreach->getStmts()) !== 1) {
             return null;
         }
 
-        $onlyForeachStmt = $foreach->stmts[0];
+        $onlyForeachStmt = $foreach->getStmts()[0];
         if (! $onlyForeachStmt instanceof If_) {
             return null;
         }
@@ -161,7 +161,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($if->stmts) !== 1) {
+        if (count($if->getStmts()) !== 1) {
             return null;
         }
 
@@ -174,7 +174,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $innerStmt = $if->stmts[0];
+        $innerStmt = $if->getStmts()[0];
         if ($innerStmt instanceof Return_) {
             return $innerStmt;
         }
@@ -205,7 +205,7 @@ CODE_SAMPLE
         }
 
         /** @var If_ $ifNode */
-        $ifNode = $foreach->stmts[0];
+        $ifNode = $foreach->getStmts()[0];
 
         /** @var Identical $identicalNode */
         $identicalNode = $ifNode->cond;
@@ -229,7 +229,7 @@ CODE_SAMPLE
     private function processForeachNodeWithAssignInside(Foreach_ $foreach, Assign $assign): ?Assign
     {
         /** @var If_ $ifNode */
-        $ifNode = $foreach->stmts[0];
+        $ifNode = $foreach->getStmts()[0];
 
         /** @var Identical $identicalNode */
         $identicalNode = $ifNode->cond;

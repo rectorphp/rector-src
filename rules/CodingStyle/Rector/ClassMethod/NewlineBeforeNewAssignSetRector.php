@@ -88,7 +88,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // skip methods with no bodies (e.g interface methods)
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -203,12 +203,12 @@ CODE_SAMPLE
 
     private function isPrecededByEmptyLine(ClassMethod | Function_ | Closure $node, int $key): bool
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return false;
         }
 
-        $previousNode = $node->stmts[$key - 1];
-        $currentNode = $node->stmts[$key];
+        $previousNode = $node->getStmts()[$key - 1];
+        $currentNode = $node->getStmts()[$key];
 
         return abs($currentNode->getStartLine() - $previousNode->getStartLine()) >= 2;
     }

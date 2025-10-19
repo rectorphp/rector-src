@@ -137,7 +137,7 @@ CODE_SAMPLE
      */
     private function resolveDimFetchVariableNames(Closure|ArrowFunction $closureExpr): array
     {
-        $closureNodes = $closureExpr instanceof ArrowFunction ? [$closureExpr->expr] : $closureExpr->stmts;
+        $closureNodes = $closureExpr instanceof ArrowFunction ? [$closureExpr->expr] : $closureExpr->getStmts();
 
         /** @var ArrayDimFetch[] $arrayDimFetches */
         $arrayDimFetches = $this->betterNodeFinder->findInstancesOfScoped($closureNodes, ArrayDimFetch::class);
@@ -164,7 +164,7 @@ CODE_SAMPLE
      */
     private function resolveIsArrayVariables(Closure|ArrowFunction $closureExpr): array
     {
-        $closureNodes = $closureExpr instanceof ArrowFunction ? [$closureExpr->expr] : $closureExpr->stmts;
+        $closureNodes = $closureExpr instanceof ArrowFunction ? [$closureExpr->expr] : $closureExpr->getStmts();
 
         /** @var FuncCall[] $funcCalls */
         $funcCalls = $this->betterNodeFinder->findInstancesOfScoped($closureNodes, FuncCall::class);
@@ -193,7 +193,7 @@ CODE_SAMPLE
      */
     private function resolveInstanceofVariables(Closure|ArrowFunction $closureExpr): array
     {
-        $closureNodes = $closureExpr instanceof ArrowFunction ? [$closureExpr->expr] : $closureExpr->stmts;
+        $closureNodes = $closureExpr instanceof ArrowFunction ? [$closureExpr->expr] : $closureExpr->getStmts();
 
         /** @var Instanceof_[] $instanceOfs */
         $instanceOfs = $this->betterNodeFinder->findInstancesOfScoped($closureNodes, Instanceof_::class);

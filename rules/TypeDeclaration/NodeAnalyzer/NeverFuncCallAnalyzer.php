@@ -21,7 +21,7 @@ final readonly class NeverFuncCallAnalyzer
 
     public function hasNeverFuncCall(ClassMethod | Closure | Function_ $functionLike): bool
     {
-        foreach ((array) $functionLike->stmts as $stmt) {
+        foreach ($functionLike->getStmts() as $stmt) {
             if ($this->isWithNeverTypeExpr($stmt)) {
                 return true;
             }

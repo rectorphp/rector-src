@@ -86,7 +86,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -99,7 +99,7 @@ CODE_SAMPLE
 
         $paramsWithType = [];
         $this->traverseNodesWithCallable(
-            $node->stmts,
+            $node->getStmts(),
             function (Node $subNode) use ($variableNamesWithArrayType, $node, &$paramsWithType): null|int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;

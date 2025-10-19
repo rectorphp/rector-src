@@ -77,7 +77,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null) {
+        if ($node->getStmts() === []) {
             return null;
         }
 
@@ -147,7 +147,7 @@ CODE_SAMPLE
     private function processRename(Foreach_ $foreach, string $valueVarName, string $singularValueVarName): void
     {
         $foreach->valueVar = new Variable($singularValueVarName);
-        $this->traverseNodesWithCallable($foreach->stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($foreach->getStmts(), function (Node $node) use (
             $singularValueVarName,
             $valueVarName
         ): ?Variable {
