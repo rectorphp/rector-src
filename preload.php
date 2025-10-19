@@ -26,7 +26,6 @@ function isPHPStanTestPreloaded(): bool
 }
 
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node.php';
-require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/ContainsStmts.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/Expr.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/NodeVisitor.php';
@@ -104,6 +103,7 @@ require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/Attribute.ph
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/AttributeGroup.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/ClosureUse.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/Const_.php';
+require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/ContainsStmts.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/DeclareItem.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ArrayDimFetch.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/Expr/Array_.php';
