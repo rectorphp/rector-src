@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -12,7 +13,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Static_;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -26,7 +26,7 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Sco
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface) {
+        if (! $node instanceof ContainsStmts) {
             return null;
         }
 

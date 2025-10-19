@@ -6,11 +6,11 @@ namespace Rector\Php72\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -52,22 +52,22 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      */
-    public function refactor(Node $node): ?StmtsAwareInterface
+    public function refactor(Node $node): ?ContainsStmts
     {
         return $this->processStrWithResult($node, false);
     }
 
     private function processStrWithResult(
-        StmtsAwareInterface $stmtsAware,
+        ContainsStmts $stmtsAware,
         bool $hasChanged,
         int $jumpToKey = 0
-    ): null|StmtsAwareInterface {
+    ): null|ContainsStmts {
         if ($stmtsAware->stmts === null) {
             return null;
         }

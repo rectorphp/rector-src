@@ -6,6 +6,7 @@ namespace Rector\Transform\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
@@ -17,7 +18,6 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitor;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
 use Rector\Transform\ValueObject\WrapFuncCallWithPhpVersionIdChecker;
@@ -63,11 +63,11 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      * @return null|Node|NodeVisitor::DONT_TRAVERSE_CHILDREN
      */
     public function refactor(Node $node): null|Node|int
@@ -126,7 +126,7 @@ final class WrapFuncCallWithPhpVersionIdCheckerRector extends AbstractRector imp
         $this->wrapFuncCallWithPhpVersionIdCheckers = $configuration;
     }
 
-    private function isWrappedFuncCall(StmtsAwareInterface $stmtsAware): bool
+    private function isWrappedFuncCall(ContainsStmts $stmtsAware): bool
     {
         if (! $stmtsAware instanceof If_) {
             return false;

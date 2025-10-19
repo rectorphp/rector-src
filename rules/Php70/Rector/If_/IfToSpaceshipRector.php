@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php70\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -13,7 +14,6 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Php70\Enum\BattleshipCompareOrder;
 use Rector\Php70\NodeAnalyzer\BattleshipTernaryAnalyzer;
 use Rector\Php70\ValueObject\ComparedExprs;
@@ -65,11 +65,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class, If_::class];
+        return [ContainsStmts::class, If_::class];
     }
 
     /**
-     * @param StmtsAwareInterface|If_ $node
+     * @param ContainsStmts|If_ $node
      */
     public function refactor(Node $node): ?Node
     {

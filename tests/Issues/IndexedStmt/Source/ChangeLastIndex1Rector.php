@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitor;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use PhpParser\Node\ContainsStmts;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,11 +22,11 @@ final class ChangeLastIndex1Rector extends AbstractRector
 
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      */
     public function refactor(Node $node)
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\EarlyReturn\Rector\Return_;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
@@ -17,7 +18,6 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\While_;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\EarlyReturn\ValueObject\BareSingleAssignIf;
 use Rector\NodeManipulator\IfManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -87,13 +87,13 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      */
-    public function refactor(Node $node): ?StmtsAwareInterface
+    public function refactor(Node $node): ?ContainsStmts
     {
         if ($node->stmts === null) {
             return null;
@@ -185,7 +185,7 @@ CODE_SAMPLE
      * @param If_[] $ifs
      * @return BareSingleAssignIf[]
      */
-    private function getMatchingBareSingleAssignIfs(array $ifs, StmtsAwareInterface $stmtsAware): array
+    private function getMatchingBareSingleAssignIfs(array $ifs, ContainsStmts $stmtsAware): array
     {
         $bareSingleAssignIfs = [];
         foreach ($ifs as $key => $if) {
@@ -233,7 +233,7 @@ CODE_SAMPLE
         return true;
     }
 
-    private function matchBareSingleAssignIf(Stmt $stmt, int $key, StmtsAwareInterface $stmtsAware): ?BareSingleAssignIf
+    private function matchBareSingleAssignIf(Stmt $stmt, int $key, ContainsStmts $stmtsAware): ?BareSingleAssignIf
     {
         if (! $stmt instanceof If_) {
             return null;
@@ -277,12 +277,12 @@ CODE_SAMPLE
      * @param BareSingleAssignIf[] $bareSingleAssignIfs
      */
     private function refactorToDirectReturns(
-        StmtsAwareInterface $stmtsAware,
+        ContainsStmts $stmtsAware,
         int $initialAssignPosition,
         array $bareSingleAssignIfs,
         Assign $initialAssign,
         Return_ $return
-    ): StmtsAwareInterface {
+    ): ContainsStmts {
         // 1. remove initial assign
         unset($stmtsAware->stmts[$initialAssignPosition]);
 

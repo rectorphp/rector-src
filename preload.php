@@ -26,7 +26,7 @@ function isPHPStanTestPreloaded(): bool
 }
 
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node.php';
-require_once __DIR__ . '/src/Contract/PhpParser/Node/StmtsAwareInterface.php';
+//require_once __DIR__ . '/src/Contract/PhpParser/Node/ContainsStmts.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node/Expr.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/NodeVisitor.php';

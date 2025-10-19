@@ -361,10 +361,10 @@ CODE_SAMPLE;
             }
         }
 
-        $fileInfos = array_values($fileInfos);
+        return array_values($fileInfos);
 
-        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
-        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
+        //        $ContainsStmts = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/ContainsStmts.php');
+        //        array_splice($fileInfos, 1, 0, [$ContainsStmts]);
 
         return $fileInfos;
     }

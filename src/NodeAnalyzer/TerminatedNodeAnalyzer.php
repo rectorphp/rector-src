@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\Throw_;
@@ -25,7 +26,6 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final class TerminatedNodeAnalyzer
@@ -45,7 +45,7 @@ final class TerminatedNodeAnalyzer
      */
     private const ALLOWED_CONTINUE_CURRENT_STMTS = [InlineHTML::class, Nop::class];
 
-    public function isAlwaysTerminated(StmtsAwareInterface $stmtsAware, Stmt $node, Stmt $currentStmt): bool
+    public function isAlwaysTerminated(ContainsStmts $stmtsAware, Stmt $node, Stmt $currentStmt): bool
     {
         if (in_array($currentStmt::class, self::ALLOWED_CONTINUE_CURRENT_STMTS, true)) {
             return false;

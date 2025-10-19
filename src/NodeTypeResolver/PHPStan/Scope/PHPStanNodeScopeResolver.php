@@ -524,7 +524,7 @@ final readonly class PHPStanNodeScopeResolver
     private function decorateNodeAttrGroups(Node $node, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         // better to have AttrGroupsAwareInterface for all Node definition with attrGroups property
-        // but because may conflict with StmtsAwareInterface patch, this needs to be here
+        // but because may conflict with ContainsStmts patch, this needs to be here
         if (
             ! $node instanceof Param &&
             ! $node instanceof ArrowFunction &&

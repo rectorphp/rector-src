@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Stmt;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -56,11 +56,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -88,7 +88,7 @@ CODE_SAMPLE
      * @param Stmt[] $stmts
      * @return Stmt[]
      */
-    private function processCleanUpUnreachableStmts(StmtsAwareInterface $stmtsAware, array $stmts): array
+    private function processCleanUpUnreachableStmts(ContainsStmts $stmtsAware, array $stmts): array
     {
         foreach ($stmts as $key => $stmt) {
             if (! isset($stmts[$key - 1])) {

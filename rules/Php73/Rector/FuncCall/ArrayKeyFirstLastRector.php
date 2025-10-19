@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Rector\Php73\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -87,13 +87,13 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      */
-    public function refactor(Node $node): ?StmtsAwareInterface
+    public function refactor(Node $node): ?ContainsStmts
     {
         return $this->processArrayKeyFirstLast($node);
     }
@@ -108,10 +108,8 @@ CODE_SAMPLE
         return PolyfillPackage::PHP_73;
     }
 
-    private function processArrayKeyFirstLast(
-        StmtsAwareInterface $stmtsAware,
-        int $jumpToKey = 0
-    ): ?StmtsAwareInterface {
+    private function processArrayKeyFirstLast(ContainsStmts $stmtsAware, int $jumpToKey = 0): ?ContainsStmts
+    {
         if ($stmtsAware->stmts === null) {
             return null;
         }
@@ -165,7 +163,7 @@ CODE_SAMPLE
     }
 
     private function changeNextKeyCall(
-        StmtsAwareInterface $stmtsAware,
+        ContainsStmts $stmtsAware,
         int $key,
         FuncCall $resetOrEndFuncCall,
         Name $newName
@@ -219,7 +217,7 @@ CODE_SAMPLE
     }
 
     private function hasInternalPointerChangeNext(
-        StmtsAwareInterface $stmtsAware,
+        ContainsStmts $stmtsAware,
         int $nextKey,
         int $totalKeys,
         FuncCall $funcCall

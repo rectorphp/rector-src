@@ -20,7 +20,7 @@
         "doctrine/inflector": "^2.1",
         "illuminate/container": "^11.46",
         "nette/utils": "^4.0",
-        "nikic/php-parser": "^5.6.1",
+        "nikic/php-parser": "dev-tv-add-stmts-iterable as 5.4",
         "ondram/ci-detector": "^4.2",
         "phpstan/phpdoc-parser": "^2.3",
         "phpstan/phpstan": "^2.1.26",
@@ -147,5 +147,11 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/tomasVotruba/php-parser"
+        }
+    ]
 }

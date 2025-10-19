@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\For_;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
@@ -13,7 +14,6 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -76,11 +76,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      */
     public function refactor(Node $node): Node|null
     {
@@ -113,7 +113,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processIf(If_ $if, int $key, StmtsAwareInterface $stmtsAware): void
+    private function processIf(If_ $if, int $key, ContainsStmts $stmtsAware): void
     {
         if ($if->elseifs !== []) {
             return;
@@ -137,7 +137,7 @@ CODE_SAMPLE
         $this->hasChanged = true;
     }
 
-    private function processForForeach(For_|Foreach_ $for, int $key, StmtsAwareInterface $stmtsAware): void
+    private function processForForeach(For_|Foreach_ $for, int $key, ContainsStmts $stmtsAware): void
     {
         if ($for instanceof For_) {
             $variables = $this->betterNodeFinder->findInstanceOf(

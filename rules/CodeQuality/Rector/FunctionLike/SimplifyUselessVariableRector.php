@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\FunctionLike;
 
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\Ternary;
@@ -15,7 +16,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeAnalyzer\VariableAnalyzer;
@@ -106,11 +106,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return [ContainsStmts::class];
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param ContainsStmts $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -152,11 +152,11 @@ CODE_SAMPLE
     }
 
     private function processSimplifyUselessVariable(
-        StmtsAwareInterface $stmtsAware,
+        ContainsStmts $stmtsAware,
         Return_ $return,
         Assign|AssignOp $assign,
         int $key
-    ): ?StmtsAwareInterface {
+    ): ?ContainsStmts {
         if (! $assign instanceof Assign) {
             $binaryClass = $this->assignAndBinaryMap->getAlternative($assign);
             if ($binaryClass === null) {

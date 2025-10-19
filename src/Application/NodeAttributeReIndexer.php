@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Application;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -21,14 +22,13 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeAttributeReIndexer
 {
     public static function reIndexStmtKeyNodeAttributes(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_ && ! $node instanceof Block) {
+        if (! $node instanceof ContainsStmts && ! $node instanceof ClassLike && ! $node instanceof Declare_ && ! $node instanceof Block) {
             return null;
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -12,7 +13,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\TryCatch;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -74,7 +74,7 @@ final readonly class StmtsManipulator
     }
 
     public function isVariableUsedInNextStmt(
-        StmtsAwareInterface $stmtsAware,
+        ContainsStmts $stmtsAware,
         int $jumpToKey,
         string $variableName
     ): bool {

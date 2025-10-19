@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
@@ -14,7 +15,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\NodeManipulator\CountManipulator;
 use Rector\DeadCode\UselessIfCondBeforeForeachDetector;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -83,12 +83,12 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class, StmtsAwareInterface::class];
+        return [If_::class, ContainsStmts::class];
     }
 
     /**
-     * @param If_|StmtsAwareInterface $node
-     * @return Foreach_|StmtsAwareInterface|null
+     * @param If_|ContainsStmts $node
+     * @return Foreach_|ContainsStmts|null
      */
     public function refactor(Node $node): Node|null
     {
@@ -151,7 +151,7 @@ CODE_SAMPLE
         return $this->countManipulator->isCounterHigherThanOne($booleanAnd->right, $foreachExpr);
     }
 
-    private function refactorStmtsAware(StmtsAwareInterface $stmtsAware): ?StmtsAwareInterface
+    private function refactorStmtsAware(ContainsStmts $stmtsAware): ?ContainsStmts
     {
         if ($stmtsAware->stmts === null) {
             return null;

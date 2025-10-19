@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Rector\Stmt;
 
 use PhpParser\Comment;
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -23,7 +24,6 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
@@ -95,22 +95,22 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class, ClassLike::class];
+        return [ContainsStmts::class, ClassLike::class];
     }
 
     /**
-     * @param StmtsAwareInterface|ClassLike $node
+     * @param ContainsStmts|ClassLike $node
      */
-    public function refactor(Node $node): null|StmtsAwareInterface|ClassLike
+    public function refactor(Node $node): null|ContainsStmts|ClassLike
     {
         return $this->processAddNewLine($node, false);
     }
 
     private function processAddNewLine(
-        StmtsAwareInterface|ClassLike $node,
+        ContainsStmts|ClassLike $node,
         bool $hasChanged,
         int $jumpToKey = 0
-    ): null|StmtsAwareInterface|ClassLike {
+    ): null|ContainsStmts|ClassLike {
         if ($node->stmts === null) {
             return null;
         }

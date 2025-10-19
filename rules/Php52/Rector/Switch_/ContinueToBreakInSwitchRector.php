@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php52\Rector\Switch_;
 
 use PhpParser\Node;
+use PhpParser\Node\ContainsStmts;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -21,7 +22,6 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\Constant\ConstantIntegerType;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -107,7 +107,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processContinueStatement(Stmt|StmtsAwareInterface $stmt): void
+    private function processContinueStatement(Stmt|ContainsStmts $stmt): void
     {
         $this->traverseNodesWithCallable(
             $stmt,
