@@ -6,6 +6,7 @@ use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRecto
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Utils\Rector\MakeUseOfContaintsStmtsRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -35,6 +36,7 @@ return RectorConfig::configure()
         __DIR__ . '/config',
         __DIR__ . '/build/build-preload.php',
     ])
+    ->withRules([MakeUseOfContaintsStmtsRector::class])
     ->withRootFiles()
     ->withImportNames(removeUnusedImports: true)
     ->withSkip([

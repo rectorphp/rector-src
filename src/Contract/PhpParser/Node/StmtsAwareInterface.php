@@ -10,6 +10,6 @@ use PhpParser\Node\Stmt;
 /**
  * @property Stmt[]|null $stmts
  */
-interface ContainsStmts extends Node
+interface StmtsAwareInterface extends Node\ContainsStmts
 {
 }

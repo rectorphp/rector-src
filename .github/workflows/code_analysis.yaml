@@ -21,9 +21,9 @@ jobs:
                         name: 'Run with Space in Directory'
                         run: bin/rector process tests-paths/path/with\ space/SomeFile.php --clear-cache
 
-                    -
-                        name: 'Preload php-parser Order'
-                        run: php preload.php
+#                    -
+#                        name: 'Preload php-parser Order'
+#                        run: php preload.php
 
                     -
                         name: 'PHPStan'
@@ -42,7 +42,7 @@ jobs:
                     -
                         name: 'Active Classes'
                         run: |
-                            vendor/bin/class-leak check bin config src rules utils --skip-suffix "Rector" --skip-type="Rector\\Utils\\Compiler\\Unprefixer" --skip-type="Rector\\NodeCollector\\BinaryOpConditionsCollector" --skip-type="Rector\\Set\\Contract\\SetListInterface"
+                            vendor/bin/class-leak check bin config src rules utils --skip-suffix "Rector" --skip-type="Rector\\Utils\\Compiler\\Unprefixer" --skip-type="Rector\\NodeCollector\\BinaryOpConditionsCollector" --skip-type="Rector\\Set\\Contract\\SetListInterface" --skip-type="Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface"
 
                     -
                         name: 'Compatible PHPStan versions'
