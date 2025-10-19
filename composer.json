@@ -81,6 +81,7 @@
                 "rules-tests",
                 "tests"
             ],
+            "Rector\\Utils\\Tests\\": "utils-tests",
             "E2e\\Parallel\\Reflection\\Resolver\\": [
                 "e2e/parallel-reflection-resolver/src/",
                 "e2e/no-parallel-reflection-resolver/src"

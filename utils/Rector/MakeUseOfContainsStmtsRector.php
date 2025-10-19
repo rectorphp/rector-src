@@ -18,12 +18,16 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class MakeUseOfContaintsStmtsRector extends AbstractRector
+/**
+ * @see \Rector\Utils\Tests\Rector\MakeUseOfContainsStmtsRector\MakeUseOfContainsStmtsRectorTest
+ */
+final class MakeUseOfContainsStmtsRector extends AbstractRector
 {
     public function __construct(
         private readonly ValueResolver $valueResolver
@@ -85,6 +89,16 @@ final class MakeUseOfContaintsStmtsRector extends AbstractRector
 
         if (! $this->isObjectType($node->var, new ObjectType(ContainsStmts::class))) {
             return null;
+        }
+
+        $callerType = $this->getType($node->var);
+        if ($callerType instanceof ObjectType) {
+            /** @var ClassReflection $callerClassReflection */
+            $callerClassReflection = $callerType->getClassReflection();
+            if (! $callerClassReflection->isInterface()) {
+                // we have to match interface exactly
+                return null;
+            }
         }
 
         return new MethodCall($node->var, 'getStmts');

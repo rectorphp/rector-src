@@ -360,3 +360,4 @@ parameters:
         -
             message: '#Method Rector\\Utils\\Rector\\MakeUseOfContaintsStmtsRector\:\:refactor\(\) should return 4\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\MethodCall\|null but returns int\|null#'
             path: utils/Rector/MakeUseOfContaintsStmtsRector.php
+        - message: '#Method Rector\\Utils\\Rector\\MakeUseOfContainsStmtsRector\:\:refactor\(\) should return 4\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\MethodCall\|null but returns int\|null#'
