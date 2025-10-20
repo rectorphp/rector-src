@@ -13,6 +13,7 @@ use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -26,7 +27,8 @@ final class AddParamFromDimFetchKeyUseRector extends AbstractRector
     public function __construct(
         private readonly ArrayDimFetchFinder $arrayDimFetchFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly ParamTypeAddGuard $paramTypeAddGuard
     ) {
     }
 
@@ -104,6 +106,10 @@ CODE_SAMPLE
 
                 $dimFetches = $this->arrayDimFetchFinder->findByDimName($classMethod, $paramName);
                 if ($dimFetches === []) {
+                    continue;
+                }
+
+                if (! $this->paramTypeAddGuard->isLegal($param, $classMethod)) {
                     continue;
                 }
 
