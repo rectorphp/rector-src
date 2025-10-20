@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamStringTypeFrom
 final class SkipConditionalNonString
 {
     /**
-     * @param false|float|int|string $cell
+     * @param false|float|int|string $data
      *
      * @return bool|float|int|string
      */
