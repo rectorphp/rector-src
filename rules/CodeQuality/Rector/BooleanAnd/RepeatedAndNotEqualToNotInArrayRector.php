@@ -181,12 +181,12 @@ CODE_SAMPLE
 
     private function isStrictComparison(BooleanAnd $booleanAnd): bool
     {
-        $notIenticals = $this->betterNodeFinder->findInstanceOf($booleanAnd, NotIdentical::class);
+        $notIdenticals = $this->betterNodeFinder->findInstanceOf($booleanAnd, NotIdentical::class);
         $notEquals = $this->betterNodeFinder->findInstanceOf($booleanAnd, NotEqual::class);
 
-        if ($notIenticals !== []) {
-            // mix identical and equals, keep as is
-            // @see https://3v4l.org/24cFl
+        if ($notIdenticals !== []) {
+            // mix not identical and not equals, keep as is
+            // @see https://3v4l.org/2SoHZ
             return $notEquals === [];
         }
 

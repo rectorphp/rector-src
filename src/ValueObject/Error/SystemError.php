@@ -84,7 +84,7 @@ final readonly class SystemError implements SerializableInterface
     {
         $rectorClass = $this->rectorClass;
 
-        if (!in_array($rectorClass, [null, ''], true)) {
+        if (! in_array($rectorClass, [null, ''], true)) {
             return (string) Strings::after($rectorClass, '\\', -1);
         }
 
