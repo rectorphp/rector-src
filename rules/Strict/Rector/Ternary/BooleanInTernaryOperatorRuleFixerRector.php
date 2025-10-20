@@ -65,6 +65,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Ternary
     {
-        throw new ShouldNotHappenException(sprintf('This rule is deprecated and will be removed', self::class));
+        throw new ShouldNotHappenException('This rule is deprecated as risky and not practical');
     }
 }
