@@ -83,7 +83,8 @@ final readonly class SystemError implements SerializableInterface
     public function getRectorShortClass(): ?string
     {
         $rectorClass = $this->rectorClass;
-        if ($rectorClass !== null && $rectorClass !== '' && $rectorClass !== '0') {
+
+        if (! in_array($rectorClass, [null, ''], true)) {
             return (string) Strings::after($rectorClass, '\\', -1);
         }
 
