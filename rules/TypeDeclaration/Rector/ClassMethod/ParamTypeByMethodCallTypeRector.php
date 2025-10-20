@@ -146,10 +146,6 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $functionLike instanceof ClassMethod) {
-            return false;
-        }
-
         return ! $this->paramTypeAddGuard->isLegal($param, $functionLike);
     }
 
