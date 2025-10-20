@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
@@ -130,6 +131,11 @@ CODE_SAMPLE
             && ! $callLike instanceof MethodCall
             && ! $callLike instanceof StaticCall
         ) {
+            return null;
+        }
+
+        // dynamic name? skip
+        if ($callLike->name instanceof Expr) {
             return null;
         }
 
