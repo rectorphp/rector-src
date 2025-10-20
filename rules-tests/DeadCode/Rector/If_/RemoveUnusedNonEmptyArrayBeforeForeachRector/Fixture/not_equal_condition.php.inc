@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector\Fixture;
 
-class NotEqual
+final class NotEqualCondition
 {
     public function run()
     {
@@ -21,7 +21,7 @@ class NotEqual
 
 namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector\Fixture;
 
-class NotEqual
+final class NotEqualCondition
 {
     public function run()
     {

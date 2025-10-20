@@ -6,6 +6,7 @@ namespace Rector\Config\Level;
 
 use Rector\CodeQuality\Rector\Assign\CombinedAssignRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
+use Rector\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
 use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
@@ -107,6 +108,7 @@ final class CodeQualityLevel
         ReplaceMultipleBooleanNotRector::class,
         ForeachToInArrayRector::class,
         RepeatedOrEqualToInArrayRector::class,
+        RepeatedAndNotEqualToNotInArrayRector::class,
         SimplifyForeachToCoalescingRector::class,
         SimplifyFuncGetArgsCountRector::class,
         SimplifyInArrayValuesRector::class,
