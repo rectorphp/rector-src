@@ -42,7 +42,7 @@ final class InstalledPackageResolver
             return $this->resolvedInstalledPackages;
         }
 
-        $installedPackagesFilePath = self::resolveVendorDir() . '/composer/installed.json';
+        $installedPackagesFilePath = $this->resolveVendorDir() . '/composer/installed.json';
         if (! file_exists($installedPackagesFilePath)) {
             throw new ShouldNotHappenException(
                 'The installed package json not found. Make sure you run `composer update` and the "vendor/composer/installed.json" file exists'
@@ -57,6 +57,20 @@ final class InstalledPackageResolver
         $this->resolvedInstalledPackages = $installedPackages;
 
         return $installedPackages;
+    }
+
+    public function resolvePackageVersion(string $packageName): ?string
+    {
+        $installedPackages = $this->resolve();
+        foreach ($installedPackages as $installedPackage) {
+            if ($installedPackage->getName() !== $packageName) {
+                continue;
+            }
+
+            return $installedPackage->getVersion();
+        }
+
+        return null;
     }
 
     /**
@@ -77,6 +91,7 @@ final class InstalledPackageResolver
     private function resolveVendorDir(): string
     {
         $projectComposerJsonFilePath = $this->projectDirectory . '/composer.json';
+
         if (\file_exists($projectComposerJsonFilePath)) {
             $projectComposerContents = FileSystem::read($projectComposerJsonFilePath);
             $projectComposerJson = Json::decode($projectComposerContents, true);

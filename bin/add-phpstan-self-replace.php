@@ -6,20 +6,16 @@ declare(strict_types=1);
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
-use PackageVersions\Versions;
+use Rector\Composer\InstalledPackageResolver;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-if (! class_exists(Versions::class)) {
-    echo 'You need to run `composer require ocramius/package-versions` first' . PHP_EOL;
-    exit(1);
-}
-
 $composerJsonFileContents = FileSystem::read(__DIR__ . '/../composer.json');
 
+$installedPackageResolver = new InstalledPackageResolver(__DIR__ . '/..');
+$phpstanVersion = $installedPackageResolver->resolvePackageVersion('phpstan/phpstan');
+
 $composerJson = Json::decode($composerJsonFileContents, forceArrays: true);
-// result output is like: // 1.0.0@0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
-[$phpstanVersion] = explode('@', Versions::getVersion('phpstan/phpstan'));
 $composerJson['replace']['phpstan/phpstan'] = $phpstanVersion;
 
 $modifiedComposerJsonFileContents = Json::encode($composerJson, pretty: true);
