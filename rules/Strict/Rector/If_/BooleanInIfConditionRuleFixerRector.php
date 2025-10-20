@@ -5,28 +5,18 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector\If_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\If_;
-use Rector\PHPStan\ScopeFetcher;
-use Rector\Strict\NodeFactory\ExactCompareFactory;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * Fixer Rector for PHPStan rules:
- * https://github.com/phpstan/phpstan-strict-rules/blob/master/src/Rules/BooleansInConditions/BooleanInIfConditionRule.php
- * https://github.com/phpstan/phpstan-strict-rules/blob/master/src/Rules/BooleansInConditions/BooleanInElseIfConditionRule.php
- *
- * @see \Rector\Tests\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector\BooleanInIfConditionRuleFixerRectorTest
+ * @deprecated this rule is risky and requires manual checking
  */
-final class BooleanInIfConditionRuleFixerRector extends AbstractFalsyScalarRuleFixerRector
+final class BooleanInIfConditionRuleFixerRector extends AbstractFalsyScalarRuleFixerRector implements DeprecatedInterface
 {
-    public function __construct(
-        private readonly ExactCompareFactory $exactCompareFactory
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         $errorMessage = \sprintf(
@@ -83,45 +73,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?If_
     {
-        $hasChanged = false;
-
-        $scope = ScopeFetcher::fetch($node);
-
-        // 1. if
-        $ifCondExprType = $scope->getNativeType($node->cond);
-        $notIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
-            $ifCondExprType,
-            $node->cond,
-            $this->treatAsNonEmpty
+        throw new ShouldNotHappenException(
+            'This rule is deprecated and will be removed as risky and requires manual checking'
         );
-        if ($notIdentical !== null) {
-            $node->cond = $notIdentical;
-
-            $hasChanged = true;
-        }
-
-        // 2. elseifs
-        foreach ($node->elseifs as $elseif) {
-            $elseifCondExprType = $scope->getNativeType($elseif->cond);
-            $notIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
-                $elseifCondExprType,
-                $elseif->cond,
-                $this->treatAsNonEmpty
-            );
-
-            if (! $notIdentical instanceof Expr) {
-                continue;
-            }
-
-            $elseif->cond = $notIdentical;
-
-            $hasChanged = true;
-        }
-
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
     }
 }
