@@ -1053,7 +1053,7 @@ final class RectorConfigBuilder
                 __METHOD__,
                 $level,
                 $levelRulesCount,
-                'TypeDeclarationDocblocksLevel',
+                'typeDeclarationDocblocks',
                 'TYPE_DECLARATION_DOCBLOCKS'
             );
         }
