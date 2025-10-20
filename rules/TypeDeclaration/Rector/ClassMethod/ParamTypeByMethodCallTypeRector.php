@@ -102,7 +102,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -144,10 +144,6 @@ CODE_SAMPLE
 
         if ($param->variadic) {
             return true;
-        }
-
-        if (! $functionLike instanceof ClassMethod) {
-            return false;
         }
 
         return ! $this->paramTypeAddGuard->isLegal($param, $functionLike);
