@@ -13,6 +13,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
 use Rector\TypeDeclaration\NodeAnalyzer\VariableInSprintfMaskMatcher;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -26,6 +27,7 @@ final class AddParamStringTypeFromSprintfUseRector extends AbstractRector
     public function __construct(
         private readonly VariableInSprintfMaskMatcher $variableInSprintfMaskMatcher,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly ParamTypeAddGuard $paramTypeAddGuard
     ) {
     }
 
@@ -94,8 +96,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $variableName = $this->getName($param);
+            if (! $this->paramTypeAddGuard->isLegal($param, $node)) {
+                continue;
+            }
 
+            $variableName = $this->getName($param);
             if (! $this->variableInSprintfMaskMatcher->matchMask($node, $variableName, '%s')) {
                 continue;
             }
