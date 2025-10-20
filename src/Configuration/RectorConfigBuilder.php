@@ -760,6 +760,7 @@ final class RectorConfigBuilder
         bool $naming = false,
         bool $instanceOf = false,
         bool $earlyReturn = false,
+        /** @deprecated */
         bool $strictBooleans = false,
         bool $carbon = false,
         bool $rectorPreset = false,
@@ -780,7 +781,6 @@ final class RectorConfigBuilder
             SetList::NAMING => $naming,
             SetList::INSTANCEOF => $instanceOf,
             SetList::EARLY_RETURN => $earlyReturn,
-            SetList::STRICT_BOOLEANS => $strictBooleans,
             SetList::CARBON => $carbon,
             SetList::RECTOR_PRESET => $rectorPreset,
             PHPUnitSetList::PHPUNIT_CODE_QUALITY => $phpunitCodeQuality,
