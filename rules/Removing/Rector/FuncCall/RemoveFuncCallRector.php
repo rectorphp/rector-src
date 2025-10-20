@@ -26,7 +26,7 @@ final class RemoveFuncCallRector extends AbstractRector implements ConfigurableR
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove function', [
+        return new RuleDefinition('Remove defined function calls', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 $x = 'something';

@@ -19,6 +19,7 @@ use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
 use Rector\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector;
 use Rector\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
+use Rector\Removing\Rector\FuncCall\RemoveFuncCallRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
 use Rector\Renaming\Rector\Cast\RenameCastRector;
 use Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector;
@@ -28,8 +29,6 @@ use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\RenameCast;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
-use Rector\Transform\Rector\FuncCall\WrapFuncCallWithPhpVersionIdCheckerRector;
-use Rector\Transform\ValueObject\WrapFuncCallWithPhpVersionIdChecker;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules(
@@ -199,16 +198,10 @@ return static function (RectorConfig $rectorConfig): void {
     );
 
     // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_no-op_functions_from_the_resource_to_object_conversion
-    $rectorConfig->ruleWithConfiguration(
-        WrapFuncCallWithPhpVersionIdCheckerRector::class,
-        [
-            new WrapFuncCallWithPhpVersionIdChecker('curl_close', 80500),
-            new WrapFuncCallWithPhpVersionIdChecker('curl_share_close', 80500),
-            new WrapFuncCallWithPhpVersionIdChecker('finfo_close', 80500),
-            new WrapFuncCallWithPhpVersionIdChecker('imagedestroy', 80500),
-            new WrapFuncCallWithPhpVersionIdChecker('xml_parser_free', 80500),
-        ]
-    );
+    // these function have no effect when use
+    $rectorConfig->ruleWithConfiguration(RemoveFuncCallRector::class, [
+        'curl_close', 'curl_share_close', 'finfo_close', 'imagedestroy', 'xml_parser_free',
+    ]);
 
     // https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_filter_default_constant
     $rectorConfig->ruleWithConfiguration(RenameConstantRector::class, [
