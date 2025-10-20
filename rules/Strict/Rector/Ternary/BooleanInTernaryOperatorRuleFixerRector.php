@@ -8,15 +8,17 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Ternary;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @deprecated as risky and requires manual checking
  */
-final class BooleanInTernaryOperatorRuleFixerRector extends AbstractFalsyScalarRuleFixerRector implements DeprecatedInterface
+final class BooleanInTernaryOperatorRuleFixerRector extends AbstractRector implements DeprecatedInterface
 {
+    public const TREAT_AS_NON_EMPTY = 'treat_as_non_empty';
+
     public function getRuleDefinition(): RuleDefinition
     {
         $errorMessage = \sprintf(
