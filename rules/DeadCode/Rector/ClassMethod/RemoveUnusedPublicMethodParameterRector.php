@@ -13,7 +13,6 @@ use Rector\DeadCode\NodeManipulator\ClassMethodParamRemover;
 use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Rector\AbstractRector;
-use Rector\Symfony\Enum\SymfonyClass;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
