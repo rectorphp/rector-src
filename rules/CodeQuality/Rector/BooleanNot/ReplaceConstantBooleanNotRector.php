@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,6 +20,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReplaceConstantBooleanNotRector extends AbstractRector
 {
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -67,17 +73,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->expr instanceof ConstFetch) {
-            return null;
-        }
-
-        $constantName = $this->getName($node->expr);
-
-        if ($constantName === 'false') {
+        if ($this->valueResolver->isFalse($node->expr)) {
             return new ConstFetch(new Name('true'));
         }
 
-        if ($constantName === 'true') {
+        if ($this->valueResolver->isTrue($node->expr)) {
             return new ConstFetch(new Name('false'));
         }
 
