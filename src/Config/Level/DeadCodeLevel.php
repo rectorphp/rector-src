@@ -41,6 +41,7 @@ use Rector\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector;
 use Rector\DeadCode\Rector\FunctionLike\RemoveDeadReturnRector;
 use Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
+use Rector\DeadCode\Rector\If_\RemoveDeadIfBlocksRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\DeadCode\Rector\If_\RemoveTypedPropertyDeadInstanceOfRector;
 use Rector\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector;
@@ -129,6 +130,7 @@ final class DeadCodeLevel
 
         RemoveDeadCatchRector::class,
         RemoveDeadTryCatchRector::class,
+        RemoveDeadIfBlocksRector::class,
         RemoveDeadIfForeachForRector::class,
         RemoveConditionExactReturnRector::class,
         RemoveDeadStmtRector::class,
