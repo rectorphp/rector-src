@@ -352,3 +352,5 @@ parameters:
         -
             identifier: offsetAccess.invalidOffset
             path: src/CustomRules/SimpleNodeDumper.php
+
+        - '#Method Rector\\Utils\\Rector\\RemoveRefactorDuplicatedNodeInstanceCheckRector\:\:getInstanceofNodeClass\(\) should return class\-string<PhpParser\\Node>\|null but returns class\-string#'
