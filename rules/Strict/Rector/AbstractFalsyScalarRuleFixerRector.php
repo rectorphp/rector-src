@@ -9,8 +9,6 @@ use Rector\Rector\AbstractRector;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRector\BooleanInBooleanNotRuleFixerRectorTest
- *
  * @internal
  */
 abstract class AbstractFalsyScalarRuleFixerRector extends AbstractRector implements ConfigurableRectorInterface

@@ -5,26 +5,19 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector\Ternary;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Ternary;
-use Rector\PHPStan\ScopeFetcher;
-use Rector\Strict\NodeFactory\ExactCompareFactory;
-use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * Fixer Rector for PHPStan rule:
- * https://github.com/phpstan/phpstan-strict-rules/blob/master/src/Rules/BooleansInConditions/BooleanInTernaryOperatorRule.php
- *
- * @see \Rector\Tests\Strict\Rector\Ternary\BooleanInTernaryOperatorRuleFixerRector\BooleanInTernaryOperatorRuleFixerRectorTest
+ * @deprecated as risky and requires manual checking
  */
-final class BooleanInTernaryOperatorRuleFixerRector extends AbstractFalsyScalarRuleFixerRector
+final class BooleanInTernaryOperatorRuleFixerRector extends AbstractRector implements DeprecatedInterface
 {
-    public function __construct(
-        private readonly ExactCompareFactory $exactCompareFactory
-    ) {
-    }
+    public const TREAT_AS_NON_EMPTY = 'treat_as_non_empty';
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -74,25 +67,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Ternary
     {
-        // skip short ternary
-        if (! $node->if instanceof Expr) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($node);
-        $exprType = $scope->getNativeType($node->cond);
-
-        $expr = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
-            $exprType,
-            $node->cond,
-            $this->treatAsNonEmpty
-        );
-        if (! $expr instanceof Expr) {
-            return null;
-        }
-
-        $node->cond = $expr;
-
-        return $node;
+        throw new ShouldNotHappenException('This rule is deprecated as risky and not practical');
     }
 }
