@@ -20,7 +20,11 @@
         "doctrine/inflector": "^2.1",
         "illuminate/container": "^11.46",
         "nette/utils": "^4.0",
+<<<<<<< HEAD
         "nikic/php-parser": "^5.6.2",
+=======
+        "nikic/php-parser": "5.6.1",
+>>>>>>> 2a1a5105ab (lock php parser to 5.6.1 to avoid breaking space on attributes)
         "ondram/ci-detector": "^4.2",
         "phpstan/phpdoc-parser": "^2.3",
         "phpstan/phpstan": "^2.1.26",
