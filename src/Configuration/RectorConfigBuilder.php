@@ -36,6 +36,9 @@ use Rector\Symfony\Set\SymfonyInternalSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\PhpVersion;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Webmozart\Assert\Assert;
 
@@ -770,6 +773,13 @@ final class RectorConfigBuilder
         bool $symfonyConfigs = false,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
+
+        if ($strictBooleans) {
+            $message = 'The "strictBooleans" set is deprecated as mostly risky and not practical. Remove it from withPreparedSets() method and use "codeQuality" and "codingStyle" sets instead. They already contain more granular and stable rules on same note.';
+
+            $symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+            $symfonyStyle->warning($message);
+        }
 
         $setMap = [
             SetList::DEAD_CODE => $deadCode,
