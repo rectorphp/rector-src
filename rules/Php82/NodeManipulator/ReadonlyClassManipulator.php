@@ -15,8 +15,10 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
+use Rector\Php81\NodeManipulator\AttributeGroupNewLiner;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
+use Rector\ValueObject\Application\File;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\Visibility;
 
@@ -25,11 +27,12 @@ final readonly class ReadonlyClassManipulator
     public function __construct(
         private VisibilityManipulator $visibilityManipulator,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider,
+        private AttributeGroupNewLiner $attributeGroupNewLiner
     ) {
     }
 
-    public function process(Class_ $class): Class_|null
+    public function process(Class_ $class, File $file): Class_|null
     {
         $scope = ScopeFetcher::fetch($class);
         if ($this->shouldSkip($class, $scope)) {
@@ -43,11 +46,23 @@ final readonly class ReadonlyClassManipulator
         if ($constructClassMethod instanceof ClassMethod) {
             foreach ($constructClassMethod->getParams() as $param) {
                 $this->visibilityManipulator->removeReadonly($param);
+
+                if ($param->attrGroups !== []) {
+                    $this->attributeGroupNewLiner->newLine($file, $param);
+                }
             }
         }
 
         foreach ($class->getProperties() as $property) {
             $this->visibilityManipulator->removeReadonly($property);
+
+            if ($property->attrGroups !== []) {
+                $this->attributeGroupNewLiner->newLine($file, $property);
+            }
+        }
+
+        if ($class->attrGroups !== []) {
+            $this->attributeGroupNewLiner->newLine($file, $class);
         }
 
         return $class;
@@ -210,8 +225,8 @@ final readonly class ReadonlyClassManipulator
         }
 
         return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
-            $class->extends->toString()
-        );
+                $class->extends->toString()
+            );
     }
 
     /**
