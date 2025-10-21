@@ -6,7 +6,6 @@ namespace Rector\VendorLocker\NodeVendorLocker;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use Rector\FileSystem\FilePathHelper;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Reflection\ReflectionResolver;
 
@@ -15,7 +14,6 @@ final readonly class ClassMethodParamVendorLockResolver
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private ReflectionResolver $reflectionResolver,
-        private FilePathHelper $filePathHelper
     ) {
     }
 
@@ -38,11 +36,7 @@ final readonly class ClassMethodParamVendorLockResolver
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
         // has interface vendor lock? → better skip it, as PHPStan has access only to just analyzed classes
-        if ($this->hasParentInterfaceMethod($classReflection, $methodName)) {
-            return true;
-        }
-
-        return $this->hasClassMethodLockMatchingFileName($classReflection, $methodName, '/vendor/');
+        return $this->hasParentInterfaceMethod($classReflection, $methodName);
     }
 
     /**
@@ -54,39 +48,6 @@ final readonly class ClassMethodParamVendorLockResolver
     {
         foreach ($classReflection->getInterfaces() as $interfaceClassReflection) {
             if ($interfaceClassReflection->hasMethod($methodName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function hasClassMethodLockMatchingFileName(
-        ClassReflection $classReflection,
-        string $methodName,
-        string $filePathPartName
-    ): bool {
-        $ancestorClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
-        foreach ($ancestorClassReflections as $ancestorClassReflection) {
-            // parent type
-            if (! $ancestorClassReflection->hasNativeMethod($methodName)) {
-                continue;
-            }
-
-            // is file in vendor?
-            $fileName = $ancestorClassReflection->getFileName();
-            // probably internal class
-            if ($fileName === null) {
-                continue;
-            }
-
-            // not conditions? its a match
-            if ($filePathPartName === '') {
-                return true;
-            }
-
-            $normalizedFileName = $this->filePathHelper->normalizePathAndSchema($fileName);
-            if (str_contains($normalizedFileName, $filePathPartName)) {
                 return true;
             }
         }
