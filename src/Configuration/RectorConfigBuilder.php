@@ -774,10 +774,8 @@ final class RectorConfigBuilder
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
-        if ($strictBooleans === true) {
-            $message = sprintf(
-                'The "strictBooleans" set is deprecated as mostly risky and not practical. Remove it from withPreparedSets() method and use "codeQuality" and "codingStyle" sets instead. They already contain more granular and stable rules on same note.',
-            );
+        if ($strictBooleans) {
+            $message = 'The "strictBooleans" set is deprecated as mostly risky and not practical. Remove it from withPreparedSets() method and use "codeQuality" and "codingStyle" sets instead. They already contain more granular and stable rules on same note.';
 
             $symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
             $symfonyStyle->warning($message);
