@@ -112,7 +112,7 @@ CODE_SAMPLE
             foreach ($node->elseifs as $elseif) {
                 $keep_elseifs = array_filter(
                     $node->elseifs,
-                    fn ($elseif) => $elseif->stmts !== [] && ! $this->shouldSkipExpr($elseif->cond)
+                    fn ($elseif) => $elseif->stmts !== [] || $this->shouldSkipExpr($elseif->cond)
                 );
                 if (count($node->elseifs) !== count($keep_elseifs)) {
                     $node->elseifs = $keep_elseifs;
