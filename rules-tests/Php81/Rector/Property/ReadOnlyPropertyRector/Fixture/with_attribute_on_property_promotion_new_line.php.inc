@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final class WithAttributeOnPropertyPromotion
+final class WithAttributeOnPropertyPromotionNewLine
 {
 	private function __construct(
         #[MyAttr]
@@ -16,7 +16,7 @@ final class WithAttributeOnPropertyPromotion
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final class WithAttributeOnPropertyPromotion
+final class WithAttributeOnPropertyPromotionNewLine
 {
 	private function __construct(
         #[MyAttr]
