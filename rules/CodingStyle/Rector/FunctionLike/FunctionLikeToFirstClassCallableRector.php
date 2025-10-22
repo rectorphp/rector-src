@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
@@ -20,9 +21,12 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ResolvedFunctionVariantWithOriginal;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -33,8 +37,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FunctionLikeToFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const SKIP_BASED_ON_CALLBACK_SIGNATURE = 'skip_based_on_callback_signature';
+
     public function __construct(
-        private readonly AstResolver $astResolver
+        private readonly AstResolver $astResolver,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -59,14 +69,63 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [ArrowFunction::class, Closure::class];
+        return [
+            MethodCall::class,
+            FuncCall::class,
+            StaticCall::class,
+            New_::class,
+            ArrowFunction::class,
+            Closure::class,
+        ];
     }
 
     /**
-     * @param ArrowFunction|Closure $node
+     * @param MethodCall|FuncCall|StaticCall|New_|ArrowFunction|Closure $node
      */
     public function refactor(Node $node): null|CallLike
     {
+        if ($node instanceof CallLike) {
+            if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
+            $args = $node->getArgs();
+            foreach ($args as $key => $arg) {
+                if ($arg->value instanceof Closure || $arg->value instanceof ArrowFunction) {
+                    // verify caller signature
+                    $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
+
+                    if ($methodReflection === null) {
+                        return null;
+                    }
+
+                    $reflection = ParametersAcceptorSelectorVariantsWrapper::select(
+                        $methodReflection,
+                        $node,
+                        ScopeFetcher::fetch($node)
+                    );
+
+                    if ($reflection instanceof ResolvedFunctionVariantWithOriginal) {
+                        return null;
+                    }
+
+                    foreach ($reflection->getParameters() as $index => $parameterReflection) {
+                        if ($index === $key
+                            && $parameterReflection->getType()
+                                ->isCallable()
+                                ->yes()
+                            && count($parameterReflection->getType()->getParameters()) > 1
+                        ) {
+                            $args[$key]->value->setAttribute(self::SKIP_BASED_ON_CALLBACK_SIGNATURE, true);
+                            return null;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         $callLike = $this->extractCallLike($node);
 
         if ($callLike === null) {
@@ -119,6 +178,10 @@ CODE_SAMPLE
         }
 
         if ($this->isUsingThisInNonObjectContext($callLike, $scope)) {
+            return true;
+        }
+
+        if ($node->getAttribute(self::SKIP_BASED_ON_CALLBACK_SIGNATURE) === true) {
             return true;
         }
 
