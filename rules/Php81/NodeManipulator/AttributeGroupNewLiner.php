@@ -49,12 +49,12 @@ final class AttributeGroupNewLiner
                 }
 
                 $nextTokenText = $oldTokens[$startTokenPos + $iteration + 1]->text ?? '';
-                // when trimmed is empty string, but it contains new line
-                if (trim($nextTokenText) === '' && str_contains($nextTokenText, "\n")) {
-                    break;
-                }
-
                 if (trim($nextTokenText) === '') {
+                    // when trimmed is empty string, but it contains new line
+                    if (str_contains($nextTokenText, "\n") || str_contains($nextTokenText, "\r")) {
+                        break;
+                    }
+
                     $space = ltrim($nextTokenText, "\r\n");
                 } elseif (trim($oldTokens[$startTokenPos - 1]->text ?? '') === '') {
                     $space = ltrim($oldTokens[$startTokenPos - 1]->text ?? '', "\r\n");
