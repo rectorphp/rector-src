@@ -23,7 +23,6 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\NodeManipulator\PropertyFetchAssignManipulator;
 use Rector\NodeManipulator\PropertyManipulator;
-use Rector\Php81\NodeManipulator\AttributeGroupNewLiner;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
@@ -47,8 +46,7 @@ final class ReadOnlyPropertyRector extends AbstractRector implements MinPhpVersi
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly AttributeGroupNewLiner $attributeGroupNewLiner
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -177,12 +175,6 @@ CODE_SAMPLE
         }
 
         $this->visibilityManipulator->makeReadonly($property);
-
-        $attributeGroups = $property->attrGroups;
-        if ($attributeGroups !== []) {
-            $this->attributeGroupNewLiner->newLine($this->file, $property);
-        }
-
         $this->removeReadOnlyDoc($property);
 
         return $property;
@@ -245,7 +237,7 @@ CODE_SAMPLE
         }
 
         if ($param->attrGroups !== []) {
-            $this->attributeGroupNewLiner->newLine($this->file, $param);
+            //$this->attributeGroupNewLiner->newLine($this->file, $param);
         }
 
         $this->visibilityManipulator->makeReadonly($param);
