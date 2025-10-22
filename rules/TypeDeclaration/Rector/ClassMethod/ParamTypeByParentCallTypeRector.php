@@ -104,6 +104,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($param->variadic) {
+                continue;
+            }
+
             $parentParam = $this->callerParamMatcher->matchParentParam($parentStaticCall, $param, $scope);
             if (! $parentParam instanceof Param) {
                 continue;
