@@ -236,10 +236,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($param->attrGroups !== []) {
-            //$this->attributeGroupNewLiner->newLine($this->file, $param);
-        }
-
         $this->visibilityManipulator->makeReadonly($param);
 
         $this->removeReadOnlyDoc($param);
