@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\FunctionLike;
 
-use PHPStan\Type\CallableType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -24,6 +23,7 @@ use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ResolvedFunctionVariantWithOriginal;
+use PHPStan\Type\CallableType;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
@@ -242,7 +242,10 @@ CODE_SAMPLE
 
             if ($arg->value instanceof Variable) {
                 foreach ($params as $param) {
-                    if ($param->var instanceof Variable && $this->isName($param->var, (string) $this->getName($arg->value)) && $param->variadic && ! $arg->unpack) {
+                    if ($param->var instanceof Variable
+                        && $this->isName($param->var, (string) $this->getName($arg->value))
+                        && $param->variadic
+                        && ! $arg->unpack) {
                         return true;
                     }
                 }
