@@ -13,12 +13,15 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
+use Rector\NodeAnalyzer\VariadicAnalyzer;
+use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -31,6 +34,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FunctionLikeToFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly AstResolver $astResolver
+    )
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -111,7 +120,16 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->isUsingThisInNonObjectContext($callLike, $scope);
+        if ($this->isUsingThisInNonObjectContext($callLike, $scope)) {
+            return true;
+        }
+
+        $functionLike = $this->astResolver->resolveClassMethodOrFunctionFromCall($callLike);
+        if (! $functionLike instanceof FunctionLike) {
+            return false;
+        }
+
+        return count($functionLike->getParams()) > 1;
     }
 
     private function extractCallLike(Closure|ArrowFunction $node): FuncCall|MethodCall|StaticCall|null
