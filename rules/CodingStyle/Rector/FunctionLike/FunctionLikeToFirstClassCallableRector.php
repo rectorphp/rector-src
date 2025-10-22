@@ -242,7 +242,7 @@ CODE_SAMPLE
 
             if ($arg->value instanceof Variable) {
                 foreach ($params as $param) {
-                    if ($param->var instanceof Variable && $param->variadic && ! $arg->unpack) {
+                    if ($param->var instanceof Variable && $this->isName($param->var, (string) $this->getName($arg->value)) && $param->variadic && ! $arg->unpack) {
                         return true;
                     }
                 }
