@@ -20,7 +20,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
-use Rector\NodeAnalyzer\VariadicAnalyzer;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
@@ -36,8 +35,7 @@ final class FunctionLikeToFirstClassCallableRector extends AbstractRector implem
 {
     public function __construct(
         private readonly AstResolver $astResolver
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
