@@ -6,8 +6,6 @@ namespace Rector\Console\Command;
 
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Configuration\ConfigurationRuleFilter;
-use Rector\Configuration\OnlyRuleResolver;
 use Rector\Configuration\Option;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
@@ -26,8 +24,6 @@ final class ListRulesCommand extends Command
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,
         private readonly SkippedClassResolver $skippedClassResolver,
-        private readonly OnlyRuleResolver $onlyRuleResolver,
-        private readonly ConfigurationRuleFilter $configurationRuleFilter,
         private readonly array $rectors
     ) {
         parent::__construct();
@@ -53,12 +49,7 @@ final class ListRulesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $onlyRule = $input->getOption(Option::ONLY);
-        if ($onlyRule !== null) {
-            $onlyRule = $this->onlyRuleResolver->resolve($onlyRule);
-        }
-
-        $rectorClasses = $this->resolveRectorClasses($onlyRule);
+        $rectorClasses = $this->resolveRectorClasses();
 
         $skippedClasses = $this->getSkippedCheckers();
 
@@ -90,16 +81,12 @@ final class ListRulesCommand extends Command
     /**
      * @return array<class-string<RectorInterface>>
      */
-    private function resolveRectorClasses(?string $onlyRule): array
+    private function resolveRectorClasses(): array
     {
         $customRectors = array_filter(
             $this->rectors,
             static fn (RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
         );
-
-        if ($onlyRule !== null) {
-            $customRectors = $this->configurationRuleFilter->filterOnlyRule($customRectors, $onlyRule);
-        }
 
         $rectorClasses = array_map(static fn (RectorInterface $rector): string => $rector::class, $customRectors);
         sort($rectorClasses);
