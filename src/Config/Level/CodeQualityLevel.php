@@ -8,6 +8,7 @@ use Rector\CodeQuality\Rector\Assign\CombinedAssignRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
+use Rector\CodeQuality\Rector\BooleanNot\ReplaceConstantBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\BooleanOr\RepeatedOrEqualToInArrayRector;
@@ -106,6 +107,7 @@ final class CodeQualityLevel
         CombinedAssignRector::class,
         SimplifyEmptyArrayCheckRector::class,
         ReplaceMultipleBooleanNotRector::class,
+        ReplaceConstantBooleanNotRector::class,
         ForeachToInArrayRector::class,
         RepeatedOrEqualToInArrayRector::class,
         RepeatedAndNotEqualToNotInArrayRector::class,
