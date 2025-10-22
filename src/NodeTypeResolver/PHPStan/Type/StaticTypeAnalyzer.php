@@ -12,15 +12,9 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 
 final readonly class StaticTypeAnalyzer
 {
-    public function __construct(
-        private UnionTypeAnalyzer $unionTypeAnalyzer
-    ) {
-    }
-
     public function isAlwaysTruableType(Type $type): bool
     {
         if ($type instanceof MixedType) {
