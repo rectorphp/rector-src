@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -35,7 +36,7 @@ final readonly class PropertyTypeDecorator
         PhpDocInfo $phpDocInfo,
         bool $changeVarTypeFallback = true
     ): void {
-        if (! $this->unionTypeAnalyzer->isNullable($unionType)) {
+        if (! TypeCombinator::containsNull($unionType)) {
             if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
                 $property->type = $typeNode;
                 return;
