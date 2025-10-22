@@ -53,10 +53,6 @@ final readonly class ReadonlyClassManipulator
             $this->visibilityManipulator->removeReadonly($property);
         }
 
-        if ($class->attrGroups !== []) {
-            $this->attributeGroupNewLiner->newLine($file, $class);
-        }
-
         return $class;
     }
 

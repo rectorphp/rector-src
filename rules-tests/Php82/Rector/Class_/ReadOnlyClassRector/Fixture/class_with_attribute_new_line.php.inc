@@ -3,7 +3,7 @@
 namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture;
 
 #[SomeAttribute]
-final class ClassWithAttribute
+final class ClassWithAttributeNewLine
 {
     private readonly string $property;
 }
@@ -15,7 +15,7 @@ final class ClassWithAttribute
 namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture;
 
 #[SomeAttribute]
-final readonly class ClassWithAttribute
+final readonly class ClassWithAttributeNewLine
 {
     private string $property;
 }

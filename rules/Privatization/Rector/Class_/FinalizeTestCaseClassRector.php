@@ -85,10 +85,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->attrGroups !== []) {
-            $this->attributeGroupNewLiner->newLine($this->file, $node);
-        }
-
         $this->visibilityManipulator->makeFinal($node);
 
         return $node;
