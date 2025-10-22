@@ -15,10 +15,8 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
-use Rector\Php81\NodeManipulator\AttributeGroupNewLiner;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
-use Rector\ValueObject\Application\File;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\Visibility;
 
@@ -31,7 +29,7 @@ final readonly class ReadonlyClassManipulator
     ) {
     }
 
-    public function process(Class_ $class, File $file): Class_|null
+    public function process(Class_ $class): Class_|null
     {
         $scope = ScopeFetcher::fetch($class);
         if ($this->shouldSkip($class, $scope)) {
