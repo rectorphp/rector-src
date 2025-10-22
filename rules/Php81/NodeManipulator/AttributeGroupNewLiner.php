@@ -51,6 +51,7 @@ final class AttributeGroupNewLiner
                 $nextTokenText = $oldTokens[$startTokenPos + $iteration + 1]->text ?? '';
                 if (trim($nextTokenText) === '') {
                     // when trimmed is empty string, but original text contains new line
+                    // no need to add another new line
                     if (str_contains($nextTokenText, "\n") || str_contains($nextTokenText, "\r")) {
                         break;
                     }
