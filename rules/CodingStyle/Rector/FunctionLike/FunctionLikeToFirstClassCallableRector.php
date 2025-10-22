@@ -111,9 +111,7 @@ CODE_SAMPLE
 
                     foreach ($reflection->getParameters() as $index => $parameterReflection) {
                         if ($index === $key
-                            && $parameterReflection->getType()
-                                ->isCallable()
-                                ->yes()
+                            && $parameterReflection->getType() instanceof \PHPStan\Type\CallableType
                             && count($parameterReflection->getType()->getParameters()) > 1
                         ) {
                             $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
