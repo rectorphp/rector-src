@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
@@ -237,6 +238,14 @@ CODE_SAMPLE
         foreach ($args as $key => $arg) {
             if (! $this->nodeComparator->areNodesEqual($arg->value, $params[$key]->var)) {
                 return true;
+            }
+
+            if ($arg->value instanceof Variable) {
+                foreach ($params as $param) {
+                    if ($param->var instanceof Variable && $param->variadic && ! $arg->unpack) {
+                        return true;
+                    }
+                }
             }
         }
 
