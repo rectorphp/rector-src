@@ -40,7 +40,7 @@ final class FunctionLikeToFirstClassCallableRector extends AbstractRector implem
     /**
      * @var string
      */
-    private const SKIP_BASED_ON_CALLBACK_SIGNATURE = 'skip_based_on_callback_signature';
+    private const HAS_CALLBACK_SIGNATURE_MULTI_PARAMS = 'has_callback_signature_multi_params';
 
     public function __construct(
         private readonly AstResolver $astResolver,
@@ -116,7 +116,7 @@ CODE_SAMPLE
                                 ->yes()
                             && count($parameterReflection->getType()->getParameters()) > 1
                         ) {
-                            $args[$key]->value->setAttribute(self::SKIP_BASED_ON_CALLBACK_SIGNATURE, true);
+                            $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
                             return null;
                         }
                     }
@@ -181,7 +181,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($node->getAttribute(self::SKIP_BASED_ON_CALLBACK_SIGNATURE) === true) {
+        if ($node->getAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS) === true) {
             return true;
         }
 
