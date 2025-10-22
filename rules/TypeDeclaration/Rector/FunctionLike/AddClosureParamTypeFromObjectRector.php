@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Param;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -54,7 +53,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        throw new ShouldNotHappenException(sprintf('"%s" rule is deprecated as risky and not practical', self::class));
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" rule is deprecated as too specific and not practical for general core rules',
+            self::class
+        ));
     }
 
     /**
