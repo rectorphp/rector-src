@@ -7,6 +7,9 @@ namespace Rector\Renaming\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
+/**
+ * @deprecated as related rule is deprecated
+ */
 final readonly class RenameFunctionLikeParamWithinCallLikeArg
 {
     /**
