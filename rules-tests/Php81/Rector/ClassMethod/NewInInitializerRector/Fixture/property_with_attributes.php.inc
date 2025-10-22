@@ -34,7 +34,7 @@ class Carrier
     public function __construct(
         #[ORM\Id]
         #[ORM\Column(type: 'ulid', unique: true)]
-        private Ulid $id = new Ulid()
+        private ?Ulid $id = new Ulid()
     )
     {
     }

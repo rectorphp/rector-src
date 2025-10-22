@@ -29,7 +29,7 @@ const NOW = 'now';
 
 class PassConstFetchArg
 {
-    public function __construct(private DateTime $dateTime = new DateTime(NOW))
+    public function __construct(private ?DateTime $dateTime = new DateTime(NOW))
     {
     }
 }

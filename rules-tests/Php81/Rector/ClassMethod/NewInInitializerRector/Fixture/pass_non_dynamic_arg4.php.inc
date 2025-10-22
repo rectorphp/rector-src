@@ -25,7 +25,7 @@ use stdClass;
 
 class SomeClass
 {
-    public function __construct(private Logger $logger = new NullLogger([new stdClass]))
+    public function __construct(private ?Logger $logger = new NullLogger([new stdClass]))
     {
     }
 }
