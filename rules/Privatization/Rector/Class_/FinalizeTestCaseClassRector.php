@@ -20,8 +20,7 @@ final class FinalizeTestCaseClassRector extends AbstractRector
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly AttributeGroupNewLiner $attributeGroupNewLiner
+        private readonly VisibilityManipulator $visibilityManipulator
     ) {
     }
 

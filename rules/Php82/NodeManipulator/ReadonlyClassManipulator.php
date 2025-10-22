@@ -27,8 +27,7 @@ final readonly class ReadonlyClassManipulator
     public function __construct(
         private VisibilityManipulator $visibilityManipulator,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private ReflectionProvider $reflectionProvider,
-        private AttributeGroupNewLiner $attributeGroupNewLiner
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
