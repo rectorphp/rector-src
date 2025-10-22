@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\FunctionLike;
 
+use PHPStan\Type\CallableType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -111,7 +112,7 @@ CODE_SAMPLE
 
                     foreach ($reflection->getParameters() as $index => $parameterReflection) {
                         if ($index === $key
-                            && $parameterReflection->getType() instanceof \PHPStan\Type\CallableType
+                            && $parameterReflection->getType() instanceof CallableType
                             && count($parameterReflection->getType()->getParameters()) > 1
                         ) {
                             $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
