@@ -354,3 +354,7 @@ parameters:
             path: src/CustomRules/SimpleNodeDumper.php
 
         - '#Method Rector\\Utils\\Rector\\RemoveRefactorDuplicatedNodeInstanceCheckRector\:\:getInstanceofNodeClass\(\) should return class\-string<PhpParser\\Node>\|null but returns class\-string#'
+
+        -
+            path: bin/list-unused-rules.php
+            identifier:  symplify.multipleClassLikeInFile
