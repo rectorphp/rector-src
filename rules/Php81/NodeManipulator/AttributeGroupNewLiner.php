@@ -6,14 +6,15 @@ namespace Rector\Php81\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Stmt\Class_;
 use Rector\ValueObject\Application\File;
 use Webmozart\Assert\Assert;
 
 final class AttributeGroupNewLiner
 {
-    public function newLine(File $file, Node $node): void
+    public function newLine(File $file, Class_ $node): void
     {
-        $attrGroups = $node->attrGroups ?? [];
+        $attrGroups = $node->attrGroups;
 
         if ($attrGroups === []) {
             return;
