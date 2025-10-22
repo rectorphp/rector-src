@@ -241,9 +241,10 @@ CODE_SAMPLE
             }
 
             if ($arg->value instanceof Variable) {
+                $variableName = (string) $this->getName($arg->value);
                 foreach ($params as $param) {
                     if ($param->var instanceof Variable
-                        && $this->isName($param->var, (string) $this->getName($arg->value))
+                        && $this->isName($param->var, $variableName)
                         && $param->variadic
                         && ! $arg->unpack) {
                         return true;
