@@ -5,7 +5,7 @@ namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 use DateTime;
 use DateTimeZone;
 
-class PassNonDynamicArg
+final class PassNonDynamicArg
 {
     private DateTime $dateTime;
 
@@ -25,7 +25,7 @@ namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 use DateTime;
 use DateTimeZone;
 
-class PassNonDynamicArg
+final class PassNonDynamicArg
 {
     public function __construct(private ?DateTime $dateTime = new DateTime('now', new DateTimeZone('Asia/Jakarta')))
     {

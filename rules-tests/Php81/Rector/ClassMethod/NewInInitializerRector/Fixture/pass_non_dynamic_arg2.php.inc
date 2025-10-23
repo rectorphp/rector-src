@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 
-class SomeClass
+final class PassNonDynamicArg2
 {
     private Logger $logger;
 
@@ -19,7 +19,7 @@ class SomeClass
 
 namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 
-class SomeClass
+final class PassNonDynamicArg2
 {
     public function __construct(private ?Logger $logger = new NullLogger(['a' => 'b']))
     {

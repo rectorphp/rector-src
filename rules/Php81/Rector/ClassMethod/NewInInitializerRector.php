@@ -81,11 +81,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === null || $node->stmts === []) {
-            return null;
-        }
-
-        if ($node->isAbstract() || $node->isAnonymous()) {
+        if ($this->shouldSkipClass($node)) {
             return null;
         }
 
@@ -103,6 +99,10 @@ CODE_SAMPLE
         foreach ((array) $constructClassMethod->stmts as $key => $stmt) {
             foreach ($params as $param) {
                 $paramName = $this->getName($param);
+
+                if ($param->type instanceof NullableType && $param->default === null) {
+                    continue;
+                }
 
                 $coalesce = $this->coalescePropertyAssignMatcher->matchCoalesceAssignsToLocalPropertyNamed(
                     $stmt,
@@ -214,5 +214,18 @@ CODE_SAMPLE
         }
 
         return $params;
+    }
+
+    private function shouldSkipClass(Class_ $class): bool
+    {
+        if ($class->stmts === []) {
+            return true;
+        }
+
+        if ($class->isAbstract()) {
+            return true;
+        }
+
+        return $class->isAnonymous();
     }
 }
