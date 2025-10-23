@@ -12,7 +12,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $composerJsonFileContents = FileSystem::read(__DIR__ . '/../composer.json');
 
-$installedPackageResolver = new InstalledPackageResolver(__DIR__ . '/..');
+$installedPackageResolver = new InstalledPackageResolver(__DIR__ . '/rector-src');
 $phpstanVersion = $installedPackageResolver->resolvePackageVersion('phpstan/phpstan');
 
 $composerJson = Json::decode($composerJsonFileContents, forceArrays: true);

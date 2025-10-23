@@ -30,7 +30,7 @@ note "Starts"
 note "Downloading php-scoper.phar"
 wget https://github.com/humbug/php-scoper/releases/download/0.18.17/php-scoper.phar -N --no-verbose
 
-php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
+php "$BUILD_DIRECTORY/scripts/add-phpstan-self-replace.php"
 
 note "Remove PHPStan to avoid duplicating it"
 
