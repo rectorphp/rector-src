@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OpenApi\Attributes
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute
 {
-    use OpenApi\Annotations as OA;
-
-    #[\Attribute]
-    class SomeProperty {}
+    use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Annotation as OA;
 
     class TestClass
     {
@@ -30,12 +27,9 @@ namespace OpenApi\Attributes
 
 declare(strict_types=1);
 
-namespace OpenApi\Attributes
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute
 {
-    use OpenApi\Attributes as OA;
-
-    #[\Attribute]
-    class SomeProperty {}
+    use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute as OA;
 
     class TestClass
     {
