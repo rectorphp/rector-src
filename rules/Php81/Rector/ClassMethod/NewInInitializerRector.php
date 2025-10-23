@@ -221,9 +221,11 @@ CODE_SAMPLE
         if ($class->stmts === []) {
             return true;
         }
+
         if ($class->isAbstract()) {
             return true;
         }
+
         return $class->isAnonymous();
     }
 }
