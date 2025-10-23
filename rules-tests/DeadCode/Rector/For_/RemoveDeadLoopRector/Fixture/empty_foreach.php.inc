@@ -2,13 +2,12 @@
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
-class Do_
+final class EmptyForeach
 {
-    public function run()
+    public function run($values)
     {
-        do {
-
-        } while (++$i < 10);
+        foreach ($values as $value) {
+        }
     }
 }
 
@@ -18,9 +17,9 @@ class Do_
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
-class Do_
+final class EmptyForeach
 {
-    public function run()
+    public function run($values)
     {
     }
 }

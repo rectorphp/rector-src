@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector\Fixture;
 
-class Identical
+final class SplitOrIdentical
 {
     public function canDrive(Car $newCar)
     {
@@ -22,7 +22,7 @@ class Identical
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector\Fixture;
 
-class Identical
+final class SplitOrIdentical
 {
     public function canDrive(Car $newCar)
     {

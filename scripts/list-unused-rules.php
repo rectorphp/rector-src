@@ -2,16 +2,12 @@
 
 declare(strict_types=1);
 
-use Nette\Loaders\RobotLoader;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Scripts\Finder\RectorClassFinder;
 use Rector\Scripts\Finder\RectorSetFilesFinder;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
-use Webmozart\Assert\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
 

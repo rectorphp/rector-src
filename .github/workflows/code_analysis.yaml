@@ -57,6 +57,10 @@ jobs:
                         run: php scripts/check-before-after-same-fixtures.php
 
                     -
+                        name: 'Check fixture classes are different to nodes'
+                        run: php scripts/avoid-short-node-names-in-fixtures.php
+
+                    -
                         name: 'Check no "*.php" files in rules Fixture directory'
                         run: php scripts/no-php-file-in-fixtures.php
 
