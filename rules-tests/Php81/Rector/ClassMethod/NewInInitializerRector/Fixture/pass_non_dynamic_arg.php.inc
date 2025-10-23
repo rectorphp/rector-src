@@ -27,7 +27,7 @@ use DateTimeZone;
 
 class PassNonDynamicArg
 {
-    public function __construct(private DateTime $dateTime = new DateTime('now', new DateTimeZone('Asia/Jakarta')))
+    public function __construct(private ?DateTime $dateTime = new DateTime('now', new DateTimeZone('Asia/Jakarta')))
     {
     }
 }

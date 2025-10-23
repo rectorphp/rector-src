@@ -59,7 +59,7 @@ CODE_SAMPLE
 class SomeClass
 {
     public function __construct(
-        private Logger $logger = new NullLogger,
+        private ?Logger $logger = new NullLogger,
     ) {
     }
 }
@@ -116,10 +116,6 @@ CODE_SAMPLE
                     continue;
                 }
 
-                /** @var NullableType $currentParamType */
-                $currentParamType = $param->type;
-
-                $param->type = $currentParamType->type;
                 $param->default = $coalesce->right;
 
                 unset($constructClassMethod->stmts[$key]);

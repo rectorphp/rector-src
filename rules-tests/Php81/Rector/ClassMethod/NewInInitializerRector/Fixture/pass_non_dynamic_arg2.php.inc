@@ -21,7 +21,7 @@ namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 
 class SomeClass
 {
-    public function __construct(private Logger $logger = new NullLogger(['a' => 'b']))
+    public function __construct(private ?Logger $logger = new NullLogger(['a' => 'b']))
     {
     }
 }

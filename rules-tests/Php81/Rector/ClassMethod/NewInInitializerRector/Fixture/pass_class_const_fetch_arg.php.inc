@@ -27,7 +27,7 @@ use Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Source\SomeValu
 
 class PassClassConstFetchArg
 {
-    public function __construct(private DateTime $dateTime = new DateTime(SomeValueObject::NOW))
+    public function __construct(private ?DateTime $dateTime = new DateTime(SomeValueObject::NOW))
     {
     }
 }
