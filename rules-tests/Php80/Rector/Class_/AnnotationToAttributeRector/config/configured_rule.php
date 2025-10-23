@@ -67,6 +67,9 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute('OldName2', NewName2::class),
         new AnnotationToAttribute('SameName', SameName::class),
 
-        new AnnotationToAttribute('OpenApi\Annotations\Property', 'OpenApi\Attributes\Property'),
+        new AnnotationToAttribute(
+            'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Annotation\SomeProperty',
+            'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute\SomeProperty'
+        ),
     ]);
 };
