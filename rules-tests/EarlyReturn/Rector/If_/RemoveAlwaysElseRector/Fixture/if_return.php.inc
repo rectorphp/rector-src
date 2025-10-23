@@ -2,15 +2,18 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-class Throw_
+final class IfReturn
 {
     public function run()
     {
         if ($cond1) {
-            throw new \Exception('should not happen');
+            return 'foo';
+        } elseif ($cond2) {
+            bar();
+        } elseif ($cond3) {
+            baz();
         } else {
             foo();
-            return 'bar';
         }
     }
 }
@@ -21,15 +24,21 @@ class Throw_
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-class Throw_
+final class IfReturn
 {
     public function run()
     {
         if ($cond1) {
-            throw new \Exception('should not happen');
+            return 'foo';
         }
-        foo();
-        return 'bar';
+        if ($cond2) {
+            bar();
+        } elseif ($cond3) {
+            baz();
+        }
+        else {
+            foo();
+        }
     }
 }
 

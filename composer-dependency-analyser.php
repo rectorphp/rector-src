@@ -17,9 +17,6 @@ return $config
     // ensure use version ^3.2.0
     ->ignoreErrorsOnPackage('composer/pcre', [ErrorType::UNUSED_DEPENDENCY])
 
-    // use din /bin, but only local script
-    ->ignoreErrorsOnPackage('nette/robot-loader', [ErrorType::DEV_DEPENDENCY_IN_PROD])
-
     ->ignoreErrorsOnPaths([
         __DIR__ . '/stubs',
         __DIR__ . '/tests',

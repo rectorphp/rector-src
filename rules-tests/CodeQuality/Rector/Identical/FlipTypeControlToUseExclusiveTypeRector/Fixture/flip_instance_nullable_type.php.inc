@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiv
 
 use stdClass;
 
-class NullableType
+final class FlipInstanceNullableType
 {
     public function run()
     {
@@ -32,7 +32,7 @@ namespace Rector\Tests\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiv
 
 use stdClass;
 
-class NullableType
+final class FlipInstanceNullableType
 {
     public function run()
     {

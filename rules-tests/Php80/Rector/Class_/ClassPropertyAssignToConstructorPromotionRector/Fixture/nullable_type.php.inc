@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 use DateTimeInterface;
 
-class NullableType
+final class MergeWithNullableType
 {
     private ?DateTimeInterface $time;
 
@@ -22,7 +22,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 use DateTimeInterface;
 
-class NullableType
+final class MergeWithNullableType
 {
     public function __construct(private ?DateTimeInterface $time = null)
     {

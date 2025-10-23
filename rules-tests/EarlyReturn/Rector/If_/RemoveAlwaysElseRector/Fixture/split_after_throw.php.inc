@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-class Exit_
+final class SplitAfterThrow
 {
     public function run()
     {
         if ($cond1) {
-            exit('bye');
+            throw new \Exception('should not happen');
         } else {
             foo();
             return 'bar';
@@ -21,12 +21,12 @@ class Exit_
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-class Exit_
+final class SplitAfterThrow
 {
     public function run()
     {
         if ($cond1) {
-            exit('bye');
+            throw new \Exception('should not happen');
         }
         foo();
         return 'bar';

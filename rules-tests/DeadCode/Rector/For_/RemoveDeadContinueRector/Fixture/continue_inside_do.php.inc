@@ -2,14 +2,14 @@
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadContinueRector\Fixture;
 
-class While_
+final class ContinueInsideDo
 {
     public function run()
     {
-       while (++$i < 10) {
-           echo $i;
-           continue;
-       }
+        do {
+            echo ".";
+            continue;
+        } while (++$i < 10);
     }
 }
 
@@ -19,13 +19,13 @@ class While_
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadContinueRector\Fixture;
 
-class While_
+final class ContinueInsideDo
 {
     public function run()
     {
-       while (++$i < 10) {
-           echo $i;
-       }
+        do {
+            echo ".";
+        } while (++$i < 10);
     }
 }
 

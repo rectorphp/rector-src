@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadContinueRector\Fixture;
 
-class Foreach_
+final class ContinueInsideForeach
 {
     public function run($values)
     {
@@ -19,7 +19,7 @@ class Foreach_
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadContinueRector\Fixture;
 
-class Foreach_
+final class ContinueInsideForeach
 {
     public function run($values)
     {

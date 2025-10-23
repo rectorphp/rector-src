@@ -46,7 +46,7 @@ jobs:
 
                     -
                         name: 'Compatible PHPStan versions'
-                        run: php bin/validate-phpstan-version.php
+                        run: php scripts/validate-phpstan-version.php
 
                     -
                         name: 'Finalize classes'
@@ -54,11 +54,15 @@ jobs:
 
                     -
                         name: 'Check before/after test fixture on no-changes'
-                        run: php bin/check-before-after-same-fixtures.php
+                        run: php scripts/check-before-after-same-fixtures.php
+
+                    -
+                        name: 'Check fixture classes are different to nodes'
+                        run: php scripts/avoid-short-node-names-in-fixtures.php
 
                     -
                         name: 'Check no "*.php" files in rules Fixture directory'
-                        run: php bin/no-php-file-in-fixtures.php
+                        run: php scripts/no-php-file-in-fixtures.php
 
                     -
                         name: 'Detect composer dependency issues'

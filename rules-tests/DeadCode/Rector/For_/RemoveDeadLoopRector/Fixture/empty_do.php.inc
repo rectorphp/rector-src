@@ -2,12 +2,13 @@
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
-class While_
+final class EmptyDo
 {
     public function run()
     {
-       while (++$i < 10) {
-       }
+        do {
+
+        } while (++$i < 10);
     }
 }
 
@@ -17,7 +18,7 @@ class While_
 
 namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
-class While_
+final class EmptyDo
 {
     public function run()
     {

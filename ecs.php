@@ -17,6 +17,7 @@ return ECSConfig::configure()
         __DIR__ . '/tests',
         __DIR__ . '/utils',
         __DIR__ . '/config',
+        __DIR__ . '/scripts',
         __DIR__ . '/build/build-preload.php',
     ])
     ->withSkip([
