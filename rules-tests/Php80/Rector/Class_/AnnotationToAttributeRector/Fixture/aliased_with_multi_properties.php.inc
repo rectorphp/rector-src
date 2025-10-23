@@ -2,23 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
+
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Annotation as OA;
+
+class TestClass
 {
-    use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Annotation as OA;
+    /**
+     * @OA\SomeProperty(type="string")
+     */
+    public $property1;
 
-    class TestClass
-    {
-        /**
-         * @OA\SomeProperty(type="string")
-         */
-        public $property1;
-
-        /**
-         * @OA\SomeProperty(type="string")
-         */
-        public $property2;
-    }
-
+    /**
+     * @OA\SomeProperty(type="string")
+     */
+    public $property2;
 }
 
 ?>
@@ -27,19 +25,17 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\At
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
+
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute as OA;
+
+class TestClass
 {
-    use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute as OA;
+    #[OA\SomeProperty(type: 'string')]
+    public $property1;
 
-    class TestClass
-    {
-        #[OA\SomeProperty(type: 'string')]
-        public $property1;
-
-        #[OA\SomeProperty(type: 'string')]
-        public $property2;
-    }
-
+    #[OA\SomeProperty(type: 'string')]
+    public $property2;
 }
 
 ?>
