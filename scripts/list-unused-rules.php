@@ -44,12 +44,15 @@ $symfonyStyle->newLine();
 $symfonyStyle->writeln(sprintf('<fg=yellow>Found %d used Rector rules in sets</>', count($usedRectorRules)));
 
 $unusedRectorRules = array_diff($rectorClasses, $usedRectorRules);
-$symfonyStyle->writeln(
-    sprintf('<fg=yellow;options=bold>Found %d Rector rules not in any set</>', count($unusedRectorRules))
-);
+
 
 $symfonyStyle->newLine();
 $symfonyStyle->listing($unusedRectorRules);
+
+$symfonyStyle->writeln(
+    sprintf('<fg=yellow;options=bold>Found %d Rector rules not in any set</>', count($unusedRectorRules))
+);
+$symfonyStyle->newLine();
 
 final class UsedRectorClassResolver
 {
