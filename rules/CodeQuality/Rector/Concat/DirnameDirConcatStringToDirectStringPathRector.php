@@ -86,6 +86,7 @@ CODE_SAMPLE
             $node->left = new Dir();
             return $node;
         }
+
         if (str_contains($string->value, '\\')) {
             // windows paths
             $string->value = '\\..\\' . ltrim($string->value, '\\');
