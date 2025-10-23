@@ -6,7 +6,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Annotation as OA;
 
-class TestClass
+class AliasedWithMultiProperties
 {
     /**
      * @OA\SomeProperty(type="string")
@@ -29,7 +29,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute as OA;
 
-class TestClass
+class AliasedWithMultiProperties
 {
     #[OA\SomeProperty(type: 'string')]
     public $property1;
