@@ -86,7 +86,8 @@
             "E2e\\Parallel\\Reflection\\Resolver\\": [
                 "e2e/parallel-reflection-resolver/src/",
                 "e2e/no-parallel-reflection-resolver/src"
-            ]
+            ],
+            "Rector\\Scripts\\": "scripts/src"
         },
         "classmap": [
             "stubs",

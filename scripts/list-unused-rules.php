@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Nette\Loaders\RobotLoader;
 use Rector\Bridge\SetRectorsResolver;
+use Rector\Scripts\Finder\RectorClassFinder;
+use Rector\Scripts\Finder\RectorSetFilesFinder;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -27,7 +29,7 @@ $rectorClasses = $rectorClassFinder->find([
 $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
 $symfonyStyle->writeln(sprintf('<fg=green>Found Rector %d rules</>', count($rectorClasses)));
 
-$rectorSeFinder = new RectorSetFinder();
+$rectorSeFinder = new RectorSetFilesFinder();
 
 $rectorSetFiles = $rectorSeFinder->find([
     __DIR__ . '/../config/set',
@@ -52,53 +54,6 @@ $symfonyStyle->writeln(
 
 $symfonyStyle->newLine();
 $symfonyStyle->listing($unusedRectorRules);
-
-final class RectorClassFinder
-{
-    /**
-     * @param string[] $dirs
-     * @return string[]
-     */
-    public function find(array $dirs): array
-    {
-        $robotLoader = new RobotLoader();
-        $robotLoader->acceptFiles = ['*Rector.php'];
-        $robotLoader->addDirectory(...$dirs);
-
-        $robotLoader->setTempDirectory(sys_get_temp_dir() . '/rector-rules');
-        $robotLoader->refresh();
-
-        return array_keys($robotLoader->getIndexedClasses());
-    }
-}
-
-final class RectorSetFinder
-{
-    /**
-     * @param string[] $configDirs
-     * @return string[]
-     */
-    public function find(array $configDirs): array
-    {
-        Assert::allString($configDirs);
-        Assert::allDirectory($configDirs);
-
-        // find set files
-        $finder = (new Finder())->in($configDirs)
-            ->files()
-            ->name('*.php');
-
-        /** @var SplFileInfo[] $setFileInfos */
-        $setFileInfos = iterator_to_array($finder->getIterator());
-
-        $setFiles = [];
-        foreach ($setFileInfos as $setFileInfo) {
-            $setFiles[] = $setFileInfo->getRealPath();
-        }
-
-        return $setFiles;
-    }
-}
 
 final class UsedRectorClassResolver
 {

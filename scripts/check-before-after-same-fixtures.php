@@ -10,9 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Webmozart\Assert\Assert;
 
 final readonly class SameBeforeAfterFixtureDetector
 {
@@ -29,7 +27,7 @@ final readonly class SameBeforeAfterFixtureDetector
      */
     public function run(array $testDirectories): int
     {
-        $fixtureFiles = $this->findFixtureFiles($testDirectories);
+        $fixtureFiles = \Rector\Scripts\Finder\FixtureFinder::find($testDirectories);
 
         $invalidFixturePaths = [];
         foreach ($fixtureFiles as $fixtureFile) {
@@ -51,23 +49,6 @@ final readonly class SameBeforeAfterFixtureDetector
         $this->symfonyStyle->listing($invalidFixturePaths);
 
         return Command::FAILURE;
-    }
-
-    /**
-     * @param string[] $directories
-     * @return SplFileInfo[]
-     */
-    private function findFixtureFiles(array $directories): array
-    {
-        Assert::allDirectory($directories);
-
-        $finder = (new Finder())
-            ->files()
-            ->in($directories)
-            ->name('*.php.inc')
-            ->sortByName();
-
-        return iterator_to_array($finder->getIterator());
     }
 
     private function hasFileSameBeforeAndAfterPart(SplFileInfo $fixtureFile): bool
