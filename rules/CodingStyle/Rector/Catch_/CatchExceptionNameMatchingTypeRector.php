@@ -130,6 +130,7 @@ CODE_SAMPLE
             }
 
             $catch->var = new Variable($newVariableName);
+
             $this->renameVariableInStmts(
                 $catch,
                 $oldVariableName,
@@ -147,6 +148,23 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function shouldSkipFollowingCatch(Catch_ $catch, string $newVariableName, string $oldVariableName): bool
+    {
+        if ($catch->var instanceof Variable) {
+            $nextCatchVariableName = $this->getName($catch->var);
+
+            return in_array($nextCatchVariableName, [$newVariableName, $oldVariableName], true);
+        }
+
+        if (count($catch->types) === 1) {
+            $soleType = $catch->types[0]->toString();
+
+            return lcfirst($soleType) === $newVariableName;
+        }
+
+        return false;
     }
 
     private function resolveNewVariableName(string $typeShortName): string
@@ -229,9 +247,14 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable($nextNode, function (Node $node) use (
             $oldVariableName,
+            $newVariableName,
             &$nonAssignedVariables
         ): ?int {
             if ($node instanceof Assign && $node->var instanceof Variable) {
+                return NodeVisitor::STOP_TRAVERSAL;
+            }
+
+            if ($node instanceof Catch_ && $this->shouldSkipFollowingCatch($node, $newVariableName, $oldVariableName)) {
                 return NodeVisitor::STOP_TRAVERSAL;
             }
 
