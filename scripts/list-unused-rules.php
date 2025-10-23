@@ -45,7 +45,6 @@ $symfonyStyle->writeln(sprintf('<fg=yellow>Found %d used Rector rules in sets</>
 
 $unusedRectorRules = array_diff($rectorClasses, $usedRectorRules);
 
-
 $symfonyStyle->newLine();
 $symfonyStyle->listing($unusedRectorRules);
 
