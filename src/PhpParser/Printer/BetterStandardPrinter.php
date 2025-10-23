@@ -31,6 +31,7 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\PrettyPrinter\Standard;
+use PhpParser\Token;
 use PHPStan\Node\AnonymousClassNode;
 use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use Rector\Configuration\Option;
@@ -39,6 +40,7 @@ use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Util\NewLineSplitter;
+use Rector\Util\Reflection\PrivatesAccessor;
 use Rector\Util\StringUtils;
 
 /**
@@ -62,7 +64,8 @@ final class BetterStandardPrinter extends Standard
     private const SPACED_NEW_START_REGEX = '#^new\s+#';
 
     public function __construct(
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ExprAnalyzer $exprAnalyzer,
+        private readonly PrivatesAccessor $privatesAccessor,
     ) {
         parent::__construct();
     }
@@ -163,6 +166,10 @@ final class BetterStandardPrinter extends Standard
             self::SPACED_NEW_START_REGEX
         )) {
             $content = 'new ' . $content;
+        }
+
+        if ($node instanceof CallLike) {
+            $this->cleanVariadicPlaceHolderTrailingComma($node);
         }
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
@@ -451,6 +458,45 @@ final class BetterStandardPrinter extends Standard
     {
         $this->wrapAssign($instanceof->expr, $instanceof->class);
         return parent::pExpr_Instanceof($instanceof, $precedence, $lhsPrecedence);
+    }
+
+    private function cleanVariadicPlaceHolderTrailingComma(CallLike $callLike): void
+    {
+        $originalNode = $callLike->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalNode instanceof CallLike) {
+            return;
+        }
+
+        if ($originalNode->isFirstClassCallable()) {
+            return;
+        }
+
+        if (! $callLike->isFirstClassCallable()) {
+            return;
+        }
+
+        if (! $this->origTokens instanceof TokenStream) {
+            return;
+        }
+
+        /** @var Token[] $tokens */
+        $tokens = $this->privatesAccessor->getPrivateProperty($this->origTokens, 'tokens');
+
+        $iteration = 1;
+        while (isset($tokens[$callLike->getEndTokenPos() - $iteration])) {
+            $text = trim((string) $tokens[$callLike->getEndTokenPos() - $iteration]->text);
+
+            if (in_array($text, [')', ''], true)) {
+                ++$iteration;
+                continue;
+            }
+
+            if ($text === ',') {
+                $tokens[$callLike->getEndTokenPos() - $iteration]->text = '';
+            }
+
+            break;
+        }
     }
 
     private function wrapBinaryOp(Node $node): void
