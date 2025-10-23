@@ -50,9 +50,6 @@ final readonly class NodeTypeCorrector
             $cleanTypes[] = $intersectionType;
         }
 
-        //        dump($cleanTypes);
-        //        die;
-
         if (count($cleanTypes) === 1) {
             return $cleanTypes[0];
         }
