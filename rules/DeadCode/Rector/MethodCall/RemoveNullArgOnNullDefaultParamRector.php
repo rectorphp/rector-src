@@ -90,7 +90,7 @@ CODE_SAMPLE
 
         $args = $node->getArgs();
         $lastArgPosition = count($args) - 1;
-        for ($position = $lastArgPosition; $position >=0; $position--) {
+        for ($position = $lastArgPosition; $position >=0; --$position) {
             if (! isset($args[$position])) {
                 continue;
             }
