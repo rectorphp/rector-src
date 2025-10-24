@@ -92,6 +92,8 @@ CODE_SAMPLE
 
         $args = $node->getArgs();
         $lastArgPosition = count($args) - 1;
+        $nullPositions = $this->callLikeParamDefaultResolver->resolveNullPositions($node);
+
         for ($position = $lastArgPosition; $position >= 0; --$position) {
             if (! isset($args[$position])) {
                 continue;
@@ -115,8 +117,7 @@ CODE_SAMPLE
                 break;
             }
 
-            $nullPositions = $this->callLikeParamDefaultResolver->resolveNullPositions($node);
-            if (! in_array($position, $nullPositions)) {
+            if (! in_array($position, $nullPositions, true)) {
                 break;
             }
 
