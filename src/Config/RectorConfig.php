@@ -26,6 +26,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @api
+ * @see \Rector\Tests\Config\RectorConfigTest
  */
 final class RectorConfig extends Container
 {

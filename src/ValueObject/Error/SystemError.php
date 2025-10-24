@@ -8,6 +8,9 @@ use Nette\Utils\Strings;
 use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 
+/**
+ * @see \Rector\Tests\ValueObject\Error\SystemErrorTest
+ */
 final readonly class SystemError implements SerializableInterface
 {
     public function __construct(

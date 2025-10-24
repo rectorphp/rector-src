@@ -12,6 +12,9 @@ use Rector\Util\RectorClassesSorter;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
 
+/**
+ * @see \Rector\Tests\ValueObject\Reporting\FileDiffTest
+ */
 final readonly class FileDiff implements SerializableInterface
 {
     /**

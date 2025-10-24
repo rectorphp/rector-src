@@ -11,6 +11,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @see PhpLevelSetResolverTest
+ * @see \Rector\Tests\Configuration\PhpLevelSetResolverTest
  */
 final class PhpLevelSetResolver
 {

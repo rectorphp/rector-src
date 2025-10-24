@@ -6,6 +6,7 @@ use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRecto
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector;
 
 return RectorConfig::configure()
@@ -37,7 +38,7 @@ return RectorConfig::configure()
     ])
     ->withRootFiles()
     ->withImportNames(removeUnusedImports: true)
-    ->withRules([RemoveRefactorDuplicatedNodeInstanceCheckRector::class])
+    ->withRules([RemoveRefactorDuplicatedNodeInstanceCheckRector::class, AddSeeTestAnnotationRector::class])
     ->withSkip([
         StringClassNameToClassConstantRector::class,
         // tests
