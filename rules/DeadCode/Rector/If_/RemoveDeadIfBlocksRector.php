@@ -5,20 +5,12 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
-use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitor;
+use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,7 +22,7 @@ final class RemoveDeadIfBlocksRector extends AbstractRector
 {
     public function __construct(
         private readonly ConditionInverter $conditionInverter,
-        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector,
     ) {
     }
 
@@ -112,7 +104,7 @@ CODE_SAMPLE
             foreach ($node->elseifs as $elseif) {
                 $keep_elseifs = array_filter(
                     $node->elseifs,
-                    fn ($elseif) => $elseif->stmts !== [] || $this->shouldSkipExpr($elseif->cond)
+                    fn ($elseif) => $elseif->stmts !== [] || $this->sideEffectNodeDetector->detect($elseif->cond)
                 );
                 if (count($node->elseifs) !== count($keep_elseifs)) {
                     $node->elseifs = $keep_elseifs;
@@ -131,7 +123,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipExpr($node->cond)) {
+        if ($this->sideEffectNodeDetector->detect($node->cond)) {
             return null;
         }
 
@@ -160,21 +152,5 @@ CODE_SAMPLE
         }
 
         return NodeVisitor::REMOVE_NODE;
-    }
-
-    private function shouldSkipExpr(Expr $expr): bool
-    {
-        return (bool) $this->betterNodeFinder->findInstancesOf(
-            $expr,
-            [
-                Assign::class,
-                ArrayDimFetch::class,
-                CallLike::class,
-                MethodCall::class,
-                PropertyFetch::class,
-                StaticCall::class,
-                StaticPropertyFetch::class,
-            ]
-        );
     }
 }
