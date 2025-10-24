@@ -194,7 +194,7 @@ CODE_SAMPLE
         }
 
         // exists, but by @method annotation
-        if ($reflection instanceof AnnotationMethodReflection) {
+        if ($reflection instanceof AnnotationMethodReflection && ! $reflection->getDeclaringClass()->hasNativeMethod($reflection->getName())) {
             return true;
         }
 
