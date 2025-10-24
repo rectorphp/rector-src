@@ -4,6 +4,10 @@ namespace Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultPara
 
 final class SomeExternalClass
 {
+    public function __construct(string $name, ?int $id = null)
+    {
+    }
+
     public function callWithDefaultNull(?string $name = null)
     {
     }

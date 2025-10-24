@@ -6,10 +6,9 @@ namespace Rector\DeadCode\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
-use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Type\NullType;
+use Rector\DeadCode\NodeAnalyzer\CallLikeParamDefaultResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -24,6 +23,7 @@ final class RemoveNullArgOnNullDefaultParamRector extends AbstractRector
     public function __construct(
         private readonly ValueResolver $valueResolver,
         private readonly ReflectionResolver $reflectionResolver,
+        private readonly CallLikeParamDefaultResolver $callLikeParamDefaultResolver,
     ) {
     }
 
@@ -72,13 +72,13 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class];
+        return [MethodCall::class, StaticCall::class, New_::class];
     }
 
     /**
-     * @param MethodCall|StaticCall $node
+     * @param MethodCall|StaticCall|New_ $node
      */
-    public function refactor(Node $node): StaticCall|MethodCall|null
+    public function refactor(Node $node): StaticCall|MethodCall|New_|null
     {
         if ($node->isFirstClassCallable()) {
             return null;
@@ -104,14 +104,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            // @todo extract to service
-            $nullPositions = $this->resolveDefaultParamNullPositions($node);
-
+            $nullPositions = $this->callLikeParamDefaultResolver->resolveNullPositions($node);
             if (! in_array($position, $nullPositions)) {
                 continue;
             }
 
-            unset($node->args[0]);
+            unset($node->args[$position]);
 
             $hasChanged = true;
         }
@@ -121,35 +119,5 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    /**
-     * @return int[]
-     */
-    private function resolveDefaultParamNullPositions(MethodCall|StaticCall $callLike): array
-    {
-
-        if ($callLike instanceof StaticCall) {
-            $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromStaticCall($callLike);
-        } else {
-            $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromMethodCall($callLike);
-        }
-
-        if (! $methodReflection instanceof MethodReflection) {
-            return [];
-        }
-
-        $nullPositions = [];
-
-        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
-        foreach ($extendedParametersAcceptor->getParameters() as $position => $extendedParameterReflection) {
-            if (! $extendedParameterReflection->getDefaultValue() instanceof NullType) {
-                continue;
-            }
-
-            $nullPositions[] = $position;
-        }
-
-        return $nullPositions;
     }
 }
