@@ -88,12 +88,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = false;
+        $nullPositions = $this->callLikeParamDefaultResolver->resolveNullPositions($node);
+        if ($nullPositions === []) {
+            return null;
+        }
 
+        $hasChanged = false;
         $args = $node->getArgs();
         $lastArgPosition = count($args) - 1;
-        $nullPositions = $this->callLikeParamDefaultResolver->resolveNullPositions($node);
-
         for ($position = $lastArgPosition; $position >= 0; --$position) {
             if (! isset($args[$position])) {
                 continue;
