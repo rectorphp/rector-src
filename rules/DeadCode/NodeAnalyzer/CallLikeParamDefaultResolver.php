@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\NullType;
@@ -22,16 +24,16 @@ final readonly class CallLikeParamDefaultResolver
     /**
      * @return int[]
      */
-    public function resolveNullPositions(MethodCall|StaticCall|New_ $callLike): array
+    public function resolveNullPositions(MethodCall|StaticCall|New_|FuncCall $callLike): array
     {
-        $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
-        if (! $methodReflection instanceof MethodReflection) {
+        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
+        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
             return [];
         }
 
         $nullPositions = [];
 
-        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($reflection->getVariants());
         foreach ($extendedParametersAcceptor->getParameters() as $position => $extendedParameterReflection) {
             if (! $extendedParameterReflection->getDefaultValue() instanceof NullType) {
                 continue;
@@ -43,14 +45,16 @@ final readonly class CallLikeParamDefaultResolver
         return $nullPositions;
     }
 
-    public function resolvePositionParameterByName(MethodCall|StaticCall|New_ $callLike, string $parameterName): ?int
-    {
-        $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
-        if (! $methodReflection instanceof MethodReflection) {
+    public function resolvePositionParameterByName(
+        MethodCall|StaticCall|New_|FuncCall $callLike,
+        string $parameterName
+    ): ?int {
+        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
+        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
             return null;
         }
 
-        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($reflection->getVariants());
         foreach ($extendedParametersAcceptor->getParameters() as $position => $extendedParameterReflection) {
             if ($extendedParameterReflection->getName() === $parameterName) {
                 return $position;
