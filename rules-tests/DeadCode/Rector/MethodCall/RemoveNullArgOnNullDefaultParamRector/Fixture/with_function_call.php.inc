@@ -8,13 +8,7 @@ function SomeFunctionWithDefaultNullArg(?string $someClass = null)
 {
 }
 
-class WithFunctionCall
-{
-    public function get()
-    {
-        SomeFunctionWithDefaultNullArg(null);
-    }
-}
+SomeFunctionWithDefaultNullArg(null);
 
 ?>
 -----
@@ -28,12 +22,6 @@ function SomeFunctionWithDefaultNullArg(?string $someClass = null)
 {
 }
 
-class WithFunctionCall
-{
-    public function get()
-    {
-        SomeFunctionWithDefaultNullArg();
-    }
-}
+SomeFunctionWithDefaultNullArg();
 
 ?>
