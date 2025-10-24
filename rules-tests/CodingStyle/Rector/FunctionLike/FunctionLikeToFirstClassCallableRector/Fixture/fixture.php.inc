@@ -2,21 +2,14 @@
 
 namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Fixture;
 
+use Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Source\FooBar;
+
 function ($foo)
 {
     return FooBar::foo($foo);
 };
 
 fn ($foo) => FooBar::foo($foo);
-
-$bar = null;
-
-fn ($foo) => $bar->foo($foo);
-
-function ($foo) use ($bar)
-{
-    return $bar->foo($foo);
-};
 
 function ($foo, $bar, $ray)
 {
@@ -31,15 +24,11 @@ fn ($foo, $bar, $ray) => FooBar::foo($foo);
 
 namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Fixture;
 
-FooBar::foo(...);
+use Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Source\FooBar;
 
 FooBar::foo(...);
 
-$bar = null;
-
-$bar->foo(...);
-
-$bar->foo(...);
+FooBar::foo(...);
 
 FooBar::foo(...);
 
