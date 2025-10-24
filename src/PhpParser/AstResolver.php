@@ -174,6 +174,10 @@ final class AstResolver
             }
 
             $className = $this->nodeNameResolver->getName($call->class);
+            if ($className === null) {
+                return null;
+            }
+
             return $this->resolveClassMethod($className, MethodName::CONSTRUCT);
         }
 
