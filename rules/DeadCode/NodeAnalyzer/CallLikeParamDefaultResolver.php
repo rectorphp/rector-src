@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\NullType;
@@ -26,7 +27,7 @@ final readonly class CallLikeParamDefaultResolver
     public function resolveNullPositions(MethodCall|StaticCall|New_|FuncCall $callLike): array
     {
         $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
-        if (! $reflection instanceof MethodReflection && ! $reflection instanceof \PHPStan\Reflection\FunctionReflection) {
+        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
             return [];
         }
 
@@ -44,10 +45,12 @@ final readonly class CallLikeParamDefaultResolver
         return $nullPositions;
     }
 
-    public function resolvePositionParameterByName(MethodCall|StaticCall|New_|FuncCall $callLike, string $parameterName): ?int
-    {
+    public function resolvePositionParameterByName(
+        MethodCall|StaticCall|New_|FuncCall $callLike,
+        string $parameterName
+    ): ?int {
         $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
-        if (! $reflection instanceof MethodReflection && ! $reflection instanceof \PHPStan\Reflection\FunctionReflection) {
+        if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
             return null;
         }
 
