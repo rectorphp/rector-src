@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector\Fixture;
 
-use function Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector\Source\SomeFunctionWithDefaultNullArg;
+function SomeFunctionWithDefaultNullArg(?string $someClass = null)
+{
+}
 
 class WithFunctionCall
 {
@@ -22,7 +24,9 @@ declare(strict_types=1);
 
 namespace Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector\Fixture;
 
-use function Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector\Source\SomeFunctionWithDefaultNullArg;
+function SomeFunctionWithDefaultNullArg(?string $someClass = null)
+{
+}
 
 class WithFunctionCall
 {

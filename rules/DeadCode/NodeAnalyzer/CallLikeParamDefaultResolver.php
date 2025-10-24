@@ -25,14 +25,14 @@ final readonly class CallLikeParamDefaultResolver
      */
     public function resolveNullPositions(MethodCall|StaticCall|New_|FuncCall $callLike): array
     {
-        $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
-        if (! $methodReflection instanceof MethodReflection) {
+        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
+        if (! $reflection instanceof MethodReflection && ! $reflection instanceof \PHPStan\Reflection\FunctionReflection) {
             return [];
         }
 
         $nullPositions = [];
 
-        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($reflection->getVariants());
         foreach ($extendedParametersAcceptor->getParameters() as $position => $extendedParameterReflection) {
             if (! $extendedParameterReflection->getDefaultValue() instanceof NullType) {
                 continue;
@@ -46,12 +46,12 @@ final readonly class CallLikeParamDefaultResolver
 
     public function resolvePositionParameterByName(MethodCall|StaticCall|New_|FuncCall $callLike, string $parameterName): ?int
     {
-        $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
-        if (! $methodReflection instanceof MethodReflection) {
+        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
+        if (! $reflection instanceof MethodReflection && ! $reflection instanceof \PHPStan\Reflection\FunctionReflection) {
             return null;
         }
 
-        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($reflection->getVariants());
         foreach ($extendedParametersAcceptor->getParameters() as $position => $extendedParameterReflection) {
             if ($extendedParameterReflection->getName() === $parameterName) {
                 return $position;
