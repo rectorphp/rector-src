@@ -91,7 +91,7 @@ CODE_SAMPLE
 
         $args = $node->getArgs();
         $lastArgPosition = count($args) - 1;
-        for ($position = $lastArgPosition; $position >=0; --$position) {
+        for ($position = $lastArgPosition; $position >= 0; --$position) {
             if (! isset($args[$position])) {
                 continue;
             }
@@ -102,7 +102,11 @@ CODE_SAMPLE
             }
 
             // stop when found named arg and position not match
-            if ($arg->name instanceof Identifier && $position !== $this->callLikeParamDefaultResolver->resolvePositionParameterByName($node, $arg->name->toString())) {
+            if ($arg->name instanceof Identifier &&
+                $position !== $this->callLikeParamDefaultResolver->resolvePositionParameterByName(
+                    $node,
+                    $arg->name->toString()
+                )) {
                 break;
             }
 
