@@ -6,6 +6,9 @@ namespace Rector\Transform\ValueObject;
 
 use PHPStan\Type\ObjectType;
 
+/**
+ * @deprecated as related rule is deprecated
+ */
 final readonly class MethodCallToNew
 {
     /**
