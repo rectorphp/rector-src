@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @note used extensively https://github.com/search?q=MethodCallToFuncCallRector%3A%3Aclass&type=code
  * @see \Rector\Tests\Transform\Rector\MethodCall\MethodCallToFuncCallRector\MethodCallToFuncCallRectorTest
  */
 final class MethodCallToFuncCallRector extends AbstractRector implements ConfigurableRectorInterface
