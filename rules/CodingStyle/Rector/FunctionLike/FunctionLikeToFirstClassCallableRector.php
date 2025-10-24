@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -46,6 +47,11 @@ final class FunctionLikeToFirstClassCallableRector extends AbstractRector implem
      */
     private const HAS_CALLBACK_SIGNATURE_MULTI_PARAMS = 'has_callback_signature_multi_params';
 
+    /**
+     * @var string
+     */
+    private const IS_IN_ASSIGN = 'is_in_assign';
+
     public function __construct(
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
@@ -75,6 +81,7 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [
+            Assign::class,
             MethodCall::class,
             FuncCall::class,
             StaticCall::class,
@@ -89,6 +96,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|CallLike
     {
+        if ($node instanceof Assign) {
+            if ($node->expr instanceof Closure || $node->expr instanceof ArrowFunction) {
+                $node->expr->setAttribute(self::IS_IN_ASSIGN, true);
+            }
+
+            return null;
+        }
+
         if ($node instanceof CallLike) {
             if ($node->isFirstClassCallable()) {
                 return null;
@@ -206,6 +221,10 @@ CODE_SAMPLE
         }
 
         if ($node->getAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS) === true) {
+            return true;
+        }
+
+        if ($node->getAttribute(self::IS_IN_ASSIGN) === true) {
             return true;
         }
 
