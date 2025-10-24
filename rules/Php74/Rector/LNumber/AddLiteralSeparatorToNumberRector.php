@@ -31,11 +31,6 @@ final class AddLiteralSeparatorToNumberRector extends AbstractRector implements 
     public const LIMIT_VALUE = 'limit_value';
 
     /**
-     * @var int
-     */
-    private const DEFAULT_LIMIT_VALUE = 1_000_000;
-
-    /**
      * @param array<string, mixed> $configuration
      */
     public function configure(array $configuration): void
