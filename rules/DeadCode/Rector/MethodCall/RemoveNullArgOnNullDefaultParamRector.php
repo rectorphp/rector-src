@@ -97,21 +97,21 @@ CODE_SAMPLE
 
             $arg = $args[$position];
             if ($arg->unpack) {
-                return null;
+                break;
             }
 
             // skip named args
             if ($arg->name instanceof Node) {
-                return null;
+                break;
             }
 
             if (! $this->valueResolver->isNull($arg->value)) {
-                return null;
+                break;
             }
 
             $nullPositions = $this->callLikeParamDefaultResolver->resolveNullPositions($node);
             if (! in_array($position, $nullPositions)) {
-                return null;
+                break;
             }
 
             unset($node->args[$position]);
