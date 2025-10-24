@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use Rector\DeadCode\NodeAnalyzer\CallLikeParamDefaultResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -100,8 +101,8 @@ CODE_SAMPLE
                 break;
             }
 
-            // skip named args
-            if ($arg->name instanceof Node) {
+            // stop when found named arg and position not match
+            if ($arg->name instanceof Identifier && $node->getArg($arg->name->toString(), $position) !== $arg) {
                 break;
             }
 
