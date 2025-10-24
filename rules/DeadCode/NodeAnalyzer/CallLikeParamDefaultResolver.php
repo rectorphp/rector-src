@@ -42,4 +42,21 @@ final readonly class CallLikeParamDefaultResolver
 
         return $nullPositions;
     }
+
+    public function resolvePositionParameterByName(MethodCall|StaticCall|New_ $callLike, string $parameterName): ?int
+    {
+        $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
+        if (! $methodReflection instanceof MethodReflection) {
+            return null;
+        }
+
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+        foreach ($extendedParametersAcceptor->getParameters() as $position => $extendedParameterReflection) {
+            if ($extendedParameterReflection->getName() === $parameterName) {
+                return $position;
+            }
+        }
+
+        return null;
+    }
 }

@@ -102,7 +102,7 @@ CODE_SAMPLE
             }
 
             // stop when found named arg and position not match
-            if ($arg->name instanceof Identifier && $node->getArg($arg->name->toString(), $position) !== $arg) {
+            if ($arg->name instanceof Identifier && $position !== $this->callLikeParamDefaultResolver->resolvePositionParameterByName($node, $arg->name->toString())) {
                 break;
             }
 
