@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
@@ -22,7 +23,7 @@ final readonly class CallLikeParamDefaultResolver
     /**
      * @return int[]
      */
-    public function resolveNullPositions(MethodCall|StaticCall|New_ $callLike): array
+    public function resolveNullPositions(MethodCall|StaticCall|New_|FuncCall $callLike): array
     {
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
         if (! $methodReflection instanceof MethodReflection) {
@@ -43,7 +44,7 @@ final readonly class CallLikeParamDefaultResolver
         return $nullPositions;
     }
 
-    public function resolvePositionParameterByName(MethodCall|StaticCall|New_ $callLike, string $parameterName): ?int
+    public function resolvePositionParameterByName(MethodCall|StaticCall|New_|FuncCall $callLike, string $parameterName): ?int
     {
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
         if (! $methodReflection instanceof MethodReflection) {

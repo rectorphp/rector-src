@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
@@ -71,13 +72,13 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class, New_::class];
+        return [MethodCall::class, StaticCall::class, New_::class, FuncCall::class];
     }
 
     /**
-     * @param MethodCall|StaticCall|New_ $node
+     * @param MethodCall|StaticCall|New_|FuncCall $node
      */
-    public function refactor(Node $node): StaticCall|MethodCall|New_|null
+    public function refactor(Node $node): StaticCall|MethodCall|New_|FuncCall|null
     {
         if ($node->isFirstClassCallable()) {
             return null;
