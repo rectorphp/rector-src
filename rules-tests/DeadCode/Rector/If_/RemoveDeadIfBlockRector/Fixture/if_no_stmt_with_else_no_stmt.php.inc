@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlocksRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlockRector\Fixture;
 
 class IfNoStmtWithElseNoStmt
 {
@@ -16,7 +16,7 @@ class IfNoStmtWithElseNoStmt
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlocksRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlockRector\Fixture;
 
 class IfNoStmtWithElseNoStmt
 {

@@ -16,9 +16,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlocksRector\RemoveDeadIfBlocksRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlockRector\RemoveDeadIfBlockRectorTest
  */
-final class RemoveDeadIfBlocksRector extends AbstractRector
+final class RemoveDeadIfBlockRector extends AbstractRector
 {
     public function __construct(
         private readonly ConditionInverter $conditionInverter,

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlocksRector;
+namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadIfBlockRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RemoveDeadIfBlocksRectorTest extends AbstractRectorTestCase
+final class RemoveDeadIfBlockRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
