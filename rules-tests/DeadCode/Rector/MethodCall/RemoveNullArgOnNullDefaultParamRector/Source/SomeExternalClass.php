@@ -15,4 +15,8 @@ final class SomeExternalClass
     public static function staticCallWithDefaultNull(?int $id = null)
     {
     }
+
+    public static function withMiddleNotNullDefault(?int $id = null, int $data = 1, ?string $name = null, ?string $item = null)
+    {
+    }
 }
