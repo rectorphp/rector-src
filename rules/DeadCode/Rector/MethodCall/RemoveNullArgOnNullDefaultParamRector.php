@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\StaticCall;
 use Rector\DeadCode\NodeAnalyzer\CallLikeParamDefaultResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -22,7 +21,6 @@ final class RemoveNullArgOnNullDefaultParamRector extends AbstractRector
 {
     public function __construct(
         private readonly ValueResolver $valueResolver,
-        private readonly ReflectionResolver $reflectionResolver,
         private readonly CallLikeParamDefaultResolver $callLikeParamDefaultResolver,
     ) {
     }

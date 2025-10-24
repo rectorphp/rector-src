@@ -12,10 +12,10 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\NullType;
 use Rector\Reflection\ReflectionResolver;
 
-final class CallLikeParamDefaultResolver
+final readonly class CallLikeParamDefaultResolver
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
+        private ReflectionResolver $reflectionResolver,
     ) {
     }
 
