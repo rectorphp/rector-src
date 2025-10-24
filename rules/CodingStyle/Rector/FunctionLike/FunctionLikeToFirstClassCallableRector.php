@@ -27,6 +27,7 @@ use PHPStan\Reflection\ResolvedFunctionVariantWithOriginal;
 use PHPStan\Type\CallableType;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpParser\AstResolver;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -47,7 +48,8 @@ final class FunctionLikeToFirstClassCallableRector extends AbstractRector implem
 
     public function __construct(
         private readonly AstResolver $astResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -112,13 +114,34 @@ CODE_SAMPLE
                         return null;
                     }
 
+                    $classMethodOrFunction = $this->astResolver->resolveClassMethodOrFunctionFromCall($node);
                     foreach ($reflection->getParameters() as $index => $parameterReflection) {
-                        if ($index === $key
-                            && $parameterReflection->getType() instanceof CallableType
+                        if ($index !== $key) {
+                            continue;
+                        }
+
+                        if ($parameterReflection->getType() instanceof CallableType
                             && count($parameterReflection->getType()->getParameters()) > 1
                         ) {
                             $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
                             return null;
+                        }
+
+                        if ($classMethodOrFunction instanceof FunctionLike) {
+                            $parameterName = $parameterReflection->getName();
+
+                            $isInvokable = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                                $classMethodOrFunction,
+                                fn (Node $node): bool => $node instanceof FuncCall
+                                && $node->name instanceof Variable
+                                && $this->isName($node->name, $parameterName)
+                                && count($node->args) > 1
+                            );
+
+                            if ($isInvokable) {
+                                $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
+                                return null;
+                            }
                         }
                     }
                 }
