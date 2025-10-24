@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use Rector\DeadCode\NodeAnalyzer\CallLikeParamDefaultResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -90,7 +91,7 @@ CODE_SAMPLE
 
         $args = $node->getArgs();
         $lastArgPosition = count($args) - 1;
-        for ($position = $lastArgPosition; $position >=0; --$position) {
+        for ($position = $lastArgPosition; $position >= 0; --$position) {
             if (! isset($args[$position])) {
                 continue;
             }
@@ -100,8 +101,12 @@ CODE_SAMPLE
                 break;
             }
 
-            // skip named args
-            if ($arg->name instanceof Node) {
+            // stop when found named arg and position not match
+            if ($arg->name instanceof Identifier &&
+                $position !== $this->callLikeParamDefaultResolver->resolvePositionParameterByName(
+                    $node,
+                    $arg->name->toString()
+                )) {
                 break;
             }
 
