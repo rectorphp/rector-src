@@ -6,6 +6,9 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
+/**
+ * @deprecated as related rule is deprecated
+ */
 final readonly class ClassMethodReference
 {
     public function __construct(
