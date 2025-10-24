@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Transform\Rector\Assign;
 
+use Rector\Exception\ShouldNotHappenException;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
@@ -50,7 +51,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        throw new \Rector\Exception\ShouldNotHappenException(sprintf(
+        throw new ShouldNotHappenException(sprintf(
             '%s is deprecated as too narrow use-case and never used. Create custom rector instead if needed.',
             self::class
         ));
