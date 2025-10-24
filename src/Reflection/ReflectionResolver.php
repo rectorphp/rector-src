@@ -178,6 +178,7 @@ final readonly class ReflectionResolver
 
         $className = ClassNameFromObjectTypeResolver::resolve($callerType);
         if ($className === null) {
+
             return null;
         }
 
