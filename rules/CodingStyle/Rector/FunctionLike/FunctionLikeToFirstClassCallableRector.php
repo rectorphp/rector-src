@@ -185,6 +185,18 @@ CODE_SAMPLE
             return true;
         }
 
+        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
+
+        // not exists, probably by magic method
+        if ($reflection === null) {
+            return true;
+        }
+
+        // exists, but by @method annotation
+        if ($reflection instanceof \PHPStan\Reflection\Annotations\AnnotationMethodReflection) {
+            return true;
+        }
+
         $functionLike = $this->astResolver->resolveClassMethodOrFunctionFromCall($callLike);
         if (! $functionLike instanceof FunctionLike) {
             return false;
