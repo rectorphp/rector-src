@@ -28,7 +28,7 @@ class WithFunctionCall
 {
     public function get()
     {
-        SomeFunctionWithDefaultNullArg(null);
+        SomeFunctionWithDefaultNullArg();
     }
 }
 
