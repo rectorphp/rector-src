@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
@@ -22,9 +24,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\AddAllowDynamicPropertiesAttributeRectorTest
+ * @deprecated as adds dynamic attribute everywhere blindly or by name (blindly without checking need). Instead, aim at objects without dynamic properties, or use custom rule.
  */
-final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
+final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface, DeprecatedInterface
 {
     /**
      * @var array<array-key, string>
@@ -87,11 +89,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
-            return null;
-        }
-
-        return $this->addAllowDynamicPropertiesAttribute($node);
+        throw new ShouldNotHappenException(sprintf(
+            '%s is deprecated as it adds dynamic attribute everywhere blindly or by name (blindly without checking need). Instead, aim at objects without dynamic properties, or use custom rule.',
+            self::class
+        ));
     }
 
     public function provideMinPhpVersion(): int
