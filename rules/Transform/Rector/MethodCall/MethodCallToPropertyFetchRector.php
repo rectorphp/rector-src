@@ -15,7 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @deprecated as part of removed Doctrine set that was not reliable.
+ * @deprecated as part of removed set and not practical. Use custom rule or "privatization" set instead.
  */
 final class MethodCallToPropertyFetchRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
 {
@@ -62,10 +62,9 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
-            'The "%s" is deprecated as part of removed Doctrine set that was not reliable.',
+            '%s is deprecated as part of removed set and not practical. Use custom rule or "privatization" set instead.',
             self::class
         ));
-
     }
 
     /**
