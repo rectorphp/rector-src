@@ -22,6 +22,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\Annotations\AnnotationMethodReflection;
 use PHPStan\Reflection\ResolvedFunctionVariantWithOriginal;
 use PHPStan\Type\CallableType;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
@@ -193,7 +194,7 @@ CODE_SAMPLE
         }
 
         // exists, but by @method annotation
-        if ($reflection instanceof \PHPStan\Reflection\Annotations\AnnotationMethodReflection) {
+        if ($reflection instanceof AnnotationMethodReflection) {
             return true;
         }
 
