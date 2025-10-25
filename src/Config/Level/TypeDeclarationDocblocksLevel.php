@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Config\Level;
 
 use Rector\Contract\Rector\RectorInterface;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddParamArrayDocblockBasedOnCallableNativeFuncCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblockBasedOnArrayMapRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnDocblockForScalarArrayFromAssignsRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\AddReturnDocblockDataProviderRector;
@@ -41,6 +42,7 @@ final class TypeDeclarationDocblocksLevel
         ClassMethodArrayDocblockParamFromLocalCallsRector::class,
         AddParamArrayDocblockBasedOnArrayMapRector::class,
         AddParamArrayDocblockFromAssignsParamToParamReferenceRector::class,
+        AddParamArrayDocblockBasedOnCallableNativeFuncCallRector::class,
 
         // return
         AddReturnDocblockForCommonObjectDenominatorRector::class,
