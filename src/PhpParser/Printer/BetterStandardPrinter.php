@@ -332,6 +332,18 @@ final class BetterStandardPrinter extends Standard
         return parent::pExpr_Array($array);
     }
 
+    protected function pExpr_BinaryOp_Pipe(BinaryOp\Pipe $node, int $precedence, int $lhsPrecedence): string
+    {
+        return $this->pInfixOp(
+            BinaryOp\Pipe::class,
+            $node->left,
+            $this->nl . '    |> ',
+            $node->right,
+            $precedence,
+            $lhsPrecedence
+        );
+    }
+
     /**
      * Fixes escaping of regular patterns
      */
