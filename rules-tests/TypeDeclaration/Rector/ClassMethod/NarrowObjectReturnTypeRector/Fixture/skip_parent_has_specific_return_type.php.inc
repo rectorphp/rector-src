@@ -2,13 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-class Talk
-{
-}
-
-class ConferenceTalkChild extends Talk
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\Talk;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalkExtended;
 
 abstract class AbstractTalkFactory
 {
@@ -19,7 +14,7 @@ final class ConcreteTalkFactory extends AbstractTalkFactory
 {
     public function build(): Talk
     {
-        return new ConferenceTalkChild();
+        return new ConferenceTalkExtended();
     }
 }
 

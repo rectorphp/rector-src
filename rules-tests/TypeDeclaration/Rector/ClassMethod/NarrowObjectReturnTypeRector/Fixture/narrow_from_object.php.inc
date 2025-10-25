@@ -2,13 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-class AbstractFactory
-{
-}
-
-class ConferenceTalk
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\AbstractFactory;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalk;
 
 final class TalkFactory extends AbstractFactory
 {
@@ -24,17 +19,12 @@ final class TalkFactory extends AbstractFactory
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-class AbstractFactory
-{
-}
-
-class ConferenceTalk
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\AbstractFactory;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalk;
 
 final class TalkFactory extends AbstractFactory
 {
-    protected function build(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture\ConferenceTalk
+    protected function build(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalk
     {
         return new ConferenceTalk();
     }

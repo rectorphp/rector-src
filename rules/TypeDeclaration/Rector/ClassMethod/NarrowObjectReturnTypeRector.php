@@ -104,7 +104,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->isAbstract()) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if ($classReflection instanceof ClassReflection && $classReflection->isAbstract()) {
             return null;
         }
 
