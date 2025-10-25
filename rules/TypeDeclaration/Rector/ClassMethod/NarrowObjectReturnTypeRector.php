@@ -105,7 +105,11 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if ($classReflection instanceof ClassReflection && $classReflection->isAbstract()) {
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        if (! $classReflection->isFinal()) {
             return null;
         }
 
