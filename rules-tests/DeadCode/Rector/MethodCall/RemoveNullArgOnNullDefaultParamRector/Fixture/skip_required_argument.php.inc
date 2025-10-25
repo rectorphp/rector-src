@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector\Fixture;
+
+use Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector\Source\SomeExternalClass;
+
+final class SkipRequiredArgument
+{
+    public function get()
+    {
+        SomeExternalClass::withRequiredArgument(null);
+    }
+}
