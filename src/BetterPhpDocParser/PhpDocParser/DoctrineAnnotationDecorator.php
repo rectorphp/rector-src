@@ -496,11 +496,6 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             $currentPhpNode
         );
 
-        $comment = $this->staticDoctrineAnnotationParser->getCommentFromRestOfAnnotation(
-            $nestedTokenIterator,
-            $annotationContent
-        );
-
         $identifierTypeNode = new IdentifierTypeNode($tagName);
         $identifierTypeNode->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $fullyQualifiedAnnotationClass);
 
@@ -509,7 +504,6 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             $annotationContent,
             $values,
             SilentKeyMap::CLASS_NAMES_TO_SILENT_KEYS[$fullyQualifiedAnnotationClass] ?? null,
-            $comment
         );
 
         $doctrineAnnotationTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);

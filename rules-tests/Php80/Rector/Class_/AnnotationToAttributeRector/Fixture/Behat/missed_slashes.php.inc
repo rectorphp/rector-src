@@ -2,14 +2,12 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Behat;
 
-use Behat\Step\Then;
-
 final class MissedSlashes
 {
     /**
      * @Then some message
      */
-    public function theFuelOrderTargetFuelShouldHaveASource(string $source): void
+    public function expect(string $source): void
     {
     }
 }
@@ -20,12 +18,10 @@ final class MissedSlashes
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Behat;
 
-use Behat\Step\Then;
-
 final class MissedSlashes
 {
     #[\Behat\Step\Then('some message')]
-    public function theFuelOrderTargetFuelShouldHaveASource(string $source): void
+    public function expect(string $source): void
     {
     }
 }
