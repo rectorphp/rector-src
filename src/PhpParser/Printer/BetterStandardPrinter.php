@@ -23,8 +23,6 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\InterpolatedStringPart;
-use PhpParser\Node\Scalar\Float_;
-use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Declare_;
@@ -298,18 +296,6 @@ final class BetterStandardPrinter extends Standard
     }
 
     /**
-     * Emulates 1_000 in PHP 7.3- version
-     */
-    protected function pScalar_Float(Float_ $float): string
-    {
-        if ($this->shouldPrintNewRawValue($float)) {
-            return (string) $float->getAttribute(AttributeKey::RAW_VALUE);
-        }
-
-        return parent::pScalar_Float($float);
-    }
-
-    /**
      * Do not add "()" on Expressions
      * @see https://github.com/rectorphp/rector/pull/401#discussion_r181487199
      */
@@ -403,19 +389,6 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $content;
-    }
-
-    /**
-     * Invoke re-print even if only raw value was changed.
-     * That allows PHPStan to use int strict types, while changing the value with literal "_"
-     */
-    protected function pScalar_Int(Int_ $int): string
-    {
-        if ($this->shouldPrintNewRawValue($int)) {
-            return (string) $int->getAttribute(AttributeKey::RAW_VALUE);
-        }
-
-        return parent::pScalar_Int($int);
     }
 
     protected function pExpr_MethodCall(MethodCall $methodCall): string
@@ -566,11 +539,6 @@ final class BetterStandardPrinter extends Standard
     private function getIndentCharacter(): string
     {
         return SimpleParameterProvider::provideStringParameter(Option::INDENT_CHAR, ' ');
-    }
-
-    private function shouldPrintNewRawValue(Int_|Float_ $lNumber): bool
-    {
-        return $lNumber->getAttribute(AttributeKey::REPRINT_RAW_VALUE) === true;
     }
 
     /**
