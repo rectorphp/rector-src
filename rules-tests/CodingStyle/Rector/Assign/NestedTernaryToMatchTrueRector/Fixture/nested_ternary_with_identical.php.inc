@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchTrueRector\Fixture;
 
-final class NestedTernaryToMatchTrueRector
+final class NestedTernaryWithIdentical
 {
     public function run($value)
     {
-        $result = $value > 10 ? 'greater than 10' : ($value === 10 ? 'equal to 10' : 'less than 10');
+        $result = $value === 10 ? 'equal to 10' : ($value === 5 ? 'equal to 10' : 'other value');
     }
 }
 
@@ -14,12 +14,14 @@ final class NestedTernaryToMatchTrueRector
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchTrueRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryWithIdentical\Fixture;
 
-final class NestedTernaryToMatchTrueRector
+final class NestedTernaryWithIdentical
 {
     public function run($value)
     {
+        $value = 5;
+
         $result = match (true) {
             $value > 10 => 'greater than 10',
             $value === 10 => 'equal to 10',

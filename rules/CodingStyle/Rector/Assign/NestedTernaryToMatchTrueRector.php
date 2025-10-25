@@ -29,7 +29,7 @@ class SomeClass
 {
     public function getValue($input)
     {
-        return $input === 1 ? 'one' : ($input === 2 ? 'two' : 'other');
+        return $input > 100 ? 'more than 100' : ($input > 5 ? 'more than 5' : 'less');
     }
 }
 CODE_SAMPLE
@@ -40,9 +40,9 @@ class SomeClass
     public function getValue($input)
     {
         return match (true) {
-            $input === 1 => 'one',
-            $input === 2 => 'two',
-            default => 'other',
+            $input > 100 => 'more than 100',
+            $input > 5 => 'more than 5',
+            default => 'less',
         };
     }
 }
@@ -109,6 +109,12 @@ CODE_SAMPLE
      */
     private function createMatch(array $conditionsAndResults, Expr $defaultExpr): Match_
     {
+        foreach ($conditionsAndResults as $conditionAndResult) {
+            dump($conditionAndResult->getConditionExpr() instanceof Expr\BinaryOp\Identical);
+        }
+
+        die;
+
         $match = new Match_($this->nodeFactory->createTrue());
 
         foreach ($conditionsAndResults as $conditionsAndResult) {
