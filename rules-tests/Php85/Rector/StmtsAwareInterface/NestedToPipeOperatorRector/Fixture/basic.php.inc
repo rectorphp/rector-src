@@ -6,6 +6,7 @@ $value = "hello world";
 $result1 = function3($value);
 $result2 = function2($result1);
 $result = function1($result2);
+
 ?>
 -----
 <?php
@@ -13,5 +14,9 @@ $result = function1($result2);
 namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\Fixture;
 
 $value = "hello world";
-$result = $value |> function3(...) |> function2(...) |> function1(...);
+$result = $value
+    |> function3(...)
+    |> function2(...)
+    |> function1(...);
+
 ?>

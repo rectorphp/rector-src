@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Printer;
 
+use PhpParser\Node\Expr\BinaryOp\Pipe;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Internal\TokenStream;
@@ -330,6 +331,18 @@ final class BetterStandardPrinter extends Standard
         }
 
         return parent::pExpr_Array($array);
+    }
+
+    protected function pExpr_BinaryOp_Pipe(Pipe $node, int $precedence, int $lhsPrecedence): string
+    {
+        return $this->pInfixOp(
+            Pipe::class,
+            $node->left,
+            $this->nl . '    |> ',
+            $node->right,
+            $precedence,
+            $lhsPrecedence
+        );
     }
 
     /**
