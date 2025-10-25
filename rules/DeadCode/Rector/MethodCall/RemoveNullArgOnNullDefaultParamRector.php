@@ -53,7 +53,7 @@ CODE_SAMPLE
 class SomeClass
 {
     public function call(ExternalClass $externalClass)
-    {str
+    {
         $externalClass->execute();
     }
 }
