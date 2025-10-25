@@ -2,8 +2,6 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Behat;
 
-use Behat\Step\Then;
-
 final class MissedSlashes
 {
     /**
@@ -19,8 +17,6 @@ final class MissedSlashes
 <?php
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Behat;
-
-use Behat\Step\Then;
 
 final class MissedSlashes
 {

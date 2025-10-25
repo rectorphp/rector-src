@@ -9,7 +9,6 @@ use PhpParser\Comment;
 use PhpParser\Internal\TokenStream;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
