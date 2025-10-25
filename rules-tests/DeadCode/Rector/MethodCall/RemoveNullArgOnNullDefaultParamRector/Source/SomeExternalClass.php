@@ -19,4 +19,8 @@ final class SomeExternalClass
     public static function withMiddleNotNullDefault(?int $id = null, int $data = 1, ?string $name = null, ?string $item = null)
     {
     }
+
+    public static function withRequiredArgument(?int $id)
+    {
+    }
 }
