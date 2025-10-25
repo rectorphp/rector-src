@@ -26,6 +26,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Annotations\AnnotationMethodReflection;
 use PHPStan\Reflection\ResolvedFunctionVariantWithOriginal;
 use PHPStan\Type\CallableType;
+use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -154,6 +155,38 @@ CODE_SAMPLE
                             );
 
                             if ($isInvokable) {
+                                $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
+                                return null;
+                            }
+
+                            $isClosureBindTo = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                                $classMethodOrFunction,
+                                function (Node $node) use ($parameterName): bool {
+                                    if (! $node instanceof MethodCall) {
+                                        return false;
+                                    }
+
+                                    if (! $node->name instanceof Identifier) {
+                                        return false;
+                                    }
+
+                                    if (! $this->isName($node->name, 'bindTo')) {
+                                        return false;
+                                    }
+
+                                    if (! $node->var instanceof Variable) {
+                                        return false;
+                                    }
+
+                                    if (! $this->isObjectType($node->var, new ObjectType('Closure'))) {
+                                        return false;
+                                    }
+
+                                    return $this->isName($node->var, $parameterName);
+                                }
+                            );
+
+                            if ($isClosureBindTo) {
                                 $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
                                 return null;
                             }
