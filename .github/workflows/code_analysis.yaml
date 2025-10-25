@@ -50,7 +50,7 @@ jobs:
 
                     -
                         name: 'Finalize classes'
-                        run: vendor/bin/swiss-knife finalize-classes src tests --dry-run
+                        run: vendor/bin/swiss-knife finalize-classes src tests rules --dry-run
 
                     -
                         name: 'Check before/after test fixture on no-changes'

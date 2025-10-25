@@ -6,7 +6,7 @@ namespace Rector\Transform\ValueObject;
 
 use PHPStan\Type\ObjectType;
 
-class ArrayDimFetchToMethodCall
+final class ArrayDimFetchToMethodCall
 {
     public function __construct(
         private readonly ObjectType $objectType,
