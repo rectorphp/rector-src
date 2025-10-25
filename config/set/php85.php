@@ -31,21 +31,19 @@ use Rector\Renaming\ValueObject\RenameCast;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules(
-        [
-            ArrayFirstLastRector::class,
-            RemoveFinfoBufferContextArgRector::class,
-            NullDebugInfoReturnRector::class,
-            DeprecatedAnnotationToDeprecatedAttributeRector::class,
-            ColonAfterSwitchCaseRector::class,
-            ArrayKeyExistsNullToEmptyStringRector::class,
-            ChrArgModuloRector::class,
-            SleepToSerializeRector::class,
-            OrdSingleByteRector::class,
-            WakeupToUnserializeRector::class,
-            ShellExecFunctionCallOverBackticksRector::class,
-        ]
-    );
+    $rectorConfig->rules([
+        ArrayFirstLastRector::class,
+        RemoveFinfoBufferContextArgRector::class,
+        NullDebugInfoReturnRector::class,
+        DeprecatedAnnotationToDeprecatedAttributeRector::class,
+        ColonAfterSwitchCaseRector::class,
+        ArrayKeyExistsNullToEmptyStringRector::class,
+        ChrArgModuloRector::class,
+        SleepToSerializeRector::class,
+        OrdSingleByteRector::class,
+        WakeupToUnserializeRector::class,
+        ShellExecFunctionCallOverBackticksRector::class,
+    ]);
 
     $rectorConfig->ruleWithConfiguration(
         RemoveFuncCallArgRector::class,
