@@ -17,9 +17,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchTrueRector\NestedTernaryToMatchTrueRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchRector\NestedTernaryToMatchRectorTest
  */
-final class NestedTernaryToMatchTrueRector extends AbstractRector
+final class NestedTernaryToMatchRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {

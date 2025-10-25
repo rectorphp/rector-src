@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchTrueRector;
+namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class NestedTernaryToMatchTrueRectorTest extends AbstractRectorTestCase
+final class NestedTernaryToMatchRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

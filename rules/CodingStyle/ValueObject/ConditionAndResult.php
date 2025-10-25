@@ -26,13 +26,6 @@ final readonly class ConditionAndResult
         return $this->conditionExpr instanceof Identical;
     }
 
-    private function getConditionIdentical(): Identical
-    {
-        Assert::isInstanceOf($this->conditionExpr, Identical::class);
-
-        return $this->conditionExpr;
-    }
-
     public function getIdenticalVariableName(): ?string
     {
         $identical = $this->getConditionIdentical();
@@ -59,5 +52,12 @@ final readonly class ConditionAndResult
         $identical = $this->conditionExpr;
 
         return $identical->right;
+    }
+
+    private function getConditionIdentical(): Identical
+    {
+        Assert::isInstanceOf($this->conditionExpr, Identical::class);
+
+        return $this->conditionExpr;
     }
 }
