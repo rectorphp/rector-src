@@ -17,6 +17,18 @@ final class ValidationIntegerParameter
     public function action()
     {
     }
+
+    /**
+     * @Assert\Length(
+     *      min=100,
+     *      max=255,
+     *      maxMessage="some Message",
+     *      allowed=true
+     *  )
+     */
+    public function anotherAction()
+    {
+    }
 }
 
 ?>
@@ -31,6 +43,11 @@ final class ValidationIntegerParameter
 {
     #[Assert\Length(min: 100, max: 255, maxMessage: 'some Message', allowed: 'true')]
     public function action()
+    {
+    }
+
+    #[Assert\Length(min: 100, max: 255, maxMessage: 'some Message', allowed: true)]
+    public function anotherAction()
     {
     }
 }

@@ -9,7 +9,7 @@ final class MissedSlashes
     /**
      * @Then some message
      */
-    public function theFuelOrderTargetFuelShouldHaveASource(string $source): void
+    public function expect(string $source): void
     {
     }
 }
@@ -25,7 +25,7 @@ use Behat\Step\Then;
 final class MissedSlashes
 {
     #[\Behat\Step\Then('some message')]
-    public function theFuelOrderTargetFuelShouldHaveASource(string $source): void
+    public function expect(string $source): void
     {
     }
 }
