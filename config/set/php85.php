@@ -17,7 +17,6 @@ use Rector\Php85\Rector\FuncCall\ChrArgModuloRector;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
 use Rector\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector;
-use Rector\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector;
 use Rector\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallRector;
@@ -32,22 +31,19 @@ use Rector\Renaming\ValueObject\RenameCast;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules(
-        [
-            ArrayFirstLastRector::class,
-            RemoveFinfoBufferContextArgRector::class,
-            NullDebugInfoReturnRector::class,
-            DeprecatedAnnotationToDeprecatedAttributeRector::class,
-            ColonAfterSwitchCaseRector::class,
-            ArrayKeyExistsNullToEmptyStringRector::class,
-            ChrArgModuloRector::class,
-            SleepToSerializeRector::class,
-            OrdSingleByteRector::class,
-            WakeupToUnserializeRector::class,
-            ShellExecFunctionCallOverBackticksRector::class,
-            NestedToPipeOperatorRector::class,
-        ]
-    );
+    $rectorConfig->rules([
+        ArrayFirstLastRector::class,
+        RemoveFinfoBufferContextArgRector::class,
+        NullDebugInfoReturnRector::class,
+        DeprecatedAnnotationToDeprecatedAttributeRector::class,
+        ColonAfterSwitchCaseRector::class,
+        ArrayKeyExistsNullToEmptyStringRector::class,
+        ChrArgModuloRector::class,
+        SleepToSerializeRector::class,
+        OrdSingleByteRector::class,
+        WakeupToUnserializeRector::class,
+        ShellExecFunctionCallOverBackticksRector::class,
+    ]);
 
     $rectorConfig->ruleWithConfiguration(
         RemoveFuncCallArgRector::class,
