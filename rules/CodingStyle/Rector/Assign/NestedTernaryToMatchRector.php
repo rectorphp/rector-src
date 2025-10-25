@@ -80,7 +80,7 @@ CODE_SAMPLE
         $defaultExpr = null;
 
         while ($currentTernary instanceof Ternary) {
-            if ($currentTernary->if === null) {
+            if (!$currentTernary->if instanceof Expr) {
                 // short ternary, skip
                 return null;
             }
@@ -119,10 +119,10 @@ CODE_SAMPLE
             $match = new Match_($this->nodeFactory->createTrue());
         }
 
-        foreach ($conditionsAndResults as $conditionsAndResult) {
+        foreach ($conditionsAndResults as $conditionAndResult) {
             $match->arms[] = new MatchArm([
-                $isVariableIdentical ? $conditionsAndResult->getIdenticalExpr() : $conditionsAndResult->getConditionExpr(),
-            ], $conditionsAndResult->getResultExpr());
+                $isVariableIdentical ? $conditionAndResult->getIdenticalExpr() : $conditionAndResult->getConditionExpr(),
+            ], $conditionAndResult->getResultExpr());
         }
 
         $match->arms[] = new MatchArm(null, $defaultExpr);

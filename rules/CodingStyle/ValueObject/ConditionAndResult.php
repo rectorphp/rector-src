@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ValueObject;
 
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use Webmozart\Assert\Assert;
@@ -29,7 +30,7 @@ final readonly class ConditionAndResult
     public function getIdenticalVariableName(): ?string
     {
         $identical = $this->getConditionIdentical();
-        if (! $identical->left instanceof Expr\Variable) {
+        if (! $identical->left instanceof Variable) {
             return null;
         }
 
