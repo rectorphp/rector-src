@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchTrueRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchRector\Fixture;
 
-final class NestedTernaryToMatchTrueRector
+final class NestedTernaryToMatchRector
 {
     public function run($value)
     {
@@ -14,9 +14,9 @@ final class NestedTernaryToMatchTrueRector
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchTrueRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Assign\NestedTernaryToMatchRector\Fixture;
 
-final class NestedTernaryToMatchTrueRector
+final class NestedTernaryToMatchRector
 {
     public function run($value)
     {
