@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-
+value = 5
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->disableParallel();
 

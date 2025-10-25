@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\MatchArm;
 use Rector\CodingStyle\ValueObject\ConditionAndResult;
 use Rector\Rector\AbstractRector;
@@ -109,22 +110,52 @@ CODE_SAMPLE
      */
     private function createMatch(array $conditionsAndResults, Expr $defaultExpr): Match_
     {
-        foreach ($conditionsAndResults as $conditionAndResult) {
-            dump($conditionAndResult->getConditionExpr() instanceof Expr\BinaryOp\Identical);
+        $singleVariableName = $this->matchAlwaysIdenticalVariableName($conditionsAndResults);
+        if (is_string($singleVariableName)) {
+            $isVariableIdentical = true;
+            $match = new Match_(new Variable($singleVariableName));
+        } else {
+            $isVariableIdentical = false;
+            $match = new Match_($this->nodeFactory->createTrue());
         }
-
-        die;
-
-        $match = new Match_($this->nodeFactory->createTrue());
 
         foreach ($conditionsAndResults as $conditionsAndResult) {
             $match->arms[] = new MatchArm([
-                $conditionsAndResult->getConditionExpr(),
+                $isVariableIdentical ? $conditionsAndResult->getIdenticalExpr() : $conditionsAndResult->getConditionExpr(),
             ], $conditionsAndResult->getResultExpr());
         }
 
         $match->arms[] = new MatchArm(null, $defaultExpr);
 
         return $match;
+    }
+
+    /**
+     * @param ConditionAndResult[] $conditionsAndResults
+     */
+    private function matchAlwaysIdenticalVariableName(array $conditionsAndResults): mixed
+    {
+        $identicalVariableNames = [];
+        foreach ($conditionsAndResults as $conditionAndResult) {
+            if (! $conditionAndResult->isIdenticalCompare()) {
+                return null;
+            }
+
+            $variableName = $conditionAndResult->getIdenticalVariableName();
+            if (! is_string($variableName)) {
+                return null;
+            }
+
+            $identicalVariableNames[] = $variableName;
+        }
+
+        $uniqueIdenticalVariableNames = array_unique($identicalVariableNames);
+        $uniqueIdenticalVariableNames = array_values($uniqueIdenticalVariableNames);
+
+        if (count($uniqueIdenticalVariableNames) === 1) {
+            return $uniqueIdenticalVariableNames[0];
+        }
+
+        return null;
     }
 }
