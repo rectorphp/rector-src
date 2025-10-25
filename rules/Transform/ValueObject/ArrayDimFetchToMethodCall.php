@@ -6,16 +6,16 @@ namespace Rector\Transform\ValueObject;
 
 use PHPStan\Type\ObjectType;
 
-final class ArrayDimFetchToMethodCall
+final readonly class ArrayDimFetchToMethodCall
 {
     public function __construct(
-        private readonly ObjectType $objectType,
-        private readonly string $method,
+        private ObjectType $objectType,
+        private string $method,
         // Optional methods for set, exists, and unset operations
         // if null, then these operations will not be transformed
-        private readonly ?string $setMethod = null,
-        private readonly ?string $existsMethod = null,
-        private readonly ?string $unsetMethod = null,
+        private ?string $setMethod = null,
+        private ?string $existsMethod = null,
+        private ?string $unsetMethod = null,
     ) {
     }
 

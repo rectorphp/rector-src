@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Pipe;
 use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\ConstFetch;
@@ -19,6 +20,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\VariadicPlaceholder;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -31,6 +33,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NestedToPipeOperatorRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly ExprAnalyzer $exprAnalyzer
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -67,9 +74,12 @@ CODE_SAMPLE
         return PhpVersionFeature::PIPE_OPERATOER;
     }
 
+    /**
+     * @param StmtsAwareInterface $node
+     */
     public function refactor(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface || $node->stmts === null) {
+        if ($node->stmts === null) {
             return null;
         }
 
@@ -90,17 +100,18 @@ CODE_SAMPLE
         return $hasChanged ? $node : null;
     }
 
-    private function transformSequentialAssignments(StmtsAwareInterface $node): bool
+    private function transformSequentialAssignments(StmtsAwareInterface $stmtsAware): bool
     {
         $hasChanged = false;
-        $statements = $node->stmts;
+
+        $statements = $stmtsAware->stmts;
         $totalStatements = count($statements) - 1;
 
         for ($i = 0; $i < $totalStatements; ++$i) {
             $chain = $this->findAssignmentChain($statements, $i);
 
             if ($chain && count($chain) >= 2) {
-                $this->processAssignmentChain($node, $chain, $i);
+                $this->processAssignmentChain($stmtsAware, $chain, $i);
                 $hasChanged = true;
                 // Skip processed statements
                 $i += count($chain) - 1;
@@ -153,6 +164,7 @@ CODE_SAMPLE
                 if (! $arg->value instanceof Variable && ! $this->isSimpleValue($arg->value)) {
                     return null;
                 }
+
                 $chain[] = [
                     'stmt' => $stmt,
                     'assign' => $expr,
@@ -166,6 +178,7 @@ CODE_SAMPLE
                 if (! $arg->value instanceof Variable || $this->getName($arg->value) !== $previousVarName) {
                     break;
                 }
+
                 $chain[] = [
                     'stmt' => $stmt,
                     'assign' => $expr,
@@ -181,20 +194,21 @@ CODE_SAMPLE
 
     private function isSimpleValue(Expr $expr): bool
     {
-        return $expr instanceof Variable
-            || $expr instanceof ConstFetch
+        if ($expr instanceof Array_) {
+            return ! $this->exprAnalyzer->isDynamicExpr($expr);
+        }
+
+        return $expr instanceof ConstFetch
             || $expr instanceof String_
             || $expr instanceof Float_
-            || $expr instanceof Int_
-            || $expr instanceof Array_;
+            || $expr instanceof Int_;
     }
 
     /**
      * @param array<int, array{stmt: Stmt, assign: Expr, funcCall: Expr\FuncCall}> $chain
      */
-    private function processAssignmentChain(StmtsAwareInterface $node, array $chain, int $startIndex): void
+    private function processAssignmentChain(StmtsAwareInterface $stmtsAware, array $chain, int $startIndex): void
     {
-        $firstAssignment = $chain[0]['assign'];
         $lastAssignment = $chain[count($chain) - 1]['assign'];
 
         // Get the initial value from the first function call's argument
@@ -217,15 +231,16 @@ CODE_SAMPLE
         foreach ($chain as $chainItem) {
             $funcCall = $chainItem['funcCall'];
             $placeholderCall = $this->createPlaceholderCall($funcCall);
-            $pipeExpression = new Node\Expr\BinaryOp\Pipe($pipeExpression, $placeholderCall);
+            $pipeExpression = new Pipe($pipeExpression, $placeholderCall);
         }
 
         if (! $lastAssignment instanceof Assign) {
             return;
         }
+
         // Create the final assignment
-        $finalAssignment = new Assign($lastAssignment->var, $pipeExpression);
-        $finalExpression = new Expression($finalAssignment);
+        $assign = new Assign($lastAssignment->var, $pipeExpression);
+        $finalExpression = new Expression($assign);
 
         // Replace the statements
         $endIndex = $startIndex + count($chain) - 1;
@@ -233,23 +248,23 @@ CODE_SAMPLE
         // Remove all intermediate statements and replace with the final pipe expression
         for ($i = $startIndex; $i <= $endIndex; ++$i) {
             if ($i === $startIndex) {
-                $node->stmts[$i] = $finalExpression;
+                $stmtsAware->stmts[$i] = $finalExpression;
             } else {
-                unset($node->stmts[$i]);
+                unset($stmtsAware->stmts[$i]);
             }
         }
 
-        $stmts = array_values($node->stmts);
+        $stmts = array_values($stmtsAware->stmts);
 
         // Reindex the array
-        $node->stmts = $stmts;
+        $stmtsAware->stmts = $stmts;
     }
 
-    private function transformNestedCalls(StmtsAwareInterface $node): bool
+    private function transformNestedCalls(StmtsAwareInterface $stmtsAware): bool
     {
         $hasChanged = false;
 
-        foreach ($node->stmts as $stmt) {
+        foreach ($stmtsAware->stmts as $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
             }
@@ -260,14 +275,14 @@ CODE_SAMPLE
                 $assignedValue = $expr->expr;
                 $processedValue = $this->processNestedCalls($assignedValue);
 
-                if ($processedValue !== null && $processedValue !== $assignedValue) {
+                if ($processedValue instanceof Expr && $processedValue !== $assignedValue) {
                     $expr->expr = $processedValue;
                     $hasChanged = true;
                 }
             } elseif ($expr instanceof FuncCall) {
                 $processedValue = $this->processNestedCalls($expr);
 
-                if ($processedValue !== null && $processedValue !== $expr) {
+                if ($processedValue instanceof Expr && $processedValue !== $expr) {
                     $stmt->expr = $processedValue;
                     $hasChanged = true;
                 }
@@ -288,6 +303,7 @@ CODE_SAMPLE
             if (! $arg instanceof Arg) {
                 return null;
             }
+
             if ($arg->value instanceof FuncCall) {
                 return $this->buildPipeExpression($node, $arg->value);
             }
@@ -296,20 +312,13 @@ CODE_SAMPLE
         return null;
     }
 
-    private function buildPipeExpression(FuncCall $outerCall, FuncCall $innerCall): Node\Expr\BinaryOp\Pipe
+    private function buildPipeExpression(FuncCall $outerCall, FuncCall $innerCall): Pipe
     {
-        $pipe = new Node\Expr\BinaryOp\Pipe($innerCall, $this->createPlaceholderCall($outerCall));
-
-        return $pipe;
+        return new Pipe($innerCall, $this->createPlaceholderCall($outerCall));
     }
 
-    private function createPlaceholderCall(FuncCall $originalCall): FuncCall
+    private function createPlaceholderCall(FuncCall $funcCall): FuncCall
     {
-        $newArgs = [];
-        foreach ($originalCall->args as $arg) {
-            $newArgs[] = new VariadicPlaceholder();
-        }
-
-        return new FuncCall($originalCall->name, $newArgs);
+        return new FuncCall($funcCall->name, [new VariadicPlaceholder()]);
     }
 }
