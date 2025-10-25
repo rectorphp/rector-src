@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
-use Override;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
@@ -79,13 +78,17 @@ CODE_SAMPLE
         );
     }
 
-    #[Override]
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
     }
 
-    #[Override]
+    /**
+     * @param ClassMethod $node
+     */
     public function refactor(Node $node): ?Node
     {
         if (! $node instanceof ClassMethod) {
