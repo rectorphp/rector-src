@@ -176,17 +176,6 @@ final class BetterStandardPrinter extends Standard
             : $content;
     }
 
-    protected function pAttributeGroup(AttributeGroup $attributeGroup): string
-    {
-        $ret = parent::pAttributeGroup($attributeGroup);
-        $comment = $attributeGroup->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
-        if (! in_array($comment, ['', null], true)) {
-            $ret .= ' // ' . $comment;
-        }
-
-        return $ret;
-    }
-
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string
     {
         if (! $arrowFunction->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
