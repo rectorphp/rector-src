@@ -10,6 +10,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
+use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -26,6 +27,7 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
+        private readonly AstResolver $astResolver,
     ) {
     }
 
@@ -189,17 +191,18 @@ CODE_SAMPLE
     private function hasParentMethodWithNonObjectReturn(ClassMethod $classMethod): bool
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
         $ancestors = array_filter(
             $classReflection->getAncestors(),
-            fn (ClassReflection $ancestorClassReflection): bool =>
-            $classReflection->getName() !== $ancestorClassReflection->getName()
+            fn (ClassReflection $ancestorClassReflection): bool => $classReflection->getName() !== $ancestorClassReflection->getName()
         );
 
         $methodName = $this->getName($classMethod);
+
         foreach ($ancestors as $ancestor) {
             if ($ancestor->getFileName() === null) {
                 continue;
@@ -209,11 +212,19 @@ CODE_SAMPLE
                 continue;
             }
 
-            $parentMethod = $ancestor->getNativeMethod($methodName);
-            $parentReturnType = $parentMethod->getVariants()[0]
-                ->getReturnType();
+            $parentClassMethod = $this->astResolver->resolveClassMethod($ancestor->getName(), $methodName);
 
-            if ($parentReturnType->isObject()->yes() && $parentReturnType->getObjectClassNames() === []) {
+            if ($parentClassMethod === null) {
+                continue;
+            }
+
+            $parentReturnType = $parentClassMethod->returnType;
+
+            if ($parentReturnType === null) {
+                continue;
+            }
+
+            if ($parentReturnType instanceof Identifier && $parentReturnType->name === 'object') {
                 continue;
             }
 
