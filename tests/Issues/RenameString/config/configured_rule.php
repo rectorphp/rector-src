@@ -9,10 +9,7 @@ use Rector\Renaming\Rector\String_\RenameStringRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(StringClassNameToClassConstantRector::class);
 
-    $rectorConfig->ruleWithConfiguration(
-        RenameStringRector::class,
-        [
-            'Rector\Tests\Issues\DoubleRun\Fixture\RenameString' => 'new test',
-        ]
-    );
+    $rectorConfig->ruleWithConfiguration(RenameStringRector::class, [
+        'Rector\Tests\Issues\RenameString\Fixture\RenameString' => 'new test',
+    ]);
 };
