@@ -11,7 +11,6 @@ use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
