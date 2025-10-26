@@ -10,7 +10,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
-use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -18,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * Narrows return type from generic object to specific class in final classes/methods.
+ * Narrows return type from generic object or parent class to specific class in final classes/methods.
  *
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\NarrowObjectReturnTypeRectorTest
  */
@@ -27,14 +26,13 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly AstResolver $astResolver,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrows return type from generic object to specific class in final classes/methods',
+            'Narrows return type from generic object or parent class to specific class in final classes/methods',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -114,10 +112,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasParentMethodWithNonObjectReturn($node)) {
-            return null;
-        }
-
         $actualReturnClass = $this->getActualReturnClass($node);
 
         if ($actualReturnClass === null) {
@@ -186,52 +180,6 @@ CODE_SAMPLE
 
         return $declaredObjectType->isSuperTypeOf($actualObjectType)
             ->yes();
-    }
-
-    private function hasParentMethodWithNonObjectReturn(ClassMethod $classMethod): bool
-    {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        $ancestors = array_filter(
-            $classReflection->getAncestors(),
-            fn (ClassReflection $ancestorClassReflection): bool => $classReflection->getName() !== $ancestorClassReflection->getName()
-        );
-
-        $methodName = $this->getName($classMethod);
-
-        foreach ($ancestors as $ancestor) {
-            if ($ancestor->getFileName() === null) {
-                continue;
-            }
-
-            if (! $ancestor->hasNativeMethod($methodName)) {
-                continue;
-            }
-
-            $parentClassMethod = $this->astResolver->resolveClassMethod($ancestor->getName(), $methodName);
-
-            if ($parentClassMethod === null) {
-                continue;
-            }
-
-            $parentReturnType = $parentClassMethod->returnType;
-
-            if ($parentReturnType === null) {
-                continue;
-            }
-
-            if ($parentReturnType instanceof Identifier && $parentReturnType->name === 'object') {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     private function getActualReturnClass(ClassMethod $node): ?string
