@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * Narrows return types from generic object or parent class to specific class.
+ * Narrows return type from generic object to specific class in final classes/methods.
  *
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\NarrowObjectReturnTypeRectorTest
  */
@@ -34,7 +34,7 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrows return type from generic object or parent class to specific class',
+            'Narrows return type from generic object to specific class in final classes/methods',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
