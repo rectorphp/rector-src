@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ValuesTrait;
 
-trait SkipRenamedNonAbstractMethodTrait {
+trait SkipTrait {
     use ValuesTrait {
         addValue as addAnyValue;
     }

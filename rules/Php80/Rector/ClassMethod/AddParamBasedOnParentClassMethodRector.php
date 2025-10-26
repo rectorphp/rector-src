@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
@@ -19,8 +20,8 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
@@ -38,7 +39,6 @@ final class AddParamBasedOnParentClassMethodRector extends AbstractRector implem
         private readonly AstResolver $astResolver,
         private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -59,7 +59,8 @@ class A
     }
 }
 
-class B extends A{
+class B extends A
+{
     public function execute()
     {
     }
@@ -74,7 +75,8 @@ class A
     }
 }
 
-class B extends A{
+class B extends A
+{
     public function execute($foo)
     {
     }
@@ -89,62 +91,89 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->isName($node, MethodName::CONSTRUCT)) {
+        if ($node->extends === null && $node->implements === []) {
             return null;
         }
 
-        $parentMethodReflection = $this->parentClassMethodTypeOverrideGuard->getParentClassMethod($node);
+        $hasChanged = false;
 
-        if (! $parentMethodReflection instanceof MethodReflection) {
-            return null;
-        }
+        foreach ($node->getMethods() as $classMethod) {
+            if ($this->isName($classMethod, MethodName::CONSTRUCT)) {
+                continue;
+            }
 
-        if ($parentMethodReflection->isPrivate()) {
-            return null;
-        }
+            $parentMethodReflection = $this->parentClassMethodTypeOverrideGuard->getParentClassMethod($classMethod);
+            if (! $parentMethodReflection instanceof MethodReflection) {
+                continue;
+            }
 
-        $currentClassReflection = $this->reflectionResolver->resolveClassReflection($node);
-        $isPDO = $currentClassReflection instanceof ClassReflection && $currentClassReflection->is('PDO');
+            if ($parentMethodReflection->isPrivate()) {
+                continue;
+            }
 
-        // It relies on phpstorm stubs that define 2 kind of query method for both php 7.4 and php 8.0
-        // @see https://github.com/JetBrains/phpstorm-stubs/blob/e2e898a29929d2f520fe95bdb2109d8fa895ba4a/PDO/PDO.php#L1096-L1126
-        if ($isPDO && $parentMethodReflection->getName() === 'query') {
-            return null;
-        }
+            $scope = ScopeFetcher::fetch($node);
+            $currentClassReflection = $scope->getClassReflection();
 
-        $parentClassMethod = $this->astResolver->resolveClassMethodFromMethodReflection($parentMethodReflection);
-        if (! $parentClassMethod instanceof ClassMethod) {
-            return null;
-        }
+            $isPDO = $currentClassReflection instanceof ClassReflection && $currentClassReflection->is('PDO');
 
-        $currentClassMethodParams = $node->getParams();
-        $parentClassMethodParams = $parentClassMethod->getParams();
+            // It relies on phpstorm stubs that define 2 kind of query method for both php 7.4 and php 8.0
+            // @see https://github.com/JetBrains/phpstorm-stubs/blob/e2e898a29929d2f520fe95bdb2109d8fa895ba4a/PDO/PDO.php#L1096-L1126
+            if ($isPDO && $parentMethodReflection->getName() === 'query') {
+                continue;
+            }
 
-        $countCurrentClassMethodParams = count($currentClassMethodParams);
-        $countParentClassMethodParams = count($parentClassMethodParams);
+            $parentClassMethod = $this->astResolver->resolveClassMethodFromMethodReflection($parentMethodReflection);
+            if (! $parentClassMethod instanceof ClassMethod) {
+                continue;
+            }
 
-        if ($countCurrentClassMethodParams === $countParentClassMethodParams) {
-            return null;
-        }
+            $currentClassMethodParams = $classMethod->getParams();
+            $parentClassMethodParams = $parentClassMethod->getParams();
 
-        if ($countCurrentClassMethodParams < $countParentClassMethodParams) {
-            return $this->processReplaceClassMethodParams(
-                $node,
-                $parentClassMethod,
+            $countCurrentClassMethodParams = count($currentClassMethodParams);
+            $countParentClassMethodParams = count($parentClassMethodParams);
+
+            if ($countCurrentClassMethodParams === $countParentClassMethodParams) {
+                continue;
+            }
+
+            if ($countCurrentClassMethodParams < $countParentClassMethodParams) {
+                $hasClassMethodChanged = $this->processReplaceClassMethodParams(
+                    $classMethod,
+                    $parentClassMethod,
+                    $currentClassMethodParams,
+                    $parentClassMethodParams
+                );
+
+                if ($hasClassMethodChanged) {
+                    $hasChanged = true;
+                }
+
+                continue;
+            }
+
+            $hasClassMethodChanged = $this->processAddNullDefaultParam(
                 $currentClassMethodParams,
                 $parentClassMethodParams
             );
+            if ($hasClassMethodChanged) {
+                $hasChanged = true;
+            }
         }
 
-        return $this->processAddNullDefaultParam($node, $currentClassMethodParams, $parentClassMethodParams);
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     /**
@@ -152,11 +181,11 @@ CODE_SAMPLE
      * @param Param[] $parentClassMethodParams
      */
     private function processAddNullDefaultParam(
-        ClassMethod $classMethod,
         array $currentClassMethodParams,
         array $parentClassMethodParams
-    ): ?ClassMethod {
+    ): bool {
         $hasChanged = false;
+
         foreach ($currentClassMethodParams as $key => $currentClassMethodParam) {
             if (isset($parentClassMethodParams[$key])) {
                 continue;
@@ -170,15 +199,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $currentClassMethodParams[$key]->default = $this->nodeFactory->createNull();
+            $currentClassMethodParam->default = $this->nodeFactory->createNull();
             $hasChanged = true;
         }
 
-        if (! $hasChanged) {
-            return null;
-        }
-
-        return $classMethod;
+        return $hasChanged;
     }
 
     /**
@@ -190,8 +215,10 @@ CODE_SAMPLE
         ClassMethod $parentClassMethod,
         array $currentClassMethodParams,
         array $parentClassMethodParams
-    ): ?ClassMethod {
+    ): bool {
         $originalParams = $node->params;
+
+        $hasChanged = false;
 
         foreach ($parentClassMethodParams as $key => $parentClassMethodParam) {
             if (isset($currentClassMethodParams[$key])) {
@@ -200,7 +227,7 @@ CODE_SAMPLE
 
                 if (in_array($currentParamName, $collectParamNamesNextKey, true)) {
                     $node->params = $originalParams;
-                    return null;
+                    return false;
                 }
 
                 continue;
@@ -219,7 +246,7 @@ CODE_SAMPLE
 
             if ($isUsedInStmts) {
                 $node->params = $originalParams;
-                return null;
+                return false;
             }
 
             $paramDefault = $parentClassMethodParam->default;
@@ -245,9 +272,11 @@ CODE_SAMPLE
                 $attrGroupsAsComment = $this->betterStandardPrinter->print($parentClassMethodParam->attrGroups);
                 $node->params[$key]->setAttribute(AttributeKey::COMMENTS, [new Comment($attrGroupsAsComment)]);
             }
+
+            $hasChanged = true;
         }
 
-        return $node;
+        return $hasChanged;
     }
 
     private function resolveParamType(Param $param): null|Identifier|Name|ComplexType
