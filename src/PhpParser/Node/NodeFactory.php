@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
+use PhpParser\Node\DeclareItem;
 use PhpParser\Builder\Method;
 use PhpParser\Builder\Param as ParamBuilder;
 use PhpParser\Builder\Property as PropertyBuilder;
@@ -42,8 +43,10 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -132,6 +135,13 @@ final readonly class NodeFactory
         }
 
         return $this->builderFactory->args($values);
+    }
+
+    public function createDeclaresStrictType(): Declare_
+    {
+        $declareItem = new DeclareItem(new Identifier('strict_types'), new Int_(1));
+
+        return new Declare_([$declareItem]);
     }
 
     /**

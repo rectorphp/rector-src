@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Issues\DoubleRun\Fixture;
+namespace Rector\Tests\Issues\RenameString\Fixture;
 
 final class RenameString
 {
@@ -8,7 +8,7 @@ final class RenameString
     {
         return is_a(
             $variable,
-            'Rector\Tests\Issues\DoubleRun\Fixture\RenameString',
+            'Rector\Tests\Issues\RenameString\Fixture\RenameString',
             true
         );
     }
@@ -18,7 +18,7 @@ final class RenameString
 -----
 <?php
 
-namespace Rector\Tests\Issues\DoubleRun\Fixture;
+namespace Rector\Tests\Issues\RenameString\Fixture;
 
 final class RenameString
 {

@@ -118,7 +118,7 @@ CODE_SAMPLE;
 
         $this->file = $file;
 
-        return parent::beforeTraverse($nodes);
+        return null;
     }
 
     final public function enterNode(Node $node): int|Node|null
