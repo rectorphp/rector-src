@@ -110,7 +110,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $classReflection->isFinal() && ! $node->isFinal()) {
+        if (! $classReflection->isFinalByKeyword() && ! $node->isFinal()) {
             return null;
         }
 
