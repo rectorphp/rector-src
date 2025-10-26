@@ -326,7 +326,7 @@ final class BetterStandardPrinter extends Standard
         return $this->pInfixOp(
             Pipe::class,
             $node->left,
-            $this->nl . $this->resolveIndentSpaces() . '|> ',
+            "\n" . $this->resolveIndentSpaces() . '|> ',
             $node->right,
             $precedence,
             $lhsPrecedence
