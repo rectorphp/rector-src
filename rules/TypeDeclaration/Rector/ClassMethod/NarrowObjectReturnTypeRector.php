@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -109,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $classReflection->isFinal()) {
+        if (! $classReflection->isFinal() && ! $node->isFinal()) {
             return null;
         }
 
@@ -226,7 +225,7 @@ CODE_SAMPLE
 
     private function getActualReturnClass(ClassMethod $node): ?string
     {
-        $returnStatements = $this->betterNodeFinder->findInstanceOf($node, Return_::class);
+        $returnStatements = $this->betterNodeFinder->findReturnsScoped($node);
 
         if ($returnStatements === []) {
             return null;
