@@ -2,15 +2,11 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-final class FinalProduct
-{
-}
-
 final class FinalProductFactory
 {
-    public function create(): FinalProduct
+    public function create(): \DateTime
     {
-        return new FinalProduct();
+        return new \DateTime();
     }
 }
 
