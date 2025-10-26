@@ -34,11 +34,16 @@ final class DeclareStrictTypesRector extends AbstractRector implements HTMLAvers
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add `declare(strict_types=1)` if missing', [
+        return new RuleDefinition('Add `declare(strict_types=1)` if missing in a namespaced file', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-function someFunction()
+namespace App;
+
+class SomeClass
 {
+    function someFunction(int $number)
+    {
+    }
 }
 CODE_SAMPLE
 
@@ -46,8 +51,13 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 declare(strict_types=1);
 
-function someFunction()
+namespace App;
+
+class SomeClass
 {
+    function someFunction(int $number)
+    {
+    }
 }
 CODE_SAMPLE
             ),
@@ -79,14 +89,7 @@ CODE_SAMPLE
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {
-            $currentStmt = current($rootStmt->stmts);
-
-            if (! $currentStmt instanceof Stmt) {
-                return null;
-            }
-
-            $nodes = $rootStmt->stmts;
-            $stmt = $currentStmt;
+            return null;
         }
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
@@ -100,12 +103,6 @@ CODE_SAMPLE
 
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getStartLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
-
-        if ($rootStmt instanceof FileWithoutNamespace) {
-            /** @var Stmt[] $nodes */
-            $rootStmt->stmts = [$strictTypesDeclare, new Nop(), ...$nodes];
-            return [$rootStmt];
-        }
 
         return [$strictTypesDeclare, new Nop(), ...$nodes];
     }
@@ -121,7 +118,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node): ?int
+    public function refactor(Node $node): int
     {
         // workaround, as Rector now only hooks to specific nodes, not arrays
         // avoid traversing, as we already handled in beforeTraverse()
