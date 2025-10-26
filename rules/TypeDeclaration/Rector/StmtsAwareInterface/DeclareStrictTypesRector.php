@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
-use PhpParser\Node\DeclareItem;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitor;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
@@ -19,16 +15,18 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
 use Rector\ValueObject\Application\File;
+use Rector\ValueObject\PhpVersion;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\DeclareStrictTypesRectorTest
  */
-final class DeclareStrictTypesRector extends AbstractRector implements HTMLAverseRectorInterface
+final class DeclareStrictTypesRector extends AbstractRector implements HTMLAverseRectorInterface, MinPhpVersionInterface
 {
     public function __construct(
-        private readonly DeclareStrictTypeFinder $declareStrictTypeFinder
+        private readonly DeclareStrictTypeFinder $declareStrictTypeFinder,
     ) {
     }
 
@@ -72,39 +70,26 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
-        $filePath = $this->file->getFilePath();
-        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $filePath)) {
+        if ($this->shouldSkipNodes($nodes, $this->file)) {
             return null;
         }
 
-        if ($this->startsWithShebang($this->file)) {
-            return null;
-        }
-
-        if ($nodes === []) {
-            return null;
-        }
-
+        /** @var Node $rootStmt */
         $rootStmt = current($nodes);
-        $stmt = $rootStmt;
-
         if ($rootStmt instanceof FileWithoutNamespace) {
             return null;
         }
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
-        if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($stmt)) {
+        if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($rootStmt)) {
             return null;
         }
 
-        $declareItem = new DeclareItem(new Identifier('strict_types'), new Int_(1));
-        $strictTypesDeclare = new Declare_([$declareItem]);
-
-        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getStartLine());
+        $rectorWithLineChange = new RectorWithLineChange(self::class, $rootStmt->getStartLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        return [$strictTypesDeclare, new Nop(), ...$nodes];
+        return [$this->nodeFactory->createDeclaresStrictType(), new Nop(), ...$nodes];
     }
 
     /**
@@ -125,8 +110,24 @@ CODE_SAMPLE
         return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
     }
 
-    private function startsWithShebang(File $file): bool
+    public function provideMinPhpVersion(): int
     {
-        return str_starts_with($file->getFileContent(), '#!');
+        return PhpVersion::PHP_70;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     */
+    private function shouldSkipNodes(array $nodes, File $file): bool
+    {
+        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $file->getFilePath())) {
+            return true;
+        }
+
+        if (str_starts_with($file->getFileContent(), '#!')) {
+            return true;
+        }
+
+        return $nodes === [];
     }
 }
