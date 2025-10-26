@@ -160,7 +160,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $classReflection->isFinal();
+        return $classReflection->isFinalByKeyword();
     }
 
     private function isActualTypeAnonymous(string $actualType): bool
