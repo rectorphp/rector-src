@@ -185,10 +185,14 @@ CODE_SAMPLE
         return $this->doctrineTypeAnalyzer->isInstanceOfCollectionType($propertyType);
     }
 
-    private function hasSomeUntypedProperties(Node|Class_ $node): bool
+    private function hasSomeUntypedProperties(Class_ $class): bool
     {
-        foreach ($node->getProperties() as $property) {
-            if ($property->type instanceof \PhpParser\Node) {
+        if ($class->getProperties() === []) {
+            return false;
+        }
+
+        foreach ($class->getProperties() as $property) {
+            if ($property->type instanceof Node) {
                 continue;
             }
 
