@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\Fixture;
+namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\SequentialAssignmentsToPipeOperatorRector\Fixture;
 
 $value = "hello world";
 $result1 = function3($value);
@@ -11,7 +11,7 @@ $result = function1($result2);
 -----
 <?php
 
-namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\Fixture;
+namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\SequentialAssignmentsToPipeOperatorRector\Fixture;
 
 $value = "hello world";
 $result = $value
