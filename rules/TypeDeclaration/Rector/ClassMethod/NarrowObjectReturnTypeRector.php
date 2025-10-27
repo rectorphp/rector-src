@@ -253,7 +253,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $returnType = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
+            $returnType = $this->nodeTypeResolver->getType($returnStatement->expr);
 
             if (! $returnType->isObject()->yes()) {
                 return null;
