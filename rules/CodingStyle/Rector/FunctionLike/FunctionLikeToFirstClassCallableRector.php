@@ -111,7 +111,6 @@ CODE_SAMPLE
         }
 
         $callLike = $this->extractCallLike($node);
-
         if ($callLike === null) {
             return null;
         }
@@ -135,8 +134,13 @@ CODE_SAMPLE
         FuncCall|MethodCall|StaticCall $callLike,
         Scope $scope
     ): bool {
-        $params = $node->getParams();
         if ($callLike->isFirstClassCallable()) {
+            return true;
+        }
+
+        $params = $node->getParams();
+
+        if (count($params) !== count($callLike->getArgs())) {
             return true;
         }
 
