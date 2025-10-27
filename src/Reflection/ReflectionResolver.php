@@ -193,22 +193,22 @@ final readonly class ReflectionResolver
     }
 
     public function resolveFunctionLikeReflectionFromCall(
-        CallLike $call
+        CallLike $callLike
     ): MethodReflection | FunctionReflection | null {
-        if ($call instanceof MethodCall) {
-            return $this->resolveMethodReflectionFromMethodCall($call);
+        if ($callLike instanceof MethodCall) {
+            return $this->resolveMethodReflectionFromMethodCall($callLike);
         }
 
-        if ($call instanceof StaticCall) {
-            return $this->resolveMethodReflectionFromStaticCall($call);
+        if ($callLike instanceof StaticCall) {
+            return $this->resolveMethodReflectionFromStaticCall($callLike);
         }
 
-        if ($call instanceof New_) {
-            return $this->resolveMethodReflectionFromNew($call);
+        if ($callLike instanceof New_) {
+            return $this->resolveMethodReflectionFromNew($callLike);
         }
 
-        if ($call instanceof FuncCall) {
-            return $this->resolveFunctionReflectionFromFuncCall($call);
+        if ($callLike instanceof FuncCall) {
+            return $this->resolveFunctionReflectionFromFuncCall($callLike);
         }
 
         // todo: support NullsafeMethodCall
