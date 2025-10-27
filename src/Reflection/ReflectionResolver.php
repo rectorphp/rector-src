@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Reflection;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -192,7 +193,7 @@ final readonly class ReflectionResolver
     }
 
     public function resolveFunctionLikeReflectionFromCall(
-        MethodCall|FuncCall|StaticCall|New_ $call
+        CallLike $call
     ): MethodReflection | FunctionReflection | null {
         if ($call instanceof MethodCall) {
             return $this->resolveMethodReflectionFromMethodCall($call);
