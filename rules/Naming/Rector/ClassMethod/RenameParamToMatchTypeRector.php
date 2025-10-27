@@ -85,7 +85,7 @@ CODE_SAMPLE
 
         foreach ($node->params as $param) {
             // skip as array-like
-            if ($param->variadic) {
+            if ($param->variadic || $param->type === null) {
                 continue;
             }
 
