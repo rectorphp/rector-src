@@ -145,6 +145,10 @@ CODE_SAMPLE
                     }
 
                     $classMethodOrFunction = $this->astResolver->resolveClassMethodOrFunctionFromCall($node);
+                    if (! $classMethodOrFunction instanceof FunctionLike) {
+                        return null;
+                    }
+
                     foreach ($reflection->getParameters() as $index => $parameterReflection) {
                         if ($index !== $key) {
                             continue;
@@ -160,53 +164,51 @@ CODE_SAMPLE
                             return null;
                         }
 
-                        if ($classMethodOrFunction instanceof FunctionLike) {
-                            $parameterName = $parameterReflection->getName();
+                        $parameterName = $parameterReflection->getName();
 
-                            $isInvokable = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-                                $classMethodOrFunction,
-                                fn (Node $node): bool => $node instanceof FuncCall
-                                && $node->name instanceof Variable
-                                && $this->isName($node->name, $parameterName)
-                                && count($node->args) > 1
-                            );
+                        $isInvokable = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                            $classMethodOrFunction,
+                            fn (Node $node): bool => $node instanceof FuncCall
+                            && $node->name instanceof Variable
+                            && $this->isName($node->name, $parameterName)
+                            && count($node->args) > 1
+                        );
 
-                            if ($isInvokable) {
-                                $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
-                                return null;
-                            }
+                        if ($isInvokable) {
+                            $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
+                            return null;
+                        }
 
-                            $isClosureBindTo = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-                                $classMethodOrFunction,
-                                function (Node $node) use ($parameterName): bool {
-                                    if (! $node instanceof MethodCall) {
-                                        return false;
-                                    }
-
-                                    if (! $node->name instanceof Identifier) {
-                                        return false;
-                                    }
-
-                                    if (! $this->isName($node->name, 'bindTo')) {
-                                        return false;
-                                    }
-
-                                    if (! $node->var instanceof Variable) {
-                                        return false;
-                                    }
-
-                                    if (! $this->isObjectType($node->var, new ObjectType('Closure'))) {
-                                        return false;
-                                    }
-
-                                    return $this->isName($node->var, $parameterName);
+                        $isClosureBindTo = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                            $classMethodOrFunction,
+                            function (Node $node) use ($parameterName): bool {
+                                if (! $node instanceof MethodCall) {
+                                    return false;
                                 }
-                            );
 
-                            if ($isClosureBindTo) {
-                                $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
-                                return null;
+                                if (! $node->name instanceof Identifier) {
+                                    return false;
+                                }
+
+                                if (! $this->isName($node->name, 'bindTo')) {
+                                    return false;
+                                }
+
+                                if (! $node->var instanceof Variable) {
+                                    return false;
+                                }
+
+                                if (! $this->isObjectType($node->var, new ObjectType('Closure'))) {
+                                    return false;
+                                }
+
+                                return $this->isName($node->var, $parameterName);
                             }
+                        );
+
+                        if ($isClosureBindTo) {
+                            $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
+                            return null;
                         }
                     }
                 }
@@ -260,7 +262,7 @@ CODE_SAMPLE
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
         if ($paramTagValueNode instanceof ParamTagValueNode) {
             $type = $phpDocInfo->getParamType($paramName);
-            return $type instanceof CallableType || $type instanceof UnionType;
+            return ($type instanceof CallableType && count($type->getParameters()) !== 1) || $type instanceof UnionType;
         }
 
         return false;
