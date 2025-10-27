@@ -130,6 +130,23 @@ CODE_SAMPLE
             return true;
         }
 
+        $isMissingParameterTypes = false;
+        foreach ($classMethod->params as $param) {
+            if ($param->type instanceof Node) {
+                continue;
+            }
+
+            if ($param->variadic) {
+                continue;
+            }
+
+            $isMissingParameterTypes = true;
+        }
+
+        if ($isMissingParameterTypes === false) {
+            return true;
+        }
+
         return $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod);
     }
 
