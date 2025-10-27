@@ -36,23 +36,24 @@ final class NestedToPipeOperatorRector extends AbstractRector implements MinPhpV
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Transform nested function calls and sequential assignments to pipe operator syntax',
+            'Transform sequential assignments to pipe operator syntax',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 $value = "hello world";
-$result1 = function3($value);
+$result1 = function1($value);
 $result2 = function2($result1);
-$result = function1($result2);
+
+$result = function3($result2);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 $value = "hello world";
 
 $result = $value
-    |> function3(...)
+    |> function1(...)
     |> function2(...)
-    |> function1(...);
+    |> function3(...);
 CODE_SAMPLE
                 ),
             ]
@@ -80,19 +81,25 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        // First, try to transform sequential assignments
-        $sequentialChanged = $this->transformSequentialAssignments($node);
-        if ($sequentialChanged) {
-            $hasChanged = true;
+        $statements = $node->stmts;
+        $totalStatements = count($statements) - 1;
+
+        for ($i = 0; $i < $totalStatements; ++$i) {
+            $chain = $this->findAssignmentChain($statements, $i);
+
+            if ($chain && count($chain) >= 2) {
+                $this->processAssignmentChain($node, $chain, $i);
+                $hasChanged = true;
+                // Skip processed statements
+                $i += count($chain) - 1;
+            }
         }
 
-        // Then, transform nested function calls
-        $nestedChanged = $this->transformNestedCalls($node);
-        if ($nestedChanged) {
-            $hasChanged = true;
+        if (! $hasChanged) {
+            return null;
         }
 
-        return $hasChanged ? $node : null;
+        return $node;
     }
 
     private function transformSequentialAssignments(StmtsAwareInterface $stmtsAware): bool
@@ -241,63 +248,6 @@ CODE_SAMPLE
 
         // Reindex the array
         $stmtsAware->stmts = $stmts;
-    }
-
-    private function transformNestedCalls(StmtsAwareInterface $stmtsAware): bool
-    {
-        $hasChanged = false;
-
-        foreach ($stmtsAware->stmts as $stmt) {
-            if (! $stmt instanceof Expression) {
-                continue;
-            }
-
-            $expr = $stmt->expr;
-
-            if ($expr instanceof Assign) {
-                $assignedValue = $expr->expr;
-                $processedValue = $this->processNestedCalls($assignedValue);
-
-                if ($processedValue instanceof Expr && $processedValue !== $assignedValue) {
-                    $expr->expr = $processedValue;
-                    $hasChanged = true;
-                }
-            } elseif ($expr instanceof FuncCall) {
-                $processedValue = $this->processNestedCalls($expr);
-
-                if ($processedValue instanceof Expr && $processedValue !== $expr) {
-                    $stmt->expr = $processedValue;
-                    $hasChanged = true;
-                }
-            }
-        }
-
-        return $hasChanged;
-    }
-
-    private function processNestedCalls(Node $node): ?Expr
-    {
-        if (! $node instanceof FuncCall) {
-            return null;
-        }
-
-        // Check if any argument is a function call
-        foreach ($node->args as $arg) {
-            if (! $arg instanceof Arg) {
-                return null;
-            }
-
-            if ($arg->value instanceof FuncCall) {
-                return $this->buildPipeExpression($node, $arg->value);
-            }
-        }
-
-        return null;
-    }
-
-    private function buildPipeExpression(FuncCall $outerCall, FuncCall $innerCall): Pipe
-    {
-        return new Pipe($innerCall, $this->createPlaceholderCall($outerCall));
     }
 
     private function createPlaceholderCall(FuncCall $funcCall): FuncCall
