@@ -8,18 +8,12 @@ final class WithTrailingComma
     {
         $array = [1, 2, 3];
 
-        $this->map(
-            $array,
+        array_map(
             fn($item) => var_dump(
                 $item,
-            )
+            ),
+            $array
         );
-    }
-
-    private function map(array $items, callable $callback): void {
-		foreach($items as $i) {
-        	$callback($i);
-        }
     }
 }
 
@@ -35,18 +29,12 @@ final class WithTrailingComma
     {
         $array = [1, 2, 3];
 
-        $this->map(
-            $array,
+        array_map(
             var_dump(
                 ...
-            )
+            ),
+            $array
         );
-    }
-
-    private function map(array $items, callable $callback): void {
-		foreach($items as $i) {
-        	$callback($i);
-        }
     }
 }
 

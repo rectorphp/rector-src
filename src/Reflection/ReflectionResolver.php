@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Reflection;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -192,21 +193,26 @@ final readonly class ReflectionResolver
     }
 
     public function resolveFunctionLikeReflectionFromCall(
-        MethodCall|FuncCall|StaticCall|New_ $call
+        CallLike $callLike
     ): MethodReflection | FunctionReflection | null {
-        if ($call instanceof MethodCall) {
-            return $this->resolveMethodReflectionFromMethodCall($call);
+        if ($callLike instanceof MethodCall) {
+            return $this->resolveMethodReflectionFromMethodCall($callLike);
         }
 
-        if ($call instanceof StaticCall) {
-            return $this->resolveMethodReflectionFromStaticCall($call);
+        if ($callLike instanceof StaticCall) {
+            return $this->resolveMethodReflectionFromStaticCall($callLike);
         }
 
-        if ($call instanceof New_) {
-            return $this->resolveMethodReflectionFromNew($call);
+        if ($callLike instanceof New_) {
+            return $this->resolveMethodReflectionFromNew($callLike);
         }
 
-        return $this->resolveFunctionReflectionFromFuncCall($call);
+        if ($callLike instanceof FuncCall) {
+            return $this->resolveFunctionReflectionFromFuncCall($callLike);
+        }
+
+        // todo: support NullsafeMethodCall
+        return null;
     }
 
     public function resolveMethodReflectionFromClassMethod(ClassMethod $classMethod, Scope $scope): ?MethodReflection
