@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Assign;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\BitwiseXor;
 use Rector\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -51,6 +53,12 @@ final class CombinedAssignRector extends AbstractRector
         $binaryNode = $node->expr;
 
         if (! $this->nodeComparator->areNodesEqual($node->var, $binaryNode->left)) {
+            return null;
+        }
+
+        if ($binaryNode->left instanceof ArrayDimFetch &&
+            $node->expr instanceof BitwiseXor
+        ) {
             return null;
         }
 
