@@ -206,7 +206,12 @@ final readonly class ReflectionResolver
             return $this->resolveMethodReflectionFromNew($call);
         }
 
-        return $this->resolveFunctionReflectionFromFuncCall($call);
+        if ($call instanceof FuncCall) {
+            return $this->resolveFunctionReflectionFromFuncCall($call);
+        }
+
+        // todo: support NullsafeMethodCall
+        return null;
     }
 
     public function resolveMethodReflectionFromClassMethod(ClassMethod $classMethod, Scope $scope): ?MethodReflection
