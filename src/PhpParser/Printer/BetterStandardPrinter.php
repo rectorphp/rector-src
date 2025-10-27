@@ -159,6 +159,7 @@ final class BetterStandardPrinter extends Standard
 
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
+        /** @todo remove once fix https://github.com/nikic/PHP-Parser/commit/232169fd7972e018e3d7adbcaa235a2eaa2440c4 is released */
         if ($node instanceof New_ && $node->class instanceof AnonymousClassNode && ! StringUtils::isMatch(
             $content,
             self::SPACED_NEW_START_REGEX
@@ -437,6 +438,9 @@ final class BetterStandardPrinter extends Standard
         return parent::pExpr_Instanceof($instanceof, $precedence, $lhsPrecedence);
     }
 
+    /**
+     * @todo remove once https://github.com/nikic/PHP-Parser/pull/1125 is merged and released
+     */
     private function cleanVariadicPlaceHolderTrailingComma(CallLike $callLike): void
     {
         $originalNode = $callLike->getAttribute(AttributeKey::ORIGINAL_NODE);
