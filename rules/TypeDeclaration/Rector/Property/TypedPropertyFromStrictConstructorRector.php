@@ -93,7 +93,11 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
-        if (! $constructClassMethod instanceof ClassMethod || $node->getProperties() === []) {
+        if (! $constructClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        if (! $this->hasSomeUntypedProperties($node)) {
             return null;
         }
 
@@ -179,5 +183,18 @@ CODE_SAMPLE
         }
 
         return $this->doctrineTypeAnalyzer->isInstanceOfCollectionType($propertyType);
+    }
+
+    private function hasSomeUntypedProperties(Node|Class_ $node): bool
+    {
+        foreach ($node->getProperties() as $property) {
+            if ($property->type instanceof \PhpParser\Node) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
