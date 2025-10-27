@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\FunctionLike;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -23,10 +24,16 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\Annotations\AnnotationMethodReflection;
+use PHPStan\Reflection\ExtendedFunctionVariant;
+use PHPStan\Reflection\Native\NativeFunctionReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ResolvedFunctionVariantWithOriginal;
 use PHPStan\Type\CallableType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\UnionType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -56,7 +63,8 @@ final class FunctionLikeToFirstClassCallableRector extends AbstractRector implem
     public function __construct(
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -127,7 +135,13 @@ CODE_SAMPLE
                     );
 
                     if ($reflection instanceof ResolvedFunctionVariantWithOriginal) {
-                        return null;
+                        $reflection = ParametersAcceptorSelector::combineAcceptors(
+                            $methodReflection->getVariants()
+                        );
+
+                        if (! $reflection instanceof ExtendedFunctionVariant) {
+                            return null;
+                        }
                     }
 
                     $classMethodOrFunction = $this->astResolver->resolveClassMethodOrFunctionFromCall($node);
@@ -137,7 +151,10 @@ CODE_SAMPLE
                         }
 
                         if ($parameterReflection->getType() instanceof CallableType
-                            && count($parameterReflection->getType()->getParameters()) > 1
+                            &&
+                            count($parameterReflection->getType()->getParameters()) !== 1
+                            && ! $methodReflection instanceof NativeFunctionReflection
+                            && $this->hasDocCommentForCallable($classMethodOrFunction, $index)
                         ) {
                             $args[$key]->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
                             return null;
@@ -216,6 +233,37 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::FIRST_CLASS_CALLABLE_SYNTAX;
+    }
+
+    private function hasDocCommentForCallable(FunctionLike $functionLike, int $index): bool
+    {
+        $docComment = $functionLike->getDocComment();
+        if (! $docComment instanceof Doc) {
+            return false;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
+        $params = $functionLike->getParams();
+
+        $paramName = null;
+        foreach ($params as $key => $param) {
+            if ($key === $index) {
+                $paramName = (string) $this->getName($param);
+                break;
+            }
+        }
+
+        if ($paramName === null) {
+            return false;
+        }
+
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
+        if ($paramTagValueNode instanceof ParamTagValueNode) {
+            $type = $phpDocInfo->getParamType($paramName);
+            return $type instanceof CallableType || $type instanceof UnionType;
+        }
+
+        return false;
     }
 
     private function shouldSkip(
