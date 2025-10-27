@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\Fixture;
+namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\SequentialAssignmentsToPipeOperatorRector\Fixture;
 
 final class SkipNestedFunctions
 {

@@ -24,9 +24,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see https://wiki.php.net/rfc/pipe-operator-v3
- * @see \Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\NestedToPipeOperatorRectorTest
+ * @see \Rector\Tests\Php85\Rector\StmtsAwareInterface\SequentialAssignmentsToPipeOperatorRector\SequentialAssignmentsToPipeOperatorRectorTest
  */
-final class NestedToPipeOperatorRector extends AbstractRector implements MinPhpVersionInterface
+final class SequentialAssignmentsToPipeOperatorRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer
@@ -100,27 +100,6 @@ CODE_SAMPLE
         }
 
         return $node;
-    }
-
-    private function transformSequentialAssignments(StmtsAwareInterface $stmtsAware): bool
-    {
-        $hasChanged = false;
-
-        $statements = $stmtsAware->stmts;
-        $totalStatements = count($statements) - 1;
-
-        for ($i = 0; $i < $totalStatements; ++$i) {
-            $chain = $this->findAssignmentChain($statements, $i);
-
-            if ($chain && count($chain) >= 2) {
-                $this->processAssignmentChain($stmtsAware, $chain, $i);
-                $hasChanged = true;
-                // Skip processed statements
-                $i += count($chain) - 1;
-            }
-        }
-
-        return $hasChanged;
     }
 
     /**

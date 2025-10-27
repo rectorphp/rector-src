@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\Fixture;
+namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\SequentialAssignmentsToPipeOperatorRector\Fixture;
 
 class InsideClassMethod
 {
@@ -17,7 +17,7 @@ class InsideClassMethod
 -----
 <?php
 
-namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\NestedToPipeOperatorRector\Fixture;
+namespace Rector\Tests\Php85\Rector\StmtsAwareInterface\SequentialAssignmentsToPipeOperatorRector\Fixture;
 
 class InsideClassMethod
 {
