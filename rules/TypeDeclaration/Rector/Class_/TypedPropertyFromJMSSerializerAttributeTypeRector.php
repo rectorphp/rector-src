@@ -95,10 +95,6 @@ CODE_SAMPLE
         $classReflection = null;
 
         foreach ($node->getProperties() as $property) {
-            if (! $property->isPrivate()) {
-                continue;
-            }
-
             if ($property->type instanceof Node) {
                 continue;
             }
@@ -115,7 +111,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->makePropertyTypedGuard->isLegal($property, $classReflection, false)) {
+            if (! $this->makePropertyTypedGuard->isLegal($property, $classReflection, true)) {
                 continue;
             }
 

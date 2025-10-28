@@ -13,6 +13,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Enum\ClassName;
 use Rector\Renaming\Collector\RenamedNameCollector;
 
 final readonly class PhpDocClassRenamer
@@ -122,7 +123,7 @@ final readonly class PhpDocClassRenamer
         PhpDocInfo $phpDocInfo,
         bool &$hasChanged
     ): void {
-        $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass('JMS\Serializer\Annotation\Type');
+        $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(ClassName::JMS_TYPE);
         if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return;
         }
