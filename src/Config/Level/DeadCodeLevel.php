@@ -45,6 +45,7 @@ use Rector\DeadCode\Rector\If_\RemoveTypedPropertyDeadInstanceOfRector;
 use Rector\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector;
 use Rector\DeadCode\Rector\If_\SimplifyIfElseWithSameContentRector;
 use Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector;
+use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
@@ -146,6 +147,7 @@ final class DeadCodeLevel
         RemoveDeadReturnRector::class,
 
         RemoveArgumentFromDefaultParentCallRector::class,
+        RemoveNullArgOnNullDefaultParamRector::class,
         NarrowTooWideReturnTypeRector::class,
     ];
 }

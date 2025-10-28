@@ -127,8 +127,7 @@ CODE_SAMPLE
                 $hasChanged = $this->variableRenamer->renameVariableInFunctionLike(
                     $variableAndCallForeach->getFunctionLike(),
                     $variableAndCallForeach->getVariableName(),
-                    $expectedName,
-                    null
+                    $expectedName
                 );
 
                 // use different variable on purpose to avoid variable re-assign back to false

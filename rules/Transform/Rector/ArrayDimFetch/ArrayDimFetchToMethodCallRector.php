@@ -134,7 +134,6 @@ CODE_SAMPLE
                 $carry,
                 $expr
             ) : $expr,
-            null,
         );
     }
 
