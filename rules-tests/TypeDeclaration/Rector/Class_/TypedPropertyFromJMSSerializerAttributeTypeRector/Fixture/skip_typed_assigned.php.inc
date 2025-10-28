@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector\Fixture;
 
-final class SkipTypedAssigned
+final class ExactTypedAssigned
 {
     #[\JMS\Serializer\Annotation\Type('string')]
     private $name;
@@ -12,3 +12,22 @@ final class SkipTypedAssigned
         $this->name = $name;
     }
 }
+
+?>
+-----
+<?php
+
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector\Fixture;
+
+final class ExactTypedAssigned
+{
+    #[\JMS\Serializer\Annotation\Type('string')]
+    private ?string $name = null;
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+}
+
+?>

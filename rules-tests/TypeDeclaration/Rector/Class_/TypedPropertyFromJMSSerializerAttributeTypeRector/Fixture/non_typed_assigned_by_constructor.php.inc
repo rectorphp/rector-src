@@ -22,7 +22,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSeriali
 final class NonTypedAssignedByConstructor
 {
     #[\JMS\Serializer\Annotation\Type('string')]
-    private string $name;
+    private ?string $name = null;
 
     public function __construct($name)
     {

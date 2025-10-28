@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use Rector\Doctrine\CodeQuality\Enum\CollectionMapping;
 use Rector\Enum\ClassName;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
@@ -25,8 +26,6 @@ use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
-use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\Util\StringUtils;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -39,14 +38,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class TypedPropertyFromJMSSerializerAttributeTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ValueResolver $valueResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly ScalarStringToTypeMapper $scalarStringToTypeMapper,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -96,7 +93,7 @@ CODE_SAMPLE
         $classReflection = null;
 
         foreach ($node->getProperties() as $property) {
-            if ($property->type instanceof Node) {
+            if ($property->type instanceof Node || $property->props[0]->default instanceof Expr) {
                 continue;
             }
 
@@ -124,37 +121,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty(
-                $property,
-                $classReflection,
-                $this->file
-            );
-            // has assigned with type
-            if ($inferredType instanceof Type) {
-                continue;
-            }
-
-            if ($property->props[0]->default instanceof Node) {
-                continue;
-            }
-
-            $typeValue = null;
-            foreach ($property->attrGroups as $attrGroup) {
-                foreach ($attrGroup->attrs as $attr) {
-                    if ($attr->name->toString() === ClassName::JMS_TYPE) {
-                        $typeValue = $this->valueResolver->getValue($attr->args[0]->value);
-                        break;
-                    }
-                }
-            }
-
+            $typeValue = $this->resolveAttributeType($property);
             if (! is_string($typeValue)) {
                 continue;
-            }
-
-            if (StringUtils::isMatch($typeValue, '#DateTime\<(.*?)\>#')) {
-                // special case for DateTime, which is not a scalar type
-                $typeValue = 'DateTime';
             }
 
             // skip generic iterable types
@@ -174,24 +143,39 @@ CODE_SAMPLE
                 return null;
             }
 
-            $isInConstructorAssigned = $this->constructorAssignDetector->isPropertyAssigned(
-                $node,
-                $this->getName($property)
-            );
-            $type = $isInConstructorAssigned ? $propertyType : new NullableType($propertyType);
-
-            $property->type = $type;
-
-            if (! $isInConstructorAssigned) {
-                $property->props[0]->default = new ConstFetch(new Name('null'));
-            }
+            $property->type = new NullableType($propertyType);
+            $property->props[0]->default = new ConstFetch(new Name('null'));
 
             $hasChanged = true;
-            //            }
         }
 
         if ($hasChanged) {
             return $node;
+        }
+
+        return null;
+    }
+
+    private function resolveAttributeType(Property $property): ?string
+    {
+        foreach ($property->attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attr) {
+                if (! $this->isName($attr->name, ClassName::JMS_TYPE)) {
+                    continue;
+                }
+
+                $typeValue = $this->valueResolver->getValue($attr->args[0]->value);
+                if (! is_string($typeValue)) {
+                    return null;
+                }
+
+                if (StringUtils::isMatch($typeValue, '#DateTime\<(.*?)\>#')) {
+                    // special case for DateTime, which is not a scalar type
+                    return 'DateTime';
+                }
+
+                return $typeValue;
+            }
         }
 
         return null;
