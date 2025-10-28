@@ -15,6 +15,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\Doctrine\CodeQuality\Enum\CollectionMapping;
 use Rector\Enum\ClassName;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -100,6 +101,11 @@ CODE_SAMPLE
             }
 
             if (! $this->phpAttributeAnalyzer->hasPhpAttribute($property, ClassName::JMS_TYPE)) {
+                continue;
+            }
+
+            // this will be most likely collection, not single type
+            if ($this->phpAttributeAnalyzer->hasPhpAttributes($property, CollectionMapping::TO_MANY_CLASSES)) {
                 continue;
             }
 
