@@ -105,7 +105,10 @@ CODE_SAMPLE
             }
 
             // this will be most likely collection, not single type
-            if ($this->phpAttributeAnalyzer->hasPhpAttributes($property, array_merge(CollectionMapping::TO_MANY_CLASSES, CollectionMapping::TO_ONE_CLASSES))) {
+            if ($this->phpAttributeAnalyzer->hasPhpAttributes(
+                $property,
+                array_merge(CollectionMapping::TO_MANY_CLASSES, CollectionMapping::TO_ONE_CLASSES)
+            )) {
                 continue;
             }
 
