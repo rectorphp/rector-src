@@ -21,7 +21,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSeriali
 
 use JMS\Serializer\Annotation\Type;
 
-final class ExactClass
+final class FloatVarString
 {
     #[Type('float')]
     private ?string $price = null;

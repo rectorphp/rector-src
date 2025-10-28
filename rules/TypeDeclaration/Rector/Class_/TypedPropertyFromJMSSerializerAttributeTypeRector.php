@@ -7,9 +7,7 @@ namespace Rector\TypeDeclaration\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
@@ -17,7 +15,11 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\Doctrine\CodeQuality\Enum\CollectionMapping;
 use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
 use Rector\Enum\ClassName;
@@ -48,6 +50,8 @@ final class TypedPropertyFromJMSSerializerAttributeTypeRector extends AbstractRe
         private readonly ScalarStringToTypeMapper $scalarStringToTypeMapper,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly AttributeFinder $attributeFinder,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly VarTagRemover $varTagRemover
     ) {
     }
 
@@ -119,14 +123,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            $type = $this->createType($typeValue);
-
-            $propertyType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
-            if (! $propertyType instanceof Identifier && ! $propertyType instanceof FullyQualified) {
+            $propertyTypeNode = $this->createTypeNode($typeValue, $property);
+            if (! $propertyTypeNode instanceof Identifier && ! $propertyTypeNode instanceof FullyQualified) {
                 continue;
             }
 
-            $property->type = new NullableType($propertyType);
+            $property->type = new NullableType($propertyTypeNode);
             $property->props[0]->default = $this->nodeFactory->createNull();
 
             $hasChanged = true;
@@ -174,15 +176,27 @@ CODE_SAMPLE
         return false;
     }
 
-    private function createType(string $typeValue): Type
+    private function createTypeNode(string $typeValue, Property $property): ?Node
     {
-        $type = $this->scalarStringToTypeMapper->mapScalarStringToType($typeValue);
-        if (! $type instanceof MixedType) {
-            return $type;
+        if ($typeValue === 'float') {
+            $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+            if ($propertyPhpDocInfo instanceof PhpDocInfo) {
+                // fallback to string, as most likely string representation of float
+                if ($propertyPhpDocInfo->getVarType() instanceof StringType) {
+                    $this->varTagRemover->removeVarTag($property);
+
+                    return new Identifier('string');
+                }
+            }
         }
 
-        // fallback to object type
-        return new ObjectType($typeValue);
+        $type = $this->scalarStringToTypeMapper->mapScalarStringToType($typeValue);
+        if ($type instanceof MixedType) {
+            // fallback to object type
+            $type = new ObjectType($typeValue);
+        }
+
+        return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
     }
 
     private function shouldSkipProperty(Property $property, ClassReflection $classReflection): bool
@@ -191,7 +205,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (!$this->phpAttributeAnalyzer->hasPhpAttribute($property, ClassName::JMS_TYPE)) {
+        if (! $this->phpAttributeAnalyzer->hasPhpAttribute($property, ClassName::JMS_TYPE)) {
             return true;
         }
 
