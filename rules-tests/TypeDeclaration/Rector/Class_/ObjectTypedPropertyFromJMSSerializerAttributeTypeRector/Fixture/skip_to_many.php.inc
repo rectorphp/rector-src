@@ -1,9 +1,9 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\ObjectTypedPropertyFromJMSSerializerAttributeTypeRector\Fixture;
 
 use JMS\Serializer\Annotation\Type;
-use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector\Source\SomeClassInSerializer;
+use Rector\Tests\TypeDeclaration\Rector\Class_\ObjectTypedPropertyFromJMSSerializerAttributeTypeRector\Source\SomeClassInSerializer;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 final class SkipToManyAndToOne
