@@ -42,9 +42,7 @@ final readonly class ConfigurationFactory
             false,
             null,
             false,
-            false,
-            null,
-            null
+            false
         );
     }
 

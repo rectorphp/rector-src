@@ -31,8 +31,7 @@ final readonly class ParamRenamer
         $this->variableRenamer->renameVariableInFunctionLike(
             $paramRename->getFunctionLike(),
             $paramRename->getCurrentName(),
-            $paramRename->getExpectedName(),
-            null
+            $paramRename->getExpectedName()
         );
 
         // 3. rename @param variable in docblock too
