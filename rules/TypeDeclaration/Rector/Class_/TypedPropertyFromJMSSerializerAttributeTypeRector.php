@@ -17,7 +17,6 @@ use PHPStan\Type\FloatType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -181,25 +180,19 @@ CODE_SAMPLE
     {
         if ($typeValue === 'float') {
             $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-            if ($propertyPhpDocInfo instanceof PhpDocInfo) {
-                // fallback to string, as most likely string representation of float
-                if ($propertyPhpDocInfo->getVarType() instanceof StringType) {
-                    $this->varTagRemover->removeVarTag($property);
-
-                    return new Identifier('string');
-                }
+            // fallback to string, as most likely string representation of float
+            if ($propertyPhpDocInfo instanceof PhpDocInfo && $propertyPhpDocInfo->getVarType() instanceof StringType) {
+                $this->varTagRemover->removeVarTag($property);
+                return new Identifier('string');
             }
         }
 
         if ($typeValue === 'string') {
             $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-            if ($propertyPhpDocInfo instanceof PhpDocInfo) {
-                // fallback to string, as most likely string representation of float
-                if ($propertyPhpDocInfo->getVarType() instanceof FloatType) {
-                    $this->varTagRemover->removeVarTag($property);
-
-                    return new Identifier('float');
-                }
+            // fallback to string, as most likely string representation of float
+            if ($propertyPhpDocInfo instanceof PhpDocInfo && $propertyPhpDocInfo->getVarType() instanceof FloatType) {
+                $this->varTagRemover->removeVarTag($property);
+                return new Identifier('float');
             }
         }
 
