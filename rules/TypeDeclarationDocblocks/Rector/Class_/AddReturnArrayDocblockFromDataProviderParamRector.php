@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\Class_;
 
+use PhpParser\Node\Identifier;
 use PhpParser\Node;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\ArrayType;
@@ -118,7 +118,7 @@ CODE_SAMPLE
 
             $paramTypesByPosition = [];
             foreach ($classMethod->getParams() as $position => $param) {
-                if (! $param->type instanceof \PhpParser\Node) {
+                if (! $param->type instanceof Node) {
                     continue;
                 }
 
@@ -130,7 +130,7 @@ CODE_SAMPLE
             }
 
             foreach ($dataProviderNodes->getClassMethods() as $dataProviderClassMethod) {
-                if (! $dataProviderClassMethod->returnType instanceof Node\Identifier) {
+                if (! $dataProviderClassMethod->returnType instanceof Identifier) {
                     continue;
                 }
 
