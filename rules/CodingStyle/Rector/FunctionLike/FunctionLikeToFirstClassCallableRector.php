@@ -24,6 +24,8 @@ use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Annotations\AnnotationMethodReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\CallableType;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
@@ -97,14 +99,25 @@ CODE_SAMPLE
             }
 
             $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-            if ($methodReflection instanceof NativeFunctionReflection) {
-                return null;
-            }
-
             foreach ($node->getArgs() as $arg) {
-                if ($arg->value instanceof Closure || $arg->value instanceof ArrowFunction) {
-                    $arg->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
+                if (! $arg->value instanceof Closure && ! $arg->value instanceof ArrowFunction) {
+                    continue;
                 }
+
+                if ($methodReflection instanceof NativeFunctionReflection) {
+                    $parametersAcceptors = ParametersAcceptorSelector::combineAcceptors(
+                        $methodReflection->getVariants()
+                    );
+                    foreach ($parametersAcceptors->getParameters() as $extendedParameterReflection) {
+                        if ($extendedParameterReflection->getType() instanceof CallableType && $extendedParameterReflection->getType()->isVariadic()) {
+                            $arg->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
+                        }
+                    }
+
+                    return null;
+                }
+
+                $arg->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
             }
 
             return null;
