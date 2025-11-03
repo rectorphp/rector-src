@@ -8,7 +8,7 @@ on:
     pull_request: null
 
 jobs:
-    build_scoped_rector:
+    compate_test:
         runs-on: ubuntu-latest
 
         steps:
