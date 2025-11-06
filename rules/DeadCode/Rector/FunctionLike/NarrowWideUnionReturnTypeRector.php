@@ -56,7 +56,7 @@ final class NarrowWideUnionReturnTypeRector extends AbstractRector implements Mi
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrow too wide return type declarations if possible',
+            'Narrow overly wide union return type declaration if possible',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
