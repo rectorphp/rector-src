@@ -95,10 +95,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node instanceof ClassMethod) {
-            return null;
-        }
-
         $returnType = $node->returnType;
 
         if (! $returnType instanceof Identifier && ! $returnType instanceof FullyQualified) {
@@ -156,7 +152,7 @@ CODE_SAMPLE
         $declaredObjectType = new ObjectType($declaredType);
         $classReflection = $declaredObjectType->getClassReflection();
 
-        if ($classReflection === null) {
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
@@ -168,7 +164,7 @@ CODE_SAMPLE
         $actualObjectType = new ObjectType($actualType);
         $classReflection = $actualObjectType->getClassReflection();
 
-        if ($classReflection === null) {
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
@@ -218,13 +214,13 @@ CODE_SAMPLE
 
             $parentClassMethod = $this->astResolver->resolveClassMethod($ancestor->getName(), $methodName);
 
-            if ($parentClassMethod === null) {
+            if (! $parentClassMethod instanceof ClassMethod) {
                 continue;
             }
 
             $parentReturnType = $parentClassMethod->returnType;
 
-            if ($parentReturnType === null) {
+            if (! $parentReturnType instanceof Node) {
                 continue;
             }
 
@@ -238,9 +234,9 @@ CODE_SAMPLE
         return false;
     }
 
-    private function getActualReturnClass(ClassMethod $node): ?string
+    private function getActualReturnClass(ClassMethod $classMethod): ?string
     {
-        $returnStatements = $this->betterNodeFinder->findReturnsScoped($node);
+        $returnStatements = $this->betterNodeFinder->findReturnsScoped($classMethod);
 
         if ($returnStatements === []) {
             return null;
