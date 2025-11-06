@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Fixture;
 
-use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Source\SomeInterface;
-use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector\Sourcet\SomeAbstractClass;
+use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Source\SomeInterface;
+use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Sourcet\SomeAbstractClass;
 
 class SkipInheritance extends SomeAbstractClass
 {
