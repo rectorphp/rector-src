@@ -80,7 +80,7 @@ CODE_SAMPLE
         $defaultExpr = null;
 
         while ($currentTernary instanceof Ternary) {
-            if (!$currentTernary->if instanceof Expr) {
+            if (! $currentTernary->if instanceof Expr) {
                 // short ternary, skip
                 return null;
             }
