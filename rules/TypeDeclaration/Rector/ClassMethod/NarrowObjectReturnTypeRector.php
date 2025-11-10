@@ -236,7 +236,7 @@ CODE_SAMPLE
         return $declaredObjectType->isSuperTypeOf($actualObjectType)
             ->yes();
     }
-    
+
     private function getActualReturnClass(ClassMethod $classMethod): ?string
     {
         $returnStatements = $this->betterNodeFinder->findReturnsScoped($classMethod);
