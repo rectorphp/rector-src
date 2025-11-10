@@ -2,13 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-interface PaymentInterface
-{
-}
-
-final class StripePayment implements PaymentInterface
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\PaymentInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\StripePayment;
 
 final class PaymentFactory
 {
@@ -29,17 +24,12 @@ final class PaymentFactory
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-interface PaymentInterface
-{
-}
-
-final class StripePayment implements PaymentInterface
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\PaymentInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\StripePayment;
 
 final class PaymentFactory
 {
-    public function create(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture\StripePayment
+    public function create(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\StripePayment
     {
         return $this->createStripePayment();
     }

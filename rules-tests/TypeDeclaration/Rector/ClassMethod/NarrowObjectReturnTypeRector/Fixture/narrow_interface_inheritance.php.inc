@@ -2,18 +2,9 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-interface ProductInterface
-{
-}
-
-final class ConcreteProduct implements ProductInterface
-{
-}
-
-abstract class AbstractProductFactory
-{
-    abstract public function build(): ProductInterface;
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\AbstractProductFactory;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ProductInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConcreteProduct;
 
 final class ConcreteProductFactory extends AbstractProductFactory
 {
@@ -34,22 +25,13 @@ final class ConcreteProductFactory extends AbstractProductFactory
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-interface ProductInterface
-{
-}
-
-final class ConcreteProduct implements ProductInterface
-{
-}
-
-abstract class AbstractProductFactory
-{
-    abstract public function build(): ProductInterface;
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\AbstractProductFactory;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ProductInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConcreteProduct;
 
 final class ConcreteProductFactory extends AbstractProductFactory
 {
-    public function build(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture\ConcreteProduct
+    public function build(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConcreteProduct
     {
         return $this->createProduct();
     }

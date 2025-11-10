@@ -2,13 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-interface TalkInterface
-{
-}
-
-final class ConferenceTalkImplementation implements TalkInterface
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\TalkInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalkImplementation;
 
 final class TalkFactory
 {
@@ -24,17 +19,12 @@ final class TalkFactory
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-interface TalkInterface
-{
-}
-
-final class ConferenceTalkImplementation implements TalkInterface
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\TalkInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalkImplementation;
 
 final class TalkFactory
 {
-    public function create(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture\ConferenceTalkImplementation
+    public function create(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalkImplementation
     {
         return new ConferenceTalkImplementation();
     }
