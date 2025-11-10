@@ -10,6 +10,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -169,14 +170,20 @@ CODE_SAMPLE
             return;
         }
 
-        if (! $returnTagValueNode->type instanceof GenericTypeNode) {
+        if ($returnTagValueNode->type instanceof IdentifierTypeNode) {
+            $oldType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+                $returnTagValueNode->type,
+                $classMethod
+            );
+        } elseif ($returnTagValueNode->type instanceof GenericTypeNode) {
+            $oldType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+                $returnTagValueNode->type->type,
+                $classMethod
+            );
+        } else {
             return;
         }
 
-        $oldType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
-            $returnTagValueNode->type->type,
-            $classMethod
-        );
         if ($oldType instanceof ObjectType) {
             $objectType = new ObjectType($actualReturnClass);
             if ($this->typeComparator->areTypesEqual($oldType, $objectType)) {
@@ -184,7 +191,12 @@ CODE_SAMPLE
             }
         }
 
-        $returnTagValueNode->type->type = new FullyQualifiedIdentifierTypeNode($actualReturnClass);
+        if ($returnTagValueNode->type instanceof IdentifierTypeNode) {
+            $returnTagValueNode->type = new FullyQualifiedIdentifierTypeNode($actualReturnClass);
+        } else {
+            $returnTagValueNode->type->type = new FullyQualifiedIdentifierTypeNode($actualReturnClass);
+        }
+
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
     }
 
