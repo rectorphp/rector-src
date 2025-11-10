@@ -2,13 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-abstract class AbstractTalk
-{
-}
-
-final class ConcreteConferenceTalk extends AbstractTalk
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\AbstractTalk;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConcreteConferenceTalk;
 
 final class TalkFactory
 {
@@ -24,17 +19,12 @@ final class TalkFactory
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
 
-abstract class AbstractTalk
-{
-}
-
-final class ConcreteConferenceTalk extends AbstractTalk
-{
-}
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\AbstractTalk;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConcreteConferenceTalk;
 
 final class TalkFactory
 {
-    public function create(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture\ConcreteConferenceTalk
+    public function create(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConcreteConferenceTalk
     {
         return new ConcreteConferenceTalk();
     }
