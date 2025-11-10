@@ -247,7 +247,7 @@ CODE_SAMPLE
         $returnType = $phpDocInfo->getReturnType();
         return ! $returnType instanceof GenericObjectType;
     }
-    
+
     private function getActualReturnClass(ClassMethod $classMethod): ?string
     {
         $returnStatements = $this->betterNodeFinder->findReturnsScoped($classMethod);
