@@ -119,6 +119,7 @@ final class ParallelFileProcessor
 
         $systemErrorsCount = 0;
         $reachedSystemErrorsCountLimit = false;
+        $totalChanged = 0;
 
         $handleErrorCallable = function (Throwable $throwable) use (
             &$systemErrors,
@@ -158,7 +159,8 @@ final class ParallelFileProcessor
             $timeoutInSeconds,
             $handleErrorCallable,
             &$fileChunksBudgetPerProcess,
-            &$processSpawner
+            &$processSpawner,
+            &$totalChanged
         ): void {
             $processIdentifier = Random::generate();
             $workerCommandLine = $this->workerCommandLineFactory->create(
@@ -185,8 +187,18 @@ final class ParallelFileProcessor
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier,
                     &$fileChunksBudgetPerProcess,
-                    &$processSpawner
+                    &$processSpawner,
+                    &$totalChanged
                 ): void {
+                    /** @var array{
+                     *      total_changed: int,
+                     *      system_errors: mixed[],
+                     *      file_diffs: array<string, mixed>,
+                     *      files_count: int,
+                     *      system_errors_count: int
+                     * } $json */
+                    $totalChanged += $json[Bridge::TOTAL_CHANGED];
+
                     // decode arrays to objects
                     foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
                         if (is_string($jsonError)) {
@@ -269,6 +281,6 @@ final class ParallelFileProcessor
             ));
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs);
+        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged);
     }
 }

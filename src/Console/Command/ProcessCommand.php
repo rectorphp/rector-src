@@ -214,6 +214,10 @@ EOF
             return ExitCode::CHANGED_CODE;
         }
 
+        if ($processResult->getTotalChanged() > 0) {
+            return ExitCode::CHANGED_CODE;
+        }
+
         return ExitCode::SUCCESS;
     }
 

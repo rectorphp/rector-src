@@ -61,7 +61,7 @@ final class ApplicationFileProcessor
 
         // no files found
         if ($filePaths === []) {
-            return new ProcessResult([], []);
+            return new ProcessResult([], [], 0);
         }
 
         $this->missConfigurationReporter->reportVendorInPaths($filePaths);
@@ -124,6 +124,7 @@ final class ApplicationFileProcessor
         /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
 
+        $totalChanged = 0;
         foreach ($filePaths as $filePath) {
             if ($preFileCallback !== null) {
                 $preFileCallback($filePath);
@@ -148,6 +149,10 @@ final class ApplicationFileProcessor
                 if (is_callable($postFileCallback)) {
                     $postFileCallback(1);
                 }
+
+                if ($fileProcessResult->hasChanged()) {
+                    ++$totalChanged;
+                }
             } catch (Throwable $throwable) {
                 $this->changedFilesDetector->invalidateFile($filePath);
 
@@ -159,7 +164,7 @@ final class ApplicationFileProcessor
             }
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs);
+        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged);
     }
 
     private function processFile(File $file, Configuration $configuration): FileProcessResult

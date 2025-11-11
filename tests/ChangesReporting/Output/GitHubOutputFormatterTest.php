@@ -53,6 +53,7 @@ final class GitHubOutputFormatterTest extends TestCase
                         [new RectorWithLineChange(StrStartsWithRector::class, 38)]
                     ),
                 ],
+                1
             ),
             new Configuration()
         );
@@ -62,7 +63,7 @@ final class GitHubOutputFormatterTest extends TestCase
     {
         $this->expectOsOutputString('::group::Rector report' . PHP_EOL . '::endgroup::' . PHP_EOL);
 
-        $this->gitHubOutputFormatter->report(new ProcessResult([], []), new Configuration());
+        $this->gitHubOutputFormatter->report(new ProcessResult([], [], 1), new Configuration());
     }
 
     public function testReportShouldOutputErrorMessagesGroupedWithMultipleDiffs(): void
@@ -95,7 +96,7 @@ final class GitHubOutputFormatterTest extends TestCase
                     'diff console formatted',
                     [new RectorWithLineChange(StrStartsWithRector::class, 54)]
                 ),
-            ], ),
+            ], 2),
             new Configuration()
         );
     }
