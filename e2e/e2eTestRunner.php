@@ -32,6 +32,10 @@ if (isset($argv[1]) && $argv[1] === '-a') {
     $e2eCommand .= ' -a ' . $argv[2];
 }
 
+if (isset($argv[1]) && $argv[1] === '--no-diffs') {
+    $e2eCommand .= ' --no-diffs';
+}
+
 $cliOptions = 'cli-options.txt';
 if (file_exists($cliOptions)) {
     $e2eCommand .= ' ' . trim((string) file_get_contents($cliOptions));
