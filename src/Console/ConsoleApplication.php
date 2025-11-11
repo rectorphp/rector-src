@@ -42,13 +42,7 @@ final class ConsoleApplication extends Application
 
     public function doRun(InputInterface $input, OutputInterface $output): int
     {
-        $isXdebugAllowed = $input->hasParameterOption('--xdebug');
-        if (! $isXdebugAllowed) {
-            $xdebugHandler = new XdebugHandler('rector');
-            $xdebugHandler->setPersistent();
-            $xdebugHandler->check();
-            unset($xdebugHandler);
-        }
+        $this->enableXdebug($input);
 
         $shouldFollowByNewline = false;
 
@@ -68,14 +62,12 @@ final class ConsoleApplication extends Application
         // bin/rector src
         // bin/rector --only "RemovePhpVersionIdCheckRector"
         // file_exists() can check directory and file
-        if (is_string($commandName)
-            && (
-                file_exists($commandName)
-                || isset($_SERVER['argv'][1])
-                    && $commandName !== $_SERVER['argv'][1]
-                    // ensure verify has parameter option, eg: --only
-                    && $input->hasParameterOption($_SERVER['argv'][1])
-            )
+        if (is_string($commandName) && (
+            file_exists($commandName) || isset($_SERVER['argv'][1])
+            && $commandName !== $_SERVER['argv'][1]
+            // ensure verify has parameter option, eg: --only
+            && $input->hasParameterOption($_SERVER['argv'][1])
+        )
         ) {
             // prepend command name if implicit
             $privatesAccessor = new PrivatesAccessor();
@@ -117,7 +109,7 @@ final class ConsoleApplication extends Application
     {
         $options = $inputDefinition->getOptions();
 
-        unset($options['quiet'], $options['no-interaction']);
+        unset($options['quiet'], $options['verbose'], $options['no-interaction']);
 
         $inputDefinition->setOptions($options);
     }
@@ -136,7 +128,7 @@ final class ConsoleApplication extends Application
             Option::DEBUG,
             null,
             InputOption::VALUE_NONE,
-            'Enable debug verbosity (-vvv)'
+            'Enable debug verbosity'
         ));
 
         $inputDefinition->addOption(new InputOption(
@@ -157,5 +149,16 @@ final class ConsoleApplication extends Application
     private function getDefaultConfigPath(): string
     {
         return getcwd() . '/rector.php';
+    }
+
+    private function enableXdebug(InputInterface $input): void
+    {
+        $isXdebugAllowed = $input->hasParameterOption('--xdebug');
+        if (! $isXdebugAllowed) {
+            $xdebugHandler = new XdebugHandler('rector');
+            $xdebugHandler->setPersistent();
+            $xdebugHandler->check();
+            unset($xdebugHandler);
+        }
     }
 }
