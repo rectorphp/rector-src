@@ -33,4 +33,9 @@ final class Bridge
      * @var string
      */
     public const FILES_COUNT = 'files_count';
+
+    /**
+     * @var string
+     */
+    public const HAS_CHANGED = 'has_changed';
 }

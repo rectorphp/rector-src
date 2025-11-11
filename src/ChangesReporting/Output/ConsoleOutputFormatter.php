@@ -144,9 +144,9 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
     private function createSuccessMessage(ProcessResult $processResult, Configuration $configuration): string
     {
-        $changeCount = count($processResult->getFileDiffs());
+        $changeCount = $processResult->getTotalChanged();
 
-        if ($changeCount === 0) {
+        if ($changeCount === 0 && ! $processResult->hasChanged()) {
             return 'Rector is done!';
         }
 

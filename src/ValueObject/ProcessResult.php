@@ -17,6 +17,7 @@ final class ProcessResult
     public function __construct(
         private array $systemErrors,
         private readonly array $fileDiffs,
+        private readonly int $totalChanged
     ) {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
         Assert::allIsInstanceOf($fileDiffs, FileDiff::class);
@@ -50,5 +51,15 @@ final class ProcessResult
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
 
         $this->systemErrors = [...$this->systemErrors, ...$systemErrors];
+    }
+
+    public function hasChanged(): bool
+    {
+        return $this->totalChanged > 0;
+    }
+
+    public function getTotalChanged(): int
+    {
+        return $this->totalChanged;
     }
 }

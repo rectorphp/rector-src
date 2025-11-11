@@ -100,7 +100,7 @@ final readonly class FileProcessor
             $file->setFileDiff($currentFileDiff);
         }
 
-        return new FileProcessResult([], $file->getFileDiff());
+        return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
     }
 
     private function parseFileAndDecorateNodes(File $file): ?SystemError
