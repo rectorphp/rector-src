@@ -37,5 +37,5 @@ final class Bridge
     /**
      * @var string
      */
-    public const HAS_CHANGED = 'has_changed';
+    public const TOTAL_CHANGED = 'total_changed';
 }

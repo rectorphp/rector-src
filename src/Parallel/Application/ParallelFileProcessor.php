@@ -191,9 +191,7 @@ final class ParallelFileProcessor
                     &$totalChanged
                 ): void {
 
-                    if ($json[Bridge::HAS_CHANGED]) {
-                        ++$totalChanged;
-                    }
+                    $totalChanged += $json[Bridge::TOTAL_CHANGED];
 
                     // decode arrays to objects
                     foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {

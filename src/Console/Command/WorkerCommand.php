@@ -158,7 +158,7 @@ final class WorkerCommand extends Command
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
                     Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
-                    Bridge::HAS_CHANGED => $processResult->hasChanged(),
+                    Bridge::TOTAL_CHANGED => $processResult->getTotalChanged(),
                 ],
             ]);
         });
