@@ -48,7 +48,7 @@ final readonly class FileProcessor
         $parsingSystemError = $this->parseFileAndDecorateNodes($file);
         if ($parsingSystemError instanceof SystemError) {
             // we cannot process this file as the parsing and type resolving itself went wrong
-            return new FileProcessResult([$parsingSystemError], null);
+            return new FileProcessResult([$parsingSystemError], null, false);
         }
 
         $fileHasChanged = false;
