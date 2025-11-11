@@ -190,7 +190,13 @@ final class ParallelFileProcessor
                     &$processSpawner,
                     &$totalChanged
                 ): void {
-
+                    /** @var array{
+                     *      total_changed: int,
+                     *      system_errors: mixed[],
+                     *      file_diffs: array<string, mixed>,
+                     *      files_count: int,
+                     *      system_errors_count: int
+                     * } $json */
                     $totalChanged += $json[Bridge::TOTAL_CHANGED];
 
                     // decode arrays to objects
