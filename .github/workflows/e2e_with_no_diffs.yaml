@@ -24,7 +24,7 @@ jobs:
             matrix:
                 php_version: ['8.2']
                 directory:
-                    - 'applied-rule-removed-node-no-diffs'
+                    - 'e2e/applied-rule-removed-node-no-diffs'
 
         name: End to end test - ${{ matrix.directory }}
 
