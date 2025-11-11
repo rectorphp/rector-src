@@ -53,11 +53,6 @@ final class ProcessResult
         $this->systemErrors = [...$this->systemErrors, ...$systemErrors];
     }
 
-    public function hasChanged(): bool
-    {
-        return $this->totalChanged > 0;
-    }
-
     public function getTotalChanged(): int
     {
         return $this->totalChanged;

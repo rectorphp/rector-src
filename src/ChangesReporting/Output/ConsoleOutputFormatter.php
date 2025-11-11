@@ -146,7 +146,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
     {
         $changeCount = $processResult->getTotalChanged();
 
-        if ($changeCount === 0 && ! $processResult->hasChanged()) {
+        if ($changeCount === 0) {
             return 'Rector is done!';
         }
 
