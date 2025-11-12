@@ -33,6 +33,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NarrowObjectReturnTypeRector extends AbstractRector
 {
+    /**
+     * List of interfaces that usually use non-mocked on tests
+     *
+     * @var class-string[]
+     */
+    private const ALLOWED_INTERFACES_CHANGE = [
+        'Doctrine\Common\Collections\Collection',
+        'PhpParser\Node',
+    ];
+
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
@@ -151,11 +161,27 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! in_array($declaredType, self::ALLOWED_INTERFACES_CHANGE, true) && $this->isInterface($declaredType)) {
+            return null;
+        }
+
         $node->returnType = new FullyQualified($actualReturnClass);
 
         $this->updateDocblock($node, $actualReturnClass);
 
         return $node;
+    }
+
+    private function isInterface(string $declaredType): bool
+    {
+        $declaredObjectType = new ObjectType($declaredType);
+        $classReflection = $declaredObjectType->getClassReflection();
+
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $classReflection->isInterface();
     }
 
     private function updateDocblock(ClassMethod $classMethod, string $actualReturnClass): void
