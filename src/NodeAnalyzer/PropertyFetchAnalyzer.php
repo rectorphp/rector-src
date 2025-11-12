@@ -20,6 +20,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -60,6 +61,13 @@ final readonly class PropertyFetchAnalyzer
         $variableType = $node instanceof StaticPropertyFetch
             ? $this->nodeTypeResolver->getType($node->class)
             : $this->nodeTypeResolver->getType($node->var);
+
+        // patch clone usage
+        // @see https://github.com/phpstan/phpstan-src/commit/020adb548011c098cdb2e061019346b0a838c6a4
+        // @see https://github.com/rectorphp/rector-src/pull/7622
+        if ($variableType instanceof StaticType && ! $variableType instanceof ThisType) {
+            $variableType = $variableType->getStaticObjectType();
+        }
 
         if ($variableType instanceof ObjectType) {
             $classReflection = $this->reflectionResolver->resolveClassReflection($node);
