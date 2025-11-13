@@ -98,6 +98,11 @@ CODE_SAMPLE
 
         $currentMethodCall = $firstMethodCall;
         while ($currentMethodCall instanceof MethodCall) {
+            // must be exactly one argument
+            if (count($currentMethodCall->getArgs()) !== 1) {
+                return null;
+            }
+
             $methodCalls[] = $currentMethodCall;
             $currentMethodCall = $currentMethodCall->var;
         }
