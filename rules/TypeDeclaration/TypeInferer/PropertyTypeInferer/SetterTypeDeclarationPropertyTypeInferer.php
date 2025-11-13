@@ -24,7 +24,6 @@ final readonly class SetterTypeDeclarationPropertyTypeInferer
 
     public function inferProperty(Property $property, Class_ $class): ?Type
     {
-        /** @var string $propertyName */
         $propertyName = $this->nodeNameResolver->getName($property);
 
         foreach ($class->getMethods() as $classMethod) {
