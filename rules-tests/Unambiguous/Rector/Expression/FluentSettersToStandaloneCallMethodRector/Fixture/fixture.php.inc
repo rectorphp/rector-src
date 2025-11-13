@@ -27,8 +27,8 @@ final class SomeClass
     public function setup()
     {
         $someSetterClass = new SomeSetterClass();
-        $someSetterClass->setSurname('Doe');
         $someSetterClass->setName('John');
+        $someSetterClass->setSurname('Doe');
     }
 }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Unambiguous\Rector\Expression;
 
-use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -15,6 +14,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
@@ -118,6 +118,9 @@ CODE_SAMPLE
 
         $firstAssign = new Assign($someVariable, $rootExpr);
         $stmts = [new Expression($firstAssign)];
+
+        // revert to normal order
+        $methodCalls = array_reverse($methodCalls);
 
         foreach ($methodCalls as $methodCall) {
             $methodCall->var = $someVariable;
