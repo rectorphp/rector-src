@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming\Naming;
 
 use Nette\Utils\Strings;
+use PhpParser\Node\Name;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
@@ -116,8 +117,12 @@ final readonly class PropertyNaming
         return new ExpectedName($originalName, $this->rectorNamingInflector->singularize($originalName));
     }
 
-    public function fqnToVariableName(ThisType | ObjectType | string $objectType): string
+    public function fqnToVariableName(ThisType | ObjectType | Name | string $objectType): string
     {
+        if ($objectType instanceof Name) {
+            $objectType = $objectType->toString();
+        }
+
         if ($objectType instanceof ThisType) {
             $objectType = $objectType->getStaticObjectType();
         }

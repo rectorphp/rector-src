@@ -10,5 +10,4 @@ if (class_exists('Doctrine\ORM\QueryBuilder')) {
 
 class QueryBuilder
 {
-
 }
