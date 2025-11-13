@@ -101,7 +101,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->classMethodAndPropertyAnalyzer->hasPropertyAssignWithReturnThis($classMethod, $paramName)) {
+            if (! $this->classMethodAndPropertyAnalyzer->hasPropertyAssignWithReturnThis($classMethod)) {
                 continue;
             }
 
