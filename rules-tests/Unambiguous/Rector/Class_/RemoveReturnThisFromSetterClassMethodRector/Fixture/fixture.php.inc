@@ -4,11 +4,11 @@ namespace Rector\Tests\Unambiguous\Rector\Class_\RemoveReturnThisFromSetterClass
 
 final class SomeClass
 {
-    private string $name;
+    private string $nameValue;
 
     public function setName(string $name): self
     {
-        $this->name = $name;
+        $this->nameValue = $name;
 
         return $this;
     }
@@ -22,11 +22,11 @@ namespace Rector\Tests\Unambiguous\Rector\Class_\RemoveReturnThisFromSetterClass
 
 final class SomeClass
 {
-    private string $name;
+    private string $nameValue;
 
     public function setName(string $name): void
     {
-        $this->name = $name;
+        $this->nameValue = $name;
     }
 }
 
