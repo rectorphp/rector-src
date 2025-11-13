@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Unambiguous\Rector\Expression\FluentSettersToStandaloneCallMethodRector\Source;
 
-class SomeSetterClass
+final class SomeSetterClass
 {
     private ?string $name = null;
 
