@@ -129,6 +129,11 @@ CODE_SAMPLE
             $stmts[] = new Expression($methodCall);
         }
 
+        if ($node instanceof Return_) {
+            $node->expr = $someVariable;
+            $stmts[] = $node;
+        }
+
         $node->expr = $someVariable;
 
         return $stmts;

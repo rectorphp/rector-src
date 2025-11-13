@@ -29,6 +29,7 @@ final class SomeClass
         $someSetterClass = new SomeSetterClass();
         $someSetterClass->setName('John');
         $someSetterClass->setSurname('Doe');
+        return $someSetterClass;
     }
 }
 
