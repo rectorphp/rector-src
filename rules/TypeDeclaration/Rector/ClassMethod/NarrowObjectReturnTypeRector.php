@@ -19,7 +19,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -28,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * Narrows return type from generic object to specific class in final classes/methods.
+ * Narrows return type from generic object or parent class to specific class in final classes/methods.
  *
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\NarrowObjectReturnTypeRectorTest
  */
@@ -37,7 +36,6 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly AstResolver $astResolver,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -48,7 +46,7 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrows return type from generic object to specific class in final classes/methods',
+            'Narrows return type from generic object or parent class to specific class in final classes/methods',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -121,10 +119,6 @@ CODE_SAMPLE
         }
 
         if (! $classReflection->isFinalByKeyword() && ! $node->isFinal()) {
-            return null;
-        }
-
-        if ($this->hasParentMethodWithNonObjectReturn($node)) {
             return null;
         }
 
@@ -250,56 +244,6 @@ CODE_SAMPLE
 
         $returnType = $phpDocInfo->getReturnType();
         return ! $returnType instanceof GenericObjectType;
-    }
-
-    private function hasParentMethodWithNonObjectReturn(ClassMethod $classMethod): bool
-    {
-        if ($classMethod->isPrivate()) {
-            return false;
-        }
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        $ancestors = array_filter(
-            $classReflection->getAncestors(),
-            fn (ClassReflection $ancestorClassReflection): bool => $classReflection->getName() !== $ancestorClassReflection->getName()
-        );
-
-        $methodName = $this->getName($classMethod);
-
-        foreach ($ancestors as $ancestor) {
-            if ($ancestor->getFileName() === null) {
-                continue;
-            }
-
-            if (! $ancestor->hasNativeMethod($methodName)) {
-                continue;
-            }
-
-            $parentClassMethod = $this->astResolver->resolveClassMethod($ancestor->getName(), $methodName);
-
-            if (! $parentClassMethod instanceof ClassMethod) {
-                continue;
-            }
-
-            $parentReturnType = $parentClassMethod->returnType;
-
-            if (! $parentReturnType instanceof Node) {
-                continue;
-            }
-
-            if ($parentReturnType instanceof Identifier && $parentReturnType->name === 'object') {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     private function getActualReturnClass(ClassMethod $classMethod): ?string
