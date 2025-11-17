@@ -23,7 +23,7 @@ use Closure;
 \SomeClass::staticMethod(...);
 \Foo\SomeClass::staticMethod(...);
 
-Rector\Tests\CodingStyle\Rector\FuncCall\ClosureFromCallableToFirstClassCallableRector\Fixture\SomeClass::staticMethod(...);
-SomeNamespace\Foo\SomeClass::staticMethod(...);
+\Rector\Tests\CodingStyle\Rector\FuncCall\ClosureFromCallableToFirstClassCallableRector\Fixture\SomeClass::staticMethod(...);
+\SomeNamespace\Foo\SomeClass::staticMethod(...);
 
 ?>
