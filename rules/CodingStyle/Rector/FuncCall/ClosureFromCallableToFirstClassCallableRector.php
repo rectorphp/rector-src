@@ -97,7 +97,12 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
                     return null;
                 }
 
-                $classNode = new FullyQualified($array->items[0]->value->class->name);
+                if ($array->items[0]->value->class instanceof Name) {
+                    $classNode = new Name($array->items[0]->value->class->name);
+                } else {
+                    $classNode = new FullyQualified($array->items[0]->value->class->name);
+                }
+
             } elseif ($array->items[0]->value instanceof FullyQualified) {
                 $classNode = new FullyQualified($array->items[0]->value->name);
             } else {
