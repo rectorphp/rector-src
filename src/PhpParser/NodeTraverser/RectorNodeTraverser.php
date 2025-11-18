@@ -11,6 +11,7 @@ use PhpParser\NodeVisitor;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
@@ -68,10 +69,12 @@ final class RectorNodeTraverser extends NodeTraverser
     public function getVisitorsForNode(Node $node): array
     {
         $nodeClass = $node::class;
+
         if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
             $this->visitorsPerNodeClass[$nodeClass] = [];
             foreach ($this->visitors as $visitor) {
-                assert($visitor instanceof RectorInterface);
+                // already checked in prepare visitors method
+                /** @var RectorInterface $visitor */
                 foreach ($visitor->getNodeTypes() as $nodeType) {
                     if (is_a($nodeClass, $nodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
@@ -85,10 +88,9 @@ final class RectorNodeTraverser extends NodeTraverser
     }
 
     /**
-     * This must happen after $this->configuration is set after ProcessCommand::execute() is run,
-     * otherwise we get default false positives.
+     * This must happen after $this->configuration is set after ProcessCommand::execute() is run, otherwise we get default false positives.
      *
-     * This hack should be removed after https://github.com/rectorphp/rector/issues/5584 is resolved
+     * This should be removed after https://github.com/rectorphp/rector/issues/5584 is resolved
      */
     private function prepareNodeVisitors(): void
     {
