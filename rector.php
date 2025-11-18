@@ -28,12 +28,13 @@ return RectorConfig::configure()
     ->withPhpSets()
     ->withPaths([
         __DIR__ . '/bin',
+        __DIR__ . '/config',
         __DIR__ . '/src',
         __DIR__ . '/rules',
         __DIR__ . '/rules-tests',
         __DIR__ . '/tests',
         __DIR__ . '/utils',
-        __DIR__ . '/config',
+        __DIR__ . '/scripts',
         __DIR__ . '/build/build-preload.php',
     ])
     ->withRootFiles()

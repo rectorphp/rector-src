@@ -6,6 +6,7 @@ namespace Rector\Scripts\Finder;
 
 use Nette\Loaders\RobotLoader;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use ReflectionClass;
 
 final class RectorClassFinder
 {
@@ -29,7 +30,7 @@ final class RectorClassFinder
 
         // remove deprecated and abstract classes
         foreach ($rectorClasses as $rectorClass) {
-            $rectorClassReflection = new \ReflectionClass($rectorClass);
+            $rectorClassReflection = new ReflectionClass($rectorClass);
             if ($rectorClassReflection->isAbstract()) {
                 continue;
             }

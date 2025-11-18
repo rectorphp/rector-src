@@ -9,6 +9,8 @@ use Rector\Scripts\Finder\FixtureFinder;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -16,12 +18,12 @@ $fixtureFiles = FixtureFinder::find([__DIR__ . '/../tests', __DIR__ . '/../rules
 
 // get short node names
 
-$nodeFileFinder = \Symfony\Component\Finder\Finder::create()
+$nodeFileFinder = Finder::create()
     ->files()
     ->name('*.php')
     ->in(__DIR__ . '/../vendor/nikic/php-parser/lib/PhpParser/Node');
 
-/** @var \Symfony\Component\Finder\SplFileInfo[] $nodeFileInfos */
+/** @var SplFileInfo[] $nodeFileInfos */
 $nodeFileInfos = iterator_to_array($nodeFileFinder->getIterator());
 
 $shortNodeClassNames = [];
@@ -33,10 +35,10 @@ $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
 
 $hasErrors = false;
 
-foreach ($fixtureFiles as $fixtureFileInfo) {
+foreach ($fixtureFiles as $fixtureFile) {
     $shortClassNameMatch = Strings::match(
-        $fixtureFileInfo->getContents(),
-        '/\b(?:class|interface)\s+(?<name>[A-Z][A-Za-z0-9_]*)/'
+        $fixtureFile->getContents(),
+        '/\b(?:class|interface)\s+(?<name>[A-Z]\w*)/'
     );
     if ($shortClassNameMatch === null) {
         continue;
@@ -52,7 +54,7 @@ foreach ($fixtureFiles as $fixtureFileInfo) {
         $fixtureClassName,
         PHP_EOL,
         PHP_EOL,
-        $fixtureFileInfo->getRealPath(),
+        $fixtureFile->getRealPath(),
         PHP_EOL
     ));
 

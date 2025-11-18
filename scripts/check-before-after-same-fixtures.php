@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Nette\Utils\Strings;
+use Rector\Scripts\Finder\FixtureFinder;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -27,7 +28,7 @@ final readonly class SameBeforeAfterFixtureDetector
      */
     public function run(array $testDirectories): int
     {
-        $fixtureFiles = \Rector\Scripts\Finder\FixtureFinder::find($testDirectories);
+        $fixtureFiles = FixtureFinder::find($testDirectories);
 
         $invalidFixturePaths = [];
         foreach ($fixtureFiles as $fixtureFile) {
