@@ -10,7 +10,6 @@ use PhpParser\NodeVisitor;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
-use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
