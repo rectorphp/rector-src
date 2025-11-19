@@ -24,7 +24,7 @@
         "ondram/ci-detector": "^4.2",
         "phpstan/phpdoc-parser": "^2.3",
         "phpstan/phpstan": "^2.1.32",
-        "react/event-loop": "^1.5",
+        "react/event-loop": "^1.6",
         "react/promise": "^3.3",
         "react/socket": "^1.16",
         "rector/extension-installer": "^0.11.2",
@@ -39,7 +39,7 @@
         "symfony/process": "^6.4",
         "symplify/easy-parallel": "^11.2.2",
         "symplify/rule-doc-generator-contracts": "^11.2",
-        "webmozart/assert": "^1.11"
+        "webmozart/assert": "^1.12"
     },
     "require-dev": {
         "nette/robot-loader": "^4.1",
@@ -59,7 +59,7 @@
         "symplify/phpstan-rules": "^14.8",
         "symplify/vendor-patches": "^11.5",
         "tomasvotruba/class-leak": "^2.0",
-        "tracy/tracy": "^2.10"
+        "tracy/tracy": "^2.11"
     },
     "replace": {
         "rector/rector": "self.version"

@@ -65,15 +65,11 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
     {
         $nodeClass = $node::class;
 
-        static $counter = 0;
-
         if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
             $this->visitorsPerNodeClass[$nodeClass] = [];
             /** @var RectorInterface $visitor */
             foreach ($this->visitors as $visitor) {
                 foreach ($visitor->getNodeTypes() as $nodeType) {
-                    ++$counter;
-
                     if (is_a($nodeClass, $nodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
                         continue 2;
