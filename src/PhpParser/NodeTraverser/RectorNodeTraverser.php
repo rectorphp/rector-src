@@ -10,6 +10,7 @@ use PhpParser\NodeVisitor;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
@@ -63,22 +64,9 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
      */
     public function getVisitorsForNode(Node $node): array
     {
-        $nodeClass = $node::class;
+        Assert::true($this->areNodeVisitorsPrepared);
 
-        if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
-            $this->visitorsPerNodeClass[$nodeClass] = [];
-            /** @var RectorInterface $visitor */
-            foreach ($this->visitors as $visitor) {
-                foreach ($visitor->getNodeTypes() as $nodeType) {
-                    if (is_a($nodeClass, $nodeType, true)) {
-                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
-                        continue 2;
-                    }
-                }
-            }
-        }
-
-        return $this->visitorsPerNodeClass[$nodeClass];
+        return $this->visitorsPerNodeClass[$node::class] ?? [];
     }
 
     /**
@@ -96,6 +84,21 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
         $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
         // filter by configuration
         $this->visitors = $this->configurationRuleFilter->filter($this->visitors);
+
+        // static $counter = 0;
+
+        // 1. get all node non-interface, non-abstract classes
+        // 2. iterate through them
+        foreach (\Rector\Bridge\PhpParser\NodeClassFinder::find() as $nodeClass) {
+            /** @var RectorInterface $visitor */
+            foreach ($this->visitors as $visitor) {
+                foreach ($visitor->getNodeTypes() as $matchingNodeType) {
+                    if (is_a($nodeClass, $matchingNodeType, true)) {
+                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+                    }
+                }
+            }
+        }
 
         $this->areNodeVisitorsPrepared = true;
     }

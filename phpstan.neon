@@ -379,3 +379,5 @@ parameters:
         -
             message: '#Property Rector\\PhpParser\\NodeTraverser\\AbstractImmutableNodeTraverser\:\:\$visitors \(list<PhpParser\\NodeVisitor>\) does not accept array<int\|string, PhpParser\\NodeVisitor>#'
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
+
+        - '#Method Rector\\Bridge\\PhpParser\\NodeClassFinder\:\:find\(\) should return array<class\-string<PhpParser\\Node>> but returns array<class\-string>#'

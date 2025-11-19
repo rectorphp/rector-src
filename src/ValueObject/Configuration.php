@@ -7,6 +7,7 @@ namespace Rector\ValueObject;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Webmozart\Assert\Assert;
 
@@ -61,6 +62,9 @@ final readonly class Configuration
         return $this->fileExtensions;
     }
 
+    /**
+     * @return class-string<RectorInterface>|null
+     */
     public function getOnlyRule(): ?string
     {
         return $this->onlyRule;

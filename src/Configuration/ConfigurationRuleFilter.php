@@ -31,7 +31,7 @@ final class ConfigurationRuleFilter
 
         $onlyRule = $this->configuration->getOnlyRule();
         if ($onlyRule !== null) {
-            return $this->filterOnlyRule($rectors, $onlyRule);
+            return [$onlyRule];
         }
 
         return $rectors;
@@ -46,7 +46,7 @@ final class ConfigurationRuleFilter
         $activeRectors = [];
         foreach ($rectors as $rector) {
             if ($rector instanceof $onlyRule) {
-                $activeRectors[] = $rector;
+                return [$rector];
             }
         }
 
