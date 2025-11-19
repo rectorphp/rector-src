@@ -80,6 +80,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($key === 0) {
+                continue;
+            }
+
             $previousStmt = $node->stmts[$key - 1] ?? null;
             if (! $previousStmt instanceof If_) {
                 continue;

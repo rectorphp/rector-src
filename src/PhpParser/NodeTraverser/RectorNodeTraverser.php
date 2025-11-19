@@ -65,7 +65,6 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
     public function getVisitorsForNode(Node $node): array
     {
         Assert::true($this->areNodeVisitorsPrepared);
-
         return $this->visitorsPerNodeClass[$node::class] ?? [];
     }
 
@@ -85,13 +84,11 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
         // filter by configuration
         $this->visitors = $this->configurationRuleFilter->filter($this->visitors);
 
-        // static $counter = 0;
-
         // 1. get all node non-interface, non-abstract classes
         // 2. iterate through them
-        foreach (\Rector\Bridge\PhpParser\NodeClassFinder::find() as $nodeClass) {
-            /** @var RectorInterface $visitor */
-            foreach ($this->visitors as $visitor) {
+        /** @var RectorInterface $visitor */
+        foreach ($this->visitors as $visitor) {
+            foreach (\Rector\Bridge\PhpParser\NodeClassFinder::find() as $nodeClass) {
                 foreach ($visitor->getNodeTypes() as $matchingNodeType) {
                     if (is_a($nodeClass, $matchingNodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
