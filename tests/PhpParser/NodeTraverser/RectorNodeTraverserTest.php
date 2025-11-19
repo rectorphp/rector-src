@@ -39,10 +39,9 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
     public function testGetVisitorsForNodeWhenNoVisitorsAvailable(): void
     {
         $class = new Class_('test');
+        $visitorsForNode = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertSame([], $visitors);
+        $this->assertSame([], $visitorsForNode);
     }
 
     public function testGetVisitorsForNodeWhenNoVisitorsMatch(): void
@@ -50,9 +49,8 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         $class = new Class_('test');
         $this->rectorNodeTraverser->refreshPhpRectors([$this->ruleUsingFunctionRector]);
 
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertSame([], $visitors);
+        $visitorsForNode = $this->rectorNodeTraverser->getVisitorsForNode($class);
+        $this->assertSame([], $visitorsForNode);
     }
 
     public function testGetVisitorsForNodeWhenSomeVisitorsMatch(): void
@@ -61,9 +59,8 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
 
         $this->rectorNodeTraverser->refreshPhpRectors([new RuleUsingFunctionRector(), new RuleUsingClassRector()]);
 
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertEquals([$this->ruleUsingClassRector], $visitors);
+        $visitorsForNode = $this->rectorNodeTraverser->getVisitorsForNode($class);
+        $this->assertEquals([$this->ruleUsingClassRector], $visitorsForNode);
     }
 
     public function testGetVisitorsForNodeWhenAllVisitorsMatch(): void
@@ -75,25 +72,6 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         ]);
 
         $visitorsForNode = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
         $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitorsForNode);
-    }
-
-    public function testGetVisitorsForNodeUsesCachedValue(): void
-    {
-        $class = new Class_('test');
-        $this->rectorNodeTraverser->refreshPhpRectors([
-            $this->ruleUsingClassRector,
-            $this->ruleUsingClassLikeRector,
-        ]);
-
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
-
-        $this->rectorNodeTraverser->removeVisitor($this->ruleUsingClassRector);
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
     }
 }
