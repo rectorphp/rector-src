@@ -48,7 +48,9 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
     public function testGetVisitorsForNodeWhenNoVisitorsMatch(): void
     {
         $class = new Class_('test');
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingFunctionRector);
+        $this->rectorNodeTraverser->refreshPhpRectors([
+            $this->ruleUsingFunctionRector,
+        ]);
 
         $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
@@ -58,8 +60,11 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
     public function testGetVisitorsForNodeWhenSomeVisitorsMatch(): void
     {
         $class = new Class_('test');
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingFunctionRector);
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassRector);
+
+        $this->rectorNodeTraverser->refreshPhpRectors([
+            new RuleUsingFunctionRector(),
+            new RuleUsingClassRector()
+        ]);
 
         $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
@@ -69,19 +74,23 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
     public function testGetVisitorsForNodeWhenAllVisitorsMatch(): void
     {
         $class = new Class_('test');
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassRector);
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassLikeRector);
+        $this->rectorNodeTraverser->refreshPhpRectors([
+            $this->ruleUsingClassRector,
+            $this->ruleUsingClassLikeRector
+        ]);
 
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
+        $visitorsForNode = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
-        $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
+        $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitorsForNode);
     }
 
     public function testGetVisitorsForNodeUsesCachedValue(): void
     {
         $class = new Class_('test');
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassRector);
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassLikeRector);
+        $this->rectorNodeTraverser->refreshPhpRectors([
+            $this->ruleUsingClassRector,
+            $this->ruleUsingClassLikeRector,
+        ]);
 
         $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
