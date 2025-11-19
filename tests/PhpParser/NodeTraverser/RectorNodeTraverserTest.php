@@ -11,6 +11,9 @@ use Rector\Tests\PhpParser\NodeTraverser\Class_\RuleUsingClassRector;
 use Rector\Tests\PhpParser\NodeTraverser\ClassLike\RuleUsingClassLikeRector;
 use Rector\Tests\PhpParser\NodeTraverser\Function_\RuleUsingFunctionRector;
 
+/**
+ * @see \Rector\PhpParser\NodeTraverser\AbstractImmutableNodeTraverser
+ */
 final class RectorNodeTraverserTest extends AbstractLazyTestCase
 {
     private RectorNodeTraverser $rectorNodeTraverser;
