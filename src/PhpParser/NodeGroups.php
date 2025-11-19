@@ -31,4 +31,15 @@ final class NodeGroups
         // custom Rector node
         FileWithoutNamespace::class,
     ];
+
+    public static function matchesStmtsAware(\PhpParser\Node $node): bool
+    {
+        foreach (self::STMTS_AWARE_NODES as $stmtAwareNodeClass) {
+            if (is_a($node, $stmtAwareNodeClass)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

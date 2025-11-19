@@ -12,10 +12,11 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Static_;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\NodeGroups;
+use Webmozart\Assert\Assert;
 
 final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
@@ -26,9 +27,11 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Sco
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface) {
+        if (! NodeGroups::matchesStmtsAware($node)) {
             return null;
         }
+
+        Assert::propertyExists($node, 'stmts');
 
         if ($node->stmts === null) {
             return null;

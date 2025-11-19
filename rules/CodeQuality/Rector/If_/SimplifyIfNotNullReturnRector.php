@@ -6,7 +6,6 @@ namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
