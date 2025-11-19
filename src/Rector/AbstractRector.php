@@ -191,11 +191,16 @@ CODE_SAMPLE;
 
     /**
      * Replacing nodes in leaveNode() method avoids infinite recursion
-     * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
+     * see "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
      */
     final public function leaveNode(Node $node): array|int|Node|null
     {
         if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+            return null;
+        }
+
+        // perf: hash node only if there is some object to be removed or replaced by array
+        if ($this->toBeRemovedNodeId === null && $this->nodesToReturn === []) {
             return null;
         }
 
