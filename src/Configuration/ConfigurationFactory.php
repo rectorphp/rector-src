@@ -54,6 +54,16 @@ final readonly class ConfigurationFactory
         $isDryRun = (bool) $input->getOption(Option::DRY_RUN);
         $shouldClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
 
+        if (! $shouldClearCache) {
+            // hasOption() always returns true
+            // so we use getOption() instead
+            $onlyRule = $input->getOption(Option::ONLY);
+            // when --only used, clear cache to ensure next normal run start from fresh state
+            if ($onlyRule !== null) {
+                $shouldClearCache = true;
+            }
+        }
+
         $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
         $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);
 
