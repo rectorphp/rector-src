@@ -34,6 +34,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\NodeGroups;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
@@ -377,8 +378,10 @@ CODE_SAMPLE;
         $nodeClass = $node::class;
         foreach ($this->getNodeTypes() as $nodeType) {
             if ($nodeType === StmtsAwareInterface::class) {
-                if ($node instanceof ClassMethod) {
-                    return true;
+                foreach (NodeGroups::STMTS_AWARE_NODES as $stmtsAwareNodeClass) {
+                    if (is_a($nodeClass, $stmtsAwareNodeClass, true)) {
+                        return true;
+                    }
                 }
             }
 

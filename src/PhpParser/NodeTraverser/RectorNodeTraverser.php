@@ -10,6 +10,7 @@ use PhpParser\NodeVisitor;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\PhpParser\NodeGroups;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 /**
@@ -74,17 +75,13 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
             foreach ($this->visitors as $visitor) {
                 foreach ($visitor->getNodeTypes() as $nodeType) {
                     // special case for StmtsAwareInterface
-                    if ($nodeType === StmtsAwareInterface::class) {
-                        if (property_exists($node, 'stmts')) {
-                            // all stmts are node classes
-                            foreach ([Stmt\If_::class, Stmt\Function_::class, Stmt\ClassMethod::class, Stmt\For_::class, Stmt\While_::class] as $stmtsAwareNodeClass) {
-                                dump($stmtsAwareNodeClass);
-                                dump($visitor::class);
-
-                                $this->visitorsPerNodeClass[$stmtsAwareNodeClass][] = $visitor;
-                            }
-                            continue 2;
+                    if ($nodeType === StmtsAwareInterface::class && property_exists($node, 'stmts')) {
+                        // all stmts are node classes
+                        foreach (NodeGroups::STMTS_AWARE_NODES as $stmtsAwareNodeClass) {
+                            $this->visitorsPerNodeClass[$stmtsAwareNodeClass][] = $visitor;
                         }
+
+                        continue 2;
                     }
 
                     if (is_a($nodeClass, $nodeType, true)) {

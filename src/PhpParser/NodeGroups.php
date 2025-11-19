@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser;
 
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+
 final class NodeGroups
 {
     /**
@@ -26,5 +28,7 @@ final class NodeGroups
         \PhpParser\Node\Stmt\Namespace_::class,
         \PhpParser\Node\Stmt\TryCatch::class,
         \PhpParser\Node\Stmt\While_::class,
+        // custom Rector node
+        FileWithoutNamespace::class,
     ];
 }
