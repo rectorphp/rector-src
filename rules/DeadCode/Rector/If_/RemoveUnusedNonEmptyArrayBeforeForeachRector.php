@@ -83,12 +83,12 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class, StmtsAwareInterface::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param If_|StmtsAwareInterface $node
-     * @return Foreach_|StmtsAwareInterface|null
+     * @param StmtsAwareInterface $node
+     * @return StmtsAwareInterface|null
      */
     public function refactor(Node $node): Node|null
     {

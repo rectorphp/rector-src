@@ -5,23 +5,32 @@ declare(strict_types=1);
 namespace Rector\PhpParser\Node\CustomNode;
 
 use PhpParser\Node\Stmt;
-use PhpParser\NodeAbstract;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 
-final class StmtsAwareNode extends Stmt
+final class StmtsAwareNode extends Stmt implements StmtsAwareInterface
 {
     public function __construct(
-        public \PhpParser\Node $originalNode
+        public Stmt\If_ $originalNode
     ) {
         parent::__construct();
     }
 
     public function getType(): string
     {
-        return 'Node_StmtsAware';
+        return 'Rector_Node_StmtsAware';
+    }
+
+    public function &__get($property)
+    {
+        if ($property === 'stmts') {
+            return $this->originalNode->stmts;
+        }
+
+        return $this->{$property};
     }
 
     /**
-     * @var string
+     * @var string[]
      */
     public function getSubNodeNames(): array
     {

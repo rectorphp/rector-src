@@ -23,6 +23,7 @@ use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -375,6 +376,12 @@ CODE_SAMPLE;
     {
         $nodeClass = $node::class;
         foreach ($this->getNodeTypes() as $nodeType) {
+            if ($nodeType === StmtsAwareInterface::class) {
+                if ($node instanceof ClassMethod) {
+                    return true;
+                }
+            }
+
             if (is_a($nodeClass, $nodeType, true)) {
                 return true;
             }
