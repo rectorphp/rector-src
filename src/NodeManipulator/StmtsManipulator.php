@@ -6,6 +6,7 @@ namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -73,11 +74,11 @@ final readonly class StmtsManipulator
         return $stmts;
     }
 
-    public function isVariableUsedInNextStmt(
-        StmtsAwareInterface $stmtsAware,
-        int $jumpToKey,
-        string $variableName
-    ): bool {
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     */
+    public function isVariableUsedInNextStmt(Stmt|Closure $stmtsAware, int $jumpToKey, string $variableName): bool
+    {
         if ($stmtsAware->stmts === null) {
             return false;
         }

@@ -8,6 +8,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -151,12 +152,16 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     * @return StmtsAwareInterface
+     */
     private function processSimplifyUselessVariable(
-        StmtsAwareInterface $stmtsAware,
+        Stmt|Closure $stmtsAware,
         Return_ $return,
         Assign|AssignOp $assign,
         int $key
-    ): ?StmtsAwareInterface {
+    ): Stmt|Closure|null {
         if (! $assign instanceof Assign) {
             $binaryClass = $this->assignAndBinaryMap->getAlternative($assign);
             if ($binaryClass === null) {

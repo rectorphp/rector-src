@@ -37,7 +37,6 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\PhpParser\Node\CustomNode\StmtsAwareNode;
 use Rector\Util\NewLineSplitter;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Rector\Util\StringUtils;
@@ -273,19 +272,6 @@ final class BetterStandardPrinter extends Standard
     ): ?string {
         // reindex positions for printer
         $nodes = array_values($nodes);
-
-        // unwrap StmtsAwareNode to make their printing work
-        foreach ($nodes as $key => $node) {
-            if ($node instanceof StmtsAwareNode) {
-                $nodes[$key] = $node->getOriginalNode();
-            }
-        }
-
-        foreach ($origNodes as $key => $origNode) {
-            if ($origNode instanceof StmtsAwareNode) {
-                $origNodes[$key] = $origNode->getOriginalNode();
-            }
-        }
 
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeClass, $subNodeName, $fixup);
         if ($content === null) {

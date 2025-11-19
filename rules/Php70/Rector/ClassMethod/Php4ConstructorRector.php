@@ -121,7 +121,8 @@ CODE_SAMPLE
         }
 
         $parentClassName = $classReflection->getParentClass() instanceof ClassReflection
-            ? $classReflection->getParentClass()->getName() : '';
+            ? $classReflection->getParentClass()
+                ->getName() : '';
 
         foreach ($classMethodStmts as $classMethodStmt) {
             if (! $classMethodStmt instanceof Expression) {
