@@ -71,7 +71,6 @@ final class RectorNodeTraverser extends NodeTraverser
         if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
             $this->visitorsPerNodeClass[$nodeClass] = [];
             foreach ($this->visitors as $visitor) {
-                assert($visitor instanceof RectorInterface);
                 foreach ($visitor->getNodeTypes() as $nodeType) {
                     if (is_a($nodeClass, $nodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
