@@ -28,4 +28,9 @@ final class StmtsAwareNode extends Stmt
         // empty on purpose to avoid infinity loop
         return [];
     }
+
+    public function getOriginalNode(): \PhpParser\Node
+    {
+        return $this->originalNode;
+    }
 }
