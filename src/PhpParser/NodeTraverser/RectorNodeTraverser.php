@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\NodeTraverser;
 
+use Rector\Bridge\PhpParser\NodeClassFinder;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitor;
@@ -92,7 +93,7 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
         // 2. iterate through them
         /** @var RectorInterface $visitor */
         foreach ($this->visitors as $visitor) {
-            foreach (\Rector\Bridge\PhpParser\NodeClassFinder::find() as $nodeClass) {
+            foreach (NodeClassFinder::find() as $nodeClass) {
                 foreach ($visitor->getNodeTypes() as $matchingNodeType) {
                     if (is_a($nodeClass, $matchingNodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;

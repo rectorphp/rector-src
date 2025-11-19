@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Bridge\PhpParser;
 
+use PhpParser\Node;
 use Nette\Loaders\RobotLoader;
 use PHPStan\Node\AnonymousClassNode;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -12,7 +13,7 @@ use ReflectionClass;
 final class NodeClassFinder
 {
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public static function find(): array
     {
@@ -29,12 +30,12 @@ final class NodeClassFinder
         $nodeClasses = array_keys($robotLoader->getIndexedClasses());
 
         $instantiableNodeClasses = array_filter($nodeClasses, function (string $nodeClass): bool {
-            $nodeClassReflection = new ReflectionClass($nodeClass);
-            if ($nodeClassReflection->isAbstract()) {
+            $reflectionClass = new ReflectionClass($nodeClass);
+            if ($reflectionClass->isAbstract()) {
                 return false;
             }
 
-            return ! $nodeClassReflection->isInterface();
+            return ! $reflectionClass->isInterface();
         });
 
         // this is needed, as PHPStan replaces the Class_ node of anonymous class completely
