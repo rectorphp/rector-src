@@ -25,9 +25,11 @@ use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PhpParser\NodeGroups;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\RemoveUnusedVariableAssignRectorTest
@@ -164,9 +166,11 @@ CODE_SAMPLE
      */
     private function collectAssignRefVariableNames(Stmt $stmt, array &$refVariableNames): void
     {
-        if (! $stmt instanceof StmtsAwareInterface) {
+        if (! NodeGroups::matchesStmtsAware($stmt)) {
             return;
         }
+
+        Assert::propertyExists($stmt, 'stmts');
 
         $this->traverseNodesWithCallable(
             $stmt,

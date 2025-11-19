@@ -25,9 +25,3 @@ services:
         arguments:
             parser: @currentPhpVersionPhpParser
         autowired: no
-
-    # use StmtsAwareNode
-#    -
-#        class: Rector\PHPStan\NodeVisitor\StmtsAwareWrappingNodeVisitor
-#        tags:
-#            - phpstan.parser.richParserNodeVisitor

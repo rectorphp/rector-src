@@ -381,7 +381,7 @@ parameters:
         -
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
             identifier: symplify.forbiddenFuncCall
-        - '#Parameter 1 should use "Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface" type as the only type passed to this method#'
+        - '#Parameter \d should use "Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface" type as the only type passed to this method#'
         - '#Parameter \#1 \$stmtsAware of method (.*?) expects Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface#'
 
         - '#Method (.*?) should return Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface\|null but returns (.*?)\|null#'

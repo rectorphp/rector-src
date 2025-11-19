@@ -25,6 +25,7 @@ use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector\RemoveUnusedNonEmptyArrayBeforeForeachRectorTest
@@ -151,8 +152,13 @@ CODE_SAMPLE
         return $this->countManipulator->isCounterHigherThanOne($booleanAnd->right, $foreachExpr);
     }
 
-    private function refactorStmtsAware(StmtsAwareInterface $stmtsAware): ?StmtsAwareInterface
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     */
+    private function refactorStmtsAware(\PhpParser\Node $stmtsAware): ?StmtsAwareInterface
     {
+        Assert::propertyExists($stmtsAware, 'stmts');
+
         if ($stmtsAware->stmts === null) {
             return null;
         }
