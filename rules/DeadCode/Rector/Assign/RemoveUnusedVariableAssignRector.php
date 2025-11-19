@@ -159,6 +159,9 @@ CODE_SAMPLE
         });
     }
 
+    /**
+     * @param string[] $refVariableNames
+     */
     private function collectAssignRefVariableNames(Stmt $stmt, array &$refVariableNames): void
     {
         if (! $stmt instanceof StmtsAwareInterface) {
@@ -167,10 +170,12 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable(
             $stmt,
-            function (Node $subNode) use (&$refVariableNames): void {
+            function (Node $subNode) use (&$refVariableNames): Node {
                 if ($subNode instanceof AssignRef && $subNode->var instanceof Variable) {
                     $refVariableNames[] = (string) $this->getName($subNode->var);
                 }
+
+                return $subNode;
             }
         );
     }
