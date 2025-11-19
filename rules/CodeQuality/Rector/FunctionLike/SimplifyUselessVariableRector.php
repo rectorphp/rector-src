@@ -25,6 +25,7 @@ use Rector\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector\SimplifyUselessVariableRectorTest
@@ -157,11 +158,13 @@ CODE_SAMPLE
      * @return StmtsAwareInterface
      */
     private function processSimplifyUselessVariable(
-        Stmt|Closure $stmtsAware,
+        \PhpParser\Node $stmtsAware,
         Return_ $return,
         Assign|AssignOp $assign,
         int $key
-    ): Stmt|Closure|null {
+    ): \PhpParser\Node|null {
+        Assert::propertyExists($stmtsAware, 'stmts');
+
         if (! $assign instanceof Assign) {
             $binaryClass = $this->assignAndBinaryMap->getAlternative($assign);
             if ($binaryClass === null) {

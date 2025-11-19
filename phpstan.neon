@@ -376,3 +376,12 @@ parameters:
         -
             message: '#Property Rector\\PhpParser\\NodeTraverser\\AbstractImmutableNodeTraverser\:\:\$visitors \(list<PhpParser\\NodeVisitor>\) does not accept array<int\|string, PhpParser\\NodeVisitor>#'
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
+
+        # special check for stmts aware virtual interface
+        -
+            path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
+            identifier: symplify.forbiddenFuncCall
+        - '#Parameter 1 should use "Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface" type as the only type passed to this method#'
+        - '#Parameter \#1 \$stmtsAware of method (.*?) expects Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface#'
+
+        - '#Method (.*?) should return Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface\|null but returns (.*?)\|null#'

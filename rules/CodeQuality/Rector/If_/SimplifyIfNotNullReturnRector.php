@@ -63,7 +63,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node): ?Stmt
+    public function refactor(Node $node): ?\PhpParser\Node
     {
         foreach ((array) $node->stmts as $key => $stmt) {
             if (! $stmt instanceof If_) {

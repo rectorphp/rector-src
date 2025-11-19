@@ -19,6 +19,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Webmozart\Assert\Assert;
 
 final readonly class StmtsManipulator
 {
@@ -77,8 +78,10 @@ final readonly class StmtsManipulator
     /**
      * @param StmtsAwareInterface $stmtsAware
      */
-    public function isVariableUsedInNextStmt(Stmt|Closure $stmtsAware, int $jumpToKey, string $variableName): bool
+    public function isVariableUsedInNextStmt(Node $stmtsAware, int $jumpToKey, string $variableName): bool
     {
+        Assert::propertyExists($stmtsAware, 'stmts');
+
         if ($stmtsAware->stmts === null) {
             return false;
         }
