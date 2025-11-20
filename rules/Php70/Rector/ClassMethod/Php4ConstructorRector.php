@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -137,7 +138,10 @@ CODE_SAMPLE
                     /** @var MethodCall $expr */
                     $expr = $classMethodStmt->expr;
 
-                    $classMethodStmt->expr = new StaticCall(new Name(ObjectReference::PARENT), new Identifier(
+                    /** @var string $parentClassName */
+                    $parentClassName = $this->getParentClassName($node);
+
+                    $classMethodStmt->expr = new StaticCall(new FullyQualified($parentClassName), new Identifier(
                         MethodName::CONSTRUCT
                     ), $expr->args);
                 }
@@ -193,5 +197,14 @@ CODE_SAMPLE
         }
 
         $staticCall->name = new Identifier(MethodName::CONSTRUCT);
+    }
+
+    private function getParentClassName(Class_ $class): ?string
+    {
+        if (! $class->extends instanceof \PhpParser\Node) {
+            return null;
+        }
+
+        return $class->extends->toString();
     }
 }

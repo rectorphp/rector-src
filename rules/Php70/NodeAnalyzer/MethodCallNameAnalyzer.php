@@ -6,9 +6,11 @@ namespace Rector\Php70\NodeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 
 final class MethodCallNameAnalyzer
 {
@@ -18,7 +20,7 @@ final class MethodCallNameAnalyzer
             return false;
         }
 
-        if (! $expr->var instanceof Expr\Variable) {
+        if (! $expr->var instanceof Variable) {
             return false;
         }
 
@@ -40,7 +42,7 @@ final class MethodCallNameAnalyzer
         }
 
         $parentClassName = $class->extends->toString();
-        if ($class->getMethod($parentClassName)) {
+        if ($class->getMethod($parentClassName) instanceof ClassMethod) {
             return false;
         }
 

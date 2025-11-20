@@ -16,7 +16,7 @@ final class SomeChildB extends ParentClass
 {
     public function __construct()
     {
-        parent::__construct();
+        \ParentClass::__construct();
     }
 }
 
