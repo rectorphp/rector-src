@@ -209,10 +209,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($property->type instanceof Node
-                && $param->type instanceof Node
-                && $property->hooks !== []
-                && ! $this->nodeComparator->areNodesEqual($property->type, $param->type)) {
+            if ($this->shouldSkipPropertyOrParam($property, $param)) {
                 continue;
             }
 
@@ -366,5 +363,13 @@ CODE_SAMPLE
     private function isCallableTypeIdentifier(?Node $node): bool
     {
         return $node instanceof Identifier && $this->isName($node, 'callable');
+    }
+
+    private function shouldSkipPropertyOrParam(Property $property, Param $param): bool
+    {
+        return $property->type instanceof Node
+            && $param->type instanceof Node
+            && $property->hooks !== []
+            && ! $this->nodeComparator->areNodesEqual($property->type, $param->type);
     }
 }
