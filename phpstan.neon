@@ -2,9 +2,6 @@ includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
-rules:
-    - Rector\Utils\PHPStan\Rule\PreferDirectIsNameRule
-
 parameters:
     level: 8
 
