@@ -7,9 +7,7 @@ namespace Rector\Tests\Issues\IndexedStmt\Source;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\NodeVisitor;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -34,8 +32,8 @@ final class ChangeLastIndex1Rector extends AbstractRector
             return null;
         }
 
-        foreach ($node->stmts as $stmt) {
-            if ($stmt->getAttribute(AttributeKey::STMT_KEY) === 1 && $stmt instanceof Expression && $stmt->expr instanceof String_ && $stmt->expr->value === 'with index 2') {
+        foreach ($node->stmts as $key => $stmt) {
+            if ($key === 1 && $stmt instanceof Expression && $stmt->expr instanceof String_ && $stmt->expr->value === 'with index 2') {
                 $stmt->expr->value = 'final index';
                 return $node;
             }
