@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php70\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
@@ -18,7 +17,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Enum\ObjectReference;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php70\NodeAnalyzer\MethodCallNameAnalyzer;
 use Rector\Php70\NodeAnalyzer\Php4ConstructorClassMethodAnalyzer;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
@@ -35,7 +34,8 @@ final class Php4ConstructorRector extends AbstractRector implements MinPhpVersio
 {
     public function __construct(
         private readonly Php4ConstructorClassMethodAnalyzer $php4ConstructorClassMethodAnalyzer,
-        private readonly ParentClassScopeResolver $parentClassScopeResolver
+        private readonly ParentClassScopeResolver $parentClassScopeResolver,
+        private readonly MethodCallNameAnalyzer $methodCallNameAnalyzer,
     ) {
     }
 
@@ -85,18 +85,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): Class_|null
     {
-        $className = $this->getName($node);
-        if (! is_string($className)) {
-            return null;
-        }
-
-        $psr4ConstructorMethod = $node->getMethod(lcfirst($className)) ?? $node->getMethod($className);
-        if (! $psr4ConstructorMethod instanceof ClassMethod) {
-            return null;
-        }
-
         $scope = ScopeFetcher::fetch($node);
-        if (! $this->php4ConstructorClassMethodAnalyzer->detect($psr4ConstructorMethod, $scope)) {
+
+        // catch only classes without namespace
+        if ($scope->getNamespace() !== null) {
             return null;
         }
 
@@ -105,55 +97,65 @@ CODE_SAMPLE
             return null;
         }
 
-        // process parent call references first
-        $this->processClassMethodStatementsForParentConstructorCalls($psr4ConstructorMethod, $scope);
-
-        // does it already have a __construct method?
-        if (! $node->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
-            $psr4ConstructorMethod->name = new Identifier(MethodName::CONSTRUCT);
-        }
-
-        $classMethodStmts = $psr4ConstructorMethod->stmts;
-        if ($classMethodStmts === null) {
+        $className = $this->getName($node);
+        if (! is_string($className)) {
             return null;
         }
 
-        $parentClassName = $classReflection->getParentClass() instanceof ClassReflection
-            ? $classReflection->getParentClass()
-                ->getName()
-            : '';
-
-        foreach ($classMethodStmts as $classMethodStmt) {
-            if (! $classMethodStmt instanceof Expression) {
-                return null;
+        foreach ($node->stmts as $classStmtKey => $classStmt) {
+            if (! $classStmt instanceof ClassMethod) {
+                continue;
             }
 
-            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, MethodName::CONSTRUCT)) {
-                $stmtKey = $psr4ConstructorMethod->getAttribute(AttributeKey::STMT_KEY);
-                unset($node->stmts[$stmtKey]);
+            if (! $this->php4ConstructorClassMethodAnalyzer->detect($classStmt, $classReflection)) {
+                continue;
             }
 
-            if ($this->isLocalMethodCallNamed($classMethodStmt->expr, $parentClassName) && ! $node->getMethod(
-                $parentClassName
-            ) instanceof ClassMethod) {
-                /** @var MethodCall $expr */
-                $expr = $classMethodStmt->expr;
-                $classMethodStmt->expr = new StaticCall(new FullyQualified($parentClassName), new Identifier(
+            $psr4ConstructorMethod = $classStmt;
+
+            // process parent call references first
+            $this->processClassMethodStatementsForParentConstructorCalls($psr4ConstructorMethod, $scope);
+
+            // does it already have a __construct method?
+            if (! $node->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
+                $psr4ConstructorMethod->name = new Identifier(MethodName::CONSTRUCT);
+            }
+
+            foreach ((array) $psr4ConstructorMethod->stmts as $classMethodStmt) {
+                if (! $classMethodStmt instanceof Expression) {
+                    continue;
+                }
+
+                // remove delegating method
+                if ($this->methodCallNameAnalyzer->isLocalMethodCallNamed(
+                    $classMethodStmt->expr,
                     MethodName::CONSTRUCT
-                ), $expr->args);
+                )) {
+                    unset($node->stmts[$classStmtKey]);
+                }
+
+                if ($this->methodCallNameAnalyzer->isParentMethodCall($node, $classMethodStmt->expr)) {
+                    /** @var MethodCall $expr */
+                    $expr = $classMethodStmt->expr;
+
+                    /** @var string $parentClassName */
+                    $parentClassName = $this->getParentClassName($node);
+
+                    $classMethodStmt->expr = new StaticCall(new FullyQualified($parentClassName), new Identifier(
+                        MethodName::CONSTRUCT
+                    ), $expr->args);
+                }
             }
+
+            return $node;
         }
 
-        return $node;
+        return null;
     }
 
     private function processClassMethodStatementsForParentConstructorCalls(ClassMethod $classMethod, Scope $scope): void
     {
-        if (! is_iterable($classMethod->stmts)) {
-            return;
-        }
-
-        foreach ($classMethod->stmts as $methodStmt) {
+        foreach ((array) $classMethod->stmts as $methodStmt) {
             if (! $methodStmt instanceof Expression) {
                 continue;
             }
@@ -197,24 +199,12 @@ CODE_SAMPLE
         $staticCall->name = new Identifier(MethodName::CONSTRUCT);
     }
 
-    private function isLocalMethodCallNamed(Expr $expr, string $name): bool
+    private function getParentClassName(Class_ $class): ?string
     {
-        if (! $expr instanceof MethodCall) {
-            return false;
+        if (! $class->extends instanceof Node) {
+            return null;
         }
 
-        if ($expr->var instanceof StaticCall) {
-            return false;
-        }
-
-        if ($expr->var instanceof MethodCall) {
-            return false;
-        }
-
-        if (! $this->isName($expr->var, 'this')) {
-            return false;
-        }
-
-        return $this->isName($expr->name, $name);
+        return $class->extends->toString();
     }
 }

@@ -2,7 +2,7 @@
 
 class SomeParentA
 {
-	public function SomeParentA()
+    public function SomeParentA()
     {
     }
 }
@@ -20,7 +20,7 @@ final class SomeChildB extends SomeParentA
 
 class SomeParentA
 {
-	public function __construct()
+    public function __construct()
     {
     }
 }
