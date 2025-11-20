@@ -162,7 +162,6 @@ final class AttributeKey
     public const IS_BYREF_RETURN = 'is_byref_return';
 
     /**
-     * @deprecated use keys directly from stmts iteration as convention
      * @var string
      */
     public const STMT_KEY = 'stmt_key';
