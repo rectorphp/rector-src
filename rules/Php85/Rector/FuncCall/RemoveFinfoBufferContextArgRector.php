@@ -56,6 +56,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // Cannot handle variadic args
         if ($node->isFirstClassCallable()) {
             return null;
         }
@@ -106,12 +107,19 @@ CODE_SAMPLE
 
             unset($callLike->args[3 + $methodArgCorrection]);
 
+            // update indexed to make printer work as expected
+            $callLike->args = array_values($callLike->args);
+
             return true;
         }
 
+        // process named arguments
         foreach ($args as $position => $arg) {
             if ($arg->name instanceof Identifier && $this->isName($arg->name, 'context')) {
                 unset($callLike->args[$position]);
+
+                // update indexed to make printer work as expected
+                $callLike->args = array_values($callLike->args);
 
                 return true;
             }
