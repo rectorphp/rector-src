@@ -9,18 +9,13 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
+use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -34,8 +29,7 @@ final class RemoveUnusedPrivateMethodRector extends AbstractRector
         private readonly IsClassMethodUsedAnalyzer $isClassMethodUsedAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
+        private readonly DataProviderMethodsFinder $dataProviderMethodsFinder
     ) {
     }
 
@@ -84,51 +78,47 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $classMethods = $node->getMethods();
-        if ($classMethods === []) {
+        if ($node->getMethods() === []) {
             return null;
         }
 
-        $privateMethods = array_filter(
-            $classMethods,
-            fn (ClassMethod $classMethod): bool => $classMethod->isPrivate()
-        );
-
-        if ($privateMethods === []) {
-            return null;
-        }
-
-        if ($this->hasDynamicMethodCallOnFetchThis($classMethods)) {
-            return null;
-        }
+        $hasChanged = false;
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        $collectionTestMethodsUsesPrivateProvider = $this->collectTestMethodsUsesPrivateDataProvider(
-            $classReflection,
-            $node,
-            $classMethods
-        );
+        $dataProviderMethodNames = $this->resolveDataProviderMethodNames($node);
 
-        $hasChanged = false;
-        $scope = ScopeFetcher::fetch($node);
-        foreach ($privateMethods as $privateMethod) {
-            if ($this->shouldSkip($privateMethod, $classReflection)) {
+        foreach ($node->stmts as $classStmtKey => $classStmt) {
+            if (! $classStmt instanceof ClassMethod) {
                 continue;
             }
 
-            if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($node, $privateMethod, $scope)) {
+            if (! $classStmt->isPrivate()) {
                 continue;
             }
 
-            if (in_array($this->getName($privateMethod), $collectionTestMethodsUsesPrivateProvider, true)) {
+            $classMethod = $classStmt;
+            if ($this->hasDynamicMethodCallOnFetchThis($classStmt)) {
                 continue;
             }
 
-            unset($node->stmts[$privateMethod->getAttribute(AttributeKey::STMT_KEY)]);
+            $scope = ScopeFetcher::fetch($node);
+            if ($this->shouldSkip($classStmt, $classReflection)) {
+                continue;
+            }
+
+            if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($node, $classStmt, $scope)) {
+                continue;
+            }
+
+            if ($this->isNames($classMethod, $dataProviderMethodNames)) {
+                continue;
+            }
+
+            unset($node->stmts[$classStmtKey]);
             $hasChanged = true;
         }
 
@@ -137,69 +127,11 @@ CODE_SAMPLE
         }
 
         return null;
+
     }
 
-    /**
-     * @param ClassMethod[] $classMethods
-     * @return string[]
-     */
-    private function collectTestMethodsUsesPrivateDataProvider(
-        ClassReflection $classReflection,
-        Class_ $class,
-        array $classMethods
-    ): array {
-        if (! $classReflection->is('PHPUnit\Framework\TestCase')) {
-            return [];
-        }
-
-        $privateMethods = [];
-        foreach ($classMethods as $classMethod) {
-            // test method only public, but may use private data provider
-            // so verify @dataProvider and #[\PHPUnit\Framework\Attributes\DataProvider] only on public methods
-            if (! $classMethod->isPublic()) {
-                continue;
-            }
-
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
-            if ($phpDocInfo instanceof PhpDocInfo && $phpDocInfo->hasByName('dataProvider')) {
-                $dataProvider = $phpDocInfo->getByName('dataProvider');
-                if ($dataProvider instanceof PhpDocTagNode && $dataProvider->value instanceof GenericTagValueNode) {
-                    $dataProviderMethod = $class->getMethod($dataProvider->value->value);
-                    if ($dataProviderMethod instanceof ClassMethod && $dataProviderMethod->isPrivate()) {
-                        $privateMethods[] = $dataProvider->value->value;
-                    }
-                }
-            }
-
-            if ($this->phpAttributeAnalyzer->hasPhpAttribute(
-                $classMethod,
-                'PHPUnit\Framework\Attributes\DataProvider'
-            )) {
-                foreach ($classMethod->attrGroups as $attrGroup) {
-                    foreach ($attrGroup->attrs as $attr) {
-                        if ($attr->name->toString() === 'PHPUnit\Framework\Attributes\DataProvider') {
-                            $argValue = $attr->args[0]->value->value ?? '';
-                            if (is_string($argValue)) {
-                                $dataProviderMethod = $class->getMethod($argValue);
-                                if ($dataProviderMethod instanceof ClassMethod && $dataProviderMethod->isPrivate()) {
-                                    $privateMethods[] = $argValue;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $privateMethods;
-    }
-
-    private function shouldSkip(ClassMethod $classMethod, ?ClassReflection $classReflection): bool
+    private function shouldSkip(ClassMethod $classMethod, ClassReflection $classReflection): bool
     {
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
         // unreliable to detect trait, interface, anonymous class: doesn't make sense
         if ($classReflection->isTrait()) {
             return true;
@@ -221,36 +153,34 @@ CODE_SAMPLE
         return $classReflection->hasMethod(MethodName::CALL);
     }
 
-    /**
-     * @param ClassMethod[] $classMethods
-     */
-    private function hasDynamicMethodCallOnFetchThis(array $classMethods): bool
+    private function hasDynamicMethodCallOnFetchThis(ClassMethod $classMethod): bool
     {
-        foreach ($classMethods as $classMethod) {
-            $isFound = (bool) $this->betterNodeFinder->findFirst(
-                (array) $classMethod->getStmts(),
-                function (Node $subNode): bool {
-                    if (! $subNode instanceof MethodCall) {
-                        return false;
-                    }
-
-                    if (! $subNode->var instanceof Variable) {
-                        return false;
-                    }
-
-                    if (! $this->isName($subNode->var, 'this')) {
-                        return false;
-                    }
-
-                    return $subNode->name instanceof Variable;
+        return (bool) $this->betterNodeFinder->findFirst(
+            (array) $classMethod->stmts,
+            function (Node $subNode): bool {
+                if (! $subNode instanceof MethodCall) {
+                    return false;
                 }
-            );
 
-            if ($isFound) {
-                return true;
+                if (! $subNode->var instanceof Variable) {
+                    return false;
+                }
+
+                if (! $this->isName($subNode->var, 'this')) {
+                    return false;
+                }
+
+                return $subNode->name instanceof Variable;
             }
-        }
+        );
+    }
 
-        return false;
+    /**
+     * @return string[]
+     */
+    private function resolveDataProviderMethodNames(Class_ $class): array
+    {
+        $dataProviderClassMethods = $this->dataProviderMethodsFinder->findDataProviderNodesInClass($class);
+        return $this->nodeNameResolver->getNames($dataProviderClassMethods);
     }
 }
