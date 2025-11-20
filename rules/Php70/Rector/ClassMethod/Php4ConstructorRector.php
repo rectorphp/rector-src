@@ -201,7 +201,7 @@ CODE_SAMPLE
 
     private function getParentClassName(Class_ $class): ?string
     {
-        if (! $class->extends instanceof \PhpParser\Node) {
+        if (! $class->extends instanceof Node) {
             return null;
         }
 
