@@ -85,13 +85,14 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $classMethods = $node->getMethods();
-
         if ($classMethods === []) {
             return null;
         }
 
-        $filter = static fn (ClassMethod $classMethod): bool => $classMethod->isPrivate();
-        $privateMethods = array_filter($classMethods, $filter);
+        $privateMethods = array_filter(
+            $classMethods,
+            fn (ClassMethod $classMethod): bool => $classMethod->isPrivate()
+        );
 
         if ($privateMethods === []) {
             return null;
