@@ -36,6 +36,7 @@ final class NodeAttributeReIndexer
         }
 
         $node->stmts = array_values($node->stmts);
+
         return $node;
     }
 
