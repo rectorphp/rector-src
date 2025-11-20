@@ -113,12 +113,16 @@ CODE_SAMPLE
 
             // remove current Stmt if will be overridden in next stmt
             unset($node->stmts[$key]);
+
             $hasChanged = true;
         }
 
         if (! $hasChanged) {
             return null;
         }
+
+        // update array keys to fit printer
+        $node->stmts = array_values($node->stmts);
 
         return $node;
     }
