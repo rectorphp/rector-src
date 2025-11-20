@@ -163,7 +163,6 @@ final class AttributeKey
 
     /**
      * @deprecated This value can change, as based on default input keys. Use existing array keys instead.
-     *
      * @var string
      */
     public const STMT_KEY = 'stmt_key';
