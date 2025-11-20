@@ -379,6 +379,3 @@ parameters:
         -
             message: '#Property Rector\\PhpParser\\NodeTraverser\\AbstractImmutableNodeTraverser\:\:\$visitors \(list<PhpParser\\NodeVisitor>\) does not accept array<int\|string, PhpParser\\NodeVisitor>#'
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
-
-        # handle next
-        - '#Fetching deprecated class constant STMT_KEY of class Rector\\NodeTypeResolver\\Node\\AttributeKey#'
