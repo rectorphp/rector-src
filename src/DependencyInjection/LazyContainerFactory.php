@@ -243,7 +243,7 @@ final class LazyContainerFactory
         GlobalVariableNodeVisitor::class,
         NameNodeVisitor::class,
         StaticVariableNodeVisitor::class,
-        StmtKeyNodeVisitor::class,
+        //        StmtKeyNodeVisitor::class,
     ];
 
     /**

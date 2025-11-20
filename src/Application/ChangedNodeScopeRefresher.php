@@ -58,10 +58,6 @@ final readonly class ChangedNodeScopeRefresher
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        // reindex stmt_key already covered on StmtKeyNodeVisitor on next processNodes()
-        // so set flag $reIndexStmtKey to false to avoid double loop
-        NodeAttributeReIndexer::reIndexNodeAttributes($node, false);
-
         $stmts = $this->resolveStmts($node);
         $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath, $mutatingScope);
     }
