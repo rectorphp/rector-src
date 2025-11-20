@@ -47,18 +47,25 @@ final readonly class PromotedPropertyCandidateResolver
         }
 
         $propertyPromotionCandidates = [];
-        foreach ($class->getProperties() as $property) {
-            $propertyCount = count($property->props);
-            if ($propertyCount !== 1) {
+        foreach ($class->stmts as $classStmtPosition => $classStmt) {
+            if (! $classStmt instanceof Property) {
                 continue;
             }
 
-            $propertyPromotionCandidate = $this->matchPropertyPromotionCandidate($property, $constructClassMethod);
+            if (count($classStmt->props) !== 1) {
+                continue;
+            }
+
+            $propertyPromotionCandidate = $this->matchPropertyPromotionCandidate(
+                $classStmt,
+                $constructClassMethod,
+                $classStmtPosition
+            );
             if (! $propertyPromotionCandidate instanceof PropertyPromotionCandidate) {
                 continue;
             }
 
-            if (! $allowModelBasedClasses && $this->hasModelTypeCheck($property, ClassName::JMS_TYPE)) {
+            if (! $allowModelBasedClasses && $this->hasModelTypeCheck($classStmt, ClassName::JMS_TYPE)) {
                 continue;
             }
 
@@ -80,7 +87,8 @@ final readonly class PromotedPropertyCandidateResolver
 
     private function matchPropertyPromotionCandidate(
         Property $property,
-        ClassMethod $constructClassMethod
+        ClassMethod $constructClassMethod,
+        int $propertyStmtPosition
     ): ?PropertyPromotionCandidate {
         if ($property->flags === 0) {
             return null;
@@ -92,7 +100,7 @@ final readonly class PromotedPropertyCandidateResolver
         $firstParamAsVariable = $this->resolveFirstParamUses($constructClassMethod);
 
         // match property name to assign in constructor
-        foreach ((array) $constructClassMethod->stmts as $stmt) {
+        foreach ((array) $constructClassMethod->stmts as $assignStmtPosition => $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
             }
@@ -127,7 +135,12 @@ final readonly class PromotedPropertyCandidateResolver
                 continue;
             }
 
-            return new PropertyPromotionCandidate($property, $matchedParam, $stmt);
+            return new PropertyPromotionCandidate(
+                $property,
+                $matchedParam,
+                $propertyStmtPosition,
+                $assignStmtPosition
+            );
         }
 
         return null;

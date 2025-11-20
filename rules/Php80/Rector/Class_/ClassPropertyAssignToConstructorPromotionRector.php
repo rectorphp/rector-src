@@ -26,7 +26,6 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Naming\PropertyRenamer\PropertyPromotionRenamer;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeAnalyzer\ParamAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\DocBlock\PropertyPromotionDocBlockMerger;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
@@ -216,12 +215,10 @@ CODE_SAMPLE
             $hasChanged = true;
 
             // remove property from class
-            $propertyStmtKey = $property->getAttribute(AttributeKey::STMT_KEY);
-            unset($node->stmts[$propertyStmtKey]);
+            unset($node->stmts[$promotionCandidate->getPropertyStmtPosition()]);
 
             // remove assign in constructor
-            $assignStmtPosition = $promotionCandidate->getStmtPosition();
-            unset($constructClassMethod->stmts[$assignStmtPosition]);
+            unset($constructClassMethod->stmts[$promotionCandidate->getConstructorAssignStmtPosition()]);
 
             $oldParamName = $this->getName($param);
             $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldParamName, $propertyName);
