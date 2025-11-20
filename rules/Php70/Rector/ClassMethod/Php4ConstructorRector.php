@@ -97,7 +97,6 @@ CODE_SAMPLE
             return null;
         }
 
-<<<<<<< HEAD
         $className = $this->getName($node);
         if (! is_string($className)) {
             return null;
@@ -106,28 +105,6 @@ CODE_SAMPLE
         foreach ($node->stmts as $classStmtKey => $classStmt) {
             if (! $classStmt instanceof ClassMethod) {
                 continue;
-=======
-        // process parent call references first
-        $this->processClassMethodStatementsForParentConstructorCalls($psr4ConstructorMethod, $scope);
-
-        // does it already have a "__construct" method?
-        if (! $node->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
-            $psr4ConstructorMethod->name = new Identifier(MethodName::CONSTRUCT);
-        }
-
-        $classMethodStmts = $psr4ConstructorMethod->stmts;
-        if ($classMethodStmts === null) {
-            return null;
-        }
-
-        $parentClassName = $classReflection->getParentClass() instanceof ClassReflection
-            ? $classReflection->getParentClass()
-                ->getName() : '';
-
-        foreach ($classMethodStmts as $classMethodStmt) {
-            if (! $classMethodStmt instanceof Expression) {
-                return null;
->>>>>>> ea2ce07c12 (fixup! fixup! fixup! fixup! [stmts-aware] kick of custom node parser to use StmtsAwareNode)
             }
 
             if (! $this->php4ConstructorClassMethodAnalyzer->detect($classStmt, $classReflection)) {

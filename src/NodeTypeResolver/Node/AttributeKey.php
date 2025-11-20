@@ -162,8 +162,12 @@ final class AttributeKey
     public const IS_BYREF_RETURN = 'is_byref_return';
 
     /**
+<<<<<<< HEAD
      * @deprecated This value can change, as based on default input keys. Use existing array keys instead.
      *
+=======
+     * @deprecated use keys directly from stmts iteration as convention
+>>>>>>> c23994b233 (note)
      * @var string
      */
     public const STMT_KEY = 'stmt_key';
