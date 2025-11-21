@@ -14,27 +14,7 @@ use PhpParser\NodeVisitor;
 abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
 {
     /**
-     * @deprecated Use NodeVisitor::DONT_TRAVERSE_CHILDREN instead.
-     */
-    public const DONT_TRAVERSE_CHILDREN = NodeVisitor::DONT_TRAVERSE_CHILDREN;
-
-    /**
-     * @deprecated Use NodeVisitor::STOP_TRAVERSAL instead.
-     */
-    public const STOP_TRAVERSAL = NodeVisitor::STOP_TRAVERSAL;
-
-    /**
-     * @deprecated Use NodeVisitor::REMOVE_NODE instead.
-     */
-    public const REMOVE_NODE = NodeVisitor::REMOVE_NODE;
-
-    /**
-     * @deprecated Use NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN instead.
-     */
-    public const DONT_TRAVERSE_CURRENT_AND_CHILDREN = NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-
-    /**
-     * @var list<NodeVisitor> Visitors
+     * @var list<NodeVisitor>
      */
     protected array $visitors = [];
 
@@ -61,17 +41,6 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
     public function addVisitor(NodeVisitor $visitor): void
     {
         $this->visitors[] = $visitor;
-    }
-
-    /**
-     * Removes an added visitor.
-     */
-    public function removeVisitor(NodeVisitor $visitor): void
-    {
-        $index = array_search($visitor, $this->visitors, true);
-        if ($index !== false) {
-            array_splice($this->visitors, $index, 1, []);
-        }
     }
 
     /**
