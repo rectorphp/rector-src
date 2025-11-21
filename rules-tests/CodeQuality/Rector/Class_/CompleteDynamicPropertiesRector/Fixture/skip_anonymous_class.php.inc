@@ -18,8 +18,7 @@ class SkipAnonymousClass
             $nodes = $nodes ? [$nodes] : [];
         }
 
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor($this->createNodeVisitor($callable));
+        $nodeTraverser = new NodeTraverser(...$this->createNodeVisitor($callable));
         $nodeTraverser->traverse($nodes);
     }
 

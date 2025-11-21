@@ -18,29 +18,21 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
      */
     protected array $visitors = [];
 
-    /**
-     * @var bool Whether traversal should be stopped
-     */
     private bool $stopTraversal;
 
-    /**
-     * Create a traverser with the given visitors.
-     *
-     * @param NodeVisitor ...$visitors Node visitors
-     */
     public function __construct(NodeVisitor ...$visitors)
     {
         $this->visitors = $visitors;
     }
 
-    /**
-     * Adds a visitor.
-     *
-     * @param NodeVisitor $visitor Visitor to add
-     */
     public function addVisitor(NodeVisitor $visitor): void
     {
         $this->visitors[] = $visitor;
+    }
+
+    public function removeVisitor(NodeVisitor $visitor): void
+    {
+        throw new LogicException('Removing visitors is not supported in ' . static::class);
     }
 
     /**
@@ -75,11 +67,6 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
      */
     abstract public function getVisitorsForNode(Node $node): array;
 
-    /**
-     * Recursively traverse a node.
-     *
-     * @param Node $node Node to traverse.
-     */
     private function traverseNode(Node $node): void
     {
         foreach ($node->getSubNodeNames() as $name) {
@@ -162,7 +149,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
      *
      * @param Node[] $nodes Array to traverse
      *
-     * @return array Result of traversal (may be original array or changed one)
+     * @return Node[] Result of traversal (may be original array or changed one)
      */
     private function traverseArray(array $nodes): array
     {
