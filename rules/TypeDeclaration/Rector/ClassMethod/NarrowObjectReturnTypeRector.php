@@ -294,7 +294,7 @@ CODE_SAMPLE
 
             $parentReturnTypeName = $parentReturnType->toString();
 
-            if (! $this->isNarrowingValid($parentReturnTypeName, $actualReturnClass)) {
+            if (! $this->isNarrowingValid($parentClassMethod, $parentReturnTypeName, $actualReturnClass)) {
                 return false;
             }
         }
