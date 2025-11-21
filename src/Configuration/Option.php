@@ -101,6 +101,11 @@ final class Option
     /**
      * @var string
      */
+    public const DIRTY = 'dirty';
+
+    /**
+     * @var string
+     */
     public const ONLY = 'only';
 
     /**
