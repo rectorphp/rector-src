@@ -25,21 +25,6 @@ use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 
 final class NodeAttributeReIndexer
 {
-    private static function reIndexStmtsKeys(Node $node): ?Node
-    {
-        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_ && ! $node instanceof Block) {
-            return null;
-        }
-
-        if ($node->stmts === null) {
-            return null;
-        }
-
-        $node->stmts = array_values($node->stmts);
-
-        return $node;
-    }
-
     public static function reIndexNodeAttributes(Node $node): ?Node
     {
         self::reIndexStmtsKeys($node);
@@ -77,5 +62,20 @@ final class NodeAttributeReIndexer
         }
 
         return null;
+    }
+
+    private static function reIndexStmtsKeys(Node $node): ?Node
+    {
+        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_ && ! $node instanceof Block) {
+            return null;
+        }
+
+        if ($node->stmts === null) {
+            return null;
+        }
+
+        $node->stmts = array_values($node->stmts);
+
+        return $node;
     }
 }
