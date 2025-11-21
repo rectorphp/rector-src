@@ -146,6 +146,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->isNarrowingValidFromParent($node, $actualReturnClass)) {
+            return null;
+        }
+
         $node->returnType = new FullyQualified($actualReturnClass);
 
         $this->updateDocblock($node, $actualReturnClass);
@@ -244,6 +248,56 @@ CODE_SAMPLE
 
         $returnType = $phpDocInfo->getReturnType();
         return ! $returnType instanceof GenericObjectType;
+    }
+
+    private function isNarrowingValidFromParent(ClassMethod $classMethod, string $actualReturnClass): bool
+    {
+        if ($classMethod->isPrivate()) {
+            return true;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+
+        if (! $classReflection instanceof ClassReflection) {
+            return true;
+        }
+
+        $ancestors = array_filter(
+            $classReflection->getAncestors(),
+            fn (ClassReflection $ancestorClassReflection): bool => $classReflection->getName() !== $ancestorClassReflection->getName()
+        );
+
+        $methodName = $this->getName($classMethod);
+
+        foreach ($ancestors as $ancestor) {
+            if ($ancestor->getFileName() === null) {
+                continue;
+            }
+
+            if (! $ancestor->hasNativeMethod($methodName)) {
+                continue;
+            }
+
+            $parentClassMethod = $this->astResolver->resolveClassMethod($ancestor->getName(), $methodName);
+
+            if (! $parentClassMethod instanceof ClassMethod) {
+                continue;
+            }
+
+            $parentReturnType = $parentClassMethod->returnType;
+
+            if (! $parentReturnType instanceof Node) {
+                continue;
+            }
+
+            $parentReturnTypeName = $parentReturnType->toString();
+
+            if (! $this->isNarrowingValid($parentReturnTypeName, $actualReturnClass)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function getActualReturnClass(ClassMethod $classMethod): ?string
