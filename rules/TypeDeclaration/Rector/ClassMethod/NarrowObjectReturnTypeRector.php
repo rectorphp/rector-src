@@ -19,6 +19,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -36,6 +37,7 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
+        private readonly AstResolver $astResolver,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -286,7 +288,7 @@ CODE_SAMPLE
 
             $parentReturnType = $parentClassMethod->returnType;
 
-            if (! $parentReturnType instanceof Node) {
+            if (! $parentReturnType instanceof Identifier && ! $parentReturnType instanceof FullyQualified) {
                 continue;
             }
 
