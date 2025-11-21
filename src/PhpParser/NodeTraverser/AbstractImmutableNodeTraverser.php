@@ -21,7 +21,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
     /**
      * @var bool Whether traversal should be stopped
      */
-    protected bool $stopTraversal;
+    private bool $stopTraversal;
 
     /**
      * Create a traverser with the given visitors.
@@ -80,7 +80,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
      *
      * @param Node $node Node to traverse.
      */
-    protected function traverseNode(Node $node): void
+    private function traverseNode(Node $node): void
     {
         foreach ($node->getSubNodeNames() as $name) {
             $subNode = $node->{$name};
@@ -164,7 +164,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
      *
      * @return array Result of traversal (may be original array or changed one)
      */
-    protected function traverseArray(array $nodes): array
+    private function traverseArray(array $nodes): array
     {
         $doNodes = [];
         foreach ($nodes as $i => $node) {
