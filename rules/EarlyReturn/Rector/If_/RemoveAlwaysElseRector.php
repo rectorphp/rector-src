@@ -130,7 +130,18 @@ CODE_SAMPLE
         }
 
         if ($originalIf->else instanceof Else_) {
-            $nodesToReturn[] = $originalIf->else;
+            $mergeStmts = true;
+            foreach ($nodesToReturn as $nodeToReturn) {
+                if ($this->doesLastStatementBreakFlow($nodeToReturn)) {
+                    $nodesToReturn[] = $originalIf->else;
+                    $mergeStmts = false;
+                    break;
+                }
+            }
+
+            if ($mergeStmts) {
+                $nodesToReturn = array_merge($nodesToReturn, $originalIf->else->stmts);
+            }
         }
 
         return $nodesToReturn;
