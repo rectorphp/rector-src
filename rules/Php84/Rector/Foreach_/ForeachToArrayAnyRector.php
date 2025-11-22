@@ -24,6 +24,7 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\ForeachToArrayAnyRectorTest
@@ -101,8 +102,13 @@ CODE_SAMPLE
         return PhpVersionFeature::ARRAY_ANY;
     }
 
-    private function refactorBooleanAssignmentPattern(StmtsAwareInterface $stmtsAware): ?Node
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     */
+    private function refactorBooleanAssignmentPattern(\PhpParser\Node $stmtsAware): ?Node
     {
+        Assert::propertyExists($stmtsAware, 'stmts');
+
         foreach ($stmtsAware->stmts as $key => $stmt) {
             if (! $stmt instanceof Foreach_) {
                 continue;
@@ -182,8 +188,13 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorEarlyReturnPattern(StmtsAwareInterface $stmtsAware): ?Node
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     */
+    private function refactorEarlyReturnPattern(\PhpParser\Node $stmtsAware): ?Node
     {
+        Assert::propertyExists($stmtsAware, 'stmts');
+
         foreach ($stmtsAware->stmts as $key => $stmt) {
             if (! $stmt instanceof Foreach_) {
                 continue;

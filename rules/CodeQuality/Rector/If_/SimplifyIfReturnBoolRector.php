@@ -76,6 +76,10 @@ CODE_SAMPLE
         }
 
         foreach ($node->stmts as $key => $stmt) {
+            if ($key === 0) {
+                continue;
+            }
+
             if (! $stmt instanceof Return_) {
                 continue;
             }

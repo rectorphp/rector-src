@@ -113,7 +113,10 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processIf(If_ $if, int $key, StmtsAwareInterface $stmtsAware): void
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     */
+    private function processIf(If_ $if, int $key, \PhpParser\Node $stmtsAware): void
     {
         if ($if->elseifs !== []) {
             return;
@@ -137,7 +140,10 @@ CODE_SAMPLE
         $this->hasChanged = true;
     }
 
-    private function processForForeach(For_|Foreach_ $for, int $key, StmtsAwareInterface $stmtsAware): void
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     */
+    private function processForForeach(For_|Foreach_ $for, int $key, \PhpParser\Node $stmtsAware): void
     {
         if ($for instanceof For_) {
             $variables = $this->betterNodeFinder->findInstanceOf(

@@ -183,9 +183,11 @@ CODE_SAMPLE
 
     /**
      * @param If_[] $ifs
+     * @param StmtsAwareInterface $stmtsAware
+     *
      * @return BareSingleAssignIf[]
      */
-    private function getMatchingBareSingleAssignIfs(array $ifs, StmtsAwareInterface $stmtsAware): array
+    private function getMatchingBareSingleAssignIfs(array $ifs, \PhpParser\Node $stmtsAware): array
     {
         $bareSingleAssignIfs = [];
         foreach ($ifs as $key => $if) {
@@ -233,7 +235,10 @@ CODE_SAMPLE
         return true;
     }
 
-    private function matchBareSingleAssignIf(Stmt $stmt, int $key, StmtsAwareInterface $stmtsAware): ?BareSingleAssignIf
+    /**
+     * @param StmtsAwareInterface $stmtsAware
+     */
+    private function matchBareSingleAssignIf(Stmt $stmt, int $key, \PhpParser\Node $stmtsAware): ?BareSingleAssignIf
     {
         if (! $stmt instanceof If_) {
             return null;

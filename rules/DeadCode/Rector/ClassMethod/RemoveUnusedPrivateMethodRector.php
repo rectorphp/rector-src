@@ -78,7 +78,25 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+<<<<<<< HEAD
         if ($node->getMethods() === []) {
+=======
+        foreach ($node->stmts as $stmt) {
+            if (!$stmt instanceof ClassMethod) {
+                continue;
+            }
+
+            if ($stmt->isPrivate()) {
+                return null;
+            }
+
+            dump('todo');
+        }
+
+        $classMethods = $node->getMethods();
+
+        if ($classMethods === []) {
+>>>>>>> 77e904a598 (flip keys)
             return null;
         }
 

@@ -23,6 +23,7 @@ use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -33,6 +34,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\NodeGroups;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
@@ -375,6 +377,14 @@ CODE_SAMPLE;
     {
         $nodeClass = $node::class;
         foreach ($this->getNodeTypes() as $nodeType) {
+            if ($nodeType === StmtsAwareInterface::class) {
+                foreach (NodeGroups::STMTS_AWARE_NODES as $stmtsAwareNodeClass) {
+                    if (is_a($nodeClass, $stmtsAwareNodeClass, true)) {
+                        return true;
+                    }
+                }
+            }
+
             if (is_a($nodeClass, $nodeType, true)) {
                 return true;
             }
