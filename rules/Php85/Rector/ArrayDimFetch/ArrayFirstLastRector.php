@@ -7,6 +7,7 @@ namespace Rector\Php85\Rector\ArrayDimFetch;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\FuncCall;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -79,6 +80,11 @@ CODE_SAMPLE
         }
 
         if (! $this->nodeComparator->areNodesEqual($node->var, $node->dim->getArgs()[0]->value)) {
+            return null;
+        }
+
+        $scope = ScopeFetcher::fetch($node->var);
+        if ($scope->isInExpressionAssign($node)) {
             return null;
         }
 
