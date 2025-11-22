@@ -24,7 +24,7 @@ use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector;
-use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
+use Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
 use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
@@ -59,7 +59,7 @@ final class CodingStyleLevel
         NullableCompareToNullRector::class,
         ConsistentImplodeRector::class,
         TernaryConditionVariableAssignmentRector::class,
-        SymplifyQuoteEscapeRector::class,
+        SimplifyQuoteEscapeRector::class,
         StringClassNameToClassConstantRector::class,
         CatchExceptionNameMatchingTypeRector::class,
         SplitDoubleAssignRector::class,
