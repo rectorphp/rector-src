@@ -47,9 +47,7 @@ class ProcessEmptyReturnLast
             $value = 55;
             return 10;
         }
-        else {
-            return;
-        }
+        return;
     }
 
     public function secondRun($value)

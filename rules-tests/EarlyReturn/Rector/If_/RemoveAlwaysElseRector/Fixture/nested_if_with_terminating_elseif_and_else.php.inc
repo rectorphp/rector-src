@@ -37,9 +37,7 @@ class NestedIfWithTerminatingElseIfAndElse
             if ($cond3) {
                 return 'bar';
             }
-            else {
-                return 'baz';
-            }
+            return 'baz';
         }
         foo();
     }
