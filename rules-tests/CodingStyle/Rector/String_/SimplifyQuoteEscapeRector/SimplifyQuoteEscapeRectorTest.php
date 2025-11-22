@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
+namespace Rector\Tests\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class SymplifyQuoteEscapeRectorTest extends AbstractRectorTestCase
+final class SimplifyQuoteEscapeRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

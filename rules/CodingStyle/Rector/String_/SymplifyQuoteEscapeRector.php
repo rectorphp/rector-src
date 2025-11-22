@@ -13,9 +13,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector\SymplifyQuoteEscapeRectorTest
+ * @deprecated Use \Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector instead.
  */
-final class SymplifyQuoteEscapeRector extends AbstractRector
+class SymplifyQuoteEscapeRector extends AbstractRector
 {
     /**
      * @var string
