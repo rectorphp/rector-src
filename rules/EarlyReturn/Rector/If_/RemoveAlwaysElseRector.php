@@ -170,7 +170,9 @@ CODE_SAMPLE
         $lastStmt = end($node->stmts);
 
         if ($lastStmt instanceof If_ && $lastStmt->else instanceof Else_) {
-            if ($this->doesNotLastStatementBreakFlow($lastStmt) || $this->doesNotLastStatementBreakFlow($lastStmt->else)) {
+            if ($this->doesNotLastStatementBreakFlow($lastStmt) || $this->doesNotLastStatementBreakFlow(
+                $lastStmt->else
+            )) {
                 return true;
             }
 
