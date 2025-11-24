@@ -33,10 +33,11 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\NodeTraverser\AbstractLeaveNode;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
-abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
+abstract class AbstractRector extends AbstractLeaveNode implements RectorInterface
 {
     /**
      * @var string
@@ -71,14 +72,7 @@ CODE_SAMPLE;
 
     private CurrentFileProvider $currentFileProvider;
 
-    /**
-     * @var array<int, Node[]>
-     */
-    private array $nodesToReturn = [];
-
     private CreatedByRuleDecorator $createdByRuleDecorator;
-
-    private ?int $toBeRemovedNodeId = null;
 
     public function autowire(
         NodeNameResolver $nodeNameResolver,
@@ -184,31 +178,6 @@ CODE_SAMPLE;
         }
 
         return $this->postRefactorProcess($originalNode, $node, $refactoredNode, $filePath);
-    }
-
-    /**
-     * Replacing nodes in leaveNode() method avoids infinite recursion
-     * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-     */
-    final public function leaveNode(Node $node): array|int|Node|null
-    {
-        if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
-            return null;
-        }
-
-        // nothing to change here
-        if ($this->toBeRemovedNodeId === null && $this->nodesToReturn === []) {
-            return null;
-        }
-
-        $objectId = spl_object_id($node);
-        if ($this->toBeRemovedNodeId === $objectId) {
-            $this->toBeRemovedNodeId = null;
-
-            return NodeVisitor::REMOVE_NODE;
-        }
-
-        return $this->nodesToReturn[$objectId] ?? $node;
     }
 
     protected function isName(Node $node, string $name): bool
