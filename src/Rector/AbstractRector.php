@@ -32,7 +32,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
-use Rector\PhpParser\NodeTraverser\AbstractLeaveNode;
+use Rector\PhpParser\NodeVisitor\AbstractLeaveNode;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 

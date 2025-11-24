@@ -9,7 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitor;
-use Rector\PhpParser\NodeTraverser\AbstractLeaveNode;
+use Rector\PhpParser\NodeVisitor\AbstractLeaveNode;
 
 final class CallableNodeVisitor extends AbstractLeaveNode
 {
