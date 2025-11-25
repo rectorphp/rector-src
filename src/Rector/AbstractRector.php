@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Rector;
 
-use PhpParser\Builder\FunctionLike;
 use PhpParser\Node;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Class_;
@@ -310,11 +310,16 @@ CODE_SAMPLE;
             static fn (string $nodeType): bool => $nodeType !== $node::class
         );
 
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes): int|Node {
+        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($node, $otherTypes): null|int|Node {
             // early check here as included in other types defined in getNodeTypes()
             if (in_array($subNode::class, $otherTypes, true)) {
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
                 return $subNode;
+            }
+
+            // already set
+            if ($node === $subNode) {
+                return null;
             }
 
             // inner class/function are out of scope
