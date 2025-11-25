@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Rector;
 
+use PhpParser\Builder\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\PropertyItem;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Const_;
 use PhpParser\Node\Stmt\InlineHTML;
@@ -297,6 +299,8 @@ CODE_SAMPLE;
 
     private function decorateCurrentAndChildren(Node $node): void
     {
+        $node->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
+
         // filter only types that
         //    1. registered in getNodesTypes() method
         //    2. different with current node type, as already decorated above
@@ -306,16 +310,20 @@ CODE_SAMPLE;
             static fn (string $nodeType): bool => $nodeType !== $node::class
         );
 
-        if ($otherTypes === []) {
-            return;
-        }
-
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes): null {
+        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes): int|Node {
+            // early check here as included in other types defined in getNodeTypes()
             if (in_array($subNode::class, $otherTypes, true)) {
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
+                return $subNode;
             }
 
-            return null;
+            // inner class/function are out of scope
+            if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
+                return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
+            return $subNode;
         });
     }
 

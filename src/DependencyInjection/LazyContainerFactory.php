@@ -97,7 +97,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver\StaticCallMethodCallTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
@@ -236,7 +235,6 @@ final class LazyContainerFactory
     private const DECORATING_NODE_VISITOR_CLASSES = [
         ArgNodeVisitor::class,
         AssignedToNodeVisitor::class,
-        ByRefReturnNodeVisitor::class,
         ByRefVariableNodeVisitor::class,
         ContextNodeVisitor::class,
         GlobalVariableNodeVisitor::class,

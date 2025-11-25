@@ -10,16 +10,17 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\NodeVisitor;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeAnalyzer\VariableAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -111,12 +112,17 @@ CODE_SAMPLE
 
     /**
      * @param StmtsAwareInterface $node
+     * @return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN|null|StmtsAwareInterface
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): int|null|Node
     {
         $stmts = $node->stmts;
         if ($stmts === null) {
             return null;
+        }
+
+        if ($node instanceof FunctionLike && $node->returnsByRef()) {
+            return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         foreach ($stmts as $key => $stmt) {
@@ -175,10 +181,6 @@ CODE_SAMPLE
     private function shouldSkipStmt(Return_ $return, Stmt $previousStmt): bool
     {
         if (! $return->expr instanceof Variable) {
-            return true;
-        }
-
-        if ($return->getAttribute(AttributeKey::IS_BYREF_RETURN) === true) {
             return true;
         }
 
