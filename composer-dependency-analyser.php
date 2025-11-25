@@ -21,6 +21,7 @@ return $config
         __DIR__ . '/stubs',
         __DIR__ . '/tests',
         __DIR__ . '/rules-tests',
+        __DIR__ . '/build/config/config-downgrade.php'
     ], [ErrorType::UNKNOWN_CLASS])
 
     ->disableExtensionsAnalysis();
