@@ -31,6 +31,13 @@ final readonly class CallLikeParamDefaultResolver
             return [];
         }
 
+        if ($reflection instanceof MethodReflection && $reflection->getName() === 'get') {
+            $classReflection = $reflection->getDeclaringClass();
+            if ($classReflection->getName() === 'Ds\Map') {
+                return [];
+            }
+        }
+
         $nullPositions = [];
 
         $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($reflection->getVariants());
