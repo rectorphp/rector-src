@@ -65,6 +65,7 @@ use Rector\Console\Output\OutputFormatterCollector;
 use Rector\Console\Style\RectorStyle;
 use Rector\Console\Style\SymfonyStyleFactory;
 use Rector\Contract\DependencyInjection\ResetableInterface;
+use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
@@ -94,7 +95,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver\PropertyTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ScalarTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\StaticCallMethodCallTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
@@ -231,9 +231,9 @@ final class LazyContainerFactory
     ];
 
     /**
-     * @var array<class-string<ScopeResolverNodeVisitorInterface>>
+     * @var array<class-string<DecoratingNodeVisitorInterface>>
      */
-    private const SCOPE_RESOLVER_NODE_VISITOR_CLASSES = [
+    private const DECORATING_NODE_VISITOR_CLASSES = [
         ArgNodeVisitor::class,
         AssignedToNodeVisitor::class,
         ByRefReturnNodeVisitor::class,
@@ -660,13 +660,13 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->when(PHPStanNodeScopeResolver::class)
-            ->needs('$nodeVisitors')
-            ->giveTagged(ScopeResolverNodeVisitorInterface::class);
+            ->needs('$decoratingNodeVisitors')
+            ->giveTagged(DecoratingNodeVisitorInterface::class);
 
         $this->registerTagged(
             $rectorConfig,
-            self::SCOPE_RESOLVER_NODE_VISITOR_CLASSES,
-            ScopeResolverNodeVisitorInterface::class
+            self::DECORATING_NODE_VISITOR_CLASSES,
+            DecoratingNodeVisitorInterface::class
         );
 
         $this->createPHPStanServices($rectorConfig);

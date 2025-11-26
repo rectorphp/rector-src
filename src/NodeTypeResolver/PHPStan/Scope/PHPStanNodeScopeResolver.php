@@ -102,10 +102,10 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Webmozart\Assert\Assert;
@@ -124,18 +124,19 @@ final readonly class PHPStanNodeScopeResolver
     private NodeTraverser $nodeTraverser;
 
     /**
-     * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
+     * @param DecoratingNodeVisitorInterface[] $decoratingNodeVisitors
      */
     public function __construct(
         private NodeScopeResolver $nodeScopeResolver,
         private ReflectionProvider $reflectionProvider,
-        iterable $nodeVisitors,
+        iterable $decoratingNodeVisitors,
         private ScopeFactory $scopeFactory,
         private PrivatesAccessor $privatesAccessor,
         private NodeNameResolver $nodeNameResolver,
         private ClassAnalyzer $classAnalyzer
     ) {
-        $this->nodeTraverser = new NodeTraverser(...$nodeVisitors);
+        // @todo make use of immutable, to avoid tedious traversing
+        $this->nodeTraverser = new NodeTraverser(...$decoratingNodeVisitors);
     }
 
     /**
