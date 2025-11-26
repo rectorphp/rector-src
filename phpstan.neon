@@ -265,6 +265,11 @@ parameters:
         # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110
         - '#Doing instanceof PHPStan\\Type\\.+ is error\-prone and deprecated#'
 
+        # BC layer on Rector deprecation
+        -
+            path: src/Configuration/RectorConfigBuilder.php
+            identifier: classConstant.deprecatedInterface
+
         # allowed internally only
         -
             message: '#Fetching (deprecated )?class constant (.*?) of (deprecated )?class (Rector\\Set\\ValueObject\\DowngradeLevelSetList|Rector\\Symfony\\Set\\(.*?))#'

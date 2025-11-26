@@ -11,11 +11,11 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\NodeVisitorAbstract;
+use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
+final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
