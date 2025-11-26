@@ -10,10 +10,11 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
+use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface
+final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser

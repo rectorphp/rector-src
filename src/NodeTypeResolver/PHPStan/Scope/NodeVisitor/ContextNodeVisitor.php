@@ -34,10 +34,11 @@ use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
+use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class ContextNodeVisitor extends NodeVisitorAbstract implements \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface
+final class ContextNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser

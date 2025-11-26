@@ -11,9 +11,10 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\NodeVisitorAbstract;
+use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-final class ArgNodeVisitor extends NodeVisitorAbstract implements \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface
+final class ArgNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function enterNode(Node $node): ?Node
     {
