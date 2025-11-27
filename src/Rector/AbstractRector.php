@@ -310,7 +310,7 @@ CODE_SAMPLE;
         );
 
         $isCurrentNode = false;
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($node, $types, $otherTypes, &$isCurrentNode): int|Node {
+        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($node, $types, $otherTypes, &$isCurrentNode): null|int|Node {
             // first visited is current node itself
             if (! $isCurrentNode) {
                 $isCurrentNode = true;
@@ -324,9 +324,13 @@ CODE_SAMPLE;
                 return $subNode;
             }
 
+            if ($types !== [StmtsAwareInterface::class]) {
+                return null;
+            }
+
             // exact StmtsAwareInterface will be visited by itself, and requires revalidated
             // no need to apply skip by current rule
-            if ($types === [StmtsAwareInterface::class] && $node instanceof FunctionLike && $subNode instanceof FunctionLike) {
+            if ($node instanceof FunctionLike && $subNode instanceof FunctionLike) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
