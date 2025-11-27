@@ -77,12 +77,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
             // reset
-            /** @var RewindableGenerator<int, ResettableInterface> $resetables */
-            $resetables = $rectorConfig->tagged(ResettableInterface::class);
+            /** @var RewindableGenerator<int, ResettableInterface> $resettables */
+            $resettables = $rectorConfig->tagged(ResettableInterface::class);
 
-            foreach ($resetables as $resetable) {
-                /** @var ResettableInterface $resetable */
-                $resetable->reset();
+            foreach ($resettables as $resettable) {
+                /** @var ResettableInterface $resettable */
+                $resettable->reset();
             }
 
             $this->forgetRectorsRules();
