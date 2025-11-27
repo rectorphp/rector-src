@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\PropertyItem;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Const_;
 use PhpParser\Node\Stmt\InlineHTML;
@@ -25,6 +24,7 @@ use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -299,31 +299,34 @@ CODE_SAMPLE;
 
     private function decorateCurrentAndChildren(Node $node): void
     {
-        $node->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
-
         // filter only types that
         //    1. registered in getNodesTypes() method
         //    2. different with current node type, as already decorated above
         //
+        $types = $this->getNodeTypes();
         $otherTypes = array_filter(
-            $this->getNodeTypes(),
+            $types,
             static fn (string $nodeType): bool => $nodeType !== $node::class
         );
 
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($node, $otherTypes): null|int|Node {
+        $isCurrentNode = false;
+        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($node, $types, $otherTypes, &$isCurrentNode): int|Node {
+            // first visited is current node itself
+            if (! $isCurrentNode) {
+                $isCurrentNode = true;
+                $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
+                return $subNode;
+            }
+
             // early check here as included in other types defined in getNodeTypes()
             if (in_array($subNode::class, $otherTypes, true)) {
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
                 return $subNode;
             }
 
-            // already set
-            if ($node === $subNode) {
-                return null;
-            }
-
-            // inner class/function are out of scope
-            if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
+            // exact StmtsAwareInterface will be visited by itself, and requires revalidated
+            // no need to apply skip by current rule
+            if ($types === [StmtsAwareInterface::class] && $node instanceof FunctionLike && $subNode instanceof FunctionLike) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
