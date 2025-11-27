@@ -8,15 +8,22 @@ use PhpParser\Node\Stmt;
 use PhpParser\ParserFactory;
 use PhpParser\PhpVersion;
 use PHPStan\Parser\Parser;
+use PHPStan\Parser\RichParser;
+use Rector\DependencyInjection\PHPStan\PHPStanContainerMemento;
 use Rector\PhpParser\ValueObject\StmtsAndTokens;
 use Rector\Util\Reflection\PrivatesAccessor;
 
 final readonly class RectorParser
 {
+    /**
+     * @param RichParser $parser
+     */
     public function __construct(
         private Parser $parser,
         private PrivatesAccessor $privatesAccessor
     ) {
+
+        PHPStanContainerMemento::removeRichVisitors($parser);
     }
 
     /**

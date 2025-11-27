@@ -7,15 +7,15 @@ namespace Rector\Tests\PhpParser\Printer;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Parser\Parser;
 use PHPStan\Parser\RichParser;
+use Rector\DependencyInjection\PHPStan\PHPStanContainerMemento;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-<<<<<<< HEAD
 use ReflectionProperty;
-=======
->>>>>>> ea9a6ad8a5 ([issue 9492] create reproducer for modified array_map args, as creates changed args on print)
 
 /**
  * Test case for: https://github.com/rectorphp/rector/issues/9492
  * Most likely caused by https://github.com/phpstan/phpstan-src/pull/3763
+ *
+ * @see https://github.com/phpstan/phpstan-src/blob/2.1.x/src/Parser/ArrayMapArgVisitor.php
  */
 final class PHPStanPrinterTest extends AbstractLazyTestCase
 {
@@ -24,33 +24,22 @@ final class PHPStanPrinterTest extends AbstractLazyTestCase
         /** @var RichParser $phpstanParser */
         $phpstanParser = $this->make(Parser::class);
 
+        PHPStanContainerMemento::removeRichVisitors($phpstanParser);
+
         $stmts = $phpstanParser->parseFile(__DIR__ . '/Fixture/some_array_map.php');
 
         // get private property "parser"
-<<<<<<< HEAD
         $parserReflectionProperty = new ReflectionProperty(RichParser::class, 'parser');
-=======
-        $parserReflectionProperty = new \ReflectionProperty(RichParser::class, 'parser');
->>>>>>> ea9a6ad8a5 ([issue 9492] create reproducer for modified array_map args, as creates changed args on print)
 
         /** @var \PhpParser\Parser $innerParser */
         $innerParser = $parserReflectionProperty->getValue($phpstanParser);
         $tokens = $innerParser->getTokens();
 
-<<<<<<< HEAD
         $standard = new Standard([]);
         $printerContents = $standard->printFormatPreserving($stmts, $stmts, $tokens);
 
         $newlineNormalizedContents = str_replace("\r\n", PHP_EOL, $printerContents);
 
         $this->assertStringEqualsFile(__DIR__ . '/Fixture/some_array_map.php', $newlineNormalizedContents);
-=======
-        $standardPrinter = new Standard([
-            'newline' => "\n",
-        ]);
-        $printerContents = $standardPrinter->printFormatPreserving($stmts, $stmts, $tokens);
-
-        $this->assertStringEqualsFile(__DIR__ . '/Fixture/some_array_map.php', $printerContents);
->>>>>>> ea9a6ad8a5 ([issue 9492] create reproducer for modified array_map args, as creates changed args on print)
     }
 }
