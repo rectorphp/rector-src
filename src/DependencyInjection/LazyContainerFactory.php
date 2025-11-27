@@ -64,7 +64,7 @@ use Rector\Console\ConsoleApplication;
 use Rector\Console\Output\OutputFormatterCollector;
 use Rector\Console\Style\RectorStyle;
 use Rector\Console\Style\SymfonyStyleFactory;
-use Rector\Contract\DependencyInjection\ResetableInterface;
+use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
@@ -452,8 +452,8 @@ final class LazyContainerFactory
         );
 
         // resetables
-        $rectorConfig->tag(DynamicSourceLocatorProvider::class, ResetableInterface::class);
-        $rectorConfig->tag(RenamedClassesDataCollector::class, ResetableInterface::class);
+        $rectorConfig->tag(DynamicSourceLocatorProvider::class, ResettableInterface::class);
+        $rectorConfig->tag(RenamedClassesDataCollector::class, ResettableInterface::class);
 
         // caching
         $rectorConfig->singleton(Cache::class, static function (Container $container): Cache {

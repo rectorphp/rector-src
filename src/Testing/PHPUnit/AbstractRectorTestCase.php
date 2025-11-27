@@ -15,7 +15,7 @@ use Rector\Autoloading\BootstrapFilesIncluder;
 use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Contract\DependencyInjection\ResetableInterface;
+use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
@@ -77,11 +77,11 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
             // reset
-            /** @var RewindableGenerator<int, ResetableInterface> $resetables */
-            $resetables = $rectorConfig->tagged(ResetableInterface::class);
+            /** @var RewindableGenerator<int, ResettableInterface> $resetables */
+            $resetables = $rectorConfig->tagged(ResettableInterface::class);
 
             foreach ($resetables as $resetable) {
-                /** @var ResetableInterface $resetable */
+                /** @var ResettableInterface $resetable */
                 $resetable->reset();
             }
 

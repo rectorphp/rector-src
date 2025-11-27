@@ -9,7 +9,7 @@ use PhpParser\NodeTraverser;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\RenamedClassesDataCollector;
-use Rector\Contract\DependencyInjection\ResetableInterface;
+use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\PostRector\Rector\ClassRenamingPostRector;
 use Rector\PostRector\Rector\DocblockNameImportingPostRector;
@@ -20,7 +20,7 @@ use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
-final class PostFileProcessor implements ResetableInterface
+final class PostFileProcessor implements ResettableInterface
 {
     /**
      * @var PostRectorInterface[]
