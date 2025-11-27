@@ -1,4 +1,4 @@
-name: "Lock closed issues and PRs"
+name: "Lock closed PRs"
 
 on:
     schedule:
@@ -14,16 +14,10 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
 
-                  issue-inactive-days: 150
                   pr-inactive-days: 150
-
-                  issue-comment: >
-                      This issue has been automatically locked because it has been closed for 150 days.
-                      Please open a new issue if you have a similar problem.
 
                   pr-comment: >
                       This pull request has been automatically locked because it has been closed for 150 days.
                       Please open a new PR if you want to continue the work.
 
-                  exclude-issue-labels: "keep-open,no-lock"
                   exclude-pr-labels: "keep-open,no-lock"
