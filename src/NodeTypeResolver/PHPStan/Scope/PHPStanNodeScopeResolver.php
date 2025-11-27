@@ -158,10 +158,12 @@ final readonly class PHPStanNodeScopeResolver
         $this->nodeTraverser->traverse($stmts);
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
+        $requiresExtractVirtualNode = false;
 
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
             $filePath,
+            &$requiresExtractVirtualNode
         ): void {
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
@@ -374,6 +376,7 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Match_) {
                 $this->processMatch($node, $mutatingScope);
+                $requiresExtractVirtualNode = true;
                 return;
             }
 
@@ -417,6 +420,11 @@ final readonly class PHPStanNodeScopeResolver
             // in the middle of process
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $scope);
+        }
+
+        if ($requiresExtractVirtualNode) {
+            // extract Match_ virtual node to real nodes
+            RectorVirtualNodeExtractor::processNodes($stmts);
         }
 
         return $stmts;
