@@ -9,7 +9,8 @@ require_once  __DIR__ . '/../target-repository/stubs-rector/PHPUnit/Framework/Te
 return RectorConfig::configure()
     ->withSkip(DowngradeRectorConfig::DEPENDENCY_EXCLUDE_PATHS)
     ->withPHPStanConfigs([__DIR__ . '/phpstan-for-downgrade.neon'])
-    ->withDowngradeSets(php74: true);
+    ->withDowngradeSets(php74: true)
+    ->withParallel(240);
 
 /**
  * Configuration consts for the different rector.php config files
