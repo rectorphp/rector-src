@@ -13,7 +13,7 @@ final class ReturnAnonymousClassVariable
             // any properties
         };
 
-        // some bussines logic to fill the data
+        // some business logic to fill the data
 
         return $data;
     }
@@ -36,7 +36,7 @@ final class ReturnAnonymousClassVariable
             // any properties
         };
 
-        // some bussines logic to fill the data
+        // some business logic to fill the data
 
         return $data;
     }

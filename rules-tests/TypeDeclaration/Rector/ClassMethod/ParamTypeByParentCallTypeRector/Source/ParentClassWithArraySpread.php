@@ -6,7 +6,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallT
 
 class ParentClassWithArraySpread
 {
-    public function __construct(string $spreadedItem)
+    public function __construct(string $spreadItem)
     {
     }
 }

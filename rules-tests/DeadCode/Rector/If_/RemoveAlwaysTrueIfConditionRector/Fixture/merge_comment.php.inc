@@ -8,7 +8,7 @@ class MergeComments
     {
         // toplevel
         if (true) {
-            // first innner
+            // first inner
             f();
             // second inner
         }
@@ -26,7 +26,7 @@ class MergeComments
     public function run()
     {
         // toplevel
-        // first innner
+        // first inner
         f();
         // second inner
     }

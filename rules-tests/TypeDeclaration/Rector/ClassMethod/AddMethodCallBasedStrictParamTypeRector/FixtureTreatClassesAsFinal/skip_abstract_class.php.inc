@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\FixtureTreatClassesAsFinal;
 
-// both classses here on purpose as the abstract class is subject to test
+// both classes here on purpose as the abstract class is subject to test
 // with child class override
 abstract class SkipAbstractClass
 {
