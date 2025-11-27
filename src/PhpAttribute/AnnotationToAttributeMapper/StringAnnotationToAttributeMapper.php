@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
@@ -22,7 +21,7 @@ final class StringAnnotationToAttributeMapper implements AnnotationToAttributeMa
     /**
      * @param string $value
      */
-    public function map($value): Expr
+    public function map($value): String_
     {
         if (str_contains($value, "'") && ! str_contains($value, "\n")) {
             $kind = String_::KIND_DOUBLE_QUOTED;
