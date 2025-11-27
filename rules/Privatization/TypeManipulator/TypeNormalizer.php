@@ -31,7 +31,7 @@ final readonly class TypeNormalizer
     /**
      * @var int
      */
-    private const MAX_PRINTED_UNION_DOC_LENGHT = 77;
+    private const MAX_PRINTED_UNION_DOC_LENGTH = 77;
 
     public function __construct(
         private TypeFactory $typeFactory,
@@ -146,7 +146,7 @@ final readonly class TypeNormalizer
                     // too long
                     if (strlen(
                         (string) $unionedDocType
-                    ) > self::MAX_PRINTED_UNION_DOC_LENGHT && $this->avoidPrintedDocblockTrimming(
+                    ) > self::MAX_PRINTED_UNION_DOC_LENGTH && $this->avoidPrintedDocblockTrimming(
                         $generalizedUnionType
                     ) === false) {
                         $alwaysKnownArrayType = $this->narrowToAlwaysKnownArrayType($generalizedUnionType);
