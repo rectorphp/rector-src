@@ -14,4 +14,5 @@ jobs:
                   days-before-stale: 60
                   days-before-close: 90
                   stale-issue-message: 'This issue has been automatically marked as stale due to inactivity for past 2 months. It will be closed in next 30 days if no further activity occurs.'
-                  close-issue-message: 'Closing this issue due to prolonged inactivity.'
+                  close-issue-message: 'Closing this issue as inactive for 30 days after marking stale.'
+                  operations-per-run: 10

@@ -7,7 +7,6 @@ namespace Rector\StaticTypeMapper\PhpParser;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 
 /**
@@ -23,7 +22,7 @@ final class StringNodeMapper implements PhpParserNodeMapperInterface
     /**
      * @param String_ $node
      */
-    public function mapToPHPStan(Node $node): Type
+    public function mapToPHPStan(Node $node): StringType
     {
         return new StringType();
     }
