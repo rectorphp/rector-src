@@ -28,7 +28,7 @@ final class MethodName
     /**
      * @var string
      */
-    public const DESCTRUCT = '__destruct';
+    public const DESTRUCT = '__destruct';
 
     /**
      * @var string

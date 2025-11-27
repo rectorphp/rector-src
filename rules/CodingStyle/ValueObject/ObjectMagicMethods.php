@@ -17,7 +17,7 @@ final class ObjectMagicMethods
         MethodName::CLONE,
         MethodName::CONSTRUCT,
         '__debugInfo',
-        MethodName::DESCTRUCT,
+        MethodName::DESTRUCT,
         '__get',
         MethodName::INVOKE,
         '__isset',
