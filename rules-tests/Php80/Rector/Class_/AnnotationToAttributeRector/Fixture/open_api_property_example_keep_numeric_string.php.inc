@@ -24,7 +24,7 @@ use OpenApi\Attributes as OA;
 
 final class OpenAPIPropertyExampleKeepNumericString
 {
-    #[OA\Property(example: '1112')]
+    #[OA\Property(example: '01112')]
     public ?string $uid = null;
 }
 
