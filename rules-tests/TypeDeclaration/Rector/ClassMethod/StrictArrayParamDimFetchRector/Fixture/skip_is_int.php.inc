@@ -13,7 +13,7 @@ final class SkipIsInt
             return '';
         }
 
-        if ('alle' === $ids[0]) {
+        if ('value' === $ids[0]) {
             return $ids[0];
         }
     }

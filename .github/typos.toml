@@ -1,5 +1,9 @@
 [default.extend-words]
 Symplify = "Symplify"
+Invokable = "Invokable"
+
+# as in 2nd
+nd = "nd"
 
 # plurals
 Identicals = "Identicals"

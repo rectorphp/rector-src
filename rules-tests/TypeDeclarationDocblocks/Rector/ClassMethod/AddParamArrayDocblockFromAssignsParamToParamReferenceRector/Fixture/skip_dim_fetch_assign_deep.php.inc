@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromAssignsParamToParamReferenceRector\Fixture;
 
-final class SkipDimFetchAssingDeep
+final class SkipDimFetchAssignDeep
 {
     public function run(array &$items)
     {

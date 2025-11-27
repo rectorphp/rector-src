@@ -6,7 +6,7 @@ namespace Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultPara
 
 use Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector\Source\SomeExternalClass;
 
-final class SkipNamedArgumentPostitionNotMatch
+final class SkipNamedArgumentPositionNotMatch
 {
     public function get()
     {

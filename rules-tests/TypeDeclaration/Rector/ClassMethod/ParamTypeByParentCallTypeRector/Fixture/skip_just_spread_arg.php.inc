@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallT
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector\Source\ParentClassWithArraySpread;
 
-final class SkipJustSPreadedArg extends ParentClassWithArraySpread
+final class SkipJustSpreadArg extends ParentClassWithArraySpread
 {
     public function __construct($items)
     {
