@@ -25,7 +25,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -98,11 +97,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -188,9 +187,10 @@ CODE_SAMPLE
     }
 
     /**
+     * @param StmtsAware $stmtsAware
      * @param string[] $extractValues
      */
-    private function shouldSkip(StmtsAwareInterface $stmtsAware, int $key, Stmt $stmt, array $extractValues): bool
+    private function shouldSkip(\PhpParser\Node $stmtsAware, int $key, Stmt $stmt, array $extractValues): bool
     {
         if (! in_array($stmt::class, self::NODE_TYPES, true)) {
             return true;

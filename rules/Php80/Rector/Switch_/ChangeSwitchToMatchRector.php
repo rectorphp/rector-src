@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\ObjectType;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
@@ -78,11 +77,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      * @return null|Node|NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      */
     public function refactor(Node $node): null|Node|int

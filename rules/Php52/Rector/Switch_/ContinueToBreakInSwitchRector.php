@@ -21,7 +21,6 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\Constant\ConstantIntegerType;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -107,7 +106,10 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processContinueStatement(Stmt|StmtsAwareInterface $stmt): void
+    /**
+     * @param Stmt|StmtsAware $stmt
+     */
+    private function processContinueStatement(Stmt|\PhpParser\Node $stmt): void
     {
         $this->traverseNodesWithCallable(
             $stmt,

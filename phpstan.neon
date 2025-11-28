@@ -8,6 +8,10 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
+    # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
+    typeAliases:
+        StmtsAware: \PhpParser\Node\Expr\Closure | \PhpParser\Node\Stmt\Case_ | \PhpParser\Node\Stmt\Catch_ | \PhpParser\Node\Stmt\ClassMethod | \PhpParser\Node\Stmt\Do_ | \PhpParser\Node\Stmt\Else_ | \PhpParser\Node\Stmt\ElseIf_ | \PhpParser\Node\Stmt\Finally_ | \PhpParser\Node\Stmt\For_ | \PhpParser\Node\Stmt\Foreach_ | \PhpParser\Node\Stmt\Function_ | \PhpParser\Node\Stmt\If_ | \PhpParser\Node\Stmt\Namespace_ | \PhpParser\Node\Stmt\TryCatch | \PhpParser\Node\Stmt\While_
+
     # requires exact closure types
     checkMissingCallableSignature: true
 
@@ -329,10 +333,6 @@ parameters:
           path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
 
         -
-            identifier: symplify.seeAnnotationToTest
-            path: utils/PHPStan/Rule/PreferDirectIsNameRule.php
-
-        -
             identifier: arrayValues.list
             path: rules/CodingStyle/Application/UseImportsAdder.php
 
@@ -364,9 +364,6 @@ parameters:
 
         # copied from /vendor, to keep as original as possible
         -
-            identifier: symplify.forbiddenNode
-            path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
-        -
             identifier: missingType.iterableValue
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
         -
@@ -381,3 +378,8 @@ parameters:
         -
             message: '#Property Rector\\PhpParser\\NodeTraverser\\AbstractImmutableNodeTraverser\:\:\$visitors \(list<PhpParser\\NodeVisitor>\) does not accept array<int\|string, PhpParser\\NodeVisitor>#'
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
+
+        # false positive
+        -
+            message: '#Method Rector\\Php70\\Rector\\If_\\IfToSpaceshipRector\:\:refactor\(\) never returns PhpParser\\Node\\Stmt\\If_ so it can be removed from the return type#'
+            path:  rules/Php70/Rector/If_/IfToSpaceshipRector.php

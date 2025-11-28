@@ -10,7 +10,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -87,13 +86,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
+     * @return ?StmtsAware
      */
-    public function refactor(Node $node): ?StmtsAwareInterface
+    public function refactor(Node $node): ?\PhpParser\Node
     {
         return $this->processArrayKeyFirstLast($node);
     }
@@ -108,10 +108,12 @@ CODE_SAMPLE
         return PolyfillPackage::PHP_73;
     }
 
-    private function processArrayKeyFirstLast(
-        StmtsAwareInterface $stmtsAware,
-        int $jumpToKey = 0
-    ): ?StmtsAwareInterface {
+    /**
+     * @param StmtsAware $stmtsAware
+     * @return StmtsAware|null
+     */
+    private function processArrayKeyFirstLast(\PhpParser\Node $stmtsAware, int $jumpToKey = 0): ?\PhpParser\Node
+    {
         if ($stmtsAware->stmts === null) {
             return null;
         }
@@ -164,12 +166,19 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @param StmtsAware $stmtsAware
+     */
     private function changeNextKeyCall(
-        StmtsAwareInterface $stmtsAware,
+        \PhpParser\Node $stmtsAware,
         int $key,
         FuncCall $resetOrEndFuncCall,
         Name $newName
     ): void {
+        if ($stmtsAware->stmts === null) {
+            return;
+        }
+
         $counter = count($stmtsAware->stmts);
         for ($nextKey = $key; $nextKey < $counter; ++$nextKey) {
             if (! isset($stmtsAware->stmts[$nextKey])) {
@@ -218,8 +227,11 @@ CODE_SAMPLE
         });
     }
 
+    /**
+     * @param StmtsAware $stmtsAware
+     */
     private function hasInternalPointerChangeNext(
-        StmtsAwareInterface $stmtsAware,
+        \PhpParser\Node $stmtsAware,
         int $nextKey,
         int $totalKeys,
         FuncCall $funcCall

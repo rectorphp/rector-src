@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeAnalyzer\VariableAnalyzer;
@@ -106,11 +105,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -151,12 +150,16 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @param StmtsAware $stmtsAware
+     * @return StmtsAware|null
+     */
     private function processSimplifyUselessVariable(
-        StmtsAwareInterface $stmtsAware,
+        \PhpParser\Node $stmtsAware,
         Return_ $return,
         Assign|AssignOp $assign,
         int $key
-    ): ?StmtsAwareInterface {
+    ): ?\PhpParser\Node {
         if (! $assign instanceof Assign) {
             $binaryClass = $this->assignAndBinaryMap->getAlternative($assign);
             if ($binaryClass === null) {

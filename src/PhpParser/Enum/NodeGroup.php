@@ -7,7 +7,10 @@ namespace Rector\PhpParser\Enum;
 final class NodeGroup
 {
     /**
-     * Node that have $stmts iterable public property
+     * These nodes have Stmt[] $stmts iterable public property
+     *
+     * If https://github.com/nikic/PHP-Parser/pull/1113 gets merged, can replace those.
+     *
      * @var array<class-string>
      */
     public const STMTS_AWARE = [

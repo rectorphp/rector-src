@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -52,22 +51,27 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
+     * @return StmtsAware
      */
-    public function refactor(Node $node): ?StmtsAwareInterface
+    public function refactor(Node $node): ?\PhpParser\Node
     {
         return $this->processStrWithResult($node, false);
     }
 
+    /**
+     * @param StmtsAware $stmtsAware
+     * @return StmtsAware|null
+     */
     private function processStrWithResult(
-        StmtsAwareInterface $stmtsAware,
+        \PhpParser\Node $stmtsAware,
         bool $hasChanged,
         int $jumpToKey = 0
-    ): null|StmtsAwareInterface {
+    ): null|\PhpParser\Node {
         if ($stmtsAware->stmts === null) {
             return null;
         }

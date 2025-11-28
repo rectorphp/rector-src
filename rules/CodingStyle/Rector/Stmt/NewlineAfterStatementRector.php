@@ -95,22 +95,28 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
+        // @todo split into 2 rules, as slightly different behavior
         return [StmtsAwareInterface::class, ClassLike::class];
     }
 
     /**
-     * @param StmtsAwareInterface|ClassLike $node
+     * @param StmtsAware|ClassLike $node
+     * @return StmtsAware|ClassLike|null
      */
-    public function refactor(Node $node): null|StmtsAwareInterface|ClassLike
+    public function refactor(Node $node): null|\PhpParser\Node|ClassLike
     {
         return $this->processAddNewLine($node, false);
     }
 
+    /**
+     * @param StmtsAware|ClassLike $node
+     * @return StmtsAware|ClassLike|null
+     */
     private function processAddNewLine(
-        StmtsAwareInterface|ClassLike $node,
+        \PhpParser\Node|ClassLike $node,
         bool $hasChanged,
         int $jumpToKey = 0
-    ): null|StmtsAwareInterface|ClassLike {
+    ): null|\PhpParser\Node|ClassLike {
         if ($node->stmts === null) {
             return null;
         }
