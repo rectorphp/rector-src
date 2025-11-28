@@ -75,4 +75,15 @@ final class NodeGroup
         Interface_::class,
         Switch_::class,
     ];
+
+    public static function isStmtAwareNode(Node $node): bool
+    {
+        foreach (self::STMTS_AWARE as $stmtAwareClass) {
+            if (is_a($node, $stmtAwareClass, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -19,11 +19,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php\ReservedKeywordAnalyzer;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -164,20 +164,17 @@ CODE_SAMPLE
      */
     private function collectAssignRefVariableNames(Stmt $stmt, array &$refVariableNames): void
     {
-        if (! $stmt instanceof StmtsAwareInterface) {
+        if (! NodeGroup::isStmtAwareNode($stmt)) {
             return;
         }
 
-        $this->traverseNodesWithCallable(
-            $stmt,
-            function (Node $subNode) use (&$refVariableNames): Node {
-                if ($subNode instanceof AssignRef && $subNode->var instanceof Variable) {
-                    $refVariableNames[] = (string) $this->getName($subNode->var);
-                }
-
-                return $subNode;
+        $this->traverseNodesWithCallable($stmt, function (Node $subNode) use (&$refVariableNames): Node {
+            if ($subNode instanceof AssignRef && $subNode->var instanceof Variable) {
+                $refVariableNames[] = (string) $this->getName($subNode->var);
             }
-        );
+
+            return $subNode;
+        });
     }
 
     /**

@@ -34,8 +34,8 @@ parameters:
     scanDirectories:
         - stubs
 
-    scanFiles:
-        - src/Contract/PhpParser/Node/StmtsAwareInterface.php
+#    scanFiles:
+#        - src/Contract/PhpParser/Node/StmtsAwareInterface.php
 
     excludePaths:
         - '*tests/*/Fixture/*'
@@ -211,7 +211,7 @@ parameters:
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
-        - '#(.*?)\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+#        - '#(.*?)\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
@@ -384,4 +384,3 @@ parameters:
             message: '#Method (.*?)refactor\(\) (never returns|should return) (.*?)#'
             paths:
                 - rules/Php70/Rector/If_/IfToSpaceshipRector.php
-                - rules/CodingStyle/Rector/Stmt/NewlineAfterStatementRector.php
