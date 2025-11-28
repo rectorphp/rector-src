@@ -10,10 +10,11 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Parser\RectorParser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Webmozart\Assert\Assert;
 
 final class ArrayItemNodeTest extends AbstractLazyTestCase
 {
@@ -51,10 +52,11 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
         $classDocComment = null;
 
         foreach ($newStmts as $newStmt) {
-            if (! $newStmt instanceof StmtsAwareInterface) {
+            if (! NodeGroup::isStmtAwareNode($newStmt)) {
                 continue;
             }
 
+            Assert::propertyExists($newStmt, 'stmts');
             if ($newStmt->stmts === null) {
                 continue;
             }

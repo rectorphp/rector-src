@@ -14,8 +14,8 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\VariadicPlaceholder;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -62,7 +62,7 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return NodeGroup::STMTS_AWARE;
     }
 
     public function provideMinPhpVersion(): int
@@ -71,7 +71,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -174,10 +174,15 @@ CODE_SAMPLE
     }
 
     /**
+     * @param StmtsAware $stmtsAware
      * @param array<int, array{stmt: Stmt, assign: Expr, funcCall: Expr\FuncCall}> $chain
      */
-    private function processAssignmentChain(StmtsAwareInterface $stmtsAware, array $chain, int $startIndex): void
+    private function processAssignmentChain(Node $stmtsAware, array $chain, int $startIndex): void
     {
+        if ($stmtsAware->stmts === null) {
+            return;
+        }
+
         $lastAssignment = $chain[count($chain) - 1]['assign'];
 
         // Get the initial value from the first function call's argument
@@ -223,10 +228,8 @@ CODE_SAMPLE
             }
         }
 
-        $stmts = array_values($stmtsAware->stmts);
-
         // Reindex the array
-        $stmtsAware->stmts = $stmts;
+        $stmtsAware->stmts = array_values($stmtsAware->stmts);
     }
 
     private function createPlaceholderCall(FuncCall $funcCall): FuncCall

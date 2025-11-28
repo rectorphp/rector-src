@@ -2,12 +2,8 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixture;
 
-class SkipAlreadyHasNewline
+final class SkipAlreadyHasNewline
 {
-    private $property;
-
-    private $property2;
-
     public function run(array $data)
     {
         if (rand(0, 1)) {
@@ -23,5 +19,3 @@ class SkipAlreadyHasNewline
         return true;
     }
 }
-
-?>

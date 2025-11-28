@@ -20,11 +20,11 @@ final class ChangeLastIndex1Rector extends AbstractRector
 
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      */
     public function refactor(Node $node)
     {

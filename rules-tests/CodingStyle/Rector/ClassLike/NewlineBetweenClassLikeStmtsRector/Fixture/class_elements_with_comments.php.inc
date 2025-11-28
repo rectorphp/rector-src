@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector\Fixture;
 
-class WithComment
+final class ClassElementsWithComments
 {
     /**
      * @var string
@@ -30,9 +30,9 @@ class WithComment
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector\Fixture;
 
-class WithComment
+final class ClassElementsWithComments
 {
     /**
      * @var string
