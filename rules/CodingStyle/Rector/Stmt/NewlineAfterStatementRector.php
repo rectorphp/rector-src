@@ -27,7 +27,7 @@ final class NewlineAfterStatementRector extends AbstractRector implements HTMLAv
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add empty new line after differnt-type statements to improve code readability',
+            'Add empty new line after different-type statements to improve code readability',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -26,6 +26,7 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final class NodeGroup
 {
@@ -34,7 +35,7 @@ final class NodeGroup
      *
      * If https://github.com/nikic/PHP-Parser/pull/1113 gets merged, can replace those.
      *
-     * @var array<class-string>
+     * @var array<class-string<Node>>
      */
     public const STMTS_AWARE = [
         Closure::class,
@@ -52,6 +53,7 @@ final class NodeGroup
         Namespace_::class,
         TryCatch::class,
         While_::class,
+        FileWithoutNamespace::class,
     ];
 
     /**
