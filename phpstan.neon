@@ -380,3 +380,8 @@ parameters:
             message: '#Method (.*?)refactor\(\) (never returns|should return) (.*?)#'
             paths:
                 - rules/Php70/Rector/If_/IfToSpaceshipRector.php
+
+        # handles full file
+        -
+            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
+            identifier: rector.noOnlyNullReturnInRefactor
