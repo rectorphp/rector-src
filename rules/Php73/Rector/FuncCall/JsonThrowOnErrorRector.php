@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -24,6 +25,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersionInterface
 {
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder
@@ -55,7 +58,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
@@ -73,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = false;
+        $this->hasChanged = false;
 
         $this->traverseNodesWithCallable($node, function (Node $currentNode): ?FuncCall {
             if (! $currentNode instanceof FuncCall) {
@@ -95,7 +98,7 @@ CODE_SAMPLE
             return null;
         });
 
-        if ($hasChanged) {
+        if ($this->hasChanged) {
             return $node;
         }
 

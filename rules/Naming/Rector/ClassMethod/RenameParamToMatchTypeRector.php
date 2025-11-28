@@ -91,6 +91,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->skipExactType($param)) {
+                return null;
+            }
+
             if ($node instanceof ClassMethod && $this->shouldSkipClassMethodFromVendor($node)) {
                 return null;
             }
@@ -147,6 +151,7 @@ CODE_SAMPLE
         );
 
         $methodName = $this->getName($classMethod);
+
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             // internal
             if ($ancestorClassReflection->getFileName() === null) {
@@ -188,5 +193,17 @@ CODE_SAMPLE
         }
 
         return $param->isPromoted();
+    }
+
+    /**
+     * Skip couple quote vague types, that could be named explicitly on purpose.
+     */
+    private function skipExactType(Param $param): bool
+    {
+        if (! $param->type instanceof \PhpParser\Node) {
+            return false;
+        }
+
+        return $this->isName($param->type, \PhpParser\Node::class);
     }
 }
