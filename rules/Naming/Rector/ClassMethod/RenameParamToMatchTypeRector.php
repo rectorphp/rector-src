@@ -29,8 +29,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RenameParamToMatchTypeRector extends AbstractRector
 {
-    private bool $hasChanged = false;
-
     public function __construct(
         private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,
         private readonly ExpectedNameResolver $expectedNameResolver,
@@ -81,7 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $this->hasChanged = false;
+        $hasChanged = false;
 
         foreach ($node->params as $param) {
             // skip as array-like
@@ -117,16 +115,20 @@ CODE_SAMPLE
             }
 
             $this->paramRenamer->rename($paramRename);
-            $this->hasChanged = true;
+            $hasChanged = true;
         }
 
-        if (! $this->hasChanged) {
+        if (! $hasChanged) {
             return null;
         }
 
         return $node;
     }
 
+    /**
+     * Avoid renaming parameters of a class method, that is located in /vendor,
+     * to keep name matching for named arguments.
+     */
     private function shouldSkipClassMethodFromVendor(ClassMethod $classMethod): bool
     {
         if ($classMethod->isPrivate()) {
@@ -138,24 +140,24 @@ CODE_SAMPLE
             return false;
         }
 
-        $ancestors = array_filter(
+        $ancestorClassReflections = array_filter(
             $classReflection->getAncestors(),
             fn (ClassReflection $ancestorClassReflection): bool =>
             $classReflection->getName() !== $ancestorClassReflection->getName()
         );
 
         $methodName = $this->getName($classMethod);
-        foreach ($ancestors as $ancestor) {
+        foreach ($ancestorClassReflections as $ancestorClassReflection) {
             // internal
-            if ($ancestor->getFileName() === null) {
+            if ($ancestorClassReflection->getFileName() === null) {
                 continue;
             }
 
-            if (! $ancestor->hasNativeMethod($methodName)) {
+            if (! $ancestorClassReflection->hasNativeMethod($methodName)) {
                 continue;
             }
 
-            $path = PathNormalizer::normalize($ancestor->getFileName());
+            $path = PathNormalizer::normalize($ancestorClassReflection->getFileName());
             if (str_contains($path, '/vendor/')) {
                 return true;
             }

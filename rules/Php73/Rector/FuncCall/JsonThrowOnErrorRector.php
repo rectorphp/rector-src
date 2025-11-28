@@ -24,8 +24,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersionInterface
 {
-    private bool $hasChanged = false;
-
     public function __construct(
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder
@@ -75,7 +73,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->hasChanged = false;
+        $hasChanged = false;
 
         $this->traverseNodesWithCallable($node, function (Node $currentNode): ?FuncCall {
             if (! $currentNode instanceof FuncCall) {
@@ -97,7 +95,7 @@ CODE_SAMPLE
             return null;
         });
 
-        if ($this->hasChanged) {
+        if ($hasChanged) {
             return $node;
         }
 

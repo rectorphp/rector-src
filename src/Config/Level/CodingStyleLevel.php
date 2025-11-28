@@ -8,6 +8,7 @@ use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
 use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
+use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
 use Rector\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector;
 use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
@@ -54,6 +55,7 @@ final class CodingStyleLevel
      */
     public const RULES = [
         SeparateMultiUseImportsRector::class,
+        NewlineBetweenClassLikeStmtsRector::class,
         NewlineAfterStatementRector::class,
         RemoveFinalFromConstRector::class,
         NullableCompareToNullRector::class,

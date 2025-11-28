@@ -2,22 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Rector\CodingStyle\Rector\Stmt;
+namespace Rector\CodingStyle\Rector\ClassLike;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Comments\CommentResolver;
-use Rector\Contract\Rector\HTMLAverseRectorInterface;
-use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\NewlineAfterStatementRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector\NewlineBetweenClassLikeStmtsRectorTest
  */
-final class NewlineAfterStatementRector extends AbstractRector implements HTMLAverseRectorInterface
+final class NewlineBetweenClassLikeStmtsRector extends AbstractRector
 {
     public function __construct(
         private readonly CommentResolver $commentResolver
@@ -27,12 +25,13 @@ final class NewlineAfterStatementRector extends AbstractRector implements HTMLAv
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add new line after statements to tidify code',
+            'Add new line space between class constants, properties and class methods to make it more readable',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
+    public const NAME = 'name';
     public function first()
     {
     }
@@ -43,8 +42,10 @@ class SomeClass
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
+    public const NAME = 'name';
+
     public function first()
     {
     }
@@ -64,31 +65,19 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return NodeGroup::STMTS_AWARE;
+        return [ClassLike::class];
     }
 
     /**
-     * @param StmtsAware $node
-     * @return StmtsAware|null
+     * @param ClassLike $node
      */
-    public function refactor(Node $node): null|\PhpParser\Node
+    public function refactor(Node $node): ?ClassLike
     {
         return $this->processAddNewLine($node, false);
     }
 
-    /**
-     * @param StmtsAware $node
-     * @return StmtsAware|null
-     */
-    private function processAddNewLine(
-        \PhpParser\Node $node,
-        bool $hasChanged,
-        int $jumpToKey = 0
-    ): null|\PhpParser\Node {
-        if ($node->stmts === null) {
-            return null;
-        }
-
+    private function processAddNewLine(ClassLike $node, bool $hasChanged, int $jumpToKey = 0): null|ClassLike
+    {
         $totalKeys = array_key_last($node->stmts);
 
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
@@ -99,11 +88,6 @@ CODE_SAMPLE
             $stmt = $node->stmts[$key];
             $nextStmt = $node->stmts[$key + 1];
 
-            if ($this->shouldSkip($stmt)) {
-                continue;
-            }
-
-            /** @var Stmt $stmt */
             $endLine = $stmt->getEndLine();
             $rangeLine = $nextStmt->getStartLine() - $endLine;
 
@@ -119,6 +103,8 @@ CODE_SAMPLE
             array_splice($node->stmts, $key + 1, 0, [new Nop()]);
 
             $hasChanged = true;
+
+            // iterate next
             return $this->processAddNewLine($node, $hasChanged, $key + 2);
         }
 
@@ -127,10 +113,5 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    private function shouldSkip(Stmt $stmt): bool
-    {
-        return ! in_array($stmt::class, NodeGroup::STMTS_TO_HAVE_NEXT_NEWLINE, true);
     }
 }

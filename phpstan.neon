@@ -381,5 +381,7 @@ parameters:
 
         # false positive
         -
-            message: '#Method Rector\\Php70\\Rector\\If_\\IfToSpaceshipRector\:\:refactor\(\) never returns PhpParser\\Node\\Stmt\\If_ so it can be removed from the return type#'
-            path:  rules/Php70/Rector/If_/IfToSpaceshipRector.php
+            message: '#Method (.*?)refactor\(\) (never returns|should return) (.*?)#'
+            paths:
+                - rules/Php70/Rector/If_/IfToSpaceshipRector.php
+                - rules/CodingStyle/Rector/Stmt/NewlineAfterStatementRector.php
