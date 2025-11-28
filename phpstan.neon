@@ -34,9 +34,6 @@ parameters:
     scanDirectories:
         - stubs
 
-#    scanFiles:
-#        - src/Contract/PhpParser/Node/StmtsAwareInterface.php
-
     excludePaths:
         - '*tests/*/Fixture/*'
         - '*tests/*/Fixture*'
@@ -211,8 +208,6 @@ parameters:
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
-#        - '#(.*?)\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
 
@@ -273,6 +268,7 @@ parameters:
         -
             path: src/Configuration/RectorConfigBuilder.php
             identifier: classConstant.deprecatedInterface
+        - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace implements deprecated interface Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface#'
 
         # allowed internally only
         -
