@@ -27,17 +27,17 @@ final class NewlineAfterStatementRector extends AbstractRector implements HTMLAv
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add new line after statements to tidify code',
+            'Add empty new line after differnt-type statements to improve code readability',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function first()
+    public function run($input)
     {
-    }
-    public function second()
-    {
+        $value = 5 * $input;
+        $secondValue = $value ^ 5;
+        return $value - $secondValue;
     }
 }
 CODE_SAMPLE
@@ -45,12 +45,13 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function first()
+    public function run($input)
     {
-    }
+        $value = 5 * $input;
 
-    public function second()
-    {
+        $secondValue = $value ^ 5;
+
+        return $value - $secondValue;
     }
 }
 CODE_SAMPLE
