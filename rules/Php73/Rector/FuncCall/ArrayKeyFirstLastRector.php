@@ -10,6 +10,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -86,14 +87,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
      * @param StmtsAware $node
      * @return ?StmtsAware
      */
-    public function refactor(Node $node): ?\PhpParser\Node
+    public function refactor(Node $node): ?Node
     {
         return $this->processArrayKeyFirstLast($node);
     }
@@ -112,7 +113,7 @@ CODE_SAMPLE
      * @param StmtsAware $stmtsAware
      * @return StmtsAware|null
      */
-    private function processArrayKeyFirstLast(\PhpParser\Node $stmtsAware, int $jumpToKey = 0): ?\PhpParser\Node
+    private function processArrayKeyFirstLast(Node $stmtsAware, int $jumpToKey = 0): ?Node
     {
         if ($stmtsAware->stmts === null) {
             return null;
@@ -170,7 +171,7 @@ CODE_SAMPLE
      * @param StmtsAware $stmtsAware
      */
     private function changeNextKeyCall(
-        \PhpParser\Node $stmtsAware,
+        Node $stmtsAware,
         int $key,
         FuncCall $resetOrEndFuncCall,
         Name $newName
@@ -231,7 +232,7 @@ CODE_SAMPLE
      * @param StmtsAware $stmtsAware
      */
     private function hasInternalPointerChangeNext(
-        \PhpParser\Node $stmtsAware,
+        Node $stmtsAware,
         int $nextKey,
         int $totalKeys,
         FuncCall $funcCall

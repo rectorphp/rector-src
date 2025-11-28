@@ -72,7 +72,7 @@ CODE_SAMPLE
      * @param StmtsAware $node
      * @return StmtsAware|null
      */
-    public function refactor(Node $node): null|\PhpParser\Node
+    public function refactor(Node $node): null|Node
     {
         return $this->processAddNewLine($node, false);
     }
@@ -81,11 +81,8 @@ CODE_SAMPLE
      * @param StmtsAware $node
      * @return StmtsAware|null
      */
-    private function processAddNewLine(
-        \PhpParser\Node $node,
-        bool $hasChanged,
-        int $jumpToKey = 0
-    ): null|\PhpParser\Node {
+    private function processAddNewLine(Node $node, bool $hasChanged, int $jumpToKey = 0): null|Node
+    {
         if ($node->stmts === null) {
             return null;
         }

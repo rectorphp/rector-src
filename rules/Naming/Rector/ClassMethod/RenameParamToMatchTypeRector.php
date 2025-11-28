@@ -200,10 +200,10 @@ CODE_SAMPLE
      */
     private function skipExactType(Param $param): bool
     {
-        if (! $param->type instanceof \PhpParser\Node) {
+        if (! $param->type instanceof Node) {
             return false;
         }
 
-        return $this->isName($param->type, \PhpParser\Node::class);
+        return $this->isName($param->type, Node::class);
     }
 }

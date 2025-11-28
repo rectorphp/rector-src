@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\If_;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -72,7 +73,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**

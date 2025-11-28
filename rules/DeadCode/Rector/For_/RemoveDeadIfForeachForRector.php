@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Rector\NodeManipulator\StmtsManipulator;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -75,7 +76,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
@@ -115,7 +116,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAware $stmtsAware
      */
-    private function processIf(If_ $if, int $key, \PhpParser\Node $stmtsAware): void
+    private function processIf(If_ $if, int $key, Node $stmtsAware): void
     {
         if ($if->elseifs !== []) {
             return;
@@ -142,7 +143,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAware $stmtsAware
      */
-    private function processForForeach(For_|Foreach_ $for, int $key, \PhpParser\Node $stmtsAware): void
+    private function processForForeach(For_|Foreach_ $for, int $key, Node $stmtsAware): void
     {
         if ($for instanceof For_) {
             $variables = $this->betterNodeFinder->findInstanceOf(

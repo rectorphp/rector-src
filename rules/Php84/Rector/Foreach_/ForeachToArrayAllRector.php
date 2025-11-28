@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -80,7 +81,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
@@ -104,7 +105,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAware $stmtsAware
      */
-    private function refactorBooleanAssignmentPattern(\PhpParser\Node $stmtsAware): ?Node
+    private function refactorBooleanAssignmentPattern(Node $stmtsAware): ?Node
     {
         if ($stmtsAware->stmts === null) {
             return null;
@@ -194,7 +195,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAware $stmtsAware
      */
-    private function refactorEarlyReturnPattern(\PhpParser\Node $stmtsAware): ?Node
+    private function refactorEarlyReturnPattern(Node $stmtsAware): ?Node
     {
         if ($stmtsAware->stmts === null) {
             return null;

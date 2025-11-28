@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
+use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
 use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()
@@ -11,6 +12,6 @@ return RectorConfig::configure()
         [
             SimplifyIfNotNullReturnRector::class,
             ExplicitBoolCompareRector::class,
-            \Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector::class,
+            NewlineBetweenClassLikeStmtsRector::class,
         ]
     );

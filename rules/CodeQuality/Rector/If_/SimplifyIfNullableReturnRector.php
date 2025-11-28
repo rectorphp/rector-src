@@ -20,6 +20,7 @@ use PHPStan\Type\UnionType;
 use Rector\CodeQuality\TypeResolver\AssignVariableTypeResolver;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\NodeManipulator\IfManipulator;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -82,7 +83,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**

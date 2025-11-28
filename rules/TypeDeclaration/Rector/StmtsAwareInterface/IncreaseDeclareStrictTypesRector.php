@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
@@ -108,7 +109,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**

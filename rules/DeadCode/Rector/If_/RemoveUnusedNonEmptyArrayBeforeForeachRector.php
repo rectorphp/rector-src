@@ -155,7 +155,7 @@ CODE_SAMPLE
      * @param StmtsAware $stmtsAware
      * @return StmtsAware|null
      */
-    private function refactorStmtsAware(\PhpParser\Node $stmtsAware): ?\PhpParser\Node
+    private function refactorStmtsAware(Node $stmtsAware): ?Node
     {
         if ($stmtsAware->stmts === null) {
             return null;

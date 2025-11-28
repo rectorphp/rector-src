@@ -76,17 +76,17 @@ CODE_SAMPLE
         return $this->processAddNewLine($node, false);
     }
 
-    private function processAddNewLine(ClassLike $node, bool $hasChanged, int $jumpToKey = 0): null|ClassLike
+    private function processAddNewLine(ClassLike $classLike, bool $hasChanged, int $jumpToKey = 0): null|ClassLike
     {
-        $totalKeys = array_key_last($node->stmts);
+        $totalKeys = array_key_last($classLike->stmts);
 
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
-            if (! isset($node->stmts[$key], $node->stmts[$key + 1])) {
+            if (! isset($classLike->stmts[$key], $classLike->stmts[$key + 1])) {
                 break;
             }
 
-            $stmt = $node->stmts[$key];
-            $nextStmt = $node->stmts[$key + 1];
+            $stmt = $classLike->stmts[$key];
+            $nextStmt = $classLike->stmts[$key + 1];
 
             $endLine = $stmt->getEndLine();
             $rangeLine = $nextStmt->getStartLine() - $endLine;
@@ -100,16 +100,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            array_splice($node->stmts, $key + 1, 0, [new Nop()]);
+            array_splice($classLike->stmts, $key + 1, 0, [new Nop()]);
 
             $hasChanged = true;
 
             // iterate next
-            return $this->processAddNewLine($node, $hasChanged, $key + 2);
+            return $this->processAddNewLine($classLike, $hasChanged, $key + 2);
         }
 
         if ($hasChanged) {
-            return $node;
+            return $classLike;
         }
 
         return null;

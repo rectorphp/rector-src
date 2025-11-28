@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\VariadicPlaceholder;
 use Rector\NodeAnalyzer\ExprAnalyzer;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -61,7 +62,7 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     public function provideMinPhpVersion(): int
@@ -176,7 +177,7 @@ CODE_SAMPLE
      * @param StmtsAware $stmtsAware
      * @param array<int, array{stmt: Stmt, assign: Expr, funcCall: Expr\FuncCall}> $chain
      */
-    private function processAssignmentChain(\PhpParser\Node $stmtsAware, array $chain, int $startIndex): void
+    private function processAssignmentChain(Node $stmtsAware, array $chain, int $startIndex): void
     {
         if ($stmtsAware->stmts === null) {
             return;

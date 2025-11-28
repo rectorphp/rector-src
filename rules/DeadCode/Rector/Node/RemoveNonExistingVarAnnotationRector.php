@@ -26,6 +26,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeManipulator\StmtsManipulator;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -97,7 +98,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
@@ -190,7 +191,7 @@ CODE_SAMPLE
      * @param StmtsAware $stmtsAware
      * @param string[] $extractValues
      */
-    private function shouldSkip(\PhpParser\Node $stmtsAware, int $key, Stmt $stmt, array $extractValues): bool
+    private function shouldSkip(Node $stmtsAware, int $key, Stmt $stmt, array $extractValues): bool
     {
         if (! in_array($stmt::class, self::NODE_TYPES, true)) {
             return true;

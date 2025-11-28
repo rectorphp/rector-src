@@ -47,7 +47,7 @@ final class TerminatedNodeAnalyzer
     /**
      * @param StmtsAware $stmtsAware
      */
-    public function isAlwaysTerminated(\PhpParser\Node $stmtsAware, Stmt $node, Stmt $currentStmt): bool
+    public function isAlwaysTerminated(Node $stmtsAware, Stmt $node, Stmt $currentStmt): bool
     {
         if (in_array($currentStmt::class, self::ALLOWED_CONTINUE_CURRENT_STMTS, true)) {
             return false;

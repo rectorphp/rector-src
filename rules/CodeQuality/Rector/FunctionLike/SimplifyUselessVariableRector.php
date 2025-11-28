@@ -19,6 +19,7 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -105,7 +106,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
@@ -155,11 +156,11 @@ CODE_SAMPLE
      * @return StmtsAware|null
      */
     private function processSimplifyUselessVariable(
-        \PhpParser\Node $stmtsAware,
+        Node $stmtsAware,
         Return_ $return,
         Assign|AssignOp $assign,
         int $key
-    ): ?\PhpParser\Node {
+    ): ?Node {
         if (! $assign instanceof Assign) {
             $binaryClass = $this->assignAndBinaryMap->getAlternative($assign);
             if ($binaryClass === null) {

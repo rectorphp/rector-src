@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -65,7 +66,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**

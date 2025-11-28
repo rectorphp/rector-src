@@ -23,6 +23,7 @@ use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
 use Rector\Php80\ValueObject\MatchResult;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -77,7 +78,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**

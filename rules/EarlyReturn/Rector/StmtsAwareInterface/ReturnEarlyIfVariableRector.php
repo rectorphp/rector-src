@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeAnalyzer\VariableAnalyzer;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -72,7 +73,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return \Rector\PhpParser\Enum\NodeGroup::STMTS_AWARE;
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
@@ -152,7 +153,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAware $stmtsAware
      */
-    private function matchNextStmtReturnVariable(\PhpParser\Node $stmtsAware, int $key): Variable|null
+    private function matchNextStmtReturnVariable(Node $stmtsAware, int $key): Variable|null
     {
         $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
 

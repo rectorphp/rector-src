@@ -75,11 +75,8 @@ final readonly class StmtsManipulator
     /**
      * @param StmtsAware $stmtsAware
      */
-    public function isVariableUsedInNextStmt(
-        \PhpParser\Node $stmtsAware,
-        int $jumpToKey,
-        string $variableName
-    ): bool {
+    public function isVariableUsedInNextStmt(Node $stmtsAware, int $jumpToKey, string $variableName): bool
+    {
         if ($stmtsAware->stmts === null) {
             return false;
         }

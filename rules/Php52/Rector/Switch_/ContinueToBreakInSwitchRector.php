@@ -109,7 +109,7 @@ CODE_SAMPLE
     /**
      * @param Stmt|StmtsAware $stmt
      */
-    private function processContinueStatement(Stmt|\PhpParser\Node $stmt): void
+    private function processContinueStatement(Stmt|Node $stmt): void
     {
         $this->traverseNodesWithCallable(
             $stmt,
