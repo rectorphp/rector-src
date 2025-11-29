@@ -86,12 +86,12 @@ CODE_SAMPLE
                 break;
             }
 
-            if ($classLike->stmts[$key + 1] instanceof TraitUse) {
-                continue;
-            }
-
             $stmt = $classLike->stmts[$key];
             $nextStmt = $classLike->stmts[$key + 1];
+
+            if ($stmt instanceof TraitUse && $nextStmt instanceof TraitUse) {
+                continue;
+            }
 
             $endLine = $stmt->getEndLine();
             $rangeLine = $nextStmt->getStartLine() - $endLine;
