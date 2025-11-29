@@ -75,12 +75,8 @@ CODE_SAMPLE
         if ($node instanceof CallLike && $node->isFirstClassCallable()) {
             return null;
         }
+        $args = $node instanceof Attribute ? $node->args : $node->getArgs();
 
-        if ($node instanceof Attribute) {
-            $args = $node->args;
-        } else {
-            $args = $node->getArgs();
-        }
         if (count($args) <= 1) {
             return null;
         }
