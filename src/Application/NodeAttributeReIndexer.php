@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Stmt\Block;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -69,7 +68,7 @@ final class NodeAttributeReIndexer
     {
         if (! NodeGroup::isStmtAwareNode(
             $node
-        ) && ! $node instanceof ClassLike && ! $node instanceof Declare_ && ! $node instanceof Block) {
+        ) && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
             return null;
         }
 
