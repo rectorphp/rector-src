@@ -29,7 +29,7 @@ final class UseIdenticalOverEqualWithSameTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Use ===/!== over ==/!=, it values have the same type',
+            'Use ===/!== over ==/!=, if values have the same type',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
