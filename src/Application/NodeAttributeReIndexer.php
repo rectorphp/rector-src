@@ -69,7 +69,7 @@ final class NodeAttributeReIndexer
     {
         if (! NodeGroup::isStmtAwareNode(
             $node
-        ) && ! $node instanceof ClassLike && ! $node instanceof Declare_ && ! $node instanceof Block) {
+        ) && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
             return null;
         }
 
