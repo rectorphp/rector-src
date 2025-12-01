@@ -170,6 +170,7 @@ EOF
 
         $this->deprecatedRulesReporter->reportDeprecatedRules();
         $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
+        $this->deprecatedRulesReporter->reportDeprecatedNodeTypes();
 
         $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
 
