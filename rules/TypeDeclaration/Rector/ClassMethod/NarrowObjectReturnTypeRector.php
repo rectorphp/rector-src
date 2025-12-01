@@ -18,13 +18,14 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -32,8 +33,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\NarrowObjectReturnTypeRectorTest
  */
-final class NarrowObjectReturnTypeRector extends AbstractRector
+final class NarrowObjectReturnTypeRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const IS_ALLOW_ABSTRACT_AND_INTERFACE = 'is_allow_abstract_and_interface';
+
+    private bool $isAllowAbstractAndInterface = true;
+
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
@@ -50,7 +58,7 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
         return new RuleDefinition(
             'Narrows return type from generic object or parent class to specific class in final classes/methods',
             [
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 final class TalkFactory extends AbstractFactory
 {
@@ -70,8 +78,12 @@ final class TalkFactory extends AbstractFactory
     }
 }
 CODE_SAMPLE
+                    ,
+                    [
+                        self::IS_ALLOW_ABSTRACT_AND_INTERFACE => true,
+                    ]
                 ),
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 final class TalkFactory
 {
@@ -91,6 +103,10 @@ final class TalkFactory
     }
 }
 CODE_SAMPLE
+                    ,
+                    [
+                        self::IS_ALLOW_ABSTRACT_AND_INTERFACE => true,
+                    ]
                 ),
             ],
         );
@@ -117,6 +133,10 @@ CODE_SAMPLE
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        if (! $this->isAllowedReturnsAbstractOrInterface($returnType->toString())) {
             return null;
         }
 
@@ -157,6 +177,34 @@ CODE_SAMPLE
         $this->updateDocblock($node, $actualReturnClass);
 
         return $node;
+    }
+
+    /**
+     * @param array<string, bool> $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $this->isAllowAbstractAndInterface = $configuration[self::IS_ALLOW_ABSTRACT_AND_INTERFACE] ?? true;
+    }
+
+    private function isAllowedReturnsAbstractOrInterface(string $actualReturnClass): bool
+    {
+        if ($this->isAllowAbstractAndInterface) {
+            return true;
+        }
+
+        $actualObjectType = new ObjectType($actualReturnClass);
+        $classReflection = $actualObjectType->getClassReflection();
+
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        if ($classReflection->isInterface()) {
+            return false;
+        }
+
+        return ! $classReflection->isAbstract();
     }
 
     private function updateDocblock(ClassMethod $classMethod, string $actualReturnClass): void
