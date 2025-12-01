@@ -2,8 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\Fixture;
 
-function run(?string $foo = null) {}
+function skip_single_arg(?string $foo = null) {}
 
-run(foo: 'test');
-
-?>
+skip_single_arg(foo: 'test');
+skip_single_arg();

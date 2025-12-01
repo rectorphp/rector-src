@@ -2,8 +2,8 @@
 
 namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\Fixture;
 
-function run($foo = null, $bar = null, $baz = null) {}
+function skip_first_class_callable($foo = null, $bar = null, $baz = null) {}
 
-run(...);
+skip_first_class_callable(...);
 
 ?>
