@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Reporting;
 
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -76,7 +77,7 @@ final readonly class DeprecatedRulesReporter
                 'Rector rule "%s" uses StmtsAwareInterface that is now deprecated.%sUse "%s::%s" instead.%sSee %s for more',
                 $rector::class,
                 PHP_EOL,
-                \Rector\PhpParser\Enum\NodeGroup::class,
+                NodeGroup::class,
                 'STMTS_AWARE',
                 PHP_EOL . PHP_EOL,
                 'https://github.com/rectorphp/rector-src/pull/7679'
