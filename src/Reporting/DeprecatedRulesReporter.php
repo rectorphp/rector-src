@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace Rector\Reporting;
 
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class DeprecatedRulesReporter
 {
+    /**
+     * @param RectorInterface[] $rectors
+     */
     public function __construct(
-        private SymfonyStyle $symfonyStyle
+        private SymfonyStyle $symfonyStyle,
+        private array $rectors
     ) {
     }
 
@@ -46,6 +53,35 @@ final readonly class DeprecatedRulesReporter
             }
 
             $this->symfonyStyle->warning(sprintf('Skipped rule "%s" is deprecated', $skippedRectorRule));
+        }
+    }
+
+    public function reportDeprecatedNodeTypes(): void
+    {
+        // helper property to avoid reporting multiple times
+        static $reportedClasses = [];
+
+        foreach ($this->rectors as $rector) {
+            if (! in_array(StmtsAwareInterface::class, $rector->getNodeTypes())) {
+                continue;
+            }
+
+            // already reported, skip
+            if (in_array($rector::class, $reportedClasses, true)) {
+                continue;
+            }
+
+            $reportedClasses[] = $rector::class;
+
+            $this->symfonyStyle->warning(sprintf(
+                'Rector rule "%s" uses StmtsAwareInterface that is now deprecated.%sUse "%s::%s" instead.%sSee %s for more',
+                $rector::class,
+                PHP_EOL,
+                NodeGroup::class,
+                'STMTS_AWARE',
+                PHP_EOL . PHP_EOL,
+                'https://github.com/rectorphp/rector-src/pull/7679'
+            ));
         }
     }
 }

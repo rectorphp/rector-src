@@ -266,7 +266,9 @@ parameters:
 
         # BC layer on Rector deprecation
         -
-            path: src/Configuration/RectorConfigBuilder.php
+            paths:
+                - src/Configuration/RectorConfigBuilder.php
+                - src/Reporting/DeprecatedRulesReporter.php
             identifier: classConstant.deprecatedInterface
         - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace implements deprecated interface Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface#'
 

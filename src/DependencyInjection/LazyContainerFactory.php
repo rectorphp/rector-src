@@ -165,6 +165,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
+use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
@@ -425,6 +426,10 @@ final class LazyContainerFactory
             ->giveTagged(RectorInterface::class);
 
         $rectorConfig->when(OnlyRuleResolver::class)
+            ->needs('$rectors')
+            ->giveTagged(RectorInterface::class);
+
+        $rectorConfig->when(DeprecatedRulesReporter::class)
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
 
