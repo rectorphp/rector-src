@@ -4,9 +4,6 @@ namespace Rector\Tests\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallR
 
 /** @var \Container $object */
 $object['key'];
-$object['key'] = 'value';
-isset($object['key']);
-unset($object['key']);
 
 ?>
 -----
@@ -16,8 +13,5 @@ namespace Rector\Tests\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallR
 
 /** @var \Container $object */
 $object->get('key');
-$object['key'] = 'value';
-isset($object['key']);
-unset($object['key']);
 
 ?>

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Reporting;
 
-use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\PhpParser\Enum\NodeGroup;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class DeprecatedRulesReporter
