@@ -87,13 +87,7 @@ CODE_SAMPLE
             if (! $node->var instanceof ArrayDimFetch) {
                 return null;
             }
-
-            $setMethodCall = $this->createExplicitMethodCall($node->var, 'set', $node->expr);
-            if ($setMethodCall instanceof MethodCall) {
-                return $setMethodCall;
-            }
-
-            return null;
+            return $this->createExplicitMethodCall($node->var, 'set', $node->expr);
         }
 
         // is part of assign, skip
