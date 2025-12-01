@@ -286,4 +286,8 @@ final class AttributeKey
      * @var string
      */
     public const HAS_MERGED_COMMENTS = 'has_merged_comments';
+
+    public const IS_DEFAULT_PROPERTY_VALUE = 'is_default_property_value';
+
+    public const IS_CLASS_CONST_VALUE = 'is_default_class_const_value';
 }

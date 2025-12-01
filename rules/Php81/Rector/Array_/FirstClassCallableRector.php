@@ -12,8 +12,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\ClassConst;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
@@ -21,6 +19,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -32,6 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @see RFC https://wiki.php.net/rfc/first_class_callable_syntax
  * @see \Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\FirstClassCallableRectorTest
  */
 final class FirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
@@ -46,7 +46,6 @@ final class FirstClassCallableRector extends AbstractRector implements MinPhpVer
 
     public function getRuleDefinition(): RuleDefinition
     {
-        // see RFC https://wiki.php.net/rfc/first_class_callable_syntax
         return new RuleDefinition('Upgrade array callable to first class callable', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
@@ -86,14 +85,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Property::class, ClassConst::class, Array_::class, Closure::class];
+        return [Array_::class, Closure::class];
     }
 
     /**
-     * @param Property|ClassConst|Array_|Closure $node
+     * @param Array_|Closure $node
      * @return StaticCall|MethodCall|null|NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
      */
-    public function refactor(Node $node): int|null|StaticCall|MethodCall
+    public function refactor(Node $node): StaticCall|MethodCall|null|int
     {
         if ($node instanceof Closure) {
             if ($this->symfonyPhpClosureDetector->detect($node)) {
@@ -101,10 +100,6 @@ CODE_SAMPLE
             }
 
             return null;
-        }
-
-        if ($node instanceof Property || $node instanceof ClassConst) {
-            return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         $scope = ScopeFetcher::fetch($node);
@@ -116,6 +111,14 @@ CODE_SAMPLE
 
         $callerExpr = $arrayCallable->getCallerExpr();
         if (! $callerExpr instanceof Variable && ! $callerExpr instanceof PropertyFetch && ! $callerExpr instanceof ClassConstFetch) {
+            return null;
+        }
+
+        if ($node->getAttribute(AttributeKey::IS_CLASS_CONST_VALUE)) {
+            return null;
+        }
+
+        if ($node->getAttribute(AttributeKey::IS_DEFAULT_PROPERTY_VALUE)) {
             return null;
         }
 
