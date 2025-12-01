@@ -87,6 +87,7 @@ CODE_SAMPLE
             if (! $node->var instanceof ArrayDimFetch) {
                 return null;
             }
+
             return $this->createExplicitMethodCall($node->var, 'set', $node->expr);
         }
 
