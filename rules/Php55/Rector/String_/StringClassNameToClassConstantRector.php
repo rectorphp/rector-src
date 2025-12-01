@@ -32,11 +32,6 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
     public const SHOULD_KEEP_PRE_SLASH = 'should_keep_pre_slash';
 
     /**
-     * @var string
-     */
-    private const IS_UNDER_CLASS_CONST = 'is_under_class_const';
-
-    /**
      * @var string[]
      */
     private array $classesToSkip = [];
@@ -105,9 +100,7 @@ CODE_SAMPLE
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
-            $this->decorateClassConst($node);
-
-            return null;
+            return NodeVisitor::DONT_TRAVERSE_CHILDREN;
         }
 
         // keep allowed string as condition
@@ -116,10 +109,6 @@ CODE_SAMPLE
                 return NodeVisitor::DONT_TRAVERSE_CHILDREN;
             }
 
-            return null;
-        }
-
-        if ($node->getAttribute(self::IS_UNDER_CLASS_CONST) === true) {
             return null;
         }
 
@@ -200,16 +189,5 @@ CODE_SAMPLE
         }
 
         return false;
-    }
-
-    private function decorateClassConst(ClassConst $classConst): void
-    {
-        $this->traverseNodesWithCallable($classConst->consts, static function (Node $subNode): null {
-            if ($subNode instanceof String_) {
-                $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
-            }
-
-            return null;
-        });
     }
 }
