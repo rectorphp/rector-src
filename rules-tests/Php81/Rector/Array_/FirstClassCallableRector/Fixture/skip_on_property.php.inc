@@ -6,6 +6,10 @@ final class SkipOnProperty
 {
     private $prop = [SkipOnProperty::class, 'size'];
 
+    private $nestedProperty = [
+        'some_callback' => [SkipOnProperty::class, 'size']
+    ];
+
     public function size()
     {
     }

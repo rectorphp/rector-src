@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\NodeTraverser\SimpleTraverser;
 
 final class PropertyOrClassConstDefaultNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
@@ -23,13 +24,13 @@ final class PropertyOrClassConstDefaultNodeVisitor extends NodeVisitorAbstract i
                     continue;
                 }
 
-                $default->setAttribute(AttributeKey::IS_DEFAULT_PROPERTY_VALUE, true);
+                SimpleTraverser::decorateWithTrueAttribute($default, AttributeKey::IS_DEFAULT_PROPERTY_VALUE);
             }
         }
 
         if ($node instanceof ClassConst) {
             foreach ($node->consts as $const) {
-                $const->value->setAttribute(AttributeKey::IS_DEFAULT_CLASS_CONST_VALUE, true);
+                SimpleTraverser::decorateWithTrueAttribute($const->value, AttributeKey::IS_CLASS_CONST_VALUE);
             }
         }
 

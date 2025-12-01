@@ -31,6 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @see RFC https://wiki.php.net/rfc/first_class_callable_syntax
  * @see \Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\FirstClassCallableRectorTest
  */
 final class FirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
@@ -45,7 +46,6 @@ final class FirstClassCallableRector extends AbstractRector implements MinPhpVer
 
     public function getRuleDefinition(): RuleDefinition
     {
-        // see RFC https://wiki.php.net/rfc/first_class_callable_syntax
         return new RuleDefinition('Upgrade array callable to first class callable', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
@@ -114,7 +114,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->getAttribute(AttributeKey::IS_DEFAULT_CLASS_CONST_VALUE)) {
+        if ($node->getAttribute(AttributeKey::IS_CLASS_CONST_VALUE)) {
             return null;
         }
 

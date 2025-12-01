@@ -289,5 +289,5 @@ final class AttributeKey
 
     public const IS_DEFAULT_PROPERTY_VALUE = 'is_default_property_value';
 
-    public const IS_DEFAULT_CLASS_CONST_VALUE = 'is_default_class_const_value';
+    public const IS_CLASS_CONST_VALUE = 'is_default_class_const_value';
 }
