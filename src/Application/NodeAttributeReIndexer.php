@@ -66,9 +66,7 @@ final class NodeAttributeReIndexer
 
     private static function reIndexStmtsKeys(Node $node): ?Node
     {
-        if (! NodeGroup::isStmtAwareNode(
-            $node
-        ) && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
+        if (! NodeGroup::isStmtAwareNode($node) && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
             return null;
         }
 
