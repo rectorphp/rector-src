@@ -150,6 +150,7 @@ CODE_SAMPLE
             }
 
             // this rule narrows only object or class types, not interfaces
+            // except private methods, as they are not part of contract, and not mockable from tests
             if (! $declaredTypeClassReflection->isClass() && ! $node->isPrivate()) {
                 return null;
             }
