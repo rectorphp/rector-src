@@ -103,6 +103,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ClassConstFetchNodeVisitor
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NameNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\PhpVersionConditionNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\PropertyOrClassConstDefaultNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\SymfonyClosureNodeVisitor;
@@ -239,6 +240,7 @@ final class LazyContainerFactory
      */
     private const DECORATING_NODE_VISITOR_CLASSES = [
         ArgNodeVisitor::class,
+        PhpVersionConditionNodeVisitor::class,
         AssignedToNodeVisitor::class,
         SymfonyClosureNodeVisitor::class,
         ByRefReturnNodeVisitor::class,
