@@ -9,9 +9,9 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -41,14 +41,15 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Narrows return type from generic object or parent class to specific class in final classes/methods',
+            'Narrows return type from generic `object` or parent class to specific class in final classes/methods',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -110,7 +111,6 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $returnType = $node->returnType;
-
         if (! $returnType instanceof Identifier && ! $returnType instanceof FullyQualified) {
             return null;
         }
@@ -124,24 +124,35 @@ CODE_SAMPLE
             return null;
         }
 
-        $actualReturnClass = $this->getActualReturnClass($node);
-
+        $actualReturnClass = $this->getActualReturnedClass($node);
         if ($actualReturnClass === null) {
             return null;
         }
 
         $declaredType = $returnType->toString();
 
+        // already most narrow type
         if ($declaredType === $actualReturnClass) {
             return null;
         }
 
-        if ($this->isDeclaredTypeFinal($declaredType)) {
-            return null;
-        }
+        // non-existing class
+        if ($declaredType !== 'object') {
+            if (! $this->reflectionProvider->hasClass($declaredType)) {
+                return null;
+            }
 
-        if ($this->isActualTypeAnonymous($actualReturnClass)) {
-            return null;
+            $declaredTypeClassReflection = $this->reflectionProvider->getClass($declaredType);
+
+            // already last final object
+            if ($declaredTypeClassReflection->isFinalByKeyword()) {
+                return null;
+            }
+
+            // this rule narrows only object or class types, not interfaces
+            if (! $declaredTypeClassReflection->isClass()) {
+                return null;
+            }
         }
 
         if (! $this->isNarrowingValid($node, $declaredType, $actualReturnClass)) {
@@ -153,7 +164,6 @@ CODE_SAMPLE
         }
 
         $node->returnType = new FullyQualified($actualReturnClass);
-
         $this->updateDocblock($node, $actualReturnClass);
 
         return $node;
@@ -176,11 +186,6 @@ CODE_SAMPLE
                 $returnTagValueNode->type,
                 $classMethod
             );
-        } elseif ($returnTagValueNode->type instanceof GenericTypeNode) {
-            $oldType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
-                $returnTagValueNode->type->type,
-                $classMethod
-            );
         } else {
             return;
         }
@@ -192,41 +197,8 @@ CODE_SAMPLE
             }
         }
 
-        if ($returnTagValueNode->type instanceof IdentifierTypeNode) {
-            $returnTagValueNode->type = new FullyQualifiedIdentifierTypeNode($actualReturnClass);
-        } else {
-            $returnTagValueNode->type->type = new FullyQualifiedIdentifierTypeNode($actualReturnClass);
-        }
-
+        $returnTagValueNode->type = new FullyQualifiedIdentifierTypeNode($actualReturnClass);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
-    }
-
-    private function isDeclaredTypeFinal(string $declaredType): bool
-    {
-        if ($declaredType === 'object') {
-            return false;
-        }
-
-        $declaredObjectType = new ObjectType($declaredType);
-        $classReflection = $declaredObjectType->getClassReflection();
-
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        return $classReflection->isFinalByKeyword();
-    }
-
-    private function isActualTypeAnonymous(string $actualType): bool
-    {
-        $actualObjectType = new ObjectType($actualType);
-        $classReflection = $actualObjectType->getClassReflection();
-
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        return $classReflection->isAnonymous();
     }
 
     private function isNarrowingValid(ClassMethod $classMethod, string $declaredType, string $actualType): bool
@@ -259,7 +231,6 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-
         if (! $classReflection instanceof ClassReflection) {
             return true;
         }
@@ -281,13 +252,11 @@ CODE_SAMPLE
             }
 
             $parentClassMethod = $this->astResolver->resolveClassMethod($ancestor->getName(), $methodName);
-
             if (! $parentClassMethod instanceof ClassMethod) {
                 continue;
             }
 
             $parentReturnType = $parentClassMethod->returnType;
-
             if (! $parentReturnType instanceof Identifier && ! $parentReturnType instanceof FullyQualified) {
                 continue;
             }
@@ -302,10 +271,9 @@ CODE_SAMPLE
         return true;
     }
 
-    private function getActualReturnClass(ClassMethod $classMethod): ?string
+    private function getActualReturnedClass(ClassMethod $classMethod): ?string
     {
         $returnStatements = $this->betterNodeFinder->findReturnsScoped($classMethod);
-
         if ($returnStatements === []) {
             return null;
         }

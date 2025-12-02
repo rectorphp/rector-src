@@ -1,0 +1,14 @@
+<?php
+
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Fixture;
+
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\TalkInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector\Source\ConferenceTalkImplementation;
+
+final class SkipInterfaceAsOnPurpose
+{
+    public function create(): TalkInterface
+    {
+        return new ConferenceTalkImplementation();
+    }
+}
