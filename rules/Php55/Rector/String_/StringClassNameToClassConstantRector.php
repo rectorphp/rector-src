@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
@@ -89,20 +88,15 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [String_::class, FuncCall::class, ClassConst::class];
+        return [String_::class, FuncCall::class];
     }
 
     /**
-     * @param String_|FuncCall|ClassConst $node
+     * @param String_|FuncCall $node
      * @return Concat|ClassConstFetch|null|NodeVisitor::DONT_TRAVERSE_CHILDREN
      */
     public function refactor(Node $node): Concat|ClassConstFetch|null|int
     {
-        // allow class strings to be part of class const arrays, as probably on purpose
-        if ($node instanceof ClassConst) {
-            return NodeVisitor::DONT_TRAVERSE_CHILDREN;
-        }
-
         // keep allowed string as condition
         if ($node instanceof FuncCall) {
             if ($this->isName($node, 'is_a')) {

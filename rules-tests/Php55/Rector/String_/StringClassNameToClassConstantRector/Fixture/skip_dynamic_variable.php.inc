@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
 
-class SkipDynamicVariable
+final class SkipDynamicVariable
 {
     public function bar()
     {
@@ -10,6 +10,15 @@ class SkipDynamicVariable
 
         for ($i=1; $i <= 2; $i++) {
             ${'field'.$i} = $employee->data['dd'.$i];
+        }
+    }
+
+    public function foo()
+    {
+        $dd1 = 1;
+
+        for ($i=1; $i <= 2; $i++) {
+            ${'field'.$i} = ${'dd'.$i};
         }
     }
 }
