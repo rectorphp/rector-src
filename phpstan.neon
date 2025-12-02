@@ -385,7 +385,9 @@ parameters:
 
         # handles full file
         -
-            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
+            paths:
+                - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
+                - rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
             identifier: rector.noOnlyNullReturnInRefactor
 
         -
