@@ -150,7 +150,7 @@ CODE_SAMPLE
             }
 
             // this rule narrows only object or class types, not interfaces
-            if (! $declaredTypeClassReflection->isClass()) {
+            if (! $declaredTypeClassReflection->isClass() && ! $node->isPrivate()) {
                 return null;
             }
         }
