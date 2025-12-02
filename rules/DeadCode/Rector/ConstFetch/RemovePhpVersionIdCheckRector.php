@@ -80,7 +80,7 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
-     * @return null|int|Stmt[]
+     * @return null|NodeVisitor::REMOVE_NODE|Stmt[]
      */
     public function refactor(Node $node): null|array|int
     {
@@ -112,7 +112,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|Stmt[]|int
+     * @return null|Stmt[]|NodeVisitor::REMOVE_NODE
      */
     private function refactorSmaller(ConstFetch $constFetch, Smaller $smaller, If_ $if): null|array|int
     {
@@ -128,7 +128,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|int|Stmt[]
+     * @return null|NodeVisitor::REMOVE_NODE|Stmt[]
      */
     private function processGreaterOrEqual(
         ConstFetch $constFetch,
@@ -146,6 +146,9 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @return null|NodeVisitor::REMOVE_NODE
+     */
     private function refactorSmallerLeft(Smaller $smaller): ?int
     {
         $value = $smaller->right;
@@ -161,7 +164,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|Stmt[]|int
+     * @return null|Stmt[]|NodeVisitor::REMOVE_NODE
      */
     private function refactorSmallerRight(Smaller $smaller, If_ $if): null|array|int
     {
@@ -182,7 +185,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|Stmt[]|int
+     * @return null|Stmt[]|NodeVisitor::REMOVE_NODE
      */
     private function refactorGreaterOrEqualLeft(GreaterOrEqual $greaterOrEqual, If_ $if): null|array|int
     {
@@ -202,6 +205,9 @@ CODE_SAMPLE
         return $if->stmts;
     }
 
+    /**
+     * @return NodeVisitor::REMOVE_NODE|null
+     */
     private function refactorGreaterOrEqualRight(GreaterOrEqual $greaterOrEqual): ?int
     {
         $value = $greaterOrEqual->left;
@@ -217,7 +223,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|Stmt[]|int
+     * @return null|Stmt[]|NodeVisitor::REMOVE_NODE
      */
     private function refactorGreater(ConstFetch $constFetch, Greater $greater, If_ $if): null|array|int
     {
@@ -233,7 +239,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|Stmt[]|int
+     * @return null|Stmt[]|NodeVisitor::REMOVE_NODE
      */
     private function refactorGreaterLeft(Greater $greater, If_ $if): null|array|int
     {
@@ -253,6 +259,9 @@ CODE_SAMPLE
         return $if->stmts;
     }
 
+    /**
+     * @return NodeVisitor::REMOVE_NODE|null
+     */
     private function refactorGreaterRight(Greater $greater): ?int
     {
         $value = $greater->left;
@@ -268,7 +277,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|Stmt[]|int
+     * @return null|Stmt[]|NodeVisitor::REMOVE_NODE
      */
     private function refactorConstFetch(ConstFetch $constFetch, If_ $if, BinaryOp $binaryOp): null|array|int
     {
