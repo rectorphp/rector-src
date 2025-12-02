@@ -392,6 +392,5 @@ parameters:
         -
             identifier: rector.noIntegerRefactorReturn
             paths:
-                - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
                 - rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
                 - tests/Issues/InfiniteLoop/Rector/MethodCall/InfinityLoopRector.php
