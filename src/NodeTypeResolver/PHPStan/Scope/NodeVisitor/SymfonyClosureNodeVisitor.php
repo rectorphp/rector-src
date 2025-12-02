@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\NodeTraverser\SimpleTraverser;
+use Rector\PhpParser\NodeTraverser\SimpleNodeTraverser;
 use Rector\Symfony\NodeAnalyzer\SymfonyPhpClosureDetector;
 
 final class SymfonyClosureNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
@@ -29,7 +29,11 @@ final class SymfonyClosureNodeVisitor extends NodeVisitorAbstract implements Dec
             return null;
         }
 
-        SimpleTraverser::decorateWithTrueAttribute($node, AttributeKey::IS_INSIDE_SYMFONY_PHP_CLOSURE);
+        SimpleNodeTraverser::decorateWithAttributeValue(
+            (array) $node->stmts,
+            AttributeKey::IS_INSIDE_SYMFONY_PHP_CLOSURE,
+            true
+        );
 
         return null;
     }
