@@ -30,7 +30,7 @@ final class SymfonyClosureNodeVisitor extends NodeVisitorAbstract implements Dec
         }
 
         SimpleNodeTraverser::decorateWithAttributeValue(
-            (array) $node->stmts,
+            $node->stmts,
             AttributeKey::IS_INSIDE_SYMFONY_PHP_CLOSURE,
             true
         );
