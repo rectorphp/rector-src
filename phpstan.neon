@@ -387,9 +387,3 @@ parameters:
         -
             path: rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
             identifier: rector.noOnlyNullReturnInRefactor
-
-        # handle next
-        -
-            identifier: rector.noIntegerRefactorReturn
-            paths:
-                - tests/Issues/InfiniteLoop/Rector/MethodCall/InfinityLoopRector.php
