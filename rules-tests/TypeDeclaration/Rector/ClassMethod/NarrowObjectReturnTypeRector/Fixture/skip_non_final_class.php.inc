@@ -11,5 +11,3 @@ class NonFinalFactory
         return new ConferenceTalk();
     }
 }
-
-?>

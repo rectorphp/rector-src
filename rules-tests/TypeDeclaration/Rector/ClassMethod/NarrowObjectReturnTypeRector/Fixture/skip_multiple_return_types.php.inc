@@ -13,5 +13,3 @@ final class MixedFactory
         return new \stdClass();
     }
 }
-
-?>
