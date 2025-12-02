@@ -29,16 +29,11 @@ final readonly class RectifiedAnalyzer
     public function hasRectified(string $rectorClass, Node $node): bool
     {
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-
         if ($this->hasConsecutiveCreatedByRule($rectorClass, $node, $originalNode)) {
             return true;
         }
 
-        if ($this->isJustReprintedOverlappedTokenStart($node, $originalNode)) {
-            return true;
-        }
-
-        return $node->getAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE) === $rectorClass;
+        return $this->isJustReprintedOverlappedTokenStart($node, $originalNode);
     }
 
     /**

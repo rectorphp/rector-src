@@ -400,3 +400,11 @@ parameters:
                 - rules/DeadCode/Rector/If_/RemoveDeadInstanceOfRector.php
                 - rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
                 - rules/DeadCode/Rector/If_/UnwrapFutureCompatibleIfPhpVersionRector.php
+
+        # condition check, just to be sure
+        - '#Method Rector\\Rector\\AbstractRector\:\:enterNode\(\) never returns 3 so it can be removed from the return type#'
+
+        # special case, working on a file-level
+        -
+            identifier: rector.noOnlyNullReturnInRefactor
+            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
