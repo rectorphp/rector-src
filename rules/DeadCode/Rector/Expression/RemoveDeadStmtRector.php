@@ -59,7 +59,7 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
-     * @return Node[]|Node|null|int
+     * @return Node[]|Node|null|NodeVisitor::REMOVE_NODE
      */
     public function refactor(Node $node): array|Node|null|int
     {
@@ -106,6 +106,9 @@ CODE_SAMPLE
         return ! $phpPropertyReflection instanceof PhpPropertyReflection;
     }
 
+    /**
+     * @return NodeVisitor::REMOVE_NODE|Node
+     */
     private function removeNodeAndKeepComments(Expression $expression): int|Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);

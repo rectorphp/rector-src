@@ -387,3 +387,14 @@ parameters:
         -
             path: rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
             identifier: rector.noOnlyNullReturnInRefactor
+
+        -
+            identifier: rector.noIntegerRefactorReturn
+            paths:
+                - rules/Transform/Rector/ArrayDimFetch/ArrayDimFetchToMethodCallRector.php
+
+                # valid, as use REMOVE_NODE
+                - rules/DeadCode/Rector/Expression/RemoveDeadStmtRector.php
+                - rules/DeadCode/Rector/If_/RemoveDeadInstanceOfRector.php
+                - rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
+                - rules/DeadCode/Rector/If_/UnwrapFutureCompatibleIfPhpVersionRector.php
