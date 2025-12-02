@@ -2,10 +2,10 @@
 
 namespace Rector\Tests\CodeQuality\Rector\FuncCall\SetTypeToCastRector\Fixture;
 
-class SkipAssign
+final class SkipInvalidCastType
 {
     public function run($foo)
     {
-        $result = settype($foo, 'string');
+        is_bool(settype($foo, 'super-element'));
     }
 }
