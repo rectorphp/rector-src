@@ -17,6 +17,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\FileProcessor;
 use Rector\Application\Provider\CurrentFileProvider;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
@@ -558,6 +559,7 @@ final class LazyContainerFactory
                     $container->get(CurrentFileProvider::class),
                     $container->get(CreatedByRuleDecorator::class),
                     $container->get(ChangedNodeScopeRefresher::class),
+                    $container->get(CommentsMerger::class),
                 );
             }
         );
