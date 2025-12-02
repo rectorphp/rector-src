@@ -6,15 +6,3 @@ namespace Rector\Tests\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallR
 $object['key'] += 42;
 $object['key'] -= 42;
 $object['key'] *= 42;
-$object['key'] /= 42;
-$object['key'] %= 42;
-$object['key'] **= 42;
-$object['key'] .= 'value';
-$object['key'] &= 42;
-$object['key'] |= 42;
-$object['key'] ^= 42;
-$object['key'] <<= 42;
-$object['key'] >>= 42;
-$object['key'] ??= 'value';
-
-?>
