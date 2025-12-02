@@ -18,7 +18,7 @@ use PhpParser\Node\Stmt\Unset_;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Transform\ValueObject\ArrayDimFetchToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -34,6 +34,11 @@ final class ArrayDimFetchToMethodCallRector extends AbstractRector implements Co
      * @var ArrayDimFetchToMethodCall[]
      */
     private array $arrayDimFetchToMethodCalls;
+
+    public function __construct(
+        private readonly ContextAnalyzer $contextAnalyzer
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -86,11 +91,7 @@ CODE_SAMPLE
         }
 
         // is part of assign, skip
-        if ($node->getAttribute(AttributeKey::IS_BEING_ASSIGNED)) {
-            return null;
-        }
-
-        if ($node->getAttribute(AttributeKey::IS_ASSIGN_OP_VAR)) {
+        if ($this->contextAnalyzer->isLeftPartOfAssign($node)) {
             return null;
         }
 
