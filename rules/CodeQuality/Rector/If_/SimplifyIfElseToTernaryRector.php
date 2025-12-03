@@ -81,7 +81,7 @@ CODE_SAMPLE
     /**
      * @param If_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ?Expression
     {
         if (! $node->else instanceof Else_) {
             return null;

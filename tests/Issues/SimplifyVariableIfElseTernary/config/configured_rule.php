@@ -8,10 +8,8 @@ use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()
-    ->withRules(
-        [
-            SimplifyIfElseToTernaryRector::class,
-            SimplifyUselessVariableRector::class,
-            CompleteDynamicPropertiesRector::class,
-        ]
-    );
+    ->withRules([
+        SimplifyIfElseToTernaryRector::class,
+        SimplifyUselessVariableRector::class,
+        CompleteDynamicPropertiesRector::class,
+    ]);

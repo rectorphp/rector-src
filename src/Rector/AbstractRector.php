@@ -128,9 +128,11 @@ CODE_SAMPLE;
      */
     final public function enterNode(Node $node): int|Node|null
     {
-        if (! $this->isMatchingNodeType($node)) {
-            return null;
-        }
+        // if previous Rector rule changed the node type, we have to skip it here
+        // as here we expect still the original type
+        //        if (! $this->isMatchingNodeType($node)) {
+        //            return null;
+        //}
 
         if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->file->containsHTML()) {
             return null;

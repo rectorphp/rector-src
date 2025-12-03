@@ -142,7 +142,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            /** @var Expression<Assign|AssignOp> $previousStmt */
+            /** @var Assign|AssignOp $assign */
             $assign = $previousStmt->expr;
 
             return $this->processSimplifyUselessVariable($node, $stmt, $assign, $key);

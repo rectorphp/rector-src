@@ -14,26 +14,6 @@ use PhpParser\NodeVisitor;
 abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
 {
     /**
-     * @deprecated Use NodeVisitor::DONT_TRAVERSE_CHILDREN instead.
-     */
-    public const DONT_TRAVERSE_CHILDREN = NodeVisitor::DONT_TRAVERSE_CHILDREN;
-
-    /**
-     * @deprecated Use NodeVisitor::STOP_TRAVERSAL instead.
-     */
-    public const STOP_TRAVERSAL = NodeVisitor::STOP_TRAVERSAL;
-
-    /**
-     * @deprecated Use NodeVisitor::REMOVE_NODE instead.
-     */
-    public const REMOVE_NODE = NodeVisitor::REMOVE_NODE;
-
-    /**
-     * @deprecated Use NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN instead.
-     */
-    public const DONT_TRAVERSE_CURRENT_AND_CHILDREN = NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-
-    /**
      * @var list<NodeVisitor> Visitors
      */
     protected array $visitors = [];
@@ -131,13 +111,22 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
             $traverseChildren = true;
             $visitorIndex = -1;
             $currentNodeVisitors = $this->getVisitorsForNode($subNode);
+
             foreach ($currentNodeVisitors as $visitorIndex => $visitor) {
                 $return = $visitor->enterNode($subNode);
                 if ($return !== null) {
                     if ($return instanceof Node) {
+
+                        $originalNodeClass = $subNode::class;
+
                         $this->ensureReplacementReasonable($subNode, $return);
                         $subNode = $return;
                         $node->{$name} = $return;
+
+                        if ($originalNodeClass !== $return::class) {
+                            $traverseChildren = false;
+                            break;
+                        }
                     } elseif ($return === NodeVisitor::DONT_TRAVERSE_CHILDREN) {
                         $traverseChildren = false;
                     } elseif ($return === NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN) {
@@ -210,12 +199,21 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
             $traverseChildren = true;
             $visitorIndex = -1;
             $currentNodeVisitors = $this->getVisitorsForNode($node);
+
             foreach ($currentNodeVisitors as $visitorIndex => $visitor) {
                 $return = $visitor->enterNode($node);
                 if ($return !== null) {
                     if ($return instanceof Node) {
                         $this->ensureReplacementReasonable($node, $return);
+
+                        // hos node type changed?
+                        $originalNodeCLass = $node::class;
                         $nodes[$i] = $node = $return;
+
+                        if ($originalNodeCLass !== $return::class) {
+                            $traverseChildren = false;
+                            break;
+                        }
                     } elseif (\is_array($return)) {
                         $doNodes[] = [$i, $return];
                         continue 2;
