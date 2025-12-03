@@ -19,6 +19,8 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
@@ -26,6 +28,7 @@ use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -107,6 +110,10 @@ CODE_SAMPLE
             /** @var Assign $assign */
             $assign = $currentStmt->expr;
 
+            if ($this->isObjectWithDestructMethod($assign->expr)) {
+                continue;
+            }
+
             if ($this->hasCallLikeInAssignExpr($assign)) {
                 // clean safely
                 $cleanAssignedExpr = $this->cleanCastedExpr($assign->expr);
@@ -125,6 +132,21 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isObjectWithDestructMethod(Expr $expr): bool
+    {
+        $exprType = $this->getType($expr);
+        if (! $exprType instanceof ObjectType) {
+            return false;
+        }
+
+        $classReflection = $exprType->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $classReflection->hasNativeMethod(MethodName::DESTRUCT);
     }
 
     private function cleanCastedExpr(Expr $expr): Expr
