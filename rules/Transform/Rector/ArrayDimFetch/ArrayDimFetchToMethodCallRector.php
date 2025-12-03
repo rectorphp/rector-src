@@ -15,11 +15,11 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Unset_;
-use PhpParser\NodeVisitor;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
+use Rector\Transform\Enum\MagicPropertyHandler;
 use Rector\Transform\ValueObject\ArrayDimFetchToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -65,9 +65,9 @@ CODE_SAMPLE
 
     /**
      * @param ArrayDimFetch|Assign|Isset_|Unset_ $node
-     * @return ($node is Unset_ ? Stmt[]|int : ($node is Isset_ ? Expr|int : MethodCall|int|null))
+     * @return ($node is Unset_ ? Stmt[] : ($node is Isset_ ? Expr : MethodCall|null))
      */
-    public function refactor(Node $node): array|Expr|null|int
+    public function refactor(Node $node): array|Expr|null
     {
         if ($node instanceof Unset_) {
             return $this->handleUnset($node);
@@ -82,7 +82,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            return $this->createExplicitMethodCall($node->var, 'set', $node->expr);
+            return $this->createExplicitMethodCall($node->var, MagicPropertyHandler::SET, $node->expr);
         }
 
         // is part of assign, skip
@@ -94,7 +94,16 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->createExplicitMethodCall($node, 'get');
+        // should be skipped as handled above
+        if ($node->getAttribute(AttributeKey::IS_UNSET_VAR)) {
+            return null;
+        }
+
+        if ($node->getAttribute(AttributeKey::IS_ISSET_VAR)) {
+            return null;
+        }
+
+        return $this->createExplicitMethodCall($node, MagicPropertyHandler::GET);
     }
 
     public function configure(array $configuration): void
@@ -104,7 +113,7 @@ CODE_SAMPLE
         $this->arrayDimFetchToMethodCalls = $configuration;
     }
 
-    private function handleIsset(Isset_ $isset): Expr|int|null
+    private function handleIsset(Isset_ $isset): Expr|null
     {
         $issets = [];
         $exprs = [];
@@ -123,7 +132,8 @@ CODE_SAMPLE
         }
 
         if ($exprs === []) {
-            return NodeVisitor::DONT_TRAVERSE_CHILDREN;
+            // nothing to handle
+            return null;
         }
 
         if ($issets !== []) {
@@ -141,9 +151,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Stmt[]|int
+     * @return Stmt[]|null
      */
-    private function handleUnset(Unset_ $unset): array|int
+    private function handleUnset(Unset_ $unset): ?array
     {
         $unsets = [];
         $stmts = [];
@@ -161,8 +171,9 @@ CODE_SAMPLE
             $unsets[] = $var;
         }
 
+        // nothing to change
         if ($stmts === []) {
-            return NodeVisitor::DONT_TRAVERSE_CHILDREN;
+            return null;
         }
 
         if ($unsets !== []) {
@@ -174,11 +185,11 @@ CODE_SAMPLE
     }
 
     /**
-     * @param 'get'|'set'|'exists'|'unset' $action
+     * @param MagicPropertyHandler::* $magicPropertyHandler
      */
     private function createExplicitMethodCall(
         ArrayDimFetch $arrayDimFetch,
-        string $action,
+        string $magicPropertyHandler,
         ?Expr $expr = null
     ): ?MethodCall {
         if (! $arrayDimFetch->dim instanceof Node) {
@@ -190,11 +201,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $method = match ($action) {
-                'get' => $arrayDimFetchToMethodCall->getMethod(),
-                'set' => $arrayDimFetchToMethodCall->getSetMethod(),
-                'exists' => $arrayDimFetchToMethodCall->getExistsMethod(),
-                'unset' => $arrayDimFetchToMethodCall->getUnsetMethod(),
+            $method = match ($magicPropertyHandler) {
+                MagicPropertyHandler::GET => $arrayDimFetchToMethodCall->getMethod(),
+                MagicPropertyHandler::SET => $arrayDimFetchToMethodCall->getSetMethod(),
+                MagicPropertyHandler::ISSET_ => $arrayDimFetchToMethodCall->getExistsMethod(),
+                MagicPropertyHandler::UNSET => $arrayDimFetchToMethodCall->getUnsetMethod(),
             };
 
             if ($method === null) {
