@@ -48,7 +48,12 @@ parameters:
         narrow_return: true
 
     ignoreErrors:
+        # required generics on interface array, not helpful
         -
+            message: '#Method (.*?)\:\:__construct\(\) has parameter#'
+            identifier: missingType.generics
+        -
+            message: '#(.*?) with generic interface (.*?)Interface does not specify its types#'
             identifier: missingType.generics
 
         # phpstan class instance
@@ -339,12 +344,6 @@ parameters:
             path: rules/CodingStyle/Application/UseImportsAdder.php
 
         -
-            message: '#^Register "Rector\\Php74\\Rector\\Double\\RealToFloatTypeCastRector" service to "php74\.php" config set$#'
-            identifier: rector.upgradeDowngradeRegisteredInSet
-            count: 1
-            path: rules/Php74/Rector/Double/RealToFloatTypeCastRector.php
-
-        -
             message: '#Offset float\|int\|string might not exist on string#'
             path: rules/Php70/EregToPcreTransformer.php
 
@@ -391,14 +390,11 @@ parameters:
         -
             paths:
                 - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
-                - rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
             identifier: rector.noOnlyNullReturnInRefactor
 
         -
             identifier: rector.noIntegerRefactorReturn
             paths:
-                - rules/Transform/Rector/ArrayDimFetch/ArrayDimFetchToMethodCallRector.php
-
                 # valid, as use REMOVE_NODE
                 - rules/DeadCode/Rector/Expression/RemoveDeadStmtRector.php
                 - rules/DeadCode/Rector/If_/RemoveDeadInstanceOfRector.php

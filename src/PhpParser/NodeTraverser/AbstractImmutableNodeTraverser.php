@@ -81,11 +81,6 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
      */
     abstract public function getVisitorsForNode(Node $node): array;
 
-    /**
-     * Recursively traverse a node.
-     *
-     * @param Node $node Node to traverse.
-     */
     protected function traverseNode(Node $node): void
     {
         foreach ($node->getSubNodeNames() as $name) {
@@ -164,10 +159,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
     }
 
     /**
-     * Recursively traverse array (usually of nodes).
-     *
-     * @param Node[] $nodes Array to traverse
-     *
+     * @param Node[] $nodes
      * @return array Result of traversal (may be original array or changed one)
      */
     protected function traverseArray(array $nodes): array
