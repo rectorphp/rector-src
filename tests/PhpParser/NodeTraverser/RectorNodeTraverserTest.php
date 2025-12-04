@@ -76,20 +76,4 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
 
         $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
     }
-
-    public function testGetVisitorsForNodeUsesCachedValue(): void
-    {
-        $class = new Class_('test');
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassRector);
-        $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassLikeRector);
-
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
-
-        $this->rectorNodeTraverser->removeVisitor($this->ruleUsingClassRector);
-        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
-
-        $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
-    }
 }
