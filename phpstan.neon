@@ -48,7 +48,12 @@ parameters:
         narrow_return: true
 
     ignoreErrors:
+        # required generics on interface array, not helpful
         -
+            message: '#Method (.*?)\:\:__construct\(\) has parameter#'
+            identifier: missingType.generics
+        -
+            message: '#(.*?) with generic interface (.*?)Interface does not specify its types#'
             identifier: missingType.generics
 
         # phpstan class instance
@@ -135,7 +140,6 @@ parameters:
 
         # internal reflection
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
-
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
         # known value
@@ -181,10 +185,15 @@ parameters:
         # fixture class
         - '#Class "Rector\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
 
+        # classes are part of *.php.inc fixture
         -
             message: '#Class (.*?) not found#'
             paths:
-                - rules-tests/*/config/*
+                - rules-tests/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector/config
+                - rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/config
+                - rules-tests/Renaming/Rector/Name/RenameClassRector/config
+                - rules-tests/Renaming/Rector/MethodCall/RenameMethodRector/config
+                - rules-tests/Arguments/Rector/ClassMethod/ArgumentAdderRector/config
 
         -
             message: '#Function "(function_exists|dump_node)\(\)" cannot be used/left in the code#'
@@ -335,12 +344,6 @@ parameters:
             path: rules/CodingStyle/Application/UseImportsAdder.php
 
         -
-            message: '#^Register "Rector\\Php74\\Rector\\Double\\RealToFloatTypeCastRector" service to "php74\.php" config set$#'
-            identifier: rector.upgradeDowngradeRegisteredInSet
-            count: 1
-            path: rules/Php74/Rector/Double/RealToFloatTypeCastRector.php
-
-        -
             message: '#Offset float\|int\|string might not exist on string#'
             path: rules/Php70/EregToPcreTransformer.php
 
@@ -387,14 +390,11 @@ parameters:
         -
             paths:
                 - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
-                - rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
             identifier: rector.noOnlyNullReturnInRefactor
 
         -
             identifier: rector.noIntegerRefactorReturn
             paths:
-                - rules/Transform/Rector/ArrayDimFetch/ArrayDimFetchToMethodCallRector.php
-
                 # valid, as use REMOVE_NODE
                 - rules/DeadCode/Rector/Expression/RemoveDeadStmtRector.php
                 - rules/DeadCode/Rector/If_/RemoveDeadInstanceOfRector.php
