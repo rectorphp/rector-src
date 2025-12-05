@@ -149,8 +149,7 @@ CODE_SAMPLE
             if ($arrayDimFetch->var instanceof Variable) {
                 $type = $this->nodeTypeResolver->getNativeType($arrayDimFetch->var);
 
-                // skip string values
-                if (! $arrayDimFetch->dim instanceof String_ && ($type->isString()->yes() || $type->isString()->maybe())) {
+                if ($type->isString()->yes()) {
                     continue;
                 }
 
