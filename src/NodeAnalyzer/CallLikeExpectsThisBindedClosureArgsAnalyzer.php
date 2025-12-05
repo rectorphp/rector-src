@@ -1,26 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
+use PHPStan\Reflection\ParameterReflectionWithPhpDocs;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Reflection\ReflectionResolver;
-use PHPStan\Reflection\ParameterReflectionWithPhpDocs;
 
 class CallLikeExpectsThisBindedClosureArgsAnalyzer
 {
-    public function __construct(private ReflectionResolver $reflectionResolver)
-    {
+    public function __construct(
+        private readonly ReflectionResolver $reflectionResolver
+    ) {
     }
 
+    /**
+     * @param CallLike $callLike
+     * @return Arg[]
+     * @throws \Rector\Exception\ShouldNotHappenException
+     */
     public function getArgsUsingThisBindedClosure(CallLike $callLike): array
     {
-        /** @var Arg[] $args */
         $args = [];
         $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
+
+        if ($callLike->isFirstClassCallable()) {
+            return [];
+        }
 
         if ($reflection === null) {
             return [];
@@ -38,7 +49,6 @@ class CallLikeExpectsThisBindedClosureArgsAnalyzer
             }
 
             if ($arg->name?->name !== null) {
-                /** @var ParameterReflectionWithPhpDocs $parameter */
                 foreach ($parameters as $parameter) {
                     $hasObjectBinding = (bool) $parameter->getClosureThisType();
                     if ($hasObjectBinding && $arg->name->name === $parameter->getName()) {
@@ -49,8 +59,7 @@ class CallLikeExpectsThisBindedClosureArgsAnalyzer
                 continue;
             }
 
-            if ($arg->name?->name === null) {
-                /** @var ParameterReflectionWithPhpDocs $parameter */
+            if (! is_string($arg->name?->name)) {
                 $parameter = $parameters[$index] ?? null;
 
                 if ($parameter === null) {
