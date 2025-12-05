@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Closure;
 
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use Rector\CodingStyle\Guard\StaticGuard;
 use Rector\NodeAnalyzer\CallLikeExpectsThisBindedClosureArgsAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -71,9 +75,9 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable($nodes, function (Node $node): ?CallLike {
             if (
-                ! $node instanceof Node\Expr\MethodCall
-                && ! $node instanceof Node\Expr\StaticCall
-                && ! $node instanceof Node\Expr\FuncCall
+                ! $node instanceof MethodCall
+                && ! $node instanceof StaticCall
+                && ! $node instanceof FuncCall
             ) {
                 return null;
             }
