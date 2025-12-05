@@ -12,7 +12,7 @@ use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Reflection\ReflectionResolver;
 
-class CallLikeExpectsThisBindedClosureArgsAnalyzer
+final class CallLikeExpectsThisBindedClosureArgsAnalyzer
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver
@@ -43,13 +43,13 @@ class CallLikeExpectsThisBindedClosureArgsAnalyzer
         $parameters = $parametersAcceptor->getParameters();
 
         foreach ($callLike->getArgs() as $index => $arg) {
-
             if (! $arg->value instanceof Closure) {
                 continue;
             }
 
             if ($arg->name?->name !== null) {
                 foreach ($parameters as $parameter) {
+                    /** @phpstan-ignore method.notFound */
                     $hasObjectBinding = (bool) $parameter->getClosureThisType();
                     if ($hasObjectBinding && $arg->name->name === $parameter->getName()) {
                         $args[] = $arg;
@@ -66,7 +66,9 @@ class CallLikeExpectsThisBindedClosureArgsAnalyzer
                     continue;
                 }
 
-                if ($parameter->getClosureThisType() !== null) {
+                /** @phpstan-ignore method.notFound */
+                $hasObjectBinding = (bool) $parameter->getClosureThisType();
+                if ($hasObjectBinding) {
                     $args[] = $arg;
                 }
             }
