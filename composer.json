@@ -23,7 +23,7 @@
         "nikic/php-parser": "^5.6.2",
         "ondram/ci-detector": "^4.2",
         "phpstan/phpdoc-parser": "^2.3",
-        "phpstan/phpstan": "^2.1.32",
+        "phpstan/phpstan": "^2.1.33",
         "react/event-loop": "^1.6",
         "react/promise": "^3.3",
         "react/socket": "^1.17",
