@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Closure;
 
-use Override;
 use PhpParser\Node;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
@@ -68,7 +67,6 @@ CODE_SAMPLE
         return [Closure::class];
     }
 
-    #[Override]
     public function beforeTraverse(array $nodes): array
     {
         parent::beforeTraverse($nodes);
