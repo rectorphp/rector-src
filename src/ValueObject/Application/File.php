@@ -11,6 +11,7 @@ use PhpParser\NodeFinder;
 use PhpParser\Token;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\PhpParser\Node\FileNode;
 use Rector\ValueObject\Reporting\FileDiff;
 
 final class File
@@ -169,5 +170,18 @@ final class File
 
         $this->containsHtml = (bool) $nodeFinder->findFirstInstanceOf($this->oldStmts, InlineHTML::class);
         return $this->containsHtml;
+    }
+
+    public function getFileNode(): ?FileNode
+    {
+        if ($this->newStmts === []) {
+            return null;
+        }
+
+        if ($this->newStmts[0] instanceof FileNode) {
+            return $this->newStmts[0];
+        }
+
+        return null;
     }
 }
