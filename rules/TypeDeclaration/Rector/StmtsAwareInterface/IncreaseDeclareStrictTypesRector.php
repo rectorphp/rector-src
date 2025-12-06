@@ -68,9 +68,13 @@ CODE_SAMPLE
     {
         throw new ShouldNotHappenException(sprintf(
 <<<<<<< HEAD
+<<<<<<< HEAD
             '"%s" is deprecated as changes strict types randomly on each run.. Use "%s" Rector on specific paths instead.',
 =======
             'This rule is deprecated as behaves very randomly and keeps adding strict types on new run Cannot be automated.
+=======
+            'The "%s" rule is deprecated as behaves very randomly and keeps adding strict types on new run Cannot be automated.
+>>>>>>> a0bb7b3a1a (update use resolving)
  * Use %s on specific paths instead narrow control',
 >>>>>>> 595b685f3e (introduce FileNode to handle file-level changes; deprecate IncreaseDeclareStrictTypesRector)
             self::class,
@@ -84,9 +88,12 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         Assert::keyExists($configuration, self::LIMIT);
         $this->limit = (int) $configuration[self::LIMIT];
 >>>>>>> 595b685f3e (introduce FileNode to handle file-level changes; deprecate IncreaseDeclareStrictTypesRector)
+=======
+>>>>>>> a0bb7b3a1a (update use resolving)
     }
 }

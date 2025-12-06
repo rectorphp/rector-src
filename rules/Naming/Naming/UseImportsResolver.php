@@ -57,7 +57,7 @@ final readonly class UseImportsResolver
             : '';
     }
 
-    private function resolveNamespace(): Namespace_|FileNode|null
+    private function resolveNamespace(): Namespace_|null
     {
         /** @var File|null $file */
         $file = $this->currentFileProvider->getFile();
