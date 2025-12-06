@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Naming;
 
-use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Application\Provider\CurrentFileProvider;
-use Rector\PhpParser\Node\FileNode;
 use Rector\ValueObject\Application\File;
 
 final readonly class UseImportsResolver
@@ -25,15 +21,13 @@ final readonly class UseImportsResolver
      */
     public function resolve(): array
     {
-        $namespace = $this->resolveNamespace();
-        if (! $namespace instanceof Node) {
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
             return [];
         }
 
-        return array_filter(
-            $namespace->stmts,
-            static fn (Stmt $stmt): bool => $stmt instanceof Use_ || $stmt instanceof GroupUse
-        );
+        $fileNode = $file->getFileNode();
+        return $fileNode->getUsesAndGroupUses();
     }
 
     /**
@@ -42,12 +36,14 @@ final readonly class UseImportsResolver
      */
     public function resolveBareUses(): array
     {
-        $namespace = $this->resolveNamespace();
-        if (! $namespace instanceof Node) {
+        $file = $this->currentFileProvider->getFile();
+
+        if (! $file instanceof File) {
             return [];
         }
 
-        return array_filter($namespace->stmts, static fn (Stmt $stmt): bool => $stmt instanceof Use_);
+        $fileNode = $file->getFileNode();
+        return $fileNode->getUses();
     }
 
     public function resolvePrefix(Use_|GroupUse $use): string
@@ -57,24 +53,24 @@ final readonly class UseImportsResolver
             : '';
     }
 
-    private function resolveNamespace(): Namespace_|FileNode|null
-    {
-        /** @var File|null $file */
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return null;
-        }
-
-        $newStmts = $file->getNewStmts();
-        if ($newStmts === []) {
-            return null;
-        }
-
-        if ($newStmts[0] instanceof FileNode) {
-            $fileNode = $newStmts[0];
-            return $fileNode->getNamespace();
-        }
-
-        return null;
-    }
+    //    private function resolveNamespace(): Namespace_|null
+    //    {
+    //        /** @var File|null $file */
+    //        $file = $this->currentFileProvider->getFile();
+    //        if (! $file instanceof File) {
+    //            return null;
+    //        }
+    //
+    //        $newStmts = $file->getNewStmts();
+    //        if ($newStmts === []) {
+    //            return null;
+    //        }
+    //
+    //        if ($newStmts[0] instanceof FileNode) {
+    //            $fileNode = $newStmts[0];
+    //            return $fileNode->getNamespace();
+    //        }
+    //
+    //        return null;
+    //    }
 }
