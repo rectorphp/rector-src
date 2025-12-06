@@ -14,12 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
-<<<<<<< HEAD
  * @deprecated As keeps changing files randomly on every run. Not deterministic. Use more reliable @see \Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector instead on specific paths.
-=======
- * @deprecated This rule is deprecated as behaves very randomly and keeps adding strict types on new run Cannot be automated.
- * Use @see DeclareStrictTypesRector on specific paths instead narrow control.
->>>>>>> 595b685f3e (introduce FileNode to handle file-level changes; deprecate IncreaseDeclareStrictTypesRector)
  */
 final class IncreaseDeclareStrictTypesRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
 {
@@ -67,16 +62,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
-<<<<<<< HEAD
-<<<<<<< HEAD
-            '"%s" is deprecated as changes strict types randomly on each run.. Use "%s" Rector on specific paths instead.',
-=======
-            'This rule is deprecated as behaves very randomly and keeps adding strict types on new run Cannot be automated.
-=======
-            'The "%s" rule is deprecated as behaves very randomly and keeps adding strict types on new run Cannot be automated.
->>>>>>> a0bb7b3a1a (update use resolving)
- * Use %s on specific paths instead narrow control',
->>>>>>> 595b685f3e (introduce FileNode to handle file-level changes; deprecate IncreaseDeclareStrictTypesRector)
+            '"%s" is deprecated as changes strict types randomly on each run. Use "%s" Rector on specific paths instead.',
             self::class,
             DeclareStrictTypesRector::class
         ));
@@ -87,13 +73,5 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        Assert::keyExists($configuration, self::LIMIT);
-        $this->limit = (int) $configuration[self::LIMIT];
->>>>>>> 595b685f3e (introduce FileNode to handle file-level changes; deprecate IncreaseDeclareStrictTypesRector)
-=======
->>>>>>> a0bb7b3a1a (update use resolving)
     }
 }

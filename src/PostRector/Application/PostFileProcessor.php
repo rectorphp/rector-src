@@ -86,7 +86,7 @@ final class PostFileProcessor implements ResettableInterface
     }
 
     /**
-     * Load on the fly, to allow test reset with different configuration
+     * Lazy load, to enable test reset with different configuration
      * @return PostRectorInterface[]
      */
     private function getPostRectors(): array
@@ -124,7 +124,6 @@ final class PostFileProcessor implements ResettableInterface
         }
 
         $this->postRectors = $postRectors;
-
         return $this->postRectors;
     }
 }

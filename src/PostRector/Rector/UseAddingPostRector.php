@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitor;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
@@ -35,7 +35,7 @@ final class UseAddingPostRector extends AbstractPostRector
         }
 
         $rootNode = $this->resolveRootNode($nodes);
-        if (! $rootNode instanceof FileWithoutNamespace && ! $rootNode instanceof Namespace_) {
+        if (! $rootNode instanceof FileNode && ! $rootNode instanceof Namespace_) {
             return $nodes;
         }
 
@@ -44,6 +44,7 @@ final class UseAddingPostRector extends AbstractPostRector
             $this->getFile()
                 ->getFilePath()
         );
+
         $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath(
             $this->getFile()
                 ->getFilePath()
@@ -55,7 +56,7 @@ final class UseAddingPostRector extends AbstractPostRector
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
-        $stmts = $rootNode instanceof FileWithoutNamespace ? $rootNode->stmts : $nodes;
+        $stmts = $rootNode instanceof FileNode ? $rootNode->stmts : $nodes;
 
         if ($this->processStmtsWithImportedUses(
             $stmts,
@@ -94,7 +95,7 @@ final class UseAddingPostRector extends AbstractPostRector
         array $useImportTypes,
         array $constantUseImportTypes,
         array $functionUseImportTypes,
-        FileWithoutNamespace|Namespace_ $namespace
+        FileNode|Namespace_ $namespace
     ): bool {
         // A. has namespace? add under it
         if ($namespace instanceof Namespace_) {
@@ -143,14 +144,23 @@ final class UseAddingPostRector extends AbstractPostRector
     /**
      * @param Stmt[] $nodes
      */
-    private function resolveRootNode(array $nodes): Namespace_|FileWithoutNamespace|null
+    private function resolveRootNode(array $nodes): Namespace_|FileNode|null
     {
-        foreach ($nodes as $node) {
-            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
-                return $node;
+        if ($nodes === []) {
+            return null;
+        }
+
+        $firstStmt = $nodes[0];
+        if (! $firstStmt instanceof FileNode) {
+            return null;
+        }
+
+        foreach ($firstStmt->stmts as $stmt) {
+            if ($stmt instanceof Namespace_) {
+                return $stmt;
             }
         }
 
-        return null;
+        return $firstStmt;
     }
 }

@@ -73,7 +73,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $staticType = $this->identifierPhpDocTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
         $staticType = $this->resolveFullyQualified($staticType);
-
         if (! $staticType instanceof FullyQualifiedObjectType) {
             return null;
         }

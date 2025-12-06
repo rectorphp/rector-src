@@ -29,6 +29,7 @@ final readonly class TestingParser
     public function parseFilePathToFile(string $filePath): File
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         [$file, $stmts] = $this->parseToFileAndStmts($filePath);
 =======
         // needed for PHPStan reflection, as it caches the last processed file
@@ -46,6 +47,9 @@ final readonly class TestingParser
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
         $this->currentFileProvider->setFile($file);
 >>>>>>> 2751658832 (introduce FileNode to handle file-level changes; deprecate IncreaseDeclareStrictTypesRector)
+=======
+        [$file, $stmts] = $this->parseToFileAndStmts($filePath);
+>>>>>>> 8e51776f69 (cleanup phpstan errors)
 
         return $file;
     }
@@ -58,10 +62,34 @@ final readonly class TestingParser
         [$file, $stmts] = $this->parseToFileAndStmts($filePath);
 
         return $stmts;
+<<<<<<< HEAD
     }
 
     /**
      * @return array{0: File, 1: Node[]}
+=======
+        //
+        //        // needed for PHPStan reflection, as it caches the last processed file
+        //        $this->dynamicSourceLocatorProvider->setFilePath($filePath);
+        //
+        //        $fileContent = FileSystem::read($filePath);
+        //        $stmts = $this->rectorParser->parseString($fileContent);
+        //        $file = new File($filePath, $fileContent);
+        //
+        //        // wrap in FileNode to enable file-level rules
+        //        $stmts = [new FileNode($stmts)];
+        //
+        //        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
+        //        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
+        //
+        //        $this->currentFileProvider->setFile($file);
+        //
+        //        return $stmts;
+    }
+
+    /**
+     * @return array{0: File, 1: Node\Stmt[]}
+>>>>>>> 8e51776f69 (cleanup phpstan errors)
      */
     private function parseToFileAndStmts(string $filePath): array
     {
@@ -70,6 +98,7 @@ final readonly class TestingParser
 
         $fileContent = FileSystem::read($filePath);
         $file = new File($filePath, $fileContent);
+        $stmts = $this->rectorParser->parseString($fileContent);
 
 <<<<<<< HEAD
         $stmts = $this->rectorParser->parseString($fileContent);

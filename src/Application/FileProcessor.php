@@ -140,27 +140,14 @@ final readonly class FileProcessor
     private function printFile(File $file, Configuration $configuration, string $filePath): void
     {
         // only save to string first, no need to print to file when not needed
-        $newStmts = $file->getNewStmts();
-
-        $oldStmts = $file->getOldStmts();
-
-        // unwrap FileNode stmts to allow printing
-        if ($newStmts[0] instanceof FileNode) {
-            $newStmts = $newStmts[0]->stmts;
-        }
-
-        if ($oldStmts[0] instanceof FileNode) {
-            $oldStmts = $oldStmts[0]->stmts;
-        }
-
-        $newContent = $this->betterStandardPrinter->printFormatPreserving(
-            $newStmts,
-            $oldStmts,
+        $newFileContent = $this->betterStandardPrinter->printFormatPreserving(
+            $file->getNewStmts(),
+            $file->getOldStmts(),
             $file->getOldTokens()
         );
 
         // change file content early to make $file->hasChanged() based on new content
-        $file->changeFileContent($newContent);
+        $file->changeFileContent($newFileContent);
         if ($configuration->isDryRun()) {
             return;
         }
@@ -169,7 +156,7 @@ final readonly class FileProcessor
             return;
         }
 
-        FileSystem::write($filePath, $newContent, null);
+        FileSystem::write($filePath, $newFileContent, null);
     }
 
     private function parseFileNodes(File $file, bool $forNewestSupportedVersion = true): void
@@ -184,6 +171,7 @@ final readonly class FileProcessor
 
         // wrap in FileNode to allow file-level rules
         $oldStmts = [new FileNode($oldStmts)];
+
         $oldTokens = $stmtsAndTokens->getTokens();
 
         $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file->getFilePath(), $oldStmts);
