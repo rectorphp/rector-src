@@ -408,3 +408,8 @@ parameters:
         -
             identifier: rector.noOnlyNullReturnInRefactor
             path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
+
+        # handle next with FileNode
+        -
+            identifier: method.parentMethodFinalByPhpDoc
+            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
