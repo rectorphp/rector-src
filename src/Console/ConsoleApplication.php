@@ -142,7 +142,7 @@ final class ConsoleApplication extends Application
             Option::CLEAR_CACHE,
             null,
             InputOption::VALUE_NONE,
-            'Clear cache'
+            'Clear cache before starting the execution of the command'
         ));
     }
 
