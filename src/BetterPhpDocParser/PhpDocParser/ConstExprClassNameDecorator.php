@@ -40,7 +40,7 @@ final readonly class ConstExprClassNameDecorator implements PhpDocNodeDecoratorI
             }
 
             $className = $this->resolveFullyQualifiedClass($node, $phpNode);
-            $node->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $className);
+            //            $node->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $className);
 
             return $node;
         });
