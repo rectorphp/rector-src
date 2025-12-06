@@ -87,7 +87,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
-            '%s is deprecated as opinonated and group size depends on context. Cannot be automated. Use manually where needed instead',
+            '"%s" is deprecated as opinionated and group size depends on context. Cannot be automated. Use manually where needed instead',
             self::class
         ));
     }
