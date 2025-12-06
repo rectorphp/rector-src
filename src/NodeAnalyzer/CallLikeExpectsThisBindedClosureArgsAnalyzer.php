@@ -7,22 +7,20 @@ namespace Rector\NodeAnalyzer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
-use PHPStan\Reflection\ParameterReflectionWithPhpDocs;
+use PHPStan\Reflection\ExtendedParameterReflection;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Reflection\ReflectionResolver;
 
-final class CallLikeExpectsThisBindedClosureArgsAnalyzer
+final readonly class CallLikeExpectsThisBindedClosureArgsAnalyzer
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
     /**
-     * @param CallLike $callLike
      * @return Arg[]
-     * @throws \Rector\Exception\ShouldNotHappenException
      */
     public function getArgsUsingThisBindedClosure(CallLike $callLike): array
     {
@@ -49,7 +47,10 @@ final class CallLikeExpectsThisBindedClosureArgsAnalyzer
 
             if ($arg->name?->name !== null) {
                 foreach ($parameters as $parameter) {
-                    /** @phpstan-ignore method.notFound */
+                    if (! $parameter instanceof ExtendedParameterReflection) {
+                        continue;
+                    }
+
                     $hasObjectBinding = (bool) $parameter->getClosureThisType();
                     if ($hasObjectBinding && $arg->name->name === $parameter->getName()) {
                         $args[] = $arg;
@@ -62,11 +63,10 @@ final class CallLikeExpectsThisBindedClosureArgsAnalyzer
             if (! is_string($arg->name?->name)) {
                 $parameter = $parameters[$index] ?? null;
 
-                if ($parameter === null) {
+                if (! $parameter instanceof ExtendedParameterReflection) {
                     continue;
                 }
 
-                /** @phpstan-ignore method.notFound */
                 $hasObjectBinding = (bool) $parameter->getClosureThisType();
                 if ($hasObjectBinding) {
                     $args[] = $arg;
