@@ -7,6 +7,7 @@ namespace Rector\DependencyInjection\PHPStan;
 use PHPStan\DependencyInjection\MemoizingContainer;
 use PHPStan\DependencyInjection\Nette\NetteContainer;
 use PHPStan\Parser\AnonymousClassVisitor;
+use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Parser\RichParser;
 use PHPStan\Parser\VariadicFunctionsVisitor;
 use PHPStan\Parser\VariadicMethodsVisitor;
@@ -42,6 +43,7 @@ final class PHPStanContainerMemento
             $container->findServiceNamesByType(AnonymousClassVisitor::class)[0] => true,
             $container->findServiceNamesByType(VariadicFunctionsVisitor::class)[0] => true,
             $container->findServiceNamesByType(VariadicMethodsVisitor::class)[0] => true,
+            $container->findServiceNamesByType(ArrayMapArgVisitor::class)[0] => true,
         ];
 
         $tags[RichParser::VISITOR_SERVICE_TAG] = $nodeVisitorsToKeep;

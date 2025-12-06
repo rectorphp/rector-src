@@ -208,9 +208,9 @@ final class EnumCaseToPascalCaseRector extends AbstractRector
                 fn ($part): string =>
                 // If part is all uppercase, convert to ucfirst(strtolower())
                 // If part is already mixed or PascalCase, keep as is except ucfirst
-                ctype_upper((string) $part)
-                    ? ucfirst(strtolower((string) $part))
-                    : ucfirst((string) $part),
+                ctype_upper($part)
+                    ? ucfirst(strtolower($part))
+                    : ucfirst($part),
                 $parts
             )
         );
