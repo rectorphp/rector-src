@@ -274,6 +274,8 @@ final class RectorConfig extends Container
     }
 
     /**
+     * @internal
+     *
      * @api only for testing. It is parsed from composer.json "require" packages by default
      * @param array<PolyfillPackage::*> $polyfillPackages
      */
@@ -446,6 +448,7 @@ final class RectorConfig extends Container
     }
 
     /**
+     * @internal used to report level overflows in configuration
      * @param LevelOverflow[] $levelOverflows
      */
     public function setOverflowLevels(array $levelOverflows): void
