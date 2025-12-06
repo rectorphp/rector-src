@@ -106,6 +106,9 @@ CODE_SAMPLE;
     }
 
     /**
+     * @final avoid using this method in child classes, as it might lead to unexpected behavior.
+     * To decorate nodes before traversal, use \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface instead
+     *
      * @return Node[]|null
      */
     public function beforeTraverse(array $nodes): ?array
