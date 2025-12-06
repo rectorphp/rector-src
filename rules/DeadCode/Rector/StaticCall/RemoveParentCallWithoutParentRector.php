@@ -138,6 +138,11 @@ CODE_SAMPLE
 
     private function shouldSkipClass(Class_ $class): bool
     {
+        // skip cases when class reflection is not found
+        if (! $this->reflectionProvider->hasClass((string) $this->getName($class))) {
+            return true;
+        }
+
         // skip cases when parent class reflection is not found
         if ($class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
             $class->extends->toString()
