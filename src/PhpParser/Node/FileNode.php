@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
@@ -21,7 +22,7 @@ final class FileNode extends Stmt
         public array $stmts
     ) {
         $firstStmt = $stmts[0] ?? null;
-        parent::__construct($firstStmt instanceof \PhpParser\Node ? $firstStmt->getAttributes() : []);
+        parent::__construct($firstStmt instanceof Node ? $firstStmt->getAttributes() : []);
 
         parent::__construct();
 
@@ -32,6 +33,9 @@ final class FileNode extends Stmt
         return 'CustomNode_File';
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getSubNodeNames(): array
     {
         return ['stmts'];
@@ -40,7 +44,7 @@ final class FileNode extends Stmt
     public function isNamespaced(): bool
     {
         foreach ($this->stmts as $stmt) {
-            if ($stmt instanceof Stmt\Namespace_) {
+            if ($stmt instanceof Namespace_) {
                 return true;
             }
         }
@@ -48,7 +52,7 @@ final class FileNode extends Stmt
         return false;
     }
 
-    public function getNamespace(): ?Stmt\Namespace_
+    public function getNamespace(): ?Namespace_
     {
         /** @var Namespace_[] $namespaces */
         $namespaces = array_filter($this->stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);

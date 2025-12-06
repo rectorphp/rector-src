@@ -7,6 +7,7 @@ namespace Rector\Naming\Naming;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Application\Provider\CurrentFileProvider;
+use Rector\PhpParser\Node\FileNode;
 use Rector\ValueObject\Application\File;
 
 final readonly class UseImportsResolver
@@ -26,8 +27,12 @@ final readonly class UseImportsResolver
             return [];
         }
 
-        $fileNode = $file->getFileNode();
-        return $fileNode->getUsesAndGroupUses();
+        $rootNode = $file->getFileNode();
+        if (! $rootNode instanceof FileNode) {
+            return [];
+        }
+
+        return $rootNode->getUsesAndGroupUses();
     }
 
     /**
@@ -43,6 +48,10 @@ final readonly class UseImportsResolver
         }
 
         $fileNode = $file->getFileNode();
+        if (! $fileNode instanceof FileNode) {
+            return [];
+        }
+
         return $fileNode->getUses();
     }
 

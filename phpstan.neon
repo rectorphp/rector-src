@@ -10,7 +10,7 @@ parameters:
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
     typeAliases:
-        StmtsAware: \PhpParser\Node\Stmt\Block | \PhpParser\Node\Expr\Closure | \PhpParser\Node\Stmt\Case_ | \PhpParser\Node\Stmt\Catch_ | \PhpParser\Node\Stmt\ClassMethod | \PhpParser\Node\Stmt\Do_ | \PhpParser\Node\Stmt\Else_ | \PhpParser\Node\Stmt\ElseIf_ | \PhpParser\Node\Stmt\Finally_ | \PhpParser\Node\Stmt\For_ | \PhpParser\Node\Stmt\Foreach_ | \PhpParser\Node\Stmt\Function_ | \PhpParser\Node\Stmt\If_ | \PhpParser\Node\Stmt\Namespace_ | \PhpParser\Node\Stmt\TryCatch | \PhpParser\Node\Stmt\While_ | \Rector\PhpParser\Node\CustomNode\FileWithoutNamespace
+        StmtsAware: \PhpParser\Node\Stmt\Block | \PhpParser\Node\Expr\Closure | \PhpParser\Node\Stmt\Case_ | \PhpParser\Node\Stmt\Catch_ | \PhpParser\Node\Stmt\ClassMethod | \PhpParser\Node\Stmt\Do_ | \PhpParser\Node\Stmt\Else_ | \PhpParser\Node\Stmt\ElseIf_ | \PhpParser\Node\Stmt\Finally_ | \PhpParser\Node\Stmt\For_ | \PhpParser\Node\Stmt\Foreach_ | \PhpParser\Node\Stmt\Function_ | \PhpParser\Node\Stmt\If_ | \PhpParser\Node\Stmt\Namespace_ | \PhpParser\Node\Stmt\TryCatch | \PhpParser\Node\Stmt\While_ | \Rector\PhpParser\Node\FileNode
 
     # requires exact closure types
     checkMissingCallableSignature: true
@@ -286,7 +286,6 @@ parameters:
                 - src/Configuration/RectorConfigBuilder.php
                 - src/Reporting/DeprecatedRulesReporter.php
             identifier: classConstant.deprecatedInterface
-        - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace implements deprecated interface Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface#'
 
         # allowed internally only
         -
@@ -398,12 +397,6 @@ parameters:
             paths:
                 - rules/Php70/Rector/If_/IfToSpaceshipRector.php
 
-        # handles full file
-        -
-            paths:
-                - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
-            identifier: rector.noOnlyNullReturnInRefactor
-
         -
             identifier: rector.noIntegerRefactorReturn
             paths:
@@ -415,6 +408,7 @@ parameters:
 
         # condition check, just to be sure
         - '#Method Rector\\Rector\\AbstractRector\:\:enterNode\(\) never returns 3 so it can be removed from the return type#'
+<<<<<<< HEAD
 
         # special case, working on a file-level
         -
@@ -440,6 +434,7 @@ parameters:
                 - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
                 - rules/Php81/Enum/AttributeName.php
 
+<<<<<<< HEAD
         -
             identifier: symplify.seeAnnotationToTest
             paths:
@@ -455,3 +450,7 @@ parameters:
             path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
 
 
+=======
+=======
+>>>>>>> ddfef52951 (cleanup phpstan errors)
+>>>>>>> d71688c507 (make use of FileNode in imports)

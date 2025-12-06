@@ -34,7 +34,6 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\NewLineSplitter;
 use Rector\Util\Reflection\PrivatesAccessor;
@@ -67,7 +66,8 @@ final class BetterStandardPrinter extends Standard
      */
     public function printFormatPreserving(array $stmts, array $origStmts, array $origTokens): string
     {
-        $newStmts = $this->resolveNewStmts($stmts);
+        $newStmts = $this->unwrapFileNode($stmts);
+        $origStmts = $this->unwrapFileNode($origStmts);
 
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
@@ -84,6 +84,7 @@ final class BetterStandardPrinter extends Standard
      */
     public function print(Node | array | null $node): string
     {
+
         if ($node === null) {
             $node = [];
         }
@@ -92,9 +93,12 @@ final class BetterStandardPrinter extends Standard
             $node = [$node];
         }
 
+        $node = $this->unwrapFileNode($node);
+
         return $this->prettyPrint($node);
     }
 
+<<<<<<< HEAD
     /**
      * @param Node[] $stmts
      */
@@ -106,14 +110,15 @@ final class BetterStandardPrinter extends Standard
         return parent::prettyPrintFile($stmts) . PHP_EOL;
     }
 
-    /**
-     * @api magic method in parent
-     */
-    public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
-    {
-        return $this->pStmts($fileWithoutNamespace->stmts);
-    }
+    //    /**
+    //     * @api magic method in parent
+    //     */
+    //    public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
+    //    {
+    //        return $this->pStmts($fileWithoutNamespace->stmts);
+    //    }
 
+<<<<<<< HEAD
     /**
      * Use for standalone InterpolatedStringPart printing, that is not support by php-parser natively.
      * Used e.g. in \Rector\PhpParser\Comparing\NodeComparator::printWithoutComments
@@ -123,6 +128,10 @@ final class BetterStandardPrinter extends Standard
         return $interpolatedStringPart->value;
     }
 
+=======
+=======
+>>>>>>> ddfef52951 (cleanup phpstan errors)
+>>>>>>> d71688c507 (make use of FileNode in imports)
     protected function p(
         Node $node,
         int $precedence = self::MAX_PRECEDENCE,
@@ -527,11 +536,10 @@ final class BetterStandardPrinter extends Standard
      * @param Node[] $stmts
      * @return Node[]|mixed[]
      */
-    private function resolveNewStmts(array $stmts): array
+    private function unwrapFileNode(array $stmts): array
     {
-        $stmts = array_values($stmts);
-
-        if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
+        //        $stmts = array_values($stmts);
+        if (count($stmts) === 1 && $stmts[0] instanceof FileNode) {
             return array_values($stmts[0]->stmts);
         }
 

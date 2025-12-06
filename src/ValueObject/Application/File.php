@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject\Application;
 
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
@@ -150,6 +151,39 @@ final class File
     public function addRectorClassWithLine(RectorWithLineChange $rectorWithLineChange): void
     {
         $this->rectorWithLineChanges[] = $rectorWithLineChange;
+    }
+
+    /**
+     * This node returns top most node,
+     * that includes use imports
+     */
+    public function getUseImportsRootNode(): Namespace_|FileNode|null
+    {
+        if ($this->newStmts === []) {
+            return null;
+        }
+
+        $firstStmt = $this->newStmts[0];
+        if ($firstStmt instanceof FileNode) {
+            if (! $firstStmt->isNamespaced()) {
+                return $firstStmt;
+            }
+
+            // return sole Namespace, or none
+            $namespaces = [];
+            foreach ($firstStmt->stmts as $stmt) {
+                if ($stmt instanceof Namespace_) {
+                    $namespaces[] = $stmt;
+                }
+            }
+
+            if (count($namespaces) === 1) {
+                return $namespaces[0];
+            }
+        }
+
+        return null;
+
     }
 
     /**

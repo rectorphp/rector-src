@@ -98,16 +98,6 @@ CODE_SAMPLE
     {
         return [FileNode::class];
     }
-    //
-    //    /**
-    //     * @param StmtsAware $node
-    //     */
-    //    public function refactor(Node $node): null
-    //    {
-    //        // workaround, as Rector now only hooks to specific nodes, not arrays
-    //        // avoid traversing, as we already handled in beforeTraverse()
-    //        return null;
-    //    }
 
     public function provideMinPhpVersion(): int
     {

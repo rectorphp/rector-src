@@ -1,3 +1,21 @@
+# Upgrading from Rector 2.2.11 to 2.2.12
+
+
+@todo
+
+* FileWithoutNamespace is deprecated, and replaced by `FileNode`
+* `beforeTraverse()` is @final, use getNodeTypes() with `FileNode::class` instead
+
+**Before**
+
+@todo
+
+
+**After**
+
+@todo
+
+
 # Upgrading from Rector 1.x to 2.0
 
 ## PHP version requirements

@@ -49,7 +49,7 @@ final readonly class ArrayItemClassNameDecorator implements PhpDocNodeDecoratorI
             }
 
             $className = $this->resolveFullyQualifiedClass($splitScopeResolution[0], $phpNode);
-            //            $node->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $className);
+            $node->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $className);
 
             return $node;
         });
