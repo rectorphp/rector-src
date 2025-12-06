@@ -7,10 +7,8 @@ namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Nop;
-use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
-use Rector\PhpParser\Enum\NodeGroup;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
 use Rector\ValueObject\Application\File;
@@ -62,33 +60,35 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Stmt[] $nodes
-     * @return Stmt[]|null
+     * @param FileNode $node
      */
-    public function beforeTraverse(array $nodes): ?array
+    public function refactor(Node $node): ?FileNode
     {
-        parent::beforeTraverse($nodes);
+        //        parent::beforeTraverse($nodes);
 
-        if ($this->shouldSkipNodes($nodes, $this->file)) {
+        if ($this->shouldSkipNodes($node->stmts, $this->file)) {
             return null;
         }
 
-        /** @var Node $rootStmt */
-        $rootStmt = current($nodes);
-        if ($rootStmt instanceof FileWithoutNamespace) {
+        //        /** @var Node $rootStmt */
+        //        $rootStmt = current();
+        if (! $node->isNamespaced()) {
             return null;
         }
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
-        if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($rootStmt)) {
+        if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($node)) {
             return null;
         }
 
-        $rectorWithLineChange = new RectorWithLineChange(self::class, $rootStmt->getStartLine());
-        $this->file->addRectorClassWithLine($rectorWithLineChange);
+        //        $rectorWithLineChange = new RectorWithLineChange(self::class, $rootStmt->getStartLine());
+        //        $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        return [$this->nodeFactory->createDeclaresStrictType(), new Nop(), ...$nodes];
+        $node->stmts = array_merge([$this->nodeFactory->createDeclaresStrictType(), new Nop()], $node->stmts);
+
+        return $node;
+        //        return [$this->nodeFactory->createDeclaresStrictType(), new Nop(), ...$nodes];
     }
 
     /**
@@ -96,18 +96,18 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return NodeGroup::STMTS_AWARE;
+        return [FileNode::class];
     }
-
-    /**
-     * @param StmtsAware $node
-     */
-    public function refactor(Node $node): null
-    {
-        // workaround, as Rector now only hooks to specific nodes, not arrays
-        // avoid traversing, as we already handled in beforeTraverse()
-        return null;
-    }
+    //
+    //    /**
+    //     * @param StmtsAware $node
+    //     */
+    //    public function refactor(Node $node): null
+    //    {
+    //        // workaround, as Rector now only hooks to specific nodes, not arrays
+    //        // avoid traversing, as we already handled in beforeTraverse()
+    //        return null;
+    //    }
 
     public function provideMinPhpVersion(): int
     {
@@ -123,6 +123,7 @@ CODE_SAMPLE
             return true;
         }
 
+        // shebang files cannot have declare strict types
         if (str_starts_with($file->getFileContent(), '#!')) {
             return true;
         }

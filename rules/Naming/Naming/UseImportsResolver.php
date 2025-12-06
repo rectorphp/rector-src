@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Application\Provider\CurrentFileProvider;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\ValueObject\Application\File;
 
 final readonly class UseImportsResolver
@@ -57,7 +57,7 @@ final readonly class UseImportsResolver
             : '';
     }
 
-    private function resolveNamespace(): Namespace_|FileWithoutNamespace|null
+    private function resolveNamespace(): Namespace_|FileNode|null
     {
         /** @var File|null $file */
         $file = $this->currentFileProvider->getFile();
@@ -66,22 +66,15 @@ final readonly class UseImportsResolver
         }
 
         $newStmts = $file->getNewStmts();
-
         if ($newStmts === []) {
             return null;
         }
 
-        /** @var Namespace_[]|FileWithoutNamespace[] $namespaces */
-        $namespaces = array_filter(
-            $newStmts,
-            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
-        );
-
-        // multiple namespaces is not supported
-        if (count($namespaces) !== 1) {
-            return null;
+        if ($newStmts[0] instanceof FileNode) {
+            $fileNode = $newStmts[0];
+            return $fileNode->getNamespace();
         }
 
-        return current($namespaces);
+        return null;
     }
 }

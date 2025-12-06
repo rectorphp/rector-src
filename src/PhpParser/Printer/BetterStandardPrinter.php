@@ -35,6 +35,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Util\NewLineSplitter;
 use Rector\Util\Reflection\PrivatesAccessor;
 
@@ -159,6 +160,11 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $content;
+    }
+
+    protected function pCustomNode_File(FileNode $fileNode): string
+    {
+        return $this->pStmts($fileNode->stmts, true);
     }
 
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string

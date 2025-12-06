@@ -88,7 +88,6 @@ final readonly class ObjectTypeSpecifier
                 }
 
                 $currentTemplateTag = $templateTags[$className] ?? null;
-
                 if ($currentTemplateTag === null) {
                     // invalid type
                     return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);

@@ -13,6 +13,7 @@ use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\FilePathHelper;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Rector\PhpParser\Node\FileNode;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\PhpParser\Parser\ParserErrors;
 use Rector\PhpParser\Parser\RectorParser;
@@ -57,7 +58,6 @@ final readonly class FileProcessor
         do {
             $file->changeHasChanged(false);
 
-            // 1. change nodes with Rector Rules
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
             // 2. apply post rectors
@@ -140,9 +140,22 @@ final readonly class FileProcessor
     private function printFile(File $file, Configuration $configuration, string $filePath): void
     {
         // only save to string first, no need to print to file when not needed
+        $newStmts = $file->getNewStmts();
+
+        $oldStmts = $file->getOldStmts();
+
+        // unwrap FileNode stmts to allow printing
+        if ($newStmts[0] instanceof FileNode) {
+            $newStmts = $newStmts[0]->stmts;
+        }
+
+        if ($oldStmts[0] instanceof FileNode) {
+            $oldStmts = $oldStmts[0]->stmts;
+        }
+
         $newContent = $this->betterStandardPrinter->printFormatPreserving(
-            $file->getNewStmts(),
-            $file->getOldStmts(),
+            $newStmts,
+            $oldStmts,
             $file->getOldTokens()
         );
 
@@ -168,9 +181,13 @@ final readonly class FileProcessor
         );
 
         $oldStmts = $stmtsAndTokens->getStmts();
+
+        // wrap in FileNode to allow file-level rules
+        $oldStmts = [new FileNode($oldStmts)];
         $oldTokens = $stmtsAndTokens->getTokens();
 
         $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file->getFilePath(), $oldStmts);
+
         $file->hydrateStmtsAndTokens($newStmts, $oldStmts, $oldTokens);
     }
 }
