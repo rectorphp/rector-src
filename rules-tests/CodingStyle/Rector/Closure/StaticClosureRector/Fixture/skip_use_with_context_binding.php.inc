@@ -3,6 +3,7 @@
 namespace Rector\Tests\CodingStyle\Rector\Closure\StaticClosureRector\Fixture;
 
 use Rector\Tests\CodingStyle\Rector\Closure\StaticClosureRector\Source\BindObject;
+use function Rector\Tests\CodingStyle\Rector\Closure\StaticClosureRector\Source\bind_on_object;
 
 BindObject::call(closure: function () {
     echo 'static call';
