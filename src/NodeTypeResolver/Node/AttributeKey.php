@@ -289,5 +289,5 @@ final class AttributeKey
 
     public const PHP_VERSION_CONDITIONED = 'php_version_conditioned';
 
-    public const CLOSURE_USES_THIS = 'has_this_closure';
+    public const IS_CLOSURE_USES_THIS = 'has_this_closure';
 }

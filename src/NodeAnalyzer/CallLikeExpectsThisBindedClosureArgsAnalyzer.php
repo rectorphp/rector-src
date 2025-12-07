@@ -8,7 +8,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PHPStan\Reflection\ExtendedParameterReflection;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Reflection\ReflectionResolver;
@@ -36,8 +35,7 @@ final readonly class CallLikeExpectsThisBindedClosureArgsAnalyzer
             return [];
         }
 
-        $scope = $callLike->getAttribute(AttributeKey::SCOPE);
-
+        $scope = ScopeFetcher::fetch($callLike);
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $callLike, $scope);
         $parameters = $parametersAcceptor->getParameters();
 

@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use Rector\CodingStyle\Guard\StaticGuard;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\CallLikeThisBoundClosureArgsNodeVisitor;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -66,7 +65,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->hasAttribute(AttributeKey::CLOSURE_USES_THIS)) {
+        if ($node->hasAttribute(AttributeKey::IS_CLOSURE_USES_THIS)) {
             return null;
         }
 
