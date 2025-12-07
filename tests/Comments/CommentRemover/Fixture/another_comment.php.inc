@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
-$values = new class
+final class AnotherComment
 {
     public function run($value)
     {
@@ -13,13 +13,13 @@ $values = new class
                 return 'https://some_very_long_link.cz';  /* here too */
         }
     }
-};
+}
 
 ?>
 -----
 namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
-$values = new class
+final class AnotherComment
 {
     public function run($value)
     {
@@ -28,4 +28,4 @@ $values = new class
                 return 'https://some_very_long_link.cz';
         }
     }
-};
+}
