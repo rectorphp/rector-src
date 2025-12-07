@@ -14,7 +14,7 @@ use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeAnalyzer\CallLikeExpectsThisBindedClosureArgsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-class CallLikeThisBoundClosureArgsNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
+final class CallLikeThisBoundClosureArgsNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function __construct(
         private readonly CallLikeExpectsThisBindedClosureArgsAnalyzer $callLikeExpectsThisBindedClosureArgsAnalyzer
