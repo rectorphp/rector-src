@@ -61,25 +61,4 @@ final readonly class UseImportsResolver
             ? $use->prefix . '\\'
             : '';
     }
-
-    //    private function resolveNamespace(): Namespace_|null
-    //    {
-    //        /** @var File|null $file */
-    //        $file = $this->currentFileProvider->getFile();
-    //        if (! $file instanceof File) {
-    //            return null;
-    //        }
-    //
-    //        $newStmts = $file->getNewStmts();
-    //        if ($newStmts === []) {
-    //            return null;
-    //        }
-    //
-    //        if ($newStmts[0] instanceof FileNode) {
-    //            $fileNode = $newStmts[0];
-    //            return $fileNode->getNamespace();
-    //        }
-    //
-    //        return null;
-    //    }
 }

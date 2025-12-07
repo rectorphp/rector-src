@@ -31,6 +31,7 @@ final readonly class TestingParser
 <<<<<<< HEAD
 <<<<<<< HEAD
         [$file, $stmts] = $this->parseToFileAndStmts($filePath);
+<<<<<<< HEAD
 =======
         // needed for PHPStan reflection, as it caches the last processed file
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
@@ -51,6 +52,8 @@ final readonly class TestingParser
         [$file, $stmts] = $this->parseToFileAndStmts($filePath);
 >>>>>>> 8e51776f69 (cleanup phpstan errors)
 
+=======
+>>>>>>> 90002f8aee (extract LaravelClassName)
         return $file;
     }
 
@@ -60,8 +63,8 @@ final readonly class TestingParser
     public function parseFileToDecoratedNodes(string $filePath): array
     {
         [$file, $stmts] = $this->parseToFileAndStmts($filePath);
-
         return $stmts;
+<<<<<<< HEAD
 <<<<<<< HEAD
     }
 
@@ -85,6 +88,8 @@ final readonly class TestingParser
         //        $this->currentFileProvider->setFile($file);
         //
         //        return $stmts;
+=======
+>>>>>>> 90002f8aee (extract LaravelClassName)
     }
 
     /**
@@ -105,8 +110,11 @@ final readonly class TestingParser
 =======
         // wrap in FileNode to enable file-level rules
         $stmts = [new FileNode($stmts)];
+<<<<<<< HEAD
 
 >>>>>>> 2751658832 (introduce FileNode to handle file-level changes; deprecate IncreaseDeclareStrictTypesRector)
+=======
+>>>>>>> 90002f8aee (extract LaravelClassName)
         $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
 
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);

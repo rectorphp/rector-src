@@ -171,7 +171,7 @@ final class BetterStandardPrinter extends Standard
         return $content;
     }
 
-    protected function pCustomNode_File(FileNode $fileNode): string
+    protected function pStmt_FileNode(FileNode $fileNode): string
     {
         return $this->pStmts($fileNode->stmts, true);
     }

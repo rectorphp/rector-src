@@ -31,7 +31,11 @@ final class PrivatizeFinalClassMethodRector extends AbstractRector
         private readonly OverrideByParentClassGuard $overrideByParentClassGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly LaravelModelGuard $laravelModelGuard,
+<<<<<<< HEAD
         private readonly ParentClassMagicCallGuard $parentClassMagicCallGuard,
+=======
+        private readonly \Rector\Privatization\VisibilityGuard\ParentClassMagicCallGuard $parentClassMagicCallGuard
+>>>>>>> 4263eff61e (skip parent magic called method in PrivatizeFinalClassMethodRector)
     ) {
     }
 
@@ -85,6 +89,7 @@ CODE_SAMPLE
         }
 
         $scope = ScopeFetcher::fetch($node);
+
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return null;
@@ -105,6 +110,10 @@ CODE_SAMPLE
                 $classMethod,
                 $classReflection
             )) {
+                continue;
+            }
+
+            if ($this->parentClassMagicCallGuard->containsParentClassMagicCall($node)) {
                 continue;
             }
 
