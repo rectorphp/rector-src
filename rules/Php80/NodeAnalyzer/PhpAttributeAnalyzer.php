@@ -23,7 +23,6 @@ final readonly class PhpAttributeAnalyzer
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -35,29 +34,6 @@ final readonly class PhpAttributeAnalyzer
                     continue;
                 }
 
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param AttributeName::* $attributeClass
-     */
-    public function hasInheritedPhpAttribute(Class_ $class, string $attributeClass): bool
-    {
-        $className = (string) $this->nodeNameResolver->getName($class);
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return false;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
-        $ancestorClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
-
-        foreach ($ancestorClassReflections as $ancestorClassReflection) {
-            $nativeReflection = $ancestorClassReflection->getNativeReflection();
-            if ($nativeReflection->getAttributes($attributeClass) !== []) {
                 return true;
             }
         }

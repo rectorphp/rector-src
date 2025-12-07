@@ -216,34 +216,6 @@ final readonly class ReflectionResolver
         return null;
     }
 
-    public function resolveMethodReflectionFromClassMethod(ClassMethod $classMethod, Scope $scope): ?MethodReflection
-    {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        $className = $classReflection->getName();
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-
-        return $this->resolveMethodReflection($className, $methodName, $scope);
-    }
-
-    public function resolveFunctionReflectionFromFunction(Function_ $function): ?FunctionReflection
-    {
-        $name = $this->nodeNameResolver->getName($function);
-        if ($name === null) {
-            return null;
-        }
-
-        $functionName = new Name($name);
-        if ($this->reflectionProvider->hasFunction($functionName, null)) {
-            return $this->reflectionProvider->getFunction($functionName, null);
-        }
-
-        return null;
-    }
-
     public function resolveMethodReflectionFromNew(New_ $new): ?MethodReflection
     {
         $newClassType = $this->nodeTypeResolver->getType($new->class);

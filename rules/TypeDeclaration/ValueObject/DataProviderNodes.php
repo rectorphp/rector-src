@@ -34,11 +34,6 @@ final readonly class DataProviderNodes
         Assert::allIsInstanceOf($phpDocTagNodes, PhpDocTagNode::class);
     }
 
-    public function isEmpty(): bool
-    {
-        return $this->getClassMethods() === [];
-    }
-
     /**
      * @return ClassMethod[]
      */
