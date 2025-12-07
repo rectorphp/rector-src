@@ -100,6 +100,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\CallLikeThisBoundClosureArgsNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ClassConstFetchNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
@@ -252,6 +253,7 @@ final class LazyContainerFactory
         StaticVariableNodeVisitor::class,
         PropertyOrClassConstDefaultNodeVisitor::class,
         ClassConstFetchNodeVisitor::class,
+        CallLikeThisBoundClosureArgsNodeVisitor::class,
     ];
 
     /**
