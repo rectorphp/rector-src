@@ -155,8 +155,6 @@ final readonly class PHPStanNodeScopeResolver
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
 
-        $this->nodeTraverser->traverse($stmts);
-
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
@@ -418,6 +416,9 @@ final readonly class PHPStanNodeScopeResolver
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $scope);
         }
+
+        // use after scope filling DecoratingNodeVisitorInterface can can fetch the scope of target node
+        $this->nodeTraverser->traverse($stmts);
 
         return $stmts;
     }
