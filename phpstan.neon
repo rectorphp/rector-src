@@ -401,17 +401,6 @@ parameters:
 
         # condition check, just to be sure
         - '#Method Rector\\Rector\\AbstractRector\:\:enterNode\(\) never returns 3 so it can be removed from the return type#'
-<<<<<<< HEAD
-
-        # special case, working on a file-level
-        -
-            identifier: rector.noOnlyNullReturnInRefactor
-            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
-
-        # handle next with FileNode
-        -
-            identifier: method.parentMethodFinalByPhpDoc
-            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
 
         # deprecated
         -
@@ -426,6 +415,3 @@ parameters:
                 - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
                 - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
                 - rules/Php81/Enum/AttributeName.php
-
-=======
->>>>>>> ddfef52951 (cleanup phpstan errors)

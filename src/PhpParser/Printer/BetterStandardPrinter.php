@@ -97,7 +97,6 @@ final class BetterStandardPrinter extends Standard
         return $this->prettyPrint($node);
     }
 
-<<<<<<< HEAD
     /**
      * @param Node[] $stmts
      */
@@ -109,16 +108,6 @@ final class BetterStandardPrinter extends Standard
         return parent::prettyPrintFile($stmts) . PHP_EOL;
     }
 
-    //    /**
-    //     * @api magic method in parent
-    //     */
-    //    public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
-    //    {
-    //        return $this->pStmts($fileWithoutNamespace->stmts);
-    //    }
-
-=======
->>>>>>> ddfef52951 (cleanup phpstan errors)
     protected function p(
         Node $node,
         int $precedence = self::MAX_PRECEDENCE,
