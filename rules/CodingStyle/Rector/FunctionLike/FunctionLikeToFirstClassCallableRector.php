@@ -54,66 +54,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|CallLike
     {
-<<<<<<< HEAD
         throw new ShouldNotHappenException(sprintf(
             '"%s" rule is deprecated. It was split into "%s" and "%s" rules.',
             self::class,
             ClosureDelegatingCallToFirstClassCallableRector::class,
             ArrowFunctionDelegatingCallToFirstClassCallableRector::class
         ));
-=======
-        if ($node instanceof Assign) {
-            // @todo handle by existing attribute already
-            if ($node->expr instanceof Closure || $node->expr instanceof ArrowFunction) {
-                $node->expr->setAttribute(self::IS_IN_ASSIGN, true);
-            }
-
-            return null;
-        }
-
-        if ($node instanceof CallLike) {
-            if ($node->isFirstClassCallable()) {
-                return null;
-            }
-
-            $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-            foreach ($node->getArgs() as $arg) {
-                if (! $arg->value instanceof Closure && ! $arg->value instanceof ArrowFunction) {
-                    continue;
-                }
-
-                if ($methodReflection instanceof NativeFunctionReflection) {
-                    $parametersAcceptors = ParametersAcceptorSelector::combineAcceptors(
-                        $methodReflection->getVariants()
-                    );
-                    foreach ($parametersAcceptors->getParameters() as $extendedParameterReflection) {
-                        if ($extendedParameterReflection->getType() instanceof CallableType && $extendedParameterReflection->getType()->isVariadic()) {
-                            $arg->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
-                        }
-                    }
-
-                    return null;
-                }
-
-                $arg->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
-            }
-
-            return null;
-        }
-
-        $callLike = $this->extractCallLike($node);
-        if ($callLike === null) {
-            return null;
-        }
-
-        if ($this->shouldSkip($node, $callLike, ScopeFetcher::fetch($node))) {
-            return null;
-        }
-
-        $callLike->args = [new VariadicPlaceholder()];
-
-        return $callLike;
->>>>>>> 24ed2fa7ac (add fixture to keep protected method)
     }
 
     public function provideMinPhpVersion(): int

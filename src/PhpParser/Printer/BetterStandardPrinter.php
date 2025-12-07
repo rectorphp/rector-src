@@ -98,7 +98,6 @@ final class BetterStandardPrinter extends Standard
         return $this->prettyPrint($node);
     }
 
-<<<<<<< HEAD
     /**
      * @param Node[] $stmts
      */
@@ -110,15 +109,6 @@ final class BetterStandardPrinter extends Standard
         return parent::prettyPrintFile($stmts) . PHP_EOL;
     }
 
-    //    /**
-    //     * @api magic method in parent
-    //     */
-    //    public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
-    //    {
-    //        return $this->pStmts($fileWithoutNamespace->stmts);
-    //    }
-
-<<<<<<< HEAD
     /**
      * Use for standalone InterpolatedStringPart printing, that is not support by php-parser natively.
      * Used e.g. in \Rector\PhpParser\Comparing\NodeComparator::printWithoutComments
@@ -128,10 +118,6 @@ final class BetterStandardPrinter extends Standard
         return $interpolatedStringPart->value;
     }
 
-=======
-=======
->>>>>>> ddfef52951 (cleanup phpstan errors)
->>>>>>> d71688c507 (make use of FileNode in imports)
     protected function p(
         Node $node,
         int $precedence = self::MAX_PRECEDENCE,

@@ -67,6 +67,12 @@ final class SomeRector extends AbstractRector
 }
 ```
 
+The `FileNode` handles both namespaced and non-namespaced files. To check if the file is namespaced, use:
+
+```php
+$fileNode->isNamespaced();
+```
+
 <br>
 
 # Upgrading from Rector 1.x to 2.0
