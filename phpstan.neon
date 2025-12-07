@@ -14,7 +14,6 @@ parameters:
 
     # requires exact closure types
     checkMissingCallableSignature: true
-
     treatPhpDocTypesAsCertain: false
 
     paths:
@@ -46,6 +45,12 @@ parameters:
         null_over_false: true
         narrow_param: true
         narrow_return: true
+
+    # see https://github.com/TomasVotruba/unused-public
+    unused_public:
+        methods: true
+        properties: true
+        constants: true
 
     ignoreErrors:
         # required generics on interface array, not helpful
@@ -413,3 +418,18 @@ parameters:
         -
             identifier: method.parentMethodFinalByPhpDoc
             path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
+
+        # deprecated
+        -
+            identifier: public.method.unused
+            paths:
+                - rules/Transform/ValueObject/ClassMethodReference.php
+                - rules/CodeQuality/ValueObject/KeyAndExpr.php
+
+        -
+            identifier: public.classConstant.unused
+            paths:
+                - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
+                - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
+                - rules/Php81/Enum/AttributeName.php
+
