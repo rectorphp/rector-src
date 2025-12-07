@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
+use Rector\Enum\LaravelClassName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -39,7 +40,7 @@ final readonly class LaravelModelGuard
 
     public function isProtectedMethod(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
-        if (! $classReflection->is('Illuminate\Database\Eloquent\Model')) {
+        if (! $classReflection->is(LaravelClassName::MODEL)) {
             return false;
         }
 
@@ -63,7 +64,7 @@ final readonly class LaravelModelGuard
 
         return $this->nodeTypeResolver->isObjectType(
             $classMethod->returnType,
-            new ObjectType('Illuminate\Database\Eloquent\Casts\Attribute')
+            new ObjectType(LaravelClassName::CAST_ATTRIBUTE)
         );
     }
 
@@ -73,9 +74,6 @@ final readonly class LaravelModelGuard
             return true;
         }
 
-        return $this->phpAttributeAnalyzer->hasPhpAttribute(
-            $classMethod,
-            'Illuminate\Database\Eloquent\Attributes\Scope'
-        );
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, LaravelClassName::ATTRIBUTES_SCOPE);
     }
 }
