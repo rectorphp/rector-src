@@ -417,7 +417,7 @@ final readonly class PHPStanNodeScopeResolver
             RectorNodeScopeResolver::processNodes($stmts, $scope);
         }
 
-        // use after scope filling DecoratingNodeVisitorInterface can can fetch the scope of target node
+        // use after scope filling so DecoratingNodeVisitorInterface instance can fetch the scope of target node
         $this->nodeTraverser->traverse($stmts);
 
         return $stmts;
