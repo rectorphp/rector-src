@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -26,6 +25,7 @@ use PHPStan\Reflection\Annotations\AnnotationMethodReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\CallableType;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
@@ -44,11 +44,6 @@ final class FunctionLikeToFirstClassCallableRector extends AbstractRector implem
      * @var string
      */
     private const HAS_CALLBACK_SIGNATURE_MULTI_PARAMS = 'has_callback_signature_multi_params';
-
-    /**
-     * @var string
-     */
-    private const IS_IN_ASSIGN = 'is_in_assign';
 
     public function __construct(
         private readonly AstResolver $astResolver,
@@ -77,7 +72,7 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [Assign::class, CallLike::class, ArrowFunction::class, Closure::class];
+        return [CallLike::class, ArrowFunction::class, Closure::class];
     }
 
     /**
@@ -85,14 +80,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|CallLike
     {
-        if ($node instanceof Assign) {
-            if ($node->expr instanceof Closure || $node->expr instanceof ArrowFunction) {
-                $node->expr->setAttribute(self::IS_IN_ASSIGN, true);
-            }
-
-            return null;
-        }
-
         if ($node instanceof CallLike) {
             if ($node->isFirstClassCallable()) {
                 return null;
@@ -186,7 +173,9 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($node->getAttribute(self::IS_IN_ASSIGN) === true) {
+        if ($node->getAttribute(AttributeKey::IS_ASSIGNED_TO) === true || $node->getAttribute(
+            AttributeKey::IS_BEING_ASSIGNED
+        )) {
             return true;
         }
 

@@ -162,6 +162,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
         }
 
         $stmts = $node instanceof Switch_ ? $node->cases : $node->stmts;
+
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
             static function (Node $subNode): ?int {
@@ -170,7 +171,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
                 }
 
                 if ($subNode instanceof If_ || $subNode instanceof Break_) {
-                    $subNode->setAttribute(AttributeKey::IS_IN_LOOP, true);
+                    $subNode->setAttribute(AttributeKey::IS_IN_LOOP_OR_SWITCH, true);
                 }
 
                 return null;
