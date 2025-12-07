@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\Guard;
 
+use PhpParser\PrettyPrinterAbstract;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Name;
@@ -19,7 +20,7 @@ final class ParentClassMagicCallGuard
      * To speed up analysis
      * @var string[]
      */
-    private const KNOWN_DYNAMIC_CALL_CLASSES = [Standard::class, \PhpParser\PrettyPrinterAbstract::class];
+    private const KNOWN_DYNAMIC_CALL_CLASSES = [Standard::class, PrettyPrinterAbstract::class];
 
     /**
      * @var array<string, bool>
