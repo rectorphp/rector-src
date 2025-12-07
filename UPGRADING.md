@@ -1,20 +1,73 @@
 # Upgrading from Rector 2.2.11 to 2.2.12
 
-
-@todo
-
-* FileWithoutNamespace is deprecated, and replaced by `FileNode`
-* `beforeTraverse()` is @final, use getNodeTypes() with `FileNode::class` instead
+* `FileWithoutNamespace` is deprecated, and replaced by `FileNode` that represents both namespaced and non-namespaced files and allow changes inside
+* `beforeTraverse()` is now soft marked as `@final`, use `getNodeTypes()` with `FileNode::class` instead
 
 **Before**
 
-@todo
+```php
+use Rector\PhpParser\Node\FileWithoutNamespace;
+use Rector\Rector\AbstractRector;
 
+final class SomeRector extends AbstractRector
+{
+    public function getNodeTypes(): array
+    {
+        return [FileWithoutNamespace::class];
+    }
+
+    public function beforeTraverse(array $nodes): array
+    {
+        // some node hacking
+    }
+
+    /**
+     * @param FileWithoutNamespace $node
+     */
+    public function refactor(Node $node): ?Node
+    {
+        // ...
+    }
+
+}
+```
 
 **After**
 
-@todo
+```php
+use Rector\PhpParser\Node\FileNode;
+use Rector\Rector\AbstractRector;
 
+final class SomeRector extends AbstractRector
+{
+    public function getNodeTypes(): array
+    {
+        return [FileNode::class];
+    }
+
+    /**
+     * @param FileNode $node
+     */
+    public function refactor(Node $node): ?Node
+    {
+        foreach ($node->stmts as $stmt) {
+            // check if has declare_strict already?
+            // ...
+
+            // create it
+            $declareStrictTypes = $this->createDeclareStrictTypesNode();
+
+            // add it
+            $node->stmts = array_merge([$declareStrictTypes], $node->stmts);
+        }
+
+        return $node;
+    }
+
+}
+```
+
+<br>
 
 # Upgrading from Rector 1.x to 2.0
 
