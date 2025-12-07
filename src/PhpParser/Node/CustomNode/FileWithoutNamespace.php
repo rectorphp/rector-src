@@ -9,6 +9,7 @@ use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 
 /**
  * @deprecated Use @see \Rector\PhpParser\Node\FileNode instead
+ * @api
  *
  * Inspired by https://github.com/phpstan/phpstan-src/commit/ed81c3ad0b9877e6122c79b4afda9d10f3994092
  */

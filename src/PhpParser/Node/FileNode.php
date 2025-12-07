@@ -28,9 +28,13 @@ final class FileNode extends Stmt
 
     }
 
+    /**
+     * This triggers Printed method with "pFileNode" name
+     * @see \Rector\PhpParser\Printer\BetterStandardPrinter::pStmt_FileNode()
+     */
     public function getType(): string
     {
-        return 'CustomNode_File';
+        return 'Stmt_FileNode';
     }
 
     /**
