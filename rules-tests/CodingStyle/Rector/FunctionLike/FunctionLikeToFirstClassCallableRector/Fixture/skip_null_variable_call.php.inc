@@ -4,8 +4,6 @@ namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassC
 
 $bar = null;
 
-fn ($foo) => $bar->foo($foo);
-
 function ($foo) use ($bar)
 {
     return $bar->foo($foo);

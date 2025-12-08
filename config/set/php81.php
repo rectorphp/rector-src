@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\FuncCall\ClosureFromCallableToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
 use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
@@ -32,7 +33,10 @@ return static function (RectorConfig $rectorConfig): void {
         NullToStrictIntPregSlitFuncCallLimitArgRector::class,
         // array of local method call
         ArrayToFirstClassCallableRector::class,
+
         // closure/arrow function
+        ArrowFunctionToFirstClassCallableRector::class,
+
         FunctionLikeToFirstClassCallableRector::class,
         ClosureFromCallableToFirstClassCallableRector::class,
         FunctionFirstClassCallableRector::class,

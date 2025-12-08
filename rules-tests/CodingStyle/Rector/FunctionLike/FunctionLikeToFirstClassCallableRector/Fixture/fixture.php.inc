@@ -9,8 +9,6 @@ function ($foo)
     return FooBar::foo($foo);
 };
 
-fn ($foo) => FooBar::foo($foo);
-
 ?>
 -----
 <?php
@@ -18,8 +16,6 @@ fn ($foo) => FooBar::foo($foo);
 namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Fixture;
 
 use Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Source\FooBar;
-
-FooBar::foo(...);
 
 FooBar::foo(...);
 

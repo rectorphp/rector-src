@@ -1,6 +1,9 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Source;
+namespace CodingStyle\Rector\ArrowFunction\ArrowFunctionToFirstClassCallableRector\Source;
+
+use Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Source\CallbackInterface;
+use Rector\Tests\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector\Source\InvalidArgumentException;
 
 interface SomeCacheInterface {
     /**

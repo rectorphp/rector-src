@@ -6,7 +6,3 @@ function ($foo)
 {
     return $foo;
 };
-
-fn ($foo) => $foo;
-
-?>
