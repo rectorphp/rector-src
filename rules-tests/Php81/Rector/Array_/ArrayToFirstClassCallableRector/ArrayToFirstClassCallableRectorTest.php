@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class FirstClassCallableRectorTest extends AbstractRectorTestCase
+final class ArrayToFirstClassCallableRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

@@ -1,9 +1,9 @@
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixture;
 
 use Rector\Tests\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector\Source\stdClass;
-use Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Source\SomeExternalObject;
+use Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Source\SomeExternalObject;
 
 return static function (stdClass $container): void {
     $container->services()
@@ -14,10 +14,10 @@ return static function (stdClass $container): void {
 -----
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixture;
 
 use Rector\Tests\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector\Source\stdClass;
-use Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Source\SomeExternalObject;
+use Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Source\SomeExternalObject;
 
 return static function (stdClass $container): void {
     $container->services()
