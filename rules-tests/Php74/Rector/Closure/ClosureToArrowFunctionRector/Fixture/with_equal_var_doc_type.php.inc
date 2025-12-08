@@ -23,9 +23,10 @@ class WithEqualVarDocType
 {
     public function run()
     {
-        fn(string $var) =>
+        
             /** @var string $var */
-            $var;
+
+            fn(string $var) => $var;
     }
 }
 
