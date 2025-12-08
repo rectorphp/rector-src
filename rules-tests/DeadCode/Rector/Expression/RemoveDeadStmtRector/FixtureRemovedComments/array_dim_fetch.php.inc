@@ -2,19 +2,19 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Stmt\DeadCodeRemovingRector\Fixture\ArrayDimFetch;
 
-function wrapToPreventPhpStanCallingMethods ()
+function wrapToPreventPhpStanCallingMethods()
 {
     $var[0] = 1;
 
     $var[0];
 
-    //comment
+    //comment 1
     $var[methodCall()];
 
-    //comment
+    //comment 2
     ${methodCall()}[0];
 
-    //comment
+    //comment 3
     ${methodCall1()}[methodCall2()];
 }
 ?>
@@ -23,19 +23,18 @@ function wrapToPreventPhpStanCallingMethods ()
 
 namespace Rector\Tests\CodeQuality\Rector\Stmt\DeadCodeRemovingRector\Fixture\ArrayDimFetch;
 
-function wrapToPreventPhpStanCallingMethods ()
+function wrapToPreventPhpStanCallingMethods()
 {
     $var[0] = 1;
 
-    //comment
+    //comment 1
     methodCall();
 
-    //comment
+    //comment 2
     methodCall();
-    //comment
     methodCall2();
 
-    //comment
+    //comment 3
     methodCall1();
 }
 ?>
