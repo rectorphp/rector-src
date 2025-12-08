@@ -282,4 +282,6 @@ final class AttributeKey
     public const CLASS_CONST_FETCH_NAME = 'class_const_fetch_name';
 
     public const PHP_VERSION_CONDITIONED = 'php_version_conditioned';
+
+    public const HAS_CLOSURE_WITH_VARIADIC_ARGS = 'has_closure_with_variadic_args';
 }
