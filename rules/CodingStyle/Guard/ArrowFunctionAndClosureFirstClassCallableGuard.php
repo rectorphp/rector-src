@@ -26,13 +26,13 @@ use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\Reflection\ReflectionResolver;
 
-final class ArrowFunctionAndClosureFirstClassCallableGuard
+final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly AstResolver $astResolver,
-        private readonly NodeComparator $nodeComparator,
-        private readonly NodeNameResolver $nodeNameResolver,
+        private ReflectionResolver $reflectionResolver,
+        private AstResolver $astResolver,
+        private NodeComparator $nodeComparator,
+        private NodeNameResolver $nodeNameResolver,
     ) {
 
     }
@@ -123,7 +123,7 @@ final class ArrowFunctionAndClosureFirstClassCallableGuard
         $parentNode = $expr instanceof MethodCall ? $expr->var : $expr->class;
 
         foreach ($params as $param) {
-            SimpleCallableNodeTraverser::traverse($parentNode, function (Node $node) use ($param, &$found) {
+            SimpleCallableNodeTraverser::traverse($parentNode, function (Node $node) use ($param, &$found): ?int {
                 if ($this->nodeComparator->areNodesEqual($node, $param->var)) {
                     $found = true;
                     return NodeVisitor::STOP_TRAVERSAL;
@@ -152,7 +152,7 @@ final class ArrowFunctionAndClosureFirstClassCallableGuard
 
         $found = false;
 
-        SimpleCallableNodeTraverser::traverse($callLike, function (Node $node) use (&$found) {
+        SimpleCallableNodeTraverser::traverse($callLike, function (Node $node) use (&$found): ?int {
             if ($this->nodeNameResolver->isName($node, 'this')) {
                 $found = true;
                 return NodeVisitor::STOP_TRAVERSAL;

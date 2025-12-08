@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Fixture;
 
-use CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Source\SomeGetter;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Source\SomeGetter;
 
 final class TwoBareGetters
 {
@@ -21,7 +21,7 @@ final class TwoBareGetters
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Fixture;
 
-use CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Source\SomeGetter;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Source\SomeGetter;
 
 final class TwoBareGetters
 {

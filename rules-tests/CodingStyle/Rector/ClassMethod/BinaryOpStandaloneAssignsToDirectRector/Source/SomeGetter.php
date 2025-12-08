@@ -1,6 +1,6 @@
 <?php
 
-namespace CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Source;
+namespace Rector\Tests\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector\Source;
 
 class SomeGetter
 {
