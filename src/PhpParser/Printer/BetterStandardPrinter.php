@@ -33,7 +33,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Util\NewLineSplitter;
 use Rector\Util\Reflection\PrivatesAccessor;
 
@@ -65,7 +65,8 @@ final class BetterStandardPrinter extends Standard
      */
     public function printFormatPreserving(array $stmts, array $origStmts, array $origTokens): string
     {
-        $newStmts = $this->resolveNewStmts($stmts);
+        $newStmts = $this->unwrapFileNode($stmts);
+        $origStmts = $this->unwrapFileNode($origStmts);
 
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
@@ -82,6 +83,7 @@ final class BetterStandardPrinter extends Standard
      */
     public function print(Node | array | null $node): string
     {
+
         if ($node === null) {
             $node = [];
         }
@@ -89,6 +91,8 @@ final class BetterStandardPrinter extends Standard
         if (! is_array($node)) {
             $node = [$node];
         }
+
+        $node = $this->unwrapFileNode($node);
 
         return $this->prettyPrint($node);
     }
@@ -102,14 +106,6 @@ final class BetterStandardPrinter extends Standard
         $stmts = array_values($stmts);
 
         return parent::prettyPrintFile($stmts) . PHP_EOL;
-    }
-
-    /**
-     * @api magic method in parent
-     */
-    public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
-    {
-        return $this->pStmts($fileWithoutNamespace->stmts);
     }
 
     protected function p(
@@ -149,6 +145,11 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $content;
+    }
+
+    protected function pStmt_FileNode(FileNode $fileNode): string
+    {
+        return $this->pStmts($fileNode->stmts, true);
     }
 
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string
@@ -511,11 +512,10 @@ final class BetterStandardPrinter extends Standard
      * @param Node[] $stmts
      * @return Node[]|mixed[]
      */
-    private function resolveNewStmts(array $stmts): array
+    private function unwrapFileNode(array $stmts): array
     {
-        $stmts = array_values($stmts);
-
-        if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
+        //        $stmts = array_values($stmts);
+        if (count($stmts) === 1 && $stmts[0] instanceof FileNode) {
             return array_values($stmts[0]->stmts);
         }
 

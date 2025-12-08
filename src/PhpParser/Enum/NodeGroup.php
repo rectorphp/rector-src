@@ -27,7 +27,7 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 
 final class NodeGroup
 {
@@ -55,7 +55,7 @@ final class NodeGroup
         Namespace_::class,
         TryCatch::class,
         While_::class,
-        FileWithoutNamespace::class,
+        FileNode::class,
     ];
 
     /**

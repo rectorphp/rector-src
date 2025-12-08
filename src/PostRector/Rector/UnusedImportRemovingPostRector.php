@@ -20,7 +20,7 @@ use PhpParser\NodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 
 final class UnusedImportRemovingPostRector extends AbstractPostRector
 {
@@ -32,7 +32,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
+        if (! $node instanceof Namespace_ && ! $node instanceof FileNode) {
             return null;
         }
 
@@ -101,11 +101,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @return string[]
      */
-    private function findNonUseImportNames(Namespace_|FileWithoutNamespace $namespace): array
+    private function findNonUseImportNames(Namespace_|FileNode $fileNode): array
     {
         $names = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace->stmts, static function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($fileNode->stmts, static function (Node $node) use (
             &$names
         ): int|null|Name {
             if ($node instanceof Use_) {
@@ -136,11 +136,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @return string[]
      */
-    private function findNamesInDocBlocks(Namespace_|FileWithoutNamespace $namespace): array
+    private function findNamesInDocBlocks(Namespace_|FileNode $rootNode): array
     {
         $names = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($rootNode, function (Node $node) use (
             &$names
         ) {
             $comments = $node->getComments();
@@ -180,10 +180,10 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @return string[]
      */
-    private function resolveUsedPhpAndDocNames(Namespace_|FileWithoutNamespace $namespace): array
+    private function resolveUsedPhpAndDocNames(Namespace_|FileNode $rootNode): array
     {
-        $phpNames = $this->findNonUseImportNames($namespace);
-        $docBlockNames = $this->findNamesInDocBlocks($namespace);
+        $phpNames = $this->findNonUseImportNames($rootNode);
+        $docBlockNames = $this->findNamesInDocBlocks($rootNode);
 
         $names = [...$phpNames, ...$docBlockNames];
         return array_unique($names);

@@ -8,6 +8,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PhpParser\Node\FileNode;
 
 final class AddUseStatementGuard
 {
@@ -34,6 +35,10 @@ final class AddUseStatementGuard
 
         // just loop the first level stmts to locate namespace to improve performance
         // as namespace is always on first level
+        if (isset($stmts[0]) && $stmts[0] instanceof FileNode) {
+            $stmts = $stmts[0]->stmts;
+        }
+
         foreach ($stmts as $stmt) {
             if ($stmt instanceof Namespace_) {
                 ++$totalNamespaces;

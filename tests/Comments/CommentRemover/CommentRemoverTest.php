@@ -29,6 +29,7 @@ final class CommentRemoverTest extends AbstractLazyTestCase
 
         $this->commentRemover = $this->make(CommentRemover::class);
         $this->testingParser = $this->make(TestingParser::class);
+
         $this->betterStandardPrinter = $this->make(BetterStandardPrinter::class);
     }
 
@@ -44,11 +45,11 @@ final class CommentRemoverTest extends AbstractLazyTestCase
 
         $nodesWithoutComments = $this->commentRemover->removeFromNode($nodes);
 
-        $fileContent = $this->betterStandardPrinter->print($nodesWithoutComments);
-        $fileContent = trim($fileContent);
+        $printedFileContent = $this->betterStandardPrinter->print($nodesWithoutComments);
+        $printedFileContent = trim($printedFileContent);
 
         $expectedContent = trim($expectedOutputContents);
-        $this->assertSame($fileContent, $expectedContent);
+        $this->assertSame($printedFileContent, $expectedContent);
 
         // original nodes are not touched
         $originalContent = $this->betterStandardPrinter->print($nodes);

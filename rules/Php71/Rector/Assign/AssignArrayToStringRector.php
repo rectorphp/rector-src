@@ -19,7 +19,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitor;
 use PHPStan\Type\UnionType;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -67,7 +67,7 @@ CODE_SAMPLE
     {
         return [
             Namespace_::class,
-            FileWithoutNamespace::class,
+            FileNode::class,
             Class_::class,
             ClassMethod::class,
             Function_::class,
@@ -76,7 +76,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Namespace_|FileWithoutNamespace|Class_|ClassMethod|Function_|Closure $node
+     * @param Namespace_|FileNode|Class_|ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -85,6 +85,11 @@ CODE_SAMPLE
         }
 
         if ($node->stmts === null) {
+            return null;
+        }
+
+        if ($node instanceof FileNode && $node->isNamespaced()) {
+            // handled in Namespace_
             return null;
         }
 
@@ -171,7 +176,7 @@ CODE_SAMPLE
      */
     private function findSameNamedVariableAssigns(
         Variable $variable,
-        Namespace_|FileWithoutNamespace|ClassMethod|Function_|Closure $node
+        Namespace_|FileNode|ClassMethod|Function_|Closure $node
     ): array {
         if ($node->stmts === null) {
             return [];
@@ -234,7 +239,7 @@ CODE_SAMPLE
 
     private function refactorAssign(
         Assign $assign,
-        Namespace_|FileWithoutNamespace|ClassMethod|Function_|Closure $node
+        Namespace_|FileNode|ClassMethod|Function_|Closure $node
     ): ?Assign {
         if (! $assign->var instanceof Variable) {
             return null;

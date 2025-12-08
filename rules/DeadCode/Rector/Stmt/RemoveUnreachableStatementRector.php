@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\PhpParser\Enum\NodeGroup;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -64,6 +65,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node instanceof FileNode && $node->isNamespaced()) {
+            // handled in Namespace_ node
+            return null;
+        }
+
         if ($node->stmts === null) {
             return null;
         }
