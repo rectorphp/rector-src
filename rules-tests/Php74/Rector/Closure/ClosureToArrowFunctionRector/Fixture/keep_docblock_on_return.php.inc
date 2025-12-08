@@ -10,6 +10,11 @@ class KeepDocblockOnReturn
             /** @psalm-suppress UndefinedFunction */
             return ff();
         };
+
+        function() {
+            // @psalm-suppress UndefinedFunction
+            return ff();
+        };
     }
 }
 
@@ -25,6 +30,10 @@ class KeepDocblockOnReturn
     {
         fn() =>
             /** @psalm-suppress UndefinedFunction */
+            ff();
+
+        fn() =>
+            // @psalm-suppress UndefinedFunction
             ff();
     }
 }
