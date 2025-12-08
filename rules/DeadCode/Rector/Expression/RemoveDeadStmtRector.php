@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\Expression;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -108,7 +109,7 @@ CODE_SAMPLE
      */
     private function removeNodeAndKeepComments(Expression $expression): int|Node
     {
-        if ($expression->getComments() !== []) {
+        if ($expression->getDocComment() instanceof Doc) {
             $nop = new Nop();
             $nop->setDocComment($expression->getDocComment());
 
