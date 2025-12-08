@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixture;
 
 final class SomeClass
 {
@@ -18,7 +18,7 @@ final class SomeClass
 -----
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixture;
 
 final class SomeClass
 {

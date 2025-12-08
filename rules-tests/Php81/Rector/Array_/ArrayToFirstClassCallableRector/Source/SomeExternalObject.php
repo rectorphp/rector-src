@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Source;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Source;
 
 final class SomeExternalObject
 {

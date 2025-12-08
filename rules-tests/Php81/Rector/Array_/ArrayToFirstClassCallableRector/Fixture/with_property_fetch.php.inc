@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixture;
 
-use Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Source\SomeExternalObject;
+use Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Source\SomeExternalObject;
 
 final class WithPropertyFetch
 {
@@ -23,9 +23,9 @@ final class WithPropertyFetch
 -----
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixture;
 
-use Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Source\SomeExternalObject;
+use Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Source\SomeExternalObject;
 
 final class WithPropertyFetch
 {
