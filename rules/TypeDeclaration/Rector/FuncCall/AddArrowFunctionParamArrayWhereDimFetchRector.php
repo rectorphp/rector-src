@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\ArrayType;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
@@ -149,8 +148,7 @@ CODE_SAMPLE
             if ($arrayDimFetch->var instanceof Variable) {
                 $type = $this->nodeTypeResolver->getNativeType($arrayDimFetch->var);
 
-                // skip string values
-                if (! $arrayDimFetch->dim instanceof String_ && ($type->isString()->yes() || $type->isString()->maybe())) {
+                if ($type->isString()->yes()) {
                     continue;
                 }
 
