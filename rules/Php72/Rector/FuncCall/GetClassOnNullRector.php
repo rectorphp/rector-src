@@ -82,7 +82,7 @@ CODE_SAMPLE
             }
 
             // just created func call
-            if ($node->getAttribute(AttributeKey::DO_NOT_CHANGE) === true) {
+            if ($node->getAttribute(AttributeKey::ORIGINAL_NODE) === null) {
                 return null;
             }
 
@@ -124,9 +124,6 @@ CODE_SAMPLE
 
     private function createGetClassFuncCall(FuncCall $oldFuncCall): FuncCall
     {
-        $funcCall = new FuncCall($oldFuncCall->name, $oldFuncCall->args);
-        $funcCall->setAttribute(AttributeKey::DO_NOT_CHANGE, true);
-
-        return $funcCall;
+        return new FuncCall($oldFuncCall->name, $oldFuncCall->args);
     }
 }
