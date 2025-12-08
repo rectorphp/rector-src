@@ -40,11 +40,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FunctionLikeToFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const HAS_CALLBACK_SIGNATURE_MULTI_PARAMS = 'has_callback_signature_multi_params';
-
     public function __construct(
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver
@@ -72,44 +67,14 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [CallLike::class, ArrowFunction::class, Closure::class];
+        return [ArrowFunction::class, Closure::class];
     }
 
     /**
-     * @param CallLike|ArrowFunction|Closure $node
+     * @param ArrowFunction|Closure $node
      */
     public function refactor(Node $node): null|CallLike
     {
-        if ($node instanceof CallLike) {
-            if ($node->isFirstClassCallable()) {
-                return null;
-            }
-
-            $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-            foreach ($node->getArgs() as $arg) {
-                if (! $arg->value instanceof Closure && ! $arg->value instanceof ArrowFunction) {
-                    continue;
-                }
-
-                if ($methodReflection instanceof NativeFunctionReflection) {
-                    $parametersAcceptors = ParametersAcceptorSelector::combineAcceptors(
-                        $methodReflection->getVariants()
-                    );
-                    foreach ($parametersAcceptors->getParameters() as $extendedParameterReflection) {
-                        if ($extendedParameterReflection->getType() instanceof CallableType && $extendedParameterReflection->getType()->isVariadic()) {
-                            $arg->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
-                        }
-                    }
-
-                    return null;
-                }
-
-                $arg->value->setAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS, true);
-            }
-
-            return null;
-        }
-
         $callLike = $this->extractCallLike($node);
         if ($callLike === null) {
             return null;
@@ -169,7 +134,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($node->getAttribute(self::HAS_CALLBACK_SIGNATURE_MULTI_PARAMS) === true) {
+        if ($node->getAttribute(AttributeKey::HAS_CLOSURE_WITH_VARIADIC_ARGS) === true) {
             return true;
         }
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
+namespace Rector\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Static_;
+use PhpParser\Node\Stmt\Global_;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
@@ -18,7 +18,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Enum\NodeGroup;
 use Webmozart\Assert\Assert;
 
-final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
+final class GlobalVariableNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
@@ -36,24 +36,23 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Dec
             return null;
         }
 
-        /** @var string[] $staticVariableNames */
-        $staticVariableNames = [];
+        /** @var string[] $globalVariableNames */
+        $globalVariableNames = [];
 
         foreach ($node->stmts as $stmt) {
-            if (! $stmt instanceof Static_) {
-                $this->setIsStaticVarAttribute($stmt, $staticVariableNames);
+            if (! $stmt instanceof Global_) {
+                $this->setIsGlobalVarAttribute($stmt, $globalVariableNames);
                 continue;
             }
 
-            foreach ($stmt->vars as $staticVar) {
-                $staticVariableName = $staticVar->var->name;
+            foreach ($stmt->vars as $variable) {
+                if ($variable instanceof Variable && ! $variable->name instanceof Expr) {
+                    $variable->setAttribute(AttributeKey::IS_GLOBAL_VAR, true);
 
-                if (! is_string($staticVariableName)) {
-                    continue;
+                    /** @var string $variableName */
+                    $variableName = $variable->name;
+                    $globalVariableNames[] = $variableName;
                 }
-
-                $staticVar->var->setAttribute(AttributeKey::IS_STATIC_VAR, true);
-                $staticVariableNames[] = $staticVariableName;
             }
         }
 
@@ -61,17 +60,17 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Dec
     }
 
     /**
-     * @param string[] $staticVariableNames
+     * @param string[] $globalVariableNames
      */
-    private function setIsStaticVarAttribute(Stmt $stmt, array $staticVariableNames): void
+    private function setIsGlobalVarAttribute(Stmt $stmt, array $globalVariableNames): void
     {
-        if ($staticVariableNames === []) {
+        if ($globalVariableNames === []) {
             return;
         }
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmt,
-            static function (Node $subNode) use ($staticVariableNames): int|null|Variable {
+            static function (Node $subNode) use ($globalVariableNames): int|null|Variable {
                 if ($subNode instanceof Class_) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
@@ -84,11 +83,11 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Dec
                     return null;
                 }
 
-                if (! in_array($subNode->name, $staticVariableNames, true)) {
+                if (! in_array($subNode->name, $globalVariableNames, true)) {
                     return null;
                 }
 
-                $subNode->setAttribute(AttributeKey::IS_STATIC_VAR, true);
+                $subNode->setAttribute(AttributeKey::IS_GLOBAL_VAR, true);
                 return $subNode;
             }
         );
