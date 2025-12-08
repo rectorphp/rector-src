@@ -127,11 +127,13 @@ CODE_SAMPLE
             return NodeVisitor::REMOVE_NODE;
         }
 
-        $node->stmts[0]->setAttribute(AttributeKey::COMMENTS, array_merge(
-            $node->getComments(),
-            $node->stmts[0]->getComments(),
-        ));
-        $node->stmts[0]->setAttribute(AttributeKey::HAS_MERGED_COMMENTS, true);
+        // keep original comments
+        if ($node->getComments() !== []) {
+            $node->stmts[0]->setAttribute(AttributeKey::COMMENTS, array_merge(
+                $node->getComments(),
+                $node->stmts[0]->getComments(),
+            ));
+        }
 
         return $node->stmts;
     }

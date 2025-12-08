@@ -12,6 +12,7 @@ use PhpParser\NodeVisitor;
 use Rector\DeadCode\ConditionEvaluator;
 use Rector\DeadCode\ConditionResolver;
 use Rector\DeadCode\Contract\ConditionInterface;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -100,7 +101,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $if->stmts;
+        return $this->keepIfLevelComments($if, $if->stmts);
     }
 
     /**
@@ -113,7 +114,22 @@ CODE_SAMPLE
             return NodeVisitor::REMOVE_NODE;
         }
 
-        // else is always used
-        return $if->else->stmts;
+        return $this->keepIfLevelComments($if, $if->else->stmts);
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @return Stmt[]
+     */
+    private function keepIfLevelComments(If_ $if, array $stmts): array
+    {
+        if ($stmts !== []) {
+            $stmts[0]->setAttribute(
+                AttributeKey::COMMENTS,
+                array_merge($if->getComments(), $stmts[0]->getComments())
+            );
+        }
+
+        return $stmts;
     }
 }

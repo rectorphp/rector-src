@@ -82,11 +82,6 @@ final class AttributeKey
     public const IS_REGULAR_PATTERN = 'is_regular_pattern';
 
     /**
-     * @var string
-     */
-    public const DO_NOT_CHANGE = 'do_not_change';
-
-    /**
      * Helps with infinite loop detection
      * @var string
      */
@@ -96,11 +91,6 @@ final class AttributeKey
      * @var string
      */
     public const WRAPPED_IN_PARENTHESES = 'wrapped_in_parentheses';
-
-    /**
-     * @var string
-     */
-    public const COMMENT_CLOSURE_RETURN_MIRRORED = 'comment_closure_return_mirrored';
 
     /**
      * To pass PHP 8.0 attribute FQN names
@@ -114,6 +104,7 @@ final class AttributeKey
     public const EXTRA_USE_IMPORT = 'extra_use_import';
 
     /**
+     * Used internally by php-parser
      * @var string
      */
     public const DOC_LABEL = 'docLabel';
@@ -265,11 +256,6 @@ final class AttributeKey
      * @var string
      */
     public const IS_FIRST_LEVEL_STATEMENT = 'first_level_stmt';
-
-    /**
-     * @var string
-     */
-    public const HAS_MERGED_COMMENTS = 'has_merged_comments';
 
     public const IS_DEFAULT_PROPERTY_VALUE = 'is_default_property_value';
 

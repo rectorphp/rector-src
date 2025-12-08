@@ -56,7 +56,7 @@
         "rector/type-perfect": "^2.1",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symplify/phpstan-extensions": "^12.0.2",
-        "symplify/phpstan-rules": "^14.9.3",
+        "symplify/phpstan-rules": "^14.9.4",
         "symplify/vendor-patches": "^11.5",
         "tomasvotruba/class-leak": "^2.1",
         "tomasvotruba/unused-public": "^2.1",
