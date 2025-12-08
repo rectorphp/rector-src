@@ -1,0 +1,30 @@
+name: Rector Laravel with dev-main
+
+on:
+    push:
+        branches:
+            - main
+    pull_request: null
+
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    rector_laravel_rector_dev:
+        runs-on: ubuntu-latest
+
+        steps:
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.3
+                    coverage: none
+
+                # fixes https://github.com/rectorphp/rector/pull/4559/checks?check_run_id=1359814403, see https://github.com/shivammathur/setup-php#composer-github-oauth
+                env:
+                    COMPOSER_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+            -   run: git clone https://github.com/driftingly/rector-laravel.git
+            -   run: composer require rector/rector:dev-main --working-dir rector-laravel
+            -   run: cd rector-laravel && vendor/bin/phpunit
