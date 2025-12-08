@@ -82,11 +82,6 @@ final class AttributeKey
     public const IS_REGULAR_PATTERN = 'is_regular_pattern';
 
     /**
-     * @var string
-     */
-    public const DO_NOT_CHANGE = 'do_not_change';
-
-    /**
      * Helps with infinite loop detection
      * @var string
      */
@@ -114,6 +109,7 @@ final class AttributeKey
     public const EXTRA_USE_IMPORT = 'extra_use_import';
 
     /**
+     * Used internally by php-parser
      * @var string
      */
     public const DOC_LABEL = 'docLabel';

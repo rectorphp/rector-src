@@ -11,10 +11,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\NodeManipulator\LivingCodeManipulator;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,7 +27,6 @@ final class RemoveDeadStmtRector extends AbstractRector
         private readonly LivingCodeManipulator $livingCodeManipulator,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -111,11 +108,9 @@ CODE_SAMPLE
      */
     private function removeNodeAndKeepComments(Expression $expression): int|Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
-
         if ($expression->getComments() !== []) {
             $nop = new Nop();
-            $nop->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
+            $nop->setDocComment($expression->getDocComment());
 
             return $nop;
         }
