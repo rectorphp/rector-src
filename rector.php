@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
@@ -42,9 +41,6 @@ return RectorConfig::configure()
     ->withImportNames(removeUnusedImports: true)
     ->withRules([RemoveRefactorDuplicatedNodeInstanceCheckRector::class, AddSeeTestAnnotationRector::class])
     ->withSkip([
-        // testing skip of deprecated class
-        FunctionLikeToFirstClassCallableRector::class,
-
         StringClassNameToClassConstantRector::class,
         // tests
         '*/Fixture*',

@@ -15,24 +15,25 @@ use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 final class SkippedClassResolver
 {
     /**
-     * @var null|array<string, string[]|null>
+     * @var null|array<class-string, string[]|null>
      */
     private null|array $skippedClassesToFiles = null;
 
     /**
-     * @return array<DeprecatedInterface>
+     * @return array<class-string<DeprecatedInterface>>
      */
     public function resolveDeprecatedSkippedClasses(): array
     {
         $skippedClassNames = array_keys($this->resolve());
 
-        return array_filter($skippedClassNames, function (string $class): bool {
-            return is_a($class, DeprecatedInterface::class, true);
-        });
+        return array_filter(
+            $skippedClassNames,
+            fn (string $class): bool => is_a($class, DeprecatedInterface::class, true)
+        );
     }
 
     /**
-     * @return array<string, string[]|null>
+     * @return array<class-string, string[]|null>
      */
     public function resolve(): array
     {
