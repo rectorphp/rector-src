@@ -194,11 +194,13 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
 
     private function isChainedCall(FuncCall|MethodCall|StaticCall $callLike): bool
     {
-        if (! $callLike instanceof MethodCall) {
-            return false;
+        if ($callLike instanceof MethodCall) {
+            return $callLike->var instanceof CallLike;
+        } elseif ($callLike instanceof StaticCall) {
+            return $callLike->class instanceof CallLike;
         }
 
-        return $callLike->var instanceof CallLike;
+        return false;
     }
 
     /**
