@@ -436,6 +436,7 @@ parameters:
         # deprecated rule
         - '#Rule Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
         - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'
+        - '#Class "Rector\\CodingStyle\\Rector\\String_\\SymplifyQuoteEscapeRector" is missing @see annotation with test case class reference#'
         - '#Access to constant on deprecated class Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector#'
         -
             message: '#Only abstract classes can be extended#'
