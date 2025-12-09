@@ -27,7 +27,7 @@ final readonly class CallLikeExpectsThisBindedClosureArgsAnalyzer
         $args = [];
         $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
 
-        if ($callLike->isFirstClassCallable()) {
+        if ($callLike->isFirstClassCallable() || $callLike->getArgs() === []) {
             return [];
         }
 
