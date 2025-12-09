@@ -21,6 +21,7 @@ use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Declare_;
@@ -110,6 +111,15 @@ final class BetterStandardPrinter extends Standard
     public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
     {
         return $this->pStmts($fileWithoutNamespace->stmts);
+    }
+
+    /**
+     * Use for standalone InterpolatedStringPart printing, that is not support by php-parser natively.
+     * Used e.g. in \Rector\PhpParser\Comparing\NodeComparator::printWithoutComments
+     */
+    protected function pInterpolatedStringPart(InterpolatedStringPart $interpolatedStringPart): string
+    {
+        return $interpolatedStringPart->value;
     }
 
     protected function p(
