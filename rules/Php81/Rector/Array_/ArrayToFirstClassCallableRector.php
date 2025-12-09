@@ -113,6 +113,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->getAttribute(AttributeKey::IS_PARAM_DEFAULT)) {
+            return null;
+        }
+
         $args = [new VariadicPlaceholder()];
         if ($callerExpr instanceof ClassConstFetch) {
             $type = $this->getType($callerExpr->class);
