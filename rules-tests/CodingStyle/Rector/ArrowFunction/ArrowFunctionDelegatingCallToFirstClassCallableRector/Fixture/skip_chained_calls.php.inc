@@ -6,11 +6,7 @@ final class SkipChainedCalls
 {
     public function run()
     {
-        function ($foo)
-        {
-            return FooBar::foo()->bar($foo);
-        };
-
         fn ($foo) => FooBar::foo()->bar($foo);
+        fn ($foo) => FooBar::foo()::bar($foo);
     }
 }
