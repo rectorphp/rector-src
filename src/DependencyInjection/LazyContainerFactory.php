@@ -125,6 +125,7 @@ use Rector\PhpParser\NodeVisitor\ClosureWithVariadicParametersNodeVisitor;
 use Rector\PhpParser\NodeVisitor\ContextNodeVisitor;
 use Rector\PhpParser\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\PhpParser\NodeVisitor\NameNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ParamDefaultNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PhpVersionConditionNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PropertyOrClassConstDefaultNodeVisitor;
 use Rector\PhpParser\NodeVisitor\StaticVariableNodeVisitor;
@@ -253,6 +254,7 @@ final class LazyContainerFactory
         NameNodeVisitor::class,
         StaticVariableNodeVisitor::class,
         PropertyOrClassConstDefaultNodeVisitor::class,
+        ParamDefaultNodeVisitor::class,
         ClassConstFetchNodeVisitor::class,
     ];
 
