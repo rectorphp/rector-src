@@ -433,3 +433,12 @@ parameters:
                 - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
                 - rules/Php81/Enum/AttributeName.php
 
+        # deprecated rule
+        - '#Rule Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
+        - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'
+        - '#Access to constant on deprecated class Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector#'
+        -
+            message: '#Only abstract classes can be extended#'
+            path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
+
+
