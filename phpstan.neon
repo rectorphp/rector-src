@@ -14,7 +14,6 @@ parameters:
 
     # requires exact closure types
     checkMissingCallableSignature: true
-
     treatPhpDocTypesAsCertain: false
 
     paths:
@@ -46,6 +45,12 @@ parameters:
         null_over_false: true
         narrow_param: true
         narrow_return: true
+
+    # see https://github.com/TomasVotruba/unused-public
+    unused_public:
+        methods: true
+        properties: true
+        constants: true
 
     ignoreErrors:
         # required generics on interface array, not helpful
@@ -413,3 +418,28 @@ parameters:
         -
             identifier: method.parentMethodFinalByPhpDoc
             path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
+
+        # deprecated
+        -
+            identifier: public.method.unused
+            paths:
+                - rules/Transform/ValueObject/ClassMethodReference.php
+                - rules/CodeQuality/ValueObject/KeyAndExpr.php
+
+        -
+            identifier: public.classConstant.unused
+            paths:
+                - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
+                - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
+                - rules/Php81/Enum/AttributeName.php
+
+        # deprecated rule
+        - '#Rule Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
+        - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'
+        - '#Class "Rector\\CodingStyle\\Rector\\String_\\SymplifyQuoteEscapeRector" is missing @see annotation with test case class reference#'
+        - '#Access to constant on deprecated class Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector#'
+        -
+            message: '#Only abstract classes can be extended#'
+            path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
+
+

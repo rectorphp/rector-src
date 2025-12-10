@@ -291,12 +291,6 @@ CODE_SAMPLE;
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
 
         if (is_array($refactoredNode)) {
-            $firstNode = current($refactoredNode);
-
-            if ($firstNode->getAttribute(AttributeKey::HAS_MERGED_COMMENTS, false) === false) {
-                $this->mirrorComments($firstNode, $originalNode);
-            }
-
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown

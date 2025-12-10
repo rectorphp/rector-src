@@ -114,9 +114,10 @@ final class BetterStandardPrinter extends Standard
     }
 
     /**
-     * @api magic method in parent
+     * Use for standalone InterpolatedStringPart printing, that is not support by php-parser natively.
+     * Used e.g. in \Rector\PhpParser\Comparing\NodeComparator::printWithoutComments
      */
-    public function pInterpolatedStringPart(InterpolatedStringPart $interpolatedStringPart): string
+    protected function pInterpolatedStringPart(InterpolatedStringPart $interpolatedStringPart): string
     {
         return $interpolatedStringPart->value;
     }
@@ -129,14 +130,12 @@ final class BetterStandardPrinter extends Standard
     ): string {
         // handle already AlwaysRememberedExpr
         // @see https://github.com/rectorphp/rector/issues/8815#issuecomment-2503453191
-        while ($node instanceof AlwaysRememberedExpr) {
-            $node = $node->getExpr();
+        if ($node instanceof AlwaysRememberedExpr) {
+            return $this->p($node->getExpr(), $precedence, $lhsPrecedence, $parentFormatPreserved);
         }
 
-        // handle overlapped origNode is Match_
-        // and its subnodes still have AlwaysRememberedExpr
+        // handle overlapped origNode is Match_ and its subnodes still have AlwaysRememberedExpr
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-
         if ($originalNode instanceof Match_) {
             $subNodeNames = $node->getSubNodeNames();
             foreach ($subNodeNames as $subNodeName) {
@@ -146,22 +145,25 @@ final class BetterStandardPrinter extends Standard
             }
         }
 
-        $this->wrapBinaryOp($node);
+        $this->wrapBinaryOpWithBrackets($node);
 
         $content = parent::p($node, $precedence, $lhsPrecedence, $parentFormatPreserved);
 
+        // remove once its fixed in php-parser, https://github.com/nikic/PHP-Parser/pull/1126
         if ($node instanceof CallLike) {
             $this->cleanVariadicPlaceHolderTrailingComma($node);
         }
 
-        return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
-            ? ('(' . $content . ')')
-            : $content;
+        if ($node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES)) {
+            return '(' . $content . ')';
+        }
+
+        return $content;
     }
 
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string
     {
-        if (! $arrowFunction->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
+        if (! $arrowFunction->hasAttribute(AttributeKey::COMMENTS)) {
             return parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
         }
 
@@ -169,7 +171,6 @@ final class BetterStandardPrinter extends Standard
 
         /** @var Comment[] $comments */
         $comments = $expr->getAttribute(AttributeKey::COMMENTS) ?? [];
-
         if ($comments === []) {
             return parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
         }
@@ -182,23 +183,7 @@ final class BetterStandardPrinter extends Standard
             $text .= $commentText . "\n";
         }
 
-        return $this->pPrefixOp(
-            ArrowFunction::class,
-            $this->pAttrGroups($arrowFunction->attrGroups, true)
-            . $this->pStatic($arrowFunction->static)
-            . 'fn' . ($arrowFunction->byRef ? '&' : '')
-            . '(' . $this->pMaybeMultiline(
-                $arrowFunction->params,
-                $this->phpVersion->supportsTrailingCommaInParamList()
-            ) . ')'
-            . ($arrowFunction->returnType instanceof Node ? ': ' . $this->p($arrowFunction->returnType) : '')
-            . ' =>'
-            . $text
-            . $indent,
-            $arrowFunction->expr,
-            $precedence,
-            $lhsPrecedence
-        );
+        return $text . "\n" . $indent . parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
     }
 
     /**
@@ -463,7 +448,7 @@ final class BetterStandardPrinter extends Standard
         }
     }
 
-    private function wrapBinaryOp(Node $node): void
+    private function wrapBinaryOpWithBrackets(Node $node): void
     {
         if ($this->exprAnalyzer->isExprWithExprPropertyWrappable($node)) {
             $node->expr->setAttribute(AttributeKey::ORIGINAL_NODE, null);

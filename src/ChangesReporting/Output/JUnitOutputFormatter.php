@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class JUnitOutputFormatter implements OutputFormatterInterface
 {
-    public const NAME = 'junit';
+    private const NAME = 'junit';
 
     private const XML_ATTRIBUTE_FILE = 'file';
 

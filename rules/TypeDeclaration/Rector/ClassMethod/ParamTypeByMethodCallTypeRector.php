@@ -111,8 +111,8 @@ CODE_SAMPLE
         }
 
         /** @var array<StaticCall|MethodCall|FuncCall> $callers */
-        $callers = $this->betterNodeFinder->findInstancesOf(
-            $node,
+        $callers = $this->betterNodeFinder->findInstancesOfScoped(
+            [$node],
             [StaticCall::class, MethodCall::class, FuncCall::class]
         );
 

@@ -8,6 +8,7 @@ use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 
 return static function (RectorConfig $rectorConfig): void {
+    /** triggers @see \Rector\NodeTypeResolver\PhpDocNodeVisitor\NameImportingPhpDocNodeVisitor */
     $rectorConfig->importNames();
 
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [

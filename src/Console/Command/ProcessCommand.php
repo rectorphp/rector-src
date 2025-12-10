@@ -19,6 +19,7 @@ use Rector\Console\ProcessConfigureDecorator;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
+use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
 use Rector\ValueObject\Configuration;
@@ -45,6 +46,7 @@ final class ProcessCommand extends Command
         private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
         private readonly MissConfigurationReporter $missConfigurationReporter,
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
+        private readonly SkippedClassResolver $skippedClassResolver,
     ) {
         parent::__construct();
     }
@@ -103,6 +105,15 @@ EOF
         // 0. warn about too high levels
         foreach ($configuration->getLevelOverflows() as $levelOverflow) {
             $this->reportLevelOverflow($levelOverflow);
+        }
+
+        // 0. warn about skipped rules that are deprecated
+        if ($this->skippedClassResolver->resolveDeprecatedSkippedClasses() !== []) {
+            $this->symfonyStyle->warning(sprintf(
+                'These rules are skipped, but are deprecated. Most likely you do not need to skip them anymore as not part of any set and remove them: %s* %s',
+                "\n\n",
+                implode(' * ', $this->skippedClassResolver->resolveDeprecatedSkippedClasses()) . "\n"
+            ));
         }
 
         // 1. warn about rules registered in both withRules() and sets to avoid bloated rector.php configs
