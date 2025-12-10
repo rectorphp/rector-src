@@ -24,11 +24,7 @@ final class ParamDefaultNodeVisitor extends NodeVisitorAbstract implements Decor
             return null;
         }
 
-        SimpleNodeTraverser::decorateWithAttributeValue(
-            $node->default,
-            AttributeKey::IS_PARAM_DEFAULT,
-            true
-        );
+        SimpleNodeTraverser::decorateWithAttributeValue($node->default, AttributeKey::IS_PARAM_DEFAULT, true);
 
         return null;
     }

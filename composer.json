@@ -99,7 +99,8 @@
             "tests/debug_functions.php",
             "rules-tests/Transform/Rector/FuncCall/FuncCallToMethodCallRector/Source/some_view_function.php",
             "rules-tests/TypeDeclaration/Rector/ClassMethod/ParamTypeByMethodCallTypeRector/Source/FunctionTyped.php",
-            "rules-tests/Php70/Rector/ClassMethod/Php4ConstructorRector/Source/ParentClass.php"
+            "rules-tests/Php70/Rector/ClassMethod/Php4ConstructorRector/Source/ParentClass.php",
+            "rules-tests/CodingStyle/Rector/Closure/StaticClosureRector/Source/functions.php"
         ]
     },
     "scripts": {
