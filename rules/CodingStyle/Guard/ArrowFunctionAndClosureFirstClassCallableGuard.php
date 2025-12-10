@@ -18,7 +18,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\Annotations\AnnotationMethodReflection;
+use PHPStan\Reflection\MethodReflection;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -95,8 +95,8 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
             return true;
         }
 
-        // exists, but by @method annotation
-        if ($reflection instanceof AnnotationMethodReflection && ! $reflection->getDeclaringClass()->hasNativeMethod(
+        // phpstan reports first class callables that are not native methods
+        if ($reflection instanceof MethodReflection && ! $reflection->getDeclaringClass()->hasNativeMethod(
             $reflection->getName()
         )) {
             return true;
