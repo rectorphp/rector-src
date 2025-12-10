@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector\Fixture;
 
 function skip_single_arg(?string $foo = null) {}
 

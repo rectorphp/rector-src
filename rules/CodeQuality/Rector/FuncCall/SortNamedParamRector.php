@@ -9,27 +9,17 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
-use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\MethodReflection;
-use Rector\CodeQuality\NodeManipulator\NamedArgsSorter;
-use Rector\NodeAnalyzer\ArgsAnalyzer;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\SortNamedParamRectorTest
+ * @deprecated as renamed to SortCallLikeNamedArgsRector
  */
-final class SortNamedParamRector extends AbstractRector
+final class SortNamedParamRector extends AbstractRector implements DeprecatedInterface
 {
-    public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly NamedArgsSorter $namedArgsSorter,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -65,36 +55,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->isFirstClassCallable()) {
-            return null;
-        }
-
-        $args = $node->getArgs();
-        if (count($args) <= 1) {
-            return null;
-        }
-
-        if (! $this->argsAnalyzer->hasNamedArg($args)) {
-            return null;
-        }
-
-        if ($node instanceof New_) {
-            $functionLikeReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($node);
-        } else {
-            $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        }
-
-        if (! $functionLikeReflection instanceof MethodReflection && ! $functionLikeReflection instanceof FunctionReflection) {
-            return null;
-        }
-
-        $args = $this->namedArgsSorter->sortArgsToMatchReflectionParameters($args, $functionLikeReflection);
-        if ($node->args === $args) {
-            return null;
-        }
-
-        $node->args = $args;
-
-        return $node;
+        throw new ShouldNotHappenException(sprintf(
+            '%s is deprecated as renamed to "%s".',
+            self::class,
+            SortCallLikeNamedArgsRector::class
+        ));
     }
 }
