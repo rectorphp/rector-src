@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector\Fixture;
 
 function run($foo = null, $bar = null, $baz = null) {}
 
@@ -12,7 +12,7 @@ run($foo, baz: $baz, bar: $bar);
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector\Fixture;
 
 function run($foo = null, $bar = null, $baz = null) {}
 
