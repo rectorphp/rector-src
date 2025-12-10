@@ -5,17 +5,13 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Attribute;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
+use Rector\CodeQuality\NodeManipulator\NamedArgsSorter;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -29,30 +25,27 @@ final class SortNamedParamRector extends AbstractRector
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly NamedArgsSorter $namedArgsSorter,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Sort named parameters usage in a function or method call',
+            'Sort named arguments to match their order in a function or method call or class constructors',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 function run($foo = null, $bar = null, $baz = null) {}
 
 run(bar: $bar, foo: $foo);
-
-run($foo, baz: $baz, bar: $bar);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 function run($foo = null, $bar = null, $baz = null) {}
 
 run(foo: $foo, bar: $bar);
-
-run($foo, bar: $bar, baz: $baz);
 CODE_SAMPLE
                 ),
             ]
@@ -64,20 +57,19 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class, New_::class, FuncCall::class, Attribute::class];
+        return [MethodCall::class, StaticCall::class, New_::class, FuncCall::class];
     }
 
     /**
-     * @param MethodCall|StaticCall|New_|FuncCall|Attribute $node
+     * @param MethodCall|StaticCall|New_|FuncCall $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node instanceof CallLike && $node->isFirstClassCallable()) {
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
-        $args = $node instanceof Attribute ? $node->args : $node->getArgs();
-
+        $args = $node->getArgs();
         if (count($args) <= 1) {
             return null;
         }
@@ -88,8 +80,6 @@ CODE_SAMPLE
 
         if ($node instanceof New_) {
             $functionLikeReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($node);
-        } elseif ($node instanceof Attribute) {
-            $functionLikeReflection = $this->reflectionResolver->resolveMethodReflectionFromAttribute($node);
         } else {
             $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
         }
@@ -98,7 +88,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $args = $this->sortNamedArguments($functionLikeReflection, $args);
+        $args = $this->namedArgsSorter->sortArgsToMatchReflectionParameters($args, $functionLikeReflection);
         if ($node->args === $args) {
             return null;
         }
@@ -106,53 +96,5 @@ CODE_SAMPLE
         $node->args = $args;
 
         return $node;
-    }
-
-    /**
-     * @param Arg[] $currentArgs
-     * @return Arg[]
-     */
-    public function sortNamedArguments(
-        FunctionReflection | MethodReflection $functionLikeReflection,
-        array $currentArgs
-    ): array {
-        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
-            $functionLikeReflection->getVariants()
-        );
-
-        $parameters = $extendedParametersAcceptor->getParameters();
-
-        $order = [];
-        foreach ($parameters as $key => $parameter) {
-            $order[$parameter->getName()] = $key;
-        }
-
-        $sortedArgs = [];
-        $toSortArgs = [];
-        foreach ($currentArgs as $currentArg) {
-            if (! $currentArg->name instanceof Identifier) {
-                $sortedArgs[] = $currentArg;
-                continue;
-            }
-
-            $toSortArgs[] = $currentArg;
-        }
-
-        usort(
-            $toSortArgs,
-            static function (Arg $arg1, Arg $arg2) use ($order): int {
-                /** @var Identifier $argName1 */
-                $argName1 = $arg1->name;
-                /** @var Identifier $argName2 */
-                $argName2 = $arg2->name;
-
-                $order1 = $order[$argName1->name] ?? PHP_INT_MAX;
-                $order2 = $order[$argName2->name] ?? PHP_INT_MAX;
-
-                return $order1 <=> $order2;
-            }
-        );
-
-        return [...$sortedArgs, ...$toSortArgs];
     }
 }
