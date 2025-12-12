@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Privatization\Rector\ClassConst\PrivatizeFinalClassConstantRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Privatization\Rector\MethodCall\PrivatizeLocalGetterToPropertyRector;
 use Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector;
@@ -12,5 +13,6 @@ return static function (RectorConfig $rectorConfig): void {
         PrivatizeLocalGetterToPropertyRector::class,
         PrivatizeFinalClassPropertyRector::class,
         PrivatizeFinalClassMethodRector::class,
+        PrivatizeFinalClassConstantRector::class,
     ]);
 };
