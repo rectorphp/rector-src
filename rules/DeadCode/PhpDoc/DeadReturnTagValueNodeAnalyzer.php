@@ -42,6 +42,10 @@ final readonly class DeadReturnTagValueNodeAnalyzer
     {
         $returnType = $functionLike->getReturnType();
 
+        if ($this->isVoidMagicMethod($functionLike)) {
+            return true;
+        }
+
         if ($returnType === null) {
             return false;
         }
@@ -92,6 +96,17 @@ final readonly class DeadReturnTagValueNodeAnalyzer
         }
 
         return ! $this->hasTrueFalsePseudoType($returnTagValueNode->type);
+    }
+
+    public function isVoidMagicMethod(ClassMethod|Function_ $functionLike): bool
+    {
+        $voidMagicMethods = ['__construct', '__destruct', '__clone'];
+
+        return $functionLike instanceof ClassMethod && in_array(
+            $functionLike->name->toString(),
+            $voidMagicMethods,
+            true
+        );
     }
 
     private function isVoidReturnType(Node $node): bool
