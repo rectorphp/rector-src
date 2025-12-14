@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector;
+namespace Rector\Tests\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class SortNamedParamRectorTest extends AbstractRectorTestCase
+final class SortAttributeNamedArgsRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

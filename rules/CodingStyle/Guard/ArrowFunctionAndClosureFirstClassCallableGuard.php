@@ -197,6 +197,7 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
         if ($callLike instanceof MethodCall) {
             return $callLike->var instanceof CallLike;
         }
+
         if ($callLike instanceof StaticCall) {
             return $callLike->class instanceof CallLike;
         }

@@ -244,7 +244,7 @@ final readonly class ReflectionResolver
         return $this->resolveMethodReflection($className, MethodName::CONSTRUCT, $scope);
     }
 
-    public function resolveMethodReflectionFromAttribute(Attribute $attribute): ?MethodReflection
+    public function resolveConstructorReflectionFromAttribute(Attribute $attribute): ?MethodReflection
     {
         $attributeClassType = $this->nodeTypeResolver->getType($attribute->name);
         $className = ClassNameFromObjectTypeResolver::resolve($attributeClassType);

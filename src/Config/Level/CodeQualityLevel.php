@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Config\Level;
 
 use Rector\CodeQuality\Rector\Assign\CombinedAssignRector;
+use Rector\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
@@ -45,7 +46,7 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
-use Rector\CodeQuality\Rector\FuncCall\SortNamedParamRector;
+use Rector\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
@@ -179,7 +180,8 @@ final class CodeQualityLevel
         CompleteMissingIfElseBracketRector::class,
         RemoveUselessIsObjectCheckRector::class,
         ConvertStaticToSelfRector::class,
-        SortNamedParamRector::class,
+        SortCallLikeNamedArgsRector::class,
+        SortAttributeNamedArgsRector::class,
         RemoveReadonlyPropertyVisibilityOnReadonlyClassRector::class,
     ];
 

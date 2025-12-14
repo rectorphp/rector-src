@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector\Fixture;
 
 function skip_sorted($foo = null, $bar = null, $baz = null) {}
 

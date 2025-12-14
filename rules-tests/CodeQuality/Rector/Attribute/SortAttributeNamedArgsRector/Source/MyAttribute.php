@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\SortNamedParamRector\Source;
+namespace Rector\Tests\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector\Source;
 
 #[\Attribute]
 class MyAttribute
