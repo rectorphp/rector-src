@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\NodeVisitor;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\CallLike;
@@ -37,17 +38,23 @@ final class ClosureWithVariadicParametersNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if ($node->getArgs() === []) {
+        $args = $node->getArgs();
+        if ($args === []) {
+            return null;
+        }
+
+        $filteredArgs = array_filter(
+            $args,
+            fn (Arg $arg): bool => $arg->value instanceof Closure || $arg->value instanceof ArrowFunction
+        );
+
+        if ($filteredArgs === []) {
             return null;
         }
 
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
 
-        foreach ($node->getArgs() as $arg) {
-            if (! $arg->value instanceof Closure && ! $arg->value instanceof ArrowFunction) {
-                continue;
-            }
-
+        foreach ($filteredArgs as $filteredArg) {
             if ($methodReflection instanceof NativeFunctionReflection) {
                 $parametersAcceptors = ParametersAcceptorSelector::combineAcceptors(
                     $methodReflection->getVariants()
@@ -55,14 +62,14 @@ final class ClosureWithVariadicParametersNodeVisitor extends NodeVisitorAbstract
 
                 foreach ($parametersAcceptors->getParameters() as $extendedParameterReflection) {
                     if ($extendedParameterReflection->getType() instanceof CallableType && $extendedParameterReflection->getType()  ->isVariadic()) {
-                        $arg->value->setAttribute(AttributeKey::HAS_CLOSURE_WITH_VARIADIC_ARGS, true);
+                        $filteredArg->value->setAttribute(AttributeKey::HAS_CLOSURE_WITH_VARIADIC_ARGS, true);
                     }
                 }
 
                 return null;
             }
 
-            $arg->value->setAttribute(AttributeKey::HAS_CLOSURE_WITH_VARIADIC_ARGS, true);
+            $filteredArg->value->setAttribute(AttributeKey::HAS_CLOSURE_WITH_VARIADIC_ARGS, true);
         }
 
         return null;
