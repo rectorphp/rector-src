@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use Rector\Arguments\ValueObject\RemoveMethodCallParam;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -24,6 +25,11 @@ final class RemoveMethodCallParamRector extends AbstractRector implements Config
      * @var RemoveMethodCallParam[]
      */
     private array $removeMethodCallParams = [];
+
+    public function __construct(
+        private readonly ArgsAnalyzer $argsAnalyzer,
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -70,6 +76,10 @@ CODE_SAMPLE
         $hasChanged = false;
 
         if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
+        if ($this->argsAnalyzer->hasNamedArg($node->getArgs())) {
             return null;
         }
 

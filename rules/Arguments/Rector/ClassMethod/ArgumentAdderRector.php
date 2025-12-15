@@ -24,6 +24,7 @@ use Rector\Arguments\ValueObject\ArgumentAdderWithoutDefaultValue;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
@@ -48,7 +49,8 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
         private readonly ArgumentAddingScope $argumentAddingScope,
         private readonly ChangedArgumentsDetector $changedArgumentsDetector,
         private readonly AstResolver $astResolver,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -247,6 +249,10 @@ CODE_SAMPLE
 
             // argument added and type has been changed
             return $this->changedArgumentsDetector->isTypeChanged($param, $argumentAdder->getArgumentType());
+        }
+
+        if ($this->argsAnalyzer->hasNamedArg($node->getArgs())) {
+            return true;
         }
 
         if (isset($node->args[$position])) {

@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
@@ -22,7 +23,8 @@ final readonly class ArgumentDefaultValueReplacer
 {
     public function __construct(
         private NodeFactory $nodeFactory,
-        private ValueResolver $valueResolver
+        private ValueResolver $valueResolver,
+        private ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -98,6 +100,10 @@ final readonly class ArgumentDefaultValueReplacer
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
     ): ?Expr {
         if ($expr->isFirstClassCallable()) {
+            return null;
+        }
+
+        if ($this->argsAnalyzer->hasNamedArg($expr->getArgs())) {
             return null;
         }
 
