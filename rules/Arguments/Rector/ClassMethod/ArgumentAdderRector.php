@@ -11,6 +11,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -183,13 +184,18 @@ CODE_SAMPLE
 
         $defaultValue = $argumentAdder->getArgumentDefaultValue();
         $arg = new Arg(BuilderHelpers::normalizeValue($defaultValue));
-        if (isset($methodCall->args[$position])) {
-            return;
+
+        if ($this->argsAnalyzer->hasNamedArg($methodCall->getArgs())) {
+            $argumentName = $argumentAdder->getArgumentName();
+            if ($argumentName === null) {
+                return;
+            }
+            $arg->name = new Identifier($argumentName);
+        } else {
+            $this->fillGapBetweenWithDefaultValue($methodCall, $position);
         }
 
-        $this->fillGapBetweenWithDefaultValue($methodCall, $position);
-
-        $methodCall->args[$position] = $arg;
+        $methodCall->args[] = $arg;
         $this->hasChanged = true;
     }
 
@@ -251,12 +257,18 @@ CODE_SAMPLE
             return $this->changedArgumentsDetector->isTypeChanged($param, $argumentAdder->getArgumentType());
         }
 
+        // If named arguments exist
         if ($this->argsAnalyzer->hasNamedArg($node->getArgs())) {
-            return true;
-        }
-
-        if (isset($node->args[$position])) {
-            return true;
+            // Check if the parameter we're trying to add is already present as a named argument
+            foreach ($node->getArgs() as $arg) {
+                if ($arg->name instanceof Identifier && $this->isName($arg->name, $argumentName)) {
+                    return true; // Skip - parameter already provided with name
+                }
+            }
+        } else {
+            if (isset($node->args[$position])) {
+                return true;
+            }
         }
 
         // Check if default value is the same
@@ -339,6 +351,16 @@ CODE_SAMPLE
             return;
         }
 
+        // Handle named arguments case - add as named argument at the end
+        if ($this->argsAnalyzer->hasNamedArg($staticCall->getArgs())) {
+            $arg = new Arg(new Variable($argumentName));
+            $arg->name = new Identifier($argumentName);
+            $staticCall->args[] = $arg;
+            $this->hasChanged = true;
+            return;
+        }
+
+        // Original positional logic
         $this->fillGapBetweenWithDefaultValue($staticCall, $position);
 
         $staticCall->args[$position] = new Arg(new Variable($argumentName));
