@@ -352,18 +352,14 @@ CODE_SAMPLE
         }
 
         // Handle named arguments case - add as named argument at the end
+        $arg = new Arg(new Variable($argumentName));
         if ($this->argsAnalyzer->hasNamedArg($staticCall->getArgs())) {
-            $arg = new Arg(new Variable($argumentName));
             $arg->name = new Identifier($argumentName);
-            $staticCall->args[] = $arg;
-            $this->hasChanged = true;
-            return;
+        } else {
+            $this->fillGapBetweenWithDefaultValue($staticCall, $position);
         }
 
-        // Original positional logic
-        $this->fillGapBetweenWithDefaultValue($staticCall, $position);
-
-        $staticCall->args[$position] = new Arg(new Variable($argumentName));
+        $staticCall->args[] = $arg;
         $this->hasChanged = true;
     }
 
