@@ -90,7 +90,6 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             return null;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
         $argPosition = $this->argsAnalyzer->resolveArgPosition($args, 'key', 0);
         $originalType = $this->getType($args[$argPosition]->value);
 
@@ -101,6 +100,7 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             }
         }
 
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
         $result = $this->nullToStrictStringIntConverter->convertIfNull(
             $node,
             $args,
