@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
 
-final class SomeClass
+final class SomeClassWithOwnPrivate
 {
     public function run()
     {
@@ -20,7 +20,7 @@ final class SomeClass
 
 namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
 
-final class SomeClass
+final class SomeClassWithOwnPrivate
 {
     public function run()
     {
