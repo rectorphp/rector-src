@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php80\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
@@ -128,6 +129,12 @@ final readonly class PromotedPropertyCandidateResolver
 
             $matchedParam = $this->matchClassMethodParamByAssignedVariable($constructClassMethod, $assignedExpr);
             if (! $matchedParam instanceof Param) {
+                continue;
+            }
+
+            if ($property->type instanceof Node
+                && ! $matchedParam->default instanceof Expr
+                && ! $this->nodeComparator->areNodesEqual($matchedParam->type, $property->type)) {
                 continue;
             }
 
