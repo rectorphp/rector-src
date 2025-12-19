@@ -133,6 +133,7 @@ final readonly class PromotedPropertyCandidateResolver
             }
 
             if ($property->type instanceof Node
+                && $matchedParam->type instanceof Node
                 && ! $matchedParam->default instanceof Expr
                 && ! $this->nodeComparator->areNodesEqual($matchedParam->type, $property->type)) {
                 continue;
