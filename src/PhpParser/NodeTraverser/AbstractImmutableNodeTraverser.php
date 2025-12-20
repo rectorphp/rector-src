@@ -101,6 +101,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
             $traverseChildren = true;
             $visitorIndex = -1;
             $currentNodeVisitors = $this->getVisitorsForNode($subNode);
+
             foreach ($currentNodeVisitors as $visitorIndex => $visitor) {
                 $return = $visitor->enterNode($subNode);
                 if ($return !== null) {
@@ -185,6 +186,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
             $traverseChildren = true;
             $visitorIndex = -1;
             $currentNodeVisitors = $this->getVisitorsForNode($node);
+
             foreach ($currentNodeVisitors as $visitorIndex => $visitor) {
                 $return = $visitor->enterNode($node);
                 if ($return !== null) {

@@ -95,6 +95,7 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
 
         // filer out by version
         $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
+
         // filter by configuration
         $this->visitors = $this->configurationRuleFilter->filter($this->visitors);
 

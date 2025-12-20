@@ -433,6 +433,11 @@ parameters:
                 - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
                 - rules/Php81/Enum/AttributeName.php
 
+        -
+            identifier: symplify.seeAnnotationToTest
+            paths:
+                - tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
+
         # deprecated rule
         - '#Rule Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
         - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'

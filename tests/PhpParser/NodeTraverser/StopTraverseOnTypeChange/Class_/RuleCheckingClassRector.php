@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Tests\PhpParser\NodeTraverser\StopTraverseOnTypeChange\Class_;
 
 use PhpParser\Node;
@@ -10,9 +12,9 @@ use Webmozart\Assert\Assert;
 
 final class RuleCheckingClassRector extends AbstractRector
 {
-
     public function getRuleDefinition(): RuleDefinition
     {
+        return new RuleDefinition('Make sure input is class', []);
     }
 
     public function getNodeTypes(): array
@@ -24,7 +26,7 @@ final class RuleCheckingClassRector extends AbstractRector
      * @param Class_ $node
      * @return Class_
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): Node
     {
         Assert::isInstanceOf($node, Class_::class);
 
