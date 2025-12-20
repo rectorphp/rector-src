@@ -112,10 +112,8 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
                         $node->{$name} = $return;
 
                         if ($originalSubNodeClass !== $subNode::class) {
-                            // stop traversing as node has changed its class and visitors do not work
-                            $traverseChildren = false;
-                            $this->stopTraversal = true;
-                            break 2;
+                            // stop traversing as node type changed and visitors won't work
+                            return;
                         }
 
                     } elseif ($return === NodeVisitor::DONT_TRAVERSE_CHILDREN) {
@@ -196,9 +194,8 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
                         $nodes[$i] = $node = $return;
 
                         if ($originalNodeNodeClass !== $return::class) {
-                            // stop traversing as node has changed its class and visitors do not work
-                            $this->stopTraversal = true;
-                            break 2;
+                            // stop traversing as node type changed and visitors won't work
+                            return $nodes;
                         }
                     } elseif (\is_array($return)) {
                         $doNodes[] = [$i, $return];
