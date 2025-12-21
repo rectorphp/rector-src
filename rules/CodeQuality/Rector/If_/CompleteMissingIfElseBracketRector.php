@@ -69,8 +69,13 @@ CODE_SAMPLE
             return null;
         }
 
+<<<<<<< HEAD
         $oldTokens = $this->getFile()
             ->getOldTokens();
+=======
+        $oldTokens = $this->file->getOldTokens();
+
+>>>>>>> 7556383dcf ([experiment] skip beforeTraverse() and afterTraverse() as never used)
         if ($this->isIfConditionFollowedByOpeningCurlyBracket($node, $oldTokens)) {
             return null;
         }

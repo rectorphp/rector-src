@@ -41,6 +41,7 @@ abstract class AbstractPostRector extends NodeVisitorAbstract implements PostRec
         Assert::isInstanceOf($this->file, File::class);
 
         $rectorWithLineChange = new RectorWithLineChange(static::class, $node->getStartLine());
-        $this->file->addRectorClassWithLine($rectorWithLineChange);
+        $this->getFile()
+            ->addRectorClassWithLine($rectorWithLineChange);
     }
 }
