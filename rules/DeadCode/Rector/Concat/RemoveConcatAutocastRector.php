@@ -79,7 +79,8 @@ CODE_SAMPLE
         }
 
         $targetExpr = $expr->expr;
-        $tokens = $this->file->getOldTokens();
+        $tokens = $this->getFile()
+            ->getOldTokens();
 
         if ($expr->expr instanceof BinaryOp) {
             $castStartTokenPos = $expr->getStartTokenPos();

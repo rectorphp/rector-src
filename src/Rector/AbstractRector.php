@@ -34,6 +34,9 @@ use Rector\PhpParser\Node\NodeFactory;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
+/**
+ * @property-read File $file @deprecated Use $this->getFile() instead
+ */
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
     private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
@@ -56,8 +59,6 @@ CODE_SAMPLE;
 
     protected NodeComparator $nodeComparator;
 
-    protected File $file;
-
     protected Skipper $skipper;
 
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
@@ -69,6 +70,16 @@ CODE_SAMPLE;
     private CommentsMerger $commentsMerger;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
+
+    public function __get(string $name): mixed
+    {
+        if ($name === 'file') {
+            return $this->getFile();
+        }
+
+        // fallback to default behavior
+        return $this->{$name};
+    }
 
     public function autowire(
         NodeNameResolver $nodeNameResolver,
@@ -96,23 +107,12 @@ CODE_SAMPLE;
 
     /**
      * @final Avoid override to prevent unintended side-effects. Use enterNode() or @see \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface instead.
-     *
      * @internal
      *
      * @return Node[]|null
      */
     public function beforeTraverse(array $nodes): ?array
     {
-        // workaround for file around refactor()
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            throw new ShouldNotHappenException(
-                'File object is missing. Make sure you call $this->currentFileProvider->setFile(...) before traversing.'
-            );
-        }
-
-        $this->file = $file;
-
         return null;
     }
 
@@ -121,11 +121,12 @@ CODE_SAMPLE;
      */
     final public function enterNode(Node $node): int|Node|null|array
     {
-        if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->file->containsHTML()) {
+        if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->getFile()->containsHTML()) {
             return null;
         }
 
-        $filePath = $this->file->getFilePath();
+        $filePath = $this->getFile()
+            ->getFilePath();
         if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
             return null;
         }
@@ -158,7 +159,8 @@ CODE_SAMPLE;
 
             // notify this rule changed code
             $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
-            $this->file->addRectorClassWithLine($rectorWithLineChange);
+            $this->getFile()
+                ->addRectorClassWithLine($rectorWithLineChange);
 
             return $refactoredNodeOrState;
         }
@@ -172,6 +174,18 @@ CODE_SAMPLE;
     final public function leaveNode(Node $node): array|int|Node|null
     {
         return null;
+    }
+
+    protected function getFile(): File
+    {
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            throw new ShouldNotHappenException(
+                'File object is missing. Make sure you call $this->currentFileProvider->setFile(...) before traversing.'
+            );
+        }
+
+        return $file;
     }
 
     protected function isName(Node $node, string $name): bool
@@ -248,7 +262,8 @@ CODE_SAMPLE;
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
         $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
-        $this->file->addRectorClassWithLine($rectorWithLineChange);
+        $this->getFile()
+            ->addRectorClassWithLine($rectorWithLineChange);
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
