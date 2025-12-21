@@ -70,6 +70,7 @@ CODE_SAMPLE
         }
 
         $oldTokens = $this->file->getOldTokens();
+
         if ($this->isIfConditionFollowedByOpeningCurlyBracket($node, $oldTokens)) {
             return null;
         }
