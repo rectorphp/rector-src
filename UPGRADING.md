@@ -1,4 +1,4 @@
-# Upgrading from Rector 2.2.11 to 2.2.12
+# Upgrading from Rector 2.2.14 to 2.3
 
 * `FileWithoutNamespace` is deprecated, and replaced by `FileNode` that represents both namespaced and non-namespaced files and allow changes inside
 * `beforeTraverse()` is now soft marked as `@final`, use `getNodeTypes()` with `FileNode::class` instead

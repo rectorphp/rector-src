@@ -11,7 +11,6 @@ use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
-use Rector\ValueObject\Application\File;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -64,14 +63,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?FileNode
     {
-        //        parent::beforeTraverse($nodes);
-
-        if ($this->shouldSkipNodes($node->stmts, $this->file)) {
+        // shebang files cannot have declare strict types
+        if ($this->file->hasShebang()) {
             return null;
         }
 
-        //        /** @var Node $rootStmt */
-        //        $rootStmt = current();
+        // only add to namespaced files, as global namespace files are often included in other files
         if (! $node->isNamespaced()) {
             return null;
         }
@@ -82,13 +79,10 @@ CODE_SAMPLE
             return null;
         }
 
-        //        $rectorWithLineChange = new RectorWithLineChange(self::class, $rootStmt->getStartLine());
-        //        $this->file->addRectorClassWithLine($rectorWithLineChange);
-
-        $node->stmts = array_merge([$this->nodeFactory->createDeclaresStrictType(), new Nop()], $node->stmts);
+        $declaresStrictType = $this->nodeFactory->createDeclaresStrictType();
+        $node->stmts = array_merge([$declaresStrictType, new Nop()], $node->stmts);
 
         return $node;
-        //        return [$this->nodeFactory->createDeclaresStrictType(), new Nop(), ...$nodes];
     }
 
     /**
@@ -102,22 +96,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
-    }
-
-    /**
-     * @param Stmt[] $nodes
-     */
-    private function shouldSkipNodes(array $nodes, File $file): bool
-    {
-        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $file->getFilePath())) {
-            return true;
-        }
-
-        // shebang files cannot have declare strict types
-        if (str_starts_with($file->getFileContent(), '#!')) {
-            return true;
-        }
-
-        return $nodes === [];
     }
 }

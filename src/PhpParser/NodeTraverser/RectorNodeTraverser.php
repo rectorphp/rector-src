@@ -74,11 +74,9 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
             foreach ($this->visitors as $visitor) {
                 foreach ($visitor->getNodeTypes() as $nodeType) {
                     // BC layer matching
-                    if ($nodeType === FileWithoutNamespace::class) {
-                        if ($nodeClass === FileNode::class) {
-                            $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
-                            continue;
-                        }
+                    if ($nodeType === FileWithoutNamespace::class && $nodeClass === FileNode::class) {
+                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+                        continue;
                     }
 
                     if (is_a($nodeClass, $nodeType, true)) {

@@ -20,7 +20,6 @@ class FileNode extends Stmt
      */
     public function __construct(
         public array $stmts,
-        array $attributes = []
     ) {
         $firstStmt = $stmts[0] ?? null;
         $attributes = $firstStmt instanceof Node ? $firstStmt->getAttributes() : [];

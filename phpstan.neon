@@ -456,10 +456,11 @@ parameters:
             message: '#Only abstract classes can be extended#'
             path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
 
+        - '#Method Rector\\Tests\\Issues\\FileWithoutNamespaceCompat\\Rector\\SubscribedToFileWithoutNamespaceRector\:\:refactor\(\) should return Rector\\PhpParser\\Node\\FileNode but returns Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace#'
+
         # BC layer for FileWithoutNamespace node
         - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
-
-
+        - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace extends final class Rector\\PhpParser\\Node\\FileNode#'
         -
             path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
             identifier: symplify.forbiddenExtendOfNonAbstractClass

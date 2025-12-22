@@ -218,4 +218,9 @@ final class File
 
         return null;
     }
+
+    public function hasShebang(): bool
+    {
+        return str_starts_with($this->getFileContent(), '#!');
+    }
 }

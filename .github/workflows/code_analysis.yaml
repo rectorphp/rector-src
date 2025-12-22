@@ -50,7 +50,7 @@ jobs:
 
                     -
                         name: 'Finalize classes'
-                        run: vendor/bin/swiss-knife finalize-classes src tests rules --dry-run
+                        run: vendor/bin/swiss-knife finalize-classes src tests rules --dry-run --skip-file="src/PhpParser/Node/FileNode.php"
 
                     -
                         name: 'Check before/after test fixture on no-changes'

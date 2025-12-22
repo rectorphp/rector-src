@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Issues\FileWithoutNamespaceCompat\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Function_;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\Node\FileNode;
@@ -30,7 +31,7 @@ final class SubscribedToFileWithoutNamespaceRector extends AbstractRector
     {
         $function = new Function_('someFunction');
         // required for PHPStan scope resolver refresh
-        $function->namespacedName = new Node\Name('someFunction');
+        $function->namespacedName = new Name('someFunction');
 
         $node->stmts[] = $function;
 

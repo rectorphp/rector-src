@@ -18,11 +18,9 @@ final class FileWithoutNamespace extends FileNode
     /**
      * @param Stmt[] $stmts
      */
-    public function __construct(
-        public array $stmts,
-        public array $attributes = []
-    ) {
-        parent::__construct($stmts, $attributes);
+    public function __construct(array $stmts)
+    {
+        parent::__construct($stmts);
     }
 
     public function getType(): string
