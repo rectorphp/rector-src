@@ -160,6 +160,8 @@ parameters:
                 - src/Validation/RectorConfigValidator.php
                 # for phpunit version check
                 - src/Testing/PHPUnit/AbstractLazyTestCase.php
+                # future node class exists check
+                - src/Reporting/DeprecatedRulesReporter.php
 
         # use of internal phpstan classes
         -
