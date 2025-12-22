@@ -1,7 +1,7 @@
 # Upgrading from Rector 2.2.14 to 2.3
 
 * `FileWithoutNamespace` is deprecated, and replaced by `FileNode` that represents both namespaced and non-namespaced files and allow changes inside
-* `beforeTraverse()` is now soft marked as `@final`, use `getNodeTypes()` with `FileNode::class` instead
+* `beforeTraverse()` is now marked as `@final`, use `getNodeTypes()` with `FileNode::class` instead
 
 **Before**
 
@@ -67,10 +67,40 @@ final class SomeRector extends AbstractRector
 }
 ```
 
-The `FileNode` handles both namespaced and non-namespaced files. To check if the file is namespaced, use:
+<br>
+
+The `FileNode` handles both namespaced and non-namespaced files. To handle the first stmts inside the file, you hook into 2 nodes:
 
 ```php
-$fileNode->isNamespaced();
+use Rector\PhpParser\Node\FileNode;
+use Rector\Rector\AbstractRector;
+use PhpParser\Node\Stmt\Namespace_;
+
+final class SomeRector extends AbstractRector
+{
+    public function getNodeTypes(): array
+    {
+        return [FileNode::class, Namespace_::class];
+    }
+
+    /**
+     * @param FileNode|Namespace_ $node
+     */
+    public function refactor(Node $node): ?Node
+    {
+        if ($node instanceof FileNode && $node->isNamespaced()) {
+            // handled in the Namespace_ node
+            return null;
+        }
+
+        foreach ($node->stmts as $stmt) {
+            // modify stmts in desired way here
+        }
+
+        return $node;
+    }
+
+}
 ```
 
 <br>

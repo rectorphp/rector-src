@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node\CustomNode;
 
-use PhpParser\Node\Stmt;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\FileNode;
 
@@ -16,14 +15,6 @@ use Rector\PhpParser\Node\FileNode;
  */
 final class FileWithoutNamespace extends FileNode implements StmtsAwareInterface
 {
-    /**
-     * @param Stmt[] $stmts
-     */
-    public function __construct(array $stmts)
-    {
-        parent::__construct($stmts);
-    }
-
     public function getType(): string
     {
         return 'FileWithoutNamespace';
