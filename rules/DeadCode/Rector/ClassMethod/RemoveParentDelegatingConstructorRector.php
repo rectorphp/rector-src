@@ -155,6 +155,10 @@ CODE_SAMPLE
         }
 
         $staticCall = $stmt->expr;
+        if ($staticCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->isName($staticCall->class, ObjectReference::PARENT)) {
             return null;
         }
@@ -201,7 +205,7 @@ CODE_SAMPLE
 
     private function areConstructorAndParentParameterTypesMatching(
         ClassMethod $classMethod,
-        ExtendedMethodReflection $parentMethodReflection
+        ExtendedMethodReflection $extendedMethodReflection
     ): bool {
         foreach ($classMethod->getParams() as $position => $param) {
             $parameterType = $param->type;
@@ -211,7 +215,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $parametersSelector = $parentMethodReflection->getOnlyVariant();
+            $parametersSelector = $extendedMethodReflection->getOnlyVariant();
 
             foreach ($parametersSelector->getParameters() as $index => $parameterReflection) {
                 if ($index !== $position) {

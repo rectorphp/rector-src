@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstru
 
 use PhpParser\Node\Scalar\String_;
 
-final class SkipDifferntCount extends String_
+final class SkipDifferentCount extends String_
 {
     public function __construct($value)
     {

@@ -7,7 +7,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstru
 use PhpParser\NodeTraverser;
 use Rector\Comments\NodeVisitor\CommentRemovingNodeVisitor;
 
-final class SkipDifferntType extends NodeTraverser
+final class SkipDifferentType extends NodeTraverser
 {
     public function __construct(CommentRemovingNodeVisitor $commentRemovingNodeVisitor)
     {
