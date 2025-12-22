@@ -103,7 +103,7 @@ final class PostFileProcessor implements ResettableInterface
         $postRectors = [];
 
         // sorted by priority, to keep removed imports in order
-        if ($isRenamedClassEnabled) {
+        if ($isRenamedClassEnabled && $isNameImportingEnabled) {
             $postRectors[] = $this->classRenamingPostRector;
         }
 
