@@ -221,6 +221,6 @@ final class File
 
     public function hasShebang(): bool
     {
-        return str_starts_with($this->getFileContent(), '#!');
+        return str_starts_with($this->fileContent, '#!');
     }
 }

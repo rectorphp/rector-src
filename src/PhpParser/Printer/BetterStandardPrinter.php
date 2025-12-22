@@ -159,7 +159,7 @@ final class BetterStandardPrinter extends Standard
 
     protected function pStmt_FileNode(FileNode $fileNode): string
     {
-        return $this->pStmts($fileNode->stmts, true);
+        return $this->pStmts($fileNode->stmts);
     }
 
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction, int $precedence, int $lhsPrecedence): string

@@ -11,15 +11,18 @@ use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PhpParser\Enum\NodeGroup;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use Rector\PhpParserNode\FileNode;
 =======
 <<<<<<< HEAD
 >>>>>>> 6bcee47e76 (warn about deprecated type)
 use ReflectionMethod;
 =======
+=======
+>>>>>>> 00c8276150 (print stmts with false)
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\Node\FileNode;
->>>>>>> 77056cdc84 (warn about deprecated type)
+use ReflectionMethod;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class DeprecatedRulesReporter
