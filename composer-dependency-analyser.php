@@ -17,8 +17,6 @@ return $config
     // ensure use version ^3.2.0
     ->ignoreErrorsOnPackage('composer/pcre', [ErrorType::UNUSED_DEPENDENCY])
 
-    ->ignoreErrorsOnPath(__DIR__ . '/src/Reporting/DeprecatedRulesReporter.php', [ErrorType::UNKNOWN_CLASS])
-
     ->ignoreErrorsOnPaths([
         __DIR__ . '/stubs',
         __DIR__ . '/tests',

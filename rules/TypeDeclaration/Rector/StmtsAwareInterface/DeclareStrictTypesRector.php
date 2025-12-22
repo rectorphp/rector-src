@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Nop;
-use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
-use Rector\PhpParser\Enum\NodeGroup;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
-use Rector\ValueObject\Application\File;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -62,33 +58,30 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Stmt[] $nodes
-     * @return Stmt[]|null
+     * @param FileNode $node
      */
-    public function beforeTraverse(array $nodes): ?array
+    public function refactor(Node $node): ?FileNode
     {
-        parent::beforeTraverse($nodes);
-
-        if ($this->shouldSkipNodes($nodes, $this->file)) {
+        // shebang files cannot have declare strict types
+        if ($this->file->hasShebang()) {
             return null;
         }
 
-        /** @var Node $rootStmt */
-        $rootStmt = current($nodes);
-        if ($rootStmt instanceof FileWithoutNamespace) {
+        // only add to namespaced files, as global namespace files are often included in other files
+        if (! $node->isNamespaced()) {
             return null;
         }
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
-        if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($rootStmt)) {
+        if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($node)) {
             return null;
         }
 
-        $rectorWithLineChange = new RectorWithLineChange(self::class, $rootStmt->getStartLine());
-        $this->file->addRectorClassWithLine($rectorWithLineChange);
+        $declaresStrictType = $this->nodeFactory->createDeclaresStrictType();
+        $node->stmts = array_merge([$declaresStrictType, new Nop()], $node->stmts);
 
-        return [$this->nodeFactory->createDeclaresStrictType(), new Nop(), ...$nodes];
+        return $node;
     }
 
     /**
@@ -96,37 +89,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return NodeGroup::STMTS_AWARE;
-    }
-
-    /**
-     * @param StmtsAware $node
-     */
-    public function refactor(Node $node): null
-    {
-        // workaround, as Rector now only hooks to specific nodes, not arrays
-        // avoid traversing, as we already handled in beforeTraverse()
-        return null;
+        return [FileNode::class];
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
-    }
-
-    /**
-     * @param Stmt[] $nodes
-     */
-    private function shouldSkipNodes(array $nodes, File $file): bool
-    {
-        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $file->getFilePath())) {
-            return true;
-        }
-
-        if (str_starts_with($file->getFileContent(), '#!')) {
-            return true;
-        }
-
-        return $nodes === [];
     }
 }

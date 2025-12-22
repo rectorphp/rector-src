@@ -10,7 +10,7 @@ parameters:
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
     typeAliases:
-        StmtsAware: \PhpParser\Node\Stmt\Block | \PhpParser\Node\Expr\Closure | \PhpParser\Node\Stmt\Case_ | \PhpParser\Node\Stmt\Catch_ | \PhpParser\Node\Stmt\ClassMethod | \PhpParser\Node\Stmt\Do_ | \PhpParser\Node\Stmt\Else_ | \PhpParser\Node\Stmt\ElseIf_ | \PhpParser\Node\Stmt\Finally_ | \PhpParser\Node\Stmt\For_ | \PhpParser\Node\Stmt\Foreach_ | \PhpParser\Node\Stmt\Function_ | \PhpParser\Node\Stmt\If_ | \PhpParser\Node\Stmt\Namespace_ | \PhpParser\Node\Stmt\TryCatch | \PhpParser\Node\Stmt\While_ | \Rector\PhpParser\Node\CustomNode\FileWithoutNamespace
+        StmtsAware: \PhpParser\Node\Stmt\Block | \PhpParser\Node\Expr\Closure | \PhpParser\Node\Stmt\Case_ | \PhpParser\Node\Stmt\Catch_ | \PhpParser\Node\Stmt\ClassMethod | \PhpParser\Node\Stmt\Do_ | \PhpParser\Node\Stmt\Else_ | \PhpParser\Node\Stmt\ElseIf_ | \PhpParser\Node\Stmt\Finally_ | \PhpParser\Node\Stmt\For_ | \PhpParser\Node\Stmt\Foreach_ | \PhpParser\Node\Stmt\Function_ | \PhpParser\Node\Stmt\If_ | \PhpParser\Node\Stmt\Namespace_ | \PhpParser\Node\Stmt\TryCatch | \PhpParser\Node\Stmt\While_ | \Rector\PhpParser\Node\FileNode
 
     # requires exact closure types
     checkMissingCallableSignature: true
@@ -189,8 +189,10 @@ parameters:
             message: '#Method Rector\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
             path: src/Util/ArrayParametersMerger.php
 
-        # fixture class
-        - '#Class "Rector\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
+        # fixture Rector rules
+        -
+            identifier:  symplify.seeAnnotationToTest
+            path: tests/Issues/
 
         # classes are part of *.php.inc fixture
         -
@@ -286,7 +288,6 @@ parameters:
                 - src/Configuration/RectorConfigBuilder.php
                 - src/Reporting/DeprecatedRulesReporter.php
             identifier: classConstant.deprecatedInterface
-        - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace implements deprecated interface Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface#'
 
         # allowed internally only
         -
@@ -398,12 +399,6 @@ parameters:
             paths:
                 - rules/Php70/Rector/If_/IfToSpaceshipRector.php
 
-        # handles full file
-        -
-            paths:
-                - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
-            identifier: rector.noOnlyNullReturnInRefactor
-
         -
             identifier: rector.noIntegerRefactorReturn
             paths:
@@ -416,22 +411,22 @@ parameters:
         # condition check, just to be sure
         - '#Method Rector\\Rector\\AbstractRector\:\:enterNode\(\) never returns 3 so it can be removed from the return type#'
 
-        # special case, working on a file-level
-        -
-            identifier: rector.noOnlyNullReturnInRefactor
-            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
-
-        # handle next with FileNode
-        -
-            identifier: method.parentMethodFinalByPhpDoc
-            path: rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php
-
         # deprecated
         -
             identifier: public.method.unused
             paths:
                 - rules/Transform/ValueObject/ClassMethodReference.php
                 - rules/CodeQuality/ValueObject/KeyAndExpr.php
+        -
+            identifier: symplify.forbiddenExtendOfNonAbstractClass
+            path: src/PhpParser/Node/FileNode.php
+        -
+            identifier: method.deprecatedClass
+            path: src/PhpParser/Node/FileNode.php
+
+        -
+            identifier: class.extendsDeprecatedClass
+            path: src/PhpParser/Node/FileNode.php
 
         -
             identifier: public.classConstant.unused
@@ -450,8 +445,22 @@ parameters:
         - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'
         - '#Class "Rector\\CodingStyle\\Rector\\String_\\SymplifyQuoteEscapeRector" is missing @see annotation with test case class reference#'
         - '#Access to constant on deprecated class Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector#'
+
+        # BC layer for FileWithoutNamespace node
+        - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
+        - '#BC layer for FileNode and FileWithoutNamespace compat, use FileNode instead#'
+        -
+            path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
+            identifier: symplify.forbiddenExtendOfNonAbstractClass
         -
             message: '#Only abstract classes can be extended#'
             path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
 
+        - '#Method Rector\\Tests\\Issues\\FileWithoutNamespaceCompat\\Rector\\SubscribedToFileWithoutNamespaceRector\:\:refactor\(\) should return Rector\\PhpParser\\Node\\FileNode but returns Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace#'
 
+        # BC layer for FileWithoutNamespace node
+        - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
+        - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace extends final class Rector\\PhpParser\\Node\\FileNode#'
+        -
+            path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
+            identifier: symplify.forbiddenExtendOfNonAbstractClass

@@ -179,6 +179,7 @@ EOF
 
         $outputFormatter->report($processResult, $configuration);
 
+        // 4. Deprecations reporter
         $this->deprecatedRulesReporter->reportDeprecatedRules();
         $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
         $this->deprecatedRulesReporter->reportDeprecatedNodeTypes();

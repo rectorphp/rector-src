@@ -49,6 +49,7 @@ final class NameImportingPostRector extends AbstractPostRector
         }
 
         $this->addRectorClassWithLine($node);
+
         return $name;
     }
 
