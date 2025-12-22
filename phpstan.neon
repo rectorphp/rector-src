@@ -189,8 +189,10 @@ parameters:
             message: '#Method Rector\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
             path: src/Util/ArrayParametersMerger.php
 
-        # fixture class
-        - '#Class "Rector\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
+        # fixture Rector rules
+        -
+            identifier:  symplify.seeAnnotationToTest
+            path: tests/Issues/
 
         # classes are part of *.php.inc fixture
         -
@@ -415,6 +417,16 @@ parameters:
             paths:
                 - rules/Transform/ValueObject/ClassMethodReference.php
                 - rules/CodeQuality/ValueObject/KeyAndExpr.php
+        -
+            identifier: symplify.forbiddenExtendOfNonAbstractClass
+            path: src/PhpParser/Node/FileNode.php
+        -
+            identifier: method.deprecatedClass
+            path: src/PhpParser/Node/FileNode.php
+
+        -
+            identifier: class.extendsDeprecatedClass
+            path: src/PhpParser/Node/FileNode.php
 
         -
             identifier: public.classConstant.unused
@@ -433,6 +445,21 @@ parameters:
         - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'
         - '#Class "Rector\\CodingStyle\\Rector\\String_\\SymplifyQuoteEscapeRector" is missing @see annotation with test case class reference#'
         - '#Access to constant on deprecated class Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector#'
+
+        # BC layer for FileWithoutNamespace node
+        - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
+        - '#BC layer for FileNode and FileWithoutNamespace compat, use FileNode instead#'
+        -
+            path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
+            identifier: symplify.forbiddenExtendOfNonAbstractClass
         -
             message: '#Only abstract classes can be extended#'
             path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
+
+        # BC layer for FileWithoutNamespace node
+        - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
+
+
+        -
+            path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
+            identifier: symplify.forbiddenExtendOfNonAbstractClass

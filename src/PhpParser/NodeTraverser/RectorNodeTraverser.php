@@ -9,6 +9,8 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitor;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 /**
@@ -71,6 +73,14 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
             /** @var RectorInterface $visitor */
             foreach ($this->visitors as $visitor) {
                 foreach ($visitor->getNodeTypes() as $nodeType) {
+                    // BC layer matching
+                    if ($nodeType === FileWithoutNamespace::class) {
+                        if ($nodeClass === FileNode::class) {
+                            $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+                            continue;
+                        }
+                    }
+
                     if (is_a($nodeClass, $nodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
                         continue 2;

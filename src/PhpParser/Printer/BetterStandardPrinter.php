@@ -524,7 +524,6 @@ final class BetterStandardPrinter extends Standard
      */
     private function unwrapFileNode(array $stmts): array
     {
-        //        $stmts = array_values($stmts);
         if (count($stmts) === 1 && $stmts[0] instanceof FileNode) {
             return array_values($stmts[0]->stmts);
         }

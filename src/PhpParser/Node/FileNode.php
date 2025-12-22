@@ -13,19 +13,19 @@ use PhpParser\Node\Stmt\Use_;
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/commit/ed81c3ad0b9877e6122c79b4afda9d10f3994092
  */
-final class FileNode extends Stmt
+class FileNode extends Stmt
 {
     /**
      * @param Stmt[] $stmts
      */
     public function __construct(
-        public array $stmts
+        public array $stmts,
+        array $attributes = []
     ) {
         $firstStmt = $stmts[0] ?? null;
-        parent::__construct($firstStmt instanceof Node ? $firstStmt->getAttributes() : []);
+        $attributes = $firstStmt instanceof Node ? $firstStmt->getAttributes() : [];
 
-        parent::__construct();
-
+        parent::__construct($attributes);
     }
 
     /**
