@@ -13,9 +13,12 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ExtendedMethodReflection;
 use Rector\Enum\ObjectReference;
 use Rector\PHPStan\ScopeFetcher;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,6 +28,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveParentDelegatingConstructorRector extends AbstractRector
 {
+    public function __construct(
+        private readonly StaticTypeMapper $staticTypeMapper,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -86,7 +94,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->hasParentClassWithConstructor($node)) {
+        $parentMethodReflection = $this->matchParentConstructorReflection($node);
+        if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
             return null;
         }
 
@@ -96,49 +105,38 @@ CODE_SAMPLE
             return null;
         }
 
-        $constructorParams = $node->getParams();
-        if (count($constructorParams) !== count($parentCallArgs)) {
+        // match count and order
+        if (! $this->isParameterAndArgCountAndOrderIdentical($node)) {
             return null;
         }
 
-        // match passed names in the same order
-        $paramNames = [];
-        foreach ($constructorParams as $constructorParam) {
-            $paramNames[] = $this->getName($constructorParam->var);
-        }
-
-        $argNames = [];
-        foreach ($parentCallArgs as $parentCallArg) {
-            $argValue = $parentCallArg->value;
-            if (! $argValue instanceof Variable) {
-                return null;
-            }
-
-            $argNames[] = $this->getName($argValue);
-        }
-
-        if ($paramNames !== $argNames) {
+        // match parameter types and parent constructor types
+        if (! $this->areConstructorAndParentParameterTypesMatching($node, $parentMethodReflection)) {
             return null;
         }
 
         return NodeVisitor::REMOVE_NODE;
     }
 
-    private function hasParentClassWithConstructor(ClassMethod $classMethod): bool
+    private function matchParentConstructorReflection(ClassMethod $classMethod): ?ExtendedMethodReflection
     {
         $scope = ScopeFetcher::fetch($classMethod);
 
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
-            return false;
+            return null;
         }
 
         $parentClassReflection = $classReflection->getParentClass();
         if (! $parentClassReflection instanceof ClassReflection) {
-            return false;
+            return null;
         }
 
-        return $parentClassReflection->hasConstructor();
+        if (! $parentClassReflection->hasConstructor()) {
+            return null;
+        }
+
+        return $parentClassReflection->getConstructor();
     }
 
     /**
@@ -166,5 +164,71 @@ CODE_SAMPLE
         }
 
         return $staticCall->getArgs();
+    }
+
+    private function isParameterAndArgCountAndOrderIdentical(ClassMethod $classMethod): bool
+    {
+        $soleStmt = $classMethod->stmts[0];
+
+        $parentCallArgs = $this->matchParentConstructorCallArgs($soleStmt);
+        if ($parentCallArgs === null) {
+            return false;
+        }
+
+        $constructorParams = $classMethod->getParams();
+        if (count($constructorParams) !== count($parentCallArgs)) {
+            return false;
+        }
+
+        // match passed names in the same order
+        $paramNames = [];
+        foreach ($constructorParams as $constructorParam) {
+            $paramNames[] = $this->getName($constructorParam->var);
+        }
+
+        $argNames = [];
+        foreach ($parentCallArgs as $parentCallArg) {
+            $argValue = $parentCallArg->value;
+            if (! $argValue instanceof Variable) {
+                return false;
+            }
+
+            $argNames[] = $this->getName($argValue);
+        }
+
+        return $paramNames === $argNames;
+    }
+
+    private function areConstructorAndParentParameterTypesMatching(
+        ClassMethod $classMethod,
+        ExtendedMethodReflection $parentMethodReflection
+    ): bool {
+        foreach ($classMethod->getParams() as $position => $param) {
+            $parameterType = $param->type;
+
+            // no type override
+            if ($parameterType === null) {
+                continue;
+            }
+
+            $parametersSelector = $parentMethodReflection->getOnlyVariant();
+
+            foreach ($parametersSelector->getParameters() as $index => $parameterReflection) {
+                if ($index !== $position) {
+                    continue;
+                }
+
+                $parentParameterType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                    $parameterReflection->getType(),
+                    TypeKind::PARAM
+                );
+
+                if (! $this->nodeComparator->areNodesEqual($parameterType, $parentParameterType)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

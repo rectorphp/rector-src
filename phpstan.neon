@@ -326,6 +326,11 @@ parameters:
         - '#expects array<PhpParser\\Node\\Stmt>, array<PhpParser\\Node> given#'
         - '#should return non\-empty\-string but returns string#'
 
+        # known non-empty class method
+        -
+            message: '#Offset 0 might not exist on array<PhpParser\\Node\\Stmt>\|null#'
+            path: rules/DeadCode/Rector/ClassMethod/RemoveParentDelegatingConstructorRector.php
+
         # false positive, can accept non-class string
         - '#Parameter \#1 \$name of method PHPStan\\BetterReflection\\Reflection\\Adapter\\ReflectionClass\:\:getAttributes\(\) expects class\-string\|null, string given#'
 
