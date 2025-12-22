@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Enum\ObjectReference;
-use Rector\NodeAnalyzer\ArgsAnalyzer;
-use Rector\NodeAnalyzer\ExprAnalyzer;
-use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -24,14 +25,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveParentDelegatingConstructorRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly ValueResolver $valueResolver,
-        private readonly ExprAnalyzer $exprAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -89,33 +82,81 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($node->stmts) !== 1) {
+        if ($node->stmts === null || count($node->stmts) !== 1) {
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection->getParentClass() instanceof ClassReflection) {
+        if (! $this->hasParentClassWithConstructor($node)) {
             return null;
+        }
+
+        $soleStmt = $node->stmts[0];
+        $parentCallArgs = $this->matchParentConstructorCallArgs($soleStmt);
+        if ($parentCallArgs === null) {
+            return null;
+        }
+
+        $constructorParams = $node->getParams();
+        if (count($constructorParams) !== count($parentCallArgs)) {
+            return null;
+        }
+
+        // match passed names in the same order
+        $paramNames = [];
+        foreach ($constructorParams as $constructorParam) {
+            $paramNames[] = $this->getName($constructorParam->var);
+        }
+
+        $argNames = [];
+        foreach ($parentCallArgs as $parentCallArg) {
+            $argValue = $parentCallArg->value;
+            if (! $argValue instanceof Variable) {
+                return null;
+            }
+
+            $argNames[] = $this->getName($argValue);
+        }
+
+        if ($paramNames !== $argNames) {
+            return null;
+        }
+
+        return NodeVisitor::REMOVE_NODE;
+    }
+
+    private function hasParentClassWithConstructor(ClassMethod $classMethod): bool
+    {
+        $scope = ScopeFetcher::fetch($classMethod);
+
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
         }
 
         $parentClassReflection = $classReflection->getParentClass();
-        if (! $parentClassReflection->hasConstructor()) {
+        if (! $parentClassReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $parentClassReflection->hasConstructor();
+    }
+
+    /**
+     * Looking for parent::__construct()
+     *
+     * @return Arg[]|null
+     */
+    private function matchParentConstructorCallArgs(Stmt $stmt): ?array
+    {
+        if (! $stmt instanceof Expression) {
             return null;
         }
 
-        // $parentClassReflectionConstructor = $parentClassReflection->getConstructor();
-
-        $soleStmt = $node->stmts[0];
-        if (! $soleStmt instanceof Node\Stmt\Expression) {
+        if (! $stmt->expr instanceof StaticCall) {
             return null;
         }
 
-        if (! $soleStmt->expr instanceof Node\Expr\StaticCall) {
-            return null;
-        }
-
-        $staticCall = $soleStmt->expr;
+        $staticCall = $stmt->expr;
         if (! $this->isName($staticCall->class, ObjectReference::PARENT)) {
             return null;
         }
@@ -124,13 +165,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $constructorParams = $node->getParams();
-        $parentCallArgs = $staticCall->getArgs();
-
-        if (count($constructorParams) !== count($parentCallArgs)) {
-            return null;
-        }
-
-        return NodeVisitor::REMOVE_NODE;
+        return $staticCall->getArgs();
     }
 }
