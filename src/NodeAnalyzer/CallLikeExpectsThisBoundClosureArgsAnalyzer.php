@@ -24,18 +24,18 @@ final readonly class CallLikeExpectsThisBoundClosureArgsAnalyzer
      */
     public function getArgsUsingThisBoundClosure(CallLike $callLike): array
     {
-        $args = [];
-
         if ($callLike->isFirstClassCallable() || $callLike->getArgs() === []) {
             return [];
         }
 
-        $args = $callLike->getArgs();
-        $hasClosureArg = (bool) array_filter($args, fn (Arg $arg): bool => $arg->value instanceof Closure);
+        $callArgs = $callLike->getArgs();
+        $hasClosureArg = (bool) array_filter($callArgs, fn (Arg $arg): bool => $arg->value instanceof Closure);
 
         if (! $hasClosureArg) {
             return [];
         }
+
+        $argsUsingThisBoundClosure = [];
 
         $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
 
@@ -52,7 +52,7 @@ final readonly class CallLikeExpectsThisBoundClosureArgsAnalyzer
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $callLike, $scope);
         $parameters = $parametersAcceptor->getParameters();
 
-        foreach ($callLike->getArgs() as $index => $arg) {
+        foreach ($callArgs as $index => $arg) {
             if (! $arg->value instanceof Closure) {
                 continue;
             }
@@ -65,7 +65,7 @@ final readonly class CallLikeExpectsThisBoundClosureArgsAnalyzer
 
                     $hasObjectBinding = (bool) $parameter->getClosureThisType();
                     if ($hasObjectBinding && $arg->name->name === $parameter->getName()) {
-                        $args[] = $arg;
+                        $argsUsingThisBoundClosure[] = $arg;
                     }
                 }
 
@@ -81,11 +81,11 @@ final readonly class CallLikeExpectsThisBoundClosureArgsAnalyzer
 
                 $hasObjectBinding = (bool) $parameter->getClosureThisType();
                 if ($hasObjectBinding) {
-                    $args[] = $arg;
+                    $argsUsingThisBoundClosure[] = $arg;
                 }
             }
         }
 
-        return $args;
+        return $argsUsingThisBoundClosure;
     }
 }
