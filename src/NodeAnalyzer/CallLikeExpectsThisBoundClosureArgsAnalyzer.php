@@ -25,11 +25,19 @@ final readonly class CallLikeExpectsThisBoundClosureArgsAnalyzer
     public function getArgsUsingThisBoundClosure(CallLike $callLike): array
     {
         $args = [];
-        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
 
         if ($callLike->isFirstClassCallable() || $callLike->getArgs() === []) {
             return [];
         }
+
+        $args = $callLike->getArgs();
+        $hasClosureArg = (bool) array_filter($args, fn (Arg $arg): bool => $arg->value instanceof Closure);
+
+        if (! $hasClosureArg) {
+            return [];
+        }
+
+        $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
 
         if ($reflection === null) {
             return [];
