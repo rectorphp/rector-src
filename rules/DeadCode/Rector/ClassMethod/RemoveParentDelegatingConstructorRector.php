@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitor;
+use PHPStan\BetterReflection\Reflection\Adapter\ReflectionParameter;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use Rector\Enum\ObjectReference;
@@ -20,7 +21,6 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -236,9 +236,19 @@ CODE_SAMPLE
                     return false;
                 }
 
+                if (! $param->default instanceof Expr) {
+                    continue;
+                }
+
                 if ($extendedMethodReflection->getDeclaringClass()->getNativeReflection()->hasMethod($methodName)) {
-                    $parentMethod = $extendedMethodReflection->getDeclaringClass()->getNativeReflection()->getMethod($methodName);
+                    $parentMethod = $extendedMethodReflection->getDeclaringClass()
+                        ->getNativeReflection()
+                        ->getMethod($methodName);
                     $nativeParentParameterReflection = $parentMethod->getParameters()[$index] ?? null;
+
+                    if (! $nativeParentParameterReflection instanceof ReflectionParameter) {
+                        continue;
+                    }
 
                     $parentDefault = $nativeParentParameterReflection->getDefaultValue();
                     $currentDefault = $this->valueResolver->getValue($param->default);
