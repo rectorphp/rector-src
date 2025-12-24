@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\TryCatch;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -107,6 +108,11 @@ CODE_SAMPLE
             }
 
             if (! $stmt->expr->var instanceof Variable && ! $stmt->expr->var instanceof PropertyFetch && ! $stmt->expr->var instanceof StaticPropertyFetch) {
+                continue;
+            }
+
+            // side effect may throw exception, and may be handled by catch block
+            if ($node instanceof TryCatch && $this->sideEffectNodeDetector->detectCallExpr($nextAssign->expr)) {
                 continue;
             }
 
