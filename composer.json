@@ -14,7 +14,7 @@
     "require": {
         "php": "^8.2",
         "clue/ndjson-react": "^1.3",
-        "composer/pcre": "^3.3.0",
+        "composer/pcre": "^3.3.2",
         "composer/semver": "^3.4",
         "composer/xdebug-handler": "^3.0.5",
         "doctrine/inflector": "^2.1",
@@ -50,7 +50,7 @@
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^11.5",
-        "rector/jack": "^0.4.0",
+        "rector/jack": "^0.4",
         "rector/release-notes-generator": "^0.5",
         "rector/swiss-knife": "^2.3",
         "rector/type-perfect": "^2.1",

@@ -32,6 +32,7 @@ final readonly class NameImporter
      */
     public function importName(FullyQualified $fullyQualified, File $file, array $currentUses): ?Name
     {
+
         if ($this->classNameImportSkipper->shouldSkipName($fullyQualified, $currentUses)) {
             return null;
         }

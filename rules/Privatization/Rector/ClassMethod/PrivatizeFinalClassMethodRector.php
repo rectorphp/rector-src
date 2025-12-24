@@ -85,6 +85,7 @@ CODE_SAMPLE
         }
 
         $scope = ScopeFetcher::fetch($node);
+
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return null;

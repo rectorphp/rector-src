@@ -14,7 +14,7 @@ use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
@@ -33,7 +33,7 @@ final readonly class UseImportsAdder
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
      */
     public function addImportsToStmts(
-        FileWithoutNamespace $fileWithoutNamespace,
+        FileNode $fileNode,
         array $stmts,
         array $useImportTypes,
         array $constantUseImportTypes,
@@ -45,10 +45,12 @@ final readonly class UseImportsAdder
         $existingFunctionUseImports = $usedImports->getFunctionImports();
 
         $useImportTypes = $this->diffFullyQualifiedObjectTypes($useImportTypes, $existingUseImportTypes);
+
         $constantUseImportTypes = $this->diffFullyQualifiedObjectTypes(
             $constantUseImportTypes,
             $existingConstantUseImports
         );
+
         $functionUseImportTypes = $this->diffFullyQualifiedObjectTypes(
             $functionUseImportTypes,
             $existingFunctionUseImports
@@ -90,8 +92,8 @@ final readonly class UseImportsAdder
 
             array_splice($stmts, $key + 1, 0, $nodesToAdd);
 
-            $fileWithoutNamespace->stmts = $stmts;
-            $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
+            $fileNode->stmts = $stmts;
+            $fileNode->stmts = array_values($fileNode->stmts);
 
             return true;
         }
@@ -99,8 +101,8 @@ final readonly class UseImportsAdder
         $this->mirrorUseComments($stmts, $newUses);
 
         // make use stmts first
-        $fileWithoutNamespace->stmts = array_merge($newUses, $this->resolveInsertNop($fileWithoutNamespace), $stmts);
-        $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
+        $fileNode->stmts = array_merge($newUses, $this->resolveInsertNop($fileNode), $stmts);
+        $fileNode->stmts = array_values($fileNode->stmts);
 
         return true;
     }
@@ -154,7 +156,7 @@ final readonly class UseImportsAdder
     /**
      * @return Nop[]
      */
-    private function resolveInsertNop(FileWithoutNamespace|Namespace_ $namespace): array
+    private function resolveInsertNop(FileNode|Namespace_ $namespace): array
     {
         $currentStmt = $namespace->stmts[0] ?? null;
         if (! $currentStmt instanceof Stmt || $currentStmt instanceof Use_ || $currentStmt instanceof GroupUse) {

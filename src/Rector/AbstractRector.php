@@ -132,10 +132,6 @@ CODE_SAMPLE;
      */
     final public function enterNode(Node $node): int|Node|null
     {
-        if (! $this->isMatchingNodeType($node)) {
-            return null;
-        }
-
         if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->file->containsHTML()) {
             return null;
         }
@@ -316,17 +312,5 @@ CODE_SAMPLE;
         foreach ($nodes as $node) {
             $this->changedNodeScopeRefresher->refresh($node, $filePath, $mutatingScope);
         }
-    }
-
-    private function isMatchingNodeType(Node $node): bool
-    {
-        $nodeClass = $node::class;
-        foreach ($this->getNodeTypes() as $nodeType) {
-            if (is_a($nodeClass, $nodeType, true)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
