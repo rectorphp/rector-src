@@ -240,6 +240,7 @@ CODE_SAMPLE
                     continue;
                 }
 
+                // native reflection is needed to get exact default value
                 if ($extendedMethodReflection->getDeclaringClass()->getNativeReflection()->hasMethod($methodName)) {
                     $parentMethod = $extendedMethodReflection->getDeclaringClass()
                         ->getNativeReflection()
