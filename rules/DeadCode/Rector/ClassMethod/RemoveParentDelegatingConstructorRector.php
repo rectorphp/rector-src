@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -15,9 +16,11 @@ use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use Rector\Enum\ObjectReference;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,6 +33,7 @@ final class RemoveParentDelegatingConstructorRector extends AbstractRector
 {
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 
@@ -207,6 +211,7 @@ CODE_SAMPLE
         ClassMethod $classMethod,
         ExtendedMethodReflection $extendedMethodReflection
     ): bool {
+        $methodName = $this->getName($classMethod);
         foreach ($classMethod->getParams() as $position => $param) {
             $parameterType = $param->type;
 
@@ -229,6 +234,18 @@ CODE_SAMPLE
 
                 if (! $this->nodeComparator->areNodesEqual($parameterType, $parentParameterType)) {
                     return false;
+                }
+
+                if ($extendedMethodReflection->getDeclaringClass()->getNativeReflection()->hasMethod($methodName)) {
+                    $parentMethod = $extendedMethodReflection->getDeclaringClass()->getNativeReflection()->getMethod($methodName);
+                    $nativeParentParameterReflection = $parentMethod->getParameters()[$index] ?? null;
+
+                    $parentDefault = $nativeParentParameterReflection->getDefaultValue();
+                    $currentDefault = $this->valueResolver->getValue($param->default);
+
+                    if ($parentDefault !== $currentDefault) {
+                        return false;
+                    }
                 }
             }
         }
