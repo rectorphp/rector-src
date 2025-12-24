@@ -53,7 +53,9 @@ return static function (RectorConfig $rectorConfig): void {
                 ArgumentAddingScope::SCOPE_CLASS_METHOD
             ),
             new ArgumentAdder(SomeClass::class, 'withoutTypeOrDefaultValue', 0, 'arguments', [], $arrayType),
-            new ArgumentAdder(SomeMultiArg::class, 'run', 2, 'c', 4),
+            new ArgumentAdder(SomeMultiArg::class, 'firstArgument', 0, 'a', 4),
+            new ArgumentAdder(SomeMultiArg::class, 'secondArgument', 1, 'b', 5),
+            new ArgumentAdder(SomeMultiArg::class, 'thirdArgument', 2, 'c', 6),
             new ArgumentAdder(SomeClass::class, 'someMethod', 0, 'default', 1),
             new ArgumentAdderWithoutDefaultValue(WithoutDefaultValue::class, 'someMethod', 0, 'foo', $arrayType),
         ]);
