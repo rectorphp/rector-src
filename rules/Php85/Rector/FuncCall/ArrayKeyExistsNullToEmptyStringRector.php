@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Php85\Rector\FuncCall;
 
+use PHPStan\Type\UnionType;
+use PHPStan\Type\TypeCombinator;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
@@ -88,12 +90,21 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             return null;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
+        $argPosition = $this->argsAnalyzer->resolveArgPosition($args, 'key', 0);
+        $originalType = $this->getType($args[$argPosition]->value);
 
+        if ($originalType instanceof UnionType) {
+            $withoutNullParameterType = TypeCombinator::removeNull($originalType);
+            if ($withoutNullParameterType->equals($originalType)) {
+                return null;
+            }
+        }
+
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
         $result = $this->nullToStrictStringIntConverter->convertIfNull(
             $node,
             $args,
-            $this->argsAnalyzer->resolveArgPosition($args, 'key', 0),
+            $argPosition,
             $isTrait,
             $scope,
             $parametersAcceptor
