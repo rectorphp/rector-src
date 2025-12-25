@@ -211,7 +211,6 @@ CODE_SAMPLE
         ClassMethod $classMethod,
         ExtendedMethodReflection $extendedMethodReflection
     ): bool {
-        $methodName = $this->getName($classMethod);
         foreach ($classMethod->getParams() as $position => $param) {
             $parameterType = $param->type;
 
@@ -240,27 +239,38 @@ CODE_SAMPLE
                     continue;
                 }
 
-                // native reflection is needed to get exact default value
-                if ($extendedMethodReflection->getDeclaringClass()->getNativeReflection()->hasMethod($methodName)) {
-                    $parentMethod = $extendedMethodReflection->getDeclaringClass()
-                        ->getNativeReflection()
-                        ->getMethod($methodName);
-                    $nativeParentParameterReflection = $parentMethod->getParameters()[$index] ?? null;
-
-                    if (! $nativeParentParameterReflection instanceof ReflectionParameter) {
-                        continue;
-                    }
-
-                    $parentDefault = $nativeParentParameterReflection->getDefaultValue();
-                    $currentDefault = $this->valueResolver->getValue($param->default);
-
-                    if ($parentDefault !== $currentDefault) {
-                        return false;
-                    }
+                if ($this->isDifferentDefaultValue($param->default, $extendedMethodReflection, $index)) {
+                    return false;
                 }
             }
         }
 
         return true;
+    }
+
+    private function isDifferentDefaultValue(
+        Expr $defaultExpr,
+        ExtendedMethodReflection $extendedMethodReflection,
+        int $index
+    ): bool {
+        $methodName = $extendedMethodReflection->getName();
+        // native reflection is needed to get exact default value
+        if ($extendedMethodReflection->getDeclaringClass()->getNativeReflection()->hasMethod($methodName)) {
+            $parentMethod = $extendedMethodReflection->getDeclaringClass()
+                ->getNativeReflection()
+                ->getMethod($methodName);
+            $nativeParentParameterReflection = $parentMethod->getParameters()[$index] ?? null;
+
+            if (! $nativeParentParameterReflection instanceof ReflectionParameter) {
+                return false;
+            }
+
+            $parentDefault = $nativeParentParameterReflection->getDefaultValue();
+            if (! $this->valueResolver->isValue($defaultExpr, $parentDefault)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
