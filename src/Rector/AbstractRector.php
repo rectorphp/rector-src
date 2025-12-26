@@ -74,7 +74,7 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         if ($name === 'file') {
             return $this->getFile();
