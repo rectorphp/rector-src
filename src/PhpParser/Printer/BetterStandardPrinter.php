@@ -177,9 +177,15 @@ final class BetterStandardPrinter extends Standard
         }
 
         $isMaxPrecedence = $precedence === self::MAX_PRECEDENCE;
+        $isNewLineAndIndent = $arrowFunction->getAttribute(AttributeKey::IS_ARG_VALUE) === true;
         $indent = $this->resolveIndentSpaces($isMaxPrecedence);
 
         $text = $isMaxPrecedence ? '' : "\n" . $indent;
+        if ($isNewLineAndIndent) {
+            $indent = $this->resolveIndentSpaces();
+            $text = "\n" . $indent;
+        }
+
         foreach ($comments as $key => $comment) {
             $commentText = $key > 0 ? $indent . $comment->getText() : $comment->getText();
             $text .= $commentText . "\n";

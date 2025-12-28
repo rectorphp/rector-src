@@ -73,13 +73,17 @@ CODE_SAMPLE
             return null;
         }
 
+        $attributes = $node->getAttributes();
+        unset($attributes[AttributeKey::ORIGINAL_NODE]);
+
         $arrowFunction = new ArrowFunction(
             [
                 'params' => $node->params,
                 'returnType' => $node->returnType,
                 'byRef' => $node->byRef,
                 'expr' => $returnExpr,
-            ]
+            ],
+            $attributes
         );
 
         if ($node->static) {
