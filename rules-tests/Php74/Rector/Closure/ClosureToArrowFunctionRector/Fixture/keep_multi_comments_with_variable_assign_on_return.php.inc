@@ -2,17 +2,13 @@
 
 namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
 
-class KeepDocblockOnReturn
+class KeepMultiCommentsWithVariableAssignOnReturn
 {
     public function run()
     {
-        function() {
+        $variable = function() {
+            // some comment
             /** @psalm-suppress UndefinedFunction */
-            return ff();
-        };
-
-        function() {
-            // @psalm-suppress UndefinedFunction
             return ff();
         };
     }
@@ -24,15 +20,14 @@ class KeepDocblockOnReturn
 
 namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
 
-class KeepDocblockOnReturn
+class KeepMultiCommentsWithVariableAssignOnReturn
 {
     public function run()
     {
-        /** @psalm-suppress UndefinedFunction */
-        fn() => ff();
-
-        // @psalm-suppress UndefinedFunction
-        fn() => ff();
+        $variable = 
+            // some comment
+            /** @psalm-suppress UndefinedFunction */
+            (fn() => ff());
     }
 }
 
