@@ -176,15 +176,15 @@ final class BetterStandardPrinter extends Standard
             return parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
         }
 
-        $indent = $this->resolveIndentSpaces();
+        $indentOnlyLevel = $this->resolveIndentSpaces(true);
 
-        $text = "\n" . $indent;
+        $text = "";
         foreach ($comments as $key => $comment) {
-            $commentText = $key > 0 ? $indent . $comment->getText() : $comment->getText();
+            $commentText = $key > 0 ? $indentOnlyLevel . $comment->getText() : $comment->getText();
             $text .= $commentText . "\n";
         }
 
-        return $text . "\n" . $indent . parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
+        return $text . $indentOnlyLevel . parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
     }
 
     /**
@@ -502,9 +502,13 @@ final class BetterStandardPrinter extends Standard
         return implode("\n", $trimmedLines);
     }
 
-    private function resolveIndentSpaces(): string
+    private function resolveIndentSpaces(bool $onlyLevel = false): string
     {
         $indentSize = SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
+
+        if ($onlyLevel) {
+            return str_repeat($this->getIndentCharacter(), $this->indentLevel);
+        }
 
         return str_repeat($this->getIndentCharacter(), $this->indentLevel) .
             str_repeat($this->getIndentCharacter(), $indentSize);

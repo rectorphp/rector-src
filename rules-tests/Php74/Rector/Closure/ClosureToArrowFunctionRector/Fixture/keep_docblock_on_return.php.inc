@@ -28,15 +28,11 @@ class KeepDocblockOnReturn
 {
     public function run()
     {
-        
-            /** @psalm-suppress UndefinedFunction */
+        /** @psalm-suppress UndefinedFunction */
+        fn() => ff();
 
-            fn() => ff();
-
-        
-            // @psalm-suppress UndefinedFunction
-
-            fn() => ff();
+        // @psalm-suppress UndefinedFunction
+        fn() => ff();
     }
 }
 
