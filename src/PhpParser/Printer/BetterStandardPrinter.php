@@ -176,15 +176,16 @@ final class BetterStandardPrinter extends Standard
             return parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
         }
 
-        $indentOnlyLevel = $this->resolveIndentSpaces(true);
+        $isMaxPrecedence = $precedence === self::MAX_PRECEDENCE;
+        $indent = $this->resolveIndentSpaces($isMaxPrecedence);
 
-        $text = "";
+        $text = $isMaxPrecedence ? '' : "\n" . $indent;
         foreach ($comments as $key => $comment) {
-            $commentText = $key > 0 ? $indentOnlyLevel . $comment->getText() : $comment->getText();
+            $commentText = $key > 0 ? $indent . $comment->getText() : $comment->getText();
             $text .= $commentText . "\n";
         }
 
-        return $text . $indentOnlyLevel . parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
+        return $text . $indent . parent::pExpr_ArrowFunction($arrowFunction, $precedence, $lhsPrecedence);
     }
 
     /**
