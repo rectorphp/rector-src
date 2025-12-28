@@ -146,38 +146,46 @@ CODE_SAMPLE
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($stmt);
 
-            $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-            if (! $varTagValueNode instanceof VarTagValueNode) {
-                continue;
+            $varTagValueNodes = $phpDocInfo->getPhpDocNode()
+                ->getVarTagValues();
+
+            foreach ($varTagValueNodes as $varTagValueNode) {
+                if ($this->isObjectShapePseudoType($varTagValueNode)) {
+                    continue;
+                }
+
+                $variableName = ltrim($varTagValueNode->variableName, '$');
+
+                if ($variableName === '' && $this->isAllowedEmptyVariableName($stmt)) {
+                    continue;
+                }
+
+                if ($this->hasVariableName($stmt, $variableName)) {
+                    continue;
+                }
+
+                $comments = $node->getComments();
+                if (isset($comments[1])) {
+                    // skip edge case with double comment, as impossible to resolve by PHPStan doc parser
+                    continue;
+                }
+
+                if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $variableName)) {
+                    continue;
+                }
+
+                if ($variableName === '') {
+                    $phpDocInfo->removeByType(VarTagValueNode::class);
+                } else {
+                    $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
+                }
+
+                $hasChanged = true;
             }
 
-            if ($this->isObjectShapePseudoType($varTagValueNode)) {
-                continue;
+            if ($hasChanged) {
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
             }
-
-            $variableName = ltrim($varTagValueNode->variableName, '$');
-
-            if ($variableName === '' && $this->isAllowedEmptyVariableName($stmt)) {
-                continue;
-            }
-
-            if ($this->hasVariableName($stmt, $variableName)) {
-                continue;
-            }
-
-            $comments = $node->getComments();
-            if (isset($comments[1])) {
-                // skip edge case with double comment, as impossible to resolve by PHPStan doc parser
-                continue;
-            }
-
-            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $variableName)) {
-                continue;
-            }
-
-            $phpDocInfo->removeByType(VarTagValueNode::class);
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
-            $hasChanged = true;
         }
 
         if ($hasChanged) {
