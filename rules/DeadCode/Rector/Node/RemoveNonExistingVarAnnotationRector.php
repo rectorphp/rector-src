@@ -114,6 +114,7 @@ CODE_SAMPLE
         $extractValues = [];
 
         foreach ($node->stmts as $key => $stmt) {
+            $hasChangedStmt = false;
             if ($stmt instanceof Expression && $stmt->expr instanceof FuncCall && $this->isName(
                 $stmt->expr,
                 'extract'
@@ -180,11 +181,12 @@ CODE_SAMPLE
                     $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
                 }
 
-                $hasChanged = true;
+                $hasChangedStmt = true;
             }
 
-            if ($hasChanged) {
+            if ($hasChangedStmt) {
                 $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
+                $hasChanged = true;
             }
         }
 
