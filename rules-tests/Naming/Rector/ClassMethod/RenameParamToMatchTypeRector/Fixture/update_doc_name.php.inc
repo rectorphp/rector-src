@@ -5,13 +5,14 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Fi
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PHPStan\Node\ClassMethod;
 
 interface UpdateDocName
 {
     /**
-     * @param Identifier|Name $value
+     * @param ClassMethod|Node\Stmt\Property $value
      */
-    public function method(Node $value);
+    public function method(Node\Stmt $value);
 }
 
 ?>
@@ -23,13 +24,14 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Fi
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PHPStan\Node\ClassMethod;
 
 interface UpdateDocName
 {
     /**
-     * @param Identifier|Name $node
+     * @param ClassMethod|Node\Stmt\Property $stmt
      */
-    public function method(Node $node);
+    public function method(Node\Stmt $stmt);
 }
 
 ?>

@@ -23,10 +23,7 @@ use Rector\ValueObject\ProcessResult;
  */
 final readonly class GitHubOutputFormatter implements OutputFormatterInterface
 {
-    /**
-     * @var string
-     */
-    public const NAME = 'github';
+    private const NAME = 'github';
 
     private const GROUP_NAME = 'Rector report';
 

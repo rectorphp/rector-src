@@ -14,7 +14,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  *
  *      - already applied same Rector rule before current Rector rule on last previous Rector rule.
  *      - just re-printed but token start still >= 0
- *      - has above node skipped traverse children on current rule
  */
 final readonly class RectifiedAnalyzer
 {
@@ -29,16 +28,11 @@ final readonly class RectifiedAnalyzer
     public function hasRectified(string $rectorClass, Node $node): bool
     {
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-
         if ($this->hasConsecutiveCreatedByRule($rectorClass, $node, $originalNode)) {
             return true;
         }
 
-        if ($this->isJustReprintedOverlappedTokenStart($node, $originalNode)) {
-            return true;
-        }
-
-        return $node->getAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE) === $rectorClass;
+        return $this->isJustReprintedOverlappedTokenStart($node, $originalNode);
     }
 
     /**

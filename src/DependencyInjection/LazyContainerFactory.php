@@ -17,6 +17,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\FileProcessor;
 use Rector\Application\Provider\CurrentFileProvider;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
@@ -95,14 +96,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver\PropertyTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ScalarTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\StaticCallMethodCallTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NameNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Php80\AttributeDecorator\DoctrineConverterAttributeDecorator;
@@ -123,6 +116,21 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
+use Rector\PhpParser\NodeVisitor\ArgNodeVisitor;
+use Rector\PhpParser\NodeVisitor\AssignedToNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ByRefReturnNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ByRefVariableNodeVisitor;
+use Rector\PhpParser\NodeVisitor\CallLikeThisBoundClosureArgsNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ClassConstFetchNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ClosureWithVariadicParametersNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ContextNodeVisitor;
+use Rector\PhpParser\NodeVisitor\GlobalVariableNodeVisitor;
+use Rector\PhpParser\NodeVisitor\NameNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ParamDefaultNodeVisitor;
+use Rector\PhpParser\NodeVisitor\PhpVersionConditionNodeVisitor;
+use Rector\PhpParser\NodeVisitor\PropertyOrClassConstDefaultNodeVisitor;
+use Rector\PhpParser\NodeVisitor\StaticVariableNodeVisitor;
+use Rector\PhpParser\NodeVisitor\SymfonyClosureNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryLiteralStringTypeMapper;
@@ -165,6 +173,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
+use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
@@ -235,13 +244,20 @@ final class LazyContainerFactory
      */
     private const DECORATING_NODE_VISITOR_CLASSES = [
         ArgNodeVisitor::class,
+        ClosureWithVariadicParametersNodeVisitor::class,
+        PhpVersionConditionNodeVisitor::class,
         AssignedToNodeVisitor::class,
+        SymfonyClosureNodeVisitor::class,
         ByRefReturnNodeVisitor::class,
         ByRefVariableNodeVisitor::class,
         ContextNodeVisitor::class,
         GlobalVariableNodeVisitor::class,
         NameNodeVisitor::class,
         StaticVariableNodeVisitor::class,
+        PropertyOrClassConstDefaultNodeVisitor::class,
+        ParamDefaultNodeVisitor::class,
+        ClassConstFetchNodeVisitor::class,
+        CallLikeThisBoundClosureArgsNodeVisitor::class,
     ];
 
     /**
@@ -428,6 +444,10 @@ final class LazyContainerFactory
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
 
+        $rectorConfig->when(DeprecatedRulesReporter::class)
+            ->needs('$rectors')
+            ->giveTagged(RectorInterface::class);
+
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
 
@@ -545,6 +565,7 @@ final class LazyContainerFactory
                     $container->get(CurrentFileProvider::class),
                     $container->get(CreatedByRuleDecorator::class),
                     $container->get(ChangedNodeScopeRefresher::class),
+                    $container->get(CommentsMerger::class),
                 );
             }
         );

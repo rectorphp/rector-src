@@ -82,31 +82,15 @@ final class AttributeKey
     public const IS_REGULAR_PATTERN = 'is_regular_pattern';
 
     /**
-     * @var string
-     */
-    public const DO_NOT_CHANGE = 'do_not_change';
-
-    /**
      * Helps with infinite loop detection
      * @var string
      */
     public const CREATED_BY_RULE = 'created_by_rule';
 
     /**
-     * Helps with skipped below node
-     * @var string
-     */
-    public const SKIPPED_BY_RECTOR_RULE = 'skipped_rector_rule';
-
-    /**
      * @var string
      */
     public const WRAPPED_IN_PARENTHESES = 'wrapped_in_parentheses';
-
-    /**
-     * @var string
-     */
-    public const COMMENT_CLOSURE_RETURN_MIRRORED = 'comment_closure_return_mirrored';
 
     /**
      * To pass PHP 8.0 attribute FQN names
@@ -120,6 +104,7 @@ final class AttributeKey
     public const EXTRA_USE_IMPORT = 'extra_use_import';
 
     /**
+     * Used internally by php-parser
      * @var string
      */
     public const DOC_LABEL = 'docLabel';
@@ -156,13 +141,6 @@ final class AttributeKey
     public const IS_BYREF_RETURN = 'is_byref_return';
 
     /**
-     * @deprecated This value can change, as based on default input keys. Use existing array keys instead.
-     *
-     * @var string
-     */
-    public const STMT_KEY = 'stmt_key';
-
-    /**
      * @var string
      */
     public const IS_BEING_ASSIGNED = 'is_being_assigned';
@@ -185,7 +163,7 @@ final class AttributeKey
     /**
      * @var string
      */
-    public const IS_IN_LOOP = 'is_in_loop';
+    public const IS_IN_LOOP_OR_SWITCH = 'is_in_loop';
 
     /**
      * @var string
@@ -201,6 +179,8 @@ final class AttributeKey
      * @var string
      */
     public const IS_UNSET_VAR = 'is_unset_var';
+
+    public const IS_ISSET_VAR = 'is_isset_var';
 
     /**
      * @var string
@@ -240,6 +220,11 @@ final class AttributeKey
     /**
      * @var string
      */
+    public const IS_PARAM_DEFAULT = 'is_param_default';
+
+    /**
+     * @var string
+     */
     public const IS_INCREMENT_OR_DECREMENT = 'is_increment_or_decrement';
 
     /**
@@ -275,15 +260,23 @@ final class AttributeKey
     /**
      * @var string
      */
-    public const ATTRIBUTE_COMMENT = 'attribute_comment';
-
-    /**
-     * @var string
-     */
     public const IS_FIRST_LEVEL_STATEMENT = 'first_level_stmt';
 
-    /**
-     * @var string
-     */
-    public const HAS_MERGED_COMMENTS = 'has_merged_comments';
+    public const IS_DEFAULT_PROPERTY_VALUE = 'is_default_property_value';
+
+    public const IS_CLASS_CONST_VALUE = 'is_default_class_const_value';
+
+    public const IS_INSIDE_SYMFONY_PHP_CLOSURE = 'is_inside_symfony_php_closure';
+
+    public const IS_INSIDE_BYREF_FUNCTION_LIKE = 'is_inside_byref_function_like';
+
+    public const CLASS_CONST_FETCH_NAME = 'class_const_fetch_name';
+
+    public const PHP_VERSION_CONDITIONED = 'php_version_conditioned';
+
+    public const IS_CLOSURE_USES_THIS = 'has_this_closure';
+
+    public const HAS_CLOSURE_WITH_VARIADIC_ARGS = 'has_closure_with_variadic_args';
+
+    public const IS_IN_TRY_BLOCK = 'is_in_try_block';
 }

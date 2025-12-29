@@ -10,20 +10,16 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\Php81\Enum\AttributeName;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 
 final readonly class PhpAttributeAnalyzer
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -35,29 +31,6 @@ final readonly class PhpAttributeAnalyzer
                     continue;
                 }
 
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param AttributeName::* $attributeClass
-     */
-    public function hasInheritedPhpAttribute(Class_ $class, string $attributeClass): bool
-    {
-        $className = (string) $this->nodeNameResolver->getName($class);
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return false;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
-        $ancestorClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
-
-        foreach ($ancestorClassReflections as $ancestorClassReflection) {
-            $nativeReflection = $ancestorClassReflection->getNativeReflection();
-            if ($nativeReflection->getAttributes($attributeClass) !== []) {
                 return true;
             }
         }

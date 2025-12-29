@@ -11,19 +11,18 @@ use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\NodeVisitor;
 use PHPStan\Type\ObjectType;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
 use Rector\Php80\ValueObject\MatchResult;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -78,27 +77,27 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
-     * @return null|Node|NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN
+     * @param StmtsAware $node
      */
-    public function refactor(Node $node): null|Node|int
+    public function refactor(Node $node): null|Node
     {
         if (! is_array($node->stmts)) {
             return null;
-        }
-
-        if ($node instanceof FunctionLike && $node->returnsByRef()) {
-            return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
         $hasChanged = false;
 
         foreach ($node->stmts as $key => $stmt) {
             if (! $stmt instanceof Switch_) {
+                continue;
+            }
+
+            // possible reference override, where match
+            if ($stmt->getAttribute(AttributeKey::IS_INSIDE_BYREF_FUNCTION_LIKE)) {
                 continue;
             }
 

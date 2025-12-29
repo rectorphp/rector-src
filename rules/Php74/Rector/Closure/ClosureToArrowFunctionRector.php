@@ -73,13 +73,17 @@ CODE_SAMPLE
             return null;
         }
 
+        $attributes = $node->getAttributes();
+        unset($attributes[AttributeKey::ORIGINAL_NODE]);
+
         $arrowFunction = new ArrowFunction(
             [
                 'params' => $node->params,
                 'returnType' => $node->returnType,
                 'byRef' => $node->byRef,
                 'expr' => $returnExpr,
-            ]
+            ],
+            $attributes
         );
 
         if ($node->static) {
@@ -89,7 +93,7 @@ CODE_SAMPLE
         $comments = $node->stmts[0]->getAttribute(AttributeKey::COMMENTS) ?? [];
         if ($comments !== []) {
             $this->mirrorComments($arrowFunction->expr, $node->stmts[0]);
-            $arrowFunction->setAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED, true);
+            $arrowFunction->setAttribute(AttributeKey::COMMENTS, $node->stmts[0]->getComments());
         }
 
         return $arrowFunction;

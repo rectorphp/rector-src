@@ -14,10 +14,21 @@ use Rector\PhpDocParser\NodeVisitor\CallableNodeVisitor;
 final class SimpleCallableNodeTraverser
 {
     /**
-     * @param callable(Node): (int|Node|null|Node[]) $callable
+     * @param Node|Node[]|null $node
+     *
+     * @param callable(Node $node): (int|Node|null|Node[]) $callable
+     * @api shortcut helper
+     */
+    public static function traverse(Node | array | null $node, callable $callable): void
+    {
+        self::traverseNodesWithCallable($node, $callable);
+    }
+
+    /**
+     * @param callable(Node $node): (int|Node|null|Node[]) $callable
      * @param Node|Node[]|null $node
      */
-    public function traverseNodesWithCallable(Node | array | null $node, callable $callable): void
+    public static function traverseNodesWithCallable(Node | array | null $node, callable $callable): void
     {
         if ($node === null || $node === []) {
             return;

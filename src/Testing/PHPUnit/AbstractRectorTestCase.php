@@ -149,6 +149,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
 
         $inputFilePath = $this->createInputFilePath($fixtureFilePath);
+
         // to remove later in tearDown()
         $this->inputFilePath = $inputFilePath;
 

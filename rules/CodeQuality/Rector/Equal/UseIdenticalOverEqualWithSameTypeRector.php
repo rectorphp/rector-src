@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\Ternary;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
@@ -17,6 +18,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,7 +31,7 @@ final class UseIdenticalOverEqualWithSameTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Use ===/!== over ==/!=, it values have the same type',
+            'Use ===/!== over ==/!=, if values have the same type',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -135,6 +137,14 @@ CODE_SAMPLE
 
     private function processIdenticalOrNotIdentical(Equal|NotEqual $node): Identical|NotIdentical
     {
+        if ($node->left instanceof Ternary) {
+            $node->left->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
+        if ($node->right instanceof Ternary) {
+            $node->right->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
         if ($node instanceof Equal) {
             return new Identical($node->left, $node->right);
         }

@@ -51,7 +51,7 @@ final class ListRulesCommand extends Command
     {
         $rectorClasses = $this->resolveRectorClasses();
 
-        $skippedClasses = $this->getSkippedCheckers();
+        $skippedClasses = $this->getSkippedRectorClasses();
 
         $outputFormat = $input->getOption(Option::OUTPUT_FORMAT);
         if ($outputFormat === 'json') {
@@ -95,20 +95,21 @@ final class ListRulesCommand extends Command
     }
 
     /**
-     * @return string[]
+     * @return array<class-string>
      */
-    private function getSkippedCheckers(): array
+    private function getSkippedRectorClasses(): array
     {
-        $skippedCheckers = [];
-        foreach ($this->skippedClassResolver->resolve() as $checkerClass => $fileList) {
+        $skippedRectorClasses = [];
+
+        foreach ($this->skippedClassResolver->resolve() as $rectorClass => $fileList) {
             // ignore specific skips
             if ($fileList !== null) {
                 continue;
             }
 
-            $skippedCheckers[] = $checkerClass;
+            $skippedRectorClasses[] = $rectorClass;
         }
 
-        return $skippedCheckers;
+        return $skippedRectorClasses;
     }
 }

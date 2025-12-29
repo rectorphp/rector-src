@@ -4,10 +4,6 @@ namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixtu
 
 class NoNewLine
 {
-    private $property;
-    private $property2;
-    private const VIEW = 'view';
-    private const ADD = 'add';
     public function run(array $data)
     {
         if (rand(0, 1)) {
@@ -30,14 +26,6 @@ namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixtu
 
 class NoNewLine
 {
-    private $property;
-
-    private $property2;
-
-    private const VIEW = 'view';
-
-    private const ADD = 'add';
-
     public function run(array $data)
     {
         if (rand(0, 1)) {

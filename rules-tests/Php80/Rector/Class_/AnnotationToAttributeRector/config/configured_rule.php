@@ -71,5 +71,8 @@ return static function (RectorConfig $rectorConfig): void {
             'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Annotation\SomeProperty',
             'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute\SomeProperty'
         ),
+
+        // for testing allow numeric string keep as string
+        new AnnotationToAttribute('OpenApi\\Annotations\\Property', 'OpenApi\\Attributes\\Property'),
     ]);
 };

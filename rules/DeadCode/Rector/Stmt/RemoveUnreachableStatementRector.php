@@ -6,8 +6,9 @@ namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\TerminatedNodeAnalyzer;
+use Rector\PhpParser\Enum\NodeGroup;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -56,14 +57,19 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [StmtsAwareInterface::class];
+        return NodeGroup::STMTS_AWARE;
     }
 
     /**
-     * @param StmtsAwareInterface $node
+     * @param StmtsAware $node
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node instanceof FileNode && $node->isNamespaced()) {
+            // handled in Namespace_ node
+            return null;
+        }
+
         if ($node->stmts === null) {
             return null;
         }
@@ -85,10 +91,12 @@ CODE_SAMPLE
     }
 
     /**
+     * @param StmtsAware $stmtsAware
+     *
      * @param Stmt[] $stmts
      * @return Stmt[]
      */
-    private function processCleanUpUnreachableStmts(StmtsAwareInterface $stmtsAware, array $stmts): array
+    private function processCleanUpUnreachableStmts(Node $stmtsAware, array $stmts): array
     {
         foreach ($stmts as $key => $stmt) {
             if (! isset($stmts[$key - 1])) {
@@ -98,7 +106,6 @@ CODE_SAMPLE
             $previousStmt = $stmts[$key - 1];
 
             // unset...
-
             if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($stmtsAware, $previousStmt, $stmt)) {
                 array_splice($stmts, $key);
                 return $stmts;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\Expression;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -11,10 +12,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\NodeManipulator\LivingCodeManipulator;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,7 +28,6 @@ final class RemoveDeadStmtRector extends AbstractRector
         private readonly LivingCodeManipulator $livingCodeManipulator,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -59,7 +57,7 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
-     * @return Node[]|Node|null|int
+     * @return Node[]|Node|null|NodeVisitor::REMOVE_NODE
      */
     public function refactor(Node $node): array|Node|null|int
     {
@@ -106,13 +104,14 @@ CODE_SAMPLE
         return ! $phpPropertyReflection instanceof PhpPropertyReflection;
     }
 
+    /**
+     * @return NodeVisitor::REMOVE_NODE|Node
+     */
     private function removeNodeAndKeepComments(Expression $expression): int|Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
-
-        if ($expression->getComments() !== []) {
+        if ($expression->getDocComment() instanceof Doc) {
             $nop = new Nop();
-            $nop->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
+            $nop->setDocComment($expression->getDocComment());
 
             return $nop;
         }

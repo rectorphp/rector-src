@@ -13,8 +13,6 @@ class Fixture
         settype($foo, 'double');
         settype($foo, 'bool');
         settype($foo, 'boolean');
-
-        return settype($foo, 'integer');
     }
 
     public function null()
@@ -40,8 +38,6 @@ class Fixture
         $foo = (double) $foo;
         $foo = (bool) $foo;
         $foo = (bool) $foo;
-
-        return (int) $foo;
     }
 
     public function null()

@@ -8,9 +8,12 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
+    # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
+    typeAliases:
+        StmtsAware: \PhpParser\Node\Stmt\Block | \PhpParser\Node\Expr\Closure | \PhpParser\Node\Stmt\Case_ | \PhpParser\Node\Stmt\Catch_ | \PhpParser\Node\Stmt\ClassMethod | \PhpParser\Node\Stmt\Do_ | \PhpParser\Node\Stmt\Else_ | \PhpParser\Node\Stmt\ElseIf_ | \PhpParser\Node\Stmt\Finally_ | \PhpParser\Node\Stmt\For_ | \PhpParser\Node\Stmt\Foreach_ | \PhpParser\Node\Stmt\Function_ | \PhpParser\Node\Stmt\If_ | \PhpParser\Node\Stmt\Namespace_ | \PhpParser\Node\Stmt\TryCatch | \PhpParser\Node\Stmt\While_ | \Rector\PhpParser\Node\FileNode
+
     # requires exact closure types
     checkMissingCallableSignature: true
-
     treatPhpDocTypesAsCertain: false
 
     paths:
@@ -30,9 +33,6 @@ parameters:
     scanDirectories:
         - stubs
 
-    scanFiles:
-        - src/Contract/PhpParser/Node/StmtsAwareInterface.php
-
     excludePaths:
         - '*tests/*/Fixture/*'
         - '*tests/*/Fixture*'
@@ -46,8 +46,19 @@ parameters:
         narrow_param: true
         narrow_return: true
 
+    # see https://github.com/TomasVotruba/unused-public
+    unused_public:
+        methods: true
+        properties: true
+        constants: true
+
     ignoreErrors:
+        # required generics on interface array, not helpful
         -
+            message: '#Method (.*?)\:\:__construct\(\) has parameter#'
+            identifier: missingType.generics
+        -
+            message: '#(.*?) with generic interface (.*?)Interface does not specify its types#'
             identifier: missingType.generics
 
         # phpstan class instance
@@ -134,7 +145,6 @@ parameters:
 
         # internal reflection
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
-
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
         # known value
@@ -150,6 +160,8 @@ parameters:
                 - src/Validation/RectorConfigValidator.php
                 # for phpunit version check
                 - src/Testing/PHPUnit/AbstractLazyTestCase.php
+                # future node class exists check
+                - src/Reporting/DeprecatedRulesReporter.php
 
         # use of internal phpstan classes
         -
@@ -177,13 +189,20 @@ parameters:
             message: '#Method Rector\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
             path: src/Util/ArrayParametersMerger.php
 
-        # fixture class
-        - '#Class "Rector\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
+        # fixture Rector rules
+        -
+            identifier:  symplify.seeAnnotationToTest
+            path: tests/Issues/
 
+        # classes are part of *.php.inc fixture
         -
             message: '#Class (.*?) not found#'
             paths:
-                - rules-tests/*/config/*
+                - rules-tests/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector/config
+                - rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/config
+                - rules-tests/Renaming/Rector/Name/RenameClassRector/config
+                - rules-tests/Renaming/Rector/MethodCall/RenameMethodRector/config
+                - rules-tests/Arguments/Rector/ClassMethod/ArgumentAdderRector/config
 
         -
             message: '#Function "(function_exists|dump_node)\(\)" cannot be used/left in the code#'
@@ -206,8 +225,6 @@ parameters:
         -
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
-
-        - '#(.*?)\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
@@ -267,7 +284,9 @@ parameters:
 
         # BC layer on Rector deprecation
         -
-            path: src/Configuration/RectorConfigBuilder.php
+            paths:
+                - src/Configuration/RectorConfigBuilder.php
+                - src/Reporting/DeprecatedRulesReporter.php
             identifier: classConstant.deprecatedInterface
 
         # allowed internally only
@@ -308,6 +327,11 @@ parameters:
         - '#expects array<PhpParser\\Node\\Stmt>, array<PhpParser\\Node> given#'
         - '#should return non\-empty\-string but returns string#'
 
+        # known non-empty class method
+        -
+            message: '#Offset 0 might not exist on array<PhpParser\\Node\\Stmt>\|null#'
+            path: rules/DeadCode/Rector/ClassMethod/RemoveParentDelegatingConstructorRector.php
+
         # false positive, can accept non-class string
         - '#Parameter \#1 \$name of method PHPStan\\BetterReflection\\Reflection\\Adapter\\ReflectionClass\:\:getAttributes\(\) expects class\-string\|null, string given#'
 
@@ -329,18 +353,8 @@ parameters:
           path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
 
         -
-            identifier: symplify.seeAnnotationToTest
-            path: utils/PHPStan/Rule/PreferDirectIsNameRule.php
-
-        -
             identifier: arrayValues.list
             path: rules/CodingStyle/Application/UseImportsAdder.php
-
-        -
-            message: '#^Register "Rector\\Php74\\Rector\\Double\\RealToFloatTypeCastRector" service to "php74\.php" config set$#'
-            identifier: rector.upgradeDowngradeRegisteredInSet
-            count: 1
-            path: rules/Php74/Rector/Double/RealToFloatTypeCastRector.php
 
         -
             message: '#Offset float\|int\|string might not exist on string#'
@@ -364,9 +378,6 @@ parameters:
 
         # copied from /vendor, to keep as original as possible
         -
-            identifier: symplify.forbiddenNode
-            path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
-        -
             identifier: missingType.iterableValue
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
         -
@@ -381,3 +392,75 @@ parameters:
         -
             message: '#Property Rector\\PhpParser\\NodeTraverser\\AbstractImmutableNodeTraverser\:\:\$visitors \(list<PhpParser\\NodeVisitor>\) does not accept array<int\|string, PhpParser\\NodeVisitor>#'
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
+
+        # false positive
+        -
+            message: '#Method (.*?)refactor\(\) (never returns|should return) (.*?)#'
+            paths:
+                - rules/Php70/Rector/If_/IfToSpaceshipRector.php
+
+        -
+            identifier: rector.noIntegerRefactorReturn
+            paths:
+                # valid, as use REMOVE_NODE
+                - rules/DeadCode/Rector/Expression/RemoveDeadStmtRector.php
+                - rules/DeadCode/Rector/If_/RemoveDeadInstanceOfRector.php
+                - rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
+                - rules/DeadCode/Rector/If_/UnwrapFutureCompatibleIfPhpVersionRector.php
+
+        # condition check, just to be sure
+        - '#Method Rector\\Rector\\AbstractRector\:\:enterNode\(\) never returns 3 so it can be removed from the return type#'
+
+        # deprecated
+        -
+            identifier: public.method.unused
+            paths:
+                - rules/Transform/ValueObject/ClassMethodReference.php
+                - rules/CodeQuality/ValueObject/KeyAndExpr.php
+        -
+            identifier: symplify.forbiddenExtendOfNonAbstractClass
+            path: src/PhpParser/Node/FileNode.php
+        -
+            identifier: method.deprecatedClass
+            path: src/PhpParser/Node/FileNode.php
+
+        -
+            identifier: class.extendsDeprecatedClass
+            path: src/PhpParser/Node/FileNode.php
+
+        -
+            identifier: public.classConstant.unused
+            paths:
+                - rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php
+                - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
+                - rules/Php81/Enum/AttributeName.php
+
+        -
+            identifier: symplify.seeAnnotationToTest
+            paths:
+                - tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
+
+        # deprecated rule
+        - '#Rule Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
+        - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'
+        - '#Class "Rector\\CodingStyle\\Rector\\String_\\SymplifyQuoteEscapeRector" is missing @see annotation with test case class reference#'
+        - '#Access to constant on deprecated class Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector#'
+
+        # BC layer for FileWithoutNamespace node
+        - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
+        - '#BC layer for FileNode and FileWithoutNamespace compat, use FileNode instead#'
+        -
+            path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
+            identifier: symplify.forbiddenExtendOfNonAbstractClass
+        -
+            message: '#Only abstract classes can be extended#'
+            path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
+
+        - '#Method Rector\\Tests\\Issues\\FileWithoutNamespaceCompat\\Rector\\SubscribedToFileWithoutNamespaceRector\:\:refactor\(\) should return Rector\\PhpParser\\Node\\FileNode but returns Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace#'
+
+        # BC layer for FileWithoutNamespace node
+        - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
+        - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace extends final class Rector\\PhpParser\\Node\\FileNode#'
+        -
+            path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
+            identifier: symplify.forbiddenExtendOfNonAbstractClass

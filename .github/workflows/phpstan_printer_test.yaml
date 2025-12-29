@@ -1,0 +1,41 @@
+name: PHPStan Printer Test
+
+on:
+    pull_request: null
+    push:
+     branches:
+        - main
+
+
+
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    tests:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+                php-versions: ['8.2']
+
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 3
+
+        name: PHP ${{ matrix.php-versions }} tests (${{ matrix.os }})
+        steps:
+            -   uses: actions/checkout@v4
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    coverage: none
+                    # to display warning when assert() is called, eg: on direct getArgs() on CallLike
+                    # and check against first class callable strlen(...)
+                    ini-values: zend.assertions=1
+
+            -   uses: "ramsey/composer-install@v3"
+
+            -   run: vendor/bin/phpunit tests/PhpParser/Printer/PHPStanPrinterTest.php --colors

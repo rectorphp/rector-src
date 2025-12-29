@@ -85,7 +85,7 @@ final readonly class PhpAttributeGroupFactory
 
         $this->annotationToAttributeIntegerValueCaster->castAttributeTypes($annotationToAttribute, $args);
 
-        $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
+        $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args, $annotationToAttribute->getAttributeClass());
 
         $attributeName = $this->attributeNameFactory->create(
             $annotationToAttribute,

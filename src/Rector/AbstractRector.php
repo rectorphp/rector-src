@@ -9,9 +9,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Const_;
-use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitor;
@@ -21,7 +19,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
@@ -71,14 +69,9 @@ CODE_SAMPLE;
 
     private CurrentFileProvider $currentFileProvider;
 
-    /**
-     * @var array<int, Node[]>
-     */
-    private array $nodesToReturn = [];
+    private CommentsMerger $commentsMerger;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
-
-    private ?int $toBeRemovedNodeId = null;
 
     public function autowire(
         NodeNameResolver $nodeNameResolver,
@@ -89,7 +82,8 @@ CODE_SAMPLE;
         NodeComparator $nodeComparator,
         CurrentFileProvider $currentFileProvider,
         CreatedByRuleDecorator $createdByRuleDecorator,
-        ChangedNodeScopeRefresher $changedNodeScopeRefresher
+        ChangedNodeScopeRefresher $changedNodeScopeRefresher,
+        CommentsMerger $commentsMerger
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -100,9 +94,14 @@ CODE_SAMPLE;
         $this->currentFileProvider = $currentFileProvider;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
+        $this->commentsMerger = $commentsMerger;
     }
 
     /**
+     * @final Avoid override to prevent unintended side-effects. Use enterNode() or @see \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface instead.
+     *
+     * @internal
+     *
      * @return Node[]|null
      */
     public function beforeTraverse(array $nodes): ?array
@@ -120,12 +119,11 @@ CODE_SAMPLE;
         return null;
     }
 
-    final public function enterNode(Node $node): int|Node|null
+    /**
+     * @return NodeVisitor::REMOVE_NODE|Node|null|Node[]
+     */
+    final public function enterNode(Node $node): int|Node|null|array
     {
-        if (! $this->isMatchingNodeType($node)) {
-            return null;
-        }
-
         if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->file->containsHTML()) {
             return null;
         }
@@ -138,77 +136,37 @@ CODE_SAMPLE;
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
 
-        $refactoredNode = $this->refactor($node);
+        $refactoredNodeOrState = $this->refactor($node);
 
         // nothing to change → continue
-        if ($refactoredNode === null) {
+        if ($refactoredNodeOrState === null) {
             return null;
         }
 
-        if ($refactoredNode === []) {
+        if ($refactoredNodeOrState === []) {
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        $isIntRefactoredNode = is_int($refactoredNode);
+        $isState = is_int($refactoredNodeOrState);
 
-        /**
-         * If below node and/or its children not traversed on current rule
-         * early return null with decorate current and children node with skipped by "only" current rule
-         */
-        if ($isIntRefactoredNode) {
+        if ($isState) {
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
-            if (in_array(
-                $refactoredNode,
-                [NodeVisitor::DONT_TRAVERSE_CHILDREN, NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
-                true
-            )) {
-                $this->decorateCurrentAndChildren($node);
+            // only remove node is supported
+            if ($refactoredNodeOrState !== NodeVisitor::REMOVE_NODE) {
+                // @todo warn about unsupported state in the future
                 return null;
             }
 
-            // @see NodeVisitor::* codes, e.g. removal of node of stopping the traversing
-            if ($refactoredNode === NodeVisitor::REMOVE_NODE) {
-                // log here, so we can remove the node in leaveNode() method
-                $this->toBeRemovedNodeId = spl_object_id($originalNode);
-            }
-
-            // notify this rule changing code
+            // notify this rule changed code
             $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
             $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-            return $refactoredNode === NodeVisitor::REMOVE_NODE
-                ? $originalNode
-                : $refactoredNode;
+            return $refactoredNodeOrState;
         }
 
-        return $this->postRefactorProcess($originalNode, $node, $refactoredNode, $filePath);
-    }
-
-    /**
-     * Replacing nodes in leaveNode() method avoids infinite recursion
-     * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-     */
-    final public function leaveNode(Node $node): array|int|Node|null
-    {
-        if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
-            return null;
-        }
-
-        // nothing to change here
-        if ($this->toBeRemovedNodeId === null && $this->nodesToReturn === []) {
-            return null;
-        }
-
-        $objectId = spl_object_id($node);
-        if ($this->toBeRemovedNodeId === $objectId) {
-            $this->toBeRemovedNodeId = null;
-
-            return NodeVisitor::REMOVE_NODE;
-        }
-
-        return $this->nodesToReturn[$objectId] ?? $node;
+        return $this->postRefactorProcess($originalNode, $node, $refactoredNodeOrState, $filePath);
     }
 
     protected function isName(Node $node, string $name): bool
@@ -268,66 +226,19 @@ CODE_SAMPLE;
 
     protected function mirrorComments(Node $newNode, Node $oldNode): void
     {
-        if ($this->nodeComparator->areSameNode($newNode, $oldNode)) {
-            return;
-        }
-
-        if ($oldNode instanceof InlineHTML) {
-            return;
-        }
-
-        $oldPhpDocInfo = $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO);
-        $newPhpDocInfo = $newNode->getAttribute(AttributeKey::PHP_DOC_INFO);
-
-        if ($newPhpDocInfo instanceof PhpDocInfo) {
-            if (! $oldPhpDocInfo instanceof PhpDocInfo) {
-                return;
-            }
-
-            if ((string) $oldPhpDocInfo->getPhpDocNode() !== (string) $newPhpDocInfo->getPhpDocNode()) {
-                return;
-            }
-        }
-
-        $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);
-        if (! $newNode instanceof Nop) {
-            $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
-        }
-    }
-
-    private function decorateCurrentAndChildren(Node $node): void
-    {
-        // filter only types that
-        //    1. registered in getNodesTypes() method
-        //    2. different with current node type, as already decorated above
-        //
-        $otherTypes = array_filter(
-            $this->getNodeTypes(),
-            static fn (string $nodeType): bool => $nodeType !== $node::class
-        );
-
-        if ($otherTypes === []) {
-            return;
-        }
-
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes): null {
-            if (in_array($subNode::class, $otherTypes, true)) {
-                $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
-            }
-
-            return null;
-        });
+        $this->commentsMerger->mirrorComments($newNode, $oldNode);
     }
 
     /**
      * @param Node|Node[] $refactoredNode
+     * @return Node|Node[]
      */
     private function postRefactorProcess(
         Node $originalNode,
         Node $node,
         Node|array $refactoredNode,
         string $filePath
-    ): Node {
+    ): Node|array {
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
@@ -336,26 +247,8 @@ CODE_SAMPLE;
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
-
-        if (is_array($refactoredNode)) {
-            $firstNode = current($refactoredNode);
-
-            if ($firstNode->getAttribute(AttributeKey::HAS_MERGED_COMMENTS, false) === false) {
-                $this->mirrorComments($firstNode, $originalNode);
-            }
-
-            $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
-
-            // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-            $originalNodeId = spl_object_id($originalNode);
-
-            // will be replaced in leaveNode() the original node must be passed
-            $this->nodesToReturn[$originalNodeId] = $refactoredNode;
-
-            return $originalNode;
-        }
-
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
+
         return $refactoredNode;
     }
 
@@ -369,17 +262,5 @@ CODE_SAMPLE;
         foreach ($nodes as $node) {
             $this->changedNodeScopeRefresher->refresh($node, $filePath, $mutatingScope);
         }
-    }
-
-    private function isMatchingNodeType(Node $node): bool
-    {
-        $nodeClass = $node::class;
-        foreach ($this->getNodeTypes() as $nodeType) {
-            if (is_a($nodeClass, $nodeType, true)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

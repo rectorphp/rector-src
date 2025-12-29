@@ -9,7 +9,7 @@ class ByPass2ndArgValue
     public function run()
     {
         $containerBuilder = new SomeMultiArg();
-        $containerBuilder->run(1);
+        $containerBuilder->thirdArgument(1);
     }
 }
 
@@ -26,7 +26,7 @@ class ByPass2ndArgValue
     public function run()
     {
         $containerBuilder = new SomeMultiArg();
-        $containerBuilder->run(1, 2, 4);
+        $containerBuilder->thirdArgument(1, 2, 6);
     }
 }
 

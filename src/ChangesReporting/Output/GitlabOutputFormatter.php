@@ -17,10 +17,7 @@ use Rector\ValueObject\ProcessResult;
 
 final readonly class GitlabOutputFormatter implements OutputFormatterInterface
 {
-    /**
-     * @var string
-     */
-    public const NAME = 'gitlab';
+    private const NAME = 'gitlab';
 
     private const ERROR_TYPE_ISSUE = 'issue';
 

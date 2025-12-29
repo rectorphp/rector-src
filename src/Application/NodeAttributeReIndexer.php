@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Stmt\Block;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -21,7 +20,8 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\PhpParser\Enum\NodeGroup;
+use Webmozart\Assert\Assert;
 
 final class NodeAttributeReIndexer
 {
@@ -66,10 +66,11 @@ final class NodeAttributeReIndexer
 
     private static function reIndexStmtsKeys(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_ && ! $node instanceof Block) {
+        if (! NodeGroup::isStmtAwareNode($node) && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
             return null;
         }
 
+        Assert::propertyExists($node, 'stmts');
         if ($node->stmts === null) {
             return null;
         }

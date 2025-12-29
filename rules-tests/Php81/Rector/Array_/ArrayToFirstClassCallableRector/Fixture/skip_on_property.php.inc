@@ -1,0 +1,16 @@
+<?php
+
+namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixture;
+
+final class SkipOnProperty
+{
+    private $prop = [SkipOnProperty::class, 'size'];
+
+    private $nestedProperty = [
+        'some_callback' => [SkipOnProperty::class, 'size']
+    ];
+
+    public function size()
+    {
+    }
+}

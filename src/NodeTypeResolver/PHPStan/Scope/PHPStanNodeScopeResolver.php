@@ -106,7 +106,7 @@ use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Webmozart\Assert\Assert;
 
@@ -155,8 +155,6 @@ final readonly class PHPStanNodeScopeResolver
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
 
-        $this->nodeTraverser->traverse($stmts);
-
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
@@ -204,7 +202,8 @@ final readonly class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof FileWithoutNamespace) {
+            // handle unwrapped stmts
+            if ($node instanceof FileNode) {
                 $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
                 return;
             }
@@ -418,6 +417,10 @@ final readonly class PHPStanNodeScopeResolver
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $scope);
         }
+
+        // use after scope filling so DecoratingNodeVisitorInterface instance can fetch the scope of target node
+        // @see https://github.com/rectorphp/rector-src/pull/7721#discussion_r2595932460
+        $this->nodeTraverser->traverse($stmts);
 
         return $stmts;
     }
