@@ -9,7 +9,7 @@ class MergeComments
         // toplevel
         if ($b) {
         } elseif (!$b) {
-            // first innner
+            // first inner
             f();
             // second inner
         }
