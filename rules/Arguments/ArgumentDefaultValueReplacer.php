@@ -12,9 +12,12 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+use Rector\NodeAnalyzer\ArgsAnalyzer;
+use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
@@ -22,7 +25,9 @@ final readonly class ArgumentDefaultValueReplacer
 {
     public function __construct(
         private NodeFactory $nodeFactory,
-        private ValueResolver $valueResolver
+        private ValueResolver $valueResolver,
+        private ArgsAnalyzer $argsAnalyzer,
+        private AstResolver $astResolver,
     ) {
     }
 
@@ -42,10 +47,6 @@ final readonly class ArgumentDefaultValueReplacer
             }
 
             return $this->processParams($node, $replaceArgumentDefaultValue);
-        }
-
-        if (! isset($node->args[$replaceArgumentDefaultValue->getPosition()])) {
-            return null;
         }
 
         return $this->processArgs($node, $replaceArgumentDefaultValue);
@@ -102,7 +103,48 @@ final readonly class ArgumentDefaultValueReplacer
         }
 
         $position = $replaceArgumentDefaultValue->getPosition();
-        $particularArg = $expr->getArgs()[$position] ?? null;
+        $arguments = $expr->getArgs();
+        $firstNamedArgPosition = $this->argsAnalyzer->resolveFirstNamedArgPosition($arguments);
+        // if the call has named argyments and we want to replace an array of values
+        // we cannot replace it as we cannot really match this array of values to
+        // the existing arguments, it would be too complex
+        if ($firstNamedArgPosition !== null && is_array($replaceArgumentDefaultValue->getValueBefore())) {
+            return null;
+        }
+
+        // if the call has named arguments and the argument that we want to replace is not
+        // before any named argument, we need to check if it is in the list of named arguments
+        // if it is, we use the position of the named argyment as the position to replace
+        // if it is not, we cannot replace it
+        if ($firstNamedArgPosition !== null && $position >= $firstNamedArgPosition) {
+            $call = $this->astResolver->resolveClassMethodOrFunctionFromCall($expr);
+            if ($call === null) {
+                return null;
+            }
+
+            $paramName = null;
+            $variable = $call->params[$position]->var;
+            if ($variable instanceof Variable) {
+                $paramName = $variable->name;
+            }
+
+            $newPosition = -1;
+            if (is_string($paramName)) {
+                $newPosition = $this->argsAnalyzer->resolveArgPosition($arguments, $paramName, $newPosition);
+            }
+
+            if ($newPosition === -1) {
+                return null;
+            }
+
+            $position = $newPosition;
+        }
+
+        if (! isset($arguments[$position])) {
+            return null;
+        }
+
+        $particularArg = $arguments[$position] ?? null;
         if (! $particularArg instanceof Arg) {
             return null;
         }
@@ -111,7 +153,7 @@ final readonly class ArgumentDefaultValueReplacer
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()
         ) && $argValue === $replaceArgumentDefaultValue->getValueBefore()) {
-            $expr->args[$position] = $this->normalizeValueToArgument($replaceArgumentDefaultValue->getValueAfter());
+            $particularArg->value = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
             return $expr;
         }
 
