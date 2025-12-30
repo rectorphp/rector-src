@@ -14,6 +14,13 @@ class SideEffectChecks
 
         if (5 + 10) {
         }
+
+        if ($this->someCall()) {
+        }
+
+        if (false) {
+        } elseif ($this->anotherCall()) {
+        }
     }
 }
 
@@ -27,6 +34,11 @@ class SideEffectChecks
 {
     public function run()
     {
+        if ($this->someCall()) {
+        }
+
+        if (!false && $this->anotherCall()) {
+        }
     }
 }
 
