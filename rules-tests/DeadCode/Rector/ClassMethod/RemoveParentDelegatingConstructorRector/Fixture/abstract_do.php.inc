@@ -10,19 +10,10 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector\Fixture;
 
-abstract class AbstractDo
-{
-    public function __construct(private readonly ContainerInterface $filterLocator)
-    {
-    }
-
-    abstract protected function doSomething(): void;
-}
-
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector\Fixture;
-
 final class DoSomething extends AbstractDo
 {
+    # Constructor must be kept if any param has the autowire attribute
+    # https://symfony.com/doc/current/service_container/autowiring.html
     public function __construct(
         #[Autowire(service: 'service_container')]
         ContainerInterface $filterLocator,
@@ -33,6 +24,16 @@ final class DoSomething extends AbstractDo
     protected function doSomething(): void
     {
     }
+}
 
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector\Fixture;
+
+abstract class AbstractDo
+{
+    public function __construct(private readonly ContainerInterface $filterLocator)
+    {
+    }
+
+    abstract protected function doSomething(): void;
 }
 ?>
