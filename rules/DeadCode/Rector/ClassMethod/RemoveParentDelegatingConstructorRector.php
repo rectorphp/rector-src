@@ -265,6 +265,12 @@ CODE_SAMPLE
                 return false;
             }
 
+            // when parent does not have default value,
+            // mark as different
+            if (! $nativeParentParameterReflection->isDefaultValueAvailable()) {
+                return true;
+            }
+
             $parentDefault = $nativeParentParameterReflection->getDefaultValue();
             if (! $this->valueResolver->isValue($defaultExpr, $parentDefault)) {
                 return true;
