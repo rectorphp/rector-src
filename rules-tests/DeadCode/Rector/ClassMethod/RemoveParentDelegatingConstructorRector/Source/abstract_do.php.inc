@@ -8,7 +8,7 @@ use App\AbstractFilterExtension;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector\Source;
 
 final class DoSomething extends AbstractDo
 {
@@ -26,7 +26,7 @@ final class DoSomething extends AbstractDo
     }
 }
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector\Source;
 
 abstract class AbstractDo
 {
