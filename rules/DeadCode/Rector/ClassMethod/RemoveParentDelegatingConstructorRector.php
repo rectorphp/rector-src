@@ -265,7 +265,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            // when parent does not have default value,
+            // when child has default value, but parent does not have default value,
             // mark as different
             if (! $nativeParentParameterReflection->isDefaultValueAvailable()) {
                 return true;
