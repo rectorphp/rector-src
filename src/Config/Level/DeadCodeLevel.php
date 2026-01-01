@@ -103,7 +103,6 @@ final class DeadCodeLevel
         RemoveConcatAutocastRector::class,
         SimplifyIfElseWithSameContentRector::class,
 
-        // needs more testing, Nov 2025
         RemoveNextSameValueConditionRector::class,
         SimplifyUselessVariableRector::class,
         RemoveDeadZeroAndOneOperationRector::class,
