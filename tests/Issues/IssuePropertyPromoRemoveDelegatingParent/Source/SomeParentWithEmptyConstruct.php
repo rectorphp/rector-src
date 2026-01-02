@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Issues\IssuePropertyPromoRemoveDelegatingParent\Source;
 
-class SomeParentWithEmptyConstruct
+abstract class SomeParentWithEmptyConstruct
 {
     public function __construct()
     {
