@@ -94,7 +94,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @return mixed[]
+     * @return list<array{string, int, int}>
      */
     public function getTokens(): array
     {
