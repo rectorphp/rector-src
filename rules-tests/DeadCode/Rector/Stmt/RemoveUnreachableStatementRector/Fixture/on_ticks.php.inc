@@ -5,7 +5,7 @@ namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\Fix
 declare(ticks=1) {
     echo 'test';
 
-    die;
+    throw new \Exception();
 
     echo 'unreachable';
 }
@@ -19,7 +19,7 @@ namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\Fix
 declare(ticks=1) {
     echo 'test';
 
-    die;
+    throw new \Exception();
 }
 
 ?>
