@@ -21,4 +21,12 @@ final class SomeRepository
     {
         return [];
     }
+
+    /**
+     * @return SomeEntity[]
+     */
+    public static function staticFindAll(): array
+    {
+        return [];
+    }
 }
