@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\TypeManipulator;
 
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
 use PHPStan\Type\Accessory\AccessoryNonFalsyStringType;
@@ -18,6 +19,7 @@ use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
@@ -25,6 +27,7 @@ use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
 final readonly class TypeNormalizer
 {
@@ -138,14 +141,10 @@ final readonly class TypeNormalizer
                 if (count($uniqueGeneralizedUnionTypes) > 1) {
                     $generalizedUnionType = new UnionType($uniqueGeneralizedUnionTypes);
 
-                    // avoid too huge print in docblock
-                    $unionedDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-                        $generalizedUnionType
-                    );
+                    $shortUnionedDocType = $this->resolveNameShortDocTypeNode($generalizedUnionType);
 
-                    // too long
                     if (strlen(
-                        (string) $unionedDocType
+                        (string) $shortUnionedDocType
                     ) > self::MAX_PRINTED_UNION_DOC_LENGTH && $this->avoidPrintedDocblockTrimming(
                         $generalizedUnionType
                     ) === false) {
@@ -220,5 +219,25 @@ final readonly class TypeNormalizer
         }
 
         return $unionType->getObjectClassNames() !== [];
+    }
+
+    private function resolveNameShortDocTypeNode(UnionType $unionType): TypeNode
+    {
+        // we have to converet name to short here, to make sure the not FQN, but short name is counted to the full length
+        $objectShortGeneralizedUnionType = TypeTraverser::map($unionType, function (
+            Type $type,
+            callable $traverseCallback
+        ): Type {
+            if ($type instanceof ObjectType && str_contains($type->getClassName(), '\\')) {
+                // after last "\\"
+                $shortClassName = substr($type->getClassName(), strrpos($type->getClassName(), '\\') + 1);
+
+                return new ShortenedObjectType($shortClassName, $type->getClassName());
+            }
+
+            return $traverseCallback($type, $traverseCallback);
+        });
+
+        return $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($objectShortGeneralizedUnionType);
     }
 }
