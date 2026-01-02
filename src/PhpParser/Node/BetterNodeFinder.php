@@ -239,7 +239,7 @@ final readonly class BetterNodeFinder
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
             static function (Node $subNode) use ($types, &$foundNodes): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
+                if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof Stmt\ClassMethod)) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
