@@ -113,8 +113,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($returnedType->getReferencedClasses() !== []) {
-            // better handled by shared-interface/class rule, to avoid turning objects to mixed
+        // better handled by shared-interface/class rule, to avoid turning objects to mixed
+        if ($returnedType->getReferencedClasses() !== [] && count($returnedType->getReferencedClasses()) === count(
+            $returnedType->getValueTypes()
+        )) {
             return null;
         }
 
