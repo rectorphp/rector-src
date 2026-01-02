@@ -6,6 +6,7 @@ namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
@@ -116,14 +117,16 @@ CODE_SAMPLE
         }
 
         $onlyReturnWithExpr = $this->returnNodeFinder->findOnlyReturnWithExpr($node);
-        if (! $onlyReturnWithExpr instanceof Return_ || ! $onlyReturnWithExpr->expr instanceof MethodCall) {
+        if (! $onlyReturnWithExpr instanceof Return_ || (! $onlyReturnWithExpr->expr instanceof MethodCall && ! $onlyReturnWithExpr->expr instanceof StaticCall)) {
             return null;
         }
 
         $returnedMethodCall = $onlyReturnWithExpr->expr;
 
         // skip doctrine connection calls, as to generic and not helpful
-        $callerType = $this->getType($returnedMethodCall->var);
+        $callerType = $this->getType(
+            $returnedMethodCall instanceof MethodCall ? $returnedMethodCall->var : $returnedMethodCall->class
+        );
         if ($callerType instanceof ObjectType && $callerType->isInstanceOf(DoctrineClass::CONNECTION)->yes()) {
             return null;
         }
