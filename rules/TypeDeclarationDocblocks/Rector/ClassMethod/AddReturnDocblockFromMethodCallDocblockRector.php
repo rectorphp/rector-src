@@ -155,7 +155,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->phpDocTypeChanger->changeReturnTypeNode($node, $phpDocInfo, $calledReturnTagValue->type);
+        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $calledClassMethodPhpDocInfo->getReturnType());
 
         return $node;
     }

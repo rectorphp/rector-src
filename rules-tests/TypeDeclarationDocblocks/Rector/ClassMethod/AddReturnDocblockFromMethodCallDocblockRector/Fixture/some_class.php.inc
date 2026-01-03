@@ -41,7 +41,7 @@ final class SomeClass
     }
 
     /**
-     * @return SomeEntity[]
+     * @return \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockFromMethodCallDocblockRector\Source\SomeEntity[]
      */
     public function getAll(): array
     {
