@@ -18,6 +18,7 @@ use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Application\ChangedNodeScopeRefresher;
+use Rector\Application\NodeAttributeReIndexer;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
@@ -135,6 +136,16 @@ CODE_SAMPLE;
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
+
+        /**
+         * This reindex is needed when multiple rules apply.
+         * The existing node position can already be removed/moved by a different rule from a "parent" node.
+         *
+         * That can modify/remove a deep node, for example:
+         *      - first rule: - Class_ → ClassMethod → remove index 0
+         *      - second rule: - ClassMethod → here fetch the index 0 no longer exists
+         */
+        NodeAttributeReIndexer::reIndexNodeAttributes($node);
 
         $refactoredNodeOrState = $this->refactor($node);
 
