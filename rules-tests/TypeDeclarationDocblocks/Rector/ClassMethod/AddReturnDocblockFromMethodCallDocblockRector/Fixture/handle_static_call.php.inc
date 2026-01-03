@@ -27,7 +27,7 @@ use Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockFr
 final class HandleStaticCall
 {
     /**
-     * @return SomeEntity[]
+     * @return \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockFromMethodCallDocblockRector\Source\SomeEntity[]
      */
     public function getAll(): array
     {
