@@ -62,7 +62,8 @@ CODE_SAMPLE
         $tokenEndPos = $node->getEndTokenPos();
 
         for ($i = $tokenStartPos; $i < $tokenEndPos; ++$i) {
-            $token = $this->file->getOldTokens()[$i];
+            $token = $this->getFile()
+                ->getOldTokens()[$i];
 
             if ((string) $token === '<>') {
                 $token->text = '!=';

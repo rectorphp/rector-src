@@ -50,7 +50,8 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
-        $oldTokens = $this->file->getOldTokens();
+        $oldTokens = $this->getFile()
+            ->getOldTokens();
 
         foreach ($node->cases as $key => $case) {
             $cond = $case->cond;

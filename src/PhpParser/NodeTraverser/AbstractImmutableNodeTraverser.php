@@ -59,21 +59,7 @@ abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
     public function traverse(array $nodes): array
     {
         $this->stopTraversal = false;
-        foreach ($this->visitors as $visitor) {
-            if (null !== $return = $visitor->beforeTraverse($nodes)) {
-                $nodes = $return;
-            }
-        }
-
-        $nodes = $this->traverseArray($nodes);
-        for ($i = \count($this->visitors) - 1; $i >= 0; --$i) {
-            $visitor = $this->visitors[$i];
-            if (null !== $return = $visitor->afterTraverse($nodes)) {
-                $nodes = $return;
-            }
-        }
-
-        return $nodes;
+        return $this->traverseArray($nodes);
     }
 
     /**
