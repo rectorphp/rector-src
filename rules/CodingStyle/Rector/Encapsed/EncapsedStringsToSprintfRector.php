@@ -51,7 +51,7 @@ final class EncapsedStringsToSprintfRector extends AbstractRector implements Con
     private string $sprintfFormat = '';
 
     /**
-     * @var Expr[]
+     * @var ConstFetch[]|Expr[]
      */
     private array $argumentVariables = [];
 

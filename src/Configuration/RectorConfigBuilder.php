@@ -56,7 +56,7 @@ final class RectorConfigBuilder
     private const MAX_LEVEL_GAP = 10;
 
     /**
-     * @var string[]
+     * @var string[]|bool[]
      */
     private array $paths = [];
 
@@ -71,7 +71,7 @@ final class RectorConfigBuilder
     private array $skip = [];
 
     /**
-     * @var array<class-string<RectorInterface>>
+     * @var class-string<RectorInterface>[]
      */
     private array $rules = [];
 
@@ -166,7 +166,7 @@ final class RectorConfigBuilder
     private array $registerServices = [];
 
     /**
-     * @var array<SetGroup::*>
+     * @var string[]
      */
     private array $setGroups = [];
 

@@ -15,7 +15,7 @@ use Rector\Exception\ShouldNotHappenException;
 abstract class AbstractImmutableNodeTraverser implements NodeTraverserInterface
 {
     /**
-     * @var list<NodeVisitor> Visitors
+     * @var NodeVisitor[] Visitors
      */
     protected array $visitors = [];
 
