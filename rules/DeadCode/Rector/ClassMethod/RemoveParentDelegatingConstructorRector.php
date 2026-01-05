@@ -98,6 +98,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFinal()) {
+            return null;
+        }
+
         $parentMethodReflection = $this->matchParentConstructorReflection($node);
         if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
             return null;
