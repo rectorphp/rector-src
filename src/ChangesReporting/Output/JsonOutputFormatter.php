@@ -31,7 +31,8 @@ final readonly class JsonOutputFormatter implements OutputFormatterInterface
             ],
         ];
 
-        $fileDiffs = $processResult->getFileDiffs();
+        // We need onlyWithChanges: false to include all file diffs
+        $fileDiffs = $processResult->getFileDiffs(onlyWithChanges: false);
         ksort($fileDiffs);
         foreach ($fileDiffs as $fileDiff) {
             $filePath = $configuration->isReportingWithRealPath()
@@ -39,11 +40,13 @@ final readonly class JsonOutputFormatter implements OutputFormatterInterface
                 : $fileDiff->getRelativeFilePath()
             ;
 
-            $errorsJson[Bridge::FILE_DIFFS][] = [
-                'file' => $filePath,
-                'diff' => $fileDiff->getDiff(),
-                'applied_rectors' => $fileDiff->getRectorClasses(),
-            ];
+            if ($configuration->shouldShowDiffs() && $fileDiff->getDiff() !== '') {
+                $errorsJson[Bridge::FILE_DIFFS][] = [
+                    'file' => $filePath,
+                    'diff' => $fileDiff->getDiff(),
+                    'applied_rectors' => $fileDiff->getRectorClasses(),
+                ];
+            }
 
             // for Rector CI
             $errorsJson['changed_files'][] = $filePath;
