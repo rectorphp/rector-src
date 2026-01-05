@@ -467,5 +467,12 @@ parameters:
 
         # false positive
         -
-             identifier: phpstanApi.varTagAssumption
-             path: rules/TypeDeclarationDocblocks/Rector/ClassMethod/AddReturnDocblockForDimFetchArrayFromAssignsRector.php
+            identifier: phpstanApi.varTagAssumption
+            path: rules/TypeDeclarationDocblocks/Rector/ClassMethod/AddReturnDocblockForDimFetchArrayFromAssignsRector.php
+
+        # bug, fix in symplify/phpstan-rules
+        -
+            identifier: symplify.noMissnamedDocTag
+            paths:
+                 - rules/Php74/NodeAnalyzer/ClosureArrowFunctionAnalyzer.php
+                 - rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php

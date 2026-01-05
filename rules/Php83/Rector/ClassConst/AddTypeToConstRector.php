@@ -78,10 +78,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->isAbstract()) {
-            return null;
-        }
-
         $classConsts = $node->getConstants();
         if ($classConsts === []) {
             return null;
@@ -99,6 +95,10 @@ CODE_SAMPLE
             }
 
             foreach ($classConst->consts as $constNode) {
+                if ($node->isAbstract() && ! $classConst->isPrivate()) {
+                    continue;
+                }
+
                 if ($this->isConstGuardedByParents($constNode, $parentClassReflections)) {
                     continue;
                 }
