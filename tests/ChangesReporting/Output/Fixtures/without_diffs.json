@@ -1,0 +1,17 @@
+{
+    "totals": {
+        "changed_files": 2,
+        "errors": 1
+    },
+    "changed_files": [
+        "some/file.php",
+        "some/file_foo.php"
+    ],
+    "errors": [
+        {
+            "message": "Some error message",
+            "file": "some/file.php",
+            "line": 1
+        }
+    ]
+}
