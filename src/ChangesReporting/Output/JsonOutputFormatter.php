@@ -27,7 +27,7 @@ final readonly class JsonOutputFormatter implements OutputFormatterInterface
     {
         $errorsJson = [
             'totals' => [
-                'changed_files' => count($processResult->getFileDiffs()),
+                'changed_files' => $processResult->getTotalChanged(),
             ],
         ];
 
