@@ -11,7 +11,7 @@ final class SkipPrivateConstruct extends String_
         parent::__construct($value, $attributes);
     }
 
-    public function create($value, $attributes)
+    public static function create($value, $attributes)
     {
         return new self($value, $attributes);
     }
