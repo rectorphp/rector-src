@@ -102,6 +102,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $node->isPublic()) {
+            return null;
+        }
+
         $parentMethodReflection = $this->matchParentConstructorReflection($node);
         if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
             return null;
