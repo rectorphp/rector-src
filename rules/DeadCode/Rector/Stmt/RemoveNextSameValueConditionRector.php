@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
@@ -127,6 +128,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            $stmt->setAttribute(AttributeKey::COMMENTS, array_merge(
+                $stmt->getAttribute(AttributeKey::COMMENTS) ?? [],
+                $nextStmt->getAttribute(AttributeKey::COMMENTS) ?? []
+            ));
             $stmt->stmts = array_merge($stmt->stmts, $nextStmt->stmts);
 
             // remove next node
