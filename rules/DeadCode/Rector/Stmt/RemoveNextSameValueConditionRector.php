@@ -90,9 +90,11 @@ CODE_SAMPLE
             if (! $stmt instanceof If_) {
                 continue;
             }
-
             // only when no elseif/else in current if
-            if ($stmt->elseifs !== [] || $stmt->else instanceof Else_) {
+            if ($stmt->elseifs !== []) {
+                continue;
+            }
+            if ($stmt->else instanceof Else_) {
                 continue;
             }
 
@@ -113,9 +115,11 @@ CODE_SAMPLE
             if (! $this->nodeComparator->areNodesEqual($stmt->cond, $nextStmt->cond)) {
                 continue;
             }
-
             // only when no elseif/else in next stmt
-            if ($nextStmt->elseifs !== [] || $nextStmt->else instanceof Else_) {
+            if ($nextStmt->elseifs !== []) {
+                continue;
+            }
+            if ($nextStmt->else instanceof Else_) {
                 continue;
             }
 
