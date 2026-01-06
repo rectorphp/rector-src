@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\PhpParser\Enum\NodeGroup;
@@ -90,6 +91,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            // only when no elseif/else in current if
+            if ($stmt->elseifs !== [] || $stmt->else instanceof Else_) {
+                continue;
+            }
+
             // first condition must be without side effect
             if ($this->sideEffectNodeDetector->detect($stmt->cond)) {
                 continue;
@@ -105,6 +111,11 @@ CODE_SAMPLE
             }
 
             if (! $this->nodeComparator->areNodesEqual($stmt->cond, $nextStmt->cond)) {
+                continue;
+            }
+
+            // only when no elseif/else in next stmt
+            if ($nextStmt->elseifs !== [] || $nextStmt->else instanceof Else_) {
                 continue;
             }
 
