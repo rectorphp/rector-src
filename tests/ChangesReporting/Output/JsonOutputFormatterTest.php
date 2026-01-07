@@ -39,9 +39,14 @@ final class JsonOutputFormatterTest extends TestCase
                 [
                     new FileDiff(
                         'some/file.php',
-                        '--- Original' . PHP_EOL . '+++ New' . PHP_EOL .
-                            '@@ -38,5 +39,6 @@' . PHP_EOL .
-                            'return true;' . PHP_EOL . '}' . PHP_EOL,
+                        <<<'DIFF'
+                        --- Original
+                        +++ New
+                        @@ -38,5 +39,6 @@
+                        return true;
+                        }
+
+                        DIFF,
                         'diff console formatted',
                         [new RectorWithLineChange(StrStartsWithRector::class, 38)]
                     ),
