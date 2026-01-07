@@ -171,8 +171,7 @@ CODE_SAMPLE
             return false;
         }
 
-        // skip constructor in attributes as might be a marker parameter
-        return $classReflection->isAttributeClass() && $classMethod->getDocComment() instanceof Doc;
+        return $this->isAttributeMarkerConstructor($classMethod, $classReflection);
     }
 
     private function hasDeprecatedAnnotation(ClassMethod $classMethod): bool
@@ -183,5 +182,21 @@ CODE_SAMPLE
         }
 
         return $phpDocInfo->hasByType(DeprecatedTagValueNode::class);
+    }
+
+    /**
+     * Skip constructor in attributes as might be a marker parameter
+     */
+    private function isAttributeMarkerConstructor(ClassMethod $classMethod, ClassReflection $classReflection): bool
+    {
+        if (! $this->isName($classMethod, MethodName::CONSTRUCT)) {
+            return false;
+        }
+
+        if (! $classReflection->isAttributeClass()) {
+            return false;
+        }
+
+        return $classMethod->getDocComment() instanceof Doc;
     }
 }
