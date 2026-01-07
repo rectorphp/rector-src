@@ -57,7 +57,7 @@ final class JsonOutputFormatterTest extends TestCase
             new Configuration(showDiffs: false)
         );
 
-        $actualOutput = ob_get_clean();
+        $actualOutput = (string) ob_get_clean();
         $expectedOutput = (string) file_get_contents(__DIR__ . '/Fixtures/without_diffs.json');
 
         // Normalize line endings for comparison
