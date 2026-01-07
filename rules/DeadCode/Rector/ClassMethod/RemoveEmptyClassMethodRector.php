@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\DeprecatedTagValueNode;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Configuration\Parameter\FeatureFlags;
@@ -160,7 +162,17 @@ CODE_SAMPLE
             return ! $classMethod->isPublic();
         }
 
-        return $this->isName($classMethod, MethodName::INVOKE);
+        if ($this->isName($classMethod, MethodName::INVOKE)) {
+            return true;
+        }
+
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        // skip constructor in attributes as might be a marker parameter
+        return $classReflection->isAttributeClass() && $classMethod->getDocComment() instanceof Doc;
     }
 
     private function hasDeprecatedAnnotation(ClassMethod $classMethod): bool
