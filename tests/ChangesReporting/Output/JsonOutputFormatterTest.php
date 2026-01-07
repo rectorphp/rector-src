@@ -31,7 +31,7 @@ final class JsonOutputFormatterTest extends TestCase
 
     public function testReportShouldShowNumberOfChangesWithNoDiffs(): void
     {
-        ob_start();
+        $this->expectOsOutputString((string) file_get_contents(__DIR__ . '/Fixtures/without_diffs.json'));
 
         $this->jsonOutputFormatter->report(
             new ProcessResult(
@@ -61,14 +61,16 @@ final class JsonOutputFormatterTest extends TestCase
             ),
             new Configuration(showDiffs: false)
         );
+    }
 
-        $actualOutput = (string) ob_get_clean();
-        $expectedOutput = (string) file_get_contents(__DIR__ . '/Fixtures/without_diffs.json');
+    protected function expectOsOutputString(string $expectedOutput): void
+    {
+        $isWindows = strncasecmp(PHP_OS, 'WIN', 3) === 0;
+        if ($isWindows) {
+            $expectedOutput = str_replace('%0A', '%0D%0A', $expectedOutput);
+            $expectedOutput = trim($expectedOutput) . PHP_EOL;
+        }
 
-        // Normalize line endings for comparison
-        $actualOutput = str_replace("\r\n", "\n", $actualOutput);
-        $expectedOutput = str_replace("\r\n", "\n", $expectedOutput);
-
-        $this->assertSame($expectedOutput, $actualOutput);
+        parent::expectOutputString($expectedOutput);
     }
 }
