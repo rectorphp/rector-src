@@ -104,6 +104,10 @@ CODE_SAMPLE
             }
 
             if ($this->shouldSkip($stmt, $emptyArrayVariables)) {
+                if ($this->isAppend($stmt, $emptyArrayVariables)) {
+                    return null;
+                }
+                
                 continue;
             }
 
