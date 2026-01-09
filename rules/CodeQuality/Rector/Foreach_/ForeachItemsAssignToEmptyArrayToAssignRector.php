@@ -107,7 +107,7 @@ CODE_SAMPLE
                 if ($this->isAppend($stmt, $emptyArrayVariables)) {
                     return null;
                 }
-                
+
                 continue;
             }
 
