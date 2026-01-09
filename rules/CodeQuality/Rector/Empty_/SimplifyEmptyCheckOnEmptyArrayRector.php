@@ -152,7 +152,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $classReflection, $this->file);
+        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $classReflection, $this->getFile());
         if (! $type instanceof Type) {
             return false;
         }
