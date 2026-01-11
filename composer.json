@@ -39,7 +39,7 @@
         "symfony/process": "^6.4",
         "symplify/easy-parallel": "^11.2.2",
         "symplify/rule-doc-generator-contracts": "^11.2",
-        "webmozart/assert": "^1.12"
+        "webmozart/assert": "^2.1"
     },
     "require-dev": {
         "nette/robot-loader": "^4.1",
