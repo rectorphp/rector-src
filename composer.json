@@ -39,7 +39,7 @@
         "symfony/process": "^6.4",
         "symplify/easy-parallel": "^11.2.2",
         "symplify/rule-doc-generator-contracts": "^11.2",
-        "webmozart/assert": "^1.12"
+        "webmozart/assert": "^2.1"
     },
     "require-dev": {
         "nette/robot-loader": "^4.1",
@@ -51,9 +51,9 @@
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^11.5",
         "rector/jack": "^0.4",
-        "rector/release-notes-generator": "^0.5",
+        "rector/release-notes-generator": "^0.5.1",
         "rector/swiss-knife": "^2.3",
-        "rector/type-perfect": "^2.1",
+        "rector/type-perfect": "^2.1.2",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symplify/phpstan-extensions": "^12.0.2",
         "symplify/phpstan-rules": "^14.9.4",
