@@ -15,9 +15,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodsRector\RemoveVoidDocblockFromMagicMethodsRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodRector\RemoveVoidDocblockFromMagicMethodRectorTest
  */
-final class RemoveVoidDocblockFromMagicMethodsRector extends AbstractRector
+final class RemoveVoidDocblockFromMagicMethodRector extends AbstractRector
 {
     public function __construct(
         private readonly DocBlockUpdater $docBlockUpdater,
