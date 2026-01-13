@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ChangesReporting\Output;
+namespace Rector\Tests\ChangesReporting\Output\Factory;
 
 use PHPUnit\Framework\TestCase;
-use Rector\ChangesReporting\Output\JsonOutputFormatter;
+use Rector\ChangesReporting\Output\Factory\JsonOutputFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
 use Rector\ValueObject\Configuration;
@@ -13,27 +13,11 @@ use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 
-final class JsonOutputFormatterTest extends TestCase
+final class JsonOutputFactoryTest extends TestCase
 {
-    private readonly JsonOutputFormatter $jsonOutputFormatter;
-
-    protected function setUp(): void
-    {
-        $this->jsonOutputFormatter = new JsonOutputFormatter();
-
-        parent::setUp();
-    }
-
-    public function testGetName(): void
-    {
-        $this->assertSame('json', $this->jsonOutputFormatter->getName());
-    }
-
     public function testReportShouldShowNumberOfChangesWithNoDiffs(): void
     {
-        ob_start();
-
-        $this->jsonOutputFormatter->report(
+        $actualOutput = JsonOutputFactory::create(
             new ProcessResult(
                 [new SystemError('Some error message', 'some/file.php', 1)],
                 [
@@ -57,13 +41,7 @@ final class JsonOutputFormatterTest extends TestCase
             new Configuration(showDiffs: false)
         );
 
-        $actualOutput = (string) ob_get_clean();
-        $expectedOutput = (string) file_get_contents(__DIR__ . '/Fixtures/without_diffs.json');
-
-        // Normalize line endings for comparison
-        $actualOutput = str_replace("\r\n", "\n", $actualOutput);
-        $expectedOutput = str_replace("\r\n", "\n", $expectedOutput);
-
+        $expectedOutput = (string) file_get_contents(__DIR__ . '/../Fixtures/without_diffs.json');
         $this->assertSame($expectedOutput, $actualOutput);
     }
 }
