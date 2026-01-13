@@ -9,6 +9,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddParamArrayDocblockBasedOnCallab
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblockBasedOnArrayMapRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnDocblockForScalarArrayFromAssignsRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\AddReturnDocblockDataProviderRector;
+use Rector\TypeDeclarationDocblocks\Rector\Class_\AddVarArrayDocblockFromDimFetchAssignRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamFromLocalCallsRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFromGetterReturnRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFromPropertyDefaultsRector;
@@ -57,6 +58,7 @@ final class TypeDeclarationDocblocksLevel
         // property var
         DocblockVarFromParamDocblockInConstructorRector::class,
         DocblockVarArrayFromGetterReturnRector::class,
+        AddVarArrayDocblockFromDimFetchAssignRector::class,
 
         // return
         DocblockGetterReturnArrayFromPropertyDocblockVarRector::class,
