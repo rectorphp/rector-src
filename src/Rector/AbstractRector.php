@@ -169,6 +169,14 @@ CODE_SAMPLE;
         return $this->postRefactorProcess($originalNode, $node, $refactoredNodeOrState, $filePath);
     }
 
+    /**
+     * @deprecated no longer used
+     */
+    final public function leaveNode(Node $node): array|int|Node|null
+    {
+        return null;
+    }
+
     protected function isName(Node $node, string $name): bool
     {
         return $this->nodeNameResolver->isName($node, $name);
