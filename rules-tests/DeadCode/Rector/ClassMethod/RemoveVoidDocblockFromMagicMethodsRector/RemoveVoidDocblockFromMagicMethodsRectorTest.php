@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessVoidReturnFromDocblockOnVoidMagicMethodsRector;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RemoveUselessVoidReturnFromDocblockVoidMagicMethodsRectorTest extends AbstractRectorTestCase
+final class RemoveVoidDocblockFromMagicMethodsRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

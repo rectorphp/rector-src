@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessVoidReturnFromDocblockOnVoidMagicMethodsRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodsRector\Fixture;
 
 class RemoveReturnClone
 {
@@ -19,7 +19,7 @@ class RemoveReturnClone
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessVoidReturnFromDocblockOnVoidMagicMethodsRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodsRector\Fixture;
 
 class RemoveReturnClone
 {
