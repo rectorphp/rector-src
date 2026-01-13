@@ -27,6 +27,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromPropertyPromotionR
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodRector;
 use Rector\DeadCode\Rector\Closure\RemoveUnusedClosureVariableUseRector;
 use Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
@@ -109,6 +110,7 @@ final class DeadCodeLevel
         RemoveDeadZeroAndOneOperationRector::class,
 
         // docblock
+        RemoveVoidDocblockFromMagicMethodRector::class,
         RemoveUselessParamTagRector::class,
         RemoveUselessReturnTagRector::class,
         RemoveUselessReadOnlyTagRector::class,

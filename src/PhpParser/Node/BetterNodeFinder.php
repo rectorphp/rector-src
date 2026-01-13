@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
@@ -12,6 +11,7 @@ use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor;

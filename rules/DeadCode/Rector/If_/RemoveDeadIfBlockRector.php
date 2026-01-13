@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitor;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
@@ -100,16 +101,16 @@ CODE_SAMPLE
             return $this->refactor($node) ?? $node;
         }
 
-        if ($node->elseifs !== []) {
-            foreach ($node->elseifs as $elseif) {
-                $keep_elseifs = array_filter(
-                    $node->elseifs,
-                    fn ($elseif) => $elseif->stmts !== [] || $this->sideEffectNodeDetector->detect($elseif->cond)
-                );
-                if (count($node->elseifs) !== count($keep_elseifs)) {
-                    $node->elseifs = $keep_elseifs;
-                    return $this->refactor($node) ?? $node;
-                }
+        foreach ($node->elseifs as $elseif) {
+            $keep_elseifs = array_filter(
+                $node->elseifs,
+                fn (ElseIf_ $elseif): bool => $elseif->stmts !== [] || $this->sideEffectNodeDetector->detect(
+                    $elseif->cond
+                )
+            );
+            if (count($node->elseifs) !== count($keep_elseifs)) {
+                $node->elseifs = $keep_elseifs;
+                return $this->refactor($node) ?? $node;
             }
         }
 
@@ -141,6 +142,7 @@ CODE_SAMPLE
             if (count($node->elseifs) > 1) {
                 $if->elseifs = \array_slice($node->elseifs, 1);
             }
+
             return $this->refactor($if) ?? $if;
         }
 
