@@ -63,5 +63,19 @@ return static function (RectorConfig $rectorConfig): void {
                 null,
                 []
             ),
+            new ReplaceArgumentDefaultValue(
+                'Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Source\SomeMultiArg',
+                'firstArgument',
+                0,
+                0,
+                3
+            ),
+            new ReplaceArgumentDefaultValue(
+                'Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Source\SomeMultiArg',
+                'secondArgument',
+                1,
+                1,
+                4
+            ),
         ]);
 };
