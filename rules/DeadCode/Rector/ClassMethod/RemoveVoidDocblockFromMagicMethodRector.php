@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -80,18 +81,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $magicMethodNames = ['__construct', '__destruct', '__clone'];
-
-        $methodName = $this->getName($node);
-
-        if (! in_array($methodName, $magicMethodNames, true)) {
+        if (! $this->isNames($node, [MethodName::CONSTRUCT, MethodName::DESTRUCT, MethodName::CLONE])) {
             return null;
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $returnTagValueNode = $phpDocInfo->getReturnTagValue();
-
         if (! $returnTagValueNode instanceof ReturnTagValueNode) {
             return null;
         }
@@ -100,7 +96,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $returnTagValueNode->type instanceof IdentifierTypeNode || $returnTagValueNode->type->__toString() !== 'void') {
+        if (! $returnTagValueNode->type instanceof IdentifierTypeNode || $returnTagValueNode->type->name !== 'void') {
             return null;
         }
 
