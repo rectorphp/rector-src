@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
+namespace Rector\Tests\Php85\Rector\Const_\ConstAndTraitDeprecatedAttributeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class DeprecatedAnnotationToDeprecatedAttributeRectorTest extends AbstractRectorTestCase
+final class ConstAndTraitDeprecatedAttributeRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
