@@ -63,6 +63,8 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
         $this->visitorsPerNodeClass = [];
 
         $this->areNodeVisitorsPrepared = false;
+
+        $this->prepareNodeVisitors();
     }
 
     /**
