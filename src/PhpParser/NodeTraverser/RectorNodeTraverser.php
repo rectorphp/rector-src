@@ -19,12 +19,20 @@ use Rector\VersionBonding\PhpVersionedFilter;
 use Webmozart\Assert\Assert;
 
 /**
+ *  Based on native NodeTraverser class, but heavily customized for Rector needs.
+ *
+ *  The main differences are:
+ *  - no leaveNode(), as we do all in enterNode() that calls refactor() method
+ *  - cached visitors per node class for performance, e.g. when we find rules for Class_ node, they're cached for next time
+ *  - immutability features, register Rector rules once, then use; no changes on the fly
+ *
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
+ * @internal No BC promise on this class, it might change any time.
  */
 final class RectorNodeTraverser implements NodeTraverserInterface
 {
     /**
-     * @var list<NodeVisitor>
+     * @var RectorInterface[]
      */
     private array $visitors = [];
 
@@ -33,7 +41,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     private bool $areNodeVisitorsPrepared = false;
 
     /**
-     * @var array<class-string<Node>, NodeVisitor[]>
+     * @var array<class-string<Node>, RectorInterface[]>
      */
     private array $visitorsPerNodeClass = [];
 
@@ -41,9 +49,9 @@ final class RectorNodeTraverser implements NodeTraverserInterface
      * @param RectorInterface[] $rectors
      */
     public function __construct(
+        private array $rectors,
         private readonly PhpVersionedFilter $phpVersionedFilter,
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
-        private array $rectors
     ) {
     }
 
@@ -103,7 +111,9 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     }
 
     /**
-     * @return NodeVisitor[]
+     * @return RectorInterface[]
+     *
+     * @api used in tests
      */
     public function getVisitorsForNode(Node $node): array
     {
