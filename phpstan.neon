@@ -5,7 +5,7 @@ includes:
 parameters:
     level: 8
 
-    # reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: false
 
     errorFormat: symplify
 
@@ -373,9 +373,6 @@ parameters:
         - '#Method Rector\\Utils\\Rector\\RemoveRefactorDuplicatedNodeInstanceCheckRector\:\:getInstanceofNodeClass\(\) should return class\-string<PhpParser\\Node>\|null but returns class\-string#'
 
         # copied from /vendor, to keep as original as possible
-        -
-            identifier: missingType.iterableValue
-            path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
         -
             identifier: symplify.noDynamicName
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
