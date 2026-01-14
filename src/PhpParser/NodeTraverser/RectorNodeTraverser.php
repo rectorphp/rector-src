@@ -19,6 +19,12 @@ use Rector\VersionBonding\PhpVersionedFilter;
 use Webmozart\Assert\Assert;
 
 /**
+ * Based on native NodeTraverser class, but heavily customized for Rector needs.
+ *
+ * The main differences are:
+ * - no leaveNode(), as we do all in enterNode() that calls refactor() method
+ * - cached visitors per node class for performance, e.g. when we find rules for Class_ node, they're cached for next time
+ * - immutability features, register Rector rules once, then use; no changes on the fly
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
  */
 final class RectorNodeTraverser implements NodeTraverserInterface
@@ -33,7 +39,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     private bool $areNodeVisitorsPrepared = false;
 
     /**
-     * @var array<class-string<Node>, NodeVisitor[]>
+     * @var array<class-string<Node>, RectorInterface[]>
      */
     private array $visitorsPerNodeClass = [];
 
@@ -103,26 +109,30 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     }
 
     /**
-     * @return NodeVisitor[]
+     * @api used in tests
+     * @return RectorInterface[]
      */
     public function getVisitorsForNode(Node $node): array
     {
         $nodeClass = $node::class;
 
+        if (! $this->areNodeVisitorsPrepared) {
+            $this->prepareNodeVisitors();
+        }
+
         if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
             $this->visitorsPerNodeClass[$nodeClass] = [];
 
-            /** @var RectorInterface $visitor */
-            foreach ($this->visitors as $visitor) {
-                foreach ($visitor->getNodeTypes() as $nodeType) {
+            foreach ($this->rectors as $rector) {
+                foreach ($rector->getNodeTypes() as $nodeType) {
                     // BC layer matching
                     if ($nodeType === FileWithoutNamespace::class && $nodeClass === FileNode::class) {
-                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+                        $this->visitorsPerNodeClass[$nodeClass][] = $rector;
                         continue;
                     }
 
                     if (is_a($nodeClass, $nodeType, true)) {
-                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+                        $this->visitorsPerNodeClass[$nodeClass][] = $rector;
                         continue 2;
                     }
                 }

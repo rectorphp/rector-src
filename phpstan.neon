@@ -376,6 +376,7 @@ parameters:
         -
             identifier: symplify.noDynamicName
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
+
         -
             identifier: offsetAccess.nonArray
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php

@@ -58,6 +58,7 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
     public function testGetVisitorsForNodeWhenSomeVisitorsMatch(): void
     {
         $class = new Class_('test');
+
         $this->rectorNodeTraverser->refreshPhpRectors([
             $this->ruleUsingFunctionRector,
             $this->ruleUsingClassRector,
