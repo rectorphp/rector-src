@@ -375,14 +375,10 @@ parameters:
         # copied from /vendor, to keep as original as possible
         -
             identifier: symplify.noDynamicName
-            path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
+            path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
         -
             identifier: offsetAccess.nonArray
-            path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
-
-        -
-            message: '#Property Rector\\PhpParser\\NodeTraverser\\AbstractImmutableNodeTraverser\:\:\$visitors \(list<PhpParser\\NodeVisitor>\) does not accept array<int\|string, PhpParser\\NodeVisitor>#'
-            path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
+            path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
 
         # false positive
         -

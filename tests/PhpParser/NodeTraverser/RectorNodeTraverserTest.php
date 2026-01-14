@@ -12,7 +12,7 @@ use Rector\Tests\PhpParser\NodeTraverser\ClassLike\RuleUsingClassLikeRector;
 use Rector\Tests\PhpParser\NodeTraverser\Function_\RuleUsingFunctionRector;
 
 /**
- * @see \Rector\PhpParser\NodeTraverser\AbstractImmutableNodeTraverser
+ * @see \Rector\PhpParser\NodeTraverser\RectorNodeTraverser
  */
 final class RectorNodeTraverserTest extends AbstractLazyTestCase
 {
