@@ -48,9 +48,9 @@ final class RectorNodeTraverser implements NodeTraverserInterface
      * @param RectorInterface[] $rectors
      */
     public function __construct(
+        private array $rectors,
         private readonly PhpVersionedFilter $phpVersionedFilter,
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
-        private array $rectors
     ) {
     }
 
