@@ -17,6 +17,8 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 final class ConstantArrayTypeGeneralizer
 {
     /**
+     * @var int
+     *
      * Using 10-level array @return docblocks makes code very hard to read,
      * lets limit it to reasonable level
      */

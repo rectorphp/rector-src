@@ -5,7 +5,8 @@ includes:
 parameters:
     level: 8
 
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
+
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
@@ -371,11 +372,6 @@ parameters:
 
         - '#Method Rector\\Utils\\Rector\\RemoveRefactorDuplicatedNodeInstanceCheckRector\:\:getInstanceofNodeClass\(\) should return class\-string<PhpParser\\Node>\|null but returns class\-string#'
 
-        # helper classes for bin script
-        -
-            path: scripts
-            identifier:  symplify.multipleClassLikeInFile
-
         # copied from /vendor, to keep as original as possible
         -
             identifier: missingType.iterableValue
@@ -406,9 +402,6 @@ parameters:
                 - rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
                 - rules/DeadCode/Rector/If_/UnwrapFutureCompatibleIfPhpVersionRector.php
 
-        # condition check, just to be sure
-        - '#Method Rector\\Rector\\AbstractRector\:\:enterNode\(\) never returns 3 so it can be removed from the return type#'
-
         # deprecated
         -
             identifier: public.method.unused
@@ -417,14 +410,7 @@ parameters:
                 - rules/CodeQuality/ValueObject/KeyAndExpr.php
         -
             identifier: symplify.forbiddenExtendOfNonAbstractClass
-            path: src/PhpParser/Node/FileNode.php
-        -
-            identifier: method.deprecatedClass
-            path: src/PhpParser/Node/FileNode.php
-
-        -
-            identifier: class.extendsDeprecatedClass
-            path: src/PhpParser/Node/FileNode.php
+            path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
 
         -
             identifier: public.classConstant.unused
@@ -442,35 +428,20 @@ parameters:
         - '#Rule Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
         - '#Register "Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector" service to "php81\.php" config set#'
         - '#Class "Rector\\CodingStyle\\Rector\\String_\\SymplifyQuoteEscapeRector" is missing @see annotation with test case class reference#'
-        - '#Access to constant on deprecated class Rector\\Php81\\Rector\\Array_\\FirstClassCallableRector#'
 
         # BC layer for FileWithoutNamespace node
-        - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
-        - '#BC layer for FileNode and FileWithoutNamespace compat, use FileNode instead#'
         -
             path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
             identifier: symplify.forbiddenExtendOfNonAbstractClass
-        -
-            message: '#Only abstract classes can be extended#'
-            path: rules/Php81/Rector/Array_/FirstClassCallableRector.php
 
-        - '#Method Rector\\Tests\\Issues\\FileWithoutNamespaceCompat\\Rector\\SubscribedToFileWithoutNamespaceRector\:\:refactor\(\) should return Rector\\PhpParser\\Node\\FileNode but returns Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace#'
-
-        # BC layer for FileWithoutNamespace node
         - message: '#Use @see \\Rector\\PhpParser\\Node\\FileNode instead#'
-        - '#Class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace extends final class Rector\\PhpParser\\Node\\FileNode#'
-        -
-            path: src/PhpParser/Node/CustomNode/FileWithoutNamespace.php
-            identifier: symplify.forbiddenExtendOfNonAbstractClass
 
         # false positive
         -
             identifier: phpstanApi.varTagAssumption
             path: rules/TypeDeclarationDocblocks/Rector/ClassMethod/AddReturnDocblockForDimFetchArrayFromAssignsRector.php
 
-        # bug, fix in symplify/phpstan-rules
+        # @todo fix in phpstan-rules
         -
             identifier: symplify.noMissnamedDocTag
-            paths:
-                 - rules/Php74/NodeAnalyzer/ClosureArrowFunctionAnalyzer.php
-                 - rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php
+            path: rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php
