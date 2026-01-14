@@ -27,6 +27,7 @@ use Webmozart\Assert\Assert;
  *  - immutability features, register Rector rules once, then use; no changes on the fly
  *
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
+ * @internal No BC promise on this class, it might change any time.
  */
 final class RectorNodeTraverser implements NodeTraverserInterface
 {
