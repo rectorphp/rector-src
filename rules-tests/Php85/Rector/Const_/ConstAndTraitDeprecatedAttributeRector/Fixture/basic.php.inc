@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
+namespace Rector\Tests\Php85\Rector\Const_\ConstAndTraitDeprecatedAttributeRector;
 
 /**
  * @deprecated use new constant
@@ -16,7 +16,7 @@ const UNUSED = 'ignored';
 -----
 <?php
 
-namespace Rector\Tests\Php85\Rector\Const_\DeprecatedAnnotationToDeprecatedAttributeRector;
+namespace Rector\Tests\Php85\Rector\Const_\ConstAndTraitDeprecatedAttributeRector;
 
 #[\Deprecated(message: 'use new constant')]
 const CONSTANT = 'some reason';

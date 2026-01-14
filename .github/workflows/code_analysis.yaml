@@ -30,6 +30,10 @@ jobs:
                         run: vendor/bin/phpstan analyse --ansi
 
                     -
+                        name: 'Avoid duplicate short class names'
+                        run: php scripts/unique-rector-short-class-name.php
+
+                    -
                         name: 'Help and Version'
                         run:
                             bin/rector --help
