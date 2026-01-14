@@ -386,9 +386,7 @@ parameters:
         -
             identifier: offsetAccess.nonArray
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php
-        -
-            message: '#Property PhpParser\\Node\\Stmt\\ClassMethod\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node>#'
-            path: scripts/create-immutable-node-visitor.php
+
         -
             message: '#Property Rector\\PhpParser\\NodeTraverser\\AbstractImmutableNodeTraverser\:\:\$visitors \(list<PhpParser\\NodeVisitor>\) does not accept array<int\|string, PhpParser\\NodeVisitor>#'
             path: src/PhpParser/NodeTraverser/AbstractImmutableNodeTraverser.php

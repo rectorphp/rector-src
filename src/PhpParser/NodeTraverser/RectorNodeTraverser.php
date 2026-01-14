@@ -12,6 +12,7 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\Node\FileNode;
 use Rector\VersionBonding\PhpVersionedFilter;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
@@ -50,14 +51,20 @@ final class RectorNodeTraverser extends AbstractImmutableNodeTraverser
     /**
      * @param RectorInterface[] $rectors
      * @api used in tests to update the active rules
+     *
+     * @internal Used only in Rector core, not supported outside. Might change any time.
      */
     public function refreshPhpRectors(array $rectors): void
     {
+        Assert::allIsInstanceOf($rectors, RectorInterface::class);
+
         $this->rectors = $rectors;
         $this->visitors = [];
         $this->visitorsPerNodeClass = [];
 
         $this->areNodeVisitorsPrepared = false;
+
+        $this->prepareNodeVisitors();
     }
 
     /**
