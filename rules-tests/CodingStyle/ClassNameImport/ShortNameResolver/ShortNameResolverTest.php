@@ -18,7 +18,6 @@ final class ShortNameResolverTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-        // @todo let dynamic source locator know about parsed files
         parent::setUp();
 
         $this->shortNameResolver = $this->make(ShortNameResolver::class);
