@@ -186,6 +186,10 @@ CODE_SAMPLE
             return true;
         }
 
-        return (bool) $node->getAttribute(AttributeKey::IS_UNSET_VAR);
+        if ($node->getAttribute(AttributeKey::IS_UNSET_VAR)) {
+            return true;
+        }
+
+        return false;
     }
 }
