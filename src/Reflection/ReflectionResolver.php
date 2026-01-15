@@ -65,12 +65,8 @@ final readonly class ReflectionResolver
         return $this->reflectionProvider->getClass($className);
     }
 
-    public function resolveClassReflection(?Node $node): ?ClassReflection
+    public function resolveClassReflection(Node $node): ?ClassReflection
     {
-        if (! $node instanceof Node) {
-            return null;
-        }
-
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return null;
