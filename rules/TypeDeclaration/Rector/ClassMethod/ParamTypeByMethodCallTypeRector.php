@@ -106,6 +106,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->params === []) {
+            return null;
+        }
+
+        // has params with at least one missing type
+        if (! $this->hasAtLeastOneParamWithoutType($node)) {
+            return null;
+        }
+
         if ($node instanceof ClassMethod && $this->shouldSkipClassMethod($node)) {
             return null;
         }
@@ -116,7 +125,17 @@ CODE_SAMPLE
             [StaticCall::class, MethodCall::class, FuncCall::class]
         );
 
-        $hasChanged = $this->refactorFunctionLike($node, $callers);
+        // keep only callers with args
+        $callersWithArgs = array_filter(
+            $callers,
+            fn (StaticCall|MethodCall|FuncCall $caller): bool => $caller->args !== []
+        );
+
+        if ($callersWithArgs === []) {
+            return null;
+        }
+
+        $hasChanged = $this->refactorFunctionLike($node, $callersWithArgs);
         if ($hasChanged) {
             return $node;
         }
@@ -126,10 +145,6 @@ CODE_SAMPLE
 
     private function shouldSkipClassMethod(ClassMethod $classMethod): bool
     {
-        if ($classMethod->params === []) {
-            return true;
-        }
-
         $isMissingParameterTypes = false;
         foreach ($classMethod->params as $param) {
             if ($param->type instanceof Node) {
@@ -217,5 +232,16 @@ CODE_SAMPLE
         }
 
         return $hasChanged;
+    }
+
+    private function hasAtLeastOneParamWithoutType(ClassMethod|Function_|Closure|ArrowFunction $functionLike): bool
+    {
+        foreach ($functionLike->params as $param) {
+            if (! $param->type instanceof Node) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
