@@ -73,6 +73,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->getAttribute(AttributeKey::IS_CLOSURE_IN_ATTRIBUTE) === true) {
+            return null;
+        }
+
         $attributes = $node->getAttributes();
         unset($attributes[AttributeKey::ORIGINAL_NODE]);
 

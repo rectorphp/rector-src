@@ -190,6 +190,11 @@ final class AttributeKey
     /**
      * @var string
      */
+    public const IS_CLOSURE_IN_ATTRIBUTE = 'is_closure_in_attribute';
+
+    /**
+     * @var string
+     */
     public const IS_STATICCALL_CLASS_NAME = 'is_staticcall_class_name';
 
     /**
