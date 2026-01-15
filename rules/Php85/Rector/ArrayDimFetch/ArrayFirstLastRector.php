@@ -108,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($node)) {
+        if ($this->shouldSkip($node, $node->var)) {
             return null;
         }
 
@@ -137,7 +137,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($node)) {
+        if ($this->shouldSkip($node, $node)) {
             return null;
         }
 
@@ -179,9 +179,9 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkip(ArrayDimFetch $node): bool
+    private function shouldSkip(ArrayDimFetch $node, Node $scopeNode): bool
     {
-        $scope = ScopeFetcher::fetch($node);
+        $scope = ScopeFetcher::fetch($scopeNode);
         if ($scope->isInExpressionAssign($node)) {
             return true;
         }
