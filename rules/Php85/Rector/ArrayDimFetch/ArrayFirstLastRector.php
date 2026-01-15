@@ -108,12 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node->var);
-        if ($scope->isInExpressionAssign($node)) {
-            return null;
-        }
-
-        if ($node->getAttribute(AttributeKey::IS_UNSET_VAR)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -142,12 +137,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if ($scope->isInExpressionAssign($node)) {
-            return null;
-        }
-
-        if ($node->getAttribute(AttributeKey::IS_UNSET_VAR)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -187,5 +177,15 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function shouldSkip(ArrayDimFetch $node): bool
+    {
+        $scope = ScopeFetcher::fetch($node);
+        if ($scope->isInExpressionAssign($node)) {
+            return true;
+        }
+
+        return (bool) $node->getAttribute(AttributeKey::IS_UNSET_VAR);
     }
 }
