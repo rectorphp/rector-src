@@ -25,7 +25,7 @@ return RectorConfig::configure()
     )
     ->withAttributesSets()
     ->withComposerBased(phpunit: true)
-    ->withPhpSets()
+    ->withPhpSets(php82: true)
     ->withPaths([
         __DIR__ . '/bin',
         __DIR__ . '/config',

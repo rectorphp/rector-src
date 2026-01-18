@@ -22,7 +22,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php_version: ['8.2']
+                php_version: ['8.3']
                 directory:
                     - 'e2e/applied-auto-import'
                     - 'e2e/applied-polyfill-php80'
