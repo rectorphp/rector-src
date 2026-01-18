@@ -135,6 +135,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // skip if no parents are involved
+        if ($node->extends === null) {
+            return null;
+        }
+
         $className = (string) $this->getName($node);
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
