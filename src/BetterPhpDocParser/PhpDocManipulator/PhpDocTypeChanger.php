@@ -37,7 +37,7 @@ final readonly class PhpDocTypeChanger
     /**
      * @var array<class-string<Node>>
      */
-    private const ALLOWED_TYPES = [
+    private const array ALLOWED_TYPES = [
         GenericTypeNode::class,
         SpacingAwareArrayTypeNode::class,
         SpacingAwareCallableTypeNode::class,
@@ -47,7 +47,7 @@ final readonly class PhpDocTypeChanger
     /**
      * @var string[]
      */
-    private const ALLOWED_IDENTIFIER_TYPENODE_TYPES = ['class-string'];
+    private const array ALLOWED_IDENTIFIER_TYPENODE_TYPES = ['class-string'];
 
     public function __construct(
         private StaticTypeMapper $staticTypeMapper,

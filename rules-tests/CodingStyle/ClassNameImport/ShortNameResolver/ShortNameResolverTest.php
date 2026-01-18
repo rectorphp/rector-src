@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver;
 
 use Iterator;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -16,6 +17,7 @@ final class ShortNameResolverTest extends AbstractLazyTestCase
 
     private TestingParser $testingParser;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

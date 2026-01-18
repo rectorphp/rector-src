@@ -31,16 +31,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRector
 {
     /**
-     * @var string
      * @see https://regex101.com/r/JG5w9j/1
      */
-    private const OR_BETWEEN_WORDS_REGEX = '#[a-z]Or[A-Z]#';
+    private const string OR_BETWEEN_WORDS_REGEX = '#[a-z]Or[A-Z]#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/TV8YXZ/1
      */
-    private const VALID_VARIABLE_NAME_REGEX = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#';
+    private const string VALID_VARIABLE_NAME_REGEX = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#';
 
     public function __construct(
         private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,

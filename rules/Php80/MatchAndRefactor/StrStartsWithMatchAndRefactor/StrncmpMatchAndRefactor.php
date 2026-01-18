@@ -21,10 +21,7 @@ use Rector\PhpParser\Comparing\NodeComparator;
 
 final readonly class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
 {
-    /**
-     * @var string
-     */
-    private const FUNCTION_NAME = 'strncmp';
+    private const string FUNCTION_NAME = 'strncmp';
 
     public function __construct(
         private NodeNameResolver $nodeNameResolver,

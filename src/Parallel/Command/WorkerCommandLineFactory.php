@@ -18,10 +18,7 @@ use Symplify\EasyParallel\Reflection\CommandFromReflectionFactory;
  */
 final readonly class WorkerCommandLineFactory
 {
-    /**
-     * @var string
-     */
-    private const OPTION_DASHES = '--';
+    private const string OPTION_DASHES = '--';
 
     public function __construct(
         private CommandFromReflectionFactory $commandFromReflectionFactory,

@@ -31,7 +31,7 @@ final class VersionCompareFuncCallToConstantRector extends AbstractRector
     /**
      * @var array<string, class-string<BinaryOp>>
      */
-    private const OPERATOR_TO_COMPARISON = [
+    private const array OPERATOR_TO_COMPARISON = [
         '=' => Identical::class,
         '==' => Identical::class,
         'eq' => Identical::class,

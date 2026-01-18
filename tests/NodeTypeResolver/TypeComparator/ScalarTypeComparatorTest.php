@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\NodeTypeResolver\TypeComparator;
 
 use Iterator;
+use Override;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\IntegerRangeType;
@@ -19,6 +20,7 @@ final class ScalarTypeComparatorTest extends AbstractLazyTestCase
 {
     private ScalarTypeComparator $scalarTypeComparator;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

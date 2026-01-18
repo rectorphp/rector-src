@@ -22,7 +22,7 @@ final readonly class CallAnalyzer
     /**
      * @var array<class-string<Expr>>
      */
-    private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
+    private const array OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 
     public function __construct(
         private ReflectionProvider $reflectionProvider

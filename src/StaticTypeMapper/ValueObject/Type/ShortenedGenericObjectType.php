@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
+use Override;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\Type;
@@ -24,6 +25,7 @@ final class ShortenedGenericObjectType extends GenericObjectType
         parent::__construct($shortName, $types);
     }
 
+    #[Override]
     public function isSuperTypeOf(Type $type): IsSuperTypeOfResult
     {
         $genericObjectType = new GenericObjectType($this->fullyQualifiedName, $this->getTypes());

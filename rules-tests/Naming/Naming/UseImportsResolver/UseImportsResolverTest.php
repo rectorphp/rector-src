@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Naming\Naming\UseImportsResolver;
 
 use Iterator;
+use Override;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -24,6 +25,7 @@ final class UseImportsResolverTest extends AbstractLazyTestCase
 
     private BetterNodeFinder $betterNodeFinder;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

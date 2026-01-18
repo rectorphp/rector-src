@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpParser\NodeTraverser;
 
+use Override;
 use PhpParser\Node\Stmt\Class_;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -24,6 +25,7 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
 
     private RuleUsingClassLikeRector $ruleUsingClassLikeRector;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

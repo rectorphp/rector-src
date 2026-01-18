@@ -31,10 +31,7 @@ use Throwable;
 
 final class ApplicationFileProcessor
 {
-    /**
-     * @var string
-     */
-    private const ARGV = 'argv';
+    private const string ARGV = 'argv';
 
     /**
      * @var SystemError[]

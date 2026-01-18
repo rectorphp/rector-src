@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter;
 
+use Override;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -20,6 +21,7 @@ abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractLazyTestCase
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -16,26 +16,21 @@ final readonly class InflectorSingularResolver
     /**
      * @var array<string, string>
      */
-    private const SINGULARIZE_MAP = [
+    private const array SINGULARIZE_MAP = [
         'news' => 'new',
     ];
 
     /**
-     * @var string
      * @see https://regex101.com/r/lbQaGC/3
      */
-    private const CAMELCASE_REGEX = '#(?<camelcase>([a-z\d]+|[A-Z\d]{1,}[a-z\d]+|_))#';
+    private const string CAMELCASE_REGEX = '#(?<camelcase>([a-z\d]+|[A-Z\d]{1,}[a-z\d]+|_))#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/2aGdkZ/2
      */
-    private const BY_MIDDLE_REGEX = '#(?<by>By[A-Z][a-zA-Z]+)#';
+    private const string BY_MIDDLE_REGEX = '#(?<by>By[A-Z][a-zA-Z]+)#';
 
-    /**
-     * @var string
-     */
-    private const CAMELCASE = 'camelcase';
+    private const string CAMELCASE = 'camelcase';
 
     public function __construct(
         private Inflector $inflector

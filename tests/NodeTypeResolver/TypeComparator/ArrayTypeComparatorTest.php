@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeTypeResolver\TypeComparator;
 
+use Override;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ClassStringType;
@@ -24,6 +25,7 @@ final class ArrayTypeComparatorTest extends AbstractLazyTestCase
 
     private ReflectionProvider $reflectionProvider;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

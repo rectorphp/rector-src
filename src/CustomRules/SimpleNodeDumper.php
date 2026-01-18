@@ -23,7 +23,7 @@ final class SimpleNodeDumper
     /**
      * @var array<int, string>
      */
-    private const INCLUDE_TYPE_MAP = [
+    private const array INCLUDE_TYPE_MAP = [
         Include_::TYPE_INCLUDE => 'TYPE_INCLUDE',
         Include_::TYPE_INCLUDE_ONCE => 'TYPE_INCLUDE_ONCE',
         Include_::TYPE_REQUIRE => 'TYPE_REQUIRE',

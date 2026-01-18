@@ -24,7 +24,7 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const PROPERTIES_TO_TYPES = [
+    private const array PROPERTIES_TO_TYPES = [
         'phpDocInfoFactory' => PhpDocInfoFactory::class,
         'valueResolver' => ValueResolver::class,
         'betterNodeFinder' => BetterNodeFinder::class,

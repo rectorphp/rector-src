@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 
 use Nette\Utils\FileSystem;
+use Override;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\Nop;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
@@ -24,6 +25,7 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
     private DocBlockTagReplacer $docBlockTagReplacer;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

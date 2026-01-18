@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpParser\NodeTraverser\StopTraverseOnTypeChange;
 
+use Override;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeFinder;
@@ -19,6 +20,7 @@ final class StopTraverseOnTypeChangeTest extends AbstractLazyTestCase
 
     private TestingParser $testingParser;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

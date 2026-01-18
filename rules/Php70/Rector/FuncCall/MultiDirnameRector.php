@@ -19,10 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MultiDirnameRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const DIRNAME = 'dirname';
+    private const string DIRNAME = 'dirname';
 
     private int $nestingLevel = 0;
 

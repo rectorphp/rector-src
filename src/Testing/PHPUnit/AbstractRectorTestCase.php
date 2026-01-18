@@ -8,6 +8,7 @@ use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use Override;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Autoloading\AdditionalAutoloader;
@@ -63,6 +64,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::TREAT_CLASSES_AS_FINAL, false);
     }
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

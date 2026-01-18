@@ -6,6 +6,7 @@ namespace Rector\Tests\Comments\CommentRemover;
 
 use Iterator;
 use Nette\Utils\FileSystem;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Comments\CommentRemover;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
@@ -23,6 +24,7 @@ final class CommentRemoverTest extends AbstractLazyTestCase
 
     private BetterStandardPrinter $betterStandardPrinter;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

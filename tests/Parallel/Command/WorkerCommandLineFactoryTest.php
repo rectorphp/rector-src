@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Parallel\Command;
 
 use Iterator;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Option;
@@ -17,25 +18,17 @@ use Symfony\Component\Console\Input\InputDefinition;
 
 final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 {
-    /**
-     * @var string
-     */
-    private const COMMAND = 'command';
+    private const string COMMAND = 'command';
 
-    /**
-     * @var string
-     */
-    private const DUMMY_MAIN_SCRIPT = 'main_script';
+    private const string DUMMY_MAIN_SCRIPT = 'main_script';
 
-    /**
-     * @var string
-     */
-    private const SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\vendor\bin\rector';
+    private const string SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\vendor\bin\rector';
 
     private WorkerCommandLineFactory $workerCommandLineFactory;
 
     private ProcessCommand $processCommand;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

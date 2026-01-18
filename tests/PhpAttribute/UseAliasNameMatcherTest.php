@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpAttribute;
 
 use Iterator;
+use Override;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
@@ -23,6 +24,7 @@ final class UseAliasNameMatcherTest extends AbstractLazyTestCase
 {
     private UseAliasNameMatcher $useAliasNameMatcher;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

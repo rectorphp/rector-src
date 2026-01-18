@@ -26,9 +26,8 @@ final class AddLiteralSeparatorToNumberRector extends AbstractRector implements 
 {
     /**
      * @api
-     * @var string
      */
-    public const LIMIT_VALUE = 'limit_value';
+    public const string LIMIT_VALUE = 'limit_value';
 
     /**
      * @param array<string, mixed> $configuration

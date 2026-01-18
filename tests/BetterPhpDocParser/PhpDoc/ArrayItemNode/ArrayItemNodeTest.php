@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
+use Override;
 use PhpParser\Node\Stmt\Class_;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -28,6 +29,7 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
 
     private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

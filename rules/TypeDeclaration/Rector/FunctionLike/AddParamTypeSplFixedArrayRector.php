@@ -26,7 +26,7 @@ final class AddParamTypeSplFixedArrayRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const SPL_FIXED_ARRAY_TO_SINGLE = [
+    private const array SPL_FIXED_ARRAY_TO_SINGLE = [
         'PhpCsFixer\Tokenizer\Tokens' => 'PhpCsFixer\Tokenizer\Token',
         'PhpCsFixer\Doctrine\Annotation\Tokens' => 'PhpCsFixer\Doctrine\Annotation\Token',
     ];

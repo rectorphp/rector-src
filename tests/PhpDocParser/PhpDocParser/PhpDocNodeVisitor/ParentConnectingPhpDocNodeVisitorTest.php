@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpDocParser\PhpDocParser\PhpDocNodeVisitor;
 
+use Override;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
@@ -18,6 +19,7 @@ final class ParentConnectingPhpDocNodeVisitorTest extends AbstractLazyTestCase
 {
     private PhpDocNodeTraverser $phpDocNodeTraverser;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

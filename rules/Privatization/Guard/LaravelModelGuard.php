@@ -20,16 +20,14 @@ use Rector\Util\StringUtils;
 final readonly class LaravelModelGuard
 {
     /**
-     * @var string
      * @see https://regex101.com/r/Dx0WN5/2
      */
-    private const LARAVEL_MODEL_ATTRIBUTE_REGEX = '#^[gs]et.+Attribute$#';
+    private const string LARAVEL_MODEL_ATTRIBUTE_REGEX = '#^[gs]et.+Attribute$#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/hxOGeN/2
      */
-    private const LARAVEL_MODEL_SCOPE_REGEX = '#^scope.+$#';
+    private const string LARAVEL_MODEL_SCOPE_REGEX = '#^scope.+$#';
 
     public function __construct(
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,

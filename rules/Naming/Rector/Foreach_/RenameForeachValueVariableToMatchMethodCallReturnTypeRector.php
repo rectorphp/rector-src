@@ -29,7 +29,7 @@ final class RenameForeachValueVariableToMatchMethodCallReturnTypeRector extends 
     /**
      * @var string[]
      */
-    private const UNREADABLE_GENERIC_NAMES = ['traversable', 'iterable', 'generator', 'rewindableGenerator'];
+    private const array UNREADABLE_GENERIC_NAMES = ['traversable', 'iterable', 'generator', 'rewindableGenerator'];
 
     public function __construct(
         private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 
 use Iterator;
+use Override;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -30,6 +31,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractLazyTestCase
 
     private NodeNameResolver $nodeNameResolver;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

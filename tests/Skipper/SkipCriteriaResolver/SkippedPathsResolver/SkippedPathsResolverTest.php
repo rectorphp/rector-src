@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 
+use Override;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\FileSystem\PathNormalizer;
@@ -14,6 +15,7 @@ final class SkippedPathsResolverTest extends AbstractLazyTestCase
 {
     private SkippedPathsResolver $skippedPathsResolver;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -6,8 +6,5 @@ namespace Rector\Enum\Config;
 
 final class Defaults
 {
-    /**
-     * @var int
-     */
-    public const PARALLEL_MAX_NUMBER_OF_PROCESS = 32;
+    public const int PARALLEL_MAX_NUMBER_OF_PROCESS = 32;
 }

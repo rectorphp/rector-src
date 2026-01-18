@@ -29,10 +29,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddParamTypeFromPropertyTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const ERROR_MESSAGE = 'Add param type declaration based on property type';
+    private const string ERROR_MESSAGE = 'Add param type declaration based on property type';
 
     public function __construct(
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,

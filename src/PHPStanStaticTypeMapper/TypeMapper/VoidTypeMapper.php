@@ -19,10 +19,7 @@ use Rector\ValueObject\PhpVersionFeature;
  */
 final readonly class VoidTypeMapper implements TypeMapperInterface
 {
-    /**
-     * @var string
-     */
-    private const VOID = 'void';
+    private const string VOID = 'void';
 
     public function __construct(
         private PhpVersionProvider $phpVersionProvider

@@ -18,7 +18,7 @@ final class PhpLevelSetResolver
     /**
      * @var array<PhpVersion::*, SetList::PHP_*>
      */
-    private const VERSION_LOWER_BOUND_CONFIGS = [
+    private const array VERSION_LOWER_BOUND_CONFIGS = [
         PhpVersion::PHP_52 => SetList::PHP_52,
         PhpVersion::PHP_53 => SetList::PHP_53,
         PhpVersion::PHP_54 => SetList::PHP_54,

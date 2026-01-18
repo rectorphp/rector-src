@@ -15,10 +15,9 @@ use Webmozart\Assert\Assert;
 final readonly class ComposerTriggeredSet implements SetInterface
 {
     /**
-     * @var string
      * @see https://regex101.com/r/ioYomu/1
      */
-    private const PACKAGE_REGEX = '#^[a-z0-9-]+\/([a-z0-9-_]+|\*)$#';
+    private const string PACKAGE_REGEX = '#^[a-z0-9-]+\/([a-z0-9-_]+|\*)$#';
 
     public function __construct(
         private string $groupName,

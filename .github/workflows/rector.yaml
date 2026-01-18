@@ -24,8 +24,8 @@ jobs:
             -
                 uses: shivammathur/setup-php@v2
                 with:
-                    # PHP 8.2 is required, so Rector's code is PHP 8.2 compatible even after refactoring
-                    php-version: 8.2
+                    # PHP 8.3 is required, so Rector's code is PHP 8.3 compatible even after refactoring
+                    php-version: 8.3
                     coverage: none
 
             -   run: composer install --no-progress --ansi

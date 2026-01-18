@@ -10,48 +10,21 @@ namespace Rector\Parallel\ValueObject;
  */
 final class BridgeItem
 {
-    /**
-     * @var string
-     */
-    public const LINE = 'line';
+    public const string LINE = 'line';
 
-    /**
-     * @var string
-     */
-    public const MESSAGE = 'message';
+    public const string MESSAGE = 'message';
 
-    /**
-     * @var string
-     */
-    public const RELATIVE_FILE_PATH = 'relative_file_path';
+    public const string RELATIVE_FILE_PATH = 'relative_file_path';
 
-    /**
-     * @var string
-     */
-    public const ABSOLUTE_FILE_PATH = 'absolute_file_path';
+    public const string ABSOLUTE_FILE_PATH = 'absolute_file_path';
 
-    /**
-     * @var string
-     */
-    public const DIFF = 'diff';
+    public const string DIFF = 'diff';
 
-    /**
-     * @var string
-     */
-    public const DIFF_CONSOLE_FORMATTED = 'diff_console_formatted';
+    public const string DIFF_CONSOLE_FORMATTED = 'diff_console_formatted';
 
-    /**
-     * @var string
-     */
-    public const APPLIED_RECTORS = 'applied_rectors';
+    public const string APPLIED_RECTORS = 'applied_rectors';
 
-    /**
-     * @var string
-     */
-    public const RECTOR_CLASS = 'rector_class';
+    public const string RECTOR_CLASS = 'rector_class';
 
-    /**
-     * @var string
-     */
-    public const RECTORS_WITH_LINE_CHANGES = 'rectors_with_line_changes';
+    public const string RECTORS_WITH_LINE_CHANGES = 'rectors_with_line_changes';
 }

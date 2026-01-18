@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\BetterPhpDocParser;
 
+use Override;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -17,6 +18,7 @@ final class PhpDocNodeMapperTest extends AbstractLazyTestCase
 {
     private PhpDocNodeMapper $phpDocNodeMapper;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

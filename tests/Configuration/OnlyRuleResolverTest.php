@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Configuration;
 
+use Override;
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
@@ -16,6 +17,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
 {
     private OnlyRuleResolver $onlyRuleResolver;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

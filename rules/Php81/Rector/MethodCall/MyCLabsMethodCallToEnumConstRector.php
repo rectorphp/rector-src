@@ -29,7 +29,7 @@ final class MyCLabsMethodCallToEnumConstRector extends AbstractRector implements
     /**
      * @var string[]
      */
-    private const ENUM_METHODS = ['from', 'values', 'keys', 'isValid', 'search', 'toArray', 'assertValidValue'];
+    private const array ENUM_METHODS = ['from', 'values', 'keys', 'isValid', 'search', 'toArray', 'assertValidValue'];
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,

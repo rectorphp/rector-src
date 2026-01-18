@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PHPStanStaticTypeMapper\TypeMapper;
 
 use Iterator;
+use Override;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
@@ -18,6 +19,7 @@ final class ArrayTypeMapperTest extends AbstractLazyTestCase
 {
     private ArrayTypeMapper $arrayTypeMapper;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

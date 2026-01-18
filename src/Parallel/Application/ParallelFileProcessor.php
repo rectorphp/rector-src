@@ -37,18 +37,13 @@ use Throwable;
  */
 final class ParallelFileProcessor
 {
-    /**
-     * @var int
-     */
-    private const SYSTEM_ERROR_LIMIT = 50;
+    private const int SYSTEM_ERROR_LIMIT = 50;
 
     /**
      * The number of chunks a worker can process before getting killed.
      * In contrast the jobSize defines the maximum size of a chunk, a worker process at a time.
-     *
-     * @var int
      */
-    private const MAX_CHUNKS_PER_WORKER = 8;
+    private const int MAX_CHUNKS_PER_WORKER = 8;
 
     private ProcessPool|null $processPool = null;
 

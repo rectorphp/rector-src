@@ -66,10 +66,7 @@ use Rector\ValueObject\PhpVersionFeature;
  */
 final readonly class NodeFactory
 {
-    /**
-     * @var string
-     */
-    private const THIS = 'this';
+    private const string THIS = 'this';
 
     public function __construct(
         private BuilderFactory $builderFactory,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpParser\Node;
 
 use Iterator;
+use Override;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
@@ -19,6 +20,7 @@ final class NodeFactoryTest extends AbstractLazyTestCase
 {
     private NodeFactory $nodeFactory;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

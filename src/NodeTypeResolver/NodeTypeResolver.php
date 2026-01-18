@@ -61,10 +61,7 @@ use Rector\ValueObject\PhpVersion;
 
 final class NodeTypeResolver
 {
-    /**
-     * @var string
-     */
-    private const ERROR_MESSAGE = '%s itself does not have any type. Check the %s node instead';
+    private const string ERROR_MESSAGE = '%s itself does not have any type. Check the %s node instead';
 
     /**
      * @var array<class-string<Node>, NodeTypeResolverInterface>

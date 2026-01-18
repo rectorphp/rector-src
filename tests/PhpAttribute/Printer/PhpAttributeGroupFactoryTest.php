@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpAttribute\Printer;
 
+use Override;
 use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -15,6 +16,7 @@ final class PhpAttributeGroupFactoryTest extends AbstractLazyTestCase
 {
     private PhpAttributeGroupFactory $phpAttributeGroupFactory;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

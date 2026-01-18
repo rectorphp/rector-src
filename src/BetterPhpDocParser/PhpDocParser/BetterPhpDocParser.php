@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
 use Nette\Utils\Strings;
+use Override;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
@@ -33,16 +34,14 @@ use Rector\Util\Reflection\PrivatesAccessor;
 final class BetterPhpDocParser extends PhpDocParser
 {
     /**
-     * @var string
      * @see https://regex101.com/r/JDzr0c/1
      */
-    private const NEW_LINE_REGEX = "#(?<new_line>\r\n|\n)#";
+    private const string NEW_LINE_REGEX = "#(?<new_line>\r\n|\n)#";
 
     /**
-     * @var string
      * @see https://regex101.com/r/JOKSmr/5
      */
-    private const MULTI_NEW_LINES_REGEX = '#(?<new_line>\r\n|\n){2,}#';
+    private const string MULTI_NEW_LINES_REGEX = '#(?<new_line>\r\n|\n){2,}#';
 
     /**
      * @param PhpDocNodeDecoratorInterface[] $phpDocNodeDecorators
@@ -92,6 +91,7 @@ final class BetterPhpDocParser extends PhpDocParser
         return $phpDocNode;
     }
 
+    #[Override]
     public function parseTag(TokenIterator $tokenIterator): PhpDocTagNode
     {
         // replace generic nodes with DoctrineAnnotations
@@ -108,6 +108,7 @@ final class BetterPhpDocParser extends PhpDocParser
     /**
      * @param BetterTokenIterator $tokenIterator
      */
+    #[Override]
     public function parseTagValue(TokenIterator $tokenIterator, string $tag): PhpDocTagValueNode
     {
         $isPrecededByHorizontalWhitespace = $tokenIterator->isPrecededByHorizontalWhitespace();

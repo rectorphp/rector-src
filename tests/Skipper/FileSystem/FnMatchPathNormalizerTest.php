@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Skipper\FileSystem;
 
 use Iterator;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Skipper\FileSystem\FnMatchPathNormalizer;
 use Rector\Skipper\FileSystem\PathNormalizer;
@@ -14,6 +15,7 @@ final class FnMatchPathNormalizerTest extends AbstractLazyTestCase
 {
     private FnMatchPathNormalizer $fnMatchPathNormalizer;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

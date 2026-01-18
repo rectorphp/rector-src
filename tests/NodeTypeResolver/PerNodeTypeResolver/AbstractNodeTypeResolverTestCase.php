@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver;
 
+use Override;
 use PhpParser\Node;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -18,6 +19,7 @@ abstract class AbstractNodeTypeResolverTestCase extends AbstractLazyTestCase
 
     private TestingParser $testingParser;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

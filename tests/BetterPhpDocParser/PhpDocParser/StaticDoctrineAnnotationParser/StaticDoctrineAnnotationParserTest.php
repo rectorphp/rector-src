@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
 use Iterator;
+use Override;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -20,6 +21,7 @@ final class StaticDoctrineAnnotationParserTest extends AbstractLazyTestCase
 
     private TokenIteratorFactory $tokenIteratorFactory;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

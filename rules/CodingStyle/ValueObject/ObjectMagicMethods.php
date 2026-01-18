@@ -11,7 +11,7 @@ final class ObjectMagicMethods
     /**
      * @var string[]
      */
-    public const METHOD_NAMES = [
+    public const array METHOD_NAMES = [
         '__call',
         '__callStatic',
         MethodName::CLONE,

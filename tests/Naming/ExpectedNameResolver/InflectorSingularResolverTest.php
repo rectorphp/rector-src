@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Naming\ExpectedNameResolver;
 
 use Iterator;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -13,6 +14,7 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
 {
     private InflectorSingularResolver $inflectorSingularResolver;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

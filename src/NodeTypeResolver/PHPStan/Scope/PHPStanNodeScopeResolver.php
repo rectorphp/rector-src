@@ -116,10 +116,7 @@ use Webmozart\Assert\Assert;
  */
 final readonly class PHPStanNodeScopeResolver
 {
-    /**
-     * @var string
-     */
-    private const CONTEXT = 'context';
+    private const string CONTEXT = 'context';
 
     private NodeTraverser $nodeTraverser;
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpParser\Node\Value;
 
 use Iterator;
+use Override;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Plus;
@@ -17,6 +18,7 @@ final class ValueResolverTest extends AbstractLazyTestCase
 {
     private ValueResolver $valueResolver;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Skipper\Skipper;
 
 use Illuminate\Container\RewindableGenerator;
+use Override;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -14,6 +15,7 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class SkipperRectorRuleTest extends AbstractLazyTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

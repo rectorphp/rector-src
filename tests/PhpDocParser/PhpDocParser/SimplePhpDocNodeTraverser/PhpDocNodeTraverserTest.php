@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpDocParser\PhpDocParser\SimplePhpDocNodeTraverser;
 
+use Override;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -14,13 +15,11 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class PhpDocNodeTraverserTest extends AbstractLazyTestCase
 {
-    /**
-     * @var string
-     */
-    private const SOME_DESCRIPTION = 'some description';
+    private const string SOME_DESCRIPTION = 'some description';
 
     private PhpDocNodeTraverser $phpDocNodeTraverser;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

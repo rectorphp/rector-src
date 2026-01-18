@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Caching\Config\FileHashComputer;
 
+use Override;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -13,6 +14,7 @@ final class FileHashComputerTest extends AbstractLazyTestCase
 {
     private FileHashComputer $fileHashComputer;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpParser\Node\BetterNodeFinder;
 
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
@@ -20,6 +21,7 @@ final class BetterNodeFinderTest extends AbstractLazyTestCase
 
     private BetterNodeFinder $betterNodeFinder;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

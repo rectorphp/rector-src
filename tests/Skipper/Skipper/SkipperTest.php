@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Skipper\Skipper;
 
 use Iterator;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -19,6 +20,7 @@ final class SkipperTest extends AbstractLazyTestCase
 {
     private Skipper $skipper;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

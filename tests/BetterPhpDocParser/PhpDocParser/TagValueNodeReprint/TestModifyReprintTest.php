@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Nette\Utils\FileSystem;
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -31,6 +32,7 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

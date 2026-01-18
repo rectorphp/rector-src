@@ -22,10 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ExceptionHandlerTypehintRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var string
      * @see https://regex101.com/r/VBFXCR/1
      */
-    private const HANDLE_INSENSITIVE_REGEX = '#handle#i';
+    private const string HANDLE_INSENSITIVE_REGEX = '#handle#i';
 
     public function getRuleDefinition(): RuleDefinition
     {

@@ -41,7 +41,7 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
     /**
      * @var array<class-string<Stmt>>
      */
-    private const NODE_TYPES = [
+    private const array NODE_TYPES = [
         Foreach_::class,
         Static_::class,
         Echo_::class,

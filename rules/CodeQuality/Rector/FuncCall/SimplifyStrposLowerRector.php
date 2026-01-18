@@ -19,10 +19,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyStrposLowerRector extends AbstractRector
 {
     /**
-     * @var string
      * @see https://regex101.com/r/Jokjt8/1
      */
-    private const UPPERCASE_REGEX = '#[A-Z]#';
+    private const string UPPERCASE_REGEX = '#[A-Z]#';
 
     public function getRuleDefinition(): RuleDefinition
     {

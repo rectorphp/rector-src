@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Caching\Detector;
 
+use Override;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -11,6 +12,7 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 {
     private ChangedFilesDetector $changedFilesDetector;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

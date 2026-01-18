@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Util;
 
 use Nette\Utils\FileSystem;
+use Override;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Util\FileHasher;
 
@@ -12,6 +13,7 @@ final class FileHasherTest extends AbstractLazyTestCase
 {
     private FileHasher $fileHasher;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

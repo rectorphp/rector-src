@@ -3,10 +3,14 @@ stages:
     - rector
     - commit_changes
 
+default:
+    # see https://github.com/thecodingmachine/docker-images-php
+    image: thecodingmachine/php:8.3-v4-slim-cli
+
 setup:
     stage: setup
-    # see https://github.com/thecodingmachine/docker-images-php
-    image: thecodingmachine/php:8.2-v4-slim-cli
+    script:
+        - php -v
 
 rector:
     stage: rector

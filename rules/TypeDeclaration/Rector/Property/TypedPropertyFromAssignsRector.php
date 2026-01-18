@@ -41,9 +41,8 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements Min
 {
     /**
      * @api
-     * @var string
      */
-    public const INLINE_PUBLIC = 'inline_public';
+    public const string INLINE_PUBLIC = 'inline_public';
 
     /**
      * Default to false, which only apply changes:

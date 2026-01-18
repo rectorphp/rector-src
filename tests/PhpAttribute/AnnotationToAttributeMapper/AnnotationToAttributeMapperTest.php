@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpAttribute\AnnotationToAttributeMapper;
 
 use Iterator;
+use Override;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -19,6 +20,7 @@ final class AnnotationToAttributeMapperTest extends AbstractLazyTestCase
 {
     private AnnotationToAttributeMapper $annotationToAttributeMapper;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

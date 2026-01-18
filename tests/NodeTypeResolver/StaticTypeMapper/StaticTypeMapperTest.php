@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\NodeTypeResolver\StaticTypeMapper;
 
 use Iterator;
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
@@ -24,6 +25,7 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
 {
     private StaticTypeMapper $staticTypeMapper;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

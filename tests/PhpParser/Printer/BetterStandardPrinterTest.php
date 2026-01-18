@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpParser\Printer;
 
 use Iterator;
+use Override;
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
@@ -22,6 +23,7 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
 {
     private BetterStandardPrinter $betterStandardPrinter;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

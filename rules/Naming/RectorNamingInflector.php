@@ -10,10 +10,9 @@ use Nette\Utils\Strings;
 final readonly class RectorNamingInflector
 {
     /**
-     * @var string
      * @see https://regex101.com/r/VqVvke/3
      */
-    private const DATA_INFO_SUFFIX_REGEX = '#^(?<prefix>.+)(?<suffix>Data|Info)$#';
+    private const string DATA_INFO_SUFFIX_REGEX = '#^(?<prefix>.+)(?<suffix>Data|Info)$#';
 
     public function __construct(
         private Inflector $inflector

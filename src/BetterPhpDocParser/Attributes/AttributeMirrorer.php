@@ -12,7 +12,7 @@ final class AttributeMirrorer
     /**
      * @var string[]
      */
-    private const ATTRIBUTES_TO_MIRROR = [
+    private const array ATTRIBUTES_TO_MIRROR = [
         PhpDocAttributeKey::PARENT,
         PhpDocAttributeKey::START_AND_END,
         PhpDocAttributeKey::ORIG_NODE,

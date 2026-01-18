@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Caching\ValueObject\Storage;
 
+use Override;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -13,6 +14,7 @@ final class FileCacheStorageTest extends AbstractLazyTestCase
 {
     private FileCacheStorage $fileCacheStorage;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

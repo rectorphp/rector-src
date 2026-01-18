@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\FileSystem\FilesFinder;
 
 use Iterator;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -15,6 +16,7 @@ final class FilesFinderTest extends AbstractLazyTestCase
 {
     private FilesFinder $filesFinder;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\StaticTypeMapper\PhpDoc;
 
 use Iterator;
+use Override;
 use PhpParser\Node\Stmt\Nop;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
@@ -22,6 +23,7 @@ final class PhpDocTypeMapperTest extends AbstractLazyTestCase
 
     private NameScopeFactory $nameScopeFactory;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

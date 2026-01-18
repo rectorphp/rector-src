@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Naming\Naming;
 
 use Iterator;
+use Override;
 use PHPStan\Type\ObjectType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Naming\Naming\PropertyNaming;
@@ -15,6 +16,7 @@ final class PropertyNamingTest extends AbstractLazyTestCase
 {
     private PropertyNaming $propertyNaming;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

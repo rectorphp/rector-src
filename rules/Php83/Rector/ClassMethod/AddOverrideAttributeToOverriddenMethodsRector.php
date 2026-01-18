@@ -39,14 +39,10 @@ final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector
 {
     /**
      * @api
-     * @var string
      */
-    public const ALLOW_OVERRIDE_EMPTY_METHOD = 'allow_override_empty_method';
+    public const string ALLOW_OVERRIDE_EMPTY_METHOD = 'allow_override_empty_method';
 
-    /**
-     * @var string
-     */
-    private const OVERRIDE_CLASS = 'Override';
+    private const string OVERRIDE_CLASS = 'Override';
 
     private bool $allowOverrideEmptyMethod = false;
 

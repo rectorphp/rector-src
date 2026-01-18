@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeManipulator;
 
+use Override;
 use PhpParser\Modifiers;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Identifier;
@@ -30,6 +31,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 
     private Standard $printerStandard;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
