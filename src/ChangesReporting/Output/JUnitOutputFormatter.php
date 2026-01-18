@@ -18,21 +18,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class JUnitOutputFormatter implements OutputFormatterInterface
 {
-    private const NAME = 'junit';
+    private const string NAME = 'junit';
 
-    private const XML_ATTRIBUTE_FILE = 'file';
+    private const string XML_ATTRIBUTE_FILE = 'file';
 
-    private const XML_ATTRIBUTE_NAME = 'name';
+    private const string XML_ATTRIBUTE_NAME = 'name';
 
-    private const XML_ATTRIBUTE_TYPE = 'type';
+    private const string XML_ATTRIBUTE_TYPE = 'type';
 
-    private const XML_ELEMENT_TESTSUITES = 'testsuites';
+    private const string XML_ELEMENT_TESTSUITES = 'testsuites';
 
-    private const XML_ELEMENT_TESTSUITE = 'testsuite';
+    private const string XML_ELEMENT_TESTSUITE = 'testsuite';
 
-    private const XML_ELEMENT_TESTCASE = 'testcase';
+    private const string XML_ELEMENT_TESTCASE = 'testcase';
 
-    private const XML_ELEMENT_ERROR = 'error';
+    private const string XML_ELEMENT_ERROR = 'error';
 
     public function __construct(
         private SymfonyStyle $symfonyStyle,

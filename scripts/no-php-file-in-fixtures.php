@@ -17,7 +17,7 @@ final readonly class NoPhpFileInFixturesDetector
     /**
      * @var string[]
      */
-    private const EXCLUDED_FILES = [
+    private const array EXCLUDED_FILES = [
         // on-purpose as same namespace text
         'rules-tests/Renaming/Rector/Name/RenameClassRector/FixtureAutoImportNames/SomeShort.php',
     ];

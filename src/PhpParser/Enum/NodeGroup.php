@@ -39,7 +39,7 @@ final class NodeGroup
      *
      * @var array<class-string<Node>>
      */
-    public const STMTS_AWARE = [
+    public const array STMTS_AWARE = [
         Block::class,
         Closure::class,
         Case_::class,
@@ -63,7 +63,7 @@ final class NodeGroup
     /**
      * @var array<class-string<Node>>
      */
-    public const STMTS_TO_HAVE_NEXT_NEWLINE = [
+    public const array STMTS_TO_HAVE_NEXT_NEWLINE = [
         ClassMethod::class,
         Function_::class,
         Property::class,

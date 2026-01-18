@@ -31,10 +31,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
 final readonly class TypeNormalizer
 {
-    /**
-     * @var int
-     */
-    private const MAX_PRINTED_UNION_DOC_LENGTH = 77;
+    private const int MAX_PRINTED_UNION_DOC_LENGTH = 77;
 
     public function __construct(
         private TypeFactory $typeFactory,

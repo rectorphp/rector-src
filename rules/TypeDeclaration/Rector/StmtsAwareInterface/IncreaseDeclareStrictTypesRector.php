@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class IncreaseDeclareStrictTypesRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
 {
-    public const LIMIT = 'limit';
+    public const string LIMIT = 'limit';
 
     public function getRuleDefinition(): RuleDefinition
     {

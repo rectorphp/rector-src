@@ -41,7 +41,7 @@ final class RecastingRemovalRector extends AbstractRector
     /**
      * @var array<class-string<Node>, class-string<Type>>
      */
-    private const CAST_CLASS_TO_NODE_TYPE = [
+    private const array CAST_CLASS_TO_NODE_TYPE = [
         String_::class => StringType::class,
         Bool_::class => BooleanType::class,
         Array_::class => ArrayType::class,

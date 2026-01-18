@@ -28,7 +28,7 @@ final class SetTypeToCastRector extends AbstractRector
     /**
      * @var array<string, class-string<Cast>>
      */
-    private const TYPE_TO_CAST = [
+    private const array TYPE_TO_CAST = [
         'array' => Array_::class,
         'bool' => Bool_::class,
         'boolean' => Bool_::class,

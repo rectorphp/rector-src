@@ -30,15 +30,13 @@ final readonly class DeprecatedAnnotationToDeprecatedAttributeConverter
 {
     /**
      * @see https://regex101.com/r/qNytVk/1
-     * @var string
      */
-    private const VERSION_MATCH_REGEX = '/^(?:(\d+\.\d+\.\d+)\s+)?(.*)$/';
+    private const string VERSION_MATCH_REGEX = '/^(?:(\d+\.\d+\.\d+)\s+)?(.*)$/';
 
     /**
      * @see https://regex101.com/r/SVDPOB/1
-     * @var string
      */
-    private const START_STAR_SPACED_REGEX = '#^ *\*#ms';
+    private const string START_STAR_SPACED_REGEX = '#^ *\*#ms';
 
     public function __construct(
         private PhpDocTagRemover $phpDocTagRemover,

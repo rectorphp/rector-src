@@ -6,9 +6,9 @@ namespace Rector\Enum;
 
 final class LaravelClassName
 {
-    public const MODEL = 'Illuminate\Database\Eloquent\Model';
+    public const string MODEL = 'Illuminate\Database\Eloquent\Model';
 
-    public const CAST_ATTRIBUTE = 'Illuminate\Database\Eloquent\Casts\Attribute';
+    public const string CAST_ATTRIBUTE = 'Illuminate\Database\Eloquent\Casts\Attribute';
 
-    public const ATTRIBUTES_SCOPE = 'Illuminate\Database\Eloquent\Attributes\Scope';
+    public const string ATTRIBUTES_SCOPE = 'Illuminate\Database\Eloquent\Attributes\Scope';
 }

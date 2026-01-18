@@ -22,10 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AbsolutizeRequireAndIncludePathRector extends AbstractRector
 {
     /**
-     * @var string
      * @see https://regex101.com/r/N8oLqv/1
      */
-    private const WINDOWS_DRIVE_REGEX = '#^[a-zA-z]\:[\/\\\]#';
+    private const string WINDOWS_DRIVE_REGEX = '#^[a-zA-z]\:[\/\\\]#';
 
     public function __construct(
         private readonly ValueResolver $valueResolver

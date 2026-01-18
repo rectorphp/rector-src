@@ -10,10 +10,7 @@ use Rector\Validation\RectorAssert;
 
 final readonly class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
 {
-    /**
-     * @var string
-     */
-    public const ANY_VALUE_BEFORE = '*ANY_VALUE_BEFORE*';
+    public const string ANY_VALUE_BEFORE = '*ANY_VALUE_BEFORE*';
 
     /**
      * @param int<0, max> $position

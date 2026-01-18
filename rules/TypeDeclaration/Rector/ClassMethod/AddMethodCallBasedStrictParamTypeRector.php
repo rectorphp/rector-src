@@ -20,10 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddMethodCallBasedStrictParamTypeRector extends AbstractRector
 {
-    /**
-     * @var int
-     */
-    private const MAX_UNION_TYPES = 3;
+    private const int MAX_UNION_TYPES = 3;
 
     public function __construct(
         private readonly CallTypesResolver $callTypesResolver,

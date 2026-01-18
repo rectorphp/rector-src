@@ -14,7 +14,7 @@ final readonly class ReservedClassNameImportSkipVoter implements ClassNameImport
     /**
      * @var string[]
      */
-    private const RESERVED_CLASS_NAMES = [
+    private const array RESERVED_CLASS_NAMES = [
         'bool',
         'false',
         'float',

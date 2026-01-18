@@ -32,7 +32,7 @@ final class MbStrContainsRector extends AbstractRector implements MinPhpVersionI
     /**
      * @var string[]
      */
-    private const OLD_STR_NAMES = ['mb_strpos', 'mb_strstr'];
+    private const array OLD_STR_NAMES = ['mb_strpos', 'mb_strstr'];
 
     public function __construct(
         private readonly StrFalseComparisonResolver $strFalseComparisonResolver

@@ -32,10 +32,7 @@ use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
  */
 final class ArrayTypeMapper implements TypeMapperInterface
 {
-    /**
-     * @var string
-     */
-    public const HAS_GENERIC_TYPE_PARENT = 'has_generic_type_parent';
+    public const string HAS_GENERIC_TYPE_PARENT = 'has_generic_type_parent';
 
     private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 

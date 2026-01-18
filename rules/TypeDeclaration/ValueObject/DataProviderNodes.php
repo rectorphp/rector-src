@@ -17,9 +17,8 @@ final readonly class DataProviderNodes
 {
     /**
      * @see https://regex101.com/r/hW09Vt/1
-     * @var string
      */
-    private const METHOD_NAME_REGEX = '#^(?<method_name>\w+)(\(\))?#';
+    private const string METHOD_NAME_REGEX = '#^(?<method_name>\w+)(\(\))?#';
 
     /**
      * @param Attribute[] $attributes

@@ -9,54 +9,39 @@ namespace Rector\Set\Enum;
  */
 final class SetGroup
 {
-    /**
-     * @var string
-     */
-    public const CORE = 'core';
+    public const string CORE = 'core';
 
-    /**
-     * @var string
-     */
-    public const PHP = 'php';
+    public const string PHP = 'php';
 
     /**
      * Version-based set provider
-     * @var string
      */
-    public const TWIG = 'twig';
+    public const string TWIG = 'twig';
 
     /**
      * Version-based set provider
-     * @var string
      */
-    public const PHPUNIT = 'phpunit';
+    public const string PHPUNIT = 'phpunit';
 
     /**
      * Version-based set provider
-     * @var string
      */
-    public const DOCTRINE = 'doctrine';
+    public const string DOCTRINE = 'doctrine';
 
     /**
      * Version-based set provider
-     * @var string
      */
-    public const SYMFONY = 'symfony';
+    public const string SYMFONY = 'symfony';
 
     /**
      * Version-based set provider
-     * @var string
      */
-    public const NETTE_UTILS = 'nette-utils';
+    public const string NETTE_UTILS = 'nette-utils';
 
     /**
      * Version-based set provider
-     * @var string
      */
-    public const LARAVEL = 'laravel';
+    public const string LARAVEL = 'laravel';
 
-    /**
-     * @var string
-     */
-    public const ATTRIBUTES = 'attributes';
+    public const string ATTRIBUTES = 'attributes';
 }

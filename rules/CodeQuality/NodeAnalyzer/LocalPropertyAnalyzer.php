@@ -28,10 +28,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final readonly class LocalPropertyAnalyzer
 {
-    /**
-     * @var string
-     */
-    private const LARAVEL_COLLECTION_CLASS = 'Illuminate\Support\Collection';
+    private const string LARAVEL_COLLECTION_CLASS = 'Illuminate\Support\Collection';
 
     public function __construct(
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,

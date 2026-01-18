@@ -84,7 +84,7 @@ final class DeadCodeLevel
      *
      * @var array<class-string<RectorInterface>>
      */
-    public const RULES = [
+    public const array RULES = [
         // easy picks
         RemoveUnusedForeachKeyRector::class,
         RemoveDuplicatedArrayKeyRector::class,

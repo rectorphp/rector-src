@@ -21,15 +21,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SpatieEnumMethodCallToEnumConstRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const SPATIE_FQN = 'Spatie\Enum\Enum';
+    private const string SPATIE_FQN = 'Spatie\Enum\Enum';
 
     /**
      * @var string[]
      */
-    private const ENUM_METHODS = ['from', 'values', 'keys', 'isValid', 'search', 'toArray', 'assertValidValue'];
+    private const array ENUM_METHODS = ['from', 'values', 'keys', 'isValid', 'search', 'toArray', 'assertValidValue'];
 
     public function getRuleDefinition(): RuleDefinition
     {

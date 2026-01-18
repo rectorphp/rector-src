@@ -19,10 +19,9 @@ use ReflectionClass;
 final class PhpVersionProvider
 {
     /**
-     * @var string
      * @see https://regex101.com/r/qBMnbl/1
      */
-    private const VALID_PHP_VERSION_REGEX = '#^\d{5,6}$#';
+    private const string VALID_PHP_VERSION_REGEX = '#^\d{5,6}$#';
 
     private int|null $phpVersionFeatures = null;
 

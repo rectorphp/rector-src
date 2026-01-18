@@ -29,10 +29,7 @@ use Webmozart\Assert\Assert;
  */
 final readonly class PHPStanServicesFactory
 {
-    /**
-     * @var string
-     */
-    private const INVALID_BLEEDING_EDGE_PATH_MESSAGE = <<<MESSAGE_ERROR
+    private const string INVALID_BLEEDING_EDGE_PATH_MESSAGE = <<<MESSAGE_ERROR
 '%s, use full path bleedingEdge.neon config, eg:
 
 includes:

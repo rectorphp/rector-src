@@ -17,7 +17,7 @@ final class EregToPcreTransformer
     /**
      * @var array<string, string>
      */
-    private const CHARACTER_CLASS_MAP = [
+    private const array CHARACTER_CLASS_MAP = [
         ':alnum:' => '[:alnum:]',
         ':alpha:' => '[:alpha:]',
         ':blank:' => '[:blank:]',
@@ -34,23 +34,16 @@ final class EregToPcreTransformer
     ];
 
     /**
-     * @var string
      * @see https://regex101.com/r/htpXFg/1
      */
-    private const BOUND_REGEX = '/^(?<' . self::MINIMAL_NUMBER_PART . '>\d|[1-9]\d|1\d\d|
+    private const string BOUND_REGEX = '/^(?<' . self::MINIMAL_NUMBER_PART . '>\d|[1-9]\d|1\d\d|
                                 2[0-4]\d|25[0-5])
                                (?<comma>,(?<' . self::MAXIMAL_NUMBER_PART . '>\d|[1-9]\d|1\d\d|
                                   2[0-4]\d|25[0-5])?)?$/x';
 
-    /**
-     * @var string
-     */
-    private const MINIMAL_NUMBER_PART = 'minimal_number';
+    private const string MINIMAL_NUMBER_PART = 'minimal_number';
 
-    /**
-     * @var string
-     */
-    private const MAXIMAL_NUMBER_PART = 'maximal_number';
+    private const string MAXIMAL_NUMBER_PART = 'maximal_number';
 
     /**
      * @var array<string, string>

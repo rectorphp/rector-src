@@ -31,7 +31,7 @@ final class CastTypeResolver implements NodeTypeResolverInterface
     /**
      * @var array<class-string<Node>, class-string<Type>>
      */
-    private const CAST_CLASS_TO_TYPE_MAP = [
+    private const array CAST_CLASS_TO_TYPE_MAP = [
         Bool_::class => BooleanType::class,
         String_::class => StringType::class,
         Int_::class => IntegerType::class,

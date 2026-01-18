@@ -13,10 +13,7 @@ use Rector\ValueObject\ProcessResult;
 
 final readonly class JsonOutputFormatter implements OutputFormatterInterface
 {
-    /**
-     * @var string
-     */
-    public const NAME = 'json';
+    public const string NAME = 'json';
 
     public function getName(): string
     {

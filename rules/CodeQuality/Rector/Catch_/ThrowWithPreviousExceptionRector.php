@@ -29,10 +29,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ThrowWithPreviousExceptionRector extends AbstractRector
 {
-    /**
-     * @var int
-     */
-    private const DEFAULT_EXCEPTION_ARGUMENT_POSITION = 2;
+    private const int DEFAULT_EXCEPTION_ARGUMENT_POSITION = 2;
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider

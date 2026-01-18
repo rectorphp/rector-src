@@ -10,76 +10,38 @@ namespace Rector\ValueObject;
  */
 final class MethodName
 {
-    /**
-     * @var string
-     */
-    public const __SET = '__set';
+    public const string __SET = '__set';
 
-    /**
-     * @var string
-     */
-    public const __GET = '__get';
+    public const string __GET = '__get';
 
-    /**
-     * @var string
-     */
-    public const CONSTRUCT = '__construct';
+    public const string CONSTRUCT = '__construct';
 
-    /**
-     * @var string
-     */
-    public const DESTRUCT = '__destruct';
+    public const string DESTRUCT = '__destruct';
 
-    /**
-     * @var string
-     */
-    public const CLONE = '__clone';
+    public const string CLONE = '__clone';
 
     /**
      * Mostly used in unit tests
      * @see https://phpunit.readthedocs.io/en/9.3/fixtures.html#more-setup-than-teardown
-     * @var string
      */
-    public const SET_UP = 'setUp';
+    public const string SET_UP = 'setUp';
 
-    /**
-     * @var string
-     */
-    public const SET_STATE = '__set_state';
+    public const string SET_STATE = '__set_state';
 
     /**
      * @see https://phpunit.readthedocs.io/en/9.3/fixtures.html#fixtures-sharing-fixture-examples-databasetest-php
-     * @var string
      */
-    public const SET_UP_BEFORE_CLASS = 'setUpBeforeClass';
+    public const string SET_UP_BEFORE_CLASS = 'setUpBeforeClass';
 
-    /**
-     * @var string
-     */
-    public const CALL = '__call';
+    public const string CALL = '__call';
 
-    /**
-     * @var string
-     */
-    public const CALL_STATIC = '__callStatic';
+    public const string CALL_STATIC = '__callStatic';
 
-    /**
-     * @var string
-     */
-    public const TO_STRING = '__toString';
+    public const string TO_STRING = '__toString';
 
-    /**
-     * @var string
-     */
-    public const INVOKE = '__invoke';
+    public const string INVOKE = '__invoke';
 
-    /**
-     * @var string
-     */
-    public const ISSET = '__isset';
+    public const string ISSET = '__isset';
 
-    /**
-     * @var string
-     */
-    public const UNSET = '__unset';
+    public const string UNSET = '__unset';
 }

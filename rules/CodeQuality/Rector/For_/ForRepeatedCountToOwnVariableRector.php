@@ -24,10 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ForRepeatedCountToOwnVariableRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const COUNTER_NAME = 'counter';
+    private const string COUNTER_NAME = 'counter';
 
     public function getRuleDefinition(): RuleDefinition
     {

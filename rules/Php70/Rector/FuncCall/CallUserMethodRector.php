@@ -22,7 +22,7 @@ final class CallUserMethodRector extends AbstractRector implements MinPhpVersion
     /**
      * @var array<string, string>
      */
-    private const OLD_TO_NEW_FUNCTIONS = [
+    private const array OLD_TO_NEW_FUNCTIONS = [
         'call_user_method' => 'call_user_func',
         'call_user_method_array' => 'call_user_func_array',
     ];

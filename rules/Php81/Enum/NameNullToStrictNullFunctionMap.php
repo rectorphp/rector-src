@@ -9,7 +9,7 @@ final class NameNullToStrictNullFunctionMap
     /**
      * @var array<string, string[]>
      */
-    public const FUNCTION_TO_PARAM_NAMES = [
+    public const array FUNCTION_TO_PARAM_NAMES = [
         'preg_split' => ['subject'],
         'preg_match' => ['subject'],
         'preg_match_all' => ['subject'],

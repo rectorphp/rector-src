@@ -28,7 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class JsonValidateRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
-    private const JSON_MAX_DEPTH = 0x7FFFFFFF;
+    private const int JSON_MAX_DEPTH = 0x7FFFFFFF;
 
     public function __construct(
         private readonly BinaryOpManipulator $binaryOpManipulator,

@@ -104,7 +104,7 @@ final class CodeQualityLevel
      *
      * @var array<class-string<RectorInterface>>
      */
-    public const RULES = [
+    public const array RULES = [
         CombinedAssignRector::class,
         SimplifyEmptyArrayCheckRector::class,
         ReplaceMultipleBooleanNotRector::class,
@@ -188,7 +188,7 @@ final class CodeQualityLevel
     /**
      * @var array<class-string<RectorInterface>, mixed[]>
      */
-    public const RULES_WITH_CONFIGURATION = [
+    public const array RULES_WITH_CONFIGURATION = [
         RenameFunctionRector::class => [
             'split' => 'explode',
             'join' => 'implode',

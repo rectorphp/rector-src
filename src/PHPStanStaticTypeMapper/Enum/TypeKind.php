@@ -6,23 +6,11 @@ namespace Rector\PHPStanStaticTypeMapper\Enum;
 
 final class TypeKind
 {
-    /**
-     * @var string
-     */
-    public const PROPERTY = 'property';
+    public const string PROPERTY = 'property';
 
-    /**
-     * @var string
-     */
-    public const RETURN = 'return';
+    public const string RETURN = 'return';
 
-    /**
-     * @var string
-     */
-    public const PARAM = 'param';
+    public const string PARAM = 'param';
 
-    /**
-     * @var string
-     */
-    public const UNION = 'union';
+    public const string UNION = 'union';
 }

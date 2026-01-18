@@ -24,9 +24,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MyCLabsConstructorCallToEnumFromRector extends AbstractRector implements MinPhpVersionInterface
 {
-    private const MY_C_LABS_CLASS = 'MyCLabs\Enum\Enum';
+    private const string MY_C_LABS_CLASS = 'MyCLabs\Enum\Enum';
 
-    private const DEFAULT_ENUM_CONSTRUCTOR = 'from';
+    private const string DEFAULT_ENUM_CONSTRUCTOR = 'from';
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,

@@ -20,7 +20,7 @@ final class ParentClassMagicCallGuard
      * To speed up analysis
      * @var string[]
      */
-    private const KNOWN_DYNAMIC_CALL_CLASSES = [Standard::class, PrettyPrinterAbstract::class];
+    private const array KNOWN_DYNAMIC_CALL_CLASSES = [Standard::class, PrettyPrinterAbstract::class];
 
     /**
      * @var array<string, bool>

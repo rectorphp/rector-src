@@ -18,18 +18,14 @@ use Webmozart\Assert\Assert;
 final readonly class FileDiff implements SerializableInterface
 {
     /**
-     * @var string
      * @see https://en.wikipedia.org/wiki/Diff#Unified_format
      * @see https://regex101.com/r/AUPIX4/2
      */
-    private const DIFF_HUNK_HEADER_REGEX = '#@@(.*?)(?<' . self::FIRST_LINE_KEY . '>\d+)(,(?<' . self::LINE_RANGE_KEY . '>\d+))?(.*?)@@#';
+    private const string DIFF_HUNK_HEADER_REGEX = '#@@(.*?)(?<' . self::FIRST_LINE_KEY . '>\d+)(,(?<' . self::LINE_RANGE_KEY . '>\d+))?(.*?)@@#';
 
-    /**
-     * @var string
-     */
-    private const FIRST_LINE_KEY = 'first_line';
+    private const string FIRST_LINE_KEY = 'first_line';
 
-    private const LINE_RANGE_KEY = 'line_range';
+    private const string LINE_RANGE_KEY = 'line_range';
 
     /**
      * @param RectorWithLineChange[] $rectorsWithLineChanges

@@ -23,7 +23,7 @@ final class StringifyStrNeedlesRector extends AbstractRector implements MinPhpVe
     /**
      * @var string[]
      */
-    private const NEEDLE_STRING_SENSITIVE_FUNCTIONS = [
+    private const array NEEDLE_STRING_SENSITIVE_FUNCTIONS = [
         'strpos',
         'strrpos',
         'stripos',

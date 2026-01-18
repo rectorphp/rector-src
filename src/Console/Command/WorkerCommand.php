@@ -37,10 +37,7 @@ use Webmozart\Assert\Assert;
  */
 final class WorkerCommand extends Command
 {
-    /**
-     * @var string
-     */
-    private const RESULT = 'result';
+    private const string RESULT = 'result';
 
     public function __construct(
         private readonly AdditionalAutoloader $additionalAutoloader,

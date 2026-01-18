@@ -19,10 +19,7 @@ use Webmozart\Assert\Assert;
 
 final class ConsoleApplication extends Application
 {
-    /**
-     * @var string
-     */
-    private const NAME = 'Rector';
+    private const string NAME = 'Rector';
 
     /**
      * @param Command[] $commands

@@ -27,19 +27,17 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 final readonly class EnumFactory
 {
     /**
-     * @var string
      * @see https://stackoverflow.com/a/2560017
      * @see https://regex101.com/r/2xEQVj/1 for changing iso9001 to iso_9001
      * @see https://regex101.com/r/Ykm6ub/1 for changing XMLParser to XML_Parser
      * @see https://regex101.com/r/Zv4JhD/1 for changing needsReview to needs_Review
      */
-    private const PASCAL_CASE_TO_UNDERSCORE_REGEX = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
+    private const string PASCAL_CASE_TO_UNDERSCORE_REGEX = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
 
     /**
-     * @var string
      * @see https://regex101.com/r/FneU33/1
      */
-    private const MULTI_UNDERSCORES_REGEX = '#_{2,}#';
+    private const string MULTI_UNDERSCORES_REGEX = '#_{2,}#';
 
     public function __construct(
         private NodeNameResolver $nodeNameResolver,

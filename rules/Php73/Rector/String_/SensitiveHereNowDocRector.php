@@ -18,10 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SensitiveHereNowDocRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const WRAP_SUFFIX = '_WRAP';
+    private const string WRAP_SUFFIX = '_WRAP';
 
     public function provideMinPhpVersion(): int
     {

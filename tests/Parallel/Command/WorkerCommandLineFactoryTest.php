@@ -17,20 +17,11 @@ use Symfony\Component\Console\Input\InputDefinition;
 
 final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 {
-    /**
-     * @var string
-     */
-    private const COMMAND = 'command';
+    private const string COMMAND = 'command';
 
-    /**
-     * @var string
-     */
-    private const DUMMY_MAIN_SCRIPT = 'main_script';
+    private const string DUMMY_MAIN_SCRIPT = 'main_script';
 
-    /**
-     * @var string
-     */
-    private const SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\vendor\bin\rector';
+    private const string SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\vendor\bin\rector';
 
     private WorkerCommandLineFactory $workerCommandLineFactory;
 

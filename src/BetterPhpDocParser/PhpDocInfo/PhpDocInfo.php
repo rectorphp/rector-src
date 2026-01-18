@@ -44,7 +44,7 @@ final class PhpDocInfo
     /**
      * @var array<class-string<PhpDocTagValueNode>, string>
      */
-    private const TAGS_TYPES_TO_NAMES = [
+    private const array TAGS_TYPES_TO_NAMES = [
         ReturnTagValueNode::class => '@return',
         ParamTagValueNode::class => '@param',
         VarTagValueNode::class => '@var',

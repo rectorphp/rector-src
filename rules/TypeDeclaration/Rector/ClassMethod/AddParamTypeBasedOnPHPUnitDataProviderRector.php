@@ -23,10 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddParamTypeBasedOnPHPUnitDataProviderRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const ERROR_MESSAGE = 'Adds param type declaration based on PHPUnit provider return type declaration';
+    private const string ERROR_MESSAGE = 'Adds param type declaration based on PHPUnit provider return type declaration';
 
     public function __construct(
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,

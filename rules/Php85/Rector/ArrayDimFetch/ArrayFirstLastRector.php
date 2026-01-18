@@ -21,15 +21,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ArrayFirstLastRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const ARRAY_KEY_FIRST = 'array_key_first';
+    private const string ARRAY_KEY_FIRST = 'array_key_first';
 
-    /**
-     * @var string
-     */
-    private const ARRAY_KEY_LAST = 'array_key_last';
+    private const string ARRAY_KEY_LAST = 'array_key_last';
 
     public function getRuleDefinition(): RuleDefinition
     {

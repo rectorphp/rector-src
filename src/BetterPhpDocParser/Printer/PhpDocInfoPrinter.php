@@ -30,32 +30,29 @@ use Rector\Util\StringUtils;
 final class PhpDocInfoPrinter
 {
     /**
-     * @var string
      * @see https://regex101.com/r/Ab0Vey/1
      */
-    private const CLOSING_DOCBLOCK_REGEX = '#\*\/(\s+)?$#';
+    private const string CLOSING_DOCBLOCK_REGEX = '#\*\/(\s+)?$#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/5fJyws/1
      */
-    private const CALLABLE_REGEX = '#callable(\s+)\(#';
+    private const string CALLABLE_REGEX = '#callable(\s+)\(#';
 
     /**
      * @var string[]
      */
-    private const DOCBLOCK_STARTS = ['//', '/**', '/*', '#'];
+    private const array DOCBLOCK_STARTS = ['//', '/**', '/*', '#'];
 
     /**
      * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines
      */
-    private const NEWLINE_WITH_ASTERISK = "\n" . ' *';
+    private const string NEWLINE_WITH_ASTERISK = "\n" . ' *';
 
     /**
-     * @var string
      * @see https://regex101.com/r/ME5Fcn/1
      */
-    private const NEW_LINE_WITH_SPACE_REGEX = "# (?<new_line>\r\n|\n)#";
+    private const string NEW_LINE_WITH_SPACE_REGEX = "# (?<new_line>\r\n|\n)#";
 
     private int $tokenCount = 0;
 

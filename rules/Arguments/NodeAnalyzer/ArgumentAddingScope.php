@@ -16,21 +16,18 @@ final readonly class ArgumentAddingScope
 {
     /**
      * @api
-     * @var string
      */
-    public const SCOPE_PARENT_CALL = 'parent_call';
+    public const string SCOPE_PARENT_CALL = 'parent_call';
 
     /**
      * @api
-     * @var string
      */
-    public const SCOPE_METHOD_CALL = 'method_call';
+    public const string SCOPE_METHOD_CALL = 'method_call';
 
     /**
      * @api
-     * @var string
      */
-    public const SCOPE_CLASS_METHOD = 'class_method';
+    public const string SCOPE_CLASS_METHOD = 'class_method';
 
     public function __construct(
         private NodeNameResolver $nodeNameResolver

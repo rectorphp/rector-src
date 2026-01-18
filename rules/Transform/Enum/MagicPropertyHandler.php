@@ -6,11 +6,11 @@ namespace Rector\Transform\Enum;
 
 final class MagicPropertyHandler
 {
-    public const GET = 'get';
+    public const string GET = 'get';
 
-    public const SET = 'set';
+    public const string SET = 'set';
 
-    public const ISSET_ = 'exists';
+    public const string ISSET_ = 'exists';
 
-    public const UNSET = 'unset';
+    public const string UNSET = 'unset';
 }

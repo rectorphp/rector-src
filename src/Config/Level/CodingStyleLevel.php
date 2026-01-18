@@ -53,7 +53,7 @@ final class CodingStyleLevel
      *
      * @var array<class-string<RectorInterface>>
      */
-    public const RULES = [
+    public const array RULES = [
         SeparateMultiUseImportsRector::class,
         NewlineBetweenClassLikeStmtsRector::class,
         NewlineAfterStatementRector::class,
@@ -86,7 +86,7 @@ final class CodingStyleLevel
     /**
      * @var array<class-string<RectorInterface>, mixed[]>
      */
-    public const RULES_WITH_CONFIGURATION = [
+    public const array RULES_WITH_CONFIGURATION = [
         FuncCallToConstFetchRector::class => [
             'php_sapi_name' => 'PHP_SAPI',
             'pi' => 'M_PI',

@@ -18,7 +18,7 @@ final class AttributeArrayNameInliner
     /**
      * @var class-string
      */
-    private const OPEN_API_PROPERTY_ATTRIBUTE = 'OpenApi\Attributes\Property';
+    private const string OPEN_API_PROPERTY_ATTRIBUTE = 'OpenApi\Attributes\Property';
 
     /**
      * @param Array_|list<Arg> $array
