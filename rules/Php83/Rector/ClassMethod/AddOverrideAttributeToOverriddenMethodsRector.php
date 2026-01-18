@@ -19,6 +19,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\DeadCode\NodeAnalyzer\ParentClassAnalyzer;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\AstResolver;
@@ -54,6 +55,7 @@ final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly AstResolver $astResolver,
         private readonly ValueResolver $valueResolver,
+        private readonly ParentClassAnalyzer $parentClassAnalyzer,
     ) {
     }
 
@@ -132,6 +134,11 @@ CODE_SAMPLE
         $this->hasChanged = false;
 
         if ($this->classAnalyzer->isAnonymousClass($node)) {
+            return null;
+        }
+
+        // skip if no parents, nor traits, nor strinables are involved
+        if ($node->extends === null && $node->getTraitUses() === [] && ! $this->implementsStringable($node)) {
             return null;
         }
 
@@ -227,12 +234,18 @@ CODE_SAMPLE
             return true;
         }
 
+        // nothing to override
         if ($classMethod->isPrivate()) {
             return true;
         }
 
         // ignore if it already uses the attribute
-        return $this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, self::OVERRIDE_CLASS);
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, self::OVERRIDE_CLASS)) {
+            return true;
+        }
+
+        // skip test setup method override, as rather clutters the code than helps
+        return $this->isName($classMethod, 'setUp') && $this->parentClassAnalyzer->hasParentCall($classMethod);
     }
 
     private function shouldSkipParentClassMethod(ClassReflection $parentClassReflection, ClassMethod $classMethod): bool
@@ -278,6 +291,17 @@ CODE_SAMPLE
             }
 
             if ($soleStmt instanceof Expression && $soleStmt->expr instanceof Throw_) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function implementsStringable(Class_ $class): bool
+    {
+        foreach ($class->implements as $implement) {
+            if ($this->isName($implement, 'Stringable')) {
                 return true;
             }
         }
