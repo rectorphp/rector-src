@@ -32,9 +32,8 @@ final class SimplifyUselessVariableRector extends AbstractRector implements Conf
 {
     /**
      * @api
-     * @var string
      */
-    public const ONLY_DIRECT_ASSIGN = 'only_direct_assign';
+    public const string ONLY_DIRECT_ASSIGN = 'only_direct_assign';
 
     private bool $onlyDirectAssign = false;
 

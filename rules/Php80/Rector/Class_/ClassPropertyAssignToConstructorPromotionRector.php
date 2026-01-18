@@ -47,21 +47,18 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
 {
     /**
      * @api
-     * @var string
      */
-    public const INLINE_PUBLIC = 'inline_public';
+    public const string INLINE_PUBLIC = 'inline_public';
 
     /**
      * @api
-     * @var string
      */
-    public const RENAME_PROPERTY = 'rename_property';
+    public const string RENAME_PROPERTY = 'rename_property';
 
     /**
      * @api
-     * @var string
      */
-    public const ALLOW_MODEL_BASED_CLASSES = 'allow_model_based_classes';
+    public const string ALLOW_MODEL_BASED_CLASSES = 'allow_model_based_classes';
 
     /**
      * Default to false, which only apply changes:

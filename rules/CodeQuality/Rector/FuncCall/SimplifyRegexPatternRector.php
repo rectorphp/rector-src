@@ -23,7 +23,7 @@ final class SimplifyRegexPatternRector extends AbstractRector
      *
      * @var array<string, string>
      */
-    private const COMPLEX_PATTERN_TO_SIMPLE = [
+    private const array COMPLEX_PATTERN_TO_SIMPLE = [
         '[0-9]' => "\d",
         '[a-zA-Z0-9_]' => "\w",
         '[A-Za-z0-9_]' => "\w",

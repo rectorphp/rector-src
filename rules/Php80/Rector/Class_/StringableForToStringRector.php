@@ -32,10 +32,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class StringableForToStringRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const STRINGABLE = 'Stringable';
+    private const string STRINGABLE = 'Stringable';
 
     private bool $hasChanged = false;
 

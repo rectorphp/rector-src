@@ -25,10 +25,9 @@ use Rector\ValueObject\SprintfStringAndArgs;
 final class NodeTransformer
 {
     /**
-     * @var string
      * @see https://regex101.com/r/XFc3qA/1
      */
-    private const PERCENT_TEXT_REGEX = '#^%\w$#';
+    private const string PERCENT_TEXT_REGEX = '#^%\w$#';
 
     /**
      * @api used in phpunit symfony

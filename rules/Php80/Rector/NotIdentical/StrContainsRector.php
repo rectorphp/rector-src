@@ -32,7 +32,7 @@ final class StrContainsRector extends AbstractRector implements MinPhpVersionInt
     /**
      * @var string[]
      */
-    private const OLD_STR_NAMES = ['strpos', 'strstr'];
+    private const array OLD_STR_NAMES = ['strpos', 'strstr'];
 
     public function __construct(
         private readonly StrFalseComparisonResolver $strFalseComparisonResolver

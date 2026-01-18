@@ -6,23 +6,11 @@ namespace Rector\Php80\Enum;
 
 final class MatchKind
 {
-    /**
-     * @var string
-     */
-    public const NORMAL = 'normal';
+    public const string NORMAL = 'normal';
 
-    /**
-     * @var string
-     */
-    public const ASSIGN = 'assign';
+    public const string ASSIGN = 'assign';
 
-    /**
-     * @var string
-     */
-    public const RETURN = 'return';
+    public const string RETURN = 'return';
 
-    /**
-     * @var string
-     */
-    public const THROW = 'throw';
+    public const string THROW = 'throw';
 }

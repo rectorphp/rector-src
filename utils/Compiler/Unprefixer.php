@@ -9,10 +9,9 @@ use Nette\Utils\Strings;
 final class Unprefixer
 {
     /**
-     * @var string
      * @see https://regex101.com/r/P8sXfr/1
      */
-    private const QUOTED_VALUE_REGEX = '#\'\\\\(\w|@)#';
+    private const string QUOTED_VALUE_REGEX = '#\'\\\\(\w|@)#';
 
     /**
      * @api

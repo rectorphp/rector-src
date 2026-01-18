@@ -31,10 +31,9 @@ use Rector\Util\StringUtils;
 final readonly class BreakingVariableRenameGuard
 {
     /**
-     * @var string
      * @see https://regex101.com/r/1pKLgf/1
      */
-    public const AT_NAMING_REGEX = '#[\w+]At$#';
+    public const string AT_NAMING_REGEX = '#[\w+]At$#';
 
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,

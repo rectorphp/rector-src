@@ -33,10 +33,9 @@ use Rector\PhpParser\Parser\SimplePhpParser;
 final readonly class AnonymousFunctionFactory
 {
     /**
-     * @var string
      * @see https://regex101.com/r/jkLLlM/2
      */
-    private const DIM_FETCH_REGEX = '#(\\$|\\\\|\\x0)(?<number>\d+)#';
+    private const string DIM_FETCH_REGEX = '#(\\$|\\\\|\\x0)(?<number>\d+)#';
 
     public function __construct(
         private NodeNameResolver $nodeNameResolver,

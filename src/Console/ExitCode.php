@@ -11,18 +11,9 @@ use Symfony\Component\Console\Command\Command;
  */
 final class ExitCode
 {
-    /**
-     * @var int
-     */
-    public const SUCCESS = Command::SUCCESS;
+    public const int SUCCESS = Command::SUCCESS;
 
-    /**
-     * @var int
-     */
-    public const FAILURE = Command::FAILURE;
+    public const int FAILURE = Command::FAILURE;
 
-    /**
-     * @var int
-     */
-    public const CHANGED_CODE = 2;
+    public const int CHANGED_CODE = 2;
 }

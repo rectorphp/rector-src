@@ -21,10 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
-    /**
-     * @var string
-     */
-    public const TO_UPPER_SNAKE_CASE = 'toUpperSnakeCase';
+    public const string TO_UPPER_SNAKE_CASE = 'toUpperSnakeCase';
 
     private bool $toUpperSnakeCase = false;
 

@@ -25,9 +25,8 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
 {
     /**
      * @deprecated since 2.2.12. Default behavior now.
-     * @var string
      */
-    public const SHOULD_KEEP_PRE_SLASH = 'should_keep_pre_slash';
+    public const string SHOULD_KEEP_PRE_SLASH = 'should_keep_pre_slash';
 
     /**
      * @var string[]

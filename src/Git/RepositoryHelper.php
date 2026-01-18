@@ -10,10 +10,9 @@ use Symfony\Component\Process\Process;
 final class RepositoryHelper
 {
     /**
-     * @var string
      * @see https://regex101.com/r/etcmog/2
      */
-    private const GITHUB_REPOSITORY_REGEX = '#github\.com[:\/](?<repository_name>.*?)\.git#';
+    private const string GITHUB_REPOSITORY_REGEX = '#github\.com[:\/](?<repository_name>.*?)\.git#';
 
     public static function resolveGithubRepositoryName(string $currentDirectory): ?string
     {

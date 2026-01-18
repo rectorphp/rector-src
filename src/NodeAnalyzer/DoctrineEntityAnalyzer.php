@@ -18,7 +18,7 @@ final readonly class DoctrineEntityAnalyzer
     /**
      * @var string[]
      */
-    private const DOCTRINE_MAPPING_CLASSES = [
+    private const array DOCTRINE_MAPPING_CLASSES = [
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Embeddable',
         'Doctrine\ODM\MongoDB\Mapping\Annotations\Document',

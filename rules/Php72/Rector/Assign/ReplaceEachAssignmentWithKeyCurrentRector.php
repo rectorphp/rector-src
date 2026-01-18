@@ -25,10 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReplaceEachAssignmentWithKeyCurrentRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    private const KEY = 'key';
+    private const string KEY = 'key';
 
     public function provideMinPhpVersion(): int
     {

@@ -12,22 +12,20 @@ use PhpParser\Node\Scalar\String_;
 final readonly class RegexMatcher
 {
     /**
-     * @var string
      * @see https://regex101.com/r/Ok4wuE/1
      */
-    private const LAST_E_REGEX = '#(\w+)?e(\w+)?$#';
+    private const string LAST_E_REGEX = '#(\w+)?e(\w+)?$#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/2NWVwT/1
      */
-    private const LETTER_SUFFIX_REGEX = '#(?<modifiers>\w+)$#';
+    private const string LETTER_SUFFIX_REGEX = '#(?<modifiers>\w+)$#';
 
     /**
      * @var string[]
      * @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
      */
-    private const ALL_MODIFIERS_VALUES = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
+    private const array ALL_MODIFIERS_VALUES = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
 
     public function resolvePatternExpressionWithoutEIfFound(Expr $expr): Concat|String_|null
     {

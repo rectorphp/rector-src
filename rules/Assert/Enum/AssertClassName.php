@@ -6,13 +6,7 @@ namespace Rector\Assert\Enum;
 
 final class AssertClassName
 {
-    /**
-     * @var string
-     */
-    public const WEBMOZART = 'Webmozart\Assert\Assert';
+    public const string WEBMOZART = 'Webmozart\Assert\Assert';
 
-    /**
-     * @var string
-     */
-    public const BEBERLEI = 'Assert\Assertion';
+    public const string BEBERLEI = 'Assert\Assertion';
 }

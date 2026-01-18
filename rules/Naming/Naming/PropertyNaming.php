@@ -28,31 +28,26 @@ final readonly class PropertyNaming
     /**
      * @var string[]
      */
-    private const EXCLUDED_CLASSES = ['#Closure#', '#^Spl#', '#FileInfo#', '#^std#', '#Iterator#', '#SimpleXML#'];
+    private const array EXCLUDED_CLASSES = ['#Closure#', '#^Spl#', '#FileInfo#', '#^std#', '#Iterator#', '#SimpleXML#'];
 
     /**
      * @var array<string, string>
      */
-    private const CONTEXT_AWARE_NAMES_BY_TYPE = [
+    private const array CONTEXT_AWARE_NAMES_BY_TYPE = [
         'Twig\Environment' => 'twigEnvironment',
     ];
 
-    /**
-     * @var string
-     */
-    private const INTERFACE = 'Interface';
+    private const string INTERFACE = 'Interface';
 
     /**
-     * @var string
      * @see https://regex101.com/r/U78rUF/1
      */
-    private const I_PREFIX_REGEX = '#^I[A-Z]#';
+    private const string I_PREFIX_REGEX = '#^I[A-Z]#';
 
     /**
      * @see https://regex101.com/r/hnU5pm/2/
-     * @var string
      */
-    private const GET_PREFIX_REGEX = '#^get(?<root_name>[A-Z].+)#';
+    private const string GET_PREFIX_REGEX = '#^get(?<root_name>[A-Z].+)#';
 
     public function __construct(
         private RectorNamingInflector $rectorNamingInflector,

@@ -14,10 +14,9 @@ use Rector\Util\NewLineSplitter;
 final class AttributeValueResolver
 {
     /**
-     * @var string
      * @see https://regex101.com/r/CL9ktz/4
      */
-    private const END_SLASH_REGEX = '#\\\\$#';
+    private const string END_SLASH_REGEX = '#\\\\$#';
 
     public function resolve(
         AnnotationToAttribute $annotationToAttribute,

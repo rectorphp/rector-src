@@ -33,16 +33,14 @@ use Rector\Util\Reflection\PrivatesAccessor;
 final class BetterPhpDocParser extends PhpDocParser
 {
     /**
-     * @var string
      * @see https://regex101.com/r/JDzr0c/1
      */
-    private const NEW_LINE_REGEX = "#(?<new_line>\r\n|\n)#";
+    private const string NEW_LINE_REGEX = "#(?<new_line>\r\n|\n)#";
 
     /**
-     * @var string
      * @see https://regex101.com/r/JOKSmr/5
      */
-    private const MULTI_NEW_LINES_REGEX = '#(?<new_line>\r\n|\n){2,}#';
+    private const string MULTI_NEW_LINES_REGEX = '#(?<new_line>\r\n|\n){2,}#';
 
     /**
      * @param PhpDocNodeDecoratorInterface[] $phpDocNodeDecorators

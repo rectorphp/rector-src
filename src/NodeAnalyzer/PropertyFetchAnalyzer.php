@@ -33,10 +33,7 @@ use Rector\ValueObject\MethodName;
 
 final readonly class PropertyFetchAnalyzer
 {
-    /**
-     * @var string
-     */
-    private const THIS = 'this';
+    private const string THIS = 'this';
 
     public function __construct(
         private NodeNameResolver $nodeNameResolver,

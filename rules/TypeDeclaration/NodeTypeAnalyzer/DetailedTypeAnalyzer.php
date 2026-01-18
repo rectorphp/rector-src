@@ -13,9 +13,8 @@ final class DetailedTypeAnalyzer
 {
     /**
      * Use this constant to avoid overly detailed long-dragging union types across whole universe
-     * @var int
      */
-    private const MAX_NUMBER_OF_TYPES = 3;
+    private const int MAX_NUMBER_OF_TYPES = 3;
 
     public function isTooDetailed(Type $type): bool
     {

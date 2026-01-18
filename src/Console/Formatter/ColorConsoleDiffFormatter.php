@@ -17,28 +17,24 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 final readonly class ColorConsoleDiffFormatter
 {
     /**
-     * @var string
      * @see https://regex101.com/r/ovLMDF/1
      */
-    private const PLUS_START_REGEX = '#^(\+.*)#';
+    private const string PLUS_START_REGEX = '#^(\+.*)#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/xwywpa/1
      */
-    private const MINUS_START_REGEX = '#^(\-.*)#';
+    private const string MINUS_START_REGEX = '#^(\-.*)#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/CMlwa8/1
      */
-    private const AT_START_REGEX = '#^(@.*)#';
+    private const string AT_START_REGEX = '#^(@.*)#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/8MXnfa/2
      */
-    private const AT_DIFF_LINE_REGEX = '#^\<fg=cyan\>@@ \-\d+,\d+ \+\d+,\d+ @@\<\/fg=cyan\>$#';
+    private const string AT_DIFF_LINE_REGEX = '#^\<fg=cyan\>@@ \-\d+,\d+ \+\d+,\d+ @@\<\/fg=cyan\>$#';
 
     private string $template;
 

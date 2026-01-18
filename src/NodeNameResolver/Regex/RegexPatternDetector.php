@@ -11,12 +11,12 @@ final class RegexPatternDetector
      *
      * This prevents miss matching like "aMethoda"
      */
-    private const POSSIBLE_DELIMITERS = ['#', '~', '/'];
+    private const array POSSIBLE_DELIMITERS = ['#', '~', '/'];
 
     /**
      * @var array<string, string>
      */
-    private const START_AND_END_DELIMITERS = [
+    private const array START_AND_END_DELIMITERS = [
         '(' => ')',
         '{' => '}',
         '[' => ']',

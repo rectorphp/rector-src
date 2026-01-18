@@ -22,7 +22,7 @@ final class ControlStructure
      * These situations happens only if condition is met
      * @var array<class-string<Node>>
      */
-    public const CONDITIONAL_NODE_SCOPE_TYPES = [
+    public const array CONDITIONAL_NODE_SCOPE_TYPES = [
         If_::class,
         While_::class,
         Do_::class,

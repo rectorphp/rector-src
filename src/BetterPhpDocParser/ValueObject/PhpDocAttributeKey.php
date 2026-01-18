@@ -8,29 +8,16 @@ use Rector\PhpDocParser\PhpDocParser\ValueObject\PhpDocAttributeKey as NativePhp
 
 final class PhpDocAttributeKey
 {
-    /**
-     * @var string
-     */
-    public const START_AND_END = 'start_and_end';
+    public const string START_AND_END = 'start_and_end';
 
     /**
      * Fully qualified name of identifier type class
-     * @var string
      */
-    public const RESOLVED_CLASS = 'resolved_class';
+    public const string RESOLVED_CLASS = 'resolved_class';
 
-    /**
-     * @var string
-     */
-    public const PARENT = NativePhpDocAttributeKey::PARENT;
+    public const string PARENT = NativePhpDocAttributeKey::PARENT;
 
-    /**
-     * @var string
-     */
-    public const LAST_PHP_DOC_TOKEN_POSITION = 'last_token_position';
+    public const string LAST_PHP_DOC_TOKEN_POSITION = 'last_token_position';
 
-    /**
-     * @var string
-     */
-    public const ORIG_NODE = NativePhpDocAttributeKey::ORIG_NODE;
+    public const string ORIG_NODE = NativePhpDocAttributeKey::ORIG_NODE;
 }

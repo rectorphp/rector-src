@@ -28,20 +28,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ArrayKeyFirstLastRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
-    /**
-     * @var string
-     */
-    private const ARRAY_KEY_FIRST = 'array_key_first';
+    private const string ARRAY_KEY_FIRST = 'array_key_first';
 
-    /**
-     * @var string
-     */
-    private const ARRAY_KEY_LAST = 'array_key_last';
+    private const string ARRAY_KEY_LAST = 'array_key_last';
 
     /**
      * @var array<string, string>
      */
-    private const PREVIOUS_TO_NEW_FUNCTIONS = [
+    private const array PREVIOUS_TO_NEW_FUNCTIONS = [
         'reset' => self::ARRAY_KEY_FIRST,
         'end' => self::ARRAY_KEY_LAST,
     ];

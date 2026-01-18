@@ -14,7 +14,7 @@ final class StandaloneTypeRemovalGuard
     /**
      * @var string[]
      */
-    private const ALLOWED_TYPES = ['false', 'true'];
+    private const array ALLOWED_TYPES = ['false', 'true'];
 
     public function isLegal(TypeNode $typeNode, Node $node): bool
     {

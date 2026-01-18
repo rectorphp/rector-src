@@ -18,46 +18,39 @@ use Rector\Util\StringUtils;
 final readonly class InlineCodeParser
 {
     /**
-     * @var string
      * @see https://regex101.com/r/dwe4OW/1
      */
-    private const PRESLASHED_DOLLAR_REGEX = '#\\\\\$#';
+    private const string PRESLASHED_DOLLAR_REGEX = '#\\\\\$#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/tvwhWq/1
      */
-    private const CURLY_BRACKET_WRAPPER_REGEX = "#'{(\\\$.*?)}'#";
+    private const string CURLY_BRACKET_WRAPPER_REGEX = "#'{(\\\$.*?)}'#";
 
     /**
-     * @var string
      * @see https://regex101.com/r/TBlhoR/1
      */
-    private const OPEN_PHP_TAG_REGEX = '#^\<\?php\s+#';
+    private const string OPEN_PHP_TAG_REGEX = '#^\<\?php\s+#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/TUWwKw/1/
      */
-    private const ENDING_SEMI_COLON_REGEX = '#;(\s+)?$#';
+    private const string ENDING_SEMI_COLON_REGEX = '#;(\s+)?$#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/8fDjnR/1
      */
-    private const VARIABLE_IN_SINGLE_QUOTED_REGEX = '#\'(?<variable>\$.*)\'#U';
+    private const string VARIABLE_IN_SINGLE_QUOTED_REGEX = '#\'(?<variable>\$.*)\'#U';
 
     /**
-     * @var string
      * @see https://regex101.com/r/1lzQZv/1
      */
-    private const BACKREFERENCE_NO_QUOTE_REGEX = '#(?<!")(?<backreference>\\\\\d+)(?!")#';
+    private const string BACKREFERENCE_NO_QUOTE_REGEX = '#(?<!")(?<backreference>\\\\\d+)(?!")#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/nSO3Eq/1
      */
-    private const BACKREFERENCE_NO_DOUBLE_QUOTE_START_REGEX = '#(?<!")(?<backreference>\$\d+)#';
+    private const string BACKREFERENCE_NO_DOUBLE_QUOTE_START_REGEX = '#(?<!")(?<backreference>\$\d+)#';
 
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,

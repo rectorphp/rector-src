@@ -23,7 +23,7 @@ use Webmozart\Assert\Assert;
  */
 final class AddSensitiveParameterAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
-    public const SENSITIVE_PARAMETERS = 'sensitive_parameters';
+    public const string SENSITIVE_PARAMETERS = 'sensitive_parameters';
 
     /**
      * @var string[]

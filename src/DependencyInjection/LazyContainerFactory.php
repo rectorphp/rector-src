@@ -201,7 +201,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<NodeNameResolverInterface>>
      */
-    private const NODE_NAME_RESOLVER_CLASSES = [
+    private const array NODE_NAME_RESOLVER_CLASSES = [
         ClassConstFetchNameResolver::class,
         ClassConstNameResolver::class,
         ClassNameResolver::class,
@@ -217,7 +217,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<BasePhpDocNodeVisitorInterface>>
      */
-    private const BASE_PHP_DOC_NODE_VISITORS = [
+    private const array BASE_PHP_DOC_NODE_VISITORS = [
         ArrayTypePhpDocNodeVisitor::class,
         CallableTypePhpDocNodeVisitor::class,
         IntersectionTypeNodePhpDocNodeVisitor::class,
@@ -228,7 +228,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<AnnotationToAttributeMapperInterface>>
      */
-    private const ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES = [
+    private const array ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES = [
         ArrayAnnotationToAttributeMapper::class,
         ArrayItemNodeAnnotationToAttributeMapper::class,
         ClassConstFetchAnnotationToAttributeMapper::class,
@@ -242,7 +242,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<DecoratingNodeVisitorInterface>>
      */
-    private const DECORATING_NODE_VISITOR_CLASSES = [
+    private const array DECORATING_NODE_VISITOR_CLASSES = [
         ArgNodeVisitor::class,
         ClosureWithVariadicParametersNodeVisitor::class,
         PhpVersionConditionNodeVisitor::class,
@@ -263,7 +263,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<PhpDocTypeMapperInterface>>
      */
-    private const PHPDOC_TYPE_MAPPER_CLASSES = [
+    private const array PHPDOC_TYPE_MAPPER_CLASSES = [
         IdentifierPhpDocTypeMapper::class,
         IntersectionPhpDocTypeMapper::class,
         NullablePhpDocTypeMapper::class,
@@ -273,7 +273,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<ClassNameImportSkipVoterInterface>>
      */
-    private const CLASS_NAME_IMPORT_SKIPPER_CLASSES = [
+    private const array CLASS_NAME_IMPORT_SKIPPER_CLASSES = [
         AliasClassNameImportSkipVoter::class,
         ClassLikeNameClassNameImportSkipVoter::class,
         FullyQualifiedNameClassNameImportSkipVoter::class,
@@ -286,7 +286,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<TypeMapperInterface>>
      */
-    private const TYPE_MAPPER_CLASSES = [
+    private const array TYPE_MAPPER_CLASSES = [
         AccessoryLiteralStringTypeMapper::class,
         AccessoryNonEmptyStringTypeMapper::class,
         AccessoryNonFalsyStringTypeMapper::class,
@@ -330,7 +330,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<PhpDocNodeDecoratorInterface>>
      */
-    private const PHP_DOC_NODE_DECORATOR_CLASSES = [
+    private const array PHP_DOC_NODE_DECORATOR_CLASSES = [
         ConstExprClassNameDecorator::class,
         DoctrineAnnotationDecorator::class,
         ArrayItemClassNameDecorator::class,
@@ -340,7 +340,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string>
      */
-    private const PUBLIC_PHPSTAN_SERVICE_TYPES = [
+    private const array PUBLIC_PHPSTAN_SERVICE_TYPES = [
         ScopeFactory::class,
         TypeNodeResolver::class,
         NodeScopeResolver::class,
@@ -350,7 +350,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<OutputFormatterInterface>>
      */
-    private const OUTPUT_FORMATTER_CLASSES = [
+    private const array OUTPUT_FORMATTER_CLASSES = [
         ConsoleOutputFormatter::class,
         JsonOutputFormatter::class,
         GitlabOutputFormatter::class,
@@ -361,7 +361,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<NodeTypeResolverInterface>>
      */
-    private const NODE_TYPE_RESOLVER_CLASSES = [
+    private const array NODE_TYPE_RESOLVER_CLASSES = [
         CastTypeResolver::class,
         StaticCallMethodCallTypeResolver::class,
         ClassAndInterfaceTypeResolver::class,
@@ -379,7 +379,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<PhpParserNodeMapperInterface>>
      */
-    private const PHP_PARSER_NODE_MAPPER_CLASSES = [
+    private const array PHP_PARSER_NODE_MAPPER_CLASSES = [
         FullyQualifiedNodeMapper::class,
         IdentifierNodeMapper::class,
         IntersectionTypeNodeMapper::class,
@@ -393,7 +393,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<ConverterAttributeDecoratorInterface>>
      */
-    private const CONVERTER_ATTRIBUTE_DECORATOR_CLASSES = [
+    private const array CONVERTER_ATTRIBUTE_DECORATOR_CLASSES = [
         SensioParamConverterAttributeDecorator::class,
         DoctrineConverterAttributeDecorator::class,
     ];

@@ -6,8 +6,5 @@ namespace Rector\TypeDeclarationDocblocks\Enum;
 
 final class NetteClassName
 {
-    /**
-     * @var string
-     */
-    public const JSON = 'Nette\Utils\Json';
+    public const string JSON = 'Nette\Utils\Json';
 }

@@ -48,9 +48,8 @@ final class BetterStandardPrinter extends Standard
     /**
      * Remove extra spaces before new Nop_ nodes
      * @see https://regex101.com/r/iSvroO/1
-     * @var string
      */
-    private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
+    private const string EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
 
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer,

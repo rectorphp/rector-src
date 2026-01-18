@@ -35,33 +35,29 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 {
     /**
      * @see https://regex101.com/r/bGp2V0/2
-     * @var string
      */
-    public const LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\)|,|\r?\n|$)#';
+    public const string LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\)|,|\r?\n|$)#';
 
     /**
      * Special short annotations, that are resolved as FQN by Doctrine annotation parser
      * @var string[]
      */
-    private const ALLOWED_SHORT_ANNOTATIONS = ['Target'];
+    private const array ALLOWED_SHORT_ANNOTATIONS = ['Target'];
 
     /**
      * @see https://regex101.com/r/xWaLOz/1
-     * @var string
      */
-    private const NESTED_ANNOTATION_END_REGEX = '#(\s+)?\}\)(\s+)?#';
+    private const string NESTED_ANNOTATION_END_REGEX = '#(\s+)?\}\)(\s+)?#';
 
     /**
      * @see https://regex101.com/r/8rWY4r/1
-     * @var string
      */
-    private const NEWLINE_ANNOTATION_FQCN_REGEX = '#\r?\n@\\\\#';
+    private const string NEWLINE_ANNOTATION_FQCN_REGEX = '#\r?\n@\\\\#';
 
     /**
-     * @var string
      * @see https://regex101.com/r/3zXEh7/1
      */
-    private const STAR_COMMENT_REGEX = '#^\s*\*#ms';
+    private const string STAR_COMMENT_REGEX = '#^\s*\*#ms';
 
     public function __construct(
         private ClassAnnotationMatcher $classAnnotationMatcher,

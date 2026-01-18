@@ -27,7 +27,7 @@ final readonly class SideEffectNodeDetector
     /**
      * @var array<class-string<Expr>>
      */
-    private const CALL_EXPR_SIDE_EFFECT_NODE_TYPES = [
+    private const array CALL_EXPR_SIDE_EFFECT_NODE_TYPES = [
         MethodCall::class,
         New_::class,
         NullsafeMethodCall::class,

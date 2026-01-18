@@ -77,7 +77,7 @@ final class TypeDeclarationLevel
      *
      * @var array<class-string<RectorInterface>>
      */
-    public const RULES = [
+    public const array RULES = [
         // php 7.1, start with closure first, as safest
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
         AddFunctionVoidReturnTypeWhereNoReturnRector::class,

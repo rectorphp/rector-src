@@ -32,17 +32,17 @@ final class TerminatedNodeAnalyzer
     /**
      * @var array<class-string<Node>>
      */
-    private const TERMINABLE_NODES = [Return_::class, Break_::class, Continue_::class];
+    private const array TERMINABLE_NODES = [Return_::class, Break_::class, Continue_::class];
 
     /**
      * @var array<class-string<Node>>
      */
-    private const TERMINABLE_NODES_BY_ITS_STMTS = [TryCatch::class, If_::class, Switch_::class];
+    private const array TERMINABLE_NODES_BY_ITS_STMTS = [TryCatch::class, If_::class, Switch_::class];
 
     /**
      * @var array<class-string<Node>>
      */
-    private const ALLOWED_CONTINUE_CURRENT_STMTS = [InlineHTML::class, Nop::class];
+    private const array ALLOWED_CONTINUE_CURRENT_STMTS = [InlineHTML::class, Nop::class];
 
     /**
      * @param StmtsAware $stmtsAware

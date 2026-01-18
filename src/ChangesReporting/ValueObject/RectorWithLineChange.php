@@ -11,15 +11,9 @@ use Webmozart\Assert\Assert;
 
 final readonly class RectorWithLineChange implements SerializableInterface
 {
-    /**
-     * @var string
-     */
-    private const KEY_RECTOR_CLASS = 'rector_class';
+    private const string KEY_RECTOR_CLASS = 'rector_class';
 
-    /**
-     * @var string
-     */
-    private const KEY_LINE = 'line';
+    private const string KEY_LINE = 'line';
 
     /**
      * @param class-string<RectorInterface|PostRectorInterface> $rectorClass

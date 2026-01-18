@@ -6,13 +6,7 @@ namespace Rector\Php70\Enum;
 
 final class BattleshipCompareOrder
 {
-    /**
-     * @var string
-     */
-    public const ASC = 'asc';
+    public const string ASC = 'asc';
 
-    /**
-     * @var string
-     */
-    public const DESC = 'desc';
+    public const string DESC = 'desc';
 }

@@ -9,10 +9,9 @@ use Nette\Utils\Strings;
 final class NewLineSplitter
 {
     /**
-     * @var string
      * @see https://regex101.com/r/qduj2O/4
      */
-    private const NEWLINES_REGEX = "#\r?\n#";
+    private const string NEWLINES_REGEX = "#\r?\n#";
 
     /**
      * @return string[]

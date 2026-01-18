@@ -24,7 +24,7 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
     /**
      * @var array<string, string>
      */
-    private const OLD_TO_NEW_FUNCTION_NAMES = [
+    private const array OLD_TO_NEW_FUNCTION_NAMES = [
         'getrandmax' => 'mt_getrandmax',
         'srand' => 'mt_srand',
         'rand' => 'random_int',

@@ -32,7 +32,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
     /**
      * @var array<string, string>
      */
-    private const OLD_NAMES_TO_NEW_ONES = [
+    private const array OLD_NAMES_TO_NEW_ONES = [
         'ereg' => 'preg_match',
         'eregi' => 'preg_match',
         'ereg_replace' => 'preg_replace',

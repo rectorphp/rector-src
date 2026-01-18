@@ -6,8 +6,5 @@ namespace Rector\PhpAttribute\Enum;
 
 final class DocTagNodeState
 {
-    /**
-     * @var string
-     */
-    public const REMOVE_ARRAY = '__remove_array__';
+    public const string REMOVE_ARRAY = '__remove_array__';
 }

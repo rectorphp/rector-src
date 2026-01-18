@@ -9,13 +9,7 @@ namespace Rector\Caching\Enum;
  */
 final class CacheKey
 {
-    /**
-     * @var string
-     */
-    public const CONFIGURATION_HASH_KEY = 'configuration_hash';
+    public const string CONFIGURATION_HASH_KEY = 'configuration_hash';
 
-    /**
-     * @var string
-     */
-    public const FILE_HASH_KEY = 'file_hash';
+    public const string FILE_HASH_KEY = 'file_hash';
 }

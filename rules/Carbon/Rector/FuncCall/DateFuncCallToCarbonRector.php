@@ -24,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DateFuncCallToCarbonRector extends AbstractRector
 {
-    private const TIME_UNITS = [
+    private const array TIME_UNITS = [
         ['weeks', 604800],
         ['days', 86400],
         ['hours', 3600],

@@ -36,10 +36,7 @@ use Rector\ValueObject\Application\File;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
-    /**
-     * @var string
-     */
-    private const EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
+    private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
 Array of nodes cannot be empty. Ensure "%s->refactor()" returns non-empty array for Nodes.
 
 A) Direct return null for no change:

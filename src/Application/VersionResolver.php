@@ -19,20 +19,15 @@ final class VersionResolver
 {
     /**
      * @api
-     * @var string
      */
-    public const PACKAGE_VERSION = '@package_version@';
+    public const string PACKAGE_VERSION = '@package_version@';
 
     /**
      * @api
-     * @var string
      */
-    public const RELEASE_DATE = '@release_date@';
+    public const string RELEASE_DATE = '@release_date@';
 
-    /**
-     * @var int
-     */
-    private const SUCCESS_CODE = 0;
+    private const int SUCCESS_CODE = 0;
 
     public static function resolvePackageVersion(): string
     {

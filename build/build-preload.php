@@ -43,10 +43,7 @@ $preloadBuilder->buildPreloadScriptForSplitPackage($buildDirectory, $buildDirect
 
 final class PreloadBuilder
 {
-    /**
-     * @var string
-     */
-    private const PRELOAD_FILE_TEMPLATE = <<<'CODE_SAMPLE'
+    private const string PRELOAD_FILE_TEMPLATE = <<<'CODE_SAMPLE'
 <?php
 
 declare(strict_types=1);
@@ -75,10 +72,7 @@ function isPHPStanTestPreloaded(): bool
 }
 CODE_SAMPLE;
 
-    /**
-     * @var int
-     */
-    private const PRIORITY_LESS_FILE_POSITION = -1;
+    private const int PRIORITY_LESS_FILE_POSITION = -1;
 
     /**
      * These files are parent to another files, so they have to be included first
@@ -86,7 +80,7 @@ CODE_SAMPLE;
      *
      * @var string[]
      */
-    private const HIGH_PRIORITY_FILES = [
+    private const array HIGH_PRIORITY_FILES = [
         // nikic/php-parser
         'Node.php',
         'NodeAbstract.php',
@@ -131,7 +125,7 @@ CODE_SAMPLE;
      *
      * @var string[]
      */
-    private const IN_USE_CLASS_FILES = [
+    private const array IN_USE_CLASS_FILES = [
         'Node/Expr/ArrayItem.php',
         'Node/Expr/ClosureUse.php',
         'Node/Scalar/EncapsedStringPart.php',

@@ -17,16 +17,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 {
-    /**
-     * @var string
-     */
-    public const NAME = 'console';
+    public const string NAME = 'console';
 
     /**
-     * @var string
      * @see https://regex101.com/r/q8I66g/1
      */
-    private const ON_LINE_REGEX = '# on line #';
+    private const string ON_LINE_REGEX = '# on line #';
 
     public function __construct(
         private SymfonyStyle $symfonyStyle,

@@ -20,7 +20,7 @@ final class ReplaceHttpServerVarsByServerRector extends AbstractRector implement
     /**
      * @var array<string, string>
      */
-    private const VARIABLE_RENAME_MAP = [
+    private const array VARIABLE_RENAME_MAP = [
         'HTTP_SERVER_VARS' => '_SERVER',
         'HTTP_GET_VARS' => '_GET',
         'HTTP_POST_VARS' => '_POST',

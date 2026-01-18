@@ -25,10 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SimplifyIfElseToTernaryRector extends AbstractRector
 {
-    /**
-     * @var int
-     */
-    private const LINE_LENGTH_LIMIT = 120;
+    private const int LINE_LENGTH_LIMIT = 120;
 
     public function __construct(
         private readonly BetterStandardPrinter $betterStandardPrinter,

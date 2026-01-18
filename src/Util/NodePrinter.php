@@ -12,16 +12,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final readonly class NodePrinter
 {
     /**
-     * @var string
      * @see https://regex101.com/r/Fe8n73/1
      */
-    private const CLASS_NAME_REGEX = '#(?<class_name>PhpParser(.*?))\(#ms';
+    private const string CLASS_NAME_REGEX = '#(?<class_name>PhpParser(.*?))\(#ms';
 
     /**
-     * @var string
      * @see https://regex101.com/r/uQFuvL/1
      */
-    private const PROPERTY_KEY_REGEX = '#(?<key>[\w\d]+)\:#';
+    private const string PROPERTY_KEY_REGEX = '#(?<key>[\w\d]+)\:#';
 
     public function __construct(
         private SymfonyStyle $symfonyStyle

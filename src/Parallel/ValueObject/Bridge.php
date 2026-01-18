@@ -9,33 +9,15 @@ namespace Rector\Parallel\ValueObject;
  */
 final class Bridge
 {
-    /**
-     * @var string
-     */
-    public const FILE_DIFFS = 'file_diffs';
+    public const string FILE_DIFFS = 'file_diffs';
 
-    /**
-     * @var string
-     */
-    public const SYSTEM_ERRORS = 'system_errors';
+    public const string SYSTEM_ERRORS = 'system_errors';
 
-    /**
-     * @var string
-     */
-    public const SYSTEM_ERRORS_COUNT = 'system_errors_count';
+    public const string SYSTEM_ERRORS_COUNT = 'system_errors_count';
 
-    /**
-     * @var string
-     */
-    public const FILES = 'files';
+    public const string FILES = 'files';
 
-    /**
-     * @var string
-     */
-    public const FILES_COUNT = 'files_count';
+    public const string FILES_COUNT = 'files_count';
 
-    /**
-     * @var string
-     */
-    public const TOTAL_CHANGED = 'total_changed';
+    public const string TOTAL_CHANGED = 'total_changed';
 }

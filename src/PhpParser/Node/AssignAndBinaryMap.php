@@ -49,7 +49,7 @@ final class AssignAndBinaryMap
     /**
      * @var array<class-string<BinaryOp>, class-string<BinaryOp>>
      */
-    private const BINARY_OP_TO_INVERSE_CLASSES = [
+    private const array BINARY_OP_TO_INVERSE_CLASSES = [
         Identical::class => NotIdentical::class,
         NotIdentical::class => Identical::class,
         Equal::class => NotEqual::class,
@@ -63,7 +63,7 @@ final class AssignAndBinaryMap
     /**
      * @var array<class-string<AssignOp>, class-string<BinaryOp>>
      */
-    private const ASSIGN_OP_TO_BINARY_OP_CLASSES = [
+    private const array ASSIGN_OP_TO_BINARY_OP_CLASSES = [
         AssignBitwiseOr::class => BitwiseOr::class,
         AssignBitwiseAnd::class => BitwiseAnd::class,
         AssignBitwiseXor::class => BitwiseXor::class,

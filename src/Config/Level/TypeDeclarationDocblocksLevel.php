@@ -30,7 +30,7 @@ final class TypeDeclarationDocblocksLevel
     /**
      * @var array<class-string<RectorInterface>>
      */
-    public const RULES = [
+    public const array RULES = [
         // start with rules based on native code
         // property var
         DocblockVarArrayFromPropertyDefaultsRector::class,

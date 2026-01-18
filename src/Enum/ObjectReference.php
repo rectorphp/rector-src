@@ -6,18 +6,9 @@ namespace Rector\Enum;
 
 final class ObjectReference
 {
-    /**
-     * @var string
-     */
-    public const SELF = 'self';
+    public const string SELF = 'self';
 
-    /**
-     * @var string
-     */
-    public const PARENT = 'parent';
+    public const string PARENT = 'parent';
 
-    /**
-     * @var string
-     */
-    public const STATIC = 'static';
+    public const string STATIC = 'static';
 }

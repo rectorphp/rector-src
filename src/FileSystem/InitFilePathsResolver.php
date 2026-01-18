@@ -13,10 +13,9 @@ use Symfony\Component\Finder\SplFileInfo;
 final class InitFilePathsResolver
 {
     /**
-     * @var string
      * @see https://regex101.com/r/XkQ6Pe/1
      */
-    private const DO_NOT_INCLUDE_PATHS_REGEX = '#(vendor|var|stubs|temp|templates|tmp|e2e|bin|build|Migrations|data(?:base)?|storage|migrations|writable|node_modules)#';
+    private const string DO_NOT_INCLUDE_PATHS_REGEX = '#(vendor|var|stubs|temp|templates|tmp|e2e|bin|build|Migrations|data(?:base)?|storage|migrations|writable|node_modules)#';
 
     /**
      * @return string[]

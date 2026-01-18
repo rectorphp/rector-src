@@ -8,38 +8,17 @@ use PhpParser\Modifiers;
 
 final class Visibility
 {
-    /**
-     * @var int
-     */
-    public const PUBLIC = Modifiers::PUBLIC;
+    public const int PUBLIC = Modifiers::PUBLIC;
 
-    /**
-     * @var int
-     */
-    public const PROTECTED = Modifiers::PROTECTED;
+    public const int PROTECTED = Modifiers::PROTECTED;
 
-    /**
-     * @var int
-     */
-    public const PRIVATE = Modifiers::PRIVATE;
+    public const int PRIVATE = Modifiers::PRIVATE;
 
-    /**
-     * @var int
-     */
-    public const STATIC = Modifiers::STATIC;
+    public const int STATIC = Modifiers::STATIC;
 
-    /**
-     * @var int
-     */
-    public const ABSTRACT = Modifiers::ABSTRACT;
+    public const int ABSTRACT = Modifiers::ABSTRACT;
 
-    /**
-     * @var int
-     */
-    public const FINAL = Modifiers::FINAL;
+    public const int FINAL = Modifiers::FINAL;
 
-    /**
-     * @var int
-     */
-    public const READONLY = Modifiers::READONLY;
+    public const int READONLY = Modifiers::READONLY;
 }

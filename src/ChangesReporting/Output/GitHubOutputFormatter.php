@@ -23,9 +23,9 @@ use Rector\ValueObject\ProcessResult;
  */
 final readonly class GitHubOutputFormatter implements OutputFormatterInterface
 {
-    private const NAME = 'github';
+    private const string NAME = 'github';
 
-    private const GROUP_NAME = 'Rector report';
+    private const string GROUP_NAME = 'Rector report';
 
     public function getName(): string
     {
