@@ -21,12 +21,16 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Configuration\Parameter\FeatureFlags;
+use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Symplify\CodingStandard\DocBlock\UselessDocBlockCleaner;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -37,7 +41,9 @@ final class AddTypeToConstRector extends AbstractRector implements MinPhpVersion
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly VarTagRemover $varTagRemover,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 
@@ -130,6 +136,12 @@ CODE_SAMPLE
 
             $classConst->type = $valueType;
             $hasChanged = true;
+
+            $classConstPhpDocInfo = $this->phpDocInfoFactory->createFromNode($classConst);
+
+            if ($classConstPhpDocInfo instanceof PhpDocInfo) {
+                $this->varTagRemover->removeVarTagIfUseless($classConstPhpDocInfo, $classConst);
+            }
         }
 
         if (! $hasChanged) {
