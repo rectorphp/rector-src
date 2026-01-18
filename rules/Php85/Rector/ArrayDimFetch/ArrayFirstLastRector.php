@@ -179,6 +179,7 @@ CODE_SAMPLE
         if ($scope->isInExpressionAssign($arrayDimFetch)) {
             return true;
         }
+
         return (bool) $arrayDimFetch->getAttribute(AttributeKey::IS_UNSET_VAR);
     }
 }
