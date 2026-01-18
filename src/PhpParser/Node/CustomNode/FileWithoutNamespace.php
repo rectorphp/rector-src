@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node\CustomNode;
 
+use Override;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\FileNode;
 
@@ -15,6 +16,7 @@ use Rector\PhpParser\Node\FileNode;
  */
 final class FileWithoutNamespace extends FileNode implements StmtsAwareInterface
 {
+    #[Override]
     public function getType(): string
     {
         return 'FileWithoutNamespace';
@@ -23,6 +25,7 @@ final class FileWithoutNamespace extends FileNode implements StmtsAwareInterface
     /**
      * @return string[]
      */
+    #[Override]
     public function getSubNodeNames(): array
     {
         return ['stmts'];

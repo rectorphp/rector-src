@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\Array_;
 
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -15,6 +16,7 @@ use Rector\Exception\ShouldNotHappenException;
  */
 final class FirstClassCallableRector extends ArrayToFirstClassCallableRector implements DeprecatedInterface
 {
+    #[Override]
     public function refactor(Node $node): StaticCall|MethodCall|null
     {
         throw new ShouldNotHappenException(sprintf(

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitor;
@@ -62,6 +63,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
         return NodeVisitor::STOP_TRAVERSAL;
     }
 
+    #[Override]
     public function shouldTraverse(array $stmts): bool
     {
         $this->oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
