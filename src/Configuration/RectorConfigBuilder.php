@@ -47,6 +47,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @api
+ * @see \Rector\Tests\Configuration\RectorConfigBuilderTest
  */
 final class RectorConfigBuilder
 {
@@ -64,6 +65,11 @@ final class RectorConfigBuilder
      * @var string[]
      */
     private array $sets = [];
+
+    /**
+     * @var string[]
+     */
+    private array $imports = [];
 
     /**
      * @var array<mixed>
@@ -195,6 +201,10 @@ final class RectorConfigBuilder
 
     public function __invoke(RectorConfig $rectorConfig): void
     {
+        foreach ($this->imports as $import) {
+            $rectorConfig->import($import);
+        }
+
         if ($this->setGroups !== [] || $this->setProviders !== []) {
             $setProviderCollector = new SetProviderCollector(array_map(
                 $rectorConfig->make(...),
@@ -403,6 +413,16 @@ final class RectorConfigBuilder
     public function withPaths(array $paths): self
     {
         $this->paths = $paths;
+
+        return $this;
+    }
+
+    /**
+     * @param string ...$files file paths to import
+     */
+    public function withImport(string ...$files): self
+    {
+        $this->imports = array_merge($this->imports, $files);
 
         return $this;
     }
