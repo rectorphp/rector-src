@@ -126,7 +126,7 @@ final readonly class UselessIfCondBeforeForeachDetector
         }
 
         // is array though?
-        $arrayType = $scope->getType($scope, $empty->expr);
+        $arrayType = $scope->getType($empty->expr);
         return $arrayType->isArray()
             ->yes();
     }
