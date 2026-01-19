@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-
 final readonly class UselessIfCondBeforeForeachDetector
 {
     public function __construct(

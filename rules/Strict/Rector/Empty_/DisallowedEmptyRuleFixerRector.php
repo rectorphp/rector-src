@@ -15,7 +15,6 @@ use PhpParser\Node\Expr\Isset_;
 use PHPStan\Analyser\Scope;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
-
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Strict\NodeAnalyzer\UninitializedPropertyAnalyzer;
 use Rector\Strict\NodeFactory\ExactCompareFactory;

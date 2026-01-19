@@ -21,7 +21,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\NodeAnalyzer\ExprAnalyzer;
-
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
