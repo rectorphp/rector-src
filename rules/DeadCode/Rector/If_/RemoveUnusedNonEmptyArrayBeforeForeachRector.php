@@ -19,7 +19,7 @@ use Rector\DeadCode\UselessIfCondBeforeForeachDetector;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeManipulator\IfManipulator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeTypeHelper;
+
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PHPStan\ScopeFetcher;

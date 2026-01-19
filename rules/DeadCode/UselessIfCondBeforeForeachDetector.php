@@ -14,7 +14,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use Rector\PhpParser\Comparing\NodeComparator;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeTypeHelper;
+
 
 final readonly class UselessIfCondBeforeForeachDetector
 {
