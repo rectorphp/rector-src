@@ -213,6 +213,10 @@ final readonly class NullToStrictStringIntConverter
         }
 
         $parentScope = $scope->getParentScope();
+        if ($parentScope instanceof \PHPStan\Analyser\Fiber\FiberScope) {
+            $parentScope = $parentScope->toMutatingScope();
+        }
+
         if ($parentScope instanceof Scope) {
             return $parentScope->getType($expr) instanceof ErrorType;
         }
