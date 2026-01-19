@@ -10,6 +10,10 @@ $closureWithParam = function (int $x): int {
     return $x + 1;
 };
 
+$closureWithMixedReturn = function (int $x): mixed {
+    return $x + 1;
+};
+
 ?>
 -----
 <?php
@@ -23,5 +27,9 @@ $closure = function (): int {
 };
 
 $closureWithParam = function (int $x): int {
+    return $x + 1;
+};
+
+$closureWithMixedReturn = function (int $x): mixed {
     return $x + 1;
 };
