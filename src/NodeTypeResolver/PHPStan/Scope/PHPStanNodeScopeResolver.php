@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use PHPStan\Analyser\Fiber\FiberScope;
 use Error;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -158,6 +159,10 @@ final readonly class PHPStanNodeScopeResolver
             &$nodeCallback,
             $filePath,
         ): void {
+            if ($mutatingScope instanceof FiberScope) {
+                $mutatingScope = $mutatingScope->toMutatingScope();
+            }
+
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
