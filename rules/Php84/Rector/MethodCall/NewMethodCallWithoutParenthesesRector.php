@@ -53,7 +53,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $oldTokens = $this->file->getOldTokens();
+        $oldTokens = $this->getFile()
+            ->getOldTokens();
 
         $loop = 1;
         while (isset($oldTokens[$node->var->getStartTokenPos() + $loop])) {

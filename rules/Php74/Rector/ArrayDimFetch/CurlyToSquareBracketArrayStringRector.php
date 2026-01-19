@@ -63,7 +63,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isFollowedByCurlyBracket($this->file, $node)) {
+        if (! $this->isFollowedByCurlyBracket($this->getFile(), $node)) {
             return null;
         }
 
