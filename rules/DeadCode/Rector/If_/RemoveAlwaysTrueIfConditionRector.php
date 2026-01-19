@@ -121,7 +121,7 @@ CODE_SAMPLE
         }
 
         $scope = ScopeFetcher::fetch($node);
-        $type = ScopeTypeHelper::getNativeType($scope, $node->cond);
+        $type = $scope->getNativeType($scope, $node->cond);
         if (! $type->isTrue()->yes()) {
             return null;
         }

@@ -123,7 +123,7 @@ CODE_SAMPLE
         if (($ifCond instanceof Variable || $this->propertyFetchAnalyzer->isPropertyFetch($ifCond))
             && $this->nodeComparator->areNodesEqual($ifCond, $foreachExpr)
         ) {
-            $ifType = ScopeTypeHelper::getNativeType($scope, $ifCond);
+            $ifType = $scope->getNativeType($scope, $ifCond);
             return $ifType->isArray()
                 ->yes();
         }
@@ -193,7 +193,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $ifType = ScopeTypeHelper::getNativeType($scope, $empty->expr);
+            $ifType = $scope->getNativeType($scope, $empty->expr);
             if (! $ifType->isArray()->yes()) {
                 continue;
             }
@@ -239,7 +239,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            $ifType = ScopeTypeHelper::getNativeType($scope, $foreachExpr);
+            $ifType = $scope->getNativeType($scope, $foreachExpr);
             if (! $ifType->isArray()->yes()) {
                 return true;
             }

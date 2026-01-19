@@ -107,7 +107,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $emptyExprType = ScopeTypeHelper::getNativeType($scope, $empty->expr);
+        $emptyExprType = $scope->getNativeType($scope, $empty->expr);
 
         $result = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
             $emptyExprType,
@@ -132,7 +132,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $exprType = ScopeTypeHelper::getNativeType($scope, $empty->expr);
+        $exprType = $scope->getNativeType($scope, $empty->expr);
         $result = $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr, $treatAsNonEmpty);
         if (! $result instanceof Expr) {
             return null;

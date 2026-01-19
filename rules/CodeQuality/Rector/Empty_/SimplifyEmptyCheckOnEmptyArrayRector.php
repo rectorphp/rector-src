@@ -107,7 +107,7 @@ CODE_SAMPLE
 
     private function isAllowedExpr(Expr $expr, Scope $scope): bool
     {
-        if (! ScopeTypeHelper::getType($scope, $expr)->isArray()->yes()) {
+        if (! $scope->getType($scope, $expr)->isArray()->yes()) {
             return false;
         }
 
