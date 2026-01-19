@@ -180,7 +180,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($arrayDimFetch->getAttribute(AttributeKey::IS_BEING_ASSIGNED)) {
+        if ($arrayDimFetch->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
             return true;
         }
 
