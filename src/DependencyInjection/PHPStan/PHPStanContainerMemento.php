@@ -9,8 +9,6 @@ use PHPStan\DependencyInjection\Nette\NetteContainer;
 use PHPStan\Parser\AnonymousClassVisitor;
 use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Parser\RichParser;
-use PHPStan\Parser\VariadicFunctionsVisitor;
-use PHPStan\Parser\VariadicMethodsVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
 
 /**
@@ -41,8 +39,6 @@ final class PHPStanContainerMemento
         // remove all the rest, https://github.com/phpstan/phpstan-src/tree/1d86de8bb9371534983a8dbcd879e057d2ff028f/src/Parser
         $nodeVisitorsToKeep = [
             $container->findServiceNamesByType(AnonymousClassVisitor::class)[0] => true,
-            $container->findServiceNamesByType(VariadicFunctionsVisitor::class)[0] => true,
-            $container->findServiceNamesByType(VariadicMethodsVisitor::class)[0] => true,
             $container->findServiceNamesByType(ArrayMapArgVisitor::class)[0] => true,
         ];
 
