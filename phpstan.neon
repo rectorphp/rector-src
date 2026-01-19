@@ -438,3 +438,29 @@ parameters:
         -
             identifier: symplify.noMissnamedDocTag
             path: rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php
+
+        -
+            identifier: typePerfect.narrowReturnObjectType
+            path: src/PHPStan/ScopeFetcher.php
+
+        -
+            identifier: varTag.nativeType
+            path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
+
+        -
+            identifier: argument.type
+            paths:
+                - rules/Privatization/TypeManipulator/TypeNormalizer.php
+                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
+                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
+                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
+                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
+                - rules/TypeDeclarationDocblocks/Rector/Class_/AddVarArrayDocblockFromDimFetchAssignRector.php
+                - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
+
+        -
+            identifier: argument.templateType
+            paths:
+                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
+                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
+                - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
