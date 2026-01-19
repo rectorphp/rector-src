@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use Rector\PhpParser\Comparing\NodeComparator;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeTypeHelper;
 
 final readonly class UselessIfCondBeforeForeachDetector
 {
@@ -125,7 +126,7 @@ final readonly class UselessIfCondBeforeForeachDetector
         }
 
         // is array though?
-        $arrayType = $scope->getType($empty->expr);
+        $arrayType = ScopeTypeHelper::getType($scope, $empty->expr);
         return $arrayType->isArray()
             ->yes();
     }

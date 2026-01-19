@@ -19,6 +19,7 @@ use Rector\DeadCode\UselessIfCondBeforeForeachDetector;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeManipulator\IfManipulator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeTypeHelper;
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PHPStan\ScopeFetcher;
@@ -122,7 +123,7 @@ CODE_SAMPLE
         if (($ifCond instanceof Variable || $this->propertyFetchAnalyzer->isPropertyFetch($ifCond))
             && $this->nodeComparator->areNodesEqual($ifCond, $foreachExpr)
         ) {
-            $ifType = $scope->getNativeType($ifCond);
+            $ifType = ScopeTypeHelper::getNativeType($scope, $ifCond);
             return $ifType->isArray()
                 ->yes();
         }
@@ -192,7 +193,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $ifType = $scope->getNativeType($empty->expr);
+            $ifType = ScopeTypeHelper::getNativeType($scope, $empty->expr);
             if (! $ifType->isArray()->yes()) {
                 continue;
             }
@@ -238,7 +239,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            $ifType = $scope->getNativeType($foreachExpr);
+            $ifType = ScopeTypeHelper::getNativeType($scope, $foreachExpr);
             if (! $ifType->isArray()->yes()) {
                 return true;
             }

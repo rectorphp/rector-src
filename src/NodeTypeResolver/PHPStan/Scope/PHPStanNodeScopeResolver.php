@@ -158,6 +158,10 @@ final readonly class PHPStanNodeScopeResolver
             &$nodeCallback,
             $filePath,
         ): void {
+            if ($mutatingScope instanceof \PHPStan\Analyser\Fiber\FiberScope) {
+                $mutatingScope = $mutatingScope->toMutatingScope();
+            }
+
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {

@@ -21,6 +21,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\NodeAnalyzer\ExprAnalyzer;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeTypeHelper;
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\AstResolver;
 use Rector\PHPStan\ScopeFetcher;
@@ -106,7 +107,7 @@ CODE_SAMPLE
 
     private function isAllowedExpr(Expr $expr, Scope $scope): bool
     {
-        if (! $scope->getType($expr)->isArray()->yes()) {
+        if (! ScopeTypeHelper::getType($scope, $expr)->isArray()->yes()) {
             return false;
         }
 

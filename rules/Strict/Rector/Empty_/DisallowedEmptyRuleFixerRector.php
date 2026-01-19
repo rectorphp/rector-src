@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\Isset_;
 use PHPStan\Analyser\Scope;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeTypeHelper;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Strict\NodeAnalyzer\UninitializedPropertyAnalyzer;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
@@ -106,7 +107,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $emptyExprType = $scope->getNativeType($empty->expr);
+        $emptyExprType = ScopeTypeHelper::getNativeType($scope, $empty->expr);
 
         $result = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
             $emptyExprType,
@@ -131,7 +132,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $exprType = $scope->getNativeType($empty->expr);
+        $exprType = ScopeTypeHelper::getNativeType($scope, $empty->expr);
         $result = $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr, $treatAsNonEmpty);
         if (! $result instanceof Expr) {
             return null;

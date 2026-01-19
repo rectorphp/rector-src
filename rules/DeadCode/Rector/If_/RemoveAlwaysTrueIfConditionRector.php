@@ -23,6 +23,7 @@ use PHPStan\Type\IntersectionType;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeTypeHelper;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
@@ -120,7 +121,7 @@ CODE_SAMPLE
         }
 
         $scope = ScopeFetcher::fetch($node);
-        $type = $scope->getNativeType($node->cond);
+        $type = ScopeTypeHelper::getNativeType($scope, $node->cond);
         if (! $type->isTrue()->yes()) {
             return null;
         }
