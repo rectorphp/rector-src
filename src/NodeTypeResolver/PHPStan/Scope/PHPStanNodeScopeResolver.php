@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use PHPStan\Analyser\Fiber\FiberScope;
 use Error;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -158,7 +159,7 @@ final readonly class PHPStanNodeScopeResolver
             &$nodeCallback,
             $filePath,
         ): void {
-            if ($mutatingScope instanceof \PHPStan\Analyser\Fiber\FiberScope) {
+            if ($mutatingScope instanceof FiberScope) {
                 $mutatingScope = $mutatingScope->toMutatingScope();
             }
 
