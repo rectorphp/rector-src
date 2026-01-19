@@ -180,6 +180,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($arrayDimFetch->getAttribute(AttributeKey::IS_BEING_ASSIGNED)) {
+            return true;
+        }
+
         return (bool) $arrayDimFetch->getAttribute(AttributeKey::IS_UNSET_VAR);
     }
 }
