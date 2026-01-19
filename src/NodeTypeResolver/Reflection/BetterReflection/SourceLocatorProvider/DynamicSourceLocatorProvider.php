@@ -8,7 +8,6 @@ use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
-use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
@@ -31,7 +30,8 @@ final class DynamicSourceLocatorProvider implements ResettableInterface
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
-        private readonly OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory
+        private readonly OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory,
+        private readonly \PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocatorRepository $optimizedSingleFileSourceLocatorRepository
     ) {
     }
 
@@ -68,7 +68,7 @@ final class DynamicSourceLocatorProvider implements ResettableInterface
         $sourceLocators = [];
 
         foreach ($this->filePaths as $file) {
-            $sourceLocators[] = new OptimizedSingleFileSourceLocator($this->fileNodesFetcher, $file);
+            $sourceLocators[] = $this->optimizedSingleFileSourceLocatorRepository->getOrCreate($file);
         }
 
         foreach ($this->directories as $directory) {
