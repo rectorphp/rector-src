@@ -184,7 +184,7 @@ final class CodeQualityLevel
         SortCallLikeNamedArgsRector::class,
         SortAttributeNamedArgsRector::class,
         RemoveReadonlyPropertyVisibilityOnReadonlyClassRector::class,
-        SafeDeclareStrictTypesRector::class,
+        // SafeDeclareStrictTypesRector::class,
     ];
 
     /**
