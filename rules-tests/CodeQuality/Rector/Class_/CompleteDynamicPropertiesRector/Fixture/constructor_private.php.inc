@@ -6,7 +6,7 @@ class ConstructorPrivate
 {
     public function __construct()
     {
-        $this->value = 'classStringCaseInSensitive';
+        $this->value = 'constructorPrivate';
     }
 }
 
@@ -21,7 +21,7 @@ class ConstructorPrivate
     private string $value;
     public function __construct()
     {
-        $this->value = 'classStringCaseInSensitive';
+        $this->value = 'constructorPrivate';
     }
 }
 
