@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use PHPStan\Analyser\Fiber\FiberScope;
 use Error;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -86,6 +85,7 @@ use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\Node\UnionType;
 use PhpParser\NodeTraverser;
+use PHPStan\Analyser\Fiber\FiberScope;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;

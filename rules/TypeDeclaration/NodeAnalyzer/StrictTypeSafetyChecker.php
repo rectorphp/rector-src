@@ -15,6 +15,7 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
@@ -154,7 +155,8 @@ final readonly class StrictTypeSafetyChecker
         if (
             $declaredReturnType instanceof MixedType
             || $declaredReturnType instanceof NeverType
-            || $declaredReturnType->isVoid()->yes()
+            || $declaredReturnType->isVoid()
+                ->yes()
         ) {
             return true;
         }
@@ -183,7 +185,7 @@ final readonly class StrictTypeSafetyChecker
         }
 
         $propertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($assign->var);
-        if ($propertyReflection === null) {
+        if (! $propertyReflection instanceof PhpPropertyReflection) {
             return false;
         }
 
