@@ -17,6 +17,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
@@ -71,13 +72,14 @@ final readonly class PropertyFetchFinder
     }
 
     /**
+     * @api used by other Rector packages
      * @return PropertyFetch[]|StaticPropertyFetch[]|NullsafePropertyFetch[]
      */
-    public function findLocalPropertyFetchesByName(Class_ $class, string $paramName): array
+    public function findLocalPropertyFetchesByName(Class_|ClassMethod $node, string $paramName): array
     {
         /** @var PropertyFetch[]|StaticPropertyFetch[]|NullsafePropertyFetch[] $foundPropertyFetches */
         $foundPropertyFetches = $this->betterNodeFinder->find(
-            $this->resolveNodesToLocate($class),
+            $this->resolveNodesToLocate($node),
             function (Node $subNode) use ($paramName): bool {
                 if ($subNode instanceof PropertyFetch) {
                     return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($subNode, $paramName);
@@ -162,14 +164,18 @@ final readonly class PropertyFetchFinder
     /**
      * @return Stmt[]
      */
-    private function resolveNodesToLocate(Class_ $class): array
+    private function resolveNodesToLocate(Class_|ClassMethod $node): array
     {
+        if ($node instanceof ClassMethod) {
+            return [$node];
+        }
+
         $propertyWithHooks = array_filter(
-            $class->getProperties(),
+            $node->getProperties(),
             fn (Property $property): bool => $property->hooks !== []
         );
 
-        return [...$propertyWithHooks, ...$class->getMethods()];
+        return [...$propertyWithHooks, ...$node->getMethods()];
     }
 
     /**
