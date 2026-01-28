@@ -8,7 +8,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\FunctionLike;
@@ -69,8 +68,7 @@ final readonly class StrictTypeSafetyChecker
             }
         }
 
-        $includes = $this->betterNodeFinder->findInstanceOf($fileNode->stmts, Include_::class);
-        return $includes === [];
+        return true;
     }
 
     private function isCallLikeSafe(CallLike $callLike): bool
