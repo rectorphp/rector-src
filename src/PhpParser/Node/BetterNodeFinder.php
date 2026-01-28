@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PhpParser\Node;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
@@ -240,7 +241,7 @@ final readonly class BetterNodeFinder
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
             static function (Node $subNode) use ($types, &$foundNodes): ?int {
-                if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ClassMethod)) {
+                if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ClassMethod && ! $subNode instanceof ArrowFunction)) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
