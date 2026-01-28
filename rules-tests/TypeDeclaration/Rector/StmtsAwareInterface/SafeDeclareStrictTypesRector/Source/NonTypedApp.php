@@ -8,6 +8,7 @@ final class NonTypedApp
 {
     public function callDynamic(string $func): void
     {
+        $func('arg');
     }
 }
 
