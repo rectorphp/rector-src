@@ -8,6 +8,6 @@ if (json_decode('{"a":1}', true) !== null && json_last_error() === JSON_ERROR_NO
 <?php
 namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector\Fixture;
 
-if (json_validate('{"a":1}', true)) {
+if (json_validate('{"a":1}')) {
     echo "inline";
 }
