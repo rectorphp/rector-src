@@ -76,6 +76,6 @@ return static function (RectorConfig $rectorConfig): void {
         // for testing allow numeric string keep as string
         new AnnotationToAttribute('OpenApi\\Annotations\\Property', 'OpenApi\\Attributes\\Property'),
 
-        new AnnotationToAttribute(EmptyAttribute::class, null, ['foo'])
+        new AnnotationToAttribute(EmptyAttribute::class, null, ['foo']),
     ]);
 };
