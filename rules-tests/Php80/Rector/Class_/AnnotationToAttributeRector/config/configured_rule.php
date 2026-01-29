@@ -9,6 +9,7 @@ use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\Annotation\NestedPastAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\PastAnnotation;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\EmptyAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName1;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\NewName2;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute\NestedFutureAttribute;
@@ -74,5 +75,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // for testing allow numeric string keep as string
         new AnnotationToAttribute('OpenApi\\Annotations\\Property', 'OpenApi\\Attributes\\Property'),
+
+        new AnnotationToAttribute(EmptyAttribute::class, null, ['foo'])
     ]);
 };
