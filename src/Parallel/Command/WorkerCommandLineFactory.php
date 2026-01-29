@@ -95,27 +95,32 @@ final readonly class WorkerCommandLineFactory
         // @see https://github.com/symfony/symfony/issues/1238
         $workerCommandArray[] = '--no-ansi';
 
+        // Only pass --config if explicitly set via command line
+        // If not set, the worker will resolve config using RectorConfigsResolver fallback mechanism
         if ($input->hasOption(Option::CONFIG)) {
-            $workerCommandArray[] = '--config';
-            /**
-             * On parallel, the command is generated with `--config` addition
-             * Using escapeshellarg() to ensure the --config path escaped, even when it has a space.
-             *
-             * eg:
-             *    --config /path/e2e/parallel with space/rector.php
-             *
-             * that can cause error:
-             *
-             *    File /rector-src/e2e/parallel\" was not found
-             *
-             * the escaped result is:
-             *
-             *    --config '/path/e2e/parallel with space/rector.php'
-             *
-             * tested in macOS and Ubuntu (github action)
-             */
-            $config = (string) $input->getOption(Option::CONFIG);
-            $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
+            $configValue = $input->getOption(Option::CONFIG);
+            if (is_string($configValue) && $configValue !== '') {
+                $workerCommandArray[] = '--config';
+                /**
+                 * On parallel, the command is generated with `--config` addition
+                 * Using escapeshellarg() to ensure the --config path escaped, even when it has a space.
+                 *
+                 * eg:
+                 *    --config /path/e2e/parallel with space/rector.php
+                 *
+                 * that can cause error:
+                 *
+                 *    File /rector-src/e2e/parallel\" was not found
+                 *
+                 * the escaped result is:
+                 *
+                 *    --config '/path/e2e/parallel with space/rector.php'
+                 *
+                 * tested in macOS and Ubuntu (github action)
+                 */
+                $config = $configValue;
+                $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
+            }
         }
 
         if ($input->getOption(Option::ONLY) !== null) {
@@ -132,8 +137,8 @@ final readonly class WorkerCommandLineFactory
             return true;
         }
 
-        // skip output format, not relevant in parallel worker command
-        return $optionName === Option::OUTPUT_FORMAT;
+        // skip output format and config, handled separately in create()
+        return $optionName === Option::OUTPUT_FORMAT || $optionName === Option::CONFIG;
     }
 
     /**

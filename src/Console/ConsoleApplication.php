@@ -120,8 +120,7 @@ final class ConsoleApplication extends Application
             Option::CONFIG,
             'c',
             InputOption::VALUE_REQUIRED,
-            'Path to config file',
-            $this->getDefaultConfigPath()
+            'Path to config file'
         ));
 
         $inputDefinition->addOption(new InputOption(
@@ -144,11 +143,6 @@ final class ConsoleApplication extends Application
             InputOption::VALUE_NONE,
             'Clear cache before starting the execution of the command'
         ));
-    }
-
-    private function getDefaultConfigPath(): string
-    {
-        return getcwd() . '/rector.php';
     }
 
     private function enableXdebug(InputInterface $input): void

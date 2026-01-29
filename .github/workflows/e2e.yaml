@@ -29,6 +29,8 @@ jobs:
                     - 'e2e/applied-rule-change-docblock'
                     - 'e2e/applied-rule-removed-node'
                     - 'e2e/applied-rule-return-array-nodes'
+                    - 'e2e/config-dist-fallback'
+                    - 'e2e/config-file-priority'
                     - 'e2e/different-path-over-skip-config'
                     - 'e2e/invalid-paths'
                     - 'e2e/no-parallel-reflection-resolver'
