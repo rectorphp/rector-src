@@ -11,7 +11,7 @@ if (json_decode($json, true, 3) !== null && json_last_error() === JSON_ERROR_NON
 
 namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector\Fixture;
 
-if (json_validate($json, true, 3)){
+if (json_validate($json, 3)){
     echo 1;
 }
 ?>

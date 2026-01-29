@@ -9,7 +9,7 @@ if (json_decode(associative: true, json: $json) !== null && json_last_error() ==
 <?php
 namespace Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector\Fixture;
 
-if (json_validate(associative: true, json: $json)){
+if (json_validate(json: $json)){
     echo 1;
 }
 ?>
