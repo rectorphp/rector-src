@@ -154,6 +154,10 @@ final readonly class PhpAttributeGroupFactory
                 continue;
             }
 
+            if ($arrayItem->value->value === '') {
+                continue;
+            }
+
             $arrayItem->value = new ClassConstFetch(new FullyQualified($arrayItem->value->value), 'class');
         }
     }
