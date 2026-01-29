@@ -48,8 +48,12 @@ final readonly class PropertyManipulator
         'Doctrine\ORM\Mapping\Table',
         'Doctrine\ORM\Mapping\MappedSuperclass',
         'Doctrine\ORM\Mapping\Embeddable',
+        // Deprecated in ODM 2.16
         'Doctrine\ODM\MongoDB\Mapping\Annotations\Document',
         'Doctrine\ODM\MongoDB\Mapping\Annotations\EmbeddedDocument',
+        // New in ODM 2.16
+        'Doctrine\ODM\MongoDB\Mapping\Attribute\Document',
+        'Doctrine\ODM\MongoDB\Mapping\Attribute\EmbeddedDocument',
     ];
 
     public function __construct(

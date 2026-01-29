@@ -68,6 +68,9 @@ parameters:
         # phpstan class constant value
         - identifier: phpstanApi.classConstant
 
+        # phpstan class construction
+        - identifier: phpstanApi.constructor
+
         # phpstan instanceof
         - identifier: phpstanApi.instanceofAssumption
 
