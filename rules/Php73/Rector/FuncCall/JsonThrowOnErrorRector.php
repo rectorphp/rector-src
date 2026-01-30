@@ -26,6 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersionInterface
 {
     private bool $hasChanged = false;
+    private const FLAGS = ['JSON_THROW_ON_ERROR'];
 
     public function __construct(
         private readonly ValueResolver $valueResolver,
@@ -135,20 +136,22 @@ CODE_SAMPLE
 
     private function processJsonEncode(FuncCall $funcCall): ?FuncCall
     {
+        $flags = [];
         if (isset($funcCall->args[1])) {
-            return null;
+            $flags = $this->getFlags($funcCall->args[1]);
         }
-
-        $this->hasChanged = true;
-
-        $funcCall->args[1] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
+        if (!is_null($newArg = $this->getArgWithFlags($flags))) {
+            $this->hasChanged = true;
+            $funcCall->args[1] = $newArg;
+        }
         return $funcCall;
     }
 
     private function processJsonDecode(FuncCall $funcCall): ?FuncCall
     {
+        $flags = [];
         if (isset($funcCall->args[3])) {
-            return null;
+            $flags = $this->getFlags($funcCall->args[3]);
         }
 
         // set default to inter-args
@@ -160,9 +163,10 @@ CODE_SAMPLE
             $funcCall->args[2] = new Arg(new Int_(512));
         }
 
-        $this->hasChanged = true;
-        $funcCall->args[3] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
-
+        if (!is_null($newArg = $this->getArgWithFlags($flags))) {
+            $this->hasChanged = true;
+            $funcCall->args[3] = $newArg;
+        }
         return $funcCall;
     }
 
@@ -185,5 +189,64 @@ CODE_SAMPLE
         }
 
         return is_array($value);
+    }
+
+    private function getFlags(Arg|Node\Expr\BinaryOp\BitwiseOr|ConstFetch $arg, array $result = []): array
+    {
+        if ($arg instanceof ConstFetch) {
+            $constFetch = $arg;
+        } else {
+            if ($arg instanceof Arg) {
+                $array = $arg->value->jsonSerialize();
+            } else {
+                $array = $arg->jsonSerialize();
+            }
+            if ($arg->value instanceof ConstFetch) { // single flag
+                $constFetch = $arg->value;
+            } else { // multiple flag
+                $result = $this->getFlags($array['left'], $result);
+                $constFetch = $array['right'];
+            }
+        }
+        if (!is_null($constFetch)) {
+            $result[] = $constFetch->jsonSerialize()['name']->getFirst();
+        }
+        return $result;
+    }
+
+    private function getArgWithFlags(array $flags): Arg|null
+    {
+        $oldNbFlags = count($flags);
+        $flags = array_values(array_unique([...$flags, ...self::FLAGS]));
+        $newNbFlags = count($flags);
+        if ($oldNbFlags === $newNbFlags) {
+            return null;
+        }
+        if ($newNbFlags === 1) {
+            return new Arg($this->createConstFetch($flags[0]));
+        }
+        /** @var ConstFetch[] $constFetchs */
+        $constFetchs = [];
+        foreach ($flags as $flag) {
+            $constFetchs[] = $this->createConstFetch($flag);
+        }
+        $result = null;
+        foreach ($constFetchs as $i => $constFetch) {
+            if ($i === 1) {
+                continue;
+            }
+            if (is_null($result)) {
+                $result = new Node\Expr\BinaryOp\BitwiseOr(
+                    $constFetch,
+                    $constFetchs[$i + 1],
+                );
+            } else {
+                $result = new Node\Expr\BinaryOp\BitwiseOr(
+                    $result,
+                    $constFetch
+                );
+            }
+        }
+        return new Arg($result);
     }
 }

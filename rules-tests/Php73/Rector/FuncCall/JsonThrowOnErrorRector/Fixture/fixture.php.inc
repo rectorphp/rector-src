@@ -10,6 +10,8 @@ function jsonThrowOnError()
     json_decode($json, true, 215);
 
     json_decode($json, true, 122, JSON_THROW_ON_ERROR);
+
+    json_decode($json, true, 122, JSON_UNESCAPED_UNICODE);
 }
 
 ?>
@@ -26,6 +28,8 @@ function jsonThrowOnError()
     json_decode($json, true, 215, JSON_THROW_ON_ERROR);
 
     json_decode($json, true, 122, JSON_THROW_ON_ERROR);
+
+    json_decode($json, true, 122, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 }
 
 ?>
