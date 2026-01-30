@@ -2,9 +2,9 @@
 
 namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Fixture;
 
-use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\SomeAbstractTest;
+use Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source\SomeAbstractTestCase;
 
-final class SkipSetupPHPUnitAsClutter extends SomeAbstractTest
+final class SkipSetupPHPUnitAsClutter extends SomeAbstractTestCase
 {
     protected function setUp(): void
     {
