@@ -140,7 +140,8 @@ CODE_SAMPLE
             $arg = $funcCall->args[1];
             $flags = $this->getFlags($arg);
         }
-        if (!is_null($newArg = $this->getArgWithFlags($flags))) {
+        $newArg = $this->getArgWithFlags($flags);
+        if ($newArg instanceof Arg) {
             $this->hasChanged = true;
             $funcCall->args[1] = $newArg;
         }
@@ -165,7 +166,8 @@ CODE_SAMPLE
             $funcCall->args[2] = new Arg(new Int_(512));
         }
 
-        if (!is_null($newArg = $this->getArgWithFlags($flags))) {
+        $newArg = $this->getArgWithFlags($flags);
+        if ($newArg instanceof Arg) {
             $this->hasChanged = true;
             $funcCall->args[3] = $newArg;
         }
