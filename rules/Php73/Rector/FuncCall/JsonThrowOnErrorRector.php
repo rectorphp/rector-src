@@ -221,41 +221,27 @@ CODE_SAMPLE
     /**
      * @param string[] $flags
      */
-    private function getArgWithFlags(array $flags): Arg|null
+    private function getArgWithFlags(array $flags): ?Arg
     {
-        $oldNbFlags = count($flags);
-        $flags = array_values(array_unique([...$flags, ...self::FLAGS]));
-        $newNbFlags = count($flags);
-        if ($oldNbFlags === $newNbFlags) {
+        $originalCount = count($flags);
+        $flags = array_values(array_unique(array_merge($flags, self::FLAGS)));
+        if ($originalCount === count($flags)) {
             return null;
         }
-        if ($newNbFlags === 1) {
+        // Single flag
+        if (count($flags) === 1) {
             return new Arg($this->createConstFetch($flags[0]));
         }
-        $constFetches = [];
+        // Build FLAG_A | FLAG_B | FLAG_C
+        $expr = $this->createConstFetch(array_shift($flags));
+
         foreach ($flags as $flag) {
-            $constFetches[] = $this->createConstFetch($flag);
+            $expr = new Node\Expr\BinaryOp\BitwiseOr(
+                $expr,
+                $this->createConstFetch($flag)
+            );
         }
-        $result = null;
-        foreach ($constFetches as $i => $constFetch) {
-            if ($i === 1) {
-                continue;
-            }
-            if (is_null($result)) {
-                $result = new Node\Expr\BinaryOp\BitwiseOr(
-                    $constFetch,
-                    $constFetches[$i + 1],
-                );
-            } else {
-                $result = new Node\Expr\BinaryOp\BitwiseOr(
-                    $result,
-                    $constFetch
-                );
-            }
-        }
-        if (is_null($result)) {
-            return null;
-        }
-        return new Arg($result);
+
+        return new Arg($expr);
     }
 }
