@@ -6,6 +6,7 @@ namespace Rector\Php73\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
@@ -196,30 +197,23 @@ CODE_SAMPLE
      * @param string[] $flags
      * @return string[]
      */
-    private function getFlags(Arg|Node\Expr\BinaryOp\BitwiseOr|ConstFetch $arg, array $flags = []): array
+    private function getFlags(Expr|Arg $arg, array $flags = []): array
     {
-        if ($arg instanceof ConstFetch) {
-            $constFetch = $arg;
-        } else {
-            if ($arg instanceof Arg) {
-                $array = $arg->value->jsonSerialize();
-            } else {
-                $array = $arg->jsonSerialize();
-            }
-            if ($arg instanceof Arg && $arg->value instanceof ConstFetch) { // single flag
-                $constFetch = $arg->value;
-            } else { // multiple flag
-                $flags = $this->getFlags($array['left'], $flags);
-                $constFetch = $array['right'];
-            }
+        // Unwrap Arg
+        if ($arg instanceof Arg) {
+            $arg = $arg->value;
         }
-        if (!is_null($constFetch)) {
-            /** @var ConstFetch $constFetch */
-            $json = $constFetch->jsonSerialize();
-            if (isset($json['name']) && $json['name'] instanceof Name) {
-                $name = $json['name'];
-                $flags[] = $name->getFirst();
-            }
+
+        // Single flag: SOME_CONST
+        if ($arg instanceof ConstFetch) {
+            $flags[] = $arg->name->getFirst();
+            return $flags;
+        }
+
+        // Multiple flags: FLAG_A | FLAG_B | FLAG_C
+        if ($arg instanceof Node\Expr\BinaryOp\BitwiseOr) {
+            $flags = $this->getFlags($arg->left, $flags);
+            $flags = $this->getFlags($arg->right, $flags);
         }
         return $flags;
     }
