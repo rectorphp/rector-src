@@ -225,19 +225,19 @@ CODE_SAMPLE
         if ($newNbFlags === 1) {
             return new Arg($this->createConstFetch($flags[0]));
         }
-        $constFetchs = [];
+        $constFetches = [];
         foreach ($flags as $flag) {
-            $constFetchs[] = $this->createConstFetch($flag);
+            $constFetches[] = $this->createConstFetch($flag);
         }
         $result = null;
-        foreach ($constFetchs as $i => $constFetch) {
+        foreach ($constFetches as $i => $constFetch) {
             if ($i === 1) {
                 continue;
             }
             if (is_null($result)) {
                 $result = new Node\Expr\BinaryOp\BitwiseOr(
                     $constFetch,
-                    $constFetchs[$i + 1],
+                    $constFetches[$i + 1],
                 );
             } else {
                 $result = new Node\Expr\BinaryOp\BitwiseOr(
