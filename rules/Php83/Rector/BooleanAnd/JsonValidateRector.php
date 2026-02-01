@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php83\Rector\BooleanAnd;
 
-use PhpParser\Node\Identifier;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
@@ -12,6 +11,7 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\Php71\ValueObject\TwoNodeMatch;
@@ -100,7 +100,7 @@ CODE_SAMPLE
         foreach ($args as $index => $arg) {
             if ($arg instanceof Arg && (
                 ($arg->name instanceof Identifier && $arg->name->toString() === 'associative') ||
-                (!$arg->name instanceof Identifier && $index === 1)
+                (! $arg->name instanceof Identifier && $index === 1)
             )) {
                 unset($funcCall->args[$index]);
                 break;
