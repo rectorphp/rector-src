@@ -32,14 +32,12 @@ final readonly class DeadVarTagValueNodeAnalyzer
 
     public function isDead(VarTagValueNode $varTagValueNode, Property|ClassConst|Expression $node): bool
     {
-        if (! $node instanceof Expression) {
-            if (! $node->type instanceof Node) {
-                return false;
-            }
+        if (! $node instanceof Expression && ! $node->type instanceof Node) {
+            return false;
+        }
 
-            if ($varTagValueNode->description !== '') {
-                return false;
-            }
+        if ($varTagValueNode->description !== '') {
+            return false;
         }
 
         $targetNode = $node instanceof Expression
