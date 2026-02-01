@@ -32,7 +32,7 @@ final readonly class VarTagRemover
     ) {
     }
 
-    public function removeVarTagIfUseless(PhpDocInfo $phpDocInfo, Property|ClassConst $property): bool
+    public function removeVarTagIfUseless(PhpDocInfo $phpDocInfo, Property|ClassConst|Expression $property): bool
     {
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $varTagValueNode instanceof VarTagValueNode) {

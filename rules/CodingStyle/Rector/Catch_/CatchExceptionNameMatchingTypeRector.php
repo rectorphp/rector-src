@@ -108,7 +108,6 @@ CODE_SAMPLE
             /** @var Variable $catchVar */
             $catchVar = $catch->var;
 
-            /** @var string $oldVariableName */
             $oldVariableName = (string) $this->getName($catchVar);
 
             $typeShortName = $this->resolveVariableName($catch->types[0]);

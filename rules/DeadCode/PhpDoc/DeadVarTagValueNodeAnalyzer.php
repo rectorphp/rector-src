@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rector\DeadCode\PhpDoc;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -15,6 +18,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\DeadCode\PhpDoc\Guard\TemplateTypeRemovalGuard;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final readonly class DeadVarTagValueNodeAnalyzer
@@ -22,17 +26,30 @@ final readonly class DeadVarTagValueNodeAnalyzer
     public function __construct(
         private TypeComparator $typeComparator,
         private StaticTypeMapper $staticTypeMapper,
-        private TemplateTypeRemovalGuard $templateTypeRemovalGuard
+        private TemplateTypeRemovalGuard $templateTypeRemovalGuard,
     ) {
     }
 
-    public function isDead(VarTagValueNode $varTagValueNode, Property|ClassConst $property): bool
+    public function isDead(VarTagValueNode $varTagValueNode, Property|ClassConst|Expression $node): bool
     {
-        if (! $property->type instanceof Node) {
+        if (! $node instanceof Expression && ! $node->type instanceof Node) {
             return false;
         }
 
         if ($varTagValueNode->description !== '') {
+            return false;
+        }
+
+        $targetNode = null;
+
+        if ($node instanceof Expression && $node->expr instanceof Assign) {
+            $targetNode = $node->expr->expr;
+        } elseif ($node instanceof Property || $node instanceof ClassConst) {
+            $targetNode = $node->type;
+        }
+
+        // allow Identifier, ComplexType, and Name on Property and ClassConst
+        if (! $targetNode instanceof Node) {
             return false;
         }
 
@@ -41,8 +58,22 @@ final readonly class DeadVarTagValueNodeAnalyzer
         }
 
         // is strict type superior to doc type? keep strict type only
-        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
-        $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);
+        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($targetNode);
+        $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $node);
+
+        if ($node instanceof Expression) {
+            $scope = ScopeFetcher::fetch($node);
+
+            // only allow Expr on assign expr
+            if (! $targetNode instanceof Expr) {
+                return false;
+            }
+
+            $nativeType = $scope->getNativeType($targetNode);
+            if (! $docType->equals($nativeType)) {
+                return false;
+            }
+        }
 
         if (! $this->templateTypeRemovalGuard->isLegal($docType)) {
             return false;
@@ -59,9 +90,9 @@ final readonly class DeadVarTagValueNodeAnalyzer
         }
 
         if ($this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(
-            $property->type,
+            $targetNode,
             $varTagValueNode->type,
-            $property
+            $node
         )) {
             return true;
         }
