@@ -45,6 +45,15 @@ final readonly class DeadVarTagValueNodeAnalyzer
             ? $node->expr
             : $node->type;
 
+        if ($node instanceof Expression) {
+            $varType = $this->nodeTypeResolver->getType($targetNode);
+            $nativeType = $this->nodeTypeResolver->getNativeType($targetNode);
+
+            if (! $varType->equals($nativeType)) {
+                return false;
+            }
+        }
+
         if ($varTagValueNode->type instanceof GenericTypeNode) {
             return false;
         }
