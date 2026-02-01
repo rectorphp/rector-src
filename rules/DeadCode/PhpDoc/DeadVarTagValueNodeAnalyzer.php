@@ -53,6 +53,15 @@ final readonly class DeadVarTagValueNodeAnalyzer
             return false;
         }
 
+        if ($varTagValueNode->type instanceof GenericTypeNode) {
+            return false;
+        }
+
+        // is strict type superior to doc type? keep strict type only
+        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($targetNode);
+        $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $node);
+
+
         if ($node instanceof Expression) {
             $scope = ScopeFetcher::fetch($node);
 
@@ -61,21 +70,11 @@ final readonly class DeadVarTagValueNodeAnalyzer
                 return false;
             }
 
-            $varType = $scope->getType($targetNode);
             $nativeType = $scope->getNativeType($targetNode);
-
-            if (! $varType->equals($nativeType)) {
+            if (! $docType->equals($nativeType)) {
                 return false;
             }
         }
-
-        if ($varTagValueNode->type instanceof GenericTypeNode) {
-            return false;
-        }
-
-        // is strict type superior to doc type? keep strict type only
-        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($targetNode);
-        $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $node);
 
         if (! $this->templateTypeRemovalGuard->isLegal($docType)) {
             return false;
