@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
@@ -64,10 +63,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node instanceof Expression && ! $node->expr instanceof Assign) {
-            return null;
-        }
-
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $hasChanged = $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
