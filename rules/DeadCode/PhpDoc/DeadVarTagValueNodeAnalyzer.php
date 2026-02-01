@@ -6,6 +6,7 @@ namespace Rector\DeadCode\PhpDoc;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
@@ -16,8 +17,8 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\DeadCode\PhpDoc\Guard\TemplateTypeRemovalGuard;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final readonly class DeadVarTagValueNodeAnalyzer
@@ -26,7 +27,6 @@ final readonly class DeadVarTagValueNodeAnalyzer
         private TypeComparator $typeComparator,
         private StaticTypeMapper $staticTypeMapper,
         private TemplateTypeRemovalGuard $templateTypeRemovalGuard,
-        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -40,14 +40,29 @@ final readonly class DeadVarTagValueNodeAnalyzer
             return false;
         }
 
-        /** @var Expr $targetNode */
-        $targetNode = $node instanceof Expression
-            ? $node->expr
-            : $node->type;
+        $targetNode = null;
+
+        if ($node instanceof Expression && $node->expr instanceof Assign) {
+            $targetNode = $node->expr->expr;
+        } elseif ($node instanceof Property || $node instanceof ClassConst) {
+            $targetNode = $node->type;
+        }
+
+        // allow Identifier, ComplexType, and Name on Property and ClassConst
+        if (! $targetNode instanceof Node) {
+            return false;
+        }
 
         if ($node instanceof Expression) {
-            $varType = $this->nodeTypeResolver->getType($targetNode);
-            $nativeType = $this->nodeTypeResolver->getNativeType($targetNode);
+            $scope = ScopeFetcher::fetch($node);
+
+            // only allow Expr on assign expr
+            if (! $targetNode instanceof Expr) {
+                return false;
+            }
+
+            $varType = $scope->getType($targetNode);
+            $nativeType = $scope->getNativeType($targetNode);
 
             if (! $varType->equals($nativeType)) {
                 return false;
