@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\PhpDoc;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
@@ -46,6 +47,10 @@ final readonly class DeadVarTagValueNodeAnalyzer
             : $node->type;
 
         if ($node instanceof Expression) {
+            if (! $targetNode instanceof Expr) {
+                return false;
+            }
+
             $varType = $this->nodeTypeResolver->getType($targetNode);
             $nativeType = $this->nodeTypeResolver->getNativeType($targetNode);
 
