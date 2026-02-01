@@ -61,7 +61,6 @@ final readonly class DeadVarTagValueNodeAnalyzer
         $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($targetNode);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $node);
 
-
         if ($node instanceof Expression) {
             $scope = ScopeFetcher::fetch($node);
 
