@@ -40,15 +40,12 @@ final readonly class DeadVarTagValueNodeAnalyzer
             return false;
         }
 
+        /** @var Expr $targetNode */
         $targetNode = $node instanceof Expression
             ? $node->expr
             : $node->type;
 
         if ($node instanceof Expression) {
-            if (! $targetNode instanceof Expr) {
-                return false;
-            }
-
             $varType = $this->nodeTypeResolver->getType($targetNode);
             $nativeType = $this->nodeTypeResolver->getNativeType($targetNode);
 
