@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Composer\ValueObject;
 
+/**
+ * @api
+ */
 final readonly class InstalledPackage
 {
     public function __construct(
