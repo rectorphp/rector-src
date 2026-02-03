@@ -524,6 +524,10 @@ final readonly class PHPStanNodeScopeResolver
         }
 
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+        if ($arrayItem->value instanceof List_) {
+            $this->processArray($arrayItem->value, $mutatingScope);
+        }
     }
 
     /**
