@@ -36,7 +36,7 @@
         "symfony/console": "^6.4.24",
         "symfony/filesystem": "^7.0",
         "symfony/finder": "^6.4",
-        "symfony/process": "^6.4|7.0.*",
+        "symfony/process": "^6.4|^7.4",
         "symplify/easy-parallel": "^11.2.2",
         "symplify/rule-doc-generator-contracts": "^11.2",
         "webmozart/assert": "^2.1"
