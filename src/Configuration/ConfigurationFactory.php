@@ -87,6 +87,8 @@ final readonly class ConfigurationFactory
 
         $levelOverflows = SimpleParameterProvider::provideArrayParameter(Option::LEVEL_OVERFLOWS);
 
+        $showRulesSummary = (bool) $input->getOption(Option::RULES_SUMMARY);
+
         return new Configuration(
             $isDryRun,
             $showProgressBar,
@@ -104,6 +106,7 @@ final readonly class ConfigurationFactory
             $onlyRule,
             $onlySuffix,
             $levelOverflows,
+            $showRulesSummary,
         );
     }
 
