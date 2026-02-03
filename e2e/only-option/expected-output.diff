@@ -4,7 +4,7 @@
 1) src/MultiRules.php:10
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 10 @@
              echo 'a statement';
          }
      }

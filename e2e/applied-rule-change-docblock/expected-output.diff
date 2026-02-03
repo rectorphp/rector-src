@@ -4,7 +4,7 @@
 1) src/RenameDocblock.php:1
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 1 @@
  <?php
 
  /**
@@ -22,7 +22,7 @@ Applied rules:
 2) src/UselessVarTag.php:2
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 2 @@
 
  final class UselessVarTag
  {
