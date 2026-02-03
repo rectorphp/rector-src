@@ -1,0 +1,22 @@
+1 file with changes
+===================
+
+1) src/SomeClass.php:4
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class SomeClass
+ {
+-    /**
+-     * @var string
+-     */
+     public string $name = 'name';
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUselessVarTagRector
+
+
+ [OK] 1 file would have been changed (dry-run) by Rector

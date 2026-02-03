@@ -10,10 +10,14 @@ use Webmozart\Assert\Assert;
 
 final class RectorConfigsResolver
 {
+    public const string DEFAULT_CONFIG_FILE = 'rector.php';
+
+    public const string DEFAULT_DIST_CONFIG_FILE = 'rector.dist.php';
+
     public function provide(): BootstrapConfigs
     {
         $argvInput = new ArgvInput();
-        $mainConfigFile = $this->resolveFromInputWithFallback($argvInput, 'rector.php');
+        $mainConfigFile = $this->resolveFromInputWithFallback($argvInput);
 
         return new BootstrapConfigs($mainConfigFile, []);
     }
@@ -30,14 +34,20 @@ final class RectorConfigsResolver
         return realpath($configFile);
     }
 
-    private function resolveFromInputWithFallback(ArgvInput $argvInput, string $fallbackFile): ?string
+    private function resolveFromInputWithFallback(ArgvInput $argvInput): ?string
     {
         $configFile = $this->resolveFromInput($argvInput);
         if ($configFile !== null) {
             return $configFile;
         }
 
-        return $this->createFallbackFileInfoIfFound($fallbackFile);
+        // Try rector.php first, then fall back to rector.dist.php
+        $rectorConfigFile = $this->createFallbackFileInfoIfFound(self::DEFAULT_CONFIG_FILE);
+        if ($rectorConfigFile !== null) {
+            return $rectorConfigFile;
+        }
+
+        return $this->createFallbackFileInfoIfFound(self::DEFAULT_DIST_CONFIG_FILE);
     }
 
     private function createFallbackFileInfoIfFound(string $fallbackFile): ?string
