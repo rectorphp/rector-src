@@ -93,7 +93,7 @@ final readonly class InflectorSingularResolver
             if (in_array($camelCase[self::CAMELCASE], ['is', 'has', 'cms', 'this'], true)) {
                 $value = $camelCase[self::CAMELCASE];
             } else {
-                $value = $this->inflector->singularize($camelCase[self::CAMELCASE]);
+                $value = $this->inflector->singularize((string) $camelCase[self::CAMELCASE]);
             }
 
             $resolvedName .= $value;

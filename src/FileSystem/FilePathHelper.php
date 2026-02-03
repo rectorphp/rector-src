@@ -62,6 +62,7 @@ final readonly class FilePathHelper
         $pathRoot = str_starts_with($path, '/') ? $directorySeparator : '';
         $pathParts = explode('/', trim($path, '/'));
 
+        /** @var string $scheme */
         $normalizedPathParts = $this->normalizePathParts($pathParts, $scheme);
 
         $pathStart = ($scheme !== self::SCHEME_UNDEFINED ? $scheme . '://' : '');
