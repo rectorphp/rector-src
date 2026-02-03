@@ -40,19 +40,17 @@ final readonly class ComposerTriggeredSet implements SetInterface
     }
 
     /**
-     * @param InstalledPackage[] $installedPackages
+     * @param array<string, InstalledPackage> $installedPackages
      */
     public function matchInstalledPackages(array $installedPackages): bool
     {
-        foreach ($installedPackages as $installedPackage) {
-            if ($installedPackage->getName() !== $this->packageName) {
-                continue;
-            }
+        $installedVersion = ($installedPackages[$this->packageName] ?? null)?->getVersion();
 
-            return Semver::satisfies($installedPackage->getVersion(), '^' . $this->version);
+        if ($installedVersion === null) {
+            return false;
         }
 
-        return false;
+        return Semver::satisfies($installedVersion, '^' . $this->version);
     }
 
     public function getName(): string
