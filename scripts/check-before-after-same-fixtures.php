@@ -59,7 +59,7 @@ final readonly class SameBeforeAfterFixtureDetector
             return false;
         }
 
-        return trim((string) $parts[0]) === trim((string) $parts[1]);
+        return trim($parts[0]) === trim($parts[1]);
     }
 }
 

@@ -96,7 +96,7 @@ final readonly class RegexMatcher
             return null;
         }
 
-        if (! \str_contains((string) $matches['modifiers'], 'e')) {
+        if (! \str_contains($matches['modifiers'], 'e')) {
             return null;
         }
 
