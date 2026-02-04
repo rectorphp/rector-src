@@ -7,6 +7,7 @@ namespace Rector\Php73\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
@@ -26,8 +27,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersionInterface
 {
-    private bool $hasChanged = false;
     private const array FLAGS = ['JSON_THROW_ON_ERROR'];
+
+    private bool $hasChanged = false;
 
     public function __construct(
         private readonly ValueResolver $valueResolver,
@@ -140,11 +142,13 @@ CODE_SAMPLE
             $arg = $funcCall->args[1];
             $flags = $this->getFlags($arg);
         }
+
         $newArg = $this->getArgWithFlags($flags);
         if ($newArg instanceof Arg) {
             $this->hasChanged = true;
             $funcCall->args[1] = $newArg;
         }
+
         return $funcCall;
     }
 
@@ -171,6 +175,7 @@ CODE_SAMPLE
             $this->hasChanged = true;
             $funcCall->args[3] = $newArg;
         }
+
         return $funcCall;
     }
 
@@ -213,10 +218,11 @@ CODE_SAMPLE
         }
 
         // Multiple flags: FLAG_A | FLAG_B | FLAG_C
-        if ($arg instanceof Node\Expr\BinaryOp\BitwiseOr) {
+        if ($arg instanceof BitwiseOr) {
             $flags = $this->getFlags($arg->left, $flags);
             $flags = $this->getFlags($arg->right, $flags);
         }
+
         return array_values(array_unique($flags)); // array_unique in case the same flag is written multiple times
     }
 
@@ -230,18 +236,17 @@ CODE_SAMPLE
         if ($originalCount === count($flags)) {
             return null;
         }
+
         // Single flag
         if (count($flags) === 1) {
             return new Arg($this->createConstFetch($flags[0]));
         }
+
         // Build FLAG_A | FLAG_B | FLAG_C
         $expr = $this->createConstFetch(array_shift($flags));
 
         foreach ($flags as $flag) {
-            $expr = new Node\Expr\BinaryOp\BitwiseOr(
-                $expr,
-                $this->createConstFetch($flag)
-            );
+            $expr = new BitwiseOr($expr, $this->createConstFetch($flag));
         }
 
         return new Arg($expr);
