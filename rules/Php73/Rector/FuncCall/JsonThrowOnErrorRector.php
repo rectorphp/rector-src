@@ -6,6 +6,7 @@ namespace Rector\Php73\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
@@ -26,6 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersionInterface
 {
     private bool $hasChanged = false;
+    private const array FLAGS = ['JSON_THROW_ON_ERROR'];
 
     public function __construct(
         private readonly ValueResolver $valueResolver,
@@ -61,9 +63,6 @@ CODE_SAMPLE
         return NodeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param StmtsAware $node
-     */
     public function refactor(Node $node): ?Node
     {
         // if found, skip it :)
@@ -133,22 +132,29 @@ CODE_SAMPLE
         return $this->isFirstValueStringOrArray($funcCall);
     }
 
-    private function processJsonEncode(FuncCall $funcCall): ?FuncCall
+    private function processJsonEncode(FuncCall $funcCall): FuncCall
     {
+        $flags = [];
         if (isset($funcCall->args[1])) {
-            return null;
+            /** @var Arg $arg */
+            $arg = $funcCall->args[1];
+            $flags = $this->getFlags($arg);
         }
-
-        $this->hasChanged = true;
-
-        $funcCall->args[1] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
+        $newArg = $this->getArgWithFlags($flags);
+        if ($newArg instanceof Arg) {
+            $this->hasChanged = true;
+            $funcCall->args[1] = $newArg;
+        }
         return $funcCall;
     }
 
-    private function processJsonDecode(FuncCall $funcCall): ?FuncCall
+    private function processJsonDecode(FuncCall $funcCall): FuncCall
     {
+        $flags = [];
         if (isset($funcCall->args[3])) {
-            return null;
+            /** @var Arg $arg */
+            $arg = $funcCall->args[3];
+            $flags = $this->getFlags($arg);
         }
 
         // set default to inter-args
@@ -160,9 +166,11 @@ CODE_SAMPLE
             $funcCall->args[2] = new Arg(new Int_(512));
         }
 
-        $this->hasChanged = true;
-        $funcCall->args[3] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
-
+        $newArg = $this->getArgWithFlags($flags);
+        if ($newArg instanceof Arg) {
+            $this->hasChanged = true;
+            $funcCall->args[3] = $newArg;
+        }
         return $funcCall;
     }
 
@@ -185,5 +193,57 @@ CODE_SAMPLE
         }
 
         return is_array($value);
+    }
+
+    /**
+     * @param string[] $flags
+     * @return string[]
+     */
+    private function getFlags(Expr|Arg $arg, array $flags = []): array
+    {
+        // Unwrap Arg
+        if ($arg instanceof Arg) {
+            $arg = $arg->value;
+        }
+
+        // Single flag: SOME_CONST
+        if ($arg instanceof ConstFetch) {
+            $flags[] = $arg->name->getFirst();
+            return $flags;
+        }
+
+        // Multiple flags: FLAG_A | FLAG_B | FLAG_C
+        if ($arg instanceof Node\Expr\BinaryOp\BitwiseOr) {
+            $flags = $this->getFlags($arg->left, $flags);
+            $flags = $this->getFlags($arg->right, $flags);
+        }
+        return array_values(array_unique($flags)); // array_unique in case the same flag is written multiple times
+    }
+
+    /**
+     * @param string[] $flags
+     */
+    private function getArgWithFlags(array $flags): ?Arg
+    {
+        $originalCount = count($flags);
+        $flags = array_values(array_unique(array_merge($flags, self::FLAGS)));
+        if ($originalCount === count($flags)) {
+            return null;
+        }
+        // Single flag
+        if (count($flags) === 1) {
+            return new Arg($this->createConstFetch($flags[0]));
+        }
+        // Build FLAG_A | FLAG_B | FLAG_C
+        $expr = $this->createConstFetch(array_shift($flags));
+
+        foreach ($flags as $flag) {
+            $expr = new Node\Expr\BinaryOp\BitwiseOr(
+                $expr,
+                $this->createConstFetch($flag)
+            );
+        }
+
+        return new Arg($expr);
     }
 }
