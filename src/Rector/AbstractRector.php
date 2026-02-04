@@ -60,14 +60,11 @@ CODE_SAMPLE;
 
     protected NodeComparator $nodeComparator;
 
-<<<<<<< HEAD
     /**
      * @deprecated Use getFile() instead.
      */
     protected File $file;
 
-=======
->>>>>>> 7556383dcf ([experiment] skip beforeTraverse() and afterTraverse() as never used)
     protected Skipper $skipper;
 
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
