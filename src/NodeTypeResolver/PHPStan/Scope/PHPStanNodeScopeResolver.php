@@ -333,11 +333,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof ArrayItem) {
-                $this->processArrayItem($node, $mutatingScope);
-                return;
-            }
-
             if ($node instanceof NullableType) {
                 $node->type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
