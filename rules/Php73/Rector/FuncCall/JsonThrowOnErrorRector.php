@@ -217,7 +217,7 @@ CODE_SAMPLE
             $flags = $this->getFlags($arg->left, $flags);
             $flags = $this->getFlags($arg->right, $flags);
         }
-        return array_values(array_unique($flags)); // array_unique is case the same flag is written multiple times
+        return array_values(array_unique($flags)); // array_unique in case the same flag is written multiple times
     }
 
     /**
