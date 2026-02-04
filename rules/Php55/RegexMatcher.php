@@ -41,7 +41,6 @@ final readonly class RegexMatcher
                 default => $delimiter
             };
 
-            /** @var string $modifiers */
             $modifiers = $this->resolveModifiers((string) Strings::after($pattern, $delimiter, -1));
             if (! \str_contains($modifiers, 'e')) {
                 return null;
@@ -97,7 +96,7 @@ final readonly class RegexMatcher
             return null;
         }
 
-        if (! \str_contains((string) $matches['modifiers'], 'e')) {
+        if (! \str_contains($matches['modifiers'], 'e')) {
             return null;
         }
 

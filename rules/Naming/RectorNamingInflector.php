@@ -26,7 +26,7 @@ final readonly class RectorNamingInflector
             return $this->inflector->singularize($name);
         }
 
-        $singularized = $this->inflector->singularize($matches['prefix']);
+        $singularized = $this->inflector->singularize((string) $matches['prefix']);
         $uninflectable = $matches['suffix'];
 
         return $singularized . $uninflectable;

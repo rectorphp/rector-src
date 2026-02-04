@@ -108,7 +108,6 @@ CODE_SAMPLE
             /** @var Variable $catchVar */
             $catchVar = $catch->var;
 
-            /** @var string $oldVariableName */
             $oldVariableName = (string) $this->getName($catchVar);
 
             $typeShortName = $this->resolveVariableName($catch->types[0]);
@@ -171,7 +170,7 @@ CODE_SAMPLE
             lcfirst($typeShortName),
             self::STARTS_WITH_ABBREVIATION_REGEX,
             static function (array $matches): string {
-                $output = isset($matches[1]) ? strtolower((string) $matches[1]) : '';
+                $output = isset($matches[1]) ? strtolower($matches[1]) : '';
                 $output .= $matches[2] ?? '';
 
                 return $output . ($matches[3] ?? '');

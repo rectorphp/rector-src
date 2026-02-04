@@ -159,7 +159,7 @@ final readonly class InlineCodeParser
         return Strings::replace(
             $string,
             self::VARIABLE_IN_SINGLE_QUOTED_REGEX,
-            static fn (array $match) => $match['variable']
+            static fn (array $match): string => (string) $match['variable']
         );
     }
 }

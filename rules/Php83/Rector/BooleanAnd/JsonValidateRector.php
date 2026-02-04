@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\Php71\ValueObject\TwoNodeMatch;
@@ -98,8 +99,8 @@ CODE_SAMPLE
         // Remove associative argument (position 1 or named) - json_validate does not have this param
         foreach ($args as $index => $arg) {
             if ($arg instanceof Arg && (
-                ($arg->name !== null && $arg->name->toString() === 'associative') ||
-                ($arg->name === null && $index === 1)
+                ($arg->name instanceof Identifier && $arg->name->toString() === 'associative') ||
+                (! $arg->name instanceof Identifier && $index === 1)
             )) {
                 unset($funcCall->args[$index]);
                 break;
