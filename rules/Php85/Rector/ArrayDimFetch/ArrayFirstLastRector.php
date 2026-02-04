@@ -179,7 +179,6 @@ CODE_SAMPLE
         if ($scope->isInExpressionAssign($arrayDimFetch)) {
             return true;
         }
-<<<<<<< HEAD
 
         if ($arrayDimFetch->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
             return true;
@@ -189,8 +188,6 @@ CODE_SAMPLE
             return true;
         }
 
-=======
->>>>>>> ce85ccbfcc (fixup! [experiment] skip beforeTraverse() and afterTraverse() as never used)
         return (bool) $arrayDimFetch->getAttribute(AttributeKey::IS_UNSET_VAR);
     }
 }

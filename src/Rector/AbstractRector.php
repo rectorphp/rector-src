@@ -35,9 +35,6 @@ use Rector\PhpParser\Node\NodeFactory;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
-/**
- * @property-read File $file @deprecated Use $this->getFile() instead
- */
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
     private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
@@ -60,14 +57,11 @@ CODE_SAMPLE;
 
     protected NodeComparator $nodeComparator;
 
-<<<<<<< HEAD
     /**
      * @deprecated Use getFile() instead.
      */
     protected File $file;
 
-=======
->>>>>>> 7556383dcf ([experiment] skip beforeTraverse() and afterTraverse() as never used)
     protected Skipper $skipper;
 
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
@@ -79,16 +73,6 @@ CODE_SAMPLE;
     private CommentsMerger $commentsMerger;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
-
-    public function __get(string $name): mixed
-    {
-        if ($name === 'file') {
-            return $this->getFile();
-        }
-
-        // fallback to default behavior
-        return $this->{$name};
-    }
 
     public function autowire(
         NodeNameResolver $nodeNameResolver,
@@ -130,12 +114,14 @@ CODE_SAMPLE;
      */
     final public function enterNode(Node $node): int|Node|null|array
     {
-        if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->getFile()->containsHTML()) {
+        // keep $this->file populated for BC; refactor() is only ever reached through here
+        $file = $this->file = $this->getFile();
+
+        if (is_a($this, HTMLAverseRectorInterface::class, true) && $file->containsHTML()) {
             return null;
         }
 
-        $filePath = $this->getFile()
-            ->getFilePath();
+        $filePath = $file->getFilePath();
         if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
             return null;
         }
@@ -168,8 +154,7 @@ CODE_SAMPLE;
 
             // notify this rule changed code
             $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
-            $this->getFile()
-                ->addRectorClassWithLine($rectorWithLineChange);
+            $file->addRectorClassWithLine($rectorWithLineChange);
 
             return $refactoredNodeOrState;
         }
