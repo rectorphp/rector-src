@@ -152,7 +152,7 @@ CODE_SAMPLE
     {
         $flags = [];
         if (isset($funcCall->args[3])) {
-            /** @var Arg|Node\Expr\BinaryOp\BitwiseOr|ConstFetch $arg */
+            /** @var Arg $arg */
             $arg = $funcCall->args[3];
             $flags = $this->getFlags($arg);
         }
