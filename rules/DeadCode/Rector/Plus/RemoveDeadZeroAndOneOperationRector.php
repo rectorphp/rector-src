@@ -194,6 +194,7 @@ CODE_SAMPLE
                     return false;
                 }
 
+                // handle space before open parentheses
                 if (trim((string) $oldTokens[$startTokenPos]) === '') {
                     continue;
                 }
