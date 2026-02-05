@@ -201,7 +201,7 @@ CODE_SAMPLE
                 return (string) $oldTokens[$startTokenPos] === '(';
             }
 
-            return true;
+            return false;
         }
 
         return false;
