@@ -72,6 +72,10 @@ final readonly class ArrayCallableMethodMatcher
             return null;
         }
 
+        if ($array->getAttribute(AttributeKey::IS_ARG_VALUE) === true) {
+            return null;
+        }
+
         $values = $this->valueResolver->getValue($array);
         $className = $callerType->getClassName();
         $secondItemValue = $items[1]->value;
