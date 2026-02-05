@@ -2,12 +2,11 @@
 
 namespace Rector\Tests\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector\Fixture;
 
-class WithParentheses
+class MultiplyFunctionCall
 {
-    public function run()
+    public function run(string $a)
     {
-        $a = 1 * (2 + 3) * 4;
-        $a = 1 * ( 2 + 3 ) * 4;
+        $b = 1 * strlen($a) * 4;
     }
 }
 
@@ -17,12 +16,11 @@ class WithParentheses
 
 namespace Rector\Tests\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector\Fixture;
 
-class WithParentheses
+class MultiplyFunctionCall
 {
-    public function run()
+    public function run(string $a)
     {
-        $a = (2 + 3) * 4;
-        $a = (2 + 3) * 4;
+        $b = strlen($a) * 4;
     }
 }
 
