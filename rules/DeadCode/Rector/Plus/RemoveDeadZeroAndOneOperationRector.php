@@ -183,7 +183,28 @@ CODE_SAMPLE
         $oldTokens = $file->getOldTokens();
         $endTokenPost = $mul->getEndTokenPos();
 
-        return isset($oldTokens[$endTokenPost]) && (string) $oldTokens[$endTokenPost] === ')';
+        if (isset($oldTokens[$endTokenPost]) && (string) $oldTokens[$endTokenPost] === ')') {
+            $startTokenPos = $mul->right->getStartTokenPos();
+            $previousEndTokenPost = $mul->left->getEndTokenPos();
+
+            while ($startTokenPos > $previousEndTokenPost) {
+                --$startTokenPos;
+
+                if (! isset($oldTokens[$startTokenPos])) {
+                    return false;
+                }
+
+                if (trim((string) $oldTokens[$startTokenPos]) === '') {
+                    continue;
+                }
+
+                return (string) $oldTokens[$startTokenPos] === '(';
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     private function processBinaryMulAndDiv(Mul | Div $binaryOp): ?Expr
