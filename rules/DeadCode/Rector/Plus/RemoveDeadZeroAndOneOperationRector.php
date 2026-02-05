@@ -176,6 +176,10 @@ CODE_SAMPLE
 
     private function isMulParenthesized(File $file, Mul $mul): bool
     {
+        if (! $mul->right instanceof BinaryOp) {
+            return false;
+        }
+
         $oldTokens = $file->getOldTokens();
         $endTokenPost = $mul->getEndTokenPos();
 
