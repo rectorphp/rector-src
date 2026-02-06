@@ -32,14 +32,14 @@ final readonly class VarTagRemover
     ) {
     }
 
-    public function removeVarTagIfUseless(PhpDocInfo $phpDocInfo, Property|ClassConst|Expression $property): bool
+    public function removeVarTagIfUseless(PhpDocInfo $phpDocInfo, Property|ClassConst|Expression $node): bool
     {
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $varTagValueNode instanceof VarTagValueNode) {
             return false;
         }
 
-        $isVarTagValueDead = $this->deadVarTagValueNodeAnalyzer->isDead($varTagValueNode, $property);
+        $isVarTagValueDead = $this->deadVarTagValueNodeAnalyzer->isDead($varTagValueNode, $node);
         if (! $isVarTagValueDead) {
             return false;
         }
@@ -48,8 +48,8 @@ final readonly class VarTagRemover
             return false;
         }
 
-        $phpDocInfo->removeByType(VarTagValueNode::class);
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+        $phpDocInfo->removeByType(VarTagValueNode::class, $varTagValueNode->variableName);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return true;
     }

@@ -254,6 +254,10 @@ final class PhpDocInfo
     {
         $hasChanged = false;
 
+        if ($name === '') {
+            $name = null;
+        }
+
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', static function (Node $node) use (
             $typeToRemove,
