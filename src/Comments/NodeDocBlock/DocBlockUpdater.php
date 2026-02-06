@@ -43,7 +43,26 @@ final readonly class DocBlockUpdater
 
     private function setCommentsAttribute(Node $node): void
     {
-        $comments = array_filter($node->getComments(), static fn (Comment $comment): bool => ! $comment instanceof Doc);
+        $docComment = $node->getDocComment();
+        $docCommentText = $docComment instanceof Doc ? $docComment->getText() : null;
+
+        $comments = array_filter(
+            $node->getComments(),
+            static function (Comment $comment) use ($docCommentText): bool {
+                if (! $comment instanceof Doc) {
+                    return true;
+                }
+
+                // remove only the docblock that belongs to the node itself;
+                // keep other preceding docblocks (possible with multiple @var docblocks before a statement)
+                if ($docCommentText !== null && $comment->getText() === $docCommentText) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
+
         $node->setAttribute(AttributeKey::COMMENTS, array_values($comments));
     }
 
