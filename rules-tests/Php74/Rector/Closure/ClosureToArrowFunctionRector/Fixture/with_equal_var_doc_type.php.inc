@@ -14,18 +14,3 @@ class WithEqualVarDocType
 }
 
 ?>
------
-<?php
-
-namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
-
-class WithEqualVarDocType
-{
-    public function run()
-    {
-        /** @var string $var */
-        fn(string $var) => $var;
-    }
-}
-
-?>
