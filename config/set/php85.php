@@ -16,6 +16,7 @@ use Rector\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector;
 use Rector\Php85\Rector\FuncCall\ChrArgModuloRector;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Php85\Rector\FuncCall\RemoveFinfoBufferContextArgRector;
+use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
 use Rector\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector;
 use Rector\Php85\Rector\Switch_\ColonAfterSwitchCaseRector;
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
@@ -43,6 +44,7 @@ return static function (RectorConfig $rectorConfig): void {
         OrdSingleByteRector::class,
         WakeupToUnserializeRector::class,
         ShellExecFunctionCallOverBackticksRector::class,
+        AddOverrideAttributeToOverriddenPropertiesRector::class,
     ]);
 
     $rectorConfig->ruleWithConfiguration(
