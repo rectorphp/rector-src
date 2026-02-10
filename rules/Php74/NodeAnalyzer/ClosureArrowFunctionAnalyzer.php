@@ -55,7 +55,7 @@ final readonly class ClosureArrowFunctionAnalyzer
             return null;
         }
 
-        if ($this->shouldSkipMoreSpecificTypeWithVarDoc($return, $return->expr)) {
+        if ($this->shouldSkipMoreSpecificTypeWithVarDoc($return)) {
             return null;
         }
 
@@ -92,7 +92,7 @@ final readonly class ClosureArrowFunctionAnalyzer
      * Ensure @var doc usage to be skipped, as arrow functions do not support
      * inline @var annotations for type narrowing (e.g. generic types like Builder<Team>)
      */
-    private function shouldSkipMoreSpecificTypeWithVarDoc(Return_ $return, Expr $expr): bool
+    private function shouldSkipMoreSpecificTypeWithVarDoc(Return_ $return): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($return);
 

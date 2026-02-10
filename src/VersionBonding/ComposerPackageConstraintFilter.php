@@ -9,6 +9,9 @@ use Rector\Composer\InstalledPackageResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 
+/**
+ * @see \Rector\Tests\VersionBonding\ComposerPackageConstraintFilterTest
+ */
 final readonly class ComposerPackageConstraintFilter
 {
     public function __construct(

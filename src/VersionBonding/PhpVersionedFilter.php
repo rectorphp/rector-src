@@ -10,6 +10,9 @@ use Rector\Php\PolyfillPackagesProvider;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
 
+/**
+ * @see \Rector\Tests\VersionBonding\PhpVersionedFilterTest
+ */
 final readonly class PhpVersionedFilter
 {
     public function __construct(
