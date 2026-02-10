@@ -24,10 +24,10 @@ final class PhpVersionedFilterTest extends TestCase
 
     public function testRectorWithoutInterfaceIsIncluded(): void
     {
-        $rector = new NoInterfaceRector();
-        $filtered = $this->phpVersionedFilter->filter([$rector]);
+        $noInterfaceRector = new NoInterfaceRector();
+        $filtered = $this->phpVersionedFilter->filter([$noInterfaceRector]);
 
         $this->assertCount(1, $filtered);
-        $this->assertSame($rector, $filtered[0]);
+        $this->assertSame($noInterfaceRector, $filtered[0]);
     }
 }
