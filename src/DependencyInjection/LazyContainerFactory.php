@@ -405,6 +405,9 @@ final class LazyContainerFactory
     {
         $rectorConfig = new RectorConfig();
 
+        $rectorConfig::setInstance($rectorConfig);
+        $rectorConfig->instance(RectorConfig::class, $rectorConfig);
+
         $rectorConfig->import(__DIR__ . '/../../config/config.php');
 
         $rectorConfig->singleton(Application::class, static function (Container $container): Application {
