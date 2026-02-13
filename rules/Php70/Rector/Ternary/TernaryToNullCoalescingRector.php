@@ -113,7 +113,12 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
             return null;
         }
 
-        $checkedExpr = $isNullFuncCall->args[0]->value;
+        $firstArg = $isNullFuncCall->args[0];
+        if (! $firstArg instanceof Node\Arg) {
+            return null;
+        }
+
+        $checkedExpr = $firstArg->value;
 
         if ($isNegated) {
             if (! $ternary->if instanceof Expr) {
@@ -128,6 +133,10 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
         }
 
         if (! $this->nodeComparator->areNodesEqual($ternary->else, $checkedExpr)) {
+            return null;
+        }
+
+        if (! $ternary->if instanceof Expr) {
             return null;
         }
 
