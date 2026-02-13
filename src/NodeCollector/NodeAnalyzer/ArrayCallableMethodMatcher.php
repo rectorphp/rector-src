@@ -72,7 +72,9 @@ final readonly class ArrayCallableMethodMatcher
             return null;
         }
 
-        if ($array->getAttribute(AttributeKey::IS_ARG_VALUE) === true) {
+        if ($array->getAttribute(AttributeKey::IS_ARG_VALUE) === true && (bool) $array->getAttribute(
+            AttributeKey::IS_ARG_VALUE_CALLABLE
+        ) === false) {
             return null;
         }
 

@@ -10,6 +10,7 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PostDec;
@@ -19,6 +20,7 @@ use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Break_;
@@ -36,15 +38,22 @@ use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\FunctionReflection;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\ArrayType;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\NodeTraverser\SimpleNodeTraverser;
+use Rector\Reflection\ReflectionResolver;
 
 final class ContextNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -90,6 +99,49 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
         if ($node instanceof If_ || $node instanceof Else_ || $node instanceof ElseIf_) {
             $this->processContextInIf($node);
             return null;
+        }
+
+        if ($node instanceof CallLike && ! $node->isFirstClassCallable()) {
+            $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
+            if (! $functionReflection instanceof FunctionReflection && ! $functionReflection instanceof MethodReflection) {
+                return null;
+            }
+
+            $scope = $node->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                return null;
+            }
+
+            $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+                $functionReflection,
+                $node,
+                $scope
+            );
+
+            $args = $node->getArgs();
+            foreach ($parametersAcceptor->getParameters() as $key => $parameterReflection) {
+                // also process maybe callable
+                if ($parameterReflection->getType()->isCallable()->no()) {
+                    continue;
+                }
+
+                if ($parameterReflection->getType() instanceof ArrayType) {
+                    continue;
+                }
+
+                // based on name
+                foreach ($args as $arg) {
+                    if ($arg->name instanceof Identifier && $parameterReflection->getName() === $arg->name->toString()) {
+                        $arg->value->setAttribute(AttributeKey::IS_ARG_VALUE_CALLABLE, true);
+                        continue 2;
+                    }
+                }
+
+                // based on key
+                if (isset($args[$key])) {
+                    $args[$key]->value->setAttribute(AttributeKey::IS_ARG_VALUE_CALLABLE, true);
+                }
+            }
         }
 
         if ($node instanceof Arg) {
