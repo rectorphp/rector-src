@@ -11,8 +11,10 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\Ternary;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\Application\File;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -112,7 +114,41 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
             return null;
         }
 
+        if ($ternary->else instanceof Ternary && $this->isTernaryParenthesized($this->file, $ternary->cond, $ternary)) {
+            $ternary->else->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
         return new Coalesce($ternary->if, $ternary->else);
+    }
+
+    private function isTernaryParenthesized(File $file, Expr $expr, Ternary $ternary): bool
+    {
+        $oldTokens = $file->getOldTokens();
+        $endTokenPost = $ternary->getEndTokenPos();
+
+        if (isset($oldTokens[$endTokenPost]) && (string) $oldTokens[$endTokenPost] === ')') {
+            $startTokenPos = $ternary->else->getStartTokenPos();
+            $previousEndTokenPost = $expr->getEndTokenPos();
+
+            while ($startTokenPos > $previousEndTokenPost) {
+                --$startTokenPos;
+
+                if (! isset($oldTokens[$startTokenPos])) {
+                    return false;
+                }
+
+                // handle space before open parentheses
+                if (trim((string) $oldTokens[$startTokenPos]) === '') {
+                    continue;
+                }
+
+                return (string) $oldTokens[$startTokenPos] === '(';
+            }
+
+            return false;
+        }
+
+        return false;
     }
 
     private function isNullMatch(Expr $possibleNullExpr, Expr $firstNode, Expr $secondNode): bool
