@@ -73,7 +73,7 @@ final readonly class ArrayCallableMethodMatcher
         }
 
         if ($array->getAttribute(AttributeKey::IS_ARG_VALUE) === true && (bool) $array->getAttribute(
-            AttributeKey::IS_ARG_VALUE_CALLABLE
+            AttributeKey::IS_ARG_VALUE_FACTORY_SERVICECONFIGURATOR
         ) === false) {
             return null;
         }

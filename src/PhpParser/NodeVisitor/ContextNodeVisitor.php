@@ -103,7 +103,15 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
 
         if ($node instanceof CallLike && ! $node->isFirstClassCallable()) {
             $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-            if (! $functionReflection instanceof FunctionReflection && ! $functionReflection instanceof MethodReflection) {
+            if (! $functionReflection instanceof MethodReflection) {
+                return null;
+            }
+
+            if ($functionReflection->getDeclaringClass()->getName() !== 'Symfony\Component\DependencyInjection\Loader\Configurator\ServiceConfigurator') {
+                return null;
+            }
+
+            if ($functionReflection->getName() !== 'factory') {
                 return null;
             }
 
@@ -120,26 +128,21 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
 
             $args = $node->getArgs();
             foreach ($parametersAcceptor->getParameters() as $key => $parameterReflection) {
-                // also process maybe callable
-                if ($parameterReflection->getType()->isCallable()->no()) {
-                    continue;
-                }
-
-                if ($parameterReflection->getType() instanceof ArrayType) {
+                if ($parameterReflection->getName() !== 'factory') {
                     continue;
                 }
 
                 // based on name
                 foreach ($args as $arg) {
-                    if ($arg->name instanceof Identifier && $parameterReflection->getName() === $arg->name->toString()) {
-                        $arg->value->setAttribute(AttributeKey::IS_ARG_VALUE_CALLABLE, true);
+                    if ($arg->name instanceof Identifier && 'factory' === $arg->name->toString()) {
+                        $arg->value->setAttribute(AttributeKey::IS_ARG_VALUE_FACTORY_SERVICECONFIGURATOR, true);
                         continue 2;
                     }
                 }
 
                 // based on key
                 if (isset($args[$key])) {
-                    $args[$key]->value->setAttribute(AttributeKey::IS_ARG_VALUE_CALLABLE, true);
+                    $args[$key]->value->setAttribute(AttributeKey::IS_ARG_VALUE_FACTORY_SERVICECONFIGURATOR, true);
                 }
             }
         }
