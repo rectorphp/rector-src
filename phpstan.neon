@@ -469,7 +469,7 @@ parameters:
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
 
         -
-            message: '#'#Parameter \#1 \$value of static method Webmozart\\Assert\\Assert\:\:isInstanceOfAny\(\) expects object, PhpParser\\Node\\ComplexType\|PhpParser\\Node\\Identifier\|PhpParser\\Node\\Name\|null given#'
+            message: '#Parameter \#1 \$value of static method Webmozart\\Assert\\Assert\:\:isInstanceOfAny\(\) expects object, PhpParser\\Node\\ComplexType\|PhpParser\\Node\\Identifier\|PhpParser\\Node\\Name\|null given#'
             path: rules/DeadCode/Rector/FunctionLike/NarrowWideUnionReturnTypeRector.php
 
         -
