@@ -37,8 +37,8 @@ final class CarbonCallFactory
             $methodCall = $this->createModifyMethodCall(
                 $carbonCall,
                 new Int_((int) $match['count']),
-                (string) $match['unit'],
-                (string) $match['operator']
+                $match['unit'],
+                $match['operator']
             );
             if ($methodCall instanceof MethodCall) {
                 $carbonCall = $methodCall;
