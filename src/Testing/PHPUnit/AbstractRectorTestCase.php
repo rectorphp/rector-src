@@ -50,6 +50,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
      */
     public static function tearDownAfterClass(): void
     {
+        SimpleParameterProvider::unsetParameter(Option::PHP_VERSION_FEATURES);
+
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, false);
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, false);
         SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, false);
