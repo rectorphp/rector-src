@@ -53,9 +53,9 @@ final readonly class InlineCodeParser
     private const string BACKREFERENCE_NO_DOUBLE_QUOTE_START_REGEX = '#(?<!")(?<backreference>\$\d+)#';
 
     /**
-     * @see https://regex101.com/r/8Dk7Qn/1
+     * @see https://regex101.com/r/13mVVg/1
      */
-    private const string HEX_BACKREFERENCE_REGEX = '#0x(?<backreference>\\\d+|\$\d+)#';
+    private const string HEX_BACKREFERENCE_REGEX = '#0x(?<backreference>\$\d+)#';
 
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,

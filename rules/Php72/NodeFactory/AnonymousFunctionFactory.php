@@ -82,7 +82,6 @@ final readonly class AnonymousFunctionFactory
     public function createAnonymousFunctionFromExpr(Expr $expr): ?Closure
     {
         $stringValue = $this->inlineCodeParser->stringify($expr);
-        $stringValue = $this->normalizeHexBackreferenceExpression($stringValue);
 
         $phpCode = '<?php ' . $stringValue . ';';
         $contentStmts = $this->simplePhpParser->parseString($phpCode);
@@ -124,24 +123,6 @@ final readonly class AnonymousFunctionFactory
         );
 
         return $anonymousFunction;
-    }
-
-    private function normalizeHexBackreferenceExpression(string $stringValue): string
-    {
-        // Only rewrite when the expression has no quotes, to avoid mutating string literals.
-        if (str_contains($stringValue, "'") || str_contains($stringValue, '"')) {
-            return $stringValue;
-        }
-
-        return Strings::replace(
-            $stringValue,
-            '#0x(?<backreference>\\\d+|\$\d+)#',
-            static function (array $match): string {
-                $backreference = $match['backreference'];
-                $number = ltrim($backreference, '\\$');
-                return 'hexdec($matches[' . $number . '])';
-            }
-        );
     }
 
     /**
