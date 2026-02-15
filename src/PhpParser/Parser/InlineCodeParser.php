@@ -52,6 +52,11 @@ final readonly class InlineCodeParser
      */
     private const string BACKREFERENCE_NO_DOUBLE_QUOTE_START_REGEX = '#(?<!")(?<backreference>\$\d+)#';
 
+    /**
+     * @see https://regex101.com/r/13mVVg/1
+     */
+    private const string HEX_BACKREFERENCE_REGEX = '#0x(?<backreference>\$\d+)#';
+
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,
         private SimplePhpParser $simplePhpParser,
@@ -81,6 +86,20 @@ final readonly class InlineCodeParser
     public function stringify(Expr $expr): string
     {
         if ($expr instanceof String_) {
+            if (! str_contains($expr->value, "'") && ! str_contains($expr->value, '"') && StringUtils::isMatch(
+                $expr->value,
+                self::HEX_BACKREFERENCE_REGEX
+            )) {
+                return Strings::replace(
+                    $expr->value,
+                    self::HEX_BACKREFERENCE_REGEX,
+                    static function (array $match): string {
+                        $number = ltrim((string) $match['backreference'], '\\$');
+                        return 'hexdec($matches[' . $number . '])';
+                    }
+                );
+            }
+
             if (! StringUtils::isMatch($expr->value, self::BACKREFERENCE_NO_QUOTE_REGEX)) {
                 return Strings::replace(
                     $expr->value,
