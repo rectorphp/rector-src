@@ -63,6 +63,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::NEW_LINE_ON_FLUENT_CALL, false);
 
         SimpleParameterProvider::setParameter(Option::TREAT_CLASSES_AS_FINAL, false);
+
+        SimpleParameterProvider::setParameter(Option::EAGERLY_RESOLVE_DEPRECATIONS, false);
     }
 
     protected function setUp(): void
@@ -182,8 +184,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $testClass = static::class;
         $this->assertSame(
             PHP_EOL . 'WARNING: On fixture file "' . $fixtureName . '" for test "' . $testClass . '"' . PHP_EOL .
-            'File not changed but some Rector rules applied:' . PHP_EOL .
-            ' * ' . $expectedRuleApplied . PHP_EOL,
+                'File not changed but some Rector rules applied:' . PHP_EOL .
+                ' * ' . $expectedRuleApplied . PHP_EOL,
             $content
         );
     }

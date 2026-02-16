@@ -325,6 +325,11 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::TREAT_CLASSES_AS_FINAL, $treatClassesAsFinal);
     }
 
+    public function eagerlyResolveDeprecations(bool $eagerlyResolveDeprecations = true): void
+    {
+        SimpleParameterProvider::setParameter(Option::EAGERLY_RESOLVE_DEPRECATIONS, $eagerlyResolveDeprecations);
+    }
+
     /**
      * @param string[] $extensions
      */

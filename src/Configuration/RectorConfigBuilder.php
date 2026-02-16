@@ -157,6 +157,8 @@ final class RectorConfigBuilder
 
     private ?bool $isTreatClassesAsFinal = null;
 
+    private ?bool $isEagerlyResolvedDeprecations = null;
+
     /**
      * @var RegisteredService[]
      */
@@ -379,6 +381,10 @@ final class RectorConfigBuilder
 
         if ($this->isTreatClassesAsFinal !== null) {
             $rectorConfig->treatClassesAsFinal($this->isTreatClassesAsFinal);
+        }
+
+        if ($this->isEagerlyResolvedDeprecations !== null) {
+            $rectorConfig->eagerlyResolveDeprecations($this->isEagerlyResolvedDeprecations);
         }
 
         if ($this->reportingRealPath !== null) {
@@ -1212,6 +1218,12 @@ final class RectorConfigBuilder
     public function withTreatClassesAsFinal(bool $isTreatClassesAsFinal = true): self
     {
         $this->isTreatClassesAsFinal = $isTreatClassesAsFinal;
+        return $this;
+    }
+
+    public function withEagerlyResolvedDeprecations(bool $isEagerlyResolvedDeprecations = true): self
+    {
+        $this->isEagerlyResolvedDeprecations = $isEagerlyResolvedDeprecations;
         return $this;
     }
 

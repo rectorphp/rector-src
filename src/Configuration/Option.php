@@ -230,6 +230,12 @@ final class Option
     public const string TREAT_CLASSES_AS_FINAL = 'treat_classes_as_final';
 
     /**
+     * @internal Use @see \Rector\Config\RectorConfig::eagerlyResolveDeprecations() method
+     * @var string
+     */
+    public const string EAGERLY_RESOLVE_DEPRECATIONS = 'eagerly_resolve_deprecations';
+
+    /**
      * @internal To report composer based loaded sets
      * @see \Rector\Configuration\RectorConfigBuilder::withComposerBased()
      */
