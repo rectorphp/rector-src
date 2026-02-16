@@ -93,6 +93,10 @@ CODE_SAMPLE
         if ($node->type instanceof UnionType) {
             $node->type->types[] = new Name('null');
         } elseif ($node->type instanceof ComplexType) {
+            if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_INTERSECTION_TYPES)) {
+                return null;
+            }
+
             /** @var IntersectionType $nodeType */
             $nodeType = $node->type;
             $node->type = new UnionType([$nodeType, new Name('null')]);
