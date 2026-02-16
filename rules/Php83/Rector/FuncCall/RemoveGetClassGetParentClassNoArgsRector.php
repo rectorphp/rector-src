@@ -11,6 +11,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\VarLikeIdentifier;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\RemoveGetClassGetParentClassNoArgsRectorTest
  */
-final class RemoveGetClassGetParentClassNoArgsRector extends AbstractRector implements MinPhpVersionInterface
+final class RemoveGetClassGetParentClassNoArgsRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -84,6 +85,11 @@ final class RemoveGetClassGetParentClassNoArgsRector extends AbstractRector impl
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::CLASSNAME_CONSTANT;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_GET_CLASS_WITHOUT_ARGS;
     }

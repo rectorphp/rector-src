@@ -19,6 +19,7 @@ use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\NullToStrictStringFuncCallArgRectorTest
  */
-final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
+final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
@@ -127,6 +128,11 @@ CODE_SAMPLE
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::BASELINE_SUPPORTED_PHP;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
     }

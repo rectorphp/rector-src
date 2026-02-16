@@ -9,6 +9,12 @@ namespace Rector\ValueObject;
  */
 final class PhpVersionFeature
 {
+    /**
+     * Rector can only be used to target PHP versions down to 5.2.
+     * Rules that set this as a minimum version are ALWAYS included.
+     */
+    public const int BASELINE_SUPPORTED_PHP = PhpVersion::PHP_52;
+
     public const int PROPERTY_MODIFIER = PhpVersion::PHP_52;
 
     public const int CONTINUE_TO_BREAK = PhpVersion::PHP_52;
@@ -21,7 +27,27 @@ final class PhpVersionFeature
 
     public const int ELVIS_OPERATOR = PhpVersion::PHP_53;
 
+    /**
+     * @see https://www.php.net/releases/5_3_0.php
+     */
+    public const int ANONYMOUS_FUNCTION = PhpVersion::PHP_53;
+
     public const int ANONYMOUS_FUNCTION_PARAM_TYPE = PhpVersion::PHP_53;
+
+    /**
+     * @see https://www.php.net/manual/en/language.namespaces.basics.php
+     */
+    public const int NAMESPACES = PhpVersion::PHP_53;
+
+    /**
+     * @see https://wiki.php.net/rfc/rounding
+     */
+    public const int LEGACY_ROUNDING_MODES = PhpVersion::PHP_53;
+
+    /**
+     * @see https://www.php.net/manual/en/function.finfo-buffer.php
+     */
+    public const int FINFO_BUFFER_FUNCTION = PhpVersion::PHP_53;
 
     public const int NO_ZERO_BREAK = PhpVersion::PHP_54;
 
@@ -41,6 +67,11 @@ final class PhpVersionFeature
     public const int EXP_OPERATOR = PhpVersion::PHP_56;
 
     public const int REQUIRE_DEFAULT_VALUE = PhpVersion::PHP_56;
+
+    /**
+     * @see https://wiki.php.net/rfc/debug-info
+     */
+    public const int DEBUG_INFO_MAGIC_METHOD = PhpVersion::PHP_56;
 
     public const int SCALAR_TYPES = PhpVersion::PHP_70;
 
@@ -187,6 +218,11 @@ final class PhpVersionFeature
     public const int DEPRECATE_RESTORE_INCLUDE_PATH = PhpVersion::PHP_74;
 
     public const int DEPRECATE_HEBREVC = PhpVersion::PHP_74;
+
+    /**
+     * @see https://wiki.php.net/rfc/custom_object_serialization
+     */
+    public const int SERIALIZE_MAGIC_METHODS = PhpVersion::PHP_74;
 
     public const int UNION_TYPES = PhpVersion::PHP_80;
 

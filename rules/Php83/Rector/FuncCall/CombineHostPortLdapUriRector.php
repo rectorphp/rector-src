@@ -14,6 +14,7 @@ use PhpParser\Node\Scalar\String_;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.ldap
  * @see \Rector\Tests\Php83\Rector\FuncCall\CombineHostPortLdapUriRector\CombineHostPortLdapUriRectorTest
  */
-final class CombineHostPortLdapUriRector extends AbstractRector implements MinPhpVersionInterface
+final class CombineHostPortLdapUriRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer
@@ -96,6 +97,11 @@ CODE_SAMPLE
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::BASELINE_SUPPORTED_PHP;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_HOST_PORT_SEPARATE_ARGS;
     }

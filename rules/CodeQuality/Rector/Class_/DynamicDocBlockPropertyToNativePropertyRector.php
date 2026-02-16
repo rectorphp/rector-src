@@ -22,6 +22,7 @@ use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,7 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\DynamicDocBlockPropertyToNativePropertyRectorTest
  */
-final class DynamicDocBlockPropertyToNativePropertyRector extends AbstractRector implements MinPhpVersionInterface
+final class DynamicDocBlockPropertyToNativePropertyRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function __construct(
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
@@ -136,6 +137,11 @@ CODE_SAMPLE
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::TYPED_PROPERTIES;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
     }

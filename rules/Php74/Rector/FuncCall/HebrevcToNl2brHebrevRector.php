@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -17,9 +18,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php74\Rector\FuncCall\HebrevcToNl2brHebrevRector\HebrevcToNl2brHebrevRectorTest
  */
-final class HebrevcToNl2brHebrevRector extends AbstractRector implements MinPhpVersionInterface
+final class HebrevcToNl2brHebrevRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::BASELINE_SUPPORTED_PHP;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_HEBREVC;
     }

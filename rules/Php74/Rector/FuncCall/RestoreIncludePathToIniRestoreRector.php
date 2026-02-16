@@ -11,6 +11,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,9 +20,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://3v4l.org/Kcs98
  * @see \Rector\Tests\Php74\Rector\FuncCall\RestoreIncludePathToIniRestoreRector\RestoreIncludePathToIniRestoreRectorTest
  */
-final class RestoreIncludePathToIniRestoreRector extends AbstractRector implements MinPhpVersionInterface
+final class RestoreIncludePathToIniRestoreRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::BASELINE_SUPPORTED_PHP;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_RESTORE_INCLUDE_PATH;
     }

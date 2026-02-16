@@ -11,6 +11,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php74\Tokenizer\ParenthesizedNestedTernaryAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php74\Rector\Ternary\ParenthesizeNestedTernaryRector\ParenthesizeNestedTernaryRectorTest
  */
-final class ParenthesizeNestedTernaryRector extends AbstractRector implements MinPhpVersionInterface
+final class ParenthesizeNestedTernaryRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function __construct(
         private readonly ParenthesizedNestedTernaryAnalyzer $parenthesizedNestedTernaryAnalyzer
@@ -26,6 +27,11 @@ final class ParenthesizeNestedTernaryRector extends AbstractRector implements Mi
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::BASELINE_SUPPORTED_PHP;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_NESTED_TERNARY;
     }

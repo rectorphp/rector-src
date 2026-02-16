@@ -20,6 +20,7 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,9 +31,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_the_sleep_and_wakeup_magic_methods
  * @see \Rector\Tests\Php85\Rector\Class_\WakeupToUnserializeRector\WakeupToUnserializeRectorTest
  */
-final class WakeupToUnserializeRector extends AbstractRector implements MinPhpVersionInterface
+final class WakeupToUnserializeRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SERIALIZE_MAGIC_METHODS;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATED_METHOD_WAKEUP;
     }

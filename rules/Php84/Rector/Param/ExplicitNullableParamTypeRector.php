@@ -14,11 +14,13 @@ use PhpParser\Node\Param;
 use PhpParser\Node\UnionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,11 +28,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php84\Rector\Param\ExplicitNullableParamTypeRector\ExplicitNullableParamTypeRectorTest
  */
-final class ExplicitNullableParamTypeRector extends AbstractRector implements MinPhpVersionInterface
+final class ExplicitNullableParamTypeRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function __construct(
         private readonly ValueResolver $valueResolver,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly PhpVersionProvider $phpVersionProvider
     ) {
     }
 
@@ -101,6 +104,11 @@ CODE_SAMPLE
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NULLABLE_TYPE;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_IMPLICIT_NULLABLE_PARAM_TYPE;
     }

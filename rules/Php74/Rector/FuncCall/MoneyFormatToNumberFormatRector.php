@@ -16,6 +16,7 @@ use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php74\Rector\FuncCall\MoneyFormatToNumberFormatRector\MoneyFormatToNumberFormatRectorTest
  */
-final class MoneyFormatToNumberFormatRector extends AbstractRector implements MinPhpVersionInterface
+final class MoneyFormatToNumberFormatRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function __construct(
         private readonly ArgsAnalyzer $argsAnalyzer,
@@ -32,6 +33,11 @@ final class MoneyFormatToNumberFormatRector extends AbstractRector implements Mi
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::LEGACY_ROUNDING_MODES;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_MONEY_FORMAT;
     }

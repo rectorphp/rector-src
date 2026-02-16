@@ -11,6 +11,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php73\Rector\ConstFetch\SensitiveConstantNameRector\SensitiveConstantNameRectorTest
  */
-final class SensitiveConstantNameRector extends AbstractRector implements MinPhpVersionInterface
+final class SensitiveConstantNameRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     /**
      * @see http://php.net/manual/en/reserved.constants.php
@@ -89,6 +90,11 @@ final class SensitiveConstantNameRector extends AbstractRector implements MinPhp
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NAMESPACES;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_INSENSITIVE_CONSTANT_NAME;
     }

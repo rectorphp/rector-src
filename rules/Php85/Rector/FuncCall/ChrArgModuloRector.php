@@ -11,6 +11,7 @@ use PhpParser\Node\Scalar\LNumber;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\DeprecatedAtVersionInterface;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_passing_integers_outside_the_interval_0_255_to_chr
  * @see \Rector\Tests\Php85\Rector\FuncCall\ChrArgModuloRector\ChrArgModuloRectorTest
  */
-final class ChrArgModuloRector extends AbstractRector implements MinPhpVersionInterface
+final class ChrArgModuloRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedAtVersionInterface
 {
     public function __construct(
         private readonly ValueResolver $valueResolver
@@ -91,6 +92,11 @@ CODE_SAMPLE
     }
 
     public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::BASELINE_SUPPORTED_PHP;
+    }
+
+    public function provideDeprecatedAtVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_OUTSIDE_INTERVEL_VAL_IN_CHR_FUNCTION;
     }
