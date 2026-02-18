@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Behat\Step\Then;
 use Behat\Step\When;
+use Behat\Transformation\Transform;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
@@ -62,6 +63,7 @@ return static function (RectorConfig $rectorConfig): void {
         // special case with following comment becoming a inner value
         new AnnotationToAttribute('When', When::class, useValueAsAttributeArgument: true),
         new AnnotationToAttribute('Then', Then::class, useValueAsAttributeArgument: true),
+        new AnnotationToAttribute('Transform', Transform::class, useValueAsAttributeArgument: true),
 
         // simple tag to attribute
         new AnnotationToAttribute('OldName1', NewName1::class),
