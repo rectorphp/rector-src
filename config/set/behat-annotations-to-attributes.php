@@ -19,5 +19,6 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute('AfterScenario', 'Behat\Hook\AfterScenario', useValueAsAttributeArgument: true),
         new AnnotationToAttribute('BeforeStep', 'Behat\Hook\BeforeStep', useValueAsAttributeArgument: true),
         new AnnotationToAttribute('AfterStep', 'Behat\Hook\AfterStep', useValueAsAttributeArgument: true),
+        new AnnotationToAttribute('Transform', 'Behat\Transformation\Transform', useValueAsAttributeArgument: true),
     ]);
 };
