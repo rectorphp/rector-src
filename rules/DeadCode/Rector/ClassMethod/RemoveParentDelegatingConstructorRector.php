@@ -127,6 +127,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->doAttributeDecoratedParametersExist($node)) {
+            return null;
+        }
+
         return NodeVisitor::REMOVE_NODE;
     }
 
@@ -286,6 +290,20 @@ CODE_SAMPLE
             $parentDefault = $nativeParentParameterReflection->getDefaultValue();
             if (! $this->valueResolver->isValue($defaultExpr, $parentDefault)) {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function doAttributeDecoratedParametersExist(ClassMethod $classMethod): bool
+    {
+        $constructorParams = $classMethod->getParams();
+        foreach ($constructorParams as $constructorParam) {
+            foreach ($constructorParam->attrGroups as $attrGroup) {
+                if ($attrGroup->attrs !== []) {
+                    return true;
+                }
             }
         }
 
