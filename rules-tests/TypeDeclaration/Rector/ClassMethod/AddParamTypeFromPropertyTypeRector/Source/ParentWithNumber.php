@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector\Source;
 
-class ParentWithNumber
+abstract class ParentWithNumber
 {
     protected string $number;
 
