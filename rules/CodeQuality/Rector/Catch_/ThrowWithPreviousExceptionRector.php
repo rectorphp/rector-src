@@ -17,6 +17,7 @@ use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\TypeCombinator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
@@ -186,12 +187,6 @@ CODE_SAMPLE
     private function resolveExceptionArgumentPosition(Name $exceptionName): ?int
     {
         $className = $this->getName($exceptionName);
-
-        // is native exception?
-        if (! \str_contains($className, '\\')) {
-            return self::DEFAULT_EXCEPTION_ARGUMENT_POSITION;
-        }
-
         if (! $this->reflectionProvider->hasClass($className)) {
             return self::DEFAULT_EXCEPTION_ARGUMENT_POSITION;
         }
@@ -211,11 +206,16 @@ CODE_SAMPLE
             $parameterType = $extendedParameterReflection->getType();
             $className = ClassNameFromObjectTypeResolver::resolve($extendedParameterReflection->getType());
 
+            $objectType = new ObjectType('Throwable');
             if ($className === null) {
+                $parameterType = TypeCombinator::removeNull($parameterType);
+                if ($objectType->isSuperTypeOf($parameterType)->yes()) {
+                    return $position;
+                }
+
                 continue;
             }
 
-            $objectType = new ObjectType('Throwable');
             if ($objectType->isSuperTypeOf($parameterType)->no()) {
                 continue;
             }
