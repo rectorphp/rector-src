@@ -37,7 +37,7 @@ final class AddVarArrayDocblockFromDimFetchAssignRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add @var array docblock if array_map is used on the parameter', [
+        return new RuleDefinition('Add @var array docblock from dim fetch assignments', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
