@@ -246,7 +246,7 @@ CODE_SAMPLE
         }
 
         // skip test setup method override, as rather clutters the code than helps
-        return $this->isName($classMethod, 'setUp') && $this->parentClassAnalyzer->hasParentCall($classMethod);
+        return $this->isNames($classMethod, ['setUp', 'tearDown']) && $this->parentClassAnalyzer->hasParentCall($classMethod);
     }
 
     private function shouldSkipParentClassMethod(ClassReflection $parentClassReflection, ClassMethod $classMethod): bool

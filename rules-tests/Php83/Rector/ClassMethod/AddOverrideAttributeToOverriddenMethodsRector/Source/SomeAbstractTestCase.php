@@ -10,4 +10,9 @@ abstract class SomeAbstractTestCase extends TestCase
     {
         $value = 1000;
     }
+
+    protected function tearDown(): void
+    {
+        $value = null;
+    }
 }
