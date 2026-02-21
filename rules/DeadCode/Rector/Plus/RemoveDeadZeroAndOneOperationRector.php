@@ -18,8 +18,8 @@ use PhpParser\Node\Expr\BinaryOp\Mul;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\UnaryMinus;
+use PhpParser\Node\Scalar\Int_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\Application\File;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,11 +30,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDeadZeroAndOneOperationRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ValueResolver $valueResolver
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -101,7 +96,7 @@ CODE_SAMPLE
     {
         // +=, -=
         if ($assignOp instanceof AssignPlus || $assignOp instanceof AssignMinus) {
-            if (! $this->valueResolver->isValue($assignOp->expr, 0)) {
+            if (! $this->isLiteralZero($assignOp->expr)) {
                 return null;
             }
 
@@ -112,7 +107,7 @@ CODE_SAMPLE
 
         // *, /
         if ($assignOp instanceof AssignMul || $assignOp instanceof AssignDiv) {
-            if (! $this->valueResolver->isValue($assignOp->expr, 1)) {
+            if (! $this->isLiteralOne($assignOp->expr)) {
                 return null;
             }
 
@@ -157,9 +152,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->valueResolver->isValue($binaryOp->left, 0) && $this->nodeTypeResolver->isNumberType(
-            $binaryOp->right
-        )) {
+        if ($this->isLiteralZero($binaryOp->left) && $this->nodeTypeResolver->isNumberType($binaryOp->right)) {
             if ($binaryOp instanceof Minus) {
                 return new UnaryMinus($binaryOp->right);
             }
@@ -167,7 +160,7 @@ CODE_SAMPLE
             return $binaryOp->right;
         }
 
-        if (! $this->valueResolver->isValue($binaryOp->right, 0)) {
+        if (! $this->isLiteralZero($binaryOp->right)) {
             return null;
         }
 
@@ -218,10 +211,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($binaryOp instanceof Mul && $this->valueResolver->isValue(
-            $binaryOp->left,
-            1
-        ) && $this->nodeTypeResolver->isNumberType($binaryOp->right)) {
+        if ($binaryOp instanceof Mul && $this->isLiteralOne($binaryOp->left) && $this->nodeTypeResolver->isNumberType(
+            $binaryOp->right
+        )) {
             if ($this->isMulParenthesized($this->file, $binaryOp)) {
                 $binaryOp->right->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
             }
@@ -229,10 +221,20 @@ CODE_SAMPLE
             return $binaryOp->right;
         }
 
-        if (! $this->valueResolver->isValue($binaryOp->right, 1)) {
+        if (! $this->isLiteralOne($binaryOp->right)) {
             return null;
         }
 
         return $binaryOp->left;
+    }
+
+    private function isLiteralOne(Expr $expr): bool
+    {
+        return $expr instanceof Int_ && $expr->value === 1;
+    }
+
+    private function isLiteralZero(Expr $expr): bool
+    {
+        return $expr instanceof Int_ && $expr->value === 0;
     }
 }
