@@ -232,7 +232,11 @@ CODE_SAMPLE
 
             // no type override
             if ($parameterType === null) {
-                if ($param->default instanceof Expr && $this->isDifferentDefaultValue($param->default, $extendedMethodReflection, $position)) {
+                if ($param->default instanceof Expr && $this->isDifferentDefaultValue(
+                    $param->default,
+                    $extendedMethodReflection,
+                    $position
+                )) {
                     return false;
                 }
 
