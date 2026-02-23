@@ -6,7 +6,7 @@ namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToCl
 
 use Rector\Tests\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToClassConstFetchRector\Source\ClassWithFinalConstant;
 
-final class SkipDocbblockFinalConstant
+final class SkipDocblockFinalConstant
 {
     public function run(ClassWithFinalConstant $classWithFinalConstant)
     {
