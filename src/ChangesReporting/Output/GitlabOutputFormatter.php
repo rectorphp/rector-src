@@ -30,7 +30,7 @@ final readonly class GitlabOutputFormatter implements OutputFormatterInterface
     private const string ERROR_SEVERITY_MINOR = 'minor';
 
     public function __construct(
-        private Filehasher $filehasher,
+        private FileHasher $filehasher,
     ) {
     }
 

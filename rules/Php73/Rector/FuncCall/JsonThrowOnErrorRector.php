@@ -29,8 +29,6 @@ final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersi
 {
     private const array FLAGS = ['JSON_THROW_ON_ERROR'];
 
-    private bool $hasChanged = false;
-
     public function __construct(
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder
@@ -77,9 +75,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->hasChanged = false;
+        $hasChanged = false;
 
-        $this->traverseNodesWithCallable($node, function (Node $currentNode): ?FuncCall {
+        $this->traverseNodesWithCallable($node, function (Node $currentNode) use (&$hasChanged): ?FuncCall {
             if (! $currentNode instanceof FuncCall) {
                 return null;
             }
@@ -89,17 +87,17 @@ CODE_SAMPLE
             }
 
             if ($this->isName($currentNode, 'json_encode')) {
-                return $this->processJsonEncode($currentNode);
+                return $this->processJsonEncode($currentNode, $hasChanged);
             }
 
             if ($this->isName($currentNode, 'json_decode')) {
-                return $this->processJsonDecode($currentNode);
+                return $this->processJsonDecode($currentNode, $hasChanged);
             }
 
             return null;
         });
 
-        if ($this->hasChanged) {
+        if ($hasChanged) {
             return $node;
         }
 
@@ -134,7 +132,7 @@ CODE_SAMPLE
         return $this->isFirstValueStringOrArray($funcCall);
     }
 
-    private function processJsonEncode(FuncCall $funcCall): FuncCall
+    private function processJsonEncode(FuncCall $funcCall, bool &$hasChanged): FuncCall
     {
         $flags = [];
         if (isset($funcCall->args[1])) {
@@ -145,14 +143,14 @@ CODE_SAMPLE
 
         $newArg = $this->getArgWithFlags($flags);
         if ($newArg instanceof Arg) {
-            $this->hasChanged = true;
+            $hasChanged = true;
             $funcCall->args[1] = $newArg;
         }
 
         return $funcCall;
     }
 
-    private function processJsonDecode(FuncCall $funcCall): FuncCall
+    private function processJsonDecode(FuncCall $funcCall, bool &$hasChanged): FuncCall
     {
         $flags = [];
         if (isset($funcCall->args[3])) {
@@ -172,7 +170,7 @@ CODE_SAMPLE
 
         $newArg = $this->getArgWithFlags($flags);
         if ($newArg instanceof Arg) {
-            $this->hasChanged = true;
+            $hasChanged = true;
             $funcCall->args[3] = $newArg;
         }
 
