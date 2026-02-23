@@ -51,7 +51,7 @@ class SomeClass
         try {
             $someCode = 1;
         } catch (Throwable $throwable) {
-            throw new AnotherException('ups');
+            throw new \RuntimeException('ups');
         }
     }
 }
@@ -65,7 +65,7 @@ class SomeClass
         try {
             $someCode = 1;
         } catch (Throwable $throwable) {
-            throw new AnotherException('ups', $throwable->getCode(), $throwable);
+            throw new \RuntimeException('ups', $throwable->getCode(), $throwable);
         }
     }
 }
@@ -142,34 +142,47 @@ CODE_SAMPLE
         $messageArgument = $new->args[0] ?? null;
         $shouldUseNamedArguments = $messageArgument instanceof Arg && $messageArgument->name instanceof Identifier;
 
+        $hasChanged = false;
         if (! isset($new->args[0])) {
             // get previous message
             $getMessageMethodCall = new MethodCall($caughtThrowableVariable, 'getMessage');
             $new->args[0] = new Arg($getMessageMethodCall);
+            $hasChanged = true;
         } elseif ($new->args[0] instanceof Arg && $new->args[0]->name instanceof Identifier && $new->args[0]->name->toString() === 'previous' && $this->nodeComparator->areNodesEqual(
             $new->args[0]->value,
             $caughtThrowableVariable
         )) {
             $new->args[0]->name->name = 'message';
             $new->args[0]->value = new MethodCall($caughtThrowableVariable, 'getMessage');
+            $hasChanged = true;
         }
 
         if (! isset($new->getArgs()[1])) {
-            // get previous code
-            $new->args[1] = new Arg(
-                new MethodCall($caughtThrowableVariable, 'getCode'),
-                name: $shouldUseNamedArguments ? new Identifier('code') : null
-            );
+            if ($this->hasCodeParameter($new->class)) {
+                // get previous code
+                $new->args[1] = new Arg(
+                    new MethodCall($caughtThrowableVariable, 'getCode'),
+                    name: $shouldUseNamedArguments ? new Identifier('code') : null
+                );
+                $hasChanged = true;
+            } else {
+                return null;
+            }
         }
 
         /** @var Arg $arg1 */
         $arg1 = $new->args[1];
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
-            $new->args[1] = new Arg(
-                new MethodCall($caughtThrowableVariable, 'getCode'),
-                name: $shouldUseNamedArguments ? new Identifier('code') : null
-            );
-            $new->args[$exceptionArgumentPosition] = $arg1;
+            if ($this->hasCodeParameter($new->class)) {
+                $new->args[1] = new Arg(
+                    new MethodCall($caughtThrowableVariable, 'getCode'),
+                    name: $shouldUseNamedArguments ? new Identifier('code') : null
+                );
+                $new->args[$exceptionArgumentPosition] = $arg1;
+                $hasChanged = true;
+            } elseif (! $hasChanged) {
+                return null;
+            }
         } else {
             $new->args[$exceptionArgumentPosition] = new Arg(
                 $caughtThrowableVariable,
@@ -182,6 +195,34 @@ CODE_SAMPLE
 
         // nothing more to add
         return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+    }
+
+    private function hasCodeParameter(Name $exceptionName): bool
+    {
+        $className = $this->getName($exceptionName);
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+        $construct = $classReflection->hasMethod(MethodName::CONSTRUCT);
+
+        if (! $construct) {
+            return false;
+        }
+
+        $extendedMethodReflection = $classReflection->getConstructor();
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
+            $extendedMethodReflection->getVariants()
+        );
+
+        foreach ($extendedParametersAcceptor->getParameters() as $extendedParameterReflection) {
+            if ($extendedParameterReflection->getName() === 'code') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function resolveExceptionArgumentPosition(Name $exceptionName): ?int

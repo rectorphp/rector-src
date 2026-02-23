@@ -10,7 +10,7 @@ class SkipFilledExceptionWithDifferentLocation
     public function run()
     {
         try {
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             throw new BadRequestHttpException('message some', $throwable);
         }
     }
@@ -18,7 +18,7 @@ class SkipFilledExceptionWithDifferentLocation
 
 class BadRequestHttpException extends  Exception
 {
-    public function __construct(string $message = null, \Throwable $previous = null, int $code = 0, array $headers = [])
+    public function __construct(string $message = null, ?\Throwable $previous = null, int $code = 0, array $headers = [])
     {
         parent::__construct('message', 400, $previous);
     }

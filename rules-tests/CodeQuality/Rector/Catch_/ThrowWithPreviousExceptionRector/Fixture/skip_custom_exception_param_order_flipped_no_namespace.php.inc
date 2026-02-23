@@ -19,7 +19,7 @@ class HttpException extends \RuntimeException
 
 class BadGatewayHttpException extends HttpException
 {
-    public function __construct(string $message = '', ?Throwable $previous = null, array $headers = [], int $code = 0)
+    public function __construct(string $message = '', ?\Throwable $previous = null, array $headers = [], int $code = 0)
     {
         parent::__construct(Response::HTTP_BAD_GATEWAY, $message, $previous, $headers, $code);
     }

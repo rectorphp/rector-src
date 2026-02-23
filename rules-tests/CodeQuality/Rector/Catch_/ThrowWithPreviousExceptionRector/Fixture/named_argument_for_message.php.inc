@@ -9,7 +9,7 @@ class NamedArgumentForMessage
 		try {
             $this->run();
         }catch(\Throwable $throwable) {
-            throw new LogicException(message: 'Some exception');
+            throw new \LogicException(message: 'Some exception');
         }
     }
 }
@@ -27,7 +27,7 @@ class NamedArgumentForMessage
 		try {
             $this->run();
         }catch(\Throwable $throwable) {
-            throw new LogicException(message: 'Some exception', code: $throwable->getCode(), previous: $throwable);
+            throw new \LogicException(message: 'Some exception', code: $throwable->getCode(), previous: $throwable);
         }
     }
 }

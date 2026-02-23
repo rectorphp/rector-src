@@ -9,7 +9,7 @@ class NamedArgument
 		try {
             $this->run();
         }catch(\Throwable $throwable) {
-            throw new LogicException('Some exception', previous: $throwable);
+            throw new \LogicException('Some exception', previous: $throwable);
         }
     }
 }
@@ -27,7 +27,7 @@ class NamedArgument
 		try {
             $this->run();
         }catch(\Throwable $throwable) {
-            throw new LogicException('Some exception', $throwable->getCode(), previous: $throwable);
+            throw new \LogicException('Some exception', $throwable->getCode(), previous: $throwable);
         }
     }
 }
