@@ -142,18 +142,6 @@ CODE_SAMPLE
         $messageArgument = $new->args[0] ?? null;
         $shouldUseNamedArguments = $messageArgument instanceof Arg && $messageArgument->name instanceof Identifier;
 
-        if (! isset($new->args[0])) {
-            // get previous message
-            $getMessageMethodCall = new MethodCall($caughtThrowableVariable, 'getMessage');
-            $new->args[0] = new Arg($getMessageMethodCall);
-        } elseif ($new->args[0] instanceof Arg && $new->args[0]->name instanceof Identifier && $new->args[0]->name->toString() === 'previous' && $this->nodeComparator->areNodesEqual(
-            $new->args[0]->value,
-            $caughtThrowableVariable
-        )) {
-            $new->args[0]->name->name = 'message';
-            $new->args[0]->value = new MethodCall($caughtThrowableVariable, 'getMessage');
-        }
-
         if (! isset($new->getArgs()[1])) {
             if ($this->hasCodeParameter($new->class)) {
                 // get previous code
@@ -164,6 +152,18 @@ CODE_SAMPLE
             }
 
             return null;
+        }
+
+        if (! isset($new->args[0])) {
+            // get previous message
+            $getMessageMethodCall = new MethodCall($caughtThrowableVariable, 'getMessage');
+            $new->args[0] = new Arg($getMessageMethodCall);
+        } elseif ($new->args[0] instanceof Arg && $new->args[0]->name instanceof Identifier && $new->args[0]->name->toString() === 'previous' && $this->nodeComparator->areNodesEqual(
+            $new->args[0]->value,
+            $caughtThrowableVariable
+        )) {
+            $new->args[0]->name->name = 'message';
+            $new->args[0]->value = new MethodCall($caughtThrowableVariable, 'getMessage');
         }
 
         /** @var Arg $arg1 */
