@@ -16,11 +16,8 @@ use PHPStan\Reflection\ClassConstantReflection;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Enum\ObjectReference;
-use Rector\Php\PhpVersionProvider;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
-use Rector\ValueObject\PhpVersionFeature;
-use ReflectionClassConstant;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -34,11 +31,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ConvertStaticToSelfRector extends AbstractRector
 {
-    public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change `static::*` to `self::*` on final class or private static members', [
@@ -171,25 +163,8 @@ CODE_SAMPLE
         }
 
         if (! $isFinal) {
-            // init
-            $memberIsFinal = false;
             if ($reflection instanceof ClassConstantReflection) {
-                // Get the native ReflectionClassConstant
-                $declaringClass = $reflection->getDeclaringClass();
-                $nativeReflectionClass = $declaringClass->getNativeReflection();
-                $constantName = $reflection->getName();
-
-                if (
-                    // by feature config
-                    $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::FINAL_CLASS_CONSTANTS) &&
-                    // ensure native ->isFinal() exists
-                    // @see https://3v4l.org/korKr#v8.0.11
-                    PHP_VERSION_ID >= PhpVersionFeature::FINAL_CLASS_CONSTANTS
-                ) {
-                    // PHP 8.1+
-                    $nativeReflection = $nativeReflectionClass->getReflectionConstant($constantName);
-                    $memberIsFinal = $nativeReflection instanceof ReflectionClassConstant && $nativeReflection->isFinal();
-                }
+                $memberIsFinal = $reflection->isFinalByKeyword();
             } else {
                 $memberIsFinal = $reflection->isFinalByKeyword()
                     ->yes();

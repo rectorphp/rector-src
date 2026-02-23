@@ -7,4 +7,9 @@ namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToCl
 class ClassWithFinalConstant
 {
     public final const NAME = 'SomeName';
+
+    /**
+     * @final
+     */
+    public const DOCBLOCK_FINAL = 'SomeDocblockFinal';
 }
