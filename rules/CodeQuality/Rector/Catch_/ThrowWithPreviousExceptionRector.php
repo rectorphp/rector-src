@@ -142,18 +142,6 @@ CODE_SAMPLE
         $messageArgument = $new->args[0] ?? null;
         $shouldUseNamedArguments = $messageArgument instanceof Arg && $messageArgument->name instanceof Identifier;
 
-        if (! isset($new->getArgs()[1])) {
-            if ($this->hasCodeParameter($new->class)) {
-                // get previous code
-                $new->args[1] = new Arg(
-                    new MethodCall($caughtThrowableVariable, 'getCode'),
-                    name: $shouldUseNamedArguments ? new Identifier('code') : null
-                );
-            }
-
-            return null;
-        }
-
         if (! isset($new->args[0])) {
             // get previous message
             $getMessageMethodCall = new MethodCall($caughtThrowableVariable, 'getMessage');
@@ -164,6 +152,18 @@ CODE_SAMPLE
         )) {
             $new->args[0]->name->name = 'message';
             $new->args[0]->value = new MethodCall($caughtThrowableVariable, 'getMessage');
+        }
+
+        if (! isset($new->getArgs()[1])) {
+            if ($this->hasCodeParameter($new->class)) {
+                // get previous code
+                $new->args[1] = new Arg(
+                    new MethodCall($caughtThrowableVariable, 'getCode'),
+                    name: $shouldUseNamedArguments ? new Identifier('code') : null
+                );
+            }
+
+            return null;
         }
 
         /** @var Arg $arg1 */
