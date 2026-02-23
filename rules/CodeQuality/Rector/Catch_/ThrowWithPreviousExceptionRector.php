@@ -142,16 +142,19 @@ CODE_SAMPLE
         $messageArgument = $new->args[0] ?? null;
         $shouldUseNamedArguments = $messageArgument instanceof Arg && $messageArgument->name instanceof Identifier;
 
+        $hasChanged = false;
         if (! isset($new->args[0])) {
             // get previous message
             $getMessageMethodCall = new MethodCall($caughtThrowableVariable, 'getMessage');
             $new->args[0] = new Arg($getMessageMethodCall);
+            $hasChanged = true;
         } elseif ($new->args[0] instanceof Arg && $new->args[0]->name instanceof Identifier && $new->args[0]->name->toString() === 'previous' && $this->nodeComparator->areNodesEqual(
             $new->args[0]->value,
             $caughtThrowableVariable
         )) {
             $new->args[0]->name->name = 'message';
             $new->args[0]->value = new MethodCall($caughtThrowableVariable, 'getMessage');
+            $hasChanged = true;
         }
 
         if (! isset($new->getArgs()[1])) {
@@ -161,9 +164,10 @@ CODE_SAMPLE
                     new MethodCall($caughtThrowableVariable, 'getCode'),
                     name: $shouldUseNamedArguments ? new Identifier('code') : null
                 );
+                $hasChanged = true;
+            } else {
+                return null;
             }
-
-            return null;
         }
 
         /** @var Arg $arg1 */
@@ -175,7 +179,8 @@ CODE_SAMPLE
                     name: $shouldUseNamedArguments ? new Identifier('code') : null
                 );
                 $new->args[$exceptionArgumentPosition] = $arg1;
-            } else {
+                $hasChanged = true;
+            } elseif (! $hasChanged) {
                 return null;
             }
         } else {
