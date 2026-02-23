@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRecto
 
 use stdClass;
 
-class Error extends \Exception
+class CustomError extends \Exception
 {
     public function __construct(
         string $message = '',
@@ -23,5 +23,5 @@ class Error extends \Exception
 try {
     throw new \InvalidArgumentException('foo');
 } catch (\InvalidArgumentException $e) {
-    throw new Error(message: 'Some error message', previous: $e);
+    throw new CustomError(message: 'Some error message', previous: $e);
 }
