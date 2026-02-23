@@ -10,6 +10,9 @@ use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 
+/**
+ * @api
+ */
 final readonly class ClassChildAnalyzer
 {
     /**
