@@ -22,7 +22,7 @@ final class FixtureFileFinder
             ->sortByName();
 
         foreach ($finder as $fileInfo) {
-            yield [$fileInfo->getRealPath()];
+            yield $fileInfo->getFilename() => [$fileInfo->getRealPath()];
         }
     }
 }
