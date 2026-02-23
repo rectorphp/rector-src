@@ -41,7 +41,5 @@ return static function (RectorConfig $rectorConfig): void {
         ClosureFromCallableToFirstClassCallableRector::class,
         FunctionFirstClassCallableRector::class,
         RemoveReflectionSetAccessibleCallsRector::class,
-
-        NewInInitializerRector::class,
     ]);
 };
