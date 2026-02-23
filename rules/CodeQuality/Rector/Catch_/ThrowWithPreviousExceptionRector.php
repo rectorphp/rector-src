@@ -51,7 +51,7 @@ class SomeClass
         try {
             $someCode = 1;
         } catch (Throwable $throwable) {
-            throw new AnotherException('ups');
+            throw new \RuntimeException('ups');
         }
     }
 }
@@ -65,7 +65,7 @@ class SomeClass
         try {
             $someCode = 1;
         } catch (Throwable $throwable) {
-            throw new AnotherException('ups', $throwable->getCode(), $throwable);
+            throw new \RuntimeException('ups', $throwable->getCode(), $throwable);
         }
     }
 }
@@ -155,21 +155,29 @@ CODE_SAMPLE
         }
 
         if (! isset($new->getArgs()[1])) {
-            // get previous code
-            $new->args[1] = new Arg(
-                new MethodCall($caughtThrowableVariable, 'getCode'),
-                name: $shouldUseNamedArguments ? new Identifier('code') : null
-            );
+            if ($this->hasCodeParameter($new->class)) {
+                // get previous code
+                $new->args[1] = new Arg(
+                    new MethodCall($caughtThrowableVariable, 'getCode'),
+                    name: $shouldUseNamedArguments ? new Identifier('code') : null
+                );
+            }
+
+            return null;
         }
 
         /** @var Arg $arg1 */
         $arg1 = $new->args[1];
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
-            $new->args[1] = new Arg(
-                new MethodCall($caughtThrowableVariable, 'getCode'),
-                name: $shouldUseNamedArguments ? new Identifier('code') : null
-            );
-            $new->args[$exceptionArgumentPosition] = $arg1;
+            if ($this->hasCodeParameter($new->class)) {
+                $new->args[1] = new Arg(
+                    new MethodCall($caughtThrowableVariable, 'getCode'),
+                    name: $shouldUseNamedArguments ? new Identifier('code') : null
+                );
+                $new->args[$exceptionArgumentPosition] = $arg1;
+            } else {
+                return null;
+            }
         } else {
             $new->args[$exceptionArgumentPosition] = new Arg(
                 $caughtThrowableVariable,
@@ -182,6 +190,34 @@ CODE_SAMPLE
 
         // nothing more to add
         return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+    }
+
+    private function hasCodeParameter(Name $exceptionName): bool
+    {
+        $className = $this->getName($exceptionName);
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+        $construct = $classReflection->hasMethod(MethodName::CONSTRUCT);
+
+        if (! $construct) {
+            return false;
+        }
+
+        $extendedMethodReflection = $classReflection->getConstructor();
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
+            $extendedMethodReflection->getVariants()
+        );
+
+        foreach ($extendedParametersAcceptor->getParameters() as $extendedParameterReflection) {
+            if ($extendedParameterReflection->getName() === 'code') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function resolveExceptionArgumentPosition(Name $exceptionName): ?int
