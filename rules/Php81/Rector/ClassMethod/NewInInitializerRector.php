@@ -14,9 +14,6 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * @see \Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\NewInInitializerRectorTest
- */
 final class NewInInitializerRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedInterface
 {
     public function getRuleDefinition(): RuleDefinition
