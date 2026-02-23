@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php71\Rector\List_;
 
 use PhpParser\Node;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\List_;
@@ -78,6 +79,11 @@ CODE_SAMPLE
 
             $list = $node->var;
 
+            // all list items must be set
+            if ($this->hasPartialDestruct($list)) {
+                return null;
+            }
+
             $node->var = new Array_($list->items);
             return $node;
         }
@@ -93,15 +99,24 @@ CODE_SAMPLE
         $list = $node->valueVar;
 
         // all list items must be set
-        foreach ($list->items as $listItem) {
-            if ($listItem === null) {
-                return null;
-            }
+        if ($this->hasPartialDestruct($list)) {
+            return null;
         }
 
         $node->valueVar = new Array_($list->items);
 
         return $node;
+    }
+
+    private function hasPartialDestruct(List_ $list): bool
+    {
+        foreach ($list->items as $listItem) {
+            if (! $listItem instanceof ArrayItem) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function provideMinPhpVersion(): int
