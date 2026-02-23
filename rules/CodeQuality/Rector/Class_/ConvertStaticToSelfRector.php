@@ -16,7 +16,6 @@ use PHPStan\Reflection\ClassConstantReflection;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\Enum\ObjectReference;
-use Rector\Php\PhpVersionProvider;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -32,11 +31,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ConvertStaticToSelfRector extends AbstractRector
 {
-    public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change `static::*` to `self::*` on final class or private static members', [
