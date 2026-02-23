@@ -8,8 +8,8 @@ class Fixture
     {
         try {
             $someCode = 1;
-        } catch (Throwable $throwable) {
-            throw new AnotherException('ups');
+        } catch (\Throwable $throwable) {
+            throw new \RuntimeException('ups');
         }
     }
 }
@@ -26,8 +26,8 @@ class Fixture
     {
         try {
             $someCode = 1;
-        } catch (Throwable $throwable) {
-            throw new AnotherException('ups', $throwable->getCode(), $throwable);
+        } catch (\Throwable $throwable) {
+            throw new \RuntimeException('ups', $throwable->getCode(), $throwable);
         }
     }
 }

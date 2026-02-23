@@ -10,7 +10,7 @@ class SkipMissingLocation
     public function run()
     {
         try {
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             throw new MissingPreviousException('message some');
         }
     }

@@ -8,8 +8,8 @@ class EmptyBrackets
     {
         try {
             $someCode = 1;
-        } catch (Throwable $throwable) {
-            throw new AnotherException;
+        } catch (\Throwable $throwable) {
+            throw new \RuntimeException;
         }
     }
 }
@@ -26,8 +26,8 @@ class EmptyBrackets
     {
         try {
             $someCode = 1;
-        } catch (Throwable $throwable) {
-            throw new AnotherException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        } catch (\Throwable $throwable) {
+            throw new \RuntimeException($throwable->getMessage(), $throwable->getCode(), $throwable);
         }
     }
 }
