@@ -6,6 +6,7 @@ namespace Rector\Php70\Rector\Ternary;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
@@ -114,7 +115,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
             return null;
         }
 
-        if ($ternary->else instanceof Ternary && $this->isTernaryParenthesized($this->file, $ternary->cond, $ternary)) {
+        if (($ternary->else instanceof Ternary || $ternary->else instanceof BinaryOp) && $this->isTernaryParenthesized($this->file, $ternary->cond, $ternary)) {
             $ternary->else->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
