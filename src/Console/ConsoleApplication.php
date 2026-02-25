@@ -22,7 +22,7 @@ final class ConsoleApplication extends Application
 {
     private const string NAME = 'Rector';
 
-    private const ALLOWED_COMMANDS = [
+    private const array ALLOWED_COMMANDS = [
         'custom-rule',
         'process',
         'list',
