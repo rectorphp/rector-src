@@ -23,6 +23,10 @@ final class ConsoleApplication extends Application
     private const string NAME = 'Rector';
 
     private const array ALLOWED_COMMANDS = [
+        // null is for example: bin/rector --version
+        null,
+
+        // default commands
         'custom-rule',
         'process',
         'list',
