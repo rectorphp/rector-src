@@ -22,6 +22,9 @@ final class ConsoleApplication extends Application
 {
     private const string NAME = 'Rector';
 
+    /**
+     * @var array<string|null>
+     */
     private const array ALLOWED_COMMANDS = [
         // null is for example: bin/rector --version
         null,
