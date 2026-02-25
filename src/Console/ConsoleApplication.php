@@ -22,6 +22,16 @@ final class ConsoleApplication extends Application
 {
     private const string NAME = 'Rector';
 
+    private const ALLOWED_COMMANDS = [
+        'custom-rule',
+        'process',
+        'list',
+        'setup-ci',
+        'worker',
+        'help',
+        'completion',
+    ];
+
     /**
      * @param Command[] $commands
      */
@@ -73,6 +83,8 @@ final class ConsoleApplication extends Application
             $tokens = $privatesAccessor->getPrivateProperty($input, 'tokens');
             $tokens = array_merge(['process'], $tokens);
             $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
+        } elseif (! in_array($commandName, self::ALLOWED_COMMANDS, true)) {
+            Assert::fileExists($commandName);
         }
 
         return parent::doRun($input, $output);
