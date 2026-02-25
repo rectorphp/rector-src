@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 final class ConsoleApplication extends Application
@@ -42,7 +43,7 @@ final class ConsoleApplication extends Application
     /**
      * @param Command[] $commands
      */
-    public function __construct(array $commands)
+    public function __construct(array $commands, private readonly SymfonyStyle $symfonyStyle)
     {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
 
@@ -91,7 +92,15 @@ final class ConsoleApplication extends Application
             $tokens = array_merge(['process'], $tokens);
             $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
         } elseif (! in_array($commandName, self::ALLOWED_COMMANDS, true)) {
-            Assert::fileExists($commandName);
+            $this->symfonyStyle->error(
+                sprintf(
+                    'The following given path does not match any files or directories: %s%s',
+                    "\n\n - ",
+                    $commandName
+                )
+            );
+
+            return ExitCode::FAILURE;
         }
 
         return parent::doRun($input, $output);
