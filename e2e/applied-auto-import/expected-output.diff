@@ -4,7 +4,7 @@
 1) src/RenameDocblock.php:2
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 2 @@
 
  namespace App;
 

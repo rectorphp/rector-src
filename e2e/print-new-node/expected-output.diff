@@ -4,7 +4,7 @@
 1) src/ExtendingTestClass.php:1
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 1 @@
  <?php
 
  class ExtendingTestClass extends TestClass {
