@@ -2,6 +2,9 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector\Fixture;
 
+/**
+ * This direct use new ExceptionWithCustomParam() inside the class is on purpose to reproduce the issue
+ */
 final class ExceptionWithCustomParam extends \RuntimeException
 {
     public function __construct(
