@@ -34,6 +34,7 @@ final readonly class Configuration
         private ?string $onlyRule = null,
         private ?string $onlySuffix = null,
         private array $levelOverflows = [],
+        private bool $showRulesSummary = false,
     ) {
     }
 
@@ -140,5 +141,10 @@ final readonly class Configuration
         $ruleDuplicatedRegistrations = array_intersect($rootStandaloneRegisteredRules, $setRegisteredRules);
 
         return array_unique($ruleDuplicatedRegistrations);
+    }
+
+    public function shouldShowRulesSummary(): bool
+    {
+        return $this->showRulesSummary;
     }
 }
