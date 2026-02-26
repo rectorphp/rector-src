@@ -203,6 +203,10 @@ CODE_SAMPLE
     private function hasParameter(New_ $new, string $parameterName): bool
     {
         $className = $this->getName($new->class);
+        if ($className === null) {
+            return false;
+        }
+
         if (! $this->reflectionProvider->hasClass($className)) {
             return false;
         }
