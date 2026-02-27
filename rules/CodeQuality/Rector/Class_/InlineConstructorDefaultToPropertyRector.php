@@ -161,7 +161,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $isFoundInPropertyAnyHooks = $this->betterNodeFinder->findFirst($property->hooks, function (Node $subNode) use (
+            $isFoundInPropertyAnyHooks = (bool) $this->betterNodeFinder->findFirst($property->hooks, function (Node $subNode) use (
                 $class,
                 $propertyName
             ): bool {
@@ -172,7 +172,7 @@ CODE_SAMPLE
                 return $this->propertyFetchFinder->isLocalPropertyFetchByName($subNode, $class, $propertyName);
             });
 
-            if ($isFoundInPropertyAnyHooks instanceof Node) {
+            if ($isFoundInPropertyAnyHooks) {
                 return true;
             }
         }
