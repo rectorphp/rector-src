@@ -84,7 +84,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->typeComparator->isSubtype($secondArgType->getItemType(), $firstArgType)) {
+        if ($this->typeComparator->isSubtype($secondArgType->getIterableValueType(), $firstArgType)) {
             $node->args[] = new Arg($this->nodeFactory->createTrue());
             return $node;
         }
