@@ -24,19 +24,6 @@ final class ConsoleApplication extends Application
     private const string NAME = 'Rector';
 
     /**
-     * @var string[]
-     */
-    private const array ALLOWED_COMMANDS = [
-        'custom-rule',
-        'process',
-        'list',
-        'setup-ci',
-        'worker',
-        'help',
-        'completion',
-    ];
-
-    /**
      * @param Command[] $commands
      */
     public function __construct(array $commands, private readonly SymfonyStyle $symfonyStyle)
@@ -90,7 +77,7 @@ final class ConsoleApplication extends Application
             $tokens = $privatesAccessor->getPrivateProperty($input, 'tokens');
             $tokens = array_merge(['process'], $tokens);
             $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
-        } elseif (! in_array($commandName, self::ALLOWED_COMMANDS, true)) {
+        } elseif (! $this->has($commandName)) {
             $this->symfonyStyle->error(
                 sprintf(
                     'The following given path does not match any files or directories: %s%s',
