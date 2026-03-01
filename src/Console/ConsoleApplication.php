@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 final class ConsoleApplication extends Application
@@ -25,7 +26,7 @@ final class ConsoleApplication extends Application
     /**
      * @param Command[] $commands
      */
-    public function __construct(array $commands)
+    public function __construct(array $commands, private readonly SymfonyStyle $symfonyStyle)
     {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
 
@@ -57,12 +58,15 @@ final class ConsoleApplication extends Application
 
         $commandName = $input->getFirstArgument();
 
+        if ($commandName === null) {
+            return parent::doRun($input, $output);
+        }
+
         // if paths exist or if the command name is not the first argument but with --option, eg:
         // bin/rector src
         // bin/rector --only "RemovePhpVersionIdCheckRector"
         // file_exists() can check directory and file
-        if (is_string($commandName) && (
-            file_exists($commandName) || isset($_SERVER['argv'][1])
+        if ((file_exists($commandName) || isset($_SERVER['argv'][1])
             && $commandName !== $_SERVER['argv'][1]
             // ensure verify has parameter option, eg: --only
             && $input->hasParameterOption($_SERVER['argv'][1])
@@ -73,6 +77,16 @@ final class ConsoleApplication extends Application
             $tokens = $privatesAccessor->getPrivateProperty($input, 'tokens');
             $tokens = array_merge(['process'], $tokens);
             $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
+        } elseif (! $this->has($commandName)) {
+            $this->symfonyStyle->error(
+                sprintf(
+                    'The following given path does not match any files or directories: %s%s',
+                    "\n\n - ",
+                    $commandName
+                )
+            );
+
+            return ExitCode::FAILURE;
         }
 
         return parent::doRun($input, $output);
