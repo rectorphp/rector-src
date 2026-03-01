@@ -24,13 +24,9 @@ final class ConsoleApplication extends Application
     private const string NAME = 'Rector';
 
     /**
-     * @var array<string|null>
+     * @var string[]
      */
     private const array ALLOWED_COMMANDS = [
-        // null is for example: bin/rector --version
-        null,
-
-        // default commands
         'custom-rule',
         'process',
         'list',
@@ -75,12 +71,15 @@ final class ConsoleApplication extends Application
 
         $commandName = $input->getFirstArgument();
 
+        if ($commandName === null) {
+            return parent::doRun($input, $output);
+        }
+
         // if paths exist or if the command name is not the first argument but with --option, eg:
         // bin/rector src
         // bin/rector --only "RemovePhpVersionIdCheckRector"
         // file_exists() can check directory and file
-        if (is_string($commandName) && (
-            file_exists($commandName) || isset($_SERVER['argv'][1])
+        if ((file_exists($commandName) || isset($_SERVER['argv'][1])
             && $commandName !== $_SERVER['argv'][1]
             // ensure verify has parameter option, eg: --only
             && $input->hasParameterOption($_SERVER['argv'][1])
