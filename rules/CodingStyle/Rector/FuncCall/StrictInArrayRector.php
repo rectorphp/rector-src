@@ -25,9 +25,10 @@ final class StrictInArrayRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Set in_array strict to true when defined on similar type', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+            'Set in_array strict to true when defined on similar type',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 class BothStrings
 {
     public function run(string $value)
@@ -36,8 +37,8 @@ class BothStrings
     }
 }
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 class BothStrings
 {
     public function run(string $value)
@@ -46,8 +47,8 @@ class BothStrings
     }
 }
 CODE_SAMPLE
-            ),
-        ]
+                ),
+            ]
         );
     }
 

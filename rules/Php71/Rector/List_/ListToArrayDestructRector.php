@@ -108,6 +108,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ARRAY_DESTRUCT;
+    }
+
     private function hasPartialDestruct(List_ $list): bool
     {
         foreach ($list->items as $listItem) {
@@ -117,10 +122,5 @@ CODE_SAMPLE
         }
 
         return false;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::ARRAY_DESTRUCT;
     }
 }
