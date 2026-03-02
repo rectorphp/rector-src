@@ -28,11 +28,14 @@ use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ProcessCommand extends Command
 {
+    private SymfonyStyle $errorSymfonyStyle;
+
     public function __construct(
         private readonly AdditionalAutoloader $additionalAutoloader,
         private readonly ChangedFilesDetector $changedFilesDetector,
@@ -82,6 +85,10 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->errorSymfonyStyle = $output instanceof ConsoleOutputInterface
+            ? new SymfonyStyle($input, $output->getErrorOutput())
+            : $this->symfonyStyle;
+
         // missing config? add it :)
         if (! $this->configInitializer->areSomeRectorsLoaded()) {
             $this->configInitializer->createConfig(getcwd());
@@ -109,7 +116,7 @@ EOF
 
         // 0. warn about skipped rules that are deprecated
         if ($this->skippedClassResolver->resolveDeprecatedSkippedClasses() !== []) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->errorSymfonyStyle->warning(sprintf(
                 'These rules are skipped, but are deprecated. Most likely you do not need to skip them anymore as not part of any set and remove them: %s* %s',
                 "\n\n",
                 implode(' * ', $this->skippedClassResolver->resolveDeprecatedSkippedClasses()) . "\n"
@@ -119,7 +126,7 @@ EOF
         // 1. warn about rules registered in both withRules() and sets to avoid bloated rector.php configs
         $setAndRulesDuplicatedRegistrations = $configuration->getBothSetAndRulesDuplicatedRegistrations();
         if ($setAndRulesDuplicatedRegistrations !== []) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->errorSymfonyStyle->warning(sprintf(
                 'These rules are registered in both sets and "withRules()". Remove them from "withRules()" to avoid duplications: %s* %s',
                 "\n\n",
                 implode(' * ', $setAndRulesDuplicatedRegistrations) . "\n"
@@ -246,8 +253,8 @@ EOF
             return;
         }
 
-        $this->symfonyStyle->writeln('[info] Sets loaded based on installed packages:');
-        $this->symfonyStyle->listing($composerBasedSets);
+        $this->errorSymfonyStyle->writeln('[info] Sets loaded based on installed packages:');
+        $this->errorSymfonyStyle->listing($composerBasedSets);
     }
 
     private function reportLevelOverflow(LevelOverflow $levelOverflow): void
@@ -257,7 +264,7 @@ EOF
             $levelOverflow->getSuggestedRuleset()
         ) : sprintf('->withSets(SetList::%s)', $levelOverflow->getSuggestedSetListConstant());
 
-        $this->symfonyStyle->warning(sprintf(
+        $this->errorSymfonyStyle->warning(sprintf(
             'The "->%s()" level contains only %d rules, but you set level to %d.%sYou are using the full set now! Time to switch to more efficient "%s".',
             $levelOverflow->getConfigurationName(),
             $levelOverflow->getRuleCount(),
