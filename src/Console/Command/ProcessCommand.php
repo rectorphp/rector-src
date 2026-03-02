@@ -63,15 +63,15 @@ The <info>%command.name%</info> command will run Rector main feature:
 
 To specify a folder or a file, you can run:
 
-  <info>vendor/bin/rector src/Controller</info>
+  <info>vendor/bin/rector process src/Controller</info>
 
 You can also dry run to see the changes that Rector will make with the <comment>--dry-run</comment> option:
 
-  <info>vendor/bin/rector src/Controller --dry-run</info>
+  <info>vendor/bin/rector process src/Controller --dry-run</info>
 
 It's also possible to get debug via the <comment>--debug</comment> option:
 
-  <info>vendor/bin/rector src/Controller --dry-run --debug</info>
+  <info>vendor/bin/rector process src/Controller --dry-run --debug</info>
 EOF
         );
 
