@@ -15,6 +15,8 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Property;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,6 +29,8 @@ final class InlineConstructorDefaultToPropertyRector extends AbstractRector
 {
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PropertyFetchFinder $propertyFetchFinder
     ) {
     }
 
@@ -150,6 +154,26 @@ CODE_SAMPLE
         return $propertyName;
     }
 
+    private function isFoundInAnyPropertyHooks(Class_ $class, string $propertyName): bool
+    {
+        $propertyHooks = array_reduce(
+            $class->getProperties(),
+            static fn (array $hooks, Property $property): array => [...$hooks, ...$property->hooks],
+            []
+        );
+
+        return (bool) $this->betterNodeFinder->findFirst($propertyHooks, function (Node $subNode) use (
+            $class,
+            $propertyName
+        ): bool {
+            if (! $subNode instanceof PropertyFetch) {
+                return false;
+            }
+
+            return $this->propertyFetchFinder->isLocalPropertyFetchByName($subNode, $class, $propertyName);
+        });
+    }
+
     private function refactorProperty(
         Class_ $class,
         string $propertyName,
@@ -158,6 +182,10 @@ CODE_SAMPLE
         int $key
     ): bool {
         if ($class->isReadonly()) {
+            return false;
+        }
+
+        if ($this->isFoundInAnyPropertyHooks($class, $propertyName)) {
             return false;
         }
 
