@@ -156,28 +156,22 @@ CODE_SAMPLE
 
     private function isFoundInAnyPropertyHooks(Class_ $class, string $propertyName): bool
     {
-        foreach ($class->getProperties() as $property) {
-            if ($property->hooks === []) {
-                continue;
+        $propertyHooks = array_reduce(
+            $class->getProperties(),
+            static fn (array $hooks, Property $property): array => [...$hooks, ...$property->hooks],
+            []
+        );
+
+        return (bool) $this->betterNodeFinder->findFirst($propertyHooks, function (Node $subNode) use (
+            $class,
+            $propertyName
+        ): bool {
+            if (! $subNode instanceof PropertyFetch) {
+                return false;
             }
 
-            $isFoundInPropertyAnyHooks = (bool) $this->betterNodeFinder->findFirst($property->hooks, function (Node $subNode) use (
-                $class,
-                $propertyName
-            ): bool {
-                if (! $subNode instanceof PropertyFetch) {
-                    return false;
-                }
-
-                return $this->propertyFetchFinder->isLocalPropertyFetchByName($subNode, $class, $propertyName);
-            });
-
-            if ($isFoundInPropertyAnyHooks) {
-                return true;
-            }
-        }
-
-        return false;
+            return $this->propertyFetchFinder->isLocalPropertyFetchByName($subNode, $class, $propertyName);
+        });
     }
 
     private function refactorProperty(
