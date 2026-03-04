@@ -46,10 +46,6 @@ final readonly class PhpDocTagGenericUsesDecorator implements PhpDocNodeDecorato
                 return null;
             }
 
-            if (! in_array($node->name, ['@uses', '@used-by', '@see'], true)) {
-                return null;
-            }
-
             $reference = $node->value->value;
             if (! str_contains($reference, '::')) {
                 return null;
