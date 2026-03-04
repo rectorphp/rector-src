@@ -477,6 +477,14 @@ final readonly class PHPStanNodeScopeResolver
             // in the middle of process
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $mutatingScope);
+        } catch (Error $error) {
+            if (! str_contains($error->getMessage(), 'Infinite recursion?')) {
+                throw $error;
+            }
+
+            // handle stack overflow from recursive structures (e.g. self-referencing traits)
+            // fallback to fill by found scope
+            RectorNodeScopeResolver::processNodes($stmts, $mutatingScope);
         }
     }
 
