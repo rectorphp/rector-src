@@ -4,7 +4,7 @@
 1) src/SomeClass.php:7
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 7 @@
  class SomeClass
  {
      public function __construct(
