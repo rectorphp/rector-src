@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\Ternary;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -38,6 +40,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
             [
                 new CodeSample('$value === null ? 10 : $value;', '$value ?? 10;'),
                 new CodeSample('isset($value) ? $value : 10;', '$value ?? 10;'),
+                new CodeSample('is_null($value) ? 10 : $value;', '$value ?? 10;'),
             ]
         );
     }
@@ -57,6 +60,17 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
     {
         if ($node->cond instanceof Isset_) {
             return $this->processTernaryWithIsset($node, $node->cond);
+        }
+
+        if ($node->cond instanceof FuncCall && $this->isName($node->cond, 'is_null')) {
+            return $this->processTernaryWithIsNull($node, $node->cond, false);
+        }
+
+        if (
+            $node->cond instanceof BooleanNot && $node->cond->expr instanceof FuncCall
+            && $this->isName($node->cond->expr, 'is_null')
+        ) {
+            return $this->processTernaryWithIsNull($node, $node->cond->expr, true);
         }
 
         if ($node->cond instanceof Identical) {
@@ -94,6 +108,42 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NULL_COALESCE;
+    }
+
+    private function processTernaryWithIsNull(Ternary $ternary, FuncCall $isNullFuncCall, bool $isNegated): ?Coalesce
+    {
+        if (count($isNullFuncCall->args) !== 1) {
+            return null;
+        }
+
+        $firstArg = $isNullFuncCall->args[0];
+        if (! $firstArg instanceof Node\Arg) {
+            return null;
+        }
+
+        $checkedExpr = $firstArg->value;
+
+        if ($isNegated) {
+            if (! $ternary->if instanceof Expr) {
+                return null;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($ternary->if, $checkedExpr)) {
+                return null;
+            }
+
+            return new Coalesce($ternary->if, $ternary->else);
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($ternary->else, $checkedExpr)) {
+            return null;
+        }
+
+        if (! $ternary->if instanceof Expr) {
+            return null;
+        }
+
+        return new Coalesce($ternary->else, $ternary->if);
     }
 
     private function processTernaryWithIsset(Ternary $ternary, Isset_ $isset): ?Coalesce
