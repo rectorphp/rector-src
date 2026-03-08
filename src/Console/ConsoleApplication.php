@@ -26,8 +26,10 @@ final class ConsoleApplication extends Application
     /**
      * @param Command[] $commands
      */
-    public function __construct(array $commands, private readonly SymfonyStyle $symfonyStyle)
-    {
+    public function __construct(
+        array $commands,
+        private readonly SymfonyStyle $symfonyStyle
+    ) {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
 
         Assert::notEmpty($commands);
@@ -66,7 +68,8 @@ final class ConsoleApplication extends Application
         // bin/rector src
         // bin/rector --only "RemovePhpVersionIdCheckRector"
         // file_exists() can check directory and file
-        if ((file_exists($commandName) || isset($_SERVER['argv'][1])
+        if ((
+            file_exists($commandName) || isset($_SERVER['argv'][1])
             && $commandName !== $_SERVER['argv'][1]
             // ensure verify has parameter option, eg: --only
             && $input->hasParameterOption($_SERVER['argv'][1])
