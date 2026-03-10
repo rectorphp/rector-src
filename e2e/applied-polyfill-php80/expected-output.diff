@@ -4,7 +4,7 @@
 1) src/SomeStartWith.php:4
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 4 @@
  {
      public function run($a)
      {

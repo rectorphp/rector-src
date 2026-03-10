@@ -34,7 +34,7 @@ final readonly class ColorConsoleDiffFormatter
     /**
      * @see https://regex101.com/r/8MXnfa/2
      */
-    private const string AT_DIFF_LINE_REGEX = '#^\<fg=cyan\>@@ \-\d+,\d+ \+\d+,\d+ @@\<\/fg=cyan\>$#';
+    private const string AT_DIFF_LINE_REGEX = '#^\<fg=cyan\>@@ \-(\d+),\d+ \+\d+,\d+ @@\<\/fg=cyan\>$#';
 
     private string $template;
 
@@ -89,11 +89,11 @@ final readonly class ColorConsoleDiffFormatter
     }
 
     /**
-     * Remove number diff, eg; @@ -67,6 +67,8 @@ to become @@ @@
+     * Simplify diff line info, eg; @@ -67,6 +67,8 @@ to become @@ Line 67 @@
      */
     private function normalizeLineAtDiff(string $string): string
     {
-        return Strings::replace($string, self::AT_DIFF_LINE_REGEX, '<fg=cyan>@@ @@</fg=cyan>');
+        return Strings::replace($string, self::AT_DIFF_LINE_REGEX, '<fg=cyan>@@ Line $1 @@</fg=cyan>');
     }
 
     private function makePlusLinesGreen(string $string): string
