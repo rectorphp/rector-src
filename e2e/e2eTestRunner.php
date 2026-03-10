@@ -36,6 +36,10 @@ if (isset($argv[1]) && $argv[1] === '--no-diffs') {
     $e2eCommand .= ' --no-diffs';
 }
 
+if (isset($argv[2]) && $argv[2] === '--output-format=json') {
+    $e2eCommand .= ' --output-format=json';
+}
+
 $cliOptions = 'cli-options.txt';
 if (file_exists($cliOptions)) {
     $e2eCommand .= ' ' . trim((string) file_get_contents($cliOptions));

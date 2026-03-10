@@ -1,0 +1,9 @@
+{
+    "totals": {
+        "changed_files": 1,
+        "errors": 0
+    },
+    "changed_files": [
+        "src/RemoveAlwaysElse.php"
+    ],
+}
