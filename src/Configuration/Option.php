@@ -126,6 +126,8 @@ final class Option
 
     public const string XDEBUG = 'xdebug';
 
+    public const string RULES_SUMMARY = 'rules-summary';
+
     public const string CONFIG = 'config';
 
     /**
