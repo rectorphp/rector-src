@@ -10,6 +10,9 @@ use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 
+/**
+ * @see \Rector\Tests\ChangesReporting\Output\Factory\JsonOutputFactoryTest
+ */
 final class JsonOutputFactory
 {
     public static function create(ProcessResult $processResult, Configuration $configuration): string
