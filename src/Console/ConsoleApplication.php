@@ -80,7 +80,7 @@ final class ConsoleApplication extends Application
             $tokens = $privatesAccessor->getPrivateProperty($input, 'tokens');
             $tokens = array_merge(['process'], $tokens);
             $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
-        } elseif (! $this->has($commandName)) {
+        } elseif ($commandName !== 'p' && ! $this->has($commandName)) {
             $this->symfonyStyle->error(
                 sprintf(
                     'The following given path does not match any files or directories: %s%s',
