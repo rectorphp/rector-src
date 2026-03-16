@@ -35,9 +35,6 @@ return [
         'PHPUnit\Framework\TestCase',
         'PHPUnit\Runner\Version',
         'PHPUnit\Framework\ExpectationFailedException',
-
-        // native class on php 8.3+
-        'DateRangeError',
     ],
     'exclude-namespaces' => [
         '#^Rector#',
