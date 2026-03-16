@@ -50,6 +50,8 @@ jobs:
                     php ../../bin/rector process some_file.php --output-format json
                     php ../../bin/rector process some_file.php --output-format=json
 
+                    php ../../bin/rector p some_file.php --output-format=json
+
                     # with implicit process command
                     ../../bin/rector --output-format json --dry-run
                     ../../bin/rector --output-format=json --dry-run
