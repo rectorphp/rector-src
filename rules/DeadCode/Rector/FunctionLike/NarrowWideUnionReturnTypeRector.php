@@ -35,7 +35,6 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\NarrowWideUnionReturnTypeRectorTest
@@ -130,6 +129,7 @@ CODE_SAMPLE
         $returnType = $node->returnType;
 
         $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+
         $actualReturnTypes = $this->collectActualReturnTypes($returnStatements);
 
         if ($hasImplicitNullReturn) {
