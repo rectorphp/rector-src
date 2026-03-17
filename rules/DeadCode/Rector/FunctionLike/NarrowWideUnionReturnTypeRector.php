@@ -35,7 +35,6 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\NarrowWideUnionReturnTypeRectorTest
@@ -126,10 +125,11 @@ CODE_SAMPLE
         $hasImplicitNullReturn = $this->silentVoidResolver->hasSilentVoid($node)
             || $this->hasImplicitNullReturn($returnStatements);
 
+        /** @var UnionType|NullableType $returnType */
         $returnType = $node->returnType;
-        Assert::isInstanceOfAny($returnType, [UnionType::class, NullableType::class]);
 
         $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+
         $actualReturnTypes = $this->collectActualReturnTypes($returnStatements);
 
         if ($hasImplicitNullReturn) {
