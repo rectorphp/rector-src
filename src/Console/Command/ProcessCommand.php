@@ -54,6 +54,7 @@ final class ProcessCommand extends Command
     protected function configure(): void
     {
         $this->setName('process');
+        $this->setAliases(['p']);
         $this->setDescription('Upgrades or refactors source code with provided Rector rules');
         $this->setHelp(
             <<<'EOF'
