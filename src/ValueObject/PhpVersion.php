@@ -41,5 +41,7 @@ final class PhpVersion
 
     public const int PHP_85 = 80500;
 
+    public const int PHP_86 = 80600;
+
     public const int PHP_10 = 100000;
 }
