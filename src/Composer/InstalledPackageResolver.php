@@ -61,7 +61,13 @@ final class InstalledPackageResolver
 
     public function resolvePackageVersion(string $packageName): ?string
     {
-        return ($this->resolve()[$packageName] ?? null)?->getVersion();
+        $package = $this->resolve()[$packageName] ?? null;
+
+        if (! $package instanceof InstalledPackage) {
+            return null;
+        }
+
+        return $package->getVersion();
     }
 
     /**
