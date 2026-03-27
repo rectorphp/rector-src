@@ -147,7 +147,7 @@ CODE_SAMPLE
             if ($deep) {
                 // Spread argument can't be converted to pipe — keep the call as-is
                 if ($arg->unpack) {
-                    return $expr;
+                    return null;
                 }
 
                 // Return a pipe with the base expression on the left
