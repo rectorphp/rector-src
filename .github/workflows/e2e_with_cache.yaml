@@ -52,3 +52,25 @@ jobs:
             # this tests that a 2nd run with cache and "--dry-run" gives same results, see https://github.com/rectorphp/rector-src/pull/3614#issuecomment-1507742338
             -   run: php ../e2eTestRunnerWithCache.php
                 working-directory: ${{ matrix.directory }}
+
+    cache_meta_extension:
+        runs-on: ubuntu-latest
+        timeout-minutes: 3
+
+        name: End to end test - e2e/cache-meta-extension
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.3'
+                    coverage: none
+
+            -   run: composer install --ansi
+
+            -   run: composer install --ansi
+                working-directory: e2e/cache-meta-extension
+
+            -   run: php e2eTestRunnerCacheInvalidation.php
+                working-directory: e2e/cache-meta-extension

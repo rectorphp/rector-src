@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Caching\Config;
 
 use Rector\Application\VersionResolver;
+use Rector\Caching\Contract\CacheMetaExtensionInterface;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
 
@@ -13,12 +14,31 @@ use Rector\Exception\ShouldNotHappenException;
  */
 final class FileHashComputer
 {
+    /**
+     * @param CacheMetaExtensionInterface[] $cacheMetaExtensions
+     */
+    public function __construct(
+        private readonly array $cacheMetaExtensions = []
+    ) {
+    }
+
     public function compute(string $filePath): string
     {
         $this->ensureIsPhp($filePath);
 
         $parametersHash = SimpleParameterProvider::hash();
-        return sha1($filePath . $parametersHash . VersionResolver::PACKAGE_VERSION);
+        $extensionHash = $this->computeExtensionHash();
+        return sha1($filePath . $parametersHash . $extensionHash . VersionResolver::PACKAGE_VERSION);
+    }
+
+    private function computeExtensionHash(): string
+    {
+        $extensionHash = '';
+        foreach ($this->cacheMetaExtensions as $cacheMetaExtension) {
+            $extensionHash .= $cacheMetaExtension->getKey() . ':' . $cacheMetaExtension->getHash();
+        }
+
+        return $extensionHash;
     }
 
     private function ensureIsPhp(string $filePath): void
