@@ -15,7 +15,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Reflection\ClassReflection;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
@@ -23,7 +22,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final readonly class ArgumentDefaultValueReplacer
@@ -159,14 +157,16 @@ final readonly class ArgumentDefaultValueReplacer
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()
         ) && $argValue === $replaceArgumentDefaultValue->getValueBefore()) {
-            $scope = ScopeFetcher::fetch($particularArg);
-            if ($scope->getClassReflection() instanceof ClassReflection
-                && $particularArg->value instanceof ClassConstFetch
+            if ($particularArg->value instanceof ClassConstFetch
                 && $particularArg->value->class instanceof Name
-                && $particularArg->value->class->isSpecialClassName()) {
-                $classReflection = $scope->getClassReflection();
+                && $particularArg->value->class->isSpecialClassName()
+                && is_string($replaceArgumentDefaultValue->getValueAfter())
+                && str_contains($replaceArgumentDefaultValue->getValueAfter(), '::')) {
+                [$targetClass, $targetConstant] = explode('::', $replaceArgumentDefaultValue->getValueAfter());
                 $type = $this->nodeTypeResolver->getType($particularArg->value->class);
-                if ($type instanceof FullyQualifiedObjectType && $classReflection->getName() === $type->getClassName()) {
+                if ($type instanceof FullyQualifiedObjectType
+                    && $type->getClassName() === $targetClass
+                    && $particularArg->value->name->toString() === $targetConstant) {
                     return null;
                 }
             }
