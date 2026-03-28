@@ -161,6 +161,7 @@ final readonly class ArgumentDefaultValueReplacer
             if ($particularArg->value instanceof ClassConstFetch
                 && $particularArg->value->class instanceof Name
                 && $particularArg->value->class->isSpecialClassName()
+                && $normalizedValueAfter instanceof ClassConstFetch
                 && is_string($replaceArgumentDefaultValue->getValueAfter())
                 && str_contains($replaceArgumentDefaultValue->getValueAfter(), '::')) {
                 [$targetClass, $targetConstant] = explode('::', $replaceArgumentDefaultValue->getValueAfter());
@@ -172,7 +173,7 @@ final readonly class ArgumentDefaultValueReplacer
                 }
             }
 
-            $particularArg->value = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
+            $particularArg->value = $normalizedValueAfter;
             return $expr;
         }
 
