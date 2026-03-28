@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
@@ -168,6 +169,7 @@ final readonly class ArgumentDefaultValueReplacer
                 $type = $this->nodeTypeResolver->getType($particularArg->value->class);
                 if ($type instanceof FullyQualifiedObjectType
                     && $type->getClassName() === $targetClass
+                    && $particularArg->value->name instanceof Identifier
                     && $particularArg->value->name->toString() === $targetConstant) {
                     return null;
                 }
