@@ -157,6 +157,7 @@ final readonly class ArgumentDefaultValueReplacer
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()
         ) && $argValue === $replaceArgumentDefaultValue->getValueBefore()) {
+            $normalizedValueAfter = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
             if ($particularArg->value instanceof ClassConstFetch
                 && $particularArg->value->class instanceof Name
                 && $particularArg->value->class->isSpecialClassName()
