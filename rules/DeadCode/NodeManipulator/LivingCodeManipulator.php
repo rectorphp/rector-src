@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
 use PhpParser\Node\Expr\BinaryOp\LogicalOr;
+use PhpParser\Node\Expr\BinaryOp\Pipe;
 use PhpParser\Node\Expr\BitwiseNot;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast;
@@ -120,7 +121,8 @@ final readonly class LivingCodeManipulator
             $expr instanceof BooleanAnd ||
             $expr instanceof LogicalOr ||
             $expr instanceof BooleanOr ||
-            $expr instanceof Coalesce
+            $expr instanceof Coalesce ||
+            $expr instanceof Pipe
         );
     }
 

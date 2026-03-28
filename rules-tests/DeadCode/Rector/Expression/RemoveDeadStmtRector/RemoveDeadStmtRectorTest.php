@@ -13,6 +13,10 @@ final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
+        if (str_ends_with($filePath, 'skip_pipe_operator.php.inc') && PHP_VERSION_ID < 80500) {
+            $this->markTestSkipped('test contains php 8.5 syntax early before transformation');
+        }
+
         $this->doTestFile($filePath);
     }
 
