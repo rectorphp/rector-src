@@ -13,13 +13,18 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\PHPStan\ScopeFetcher;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final readonly class ArgumentDefaultValueReplacer
 {
@@ -28,6 +33,7 @@ final readonly class ArgumentDefaultValueReplacer
         private ValueResolver $valueResolver,
         private ArgsAnalyzer $argsAnalyzer,
         private AstResolver $astResolver,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -153,6 +159,18 @@ final readonly class ArgumentDefaultValueReplacer
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()
         ) && $argValue === $replaceArgumentDefaultValue->getValueBefore()) {
+            $scope = ScopeFetcher::fetch($particularArg);
+            if ($scope->getClassReflection() instanceof ClassReflection
+                && $particularArg->value instanceof ClassConstFetch
+                && $particularArg->value->class instanceof Name
+                && $particularArg->value->class->isSpecialClassName()) {
+                $classReflection = $scope->getClassReflection();
+                $type = $this->nodeTypeResolver->getType($particularArg->value->class);
+                if ($type instanceof FullyQualifiedObjectType && $classReflection->getName() === $type->getClassName()) {
+                    return null;
+                }
+            }
+
             $particularArg->value = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
             return $expr;
         }
