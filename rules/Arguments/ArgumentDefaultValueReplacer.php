@@ -13,13 +13,17 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final readonly class ArgumentDefaultValueReplacer
 {
@@ -28,6 +32,7 @@ final readonly class ArgumentDefaultValueReplacer
         private ValueResolver $valueResolver,
         private ArgsAnalyzer $argsAnalyzer,
         private AstResolver $astResolver,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -153,7 +158,24 @@ final readonly class ArgumentDefaultValueReplacer
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()
         ) && $argValue === $replaceArgumentDefaultValue->getValueBefore()) {
-            $particularArg->value = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
+            $normalizedValueAfter = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
+            if ($particularArg->value instanceof ClassConstFetch
+                && $particularArg->value->class instanceof Name
+                && $particularArg->value->class->isSpecialClassName()
+                && $normalizedValueAfter instanceof ClassConstFetch
+                && is_string($replaceArgumentDefaultValue->getValueAfter())
+                && str_contains($replaceArgumentDefaultValue->getValueAfter(), '::')) {
+                [$targetClass, $targetConstant] = explode('::', $replaceArgumentDefaultValue->getValueAfter());
+                $type = $this->nodeTypeResolver->getType($particularArg->value->class);
+                if ($type instanceof FullyQualifiedObjectType
+                    && $type->getClassName() === $targetClass
+                    && $particularArg->value->name instanceof Identifier
+                    && $particularArg->value->name->toString() === $targetConstant) {
+                    return null;
+                }
+            }
+
+            $particularArg->value = $normalizedValueAfter;
             return $expr;
         }
 

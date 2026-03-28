@@ -12,13 +12,13 @@ use Rector\Exception\ShouldNotHappenException;
 /**
  * Inspired by https://github.com/symplify/easy-coding-standard/blob/e598ab54686e416788f28fcfe007fd08e0f371d9/packages/changed-files-detector/src/FileHashComputer.php
  */
-final class FileHashComputer
+final readonly class FileHashComputer
 {
     /**
      * @param CacheMetaExtensionInterface[] $cacheMetaExtensions
      */
     public function __construct(
-        private readonly array $cacheMetaExtensions = []
+        private array $cacheMetaExtensions = []
     ) {
     }
 
@@ -34,8 +34,8 @@ final class FileHashComputer
     private function computeExtensionHash(): string
     {
         $extensionHash = '';
-        foreach ($this->cacheMetaExtensions as $cacheMetaExtension) {
-            $extensionHash .= $cacheMetaExtension->getKey() . ':' . $cacheMetaExtension->getHash();
+        foreach ($this->cacheMetaExtensions as $cacheMetumExtension) {
+            $extensionHash .= $cacheMetumExtension->getKey() . ':' . $cacheMetumExtension->getHash();
         }
 
         return $extensionHash;

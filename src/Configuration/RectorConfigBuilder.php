@@ -322,8 +322,8 @@ final class RectorConfigBuilder
             $rectorConfig->containerCacheDirectory($this->containerCacheDirectory);
         }
 
-        foreach ($this->cacheMetaExtensions as $cacheMetaExtensionClass) {
-            $rectorConfig->cacheMetaExtension($cacheMetaExtensionClass);
+        foreach ($this->cacheMetaExtensions as $cacheMetumExtension) {
+            $rectorConfig->cacheMetaExtension($cacheMetumExtension);
         }
 
         if ($this->importNames || $this->importDocBlockNames) {
