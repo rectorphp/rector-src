@@ -14,6 +14,8 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -78,6 +80,29 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
     {
         $printedNode = $this->betterStandardPrinter->print($node);
         $this->assertSame($expectedPrintedNode, $printedNode);
+    }
+
+    public function testPerNodeNewlineOnFluentCallAttribute(): void
+    {
+        SimpleParameterProvider::setParameter(Option::NEW_LINE_ON_FLUENT_CALL, false);
+
+        $innerCall = new MethodCall(new Variable('foo'), 'bar');
+        $outerCall = new MethodCall($innerCall, 'baz');
+        $outerCall->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
+
+        $printed = $this->betterStandardPrinter->print($outerCall);
+        $this->assertSame('$foo->bar()' . "\n    ->baz()", $printed);
+    }
+
+    public function testNoNewlineOnFluentCallWithoutAttribute(): void
+    {
+        SimpleParameterProvider::setParameter(Option::NEW_LINE_ON_FLUENT_CALL, false);
+
+        $innerCall = new MethodCall(new Variable('foo'), 'bar');
+        $outerCall = new MethodCall($innerCall, 'baz');
+
+        $printed = $this->betterStandardPrinter->print($outerCall);
+        $this->assertSame('$foo->bar()->baz()', $printed);
     }
 
     /**
