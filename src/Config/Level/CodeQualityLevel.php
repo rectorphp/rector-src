@@ -13,6 +13,7 @@ use Rector\CodeQuality\Rector\BooleanNot\ReplaceConstantBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\BooleanOr\RepeatedOrEqualToInArrayRector;
+use Rector\CodeQuality\Rector\CallLike\NameBooleanOrNullArgumentRector;
 use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\ConvertStaticToSelfRector;
@@ -185,6 +186,7 @@ final class CodeQualityLevel
         SortAttributeNamedArgsRector::class,
         RemoveReadonlyPropertyVisibilityOnReadonlyClassRector::class,
         SafeDeclareStrictTypesRector::class,
+        NameBooleanOrNullArgumentRector::class,
     ];
 
     /**
