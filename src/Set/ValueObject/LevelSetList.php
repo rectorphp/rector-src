@@ -9,6 +9,8 @@ namespace Rector\Set\ValueObject;
  */
 final class LevelSetList
 {
+    public const string UP_TO_PHP_86 = __DIR__ . '/../../../config/set/level/up-to-php86.php';
+
     public const string UP_TO_PHP_85 = __DIR__ . '/../../../config/set/level/up-to-php85.php';
 
     public const string UP_TO_PHP_84 = __DIR__ . '/../../../config/set/level/up-to-php84.php';

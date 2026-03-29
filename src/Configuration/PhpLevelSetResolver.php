@@ -35,6 +35,7 @@ final class PhpLevelSetResolver
         PhpVersion::PHP_83 => SetList::PHP_83,
         PhpVersion::PHP_84 => SetList::PHP_84,
         PhpVersion::PHP_85 => SetList::PHP_85,
+        PhpVersion::PHP_86 => SetList::PHP_86,
     ];
 
     /**
