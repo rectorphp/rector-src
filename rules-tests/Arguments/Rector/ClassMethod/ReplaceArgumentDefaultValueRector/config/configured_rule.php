@@ -78,6 +78,12 @@ return static function (RectorConfig $rectorConfig): void {
                 4
             ),
 
-            new ReplaceArgumentDefaultValue(Mage::class, 'getStoreConfig', 0, 'path', 'Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\SomeBase::PATH'),
+            new ReplaceArgumentDefaultValue(
+                Mage::class,
+                'getStoreConfig',
+                0,
+                'path',
+                'Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\SomeBase::PATH'
+            ),
         ]);
 };
