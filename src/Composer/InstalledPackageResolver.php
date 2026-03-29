@@ -17,7 +17,7 @@ use Webmozart\Assert\Assert;
 final class InstalledPackageResolver
 {
     /**
-     * @var null|InstalledPackage[]
+     * @var null|array<string, InstalledPackage>
      */
     private ?array $resolvedInstalledPackages = null;
 
@@ -33,7 +33,7 @@ final class InstalledPackageResolver
     }
 
     /**
-     * @return InstalledPackage[]
+     * @return array<string, InstalledPackage>
      */
     public function resolve(): array
     {
@@ -61,28 +61,26 @@ final class InstalledPackageResolver
 
     public function resolvePackageVersion(string $packageName): ?string
     {
-        $installedPackages = $this->resolve();
-        foreach ($installedPackages as $installedPackage) {
-            if ($installedPackage->getName() !== $packageName) {
-                continue;
-            }
+        $package = $this->resolve()[$packageName] ?? null;
 
-            return $installedPackage->getVersion();
+        if (! $package instanceof InstalledPackage) {
+            return null;
         }
 
-        return null;
+        return $package->getVersion();
     }
 
     /**
      * @param mixed[] $packages
-     * @return InstalledPackage[]
+     * @return array<string, InstalledPackage>
      */
     private function createInstalledPackages(array $packages): array
     {
         $installedPackages = [];
 
         foreach ($packages as $package) {
-            $installedPackages[] = new InstalledPackage($package['name'], $package['version_normalized']);
+            $name = $package['name'];
+            $installedPackages[$name] = new InstalledPackage($name, $package['version_normalized']);
         }
 
         return $installedPackages;
