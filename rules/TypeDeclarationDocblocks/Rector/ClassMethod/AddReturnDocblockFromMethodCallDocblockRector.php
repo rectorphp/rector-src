@@ -61,15 +61,14 @@ final class Repository
         // ...
     }
 }
-}
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 final class SomeController
 {
     /**
-        * @return SomeEntity[]
-        */
+     * @return SomeEntity[]
+     */
     public function getAll(): array
     {
         return $this->repository->findAll();
