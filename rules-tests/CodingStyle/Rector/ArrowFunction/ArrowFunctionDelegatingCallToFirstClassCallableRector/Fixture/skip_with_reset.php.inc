@@ -10,6 +10,6 @@ final class SkipWithReset
     public function run()
     {
         $data = [['a']];
-        return array_map(reset(...), $data);
+        return array_map(fn ($item) => reset($item), $data);
     }
 }
