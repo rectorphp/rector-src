@@ -36,6 +36,6 @@ jobs:
                     # and check against first class callable strlen(...)
                     ini-values: zend.assertions=1
 
-            -   uses: "ramsey/composer-install@v3"
+            -   uses: "ramsey/composer-install@v4"
 
             -   run: vendor/bin/phpunit tests/PhpParser/Printer/PHPStanPrinterTest.php --colors
