@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignRef;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -25,6 +26,8 @@ use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php\ReservedKeywordAnalyzer;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
+use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
@@ -42,7 +45,9 @@ final class RemoveUnusedVariableAssignRector extends AbstractRector
         private readonly SideEffectNodeDetector $sideEffectNodeDetector,
         private readonly VariableAnalyzer $variableAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly StmtsManipulator $stmtsManipulator
+        private readonly StmtsManipulator $stmtsManipulator,
+        private readonly AstResolver $astResolver,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -263,6 +268,14 @@ CODE_SAMPLE
 
             if ($this->shouldSkipVariable($assign->var, $variableName, $refVariableNames)) {
                 continue;
+            }
+
+            if ($assign->expr instanceof CallLike) {
+                $targetCall = $this->astResolver->resolveClassMethodOrFunctionFromCall($assign->expr);
+                if (($targetCall instanceof ClassMethod || $targetCall instanceof Function_)
+                    && $this->phpAttributeAnalyzer->hasPhpAttribute($targetCall, 'NoDiscard')) {
+                    continue;
+                }
             }
 
             $assignedVariableNamesByStmtPosition[$key] = $variableName;

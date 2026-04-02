@@ -112,7 +112,7 @@ final class AstResolver
     }
 
     public function resolveClassMethodOrFunctionFromCall(
-        FuncCall | StaticCall | MethodCall | New_ $call
+        FuncCall | StaticCall | MethodCall | New_ | NullsafeMethodCall $call
     ): ClassMethod | Function_ | null {
         if ($call instanceof FuncCall) {
             return $this->resolveFunctionFromFuncCall($call);
