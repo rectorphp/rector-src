@@ -8,11 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignRef;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -270,7 +273,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($assign->expr instanceof CallLike) {
+            if ($assign->expr instanceof FuncCall
+                || $assign->expr instanceof StaticCall
+                || $assign->expr instanceof MethodCall
+                || $assign->expr instanceof New_
+                || $assign->expr instanceof NullsafeMethodCall) {
                 $targetCall = $this->astResolver->resolveClassMethodOrFunctionFromCall($assign->expr);
                 if (($targetCall instanceof ClassMethod || $targetCall instanceof Function_)
                     && $this->phpAttributeAnalyzer->hasPhpAttribute($targetCall, 'NoDiscard')) {
