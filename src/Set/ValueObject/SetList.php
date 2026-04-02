@@ -66,6 +66,8 @@ final class SetList
 
     public const string PHP_85 = __DIR__ . '/../../../config/set/php85.php';
 
+    public const string PHP_86 = __DIR__ . '/../../../config/set/php86.php';
+
     public const string PRIVATIZATION = __DIR__ . '/../../../config/set/privatization.php';
 
     public const string TYPE_DECLARATION = __DIR__ . '/../../../config/set/type-declaration.php';

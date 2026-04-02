@@ -32,6 +32,7 @@ use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
 use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php86\Rector\FuncCall\MinMaxToClampRector;
 use Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector;
 use Rector\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector;
 
@@ -83,6 +84,7 @@ final class CodingStyleLevel
         ExplicitPublicClassMethodRector::class,
         RemoveUselessAliasInUseStatementRector::class,
         BinaryOpStandaloneAssignsToDirectRector::class,
+        MinMaxToClampRector::class,
     ];
 
     /**

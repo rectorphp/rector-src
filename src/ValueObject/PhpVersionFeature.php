@@ -500,4 +500,9 @@ final class PhpVersionFeature
      * @see https://wiki.php.net/rfc/override_properties
      */
     public const int OVERRIDE_ATTRIBUTE_ON_PROPERTIES = PhpVersion::PHP_85;
+
+    /**
+     * @see https://wiki.php.net/rfc/clamp_v2
+     */
+    public const int CLAMP = PhpVersion::PHP_86;
 }
