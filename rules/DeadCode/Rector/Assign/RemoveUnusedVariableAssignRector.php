@@ -12,6 +12,10 @@ use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -25,6 +29,8 @@ use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php\ReservedKeywordAnalyzer;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
+use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
@@ -42,7 +48,9 @@ final class RemoveUnusedVariableAssignRector extends AbstractRector
         private readonly SideEffectNodeDetector $sideEffectNodeDetector,
         private readonly VariableAnalyzer $variableAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly StmtsManipulator $stmtsManipulator
+        private readonly StmtsManipulator $stmtsManipulator,
+        private readonly AstResolver $astResolver,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -263,6 +271,18 @@ CODE_SAMPLE
 
             if ($this->shouldSkipVariable($assign->var, $variableName, $refVariableNames)) {
                 continue;
+            }
+
+            if ($assign->expr instanceof FuncCall
+                || $assign->expr instanceof StaticCall
+                || $assign->expr instanceof MethodCall
+                || $assign->expr instanceof New_
+                || $assign->expr instanceof NullsafeMethodCall) {
+                $targetCall = $this->astResolver->resolveClassMethodOrFunctionFromCall($assign->expr);
+                if (($targetCall instanceof ClassMethod || $targetCall instanceof Function_)
+                    && $this->phpAttributeAnalyzer->hasPhpAttribute($targetCall, 'NoDiscard')) {
+                    continue;
+                }
             }
 
             $assignedVariableNamesByStmtPosition[$key] = $variableName;

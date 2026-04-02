@@ -12,6 +12,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
@@ -23,7 +24,7 @@ final readonly class PhpAttributeAnalyzer
     ) {
     }
 
-    public function hasPhpAttribute(Property | ClassLike | ClassMethod | Param $node, string $attributeClass): bool
+    public function hasPhpAttribute(Property | ClassLike | ClassMethod | Function_ | Param  $node, string $attributeClass): bool
     {
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attribute) {
@@ -41,7 +42,7 @@ final readonly class PhpAttributeAnalyzer
     /**
      * @param string[] $attributeClasses
      */
-    public function hasPhpAttributes(Property | ClassLike | ClassMethod | Param $node, array $attributeClasses): bool
+    public function hasPhpAttributes(Property | ClassLike | ClassMethod | Function_ | Param $node, array $attributeClasses): bool
     {
         foreach ($attributeClasses as $attributeClass) {
             if ($this->hasPhpAttribute($node, $attributeClass)) {
