@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-class SkipAssignNoDiscardFunctionCall
+class SkipAssignNoDiscardMethodCall
 {
     public function run()
     {
