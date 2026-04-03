@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source;
+namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -24,7 +24,7 @@ class MergedImportError
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source;
+namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
