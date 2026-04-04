@@ -166,4 +166,6 @@ final class AttributeKey
     public const string HAS_CLOSURE_WITH_VARIADIC_ARGS = 'has_closure_with_variadic_args';
 
     public const string IS_IN_TRY_BLOCK = 'is_in_try_block';
+
+    public const string NEWLINE_ON_FLUENT_CALL = 'newline_on_fluent_call';
 }
