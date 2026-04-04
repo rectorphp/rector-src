@@ -125,7 +125,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($ternary->cond instanceof BinaryOp) {
+        if ($ternary->cond instanceof BinaryOp || $ternary->cond instanceof Assign) {
             $ternary->cond->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
