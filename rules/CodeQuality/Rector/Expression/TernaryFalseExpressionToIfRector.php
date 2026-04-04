@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -18,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector\TernaryFalseExpressionToIfRectorTest
  */
-final class TernaryFalseExpressionToIfRector extends AbstractRector
+final class TernaryFalseExpressionToIfRector extends AbstractRector implements HTMLAverseRectorInterface
 {
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer
