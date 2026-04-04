@@ -2,10 +2,12 @@
 
 namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Fixture;
 
-final class SkipOnInterface implements \Stringable
+use Countable;
+
+final class SkipCountable implements Countable
 {
-    public function __toString(): string
+    public function count(): int
     {
-        return 'implements only';
+        return 0;
     }
 }

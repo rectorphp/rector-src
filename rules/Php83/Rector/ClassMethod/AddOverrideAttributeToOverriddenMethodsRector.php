@@ -44,9 +44,16 @@ final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector
      */
     public const string ALLOW_OVERRIDE_EMPTY_METHOD = 'allow_override_empty_method';
 
+    /**
+     * @api
+     */
+    public const string ADD_TO_INTERFACE_METHODS = 'add_to_interface_methods';
+
     private const string OVERRIDE_CLASS = 'Override';
 
     private bool $allowOverrideEmptyMethod = false;
+
+    private bool $addToInterfaceMethods = false;
 
     private bool $hasChanged = false;
 
@@ -107,6 +114,42 @@ CODE_SAMPLE
                         self::ALLOW_OVERRIDE_EMPTY_METHOD => false,
                     ]
                 ),
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
+interface ParentInterface
+{
+    public function foo();
+}
+
+final class ChildClass implements ParentInterface
+{
+    public function foo()
+    {
+        echo 'implements interface';
+    }
+}
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+interface ParentInterface
+{
+    public function foo();
+}
+
+final class ChildClass implements ParentInterface
+{
+    #[\Override]
+    public function foo()
+    {
+        echo 'implements interface';
+    }
+}
+CODE_SAMPLE
+                    ,
+                    [
+                        self::ADD_TO_INTERFACE_METHODS => true,
+                    ]
+                ),
             ]
         );
     }
@@ -125,6 +168,7 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         $this->allowOverrideEmptyMethod = $configuration[self::ALLOW_OVERRIDE_EMPTY_METHOD] ?? false;
+        $this->addToInterfaceMethods = $configuration[self::ADD_TO_INTERFACE_METHODS] ?? false;
     }
 
     /**
@@ -138,8 +182,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // skip if no parents, nor traits, nor strinables are involved
-        if ($node->extends === null && $node->getTraitUses() === [] && ! $this->implementsStringable($node)) {
+        if ($this->shouldSkipNode($node)) {
             return null;
         }
 
@@ -151,15 +194,15 @@ CODE_SAMPLE
         $classReflection = $this->reflectionProvider->getClass($className);
         $parentClassReflections = $classReflection->getParents();
 
-        if ($this->allowOverrideEmptyMethod) {
-            $parentClassReflections = array_merge(
-                $parentClassReflections,
-                $classReflection->getInterfaces(),
+        // interfaces are added for Stringable
+        if ($this->addToInterfaceMethods || $this->allowOverrideEmptyMethod) {
+            $parentClassReflections = array_merge($parentClassReflections, $classReflection->getInterfaces());
+        }
 
-                // place on last to ensure verify method exists on parent early
-                // for non abstract method from trait
-                $classReflection->getTraits(),
-            );
+        if ($this->allowOverrideEmptyMethod) {
+            // place on last to ensure verify method exists on parent early
+            // for non abstract method from trait
+            $parentClassReflections = array_merge($parentClassReflections, $classReflection->getTraits());
         }
 
         if ($parentClassReflections === []) {
@@ -253,8 +296,14 @@ CODE_SAMPLE
 
     private function shouldSkipParentClassMethod(ClassReflection $parentClassReflection, ClassMethod $classMethod): bool
     {
-        if ($this->allowOverrideEmptyMethod && $parentClassReflection->isBuiltIn()) {
+        // special case for Stringable interface
+        if ($this->allowOverrideEmptyMethod && $parentClassReflection->getName() === 'Stringable') {
             return false;
+        }
+
+        // if the method is on interface, skip based on the config flag
+        if ($parentClassReflection->isInterface()) {
+            return ! $this->addToInterfaceMethods;
         }
 
         // parse parent method, if it has some contents or not
@@ -324,14 +373,30 @@ CODE_SAMPLE
         return null;
     }
 
-    private function implementsStringable(Class_ $class): bool
+    // early return for the class if it does not extend anything
+    private function shouldSkipNode(Class_ $class): bool
     {
-        foreach ($class->implements as $implement) {
-            if ($this->isName($implement, 'Stringable')) {
-                return true;
+        if ($class->extends !== null) {
+            return false;
+        }
+
+        if ($class->getTraitUses() !== []) {
+            return false;
+        }
+
+        if ($this->addToInterfaceMethods && $class->implements !== []) {
+            return false;
+        }
+
+        // add override to Stringable if flag is set
+        if ($this->allowOverrideEmptyMethod) {
+            foreach ($class->implements as $implement) {
+                if ($this->isName($implement, 'Stringable')) {
+                    return false;
+                }
             }
         }
 
-        return false;
+        return true;
     }
 }
