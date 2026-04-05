@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\Concat\JoinStringConcatRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\Coalesce\CoalesceToTernaryRector\Fixture;
 
 class SkipUnionNullableLeft
 {
