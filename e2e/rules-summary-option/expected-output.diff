@@ -1,0 +1,68 @@
+3 files with changes
+====================
+
+1) src/AlwaysTrue.php:4
+
+    ---------- begin diff ----------
+@@ @@
+ {
+     public function run()
+     {
+-        if (1 === 1) {
+-        }
+-
+-        if (2 === 2) {
+-        }
+-
+         return 'no';
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveAlwaysTrueIfConditionRector
+
+
+2) src/AnotherAlwaysTrue.php:4
+
+    ---------- begin diff ----------
+@@ @@
+ {
+     public function run()
+     {
+-        if (3 === 3) {
+-        }
+-
+         return 'yes';
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveAlwaysTrueIfConditionRector
+
+
+3) src/DeadConstructor.php:2
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class DeadConstructor
+ {
+-    public function __construct()
+-    {
+-    }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveEmptyClassMethodRector
+
+
+Rules Summary
+-------------
+
+ * RemoveAlwaysTrueIfConditionRector would have been applied 2 times
+ * RemoveEmptyClassMethodRector would have been applied 1 time
+
+ [OK] 3 files would have been changed (dry-run) by Rector
