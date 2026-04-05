@@ -101,7 +101,6 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
                 return null;
             }
 
-            /** @var Int_ $levelNumber */
             $levelNumber = $args[1]->value;
 
             $this->nestingLevel += $levelNumber->value;

@@ -87,7 +87,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var BooleanOr $booleanOr */
             $booleanOr = $stmt->expr;
 
             $left = $booleanOr->left;

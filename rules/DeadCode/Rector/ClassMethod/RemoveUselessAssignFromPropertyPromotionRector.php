@@ -97,7 +97,6 @@ CODE_SAMPLE
                 return null;
             }
 
-            /** @var Assign $assign */
             $assign = $stmt->expr;
 
             // has non property fetches assignments, skip

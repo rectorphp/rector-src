@@ -63,7 +63,6 @@ final readonly class ExpectedNameResolver
             return null;
         }
 
-        /** @var Variable $variable */
         $variable = $assign->var;
 
         return $this->nodeNameResolver->getName($variable);
@@ -79,7 +78,6 @@ final readonly class ExpectedNameResolver
             return null;
         }
 
-        /** @var New_ $new */
         $new = $assign->expr;
         if (! $new->class instanceof Name) {
             return null;

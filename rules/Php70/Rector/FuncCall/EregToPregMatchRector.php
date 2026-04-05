@@ -158,7 +158,6 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
             return;
         }
 
-        /** @var Int_ $limitNumberNode */
         $limitNumberNode = $funcCall->args[2]->value;
         if ($limitNumberNode->value !== 0) {
             return;

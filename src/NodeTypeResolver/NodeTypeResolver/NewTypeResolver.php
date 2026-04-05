@@ -74,7 +74,6 @@ final readonly class NewTypeResolver implements NodeTypeResolverInterface
 
         $directParentTypes = [];
 
-        /** @var Class_ $class */
         $class = $new->class;
         if ($class->extends instanceof Name) {
             $parentClass = (string) $class->extends;

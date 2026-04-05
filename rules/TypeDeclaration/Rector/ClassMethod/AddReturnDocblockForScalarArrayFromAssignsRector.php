@@ -203,7 +203,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var ArrayDimFetch $arrayDimFetch */
             $arrayDimFetch = $assign->var;
             if (! $arrayDimFetch->var instanceof Variable) {
                 continue;
