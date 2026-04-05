@@ -50,7 +50,6 @@ final class SimplifyFuncGetArgsCountRector extends AbstractRector
             return null;
         }
 
-        /** @var FuncCall $innerFuncCall */
         $innerFuncCall = $firstArg->value;
 
         if (! $this->isName($innerFuncCall, 'func_get_args')) {

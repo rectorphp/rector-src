@@ -32,7 +32,6 @@ final readonly class ClassMethodAndPropertyAnalyzer
             return false;
         }
 
-        /** @var Return_ $return */
         $return = $onlyClassMethodStmt;
 
         if (! $return->expr instanceof PropertyFetch) {

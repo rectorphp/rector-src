@@ -34,9 +34,7 @@ final readonly class StrFalseComparisonResolver
                 return null;
             }
 
-            /** @var FuncCall $funcCall */
-            $funcCall = $expr->right;
-            return $funcCall;
+            return $expr->right;
         }
 
         if ($this->valueResolver->isFalse($expr->right)) {
@@ -48,9 +46,7 @@ final readonly class StrFalseComparisonResolver
                 return null;
             }
 
-            /** @var FuncCall $funcCall */
-            $funcCall = $expr->left;
-            return $funcCall;
+            return $expr->left;
         }
 
         return null;

@@ -102,7 +102,6 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var MethodCall $returnExpr */
         $returnExpr = $node->stmts[0]->expr;
         if (! $this->isName($returnExpr->name, 'deserialize')) {
             return null;

@@ -203,7 +203,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var ArrayDimFetch $arrayDimFetch */
             $arrayDimFetch = $assign->var;
             if (! $arrayDimFetch->var instanceof Variable) {
                 continue;
@@ -213,7 +212,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($arrayDimFetch->dim !== null) {
+            if ($arrayDimFetch->dim instanceof Expr) {
                 continue;
             }
 

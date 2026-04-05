@@ -124,7 +124,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var Expression $stmt */
             $stmt = $stmtsAware->stmts[$key];
             if ($this->shouldSkip($stmt)) {
                 continue;

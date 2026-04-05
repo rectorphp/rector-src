@@ -109,7 +109,6 @@ final readonly class ClassDependencyManipulator
         ?Type $type,
         Assign $assign
     ): void {
-        /** @var ClassMethod|null $constructClassMethod */
         $constructClassMethod = $this->resolveConstruct($class);
 
         if ($constructClassMethod instanceof ClassMethod) {
@@ -190,7 +189,6 @@ final readonly class ClassDependencyManipulator
 
     private function resolveConstruct(Class_ $class): ?ClassMethod
     {
-        /** @var ClassMethod|null $constructorMethod */
         $constructorMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         // exists in current class
