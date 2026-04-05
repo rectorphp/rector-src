@@ -24,8 +24,10 @@ final readonly class PhpAttributeAnalyzer
     ) {
     }
 
-    public function hasPhpAttribute(Property | ClassLike | ClassMethod | Function_ | Param  $node, string $attributeClass): bool
-    {
+    public function hasPhpAttribute(
+        Property | ClassLike | ClassMethod | Function_ | Param $node,
+        string $attributeClass
+    ): bool {
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attribute) {
                 if (! $this->nodeNameResolver->isName($attribute->name, $attributeClass)) {
@@ -42,8 +44,10 @@ final readonly class PhpAttributeAnalyzer
     /**
      * @param string[] $attributeClasses
      */
-    public function hasPhpAttributes(Property | ClassLike | ClassMethod | Function_ | Param $node, array $attributeClasses): bool
-    {
+    public function hasPhpAttributes(
+        Property | ClassLike | ClassMethod | Function_ | Param $node,
+        array $attributeClasses
+    ): bool {
         foreach ($attributeClasses as $attributeClass) {
             if ($this->hasPhpAttribute($node, $attributeClass)) {
                 return true;

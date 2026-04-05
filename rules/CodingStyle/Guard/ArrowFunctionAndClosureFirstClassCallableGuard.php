@@ -104,7 +104,11 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
         }
 
         // check if args require by reference
-        $parameters = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $callLike, $scope)->getParameters();
+        $parameters = ParametersAcceptorSelectorVariantsWrapper::select(
+            $reflection,
+            $callLike,
+            $scope
+        )->getParameters();
         foreach ($parameters as $parameter) {
             if ($parameter->passedByReference()->yes()) {
                 return true;
