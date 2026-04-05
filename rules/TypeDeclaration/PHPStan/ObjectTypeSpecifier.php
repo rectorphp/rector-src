@@ -51,14 +51,16 @@ final readonly class ObjectTypeSpecifier
 
         $uses = $this->useImportsResolver->resolve();
 
-        $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
-        if ($aliasedObjectType instanceof AliasedObjectType) {
-            return $aliasedObjectType;
-        }
+        if (! $withPreslash) {
+            $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
+            if ($aliasedObjectType instanceof AliasedObjectType) {
+                return $aliasedObjectType;
+            }
 
-        $shortenedObjectType = $this->matchShortenedObjectType($objectType, $uses);
-        if ($shortenedObjectType !== null) {
-            return $shortenedObjectType;
+            $shortenedObjectType = $this->matchShortenedObjectType($objectType, $uses);
+            if ($shortenedObjectType !== null) {
+                return $shortenedObjectType;
+            }
         }
 
         if ($this->reflectionProvider->hasClass($className)) {

@@ -10,7 +10,7 @@ use Carbon\CarbonInterface;
 /**
  * @property \Carbon\CarbonInterface|null $deleted_at
  */
-class MergedImportError
+class NotInUseFqcnDocblock2
 {
     public function demoFunction(): array
     {
@@ -27,12 +27,11 @@ declare(strict_types=1);
 namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
 
 /**
  * @property CarbonInterface|null $deleted_at
  */
-class MergedImportError
+class NotInUseFqcnDocblock2
 {
     public function demoFunction(): array
     {
