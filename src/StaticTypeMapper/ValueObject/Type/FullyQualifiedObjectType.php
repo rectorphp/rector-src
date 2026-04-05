@@ -76,7 +76,10 @@ final class FullyQualifiedObjectType extends ObjectType
             return true;
         }
 
-        return $type::class === ObjectType::class
-            && $type->getClassName() === $this->getClassName();
+        if ($type instanceof self || $type::class === ObjectType::class) {
+            return $type->getClassName() === $this->getClassName();
+        }
+
+        return false;
     }
 }
