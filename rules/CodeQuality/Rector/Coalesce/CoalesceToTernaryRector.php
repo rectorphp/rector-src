@@ -72,11 +72,11 @@ CODE_SAMPLE
         $scope = ScopeFetcher::fetch($node);
         $nativeType = $scope->getNativeType($node->left);
 
-        if ($nativeType instanceof MixedType) {
+        if ($nativeType instanceof ErrorType) {
             return null;
         }
 
-        if ($nativeType instanceof ErrorType) {
+        if ($nativeType instanceof MixedType) {
             return null;
         }
 
