@@ -475,3 +475,5 @@ parameters:
         -
             message: '#Unable to resolve the template type T in call to static method Webmozart\\Assert\\Assert\:\:isInstanceOfAny\(\)#'
             path: rules/DeadCode/Rector/FunctionLike/NarrowWideUnionReturnTypeRector.php
+
+        - '#Provide more specific return type "Iterator" over abstract one#'
