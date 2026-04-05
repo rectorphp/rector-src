@@ -33,6 +33,7 @@ final readonly class StrFalseComparisonResolver
             if (! $this->nodeNameResolver->isNames($expr->right, $oldStrFuncNames)) {
                 return null;
             }
+
             return $expr->right;
         }
 
@@ -44,6 +45,7 @@ final readonly class StrFalseComparisonResolver
             if (! $this->nodeNameResolver->isNames($expr->left, $oldStrFuncNames)) {
                 return null;
             }
+
             return $expr->left;
         }
 

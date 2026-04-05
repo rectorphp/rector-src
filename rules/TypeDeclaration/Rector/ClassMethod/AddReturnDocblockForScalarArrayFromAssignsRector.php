@@ -212,7 +212,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($arrayDimFetch->dim !== null) {
+            if ($arrayDimFetch->dim instanceof Expr) {
                 continue;
             }
 
