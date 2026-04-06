@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Ternary\RemoveUselessTernaryRector\Fixture;
 
-class WithIfNotEqual
+class SkipWithIfNotEqual
 {
     public function go(bool $value)
     {
