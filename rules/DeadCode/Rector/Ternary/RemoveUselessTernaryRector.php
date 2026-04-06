@@ -62,16 +62,16 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->if instanceof Expr && ! $this->nodeComparator->areNodesEqual($node->if, $node->cond)) {
-            return null;
-        }
-
         /**
          * if condition is negated, skip
          * switch negated ternary condition early via SwitchNegatedTernaryRector for that
          * if needed
          */
         if ($node->cond instanceof BooleanNot) {
+            return null;
+        }
+
+        if ($node->if instanceof Expr && ! $this->nodeComparator->areNodesEqual($node->if, $node->cond)) {
             return null;
         }
 
