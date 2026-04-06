@@ -23,7 +23,6 @@ use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
-use Rector\CodeQuality\Rector\Coalesce\CoalesceToTernaryRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
@@ -186,7 +185,6 @@ final class CodeQualityLevel
         SortAttributeNamedArgsRector::class,
         RemoveReadonlyPropertyVisibilityOnReadonlyClassRector::class,
         SafeDeclareStrictTypesRector::class,
-        CoalesceToTernaryRector::class,
     ];
 
     /**
