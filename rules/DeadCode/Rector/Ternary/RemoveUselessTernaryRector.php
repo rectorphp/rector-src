@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\Ternary;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Scalar\Int_;
 use PHPStan\Type\ArrayType;
@@ -62,6 +63,12 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->if instanceof Expr && ! $this->nodeComparator->areNodesEqual($node->if, $node->cond)) {
+            return null;
+        }
+
+        // if condition is negated
+        // switch negated ternary condition via SwitchNegatedTernaryRector for that
+        if ($node->cond instanceof BooleanNot) {
             return null;
         }
 
