@@ -66,8 +66,11 @@ CODE_SAMPLE
             return null;
         }
 
-        // if condition is negated
-        // switch negated ternary condition via SwitchNegatedTernaryRector for that
+        /**
+         * if condition is negated, skip
+         * switch negated ternary condition early via SwitchNegatedTernaryRector for that
+         * if needed
+         */
         if ($node->cond instanceof BooleanNot) {
             return null;
         }
