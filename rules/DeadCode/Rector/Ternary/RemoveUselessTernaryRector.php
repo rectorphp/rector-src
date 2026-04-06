@@ -71,11 +71,18 @@ CODE_SAMPLE
             return null;
         }
 
+        $nativeType = $this->nodeTypeResolver->getNativeType($node->cond);
+        if ($nativeType instanceof BooleanType
+            && $node->if instanceof Expr
+            && $this->valueResolver->isTrue($node->if)
+            && $this->valueResolver->isFalse($node->else)) {
+            return $node->cond;
+        }
+
         if ($node->if instanceof Expr && ! $this->nodeComparator->areNodesEqual($node->if, $node->cond)) {
             return null;
         }
 
-        $nativeType = $this->nodeTypeResolver->getNativeType($node->cond);
         if ($nativeType instanceof BooleanType && $this->valueResolver->isFalse($node->else)) {
             return $node->cond;
         }
