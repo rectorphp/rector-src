@@ -13,6 +13,7 @@ use Rector\Application\ApplicationFileProcessor;
 use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\ConfigurationRuleFilter;
+use Rector\Configuration\Option;
 use Rector\Console\ProcessConfigureDecorator;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
@@ -75,6 +76,7 @@ final class WorkerCommand extends Command
         $promise->then(function (ConnectionInterface $connection) use (
             $parallelIdentifier,
             $configuration,
+            $input,
             $output
         ): void {
             $inDecoder = new Decoder($connection, true, 512, JSON_INVALID_UTF8_IGNORE);
@@ -85,7 +87,7 @@ final class WorkerCommand extends Command
                 ReactCommand::IDENTIFIER => $parallelIdentifier,
             ]);
 
-            $this->runWorker($outEncoder, $inDecoder, $configuration, $output);
+            $this->runWorker($outEncoder, $inDecoder, $configuration, $input, $output);
         });
 
         $streamSelectLoop->run();
@@ -97,6 +99,7 @@ final class WorkerCommand extends Command
         Encoder $encoder,
         Decoder $decoder,
         Configuration $configuration,
+        InputInterface $input,
         OutputInterface $output
     ): void {
         $this->additionalAutoloader->autoloadPaths();
@@ -128,7 +131,7 @@ final class WorkerCommand extends Command
         $encoder->on(ReactEvent::ERROR, $handleErrorCallback);
 
         // 2. collect diffs + errors from file processor
-        $decoder->on(ReactEvent::DATA, function (array $json) use ($preFileCallback, $encoder, $configuration): void {
+        $decoder->on(ReactEvent::DATA, function (array $json) use ($preFileCallback, $encoder, $configuration, $input): void {
             $action = $json[ReactCommand::ACTION];
             if ($action !== Action::MAIN) {
                 return;
@@ -151,7 +154,7 @@ final class WorkerCommand extends Command
             $encoder->write([
                 ReactCommand::ACTION => Action::RESULT,
                 self::RESULT => [
-                    Bridge::FILE_DIFFS => $processResult->getFileDiffs(),
+                    Bridge::FILE_DIFFS => $processResult->getFileDiffs($input->getOption(Option::OUTPUT_FORMAT) !== 'json'),
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
                     Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
