@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php83\Rector\ClassMethod;
 
+use PhpParser\Node\Name;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
@@ -376,7 +377,7 @@ CODE_SAMPLE
     // early return for the class if it does not extend anything
     private function shouldSkipNode(Class_ $class): bool
     {
-        if ($class->extends !== null) {
+        if ($class->extends instanceof Name) {
             return false;
         }
 
