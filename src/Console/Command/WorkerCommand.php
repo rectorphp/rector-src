@@ -131,7 +131,12 @@ final class WorkerCommand extends Command
         $encoder->on(ReactEvent::ERROR, $handleErrorCallback);
 
         // 2. collect diffs + errors from file processor
-        $decoder->on(ReactEvent::DATA, function (array $json) use ($preFileCallback, $encoder, $configuration, $input): void {
+        $decoder->on(ReactEvent::DATA, function (array $json) use (
+            $preFileCallback,
+            $encoder,
+            $configuration,
+            $input
+        ): void {
             $action = $json[ReactCommand::ACTION];
             if ($action !== Action::MAIN) {
                 return;
@@ -154,7 +159,9 @@ final class WorkerCommand extends Command
             $encoder->write([
                 ReactCommand::ACTION => Action::RESULT,
                 self::RESULT => [
-                    Bridge::FILE_DIFFS => $processResult->getFileDiffs($input->getOption(Option::OUTPUT_FORMAT) !== 'json'),
+                    Bridge::FILE_DIFFS => $processResult->getFileDiffs(
+                        $input->getOption(Option::OUTPUT_FORMAT) !== 'json'
+                    ),
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
                     Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
