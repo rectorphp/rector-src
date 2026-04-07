@@ -157,7 +157,7 @@ CODE_SAMPLE
             $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty(
                 $property,
                 $classReflection,
-                $this->file
+                $this->getFile()
             );
             if (! $inferredType instanceof Type) {
                 continue;

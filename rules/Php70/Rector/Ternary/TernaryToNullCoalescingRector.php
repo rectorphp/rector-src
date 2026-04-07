@@ -115,7 +115,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
         }
 
         if (($ternary->else instanceof Ternary || $ternary->else instanceof BinaryOp) && $this->isTernaryParenthesized(
-            $this->file,
+            $this->getFile(),
             $ternary->cond,
             $ternary
         )) {
