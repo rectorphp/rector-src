@@ -9,6 +9,7 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -376,7 +377,7 @@ CODE_SAMPLE
     // early return for the class if it does not extend anything
     private function shouldSkipNode(Class_ $class): bool
     {
-        if ($class->extends !== null) {
+        if ($class->extends instanceof Name) {
             return false;
         }
 
