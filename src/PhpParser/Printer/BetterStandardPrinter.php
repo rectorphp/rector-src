@@ -375,7 +375,10 @@ final class BetterStandardPrinter extends Standard
             return parent::pExpr_MethodCall($methodCall);
         }
 
-        if (SimpleParameterProvider::provideBoolParameter(Option::NEW_LINE_ON_FLUENT_CALL) === false) {
+        $globalFlag = SimpleParameterProvider::provideBoolParameter(Option::NEW_LINE_ON_FLUENT_CALL);
+        $perNodeFlag = (bool) $methodCall->getAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, false);
+
+        if ($globalFlag === false && $perNodeFlag === false) {
             return parent::pExpr_MethodCall($methodCall);
         }
 
