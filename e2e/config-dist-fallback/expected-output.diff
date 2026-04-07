@@ -4,7 +4,7 @@
 1) src/SomeClass.php:4
 
     ---------- begin diff ----------
-@@ @@
+@@ Line 4 @@
 
  final class SomeClass
  {
