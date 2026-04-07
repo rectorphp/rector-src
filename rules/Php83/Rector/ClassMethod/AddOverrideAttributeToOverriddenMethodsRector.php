@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Php83\Rector\ClassMethod;
 
-use PhpParser\Node\Name;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
