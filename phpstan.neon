@@ -479,3 +479,8 @@ parameters:
             path: rules/DeadCode/Rector/FunctionLike/NarrowWideUnionReturnTypeRector.php
 
         - '#Provide more specific return type "Iterator|PhpParser\\Node" over abstract one#'
+
+        # BC layer
+        -
+            message: '#Access to deprecated property \$file of class Rector\\Rector\\AbstractRector#'
+            path: src/Rector/AbstractRector.php

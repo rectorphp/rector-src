@@ -214,7 +214,7 @@ CODE_SAMPLE
         if ($binaryOp instanceof Mul && $this->isLiteralOne($binaryOp->left) && $this->nodeTypeResolver->isNumberType(
             $binaryOp->right
         )) {
-            if ($this->isMulParenthesized($this->file, $binaryOp)) {
+            if ($this->isMulParenthesized($this->getFile(), $binaryOp)) {
                 $binaryOp->right->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
             }
 
