@@ -6,7 +6,6 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use Error;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -274,11 +273,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof BinaryOp) {
                 $this->processBinaryOp($node, $mutatingScope);
-                return;
-            }
-
-            if ($node instanceof Arg) {
-                $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
             }
 
