@@ -6,7 +6,6 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use Error;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -277,11 +276,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof Arg) {
-                $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                return;
-            }
-
             if ($node instanceof Foreach_) {
                 // decorate value as well
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -491,6 +485,14 @@ final readonly class PHPStanNodeScopeResolver
             $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         } elseif ($callLike instanceof New_ && ! $callLike->class instanceof Class_) {
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        if ($callLike->isFirstClassCallable()) {
+            return;
+        }
+
+        foreach ($callLike->getArgs() as $arg) {
+            $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
 
