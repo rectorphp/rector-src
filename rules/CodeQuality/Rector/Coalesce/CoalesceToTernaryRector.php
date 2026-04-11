@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -90,6 +91,10 @@ CODE_SAMPLE
                     return null;
                 }
             }
+        }
+
+        if ($node->left instanceof Variable && ! $scope->hasVariableType((string) $this->getName($node->left))->yes()) {
+            return null;
         }
 
         return new Ternary($node->left, null, $node->right);
