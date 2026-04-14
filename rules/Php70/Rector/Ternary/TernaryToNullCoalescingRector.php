@@ -6,6 +6,7 @@ namespace Rector\Php70\Rector\Ternary;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -94,11 +95,11 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
 
         $ternaryCompareNode = $node->cond;
         if ($this->isNullMatch($ternaryCompareNode->left, $ternaryCompareNode->right, $checkedNode)) {
-            return new Coalesce($checkedNode, $fallbackNode);
+            return $this->createCoalesce($checkedNode, $fallbackNode);
         }
 
         if ($this->isNullMatch($ternaryCompareNode->right, $ternaryCompareNode->left, $checkedNode)) {
-            return new Coalesce($checkedNode, $fallbackNode);
+            return $this->createCoalesce($checkedNode, $fallbackNode);
         }
 
         return null;
@@ -131,7 +132,9 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
                 return null;
             }
 
-            return new Coalesce($ternary->if, $ternary->else);
+            $this->preserveWrappedFallback($ternary->else);
+
+            return $this->createCoalesce($ternary->if, $ternary->else);
         }
 
         if (! $this->nodeComparator->areNodesEqual($ternary->else, $checkedExpr)) {
@@ -142,7 +145,9 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
             return null;
         }
 
-        return new Coalesce($ternary->else, $ternary->if);
+        $this->preserveWrappedFallback($ternary->if);
+
+        return $this->createCoalesce($ternary->else, $ternary->if);
     }
 
     private function processTernaryWithIsset(Ternary $ternary, Isset_ $isset): ?Coalesce
@@ -172,7 +177,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
             $ternary->else->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
-        return new Coalesce($ternary->if, $ternary->else);
+        return $this->createCoalesce($ternary->if, $ternary->else);
     }
 
     private function isTernaryParenthesized(File $file, Expr $expr, Ternary $ternary): bool
@@ -212,5 +217,46 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
         }
 
         return $this->nodeComparator->areNodesEqual($firstNode, $secondNode);
+    }
+
+    private function createCoalesce(Expr $checkedExpr, Expr $fallbackExpr): Coalesce
+    {
+        if ($this->isExprParenthesized($this->getFile(), $checkedExpr)) {
+            $checkedExpr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
+        return new Coalesce($checkedExpr, $fallbackExpr);
+    }
+
+    private function preserveWrappedFallback(Expr $expr): void
+    {
+        if (! ($expr instanceof BinaryOp || $expr instanceof Ternary)) {
+            return;
+        }
+
+        if (! $this->isExprParenthesized($this->getFile(), $expr)) {
+            return;
+        }
+
+        $expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+    }
+
+    private function isExprParenthesized(File $file, Expr $expr): bool
+    {
+        $oldTokens = $file->getOldTokens();
+        $startTokenPos = $expr->getStartTokenPos();
+        $endTokenPos = $expr->getEndTokenPos();
+
+        while (isset($oldTokens[$startTokenPos - 1]) && trim((string) $oldTokens[$startTokenPos - 1]) === '') {
+            --$startTokenPos;
+        }
+
+        while (isset($oldTokens[$endTokenPos + 1]) && trim((string) $oldTokens[$endTokenPos + 1]) === '') {
+            ++$endTokenPos;
+        }
+
+        return isset($oldTokens[$startTokenPos - 1], $oldTokens[$endTokenPos + 1])
+            && (string) $oldTokens[$startTokenPos - 1] === '('
+            && (string) $oldTokens[$endTokenPos + 1] === ')';
     }
 }

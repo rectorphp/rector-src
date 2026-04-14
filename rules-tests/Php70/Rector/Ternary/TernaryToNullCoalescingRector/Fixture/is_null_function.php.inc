@@ -9,8 +9,6 @@ function ternaryWithIsNull()
     $y = is_null($a) ? $b : $a;
 
     $z = !is_null($value) ? $value : 10;
-
-    $w = !is_null($c) ? $c : $d;
 }
 
 ?>
@@ -26,8 +24,6 @@ function ternaryWithIsNull()
     $y = $a ?? $b;
 
     $z = $value ?? 10;
-
-    $w = $c ?? $d;
 }
 
 ?>
