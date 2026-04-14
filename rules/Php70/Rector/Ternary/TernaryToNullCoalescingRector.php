@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Php70\Rector\Ternary;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -117,7 +117,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
         }
 
         $firstArg = $isNullFuncCall->args[0];
-        if (! $firstArg instanceof Node\Arg) {
+        if (! $firstArg instanceof Arg) {
             return null;
         }
 
@@ -230,7 +230,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
 
     private function preserveWrappedFallback(Expr $expr): void
     {
-        if (! ($expr instanceof BinaryOp || $expr instanceof Ternary)) {
+        if (! $expr instanceof BinaryOp && ! $expr instanceof Ternary) {
             return;
         }
 
