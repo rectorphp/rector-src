@@ -19,7 +19,7 @@ function FalseAndTrue()
 namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Fixture;
 
 /**
- * @return array<string, bool[]>
+ * @return array<string, array<int, bool>>
  */
 function FalseAndTrue()
 {
