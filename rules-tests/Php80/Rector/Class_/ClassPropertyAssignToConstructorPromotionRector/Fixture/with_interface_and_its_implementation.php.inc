@@ -2,11 +2,8 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-interface SomeInterface {}
-
-class FirstImplementation implements SomeInterface {}
-
-class SecondImplementation implements SomeInterface {}
+use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterface;
+use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation;
 
 class WithInterfaceAndItsImplementation
 {
@@ -17,9 +14,9 @@ class WithInterfaceAndItsImplementation
     private ?SomeInterface $z;
 
     public function __construct(
-        FirstImplementation $x,
-        SecondImplementation $y = new SecondImplementation(),
-        SecondImplementation $z = null,
+        SomeInterfaceImplementation $x,
+        SomeInterfaceImplementation $y = new SomeInterfaceImplementation(),
+        SomeInterfaceImplementation $z = null,
     ) {
         $this->x = $x;
         $this->y = $y;
@@ -33,15 +30,12 @@ class WithInterfaceAndItsImplementation
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-interface SomeInterface {}
-
-class FirstImplementation implements SomeInterface {}
-
-class SecondImplementation implements SomeInterface {}
+use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterface;
+use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation;
 
 class WithInterfaceAndItsImplementation
 {
-    public function __construct(private FirstImplementation $x, private SecondImplementation $y = new SecondImplementation(), private ?SecondImplementation $z = null)
+    public function __construct(private SomeInterfaceImplementation $x, private SomeInterfaceImplementation $y = new SomeInterfaceImplementation(), private ?SomeInterfaceImplementation $z = null)
     {
     }
 }
