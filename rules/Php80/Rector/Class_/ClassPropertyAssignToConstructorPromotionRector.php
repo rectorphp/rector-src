@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -20,6 +21,7 @@ use PhpParser\NodeVisitor;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
@@ -30,6 +32,7 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\DocBlock\PropertyPromotionDocBlockMerger;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -90,7 +93,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly ReflectionResolver $reflectionResolver,
         private readonly PropertyPromotionRenamer $propertyPromotionRenamer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -291,6 +295,23 @@ CODE_SAMPLE
     private function processUnionType(Property $property, Param $param): void
     {
         if ($property->type instanceof Node) {
+            // Keep the more specific compatible type when property and param differ.
+            if ($param->type instanceof Node) {
+                $propertyType = $this->getType($property->type);
+                $paramType = $this->getType($param->type);
+                if ($this->typeComparator->isSubtype($paramType, $propertyType)) {
+                    // Make the parameter type nullable if its default value is null
+                    if (
+                        $this->hasNullDefaultOnNonNullableParam($param, $paramType)
+                        && ($param->type instanceof Identifier || $param->type instanceof Name)
+                    ) {
+                        $param->type = new NullableType($param->type);
+                    }
+
+                    return;
+                }
+            }
+
             $param->type = $property->type;
             return;
         }
@@ -352,6 +373,24 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function hasNullDefaultOnNonNullableParam(Param $param, Type $paramType): bool
+    {
+        if ($param->default === null) {
+            return false;
+        }
+
+        if (! $this->valueResolver->isNull($param->default)) {
+            return false;
+        }
+
+        if ($paramType instanceof MixedType) {
+            return false;
+        }
+
+        return ! $paramType->isNull()
+            ->yes();
     }
 
     private function isCallableTypeIdentifier(?Node $node): bool
