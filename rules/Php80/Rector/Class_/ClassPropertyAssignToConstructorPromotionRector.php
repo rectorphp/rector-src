@@ -393,7 +393,8 @@ CODE_SAMPLE
         $propertyTypeWithoutNull = TypeCombinator::removeNull($propertyType);
 
         $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+        $paramTypeWithoutNull = TypeCombinator::removeNull($paramType);
 
-        return $this->typeComparator->areTypesEqual($propertyTypeWithoutNull, $paramType);
+        return $this->typeComparator->areTypesEqual($propertyTypeWithoutNull, $paramTypeWithoutNull);
     }
 }
