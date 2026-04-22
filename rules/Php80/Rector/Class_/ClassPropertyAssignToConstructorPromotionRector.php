@@ -32,7 +32,6 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\DocBlock\PropertyPromotionDocBlockMerger;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
-use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -94,7 +93,6 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly PropertyPromotionRenamer $propertyPromotionRenamer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -294,24 +292,7 @@ CODE_SAMPLE
 
     private function processUnionType(Property $property, Param $param): void
     {
-        if ($property->type instanceof Node) {
-            // Keep the more specific compatible type when property and param differ.
-            if ($param->type instanceof Node) {
-                $propertyType = $this->getType($property->type);
-                $paramType = $this->getType($param->type);
-                if ($this->typeComparator->isSubtype($paramType, $propertyType)) {
-                    // Make the parameter type nullable if its default value is null
-                    if (
-                        $this->hasNullDefaultOnNonNullableParam($param, $paramType)
-                        && ($param->type instanceof Identifier || $param->type instanceof Name)
-                    ) {
-                        $param->type = new NullableType($param->type);
-                    }
-
-                    return;
-                }
-            }
-
+        if ($this->shouldUsePropertyTypeForPromotedParam($property, $param)) {
             $param->type = $property->type;
             return;
         }
@@ -375,24 +356,6 @@ CODE_SAMPLE
         return false;
     }
 
-    private function hasNullDefaultOnNonNullableParam(Param $param, Type $paramType): bool
-    {
-        if ($param->default === null) {
-            return false;
-        }
-
-        if (! $this->valueResolver->isNull($param->default)) {
-            return false;
-        }
-
-        if ($paramType instanceof MixedType) {
-            return false;
-        }
-
-        return ! $paramType->isNull()
-            ->yes();
-    }
-
     private function isCallableTypeIdentifier(?Node $node): bool
     {
         return $node instanceof Identifier && $this->isName($node, 'callable');
@@ -414,5 +377,23 @@ CODE_SAMPLE
             && $param->type instanceof Node
             && $property->hooks !== []
             && ! $this->nodeComparator->areNodesEqual($property->type, $param->type);
+    }
+
+    private function shouldUsePropertyTypeForPromotedParam(Property $property, Param $param): bool
+    {
+        if ($property->type === null) {
+            return false;
+        }
+
+        if ($param->type === null) {
+            return true;
+        }
+
+        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
+        $propertyTypeWithoutNull = TypeCombinator::removeNull($propertyType);
+
+        $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+
+        return $this->typeComparator->areTypesEqual($propertyTypeWithoutNull, $paramType);
     }
 }
