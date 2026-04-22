@@ -92,7 +92,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly ReflectionResolver $reflectionResolver,
         private readonly PropertyPromotionRenamer $propertyPromotionRenamer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
