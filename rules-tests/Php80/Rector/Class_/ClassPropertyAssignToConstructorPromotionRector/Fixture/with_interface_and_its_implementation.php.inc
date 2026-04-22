@@ -15,16 +15,20 @@ class WithInterfaceAndItsImplementation
 
     private null|SomeInterface $unionWithNull;
 
+    private SomeInterface $withNullableParam;
+
     public function __construct(
         SomeInterfaceImplementation $basic,
         SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(),
         SomeInterfaceImplementation $nullable = null,
         SomeInterfaceImplementation $unionWithNull = null,
+        ?SomeInterfaceImplementation $withNullableParam = null,
     ) {
         $this->basic = $basic;
         $this->withDefaultValue = $withDefaultValue;
         $this->nullable = $nullable;
         $this->unionWithNull = $unionWithNull;
+        $this->withNullableParam = $withNullableParam;
     }
 }
 
@@ -39,7 +43,7 @@ use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRe
 
 class WithInterfaceAndItsImplementation
 {
-    public function __construct(private SomeInterfaceImplementation $basic, private SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(), private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $nullable = null, private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $unionWithNull = null)
+    public function __construct(private SomeInterfaceImplementation $basic, private SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(), private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $nullable = null, private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $unionWithNull = null, private ?SomeInterfaceImplementation $withNullableParam = null)
     {
     }
 }
