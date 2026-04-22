@@ -9,6 +9,10 @@ class WithInterfaceAndItsImplementation
 {
     private SomeInterface $basic;
 
+    private SomeInterface $withNullableParamWithoutDefaultValue;
+
+    private SomeInterface $withUnionWithNullInParamWithoutDefaultValue;
+
     private SomeInterface $withDefaultValue;
 
     private ?SomeInterface $nullable;
@@ -21,6 +25,8 @@ class WithInterfaceAndItsImplementation
 
     public function __construct(
         SomeInterfaceImplementation $basic,
+        ?SomeInterfaceImplementation $withNullableParamWithoutDefaultValue,
+        null|SomeInterfaceImplementation $withUnionWithNullInParamWithoutDefaultValue,
         SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(),
         SomeInterfaceImplementation $nullable = null,
         SomeInterfaceImplementation $unionWithNull = null,
@@ -28,6 +34,8 @@ class WithInterfaceAndItsImplementation
         null|SomeInterfaceImplementation $withUnionWithNullInParam = null,
     ) {
         $this->basic = $basic;
+        $this->withNullableParamWithoutDefaultValue = $withNullableParamWithoutDefaultValue;
+        $this->withUnionWithNullInParamWithoutDefaultValue = $withUnionWithNullInParamWithoutDefaultValue;
         $this->withDefaultValue = $withDefaultValue;
         $this->nullable = $nullable;
         $this->unionWithNull = $unionWithNull;
@@ -47,7 +55,7 @@ use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRe
 
 class WithInterfaceAndItsImplementation
 {
-    public function __construct(private SomeInterfaceImplementation $basic, private SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(), private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $nullable = null, private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $unionWithNull = null, private ?SomeInterfaceImplementation $withNullableParam = null, private null|SomeInterfaceImplementation $withUnionWithNullInParam = null)
+    public function __construct(private SomeInterfaceImplementation $basic, private ?SomeInterfaceImplementation $withNullableParamWithoutDefaultValue, private null|SomeInterfaceImplementation $withUnionWithNullInParamWithoutDefaultValue, private SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(), private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $nullable = null, private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $unionWithNull = null, private ?SomeInterfaceImplementation $withNullableParam = null, private null|SomeInterfaceImplementation $withUnionWithNullInParam = null)
     {
     }
 }
