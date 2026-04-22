@@ -11,36 +11,36 @@ class WithInterfaceAndItsImplementation
 
     private SomeInterface $withNullableParam;
 
-    private SomeInterface $withUnionWithNullInParam;
+    private SomeInterface $withUnionAndNullInParam;
 
     private SomeInterface $withDefaultValue;
 
-    private ?SomeInterface $nullableWithDefaultValue;
+    private ?SomeInterface $withNonNullableParamAndDefaultValueNull;
 
-    private null|SomeInterface $unionWithNullWithDefaultValue;
+    private null|SomeInterface $unionWithNullAndDefaultValue;
 
-    private SomeInterface $withNullableParamWithDefaultValue;
+    private SomeInterface $withNullableParamAndDefaultValue;
 
-    private SomeInterface $withUnionWithNullInParamWithDefaultValue;
+    private SomeInterface $withUnionAndNullInParamAndDefaultValue;
 
     public function __construct(
         SomeInterfaceImplementation $basic,
         ?SomeInterfaceImplementation $withNullableParam,
-        null|SomeInterfaceImplementation $withUnionWithNullInParam,
+        null|SomeInterfaceImplementation $withUnionAndNullInParam,
         SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(),
-        SomeInterfaceImplementation $nullableWithDefaultValue = null,
-        SomeInterfaceImplementation $unionWithNullWithDefaultValue = null,
-        ?SomeInterfaceImplementation $withNullableParamWithDefaultValue = null,
-        null|SomeInterfaceImplementation $withUnionWithNullInParamWithDefaultValue = null,
+        SomeInterfaceImplementation $withNonNullableParamAndDefaultValueNull = null,
+        SomeInterfaceImplementation $unionWithNullAndDefaultValue = null,
+        ?SomeInterfaceImplementation $withNullableParamAndDefaultValue = null,
+        null|SomeInterfaceImplementation $withUnionAndNullInParamAndDefaultValue = null,
     ) {
         $this->basic = $basic;
         $this->withNullableParam = $withNullableParam;
-        $this->withUnionWithNullInParam = $withUnionWithNullInParam;
+        $this->withUnionAndNullInParam = $withUnionAndNullInParam;
         $this->withDefaultValue = $withDefaultValue;
-        $this->nullableWithDefaultValue = $nullableWithDefaultValue;
-        $this->unionWithNullWithDefaultValue = $unionWithNullWithDefaultValue;
-        $this->withNullableParamWithDefaultValue = $withNullableParamWithDefaultValue;
-        $this->withUnionWithNullInParamWithDefaultValue = $withUnionWithNullInParamWithDefaultValue;
+        $this->withNonNullableParamAndDefaultValueNull = $withNonNullableParamAndDefaultValueNull;
+        $this->unionWithNullAndDefaultValue = $unionWithNullAndDefaultValue;
+        $this->withNullableParamAndDefaultValue = $withNullableParamAndDefaultValue;
+        $this->withUnionAndNullInParamAndDefaultValue = $withUnionAndNullInParamAndDefaultValue;
     }
 }
 
@@ -55,7 +55,7 @@ use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRe
 
 class WithInterfaceAndItsImplementation
 {
-    public function __construct(private SomeInterfaceImplementation $basic, private ?SomeInterfaceImplementation $withNullableParam, private null|SomeInterfaceImplementation $withUnionWithNullInParam, private SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(), private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $nullableWithDefaultValue = null, private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $unionWithNullWithDefaultValue = null, private ?SomeInterfaceImplementation $withNullableParamWithDefaultValue = null, private null|SomeInterfaceImplementation $withUnionWithNullInParamWithDefaultValue = null)
+    public function __construct(private SomeInterfaceImplementation $basic, private ?SomeInterfaceImplementation $withNullableParam, private null|SomeInterfaceImplementation $withUnionAndNullInParam, private SomeInterfaceImplementation $withDefaultValue = new SomeInterfaceImplementation(), private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $withNonNullableParamAndDefaultValueNull = null, private ?\Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $unionWithNullAndDefaultValue = null, private ?SomeInterfaceImplementation $withNullableParamAndDefaultValue = null, private null|SomeInterfaceImplementation $withUnionAndNullInParamAndDefaultValue = null)
     {
     }
 }
