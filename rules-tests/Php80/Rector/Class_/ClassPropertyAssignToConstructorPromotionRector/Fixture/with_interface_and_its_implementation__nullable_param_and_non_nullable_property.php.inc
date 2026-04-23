@@ -27,7 +27,7 @@ use Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRe
 
 class WithInterfaceAndItsImplementationNullableParamAndNonNullableProperty
 {
-    public function __construct(private ?SomeInterfaceImplementation $x)
+    public function __construct(private \Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\SomeInterfaceImplementation $x)
     {
     }
 }
