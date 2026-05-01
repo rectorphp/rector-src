@@ -7,3 +7,6 @@ nd = "nd"
 
 # plurals
 Identicals = "Identicals"
+
+# native function names
+writeable = "writeable"
