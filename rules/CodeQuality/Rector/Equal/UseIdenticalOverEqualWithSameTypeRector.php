@@ -18,6 +18,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
+use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -93,6 +94,10 @@ CODE_SAMPLE
         $normalizedRightType = $this->normalizeScalarType($rightStaticType);
 
         if (! $normalizedLeftType->equals($normalizedRightType)) {
+            return null;
+        }
+
+        if ($normalizedLeftType instanceof UnionType) {
             return null;
         }
 
