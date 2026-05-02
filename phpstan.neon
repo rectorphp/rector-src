@@ -167,11 +167,6 @@ parameters:
                 # future node class exists check
                 - src/Reporting/DeprecatedRulesReporter.php
 
-        # use of internal phpstan classes
-        -
-            message: '#Creating new PHPStan\\Reflection\\BetterReflection\\SourceLocator\\Optimized(.*?)SourceLocator is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
-            path: src/NodeTypeResolver/Reflection/BetterReflection/SourceLocatorProvider/DynamicSourceLocatorProvider.php
-
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
@@ -248,7 +243,6 @@ parameters:
              paths:
                  - src/CustomRules/SimpleNodeDumper.php
                  - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-                 - src/PhpParser/Printer/BetterStandardPrinter.php
 
         # known node variables
         -
@@ -290,7 +284,6 @@ parameters:
         -
             paths:
                 - src/Configuration/RectorConfigBuilder.php
-                - src/Reporting/DeprecatedRulesReporter.php
             identifier: classConstant.deprecatedInterface
 
         # allowed internally only
@@ -320,10 +313,6 @@ parameters:
         -
             message: '#PHPDoc tag @var with type array<string, int> is not subtype of native type array<int<1, max>>#'
             path: rules/Naming/PhpArray/ArrayFilter.php
-
-        -
-            message: '#PHPDoc tag @var with type int is not subtype of native type array\|PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNode\|Rector\\BetterPhpDocParser\\PhpDoc\\DoctrineAnnotationTagValueNode\|Rector\\BetterPhpDocParser\\PhpDoc\\StringNode\|Rector\\BetterPhpDocParser\\ValueObject\\PhpDoc\\DoctrineAnnotation\\CurlyListNode\|string#'
-            path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
 
         - '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|80500\|80600\|100000, 79999 given#'
 
@@ -445,10 +434,6 @@ parameters:
             path: rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php
 
         -
-            identifier: typePerfect.narrowReturnObjectType
-            path: src/PHPStan/ScopeFetcher.php
-
-        -
             identifier: varTag.nativeType
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
 
@@ -457,8 +442,6 @@ parameters:
             paths:
                 - rules/Privatization/TypeManipulator/TypeNormalizer.php
                 - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
-                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
-                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
                 - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
                 - rules/TypeDeclarationDocblocks/Rector/Class_/AddVarArrayDocblockFromDimFetchAssignRector.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
@@ -468,15 +451,6 @@ parameters:
             paths:
                 - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
                 - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
-                - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
-
-        -
-            message: '#Parameter \#1 \$value of static method Webmozart\\Assert\\Assert\:\:isInstanceOfAny\(\) expects object, PhpParser\\Node\\ComplexType\|PhpParser\\Node\\Identifier\|PhpParser\\Node\\Name\|null given#'
-            path: rules/DeadCode/Rector/FunctionLike/NarrowWideUnionReturnTypeRector.php
-
-        -
-            message: '#Unable to resolve the template type T in call to static method Webmozart\\Assert\\Assert\:\:isInstanceOfAny\(\)#'
-            path: rules/DeadCode/Rector/FunctionLike/NarrowWideUnionReturnTypeRector.php
 
         - '#Provide more specific return type "Iterator|PhpParser\\Node" over abstract one#'
 
