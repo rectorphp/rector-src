@@ -355,12 +355,7 @@ CODE_SAMPLE;
             }
         }
 
-        $fileInfos = array_values($fileInfos);
-
-        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
-        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
-
-        return $fileInfos;
+        return array_values($fileInfos);
     }
 
     /**

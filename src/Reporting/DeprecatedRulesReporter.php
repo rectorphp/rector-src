@@ -7,9 +7,7 @@ namespace Rector\Reporting;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\Node\FileNode;
 use ReflectionMethod;
@@ -89,26 +87,12 @@ final readonly class DeprecatedRulesReporter
                 continue;
             }
 
-            if (! in_array(StmtsAwareInterface::class, $rector->getNodeTypes())) {
-                continue;
-            }
-
             // already reported, skip
             if (in_array($rector::class, $reportedClasses, true)) {
                 continue;
             }
 
             $reportedClasses[] = $rector::class;
-
-            $this->symfonyStyle->warning(sprintf(
-                'Rector rule "%s" uses StmtsAwareInterface that is now deprecated.%sUse "%s::%s" instead.%sSee %s for more',
-                $rector::class,
-                PHP_EOL,
-                NodeGroup::class,
-                'STMTS_AWARE',
-                PHP_EOL . PHP_EOL,
-                'https://github.com/rectorphp/rector-src/pull/7679'
-            ));
         }
     }
 
