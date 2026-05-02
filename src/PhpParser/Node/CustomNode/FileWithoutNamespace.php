@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PhpParser\Node\CustomNode;
 
 use Override;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\FileNode;
 
 /**
@@ -14,7 +13,7 @@ use Rector\PhpParser\Node\FileNode;
  *
  * Inspired by https://github.com/phpstan/phpstan-src/commit/ed81c3ad0b9877e6122c79b4afda9d10f3994092
  */
-final class FileWithoutNamespace extends FileNode implements StmtsAwareInterface
+final class FileWithoutNamespace extends FileNode
 {
     #[Override]
     public function getType(): string
