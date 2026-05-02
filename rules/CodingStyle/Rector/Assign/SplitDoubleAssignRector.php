@@ -80,6 +80,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $this->mirrorComments($collectExpressions[0], $node);
         return $collectExpressions;
     }
 
