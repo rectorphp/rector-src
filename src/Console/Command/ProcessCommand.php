@@ -183,7 +183,6 @@ EOF
         // 4. Deprecations reporter
         $this->deprecatedRulesReporter->reportDeprecatedRules();
         $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
-        $this->deprecatedRulesReporter->reportDeprecatedNodeTypes();
         $this->deprecatedRulesReporter->reportDeprecatedRectorUnsupportedMethods();
 
         $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
