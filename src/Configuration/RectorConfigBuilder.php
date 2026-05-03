@@ -26,7 +26,6 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Enum\Config\Defaults;
 use Rector\Exception\Configuration\InvalidConfigurationException;
-use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
@@ -1240,11 +1239,6 @@ final class RectorConfigBuilder
 
     public function registerService(string $className, ?string $alias = null, ?string $tag = null): self
     {
-        // BC layer since 2.2.9
-        if ($tag === ScopeResolverNodeVisitorInterface::class) {
-            $tag = DecoratingNodeVisitorInterface::class;
-        }
-
         $this->registerServices[] = new RegisteredService($className, $alias, $tag);
 
         return $this;

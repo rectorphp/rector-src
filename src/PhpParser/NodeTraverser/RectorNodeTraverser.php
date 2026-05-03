@@ -13,8 +13,6 @@ use PhpParser\NodeVisitor;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\PhpParser\Node\FileNode;
 use Rector\VersionBonding\ComposerPackageConstraintFilter;
 use Rector\VersionBonding\PhpVersionedFilter;
 use Webmozart\Assert\Assert;
@@ -127,12 +125,6 @@ final class RectorNodeTraverser implements NodeTraverserInterface
             /** @var RectorInterface $visitor */
             foreach ($this->visitors as $visitor) {
                 foreach ($visitor->getNodeTypes() as $nodeType) {
-                    // BC layer matching
-                    if ($nodeType === FileWithoutNamespace::class && $nodeClass === FileNode::class) {
-                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
-                        continue;
-                    }
-
                     if (is_a($nodeClass, $nodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
                         continue 2;
