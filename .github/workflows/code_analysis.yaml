@@ -2,6 +2,7 @@ name: Code Analysis
 
 on:
     pull_request: null
+    push: null
 
 env:
     # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
