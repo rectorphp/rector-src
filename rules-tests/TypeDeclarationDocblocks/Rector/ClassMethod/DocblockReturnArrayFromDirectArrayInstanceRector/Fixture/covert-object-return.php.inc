@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 
 final class CoverObjectReturn
 {
-    private ?\Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Sourde\SomeObjectInDirectArray $item = null;
+    private ?\Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Source\SomeObjectInDirectArray $item = null;
 
     public function toArray(): array
     {
@@ -23,10 +23,10 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 
 final class CoverObjectReturn
 {
-    private ?\Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Sourde\SomeObjectInDirectArray $item = null;
+    private ?\Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Source\SomeObjectInDirectArray $item = null;
 
     /**
-     * @return array<string, \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Sourde\SomeObjectInDirectArray|int|null>
+     * @return array<string, \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Source\SomeObjectInDirectArray|int|null>
      */
     public function toArray(): array
     {
