@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\MutatingScope;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -56,6 +58,10 @@ final readonly class VariableRenamer
                 &$currentStmt,
                 &$currentFunctionLike
             ): int|null|Variable {
+                if ($node instanceof Class_ || $node instanceof Function_) {
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
                 // skip param names
                 if ($node instanceof Param) {
                     return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
