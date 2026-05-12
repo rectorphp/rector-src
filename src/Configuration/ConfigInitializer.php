@@ -20,6 +20,7 @@ final readonly class ConfigInitializer
         private array $rectors,
         private InitFilePathsResolver $initFilePathsResolver,
         private SymfonyStyle $symfonyStyle,
+        private RectorConfigsResolver $rectorConfigsResolver,
     ) {
     }
 
@@ -38,6 +39,14 @@ final readonly class ConfigInitializer
         if (file_exists($distRectorConfigPath)) {
             $this->symfonyStyle->warning(
                 'Register rules or sets in your "' . RectorConfigsResolver::DEFAULT_DIST_CONFIG_FILE . '" config'
+            );
+            return;
+        }
+
+        $mainConfigFile = $this->rectorConfigsResolver->provide()->getMainConfigFile();
+        if ($mainConfigFile !== null && file_exists($mainConfigFile)) {
+            $this->symfonyStyle->warning(
+                'Register rules or sets in your "' . basename($mainConfigFile) . '" config'
             );
             return;
         }
