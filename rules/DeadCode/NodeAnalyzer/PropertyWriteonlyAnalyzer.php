@@ -15,14 +15,12 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
 final readonly class PropertyWriteonlyAnalyzer
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
-        private NodeTypeResolver $nodeTypeResolver,
         private NodeNameResolver $nodeNameResolver
     ) {
     }
