@@ -30,15 +30,8 @@ final readonly class PropertyWriteonlyAnalyzer
 
     public function hasClassDynamicPropertyNames(Class_ $class): bool
     {
-        $isImplementsJsonSerializable = $this->nodeTypeResolver->isObjectType(
-            $class,
-            new ObjectType('JsonSerializable')
-        );
-
-        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node) use (
-            $isImplementsJsonSerializable
-        ): bool {
-            if ($isImplementsJsonSerializable && $node instanceof FuncCall && $this->nodeNameResolver->isName(
+        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node) : bool {
+            if ($node instanceof FuncCall && $this->nodeNameResolver->isName(
                 $node,
                 'get_object_vars'
             ) && ! $node->isFirstClassCallable()) {
