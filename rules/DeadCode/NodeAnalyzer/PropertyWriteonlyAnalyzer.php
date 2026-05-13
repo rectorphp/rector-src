@@ -13,32 +13,22 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
 final readonly class PropertyWriteonlyAnalyzer
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
-        private NodeTypeResolver $nodeTypeResolver,
         private NodeNameResolver $nodeNameResolver
     ) {
     }
 
     public function hasClassDynamicPropertyNames(Class_ $class): bool
     {
-        $isImplementsJsonSerializable = $this->nodeTypeResolver->isObjectType(
-            $class,
-            new ObjectType('JsonSerializable')
-        );
-
-        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node) use (
-            $isImplementsJsonSerializable
-        ): bool {
-            if ($isImplementsJsonSerializable && $node instanceof FuncCall && $this->nodeNameResolver->isName(
+        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node) : bool {
+            if ($node instanceof FuncCall && $this->nodeNameResolver->isName(
                 $node,
                 'get_object_vars'
             ) && ! $node->isFirstClassCallable()) {
