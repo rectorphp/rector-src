@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Assert\Rector\ClassMethod\AddAssertArrayFromClassMethodDocblockRector;
+namespace Rector\Tests\Assert\Rector\ClassMethod\AddAssertArrayFromClassMethodDocblockRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

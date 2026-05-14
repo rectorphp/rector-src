@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Issues\InlineTagsTest;
+namespace Rector\Tests\Issues\InlineTags;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

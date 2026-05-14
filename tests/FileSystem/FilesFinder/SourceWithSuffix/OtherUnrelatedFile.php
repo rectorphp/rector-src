@@ -2,6 +2,6 @@
 
 namespace Rector\Tests\FileSystem\FilesFinder\SourceWithSuffix;
 
-final class SomeRepository
+final class OtherUnrelatedFile
 {
 }

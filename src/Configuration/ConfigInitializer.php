@@ -43,7 +43,8 @@ final readonly class ConfigInitializer
             return;
         }
 
-        $mainConfigFile = $this->rectorConfigsResolver->provide()->getMainConfigFile();
+        $mainConfigFile = $this->rectorConfigsResolver->provide()
+            ->getMainConfigFile();
         if ($mainConfigFile !== null && file_exists($mainConfigFile)) {
             $this->symfonyStyle->warning(
                 'Register rules or sets in your "' . basename($mainConfigFile) . '" config'

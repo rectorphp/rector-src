@@ -27,7 +27,7 @@ final readonly class PropertyWriteonlyAnalyzer
 
     public function hasClassDynamicPropertyNames(Class_ $class): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node) : bool {
+        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node): bool {
             if ($node instanceof FuncCall && $this->nodeNameResolver->isName(
                 $node,
                 'get_object_vars'
