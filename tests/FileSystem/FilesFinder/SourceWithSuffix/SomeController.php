@@ -1,6 +1,6 @@
 <?php
 
-namespace FileSystem\FilesFinder\SourceWithSuffix;
+namespace Rector\Tests\FileSystem\FilesFinder\SourceWithSuffix;
 
 final class SomeController
 {

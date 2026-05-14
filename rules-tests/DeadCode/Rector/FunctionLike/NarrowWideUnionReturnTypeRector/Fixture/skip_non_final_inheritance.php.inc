@@ -4,7 +4,7 @@
 namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Fixture;
 
 use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Source\SomeInterface;
-use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Sourcet\SomeAbstractClass;
+use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Source\SomeAbstractClass;
 
 class SkipInheritance extends SomeAbstractClass
 {

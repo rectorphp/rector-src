@@ -1,6 +1,6 @@
 <?php
 
-namespace Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Source\ValueObject;
+namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Source\ValueObject;
 
 final class Repository
 {

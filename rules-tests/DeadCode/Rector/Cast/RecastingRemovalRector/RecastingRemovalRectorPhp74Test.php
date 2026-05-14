@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DeadCode\Rector\Cast\RecastingRemovalRector;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

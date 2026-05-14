@@ -4,7 +4,7 @@
 namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Fixture;
 
 use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Source\SomeInterface;
-use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Sourcet\SomeAbstractClass;
+use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Source\SomeAbstractClass;
 
 final class FinalInheritance extends SomeAbstractClass
 {
@@ -34,7 +34,7 @@ final class FinalInterfaceImplementation implements SomeInterface
 namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Fixture;
 
 use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Source\SomeInterface;
-use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Sourcet\SomeAbstractClass;
+use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\Source\SomeAbstractClass;
 
 final class FinalInheritance extends SomeAbstractClass
 {

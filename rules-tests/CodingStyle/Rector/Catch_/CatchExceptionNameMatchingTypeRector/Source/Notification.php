@@ -1,6 +1,8 @@
 <?php
 
-namespace Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Source;
+declare(strict_types=1);
+
+namespace Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Source;
 
 class Notification
 {
