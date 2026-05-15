@@ -16,6 +16,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
@@ -166,8 +167,15 @@ CODE_SAMPLE
             return $node;
         }
 
-        // @todo handle multiple type nodes
-        $this->phpDocTypeChanger->changeReturnTypeNode($node, $phpDocInfo, $genericUnionedTypeNodes[0]);
+        if ($genericUnionedTypeNodes === []) {
+            return null;
+        }
+
+        $typeNode = count($genericUnionedTypeNodes) === 1
+            ? $genericUnionedTypeNodes[0]
+            : new BracketsAwareUnionTypeNode($genericUnionedTypeNodes);
+
+        $this->phpDocTypeChanger->changeReturnTypeNode($node, $phpDocInfo, $typeNode);
 
         return $node;
     }
