@@ -171,6 +171,9 @@ CODE_SAMPLE
             return null;
         }
 
+        // sort for deterministic output across PHP versions
+        usort($genericUnionedTypeNodes, static fn ($a, $b): int => (string) $a <=> (string) $b);
+
         $typeNode = count($genericUnionedTypeNodes) === 1
             ? $genericUnionedTypeNodes[0]
             : new BracketsAwareUnionTypeNode($genericUnionedTypeNodes);
