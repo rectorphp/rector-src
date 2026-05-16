@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Cast\Int_ as CastInt_;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Int_;
@@ -19,9 +20,11 @@ use PHPStan\Analyser\Fiber\FiberScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\ExtendedNativeParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -35,6 +38,7 @@ final readonly class NullToStrictStringIntConverter
         private ValueResolver $valueResolver,
         private NodeTypeResolver $nodeTypeResolver,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -116,6 +120,10 @@ final readonly class NullToStrictStringIntConverter
 
     private function shouldSkipValue(Expr $expr, Scope $scope, bool $isTrait, string $targetType): bool
     {
+        if ($this->isPropertyFetchOnClassWithMagicGet($expr)) {
+            return true;
+        }
+
         $type = $this->nodeTypeResolver->getType($expr);
         if ($type->isString()->yes() && $targetType === 'string') {
             return true;
@@ -151,6 +159,24 @@ final readonly class NullToStrictStringIntConverter
         }
 
         return $this->shouldSkipTrait($expr, $type, $isTrait);
+    }
+
+    private function isPropertyFetchOnClassWithMagicGet(Expr $expr): bool
+    {
+        if (! $expr instanceof PropertyFetch) {
+            return false;
+        }
+
+        $varType = $this->nodeTypeResolver->getType($expr->var);
+        if (! $varType instanceof ObjectType) {
+            return false;
+        }
+
+        if (! $this->reflectionProvider->hasClass($varType->getClassName())) {
+            return false;
+        }
+
+        return $this->reflectionProvider->getClass($varType->getClassName())->hasMethod('__get');
     }
 
     private function isValidUnionType(Type $type): bool
