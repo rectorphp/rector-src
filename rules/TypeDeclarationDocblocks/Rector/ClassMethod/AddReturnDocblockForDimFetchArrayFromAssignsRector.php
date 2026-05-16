@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
@@ -172,7 +173,7 @@ CODE_SAMPLE
         }
 
         // sort for deterministic output across PHP versions
-        usort($genericUnionedTypeNodes, static fn ($a, $b): int => (string) $a <=> (string) $b);
+        usort($genericUnionedTypeNodes, static fn (TypeNode $a, TypeNode $b): int => (string) $a <=> (string) $b);
 
         $typeNode = count($genericUnionedTypeNodes) === 1
             ? $genericUnionedTypeNodes[0]
