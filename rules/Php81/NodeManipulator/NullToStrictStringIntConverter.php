@@ -176,7 +176,8 @@ final readonly class NullToStrictStringIntConverter
             return false;
         }
 
-        return $this->reflectionProvider->getClass($varType->getClassName())->hasMethod('__get');
+        return $this->reflectionProvider->getClass($varType->getClassName())
+            ->hasMethod('__get');
     }
 
     private function isValidUnionType(Type $type): bool
