@@ -505,4 +505,9 @@ final class PhpVersionFeature
      * @see https://wiki.php.net/rfc/clamp_v2
      */
     public const int CLAMP = PhpVersion::PHP_86;
+
+    /**
+     * @see https://php.watch/versions/8.0/named-parameters
+     */
+    public const int NAMED_ARGUMENTS = PhpVersion::PHP_80;
 }
