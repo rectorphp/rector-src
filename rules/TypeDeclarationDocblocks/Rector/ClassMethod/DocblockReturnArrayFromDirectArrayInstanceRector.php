@@ -19,6 +19,7 @@ use Rector\Rector\AbstractRector;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Rector\TypeDeclarationDocblocks\TypeResolver\ConstantArrayTypeGeneralizer;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -32,7 +33,8 @@ final class DocblockReturnArrayFromDirectArrayInstanceRector extends AbstractRec
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstantArrayTypeGeneralizer $constantArrayTypeGeneralizer,
         private readonly ReturnNodeFinder $returnNodeFinder,
-        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -85,6 +87,11 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {
+            return null;
+        }
+
+        // skip overridden methods to not conflict with parent/interface @return docblock
+        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
             return null;
         }
 
