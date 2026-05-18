@@ -354,11 +354,6 @@ final readonly class ClassDependencyManipulator
         return $property instanceof Property;
     }
 
-    private function hasMethodParameter(ClassMethod $classMethod, string $name): bool
-    {
-        return $this->matchMethodParameter($classMethod, $name) instanceof Param;
-    }
-
     private function matchMethodParameter(ClassMethod $classMethod, string $name): ?Param
     {
         foreach ($classMethod->params as $param) {
