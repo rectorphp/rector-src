@@ -39,7 +39,7 @@
         "symfony/process": "^7.4",
         "symplify/easy-parallel": "^11.2.2",
         "symplify/rule-doc-generator-contracts": "^11.2",
-        "webmozart/assert": "2.3.0"
+        "webmozart/assert": "^2.4"
     },
     "require-dev": {
         "boundwize/structarmed": "^0.6",
