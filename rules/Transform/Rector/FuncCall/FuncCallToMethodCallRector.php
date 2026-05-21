@@ -114,6 +114,10 @@ CODE_SAMPLE
                         $funcNameToMethodCallName->getNewObjectType(),
                     );
 
+                    if ($expr === null) {
+                        return null;
+                    }
+
                     $hasChanged = true;
 
                     return $this->nodeFactory->createMethodCall(
