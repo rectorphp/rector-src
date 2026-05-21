@@ -127,6 +127,10 @@ CODE_SAMPLE
                         $staticCallToMethodCall->getClassObjectType(),
                     );
 
+                    if ($expr === null) {
+                        return null;
+                    }
+
                     $methodName = $this->getMethodName($node, $staticCallToMethodCall);
 
                     $hasChanged = true;

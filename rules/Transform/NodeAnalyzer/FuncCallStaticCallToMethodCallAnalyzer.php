@@ -36,7 +36,7 @@ final readonly class FuncCallStaticCallToMethodCallAnalyzer
         Class_ $class,
         ClassMethod $classMethod,
         ObjectType $objectType,
-    ): MethodCall | PropertyFetch | Variable {
+    ): MethodCall | PropertyFetch | Variable | null {
         $expr = $this->typeProvidingExprFromClassResolver->resolveTypeProvidingExprFromClass(
             $class,
             $classMethod,
@@ -49,6 +49,11 @@ final readonly class FuncCallStaticCallToMethodCallAnalyzer
             }
 
             return $expr;
+        }
+
+        // Cannot add constructor dependency when nearest parent constructor is final
+        if ($this->classDependencyManipulator->hasFinalParentConstructor($class)) {
+            return null;
         }
 
         $propertyName = $this->propertyNaming->fqnToVariableName($objectType);
