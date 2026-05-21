@@ -210,17 +210,7 @@ final readonly class ClassDependencyManipulator
                 continue;
             }
 
-            $parentClass = $this->astResolver->resolveClassFromClassReflection($ancestor);
-            if (! $parentClass instanceof ClassLike) {
-                continue;
-            }
-
-            $parentConstructorMethod = $parentClass->getMethod(MethodName::CONSTRUCT);
-            if (! $parentConstructorMethod instanceof ClassMethod) {
-                continue;
-            }
-
-            return $parentConstructorMethod->isFinal();
+            return $ancestor->getNativeMethod(MethodName::CONSTRUCT)->isFinalByKeyword()->yes();
         }
 
         return false;
