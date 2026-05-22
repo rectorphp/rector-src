@@ -1,0 +1,196 @@
+name: Auto Fix Issue
+
+on:
+    schedule:
+        - cron: '0 */12 * * *'   # every 12 hours
+    workflow_dispatch:          # allow manual trigger
+
+permissions:
+    contents: write
+    pull-requests: write
+    issues: read
+
+jobs:
+    pick-and-fix:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+
+        steps:
+            # 1. Checkout
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # 2. Install Claude Code
+            - name: Install Claude Code
+              run: npm install -g @anthropic-ai/claude-code
+
+            # 3. Install PHP & Composer dependencies
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  tools: composer:v2
+                  coverage: none
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v3
+
+            # 4. Pick a random open issue from rectorphp/rector (skip any already covered by a PR)
+            - name: Pick a fixable issue
+              id: pick
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  set -euo pipefail
+
+                  ISSUES_REPO="rectorphp/rector"
+
+                  # Fetch open issues (exclude PRs)
+                  issues=$(gh api "repos/$ISSUES_REPO/issues?state=open&per_page=100" \
+                    --jq '[.[] | select(.pull_request == null) | {number, title, body}]')
+
+                  # Collect issue numbers already covered by an open PR in this repo
+                  covered=$(gh api "repos/${{ github.repository }}/pulls?state=open&per_page=100" \
+                    --jq '[.[].head.ref]' | grep -oP '(?<=issue-)\d+' | tr '\n' ' ' || true)
+
+                  echo "Issues covered by open PRs: ${covered:-none}"
+
+                  # Exclude covered issues and pick one at random
+                  candidates=$(echo "$issues" | jq -c \
+                    --argjson covered "$(echo "$covered" | jq -Rsc 'split(" ") | map(select(. != ""))')" \
+                    '[.[] | select((.number | tostring) as $n | $covered | index($n) == null)]')
+
+                  count=$(echo "$candidates" | jq 'length')
+                  echo "Candidates: $count"
+
+                  if [ "$count" -eq 0 ]; then
+                    echo "no_issue=true" >> "$GITHUB_OUTPUT"
+                    exit 0
+                  fi
+
+                  issue=$(echo "$candidates" | jq -c ".[$(( RANDOM % count ))]")
+                  issue_number=$(echo "$issue" | jq -r '.number')
+                  issue_title=$(echo  "$issue" | jq -r '.title')
+                  issue_body=$(echo   "$issue" | jq -r '.body // ""')
+
+                  echo "Picked issue #$issue_number — $issue_title"
+
+                  branch="fix/issue-${issue_number}-$(echo "$issue_title" | \
+                    tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | cut -c1-50 | sed 's/-$//')"
+
+                  echo "issue_number=$issue_number" >> "$GITHUB_OUTPUT"
+                  echo "issue_title=$issue_title"   >> "$GITHUB_OUTPUT"
+                  echo "issue_body<<EOF"            >> "$GITHUB_OUTPUT"
+                  echo "$issue_body"                >> "$GITHUB_OUTPUT"
+                  echo "EOF"                        >> "$GITHUB_OUTPUT"
+                  echo "branch=$branch"             >> "$GITHUB_OUTPUT"
+                  echo "no_issue=false"             >> "$GITHUB_OUTPUT"
+
+            # 5. Early exit if no suitable issue was found
+            - name: No suitable issue found
+              if: steps.pick.outputs.no_issue == 'true'
+              run: echo "::notice::No fixable open issues found — skipping this run."
+
+            # 6. Configure git
+            - name: Configure git identity
+              if: steps.pick.outputs.no_issue == 'false'
+              run: |
+                  git config user.name  "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            # 7. Create fix branch
+            - name: Create fix branch
+              if: steps.pick.outputs.no_issue == 'false'
+              run: git checkout -b "${{ steps.pick.outputs.branch }}"
+
+            # 8. Ask Claude Code to fix the issue
+            - name: Run Claude Code to fix the issue
+              if: steps.pick.outputs.no_issue == 'false'
+              env:
+                  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+                  CLAUDE_ISSUE_NUMBER: ${{ steps.pick.outputs.issue_number }}
+                  CLAUDE_ISSUE_TITLE:  ${{ steps.pick.outputs.issue_title }}
+                  CLAUDE_ISSUE_BODY:   ${{ steps.pick.outputs.issue_body }}
+              run: |
+                  claude --print --dangerously-skip-permissions \
+                    "You are an expert software engineer. Fix the following GitHub issue in this repository.
+
+                  Issue #${CLAUDE_ISSUE_NUMBER}: ${CLAUDE_ISSUE_TITLE}
+
+                  Issue description:
+                  ${CLAUDE_ISSUE_BODY}
+
+                  Instructions:
+                  1. Understand the root cause of the issue deeply before making any changes.
+                  2. Make the minimal change that fixes the issue — no unrelated refactoring.
+                  3. Follow the existing code style, naming conventions, and formatting.
+                  4. If the project has a test suite, add or update a test that covers this fix.
+                  5. Run the test suite and make sure all tests pass.
+                  6. Stage all changed files with 'git add'.
+                  7. Commit with the message: fix: <short description> (fixes #${CLAUDE_ISSUE_NUMBER})
+                  8. Do NOT push — only commit locally.
+                  9. If you cannot confidently fix this issue without breaking anything, output exactly:
+                     CANNOT_FIX: <reason>
+                     and make no changes."
+
+            # 9. Verify something was committed
+            - name: Check for new commits
+              if: steps.pick.outputs.no_issue == 'false'
+              id: check_commit
+              run: |
+                  ahead=$(git rev-list --count origin/HEAD..HEAD 2>/dev/null || echo 0)
+                  echo "commits_ahead=$ahead" >> "$GITHUB_OUTPUT"
+                  if [ "$ahead" -eq 0 ]; then
+                    echo "::warning::Claude Code made no commits — issue may not be fixable automatically."
+                  fi
+
+            # 10. Push branch and open PR
+            - name: Push branch and open PR
+              if: >
+                  steps.pick.outputs.no_issue == 'false' &&
+                  steps.check_commit.outputs.commits_ahead != '0'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  BRANCH:       ${{ steps.pick.outputs.branch }}
+                  ISSUE_NUMBER: ${{ steps.pick.outputs.issue_number }}
+                  ISSUE_TITLE:  ${{ steps.pick.outputs.issue_title }}
+              run: |
+                  git push origin "$BRANCH"
+
+                  gh pr create \
+                    --title "fix: $ISSUE_TITLE (fixes rectorphp/rector#$ISSUE_NUMBER)" \
+                    --body "## Summary
+                  Fixes rectorphp/rector#${ISSUE_NUMBER} — ${ISSUE_TITLE}
+
+                  ## Root cause
+                  See the commit message and diff for details of what was changed and why.
+
+                  ## Testing
+                  - Test suite run inside the workflow — see CI logs for details.
+
+                  > Opened automatically by the [Auto Fix Issue](.github/workflows/auto-fix-issue.yml) workflow. Please review carefully before merging." \
+                    --head "$BRANCH" \
+                    --label "auto-fix"
+
+            # 11. Summary
+            - name: Write job summary
+              if: always()
+              env:
+                  NO_ISSUE:      ${{ steps.pick.outputs.no_issue }}
+                  ISSUE_NUMBER:  ${{ steps.pick.outputs.issue_number }}
+                  ISSUE_TITLE:   ${{ steps.pick.outputs.issue_title }}
+                  BRANCH:        ${{ steps.pick.outputs.branch }}
+                  COMMITS_AHEAD: ${{ steps.check_commit.outputs.commits_ahead }}
+              run: |
+                  if [ "$NO_ISSUE" = "true" ]; then
+                    echo "## ✅ No candidates found" >> "$GITHUB_STEP_SUMMARY"
+                    echo "No open issues without an existing PR were found." >> "$GITHUB_STEP_SUMMARY"
+                  elif [ "${COMMITS_AHEAD:-0}" = "0" ]; then
+                    echo "## ⚠️ Could not fix issue #${ISSUE_NUMBER}" >> "$GITHUB_STEP_SUMMARY"
+                    echo "**${ISSUE_TITLE}** — Claude Code was unable to produce a commit." >> "$GITHUB_STEP_SUMMARY"
+                  else
+                    echo "## 🚀 PR opened for issue #${ISSUE_NUMBER}" >> "$GITHUB_STEP_SUMMARY"
+                    echo "**${ISSUE_TITLE}** — branch: \`${BRANCH}\`" >> "$GITHUB_STEP_SUMMARY"
+                  fi
