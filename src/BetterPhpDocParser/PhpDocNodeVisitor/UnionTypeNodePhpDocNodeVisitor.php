@@ -58,13 +58,13 @@ final class UnionTypeNodePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor imp
     private function isWrappedInCurlyBrackets(BetterTokenIterator $betterTokenProvider, StartAndEnd $startAndEnd): bool
     {
         $previousPosition = $startAndEnd->getStart() - 1;
+        $nextPosition = $startAndEnd->getEnd() + 1;
 
-        if ($betterTokenProvider->isTokenTypeOnPosition(Lexer::TOKEN_OPEN_PARENTHESES, $previousPosition)) {
-            return true;
-        }
-
-        // there is no + 1, as end is right at the next token
-        return $betterTokenProvider->isTokenTypeOnPosition(Lexer::TOKEN_CLOSE_PARENTHESES, $startAndEnd->getEnd());
+        // A union is wrapped only when BOTH parens flank it. Either alone may be unrelated —
+        // e.g. an `@method`'s parameter-list `(` before a first-position union, or the matching
+        // `)` after a last-position union — neither belongs to the union type itself.
+        return $betterTokenProvider->isTokenTypeOnPosition(Lexer::TOKEN_OPEN_PARENTHESES, $previousPosition)
+            && $betterTokenProvider->isTokenTypeOnPosition(Lexer::TOKEN_CLOSE_PARENTHESES, $nextPosition);
     }
 
     private function resolveStartAndEnd(UnionTypeNode $unionTypeNode): ?StartAndEnd
