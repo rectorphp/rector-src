@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\VariadicPlaceholder;
 use Rector\Rector\AbstractRector;
@@ -101,7 +102,12 @@ CODE_SAMPLE
             }
 
             $node->args[$key] = new Arg(
-                new FuncCall(new Name($arg->value->value), [new VariadicPlaceholder()]),
+                new FuncCall(
+                    str_contains($arg->value->value, '\\')
+                        ? new FullyQualified($arg->value->value)
+                        : new Name($arg->value->value),
+                    [new VariadicPlaceholder()]
+                ),
                 name: $arg->name
             );
             $hasChanged = true;
