@@ -415,7 +415,7 @@ final class NodeTypeResolver
                 continue;
             }
 
-            return $originalNativeType;
+            return new MixedType();
         }
 
         return $type;
