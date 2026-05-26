@@ -522,7 +522,7 @@ final class RectorConfigBuilder
         }
 
         if ($mongoDb || $all) {
-            $this->sets[] = DoctrineSetList::MONGODB__ANNOTATIONS_TO_ATTRIBUTES;
+            $this->sets[] = DoctrineSetList::MONGODB_ANNOTATIONS_TO_ATTRIBUTES;
         }
 
         if ($gedmo || $all) {
