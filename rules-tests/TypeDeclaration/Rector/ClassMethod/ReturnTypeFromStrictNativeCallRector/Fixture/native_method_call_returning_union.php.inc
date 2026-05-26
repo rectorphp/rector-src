@@ -18,7 +18,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNa
 
 final class NativeMethodCallReturningUnion
 {
-    public function run(): array|bool
+    public function run(): bool|array
     {
         return time_nanosleep(100, 100);
     }

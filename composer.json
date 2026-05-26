@@ -52,7 +52,7 @@
         "phpunit/phpunit": "^12.5.6",
         "rector/jack": "^0.5",
         "rector/release-notes-generator": "^0.5.1",
-        "rector/swiss-knife": "^2.3",
+        "rector/swiss-knife": "2.3.5",
         "rector/type-perfect": "^2.1.2",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symplify/easy-coding-standard": "^13.1",

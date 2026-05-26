@@ -42,7 +42,7 @@ jobs:
 
                     -
                         name: 'Commented Code'
-                        run: vendor/bin/swiss-knife check-commented-code src rules tests rules-tests --line-limit 5 --ansi
+                        run: vendor/bin/swiss-knife check-commented-code src rules tests rules-tests --line-limit 5
 
                     -
                         name: 'Active Classes'
