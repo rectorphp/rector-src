@@ -7,7 +7,6 @@ use Rector\CodeQuality\Rector\CallLike\AddNameToBooleanArgumentRector;
 use Rector\CodeQuality\Rector\CallLike\AddNameToNullArgumentRector;
 use Rector\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullNamedArgOnNullDefaultParamRector;
 use Rector\NetteUtils\Rector\StaticCall\UtilsJsonStaticCallNamedArgRector;
 
@@ -15,7 +14,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         AddNameToNullArgumentRector::class,
         AddNameToBooleanArgumentRector::class,
-        RemoveNullArgOnNullDefaultParamRector::class,
         RemoveNullNamedArgOnNullDefaultParamRector::class,
         SortCallLikeNamedArgsRector::class,
         SortAttributeNamedArgsRector::class,

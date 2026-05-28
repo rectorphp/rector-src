@@ -8,4 +8,4 @@ function skipNamedArgs(?string $someClass = null)
 {
 }
 
-SomeFunctionWithDefaultNullArg(someClass: null);
+skipNamedArgs(someClass: null);

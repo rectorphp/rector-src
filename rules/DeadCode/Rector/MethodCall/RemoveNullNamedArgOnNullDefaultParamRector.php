@@ -92,9 +92,13 @@ CODE_SAMPLE
 
         $hasNamedArg = false;
         foreach ($args as $arg) {
+            // unpack hides which parameters are bound, so removal is not safe
+            if ($arg->unpack) {
+                return null;
+            }
+
             if ($arg->name instanceof Identifier) {
                 $hasNamedArg = true;
-                break;
             }
         }
 
@@ -107,45 +111,23 @@ CODE_SAMPLE
             return null;
         }
 
-        // map every arg to its target parameter position, so named args in any order are handled
-        $argPositionByParameterPosition = [];
-        foreach ($args as $argPosition => $arg) {
-            if ($arg->unpack) {
-                return null;
-            }
-
-            if ($arg->name instanceof Identifier) {
-                $parameterPosition = $this->callLikeParamDefaultResolver->resolvePositionParameterByName(
-                    $node,
-                    $arg->name->toString()
-                );
-
-                if ($parameterPosition === null) {
-                    return null;
-                }
-            } else {
-                $parameterPosition = $argPosition;
-            }
-
-            $argPositionByParameterPosition[$parameterPosition] = $argPosition;
-        }
-
-        // only handle calls that fill a contiguous prefix of parameters, so a lone misplaced named arg is left untouched
-        ksort($argPositionByParameterPosition);
-        if (array_keys($argPositionByParameterPosition) !== range(0, count($args) - 1)) {
-            return null;
-        }
-
         $hasChanged = false;
-        foreach ($argPositionByParameterPosition as $parameterPosition => $argPosition) {
-            $arg = $args[$argPosition];
-
-            // only named args are removed here; remaining args still bind by name
+        foreach ($args as $argPosition => $arg) {
+            // only named args are removed here; in any order, remaining args still bind by name
             if (! $arg->name instanceof Identifier) {
                 continue;
             }
 
             if (! $this->valueResolver->isNull($arg->value)) {
+                continue;
+            }
+
+            $parameterPosition = $this->callLikeParamDefaultResolver->resolvePositionParameterByName(
+                $node,
+                $arg->name->toString()
+            );
+
+            if ($parameterPosition === null) {
                 continue;
             }
 
