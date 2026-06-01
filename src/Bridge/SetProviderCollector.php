@@ -16,6 +16,7 @@ use Rector\Symfony\Set\SetProvider\Symfony4SetProvider;
 use Rector\Symfony\Set\SetProvider\Symfony5SetProvider;
 use Rector\Symfony\Set\SetProvider\Symfony6SetProvider;
 use Rector\Symfony\Set\SetProvider\Symfony7SetProvider;
+use Rector\Symfony\Set\SetProvider\Symfony8SetProvider;
 use Rector\Symfony\Set\SetProvider\SymfonySetProvider;
 use Rector\Symfony\Set\SetProvider\TwigSetProvider;
 
@@ -47,6 +48,7 @@ final readonly class SetProviderCollector
             new Symfony5SetProvider(),
             new Symfony6SetProvider(),
             new Symfony7SetProvider(),
+            new Symfony8SetProvider(),
             new DoctrineSetProvider(),
             new TwigSetProvider(),
         ];
