@@ -143,6 +143,8 @@ CODE_SAMPLE
                 $if->elseifs = \array_slice($node->elseifs, 1);
             }
 
+            $if->else = $node->else;
+
             return $this->refactor($if) ?? $if;
         }
 
