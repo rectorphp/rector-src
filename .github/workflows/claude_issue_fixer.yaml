@@ -35,7 +35,7 @@ jobs:
                   coverage: none
 
             - name: Install Composer dependencies
-              uses: ramsey/composer-install@v3
+              uses: ramsey/composer-install@v4
 
             # 4. Pick a random open issue from rectorphp/rector (skip any already covered by a PR)
             - name: Pick a fixable issue
