@@ -16,6 +16,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
@@ -23,6 +24,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final readonly class ArgumentDefaultValueReplacer
@@ -32,7 +34,8 @@ final readonly class ArgumentDefaultValueReplacer
         private ValueResolver $valueResolver,
         private ArgsAnalyzer $argsAnalyzer,
         private AstResolver $astResolver,
-        private NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -171,6 +174,23 @@ final readonly class ArgumentDefaultValueReplacer
                     && $type->getClassName() === $targetClass
                     && $particularArg->value->name instanceof Identifier
                     && $particularArg->value->name->toString() === $targetConstant) {
+                    return null;
+                }
+            }
+
+            // when the replacement value is a self::/static::/parent:: constant, it only
+            // resolves correctly if the class around the call actually has that constant;
+            // otherwise the produced code would reference a non-existing constant
+            if ($normalizedValueAfter instanceof ClassConstFetch
+                && $normalizedValueAfter->class instanceof Name
+                && $normalizedValueAfter->class->isSpecialClassName()
+                && $normalizedValueAfter->name instanceof Identifier) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($expr);
+                if (! $classReflection instanceof ClassReflection) {
+                    return null;
+                }
+
+                if (! $classReflection->hasConstant($normalizedValueAfter->name->toString())) {
                     return null;
                 }
             }

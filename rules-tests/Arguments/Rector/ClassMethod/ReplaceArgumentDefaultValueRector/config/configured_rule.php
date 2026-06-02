@@ -7,6 +7,7 @@ use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Config\RectorConfig;
 use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceInConstructor;
 use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceMethodArgumentWithConstant;
+use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Source\SomeSortableObject;
 use Rector\ValueObject\MethodName;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -84,6 +85,14 @@ return static function (RectorConfig $rectorConfig): void {
                 0,
                 'path',
                 'Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\SomeBase::PATH'
+            ),
+
+            new ReplaceArgumentDefaultValue(
+                SomeSortableObject::class,
+                'sortBy',
+                0,
+                'ASC',
+                'self::SORT_ORDER_DESC'
             ),
         ]);
 };
