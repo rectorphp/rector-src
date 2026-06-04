@@ -15,12 +15,10 @@ final class SkipDifferentArg
     ) {
     }
 
-    public function run(MethodCall|StaticCall $node, MethodCall|StaticCall $nod2): void
+    public function run(MethodCall|StaticCall $node, MethodCall|StaticCall $node2): void
     {
         $methodReflection = $node instanceof MethodCall
             ? $this->reflectionResolver->resolveMethodReflectionFromMethodCall($node)
             : $this->reflectionResolver->resolveMethodReflectionFromStaticCall($node2);
     }
 }
-
-?>
