@@ -13,6 +13,8 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Identifier;
+use PHPStan\Type\ObjectType;
+use Rector\Reflection\ReflectionResolver;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -100,6 +102,10 @@ CODE_SAMPLE
         }
 
         if (! $this->nodeComparator->areNodesEqual($node->expr->if->var, $node->expr->else->var)) {
+            return null;
+        }
+
+        if (! $this->isObjectType($node->expr->if->var, new ObjectType(ReflectionResolver::class))) {
             return null;
         }
 
