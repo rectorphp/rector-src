@@ -109,6 +109,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->isObjectType($node->expr->else->var, new ObjectType(ReflectionResolver::class))) {
+            return null;
+        }
+
         $ifArg = $node->expr->if->getArgs()[0];
         if (! $ifArg instanceof Arg) {
             return null;
