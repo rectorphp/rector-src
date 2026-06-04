@@ -10,6 +10,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Identifier;
 use Rector\Rector\AbstractRector;
@@ -138,11 +139,11 @@ CODE_SAMPLE
         }
 
         $className = $this->getName($expr->class);
-        if ($className === 'MethodCall' || $className === MethodCall::class) {
+        if ($className === MethodCall::class) {
             return [$expr->expr, 'resolveMethodReflectionFromMethodCall', 'resolveMethodReflectionFromStaticCall'];
         }
 
-        if ($className === 'StaticCall' || $className === 'PhpParser\\Node\\Expr\\StaticCall') {
+        if ($className === StaticCall::class) {
             return [$expr->expr, 'resolveMethodReflectionFromStaticCall', 'resolveMethodReflectionFromMethodCall'];
         }
 

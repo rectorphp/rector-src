@@ -42,7 +42,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use Rector\Reflection\ReflectionResolver;
 
-final class SomeClass
+final class UseResolveFunctionLikeReflectionFromCall
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
