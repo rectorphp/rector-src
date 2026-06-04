@@ -8,6 +8,7 @@ use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector;
+use Rector\Utils\Rector\UseResolveFunctionLikeReflectionFromCallRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -39,7 +40,13 @@ return RectorConfig::configure()
     ])
     ->withRootFiles()
     ->withImportNames(removeUnusedImports: true)
-    ->withRules([RemoveRefactorDuplicatedNodeInstanceCheckRector::class, AddSeeTestAnnotationRector::class])
+    ->withRules(
+        [
+            RemoveRefactorDuplicatedNodeInstanceCheckRector::class,
+            AddSeeTestAnnotationRector::class,
+            UseResolveFunctionLikeReflectionFromCallRector::class,
+        ]
+    )
     ->withSkip([
         StringClassNameToClassConstantRector::class,
         // tests
