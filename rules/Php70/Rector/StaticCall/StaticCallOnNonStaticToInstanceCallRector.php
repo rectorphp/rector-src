@@ -126,6 +126,11 @@ CODE_SAMPLE
 
         $classReflection = $scope->getClassReflection();
         if ($classReflection instanceof ClassReflection && $classReflection->getName() === $className) {
+            // no $this in static scope (method/closure/arrow fn)
+            if (! $scope->hasVariableType('this')->yes()) {
+                return null;
+            }
+
             return new MethodCall(new Variable('this'), $node->name, $node->args);
         }
 
