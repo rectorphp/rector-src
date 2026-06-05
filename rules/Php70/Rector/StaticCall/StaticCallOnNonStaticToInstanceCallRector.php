@@ -126,6 +126,10 @@ CODE_SAMPLE
 
         $classReflection = $scope->getClassReflection();
         if ($classReflection instanceof ClassReflection && $classReflection->getName() === $className) {
+            if ($scope->getFunction()->isStatic()) {
+                return null;
+            }
+
             return new MethodCall(new Variable('this'), $node->name, $node->args);
         }
 
