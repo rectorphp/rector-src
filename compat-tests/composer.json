@@ -1,0 +1,24 @@
+{
+    "name": "rector/rector-compat-tests",
+    "license": "MIT",
+    "description": "Tests for compatibility with PHPStand and PHPUnit preload magic",
+    "require-dev": {
+        "php": "^8.2",
+        "phpunit/phpunit": "10.*|11.*|12.*",
+        "nikic/php-parser": "5.4.*|5.5.*|5.6.*|5.7.*",
+        "rector/rector": "dev-main as 2.4.4",
+        "phpstan/phpstan": "^2.2",
+        "driftingly/rector-laravel": "^2.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rector\\RectorCompatTests\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rector\\RectorCompatTests\\Tests\\": "tests",
+            "Fixture\\": "fixture"
+        }
+    }
+}

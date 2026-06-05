@@ -1,0 +1,60 @@
+# see https://github.com/rectorphp/rector/issues/9416
+# compat tests project lives in /compat-tests
+name: PHPUnit and PHPStan Autoload Compat Test
+
+on:
+    push:
+        branches:
+            - main
+    pull_request: null
+    schedule:
+        - cron: '0 6 * * *'
+
+jobs:
+    compat_test:
+        strategy:
+            fail-fast: false
+            matrix:
+                actions:
+                    -
+                        name: 'Rector dev + PHPUnit 10'
+                        run: composer require "phpunit/phpunit:10.*" -W
+                        php: 8.2
+                    -
+                        name: 'Rector dev + PHPUnit 11'
+                        run: composer require "phpunit/phpunit:11.*" -W
+                        php: 8.2
+                    -
+                        name: 'Rector dev + PHPUnit 12'
+                        run: composer require "phpunit/phpunit:12.*" -W
+                        php: 8.3
+
+        name: ${{ matrix.actions.name }}
+
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: compat-tests
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.actions.php }}
+                    coverage: none
+
+            -
+                uses: "ramsey/composer-install@v4"
+                with:
+                    working-directory: compat-tests
+
+            -   run: ${{ matrix.actions.run }}
+
+            -   run: vendor/bin/phpunit tests/Rector
+
+            -   run: vendor/bin/phpunit tests/PHPStan
+
+            -   run: vendor/bin/phpunit
