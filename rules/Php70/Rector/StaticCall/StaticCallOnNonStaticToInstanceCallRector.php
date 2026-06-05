@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\Variable;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Php\PhpFunctionFromParserNodeReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\CodingStyle\ValueObject\ObjectMagicMethods;
@@ -126,7 +127,8 @@ CODE_SAMPLE
 
         $classReflection = $scope->getClassReflection();
         if ($classReflection instanceof ClassReflection && $classReflection->getName() === $className) {
-            if ($scope->getFunction()->isStatic()) {
+            $function = $scope->getFunction();
+            if ($function instanceof PhpFunctionFromParserNodeReflection && $function->isStatic()) {
                 return null;
             }
 
