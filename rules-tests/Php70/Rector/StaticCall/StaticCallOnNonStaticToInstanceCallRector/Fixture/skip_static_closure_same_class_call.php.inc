@@ -4,7 +4,7 @@ namespace Rector\Tests\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCa
 
 class SkipStaticClosureSameClassCall
 {
-    public static function boot(): void
+    public function boot(): void
     {
         // static closure — no $this, must not rewrite
         $callback = static function (): void {
