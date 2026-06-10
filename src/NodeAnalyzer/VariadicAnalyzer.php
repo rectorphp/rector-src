@@ -6,6 +6,7 @@ namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
@@ -18,7 +19,7 @@ final readonly class VariadicAnalyzer
     ) {
     }
 
-    public function hasVariadicParameters(FuncCall | StaticCall | MethodCall $call): bool
+    public function hasVariadicParameters(FuncCall | StaticCall | MethodCall | New_ $call): bool
     {
         $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($call);
         if ($functionLikeReflection === null) {
