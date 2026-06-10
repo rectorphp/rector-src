@@ -31,7 +31,7 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
 
     public function testCleanFileIsCachedAsUnchanged(): void
     {
-        $filePath = __DIR__ . '/Source/clean_file.php';
+        $filePath = __DIR__ . '/Source/CleanFile.php';
 
         $this->applicationFileProcessor->processFiles([$filePath], new Configuration(isDryRun: true));
 
@@ -40,7 +40,7 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
 
     public function testOnlyRuleRunDoesNotCacheFileAsUnchanged(): void
     {
-        $filePath = __DIR__ . '/Source/clean_file.php';
+        $filePath = __DIR__ . '/Source/CleanFile.php';
 
         $this->applicationFileProcessor->processFiles([$filePath], new Configuration(
             isDryRun: true,
@@ -53,7 +53,7 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
 
     public function testOnlySuffixRunDoesNotCacheFileAsUnchanged(): void
     {
-        $filePath = __DIR__ . '/Source/clean_file.php';
+        $filePath = __DIR__ . '/Source/CleanFile.php';
 
         $this->applicationFileProcessor->processFiles([$filePath], new Configuration(
             isDryRun: true,
