@@ -12,12 +12,14 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\NullType;
+use Rector\NodeAnalyzer\VariadicAnalyzer;
 use Rector\Reflection\ReflectionResolver;
 
 final readonly class CallLikeParamDefaultResolver
 {
     public function __construct(
         private ReflectionResolver $reflectionResolver,
+        private VariadicAnalyzer $variadicAnalyzer,
     ) {
     }
 
@@ -36,6 +38,10 @@ final readonly class CallLikeParamDefaultResolver
             if ($classReflection->getName() === 'Ds\Map') {
                 return [];
             }
+        }
+
+        if ($this->variadicAnalyzer->hasVariadicParameters($callLike)) {
+            return [];
         }
 
         $nullPositions = [];
