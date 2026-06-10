@@ -12,4 +12,6 @@ final class CacheKey
     public const string CONFIGURATION_HASH_KEY = 'configuration_hash';
 
     public const string FILE_HASH_KEY = 'file_hash';
+
+    public const string FILE_DIFF_KEY = 'file_diff';
 }

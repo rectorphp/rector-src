@@ -39,6 +39,7 @@ use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Contract\CacheMetaExtensionInterface;
+use Rector\Caching\DryRunDiffCache;
 use Rector\Caching\FileDependencyCollector;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
@@ -456,6 +457,7 @@ final class LazyContainerFactory
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
         $rectorConfig->singleton(FileDependencyCollector::class);
+        $rectorConfig->singleton(DryRunDiffCache::class);
 
         $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$rectors')
