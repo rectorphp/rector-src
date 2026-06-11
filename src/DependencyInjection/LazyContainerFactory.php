@@ -10,6 +10,7 @@ use Illuminate\Container\Container;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
+use PHPStan\Dependency\DependencyResolver;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\ParserConfig;
@@ -38,6 +39,7 @@ use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Contract\CacheMetaExtensionInterface;
+use Rector\Caching\FileDependencyCollector;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\ChangesReporting\Output\GitHubOutputFormatter;
@@ -347,6 +349,7 @@ final class LazyContainerFactory
         TypeNodeResolver::class,
         NodeScopeResolver::class,
         ReflectionProvider::class,
+        DependencyResolver::class,
     ];
 
     /**
@@ -452,6 +455,7 @@ final class LazyContainerFactory
 
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
+        $rectorConfig->singleton(FileDependencyCollector::class);
 
         $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$rectors')
@@ -476,6 +480,7 @@ final class LazyContainerFactory
         // resettable
         $rectorConfig->tag(DynamicSourceLocatorProvider::class, ResettableInterface::class);
         $rectorConfig->tag(RenamedClassesDataCollector::class, ResettableInterface::class);
+        $rectorConfig->tag(FileDependencyCollector::class, ResettableInterface::class);
 
         // caching
         $rectorConfig->singleton(Cache::class, static function (Container $container): Cache {

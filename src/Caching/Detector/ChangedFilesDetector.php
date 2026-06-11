@@ -7,6 +7,7 @@ namespace Rector\Caching\Detector;
 use Rector\Caching\Cache;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Enum\CacheKey;
+use Rector\Caching\FileDependencyCollector;
 use Rector\Util\FileHasher;
 
 /**
@@ -24,7 +25,8 @@ final class ChangedFilesDetector
     public function __construct(
         private readonly FileHashComputer $fileHashComputer,
         private readonly Cache $cache,
-        private readonly FileHasher $fileHasher
+        private readonly FileHasher $fileHasher,
+        private readonly FileDependencyCollector $fileDependencyCollector
     ) {
     }
 
@@ -36,9 +38,26 @@ final class ChangedFilesDetector
             return;
         }
 
-        $hash = $this->hashFile($filePath);
+        // a failed capture means a possibly incomplete set, skip caching so the file is reprocessed
+        $dependencyHashes = $this->fileDependencyCollector->getDependencyFileHashes($filePath);
+        if ($dependencyHashes === null) {
+            return;
+        }
 
-        $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $hash);
+        // the file may have just been written, recompute its hash fresh
+        // rather than trusting a memo entry from the pre-write filter pass
+        $this->fileDependencyCollector->forgetContentHash($filePath);
+        $ownHash = $this->fileDependencyCollector->contentHash($filePath);
+        if ($ownHash === null) {
+            return;
+        }
+
+        // store the own content hash plus one per dependency, so a dependency change
+        // invalidates this file even when its own content is unchanged
+        $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, [
+            'hash' => $ownHash,
+            'deps' => $dependencyHashes,
+        ]);
     }
 
     public function addCacheableFile(string $filePath): void
@@ -52,13 +71,27 @@ final class ChangedFilesDetector
         $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
         $cachedValue = $this->cache->load($fileInfoCacheKey, CacheKey::FILE_HASH_KEY);
 
-        if ($cachedValue !== null) {
-            $currentFileHash = $this->hashFile($filePath);
-            return $currentFileHash !== $cachedValue;
+        // no value to compare against → be defensive and assume changed
+        if ($cachedValue === null) {
+            return true;
         }
 
-        // we don't have a value to compare against. Be defensive and assume its changed
-        return true;
+        // legacy string entry → own-hash comparison only, rewritten in the new format on next cacheFile()
+        if (is_string($cachedValue)) {
+            return $this->fileDependencyCollector->contentHash($filePath) !== $cachedValue;
+        }
+
+        if (! is_array($cachedValue)) {
+            return true;
+        }
+
+        // own content changed
+        if (($cachedValue['hash'] ?? null) !== $this->fileDependencyCollector->contentHash($filePath)) {
+            return true;
+        }
+
+        // any recorded dependency changed
+        return $this->fileDependencyCollector->hasAnyChangedDependency($cachedValue['deps'] ?? []);
     }
 
     public function invalidateFile(string $filePath): void
@@ -96,11 +129,6 @@ final class ChangedFilesDetector
     private function getFilePathCacheKey(string $filePath): string
     {
         return $this->fileHasher->hash($this->resolvePath($filePath));
-    }
-
-    private function hashFile(string $filePath): string
-    {
-        return $this->fileHasher->hashFiles([$this->resolvePath($filePath)]);
     }
 
     private function storeConfigurationDataHash(string $filePath, string $configurationHash): void
