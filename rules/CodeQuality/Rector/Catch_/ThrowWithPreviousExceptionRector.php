@@ -102,8 +102,13 @@ CODE_SAMPLE
                 return null;
             }
 
-            $isChanged = $this->refactorThrow($node, $caughtThrowableVariable);
-            return $isChanged;
+            $result = $this->refactorThrow($node, $caughtThrowableVariable);
+            if ($result === null) {
+                return null;
+            }
+
+            $isChanged = true;
+            return $result;
         });
 
         if (! (bool) $isChanged) {
@@ -142,6 +147,12 @@ CODE_SAMPLE
         $messageArgument = $new->args[0] ?? null;
         $shouldUseNamedArguments = $messageArgument instanceof Arg && $messageArgument->name instanceof Identifier;
 
+        $hasCodeParameter = $this->hasParameter($new, 'code');
+        $hasCodeArgument = $this->hasArgument($new, 'code');
+        if (! isset($new->getArgs()[1]) && (! $hasCodeParameter || $hasCodeArgument)) {
+            return null;
+        }
+
         $hasChanged = false;
         if (! isset($new->args[0])) {
             // get previous message
@@ -158,7 +169,7 @@ CODE_SAMPLE
         }
 
         if (! isset($new->getArgs()[1])) {
-            if ($this->hasParameter($new, 'code') && ! $this->hasArgument($new, 'code')) {
+            if ($hasCodeParameter && ! $hasCodeArgument) {
                 // get previous code
                 $new->args[1] = new Arg(
                     new MethodCall($caughtThrowableVariable, 'getCode'),
@@ -173,7 +184,7 @@ CODE_SAMPLE
         /** @var Arg $arg1 */
         $arg1 = $new->args[1];
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
-            if ($this->hasParameter($new, 'code') && ! $this->hasArgument($new, 'code')) {
+            if ($hasCodeParameter && ! $hasCodeArgument) {
                 $new->args[1] = new Arg(
                     new MethodCall($caughtThrowableVariable, 'getCode'),
                     name: $shouldUseNamedArguments ? new Identifier('code') : null
