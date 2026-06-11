@@ -111,7 +111,7 @@ CODE_SAMPLE
             return $result;
         });
 
-        if (! (bool) $isChanged) {
+        if (! $isChanged) {
             return null;
         }
 
