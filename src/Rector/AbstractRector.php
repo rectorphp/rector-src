@@ -35,6 +35,9 @@ use Rector\PhpParser\Node\NodeFactory;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
+/**
+ * @property-read File $file @deprecated Use $this->getFile() instead
+ */
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
     private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
@@ -74,6 +77,16 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
+    public function __get(string $name): mixed
+    {
+        if ($name === 'file') {
+            return $this->getFile();
+        }
+
+        // fallback to default behavior
+        return $this->{$name};
+    }
+
     public function autowire(
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
@@ -100,23 +113,12 @@ CODE_SAMPLE;
 
     /**
      * @final Avoid override to prevent unintended side-effects. Use enterNode() or @see \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface instead.
-     *
      * @internal
      *
      * @return Node[]|null
      */
     public function beforeTraverse(array $nodes): ?array
     {
-        // workaround for file around refactor()
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            throw new ShouldNotHappenException(
-                'File object is missing. Make sure you call $this->currentFileProvider->setFile(...) before traversing.'
-            );
-        }
-
-        $this->file = $file;
-
         return null;
     }
 
