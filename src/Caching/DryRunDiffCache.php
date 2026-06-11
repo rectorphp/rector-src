@@ -22,12 +22,17 @@ use Rector\ValueObject\Reporting\FileDiff;
  *
  * @see \Rector\Tests\Caching\DryRunDiffCacheTest
  */
-final readonly class DryRunDiffCache
+final class DryRunDiffCache
 {
+    /**
+     * memoized: hashing serializes the whole parameter bag, and this runs per file
+     */
+    private ?string $parameterHash = null;
+
     public function __construct(
-        private Cache $cache,
-        private FileHasher $fileHasher,
-        private FileDependencyCollector $fileDependencyCollector,
+        private readonly Cache $cache,
+        private readonly FileHasher $fileHasher,
+        private readonly FileDependencyCollector $fileDependencyCollector,
     ) {
     }
 
@@ -101,8 +106,10 @@ final readonly class DryRunDiffCache
     {
         // --no-diffs changes the produced FileDiff content but is not part of the
         // parameter hash, include it so entries do not cross-replay
+        $this->parameterHash ??= SimpleParameterProvider::hash();
+
         return $this->fileHasher->hash($file->getOriginalFileContent())
-            . '_' . SimpleParameterProvider::hash()
+            . '_' . $this->parameterHash
             . ($configuration->shouldShowDiffs() ? '' : '_no-diffs');
     }
 }
