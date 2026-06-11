@@ -13,17 +13,16 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\NodeVisitor;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\Reflection\ReflectionResolver;
 
@@ -31,7 +30,6 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
 {
     public function __construct(
         private ReflectionResolver $reflectionResolver,
-        private AstResolver $astResolver,
         private NodeComparator $nodeComparator,
         private NodeNameResolver $nodeNameResolver,
     ) {
@@ -115,12 +113,20 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
             }
         }
 
-        $functionLike = $this->astResolver->resolveClassMethodOrFunctionFromCall($callLike);
-        if (! $functionLike instanceof FunctionLike) {
+        if ($this->isBuiltinReflection($reflection)) {
             return false;
         }
 
-        return count($functionLike->getParams()) > 1;
+        return count($parameters) > 1;
+    }
+
+    private function isBuiltinReflection(FunctionReflection|MethodReflection $reflection): bool
+    {
+        if ($reflection instanceof FunctionReflection) {
+            return $reflection->isBuiltin();
+        }
+
+        return $reflection->getDeclaringClass()->isBuiltin();
     }
 
     /**
