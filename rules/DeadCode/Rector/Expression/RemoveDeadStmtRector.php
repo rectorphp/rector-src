@@ -6,10 +6,12 @@ namespace Rector\DeadCode\Rector\Expression;
 
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Cast\Void_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
+use Rector\DeadCode\NodeAnalyzer\NoDiscardCallAnalyzer;
 use Rector\DeadCode\NodeManipulator\LivingCodeManipulator;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -24,6 +26,7 @@ final class RemoveDeadStmtRector extends AbstractRector
 {
     public function __construct(
         private readonly LivingCodeManipulator $livingCodeManipulator,
+        private readonly NoDiscardCallAnalyzer $noDiscardCallAnalyzer,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
     ) {
@@ -63,6 +66,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isVoidCastNoDiscardCall($node)) {
+            return null;
+        }
+
         $livingCode = $this->livingCodeManipulator->keepLivingCodeFromExpr($node->expr);
         if ($livingCode === []) {
             return $this->removeNodeAndKeepComments($node);
@@ -99,6 +106,15 @@ CODE_SAMPLE
          *  that can call non-defined property, that can have some special handling, eg: throw on special case
          */
         return ! $phpPropertyReflection instanceof PhpPropertyReflection;
+    }
+
+    private function isVoidCastNoDiscardCall(Expression $expression): bool
+    {
+        if (! $expression->expr instanceof Void_) {
+            return false;
+        }
+
+        return $this->noDiscardCallAnalyzer->isNoDiscardCall($expression->expr->expr);
     }
 
     /**

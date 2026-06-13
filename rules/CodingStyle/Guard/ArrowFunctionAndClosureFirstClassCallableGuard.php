@@ -126,7 +126,8 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
             return $reflection->isBuiltin();
         }
 
-        return $reflection->getDeclaringClass()->isBuiltin();
+        return $reflection->getDeclaringClass()
+            ->isBuiltin();
     }
 
     /**

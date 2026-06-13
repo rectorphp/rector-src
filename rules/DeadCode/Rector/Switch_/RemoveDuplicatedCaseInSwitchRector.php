@@ -102,10 +102,10 @@ CODE_SAMPLE
 
     private function removeDuplicatedCases(Switch_ $switch): void
     {
-        /** @var Case_[] */
+        /** @var Case_[] $result */
         $result = [];
 
-        /** @var int[] */
+        /** @var int[] $processedCasesKeys */
         $processedCasesKeys = [];
 
         foreach ($switch->cases as $outerCaseKey => $outerCase) {
@@ -123,7 +123,7 @@ CODE_SAMPLE
             /** @var array<int, Case_> */
             $casesWithoutStmts = [];
 
-            /** @var Case_[] */
+            /** @var Case_[] $equalCases */
             $equalCases = [];
 
             foreach ($switch->cases as $innerCaseKey => $innerCase) {
