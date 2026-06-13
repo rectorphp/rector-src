@@ -89,6 +89,7 @@ use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Analyser\UndefinedVariableException;
+use PHPStan\Dependency\DependencyResolver;
 use PHPStan\Node\FunctionCallableNode;
 use PHPStan\Node\InstantiationCallableNode;
 use PHPStan\Node\MethodCallableNode;
@@ -102,12 +103,14 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Caching\FileDependencyCollector;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\Reflection\PrivatesAccessor;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 /**
@@ -130,7 +133,9 @@ final readonly class PHPStanNodeScopeResolver
         private ScopeFactory $scopeFactory,
         private PrivatesAccessor $privatesAccessor,
         private NodeNameResolver $nodeNameResolver,
-        private ClassAnalyzer $classAnalyzer
+        private ClassAnalyzer $classAnalyzer,
+        private DependencyResolver $dependencyResolver,
+        private FileDependencyCollector $fileDependencyCollector
     ) {
         // @todo make use of immutable, to avoid tedious traversing
         $this->nodeTraverser = new NodeTraverser(...$decoratingNodeVisitors);
@@ -161,6 +166,10 @@ final readonly class PHPStanNodeScopeResolver
             if ($mutatingScope instanceof FiberScope) {
                 $mutatingScope = $mutatingScope->toMutatingScope();
             }
+
+            // capture the files this file depends on, so the unchanged-files cache
+            // invalidates when a dependency changes, see captureNodeDependencies()
+            $this->captureNodeDependencies($node, $mutatingScope, $filePath);
 
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
@@ -729,5 +738,54 @@ final readonly class PHPStanNodeScopeResolver
         $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
         $this->nodeScopeResolverProcessNodes($trait->stmts, $traitScope, $nodeCallback);
         $this->decorateNodeAttrGroups($trait, $traitScope, $nodeCallback);
+    }
+
+    /**
+     * Record the dependency files PHPStan surfaces for this node, with a memo per
+     * function call as signature dependencies are identical at every call site.
+     * The memo key is the resolved function name, so two calls only share an entry
+     * when they resolve to the same function.
+     */
+    private function captureNodeDependencies(Node $node, MutatingScope $mutatingScope, string $filePath): void
+    {
+        $functionMemoKey = null;
+        if ($node instanceof FuncCall) {
+            $functionName = $this->nodeNameResolver->getName($node);
+            if (is_string($functionName)) {
+                $functionMemoKey = strtolower($functionName);
+            }
+        }
+
+        $memoizedFiles = $functionMemoKey !== null
+            ? $this->fileDependencyCollector->getMemoizedFunctionDependencyFiles($functionMemoKey)
+            : null;
+
+        if ($memoizedFiles !== null) {
+            foreach ($memoizedFiles as $memoizedFile) {
+                $this->fileDependencyCollector->record($filePath, $memoizedFile);
+            }
+
+            return;
+        }
+
+        try {
+            $nodeDependencies = $this->dependencyResolver->resolveDependencies($node, $mutatingScope);
+            $dependencyFiles = [];
+            foreach ($nodeDependencies->getReflections() as $dependencyReflection) {
+                $dependencyFile = $dependencyReflection->getFileName();
+                if ($dependencyFile !== null) {
+                    $dependencyFiles[] = $dependencyFile;
+                    $this->fileDependencyCollector->record($filePath, $dependencyFile);
+                }
+            }
+
+            if ($functionMemoKey !== null) {
+                $this->fileDependencyCollector->memoizeFunctionDependencyFiles($functionMemoKey, $dependencyFiles);
+            }
+        } catch (Throwable) {
+            // a failed capture leaves a possibly partial dependency set, mark the file
+            // so it is never cached with it and gets reprocessed on every run instead
+            $this->fileDependencyCollector->markFailed($filePath);
+        }
     }
 }

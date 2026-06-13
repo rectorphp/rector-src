@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem as UtilsFileSystem;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\DryRunDiffCache;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\FileSystem\FilesFinder;
@@ -49,6 +50,7 @@ final class ApplicationFileProcessor
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
+        private readonly DryRunDiffCache $dryRunDiffCache,
     ) {
     }
 
@@ -168,12 +170,30 @@ final class ApplicationFileProcessor
     {
         $this->currentFileProvider->setFile($file);
 
+        // a selective run applies a subset of rules, so its results are not
+        // interchangeable with full runs → bypass both caches entirely
+        $isSelectiveRun = $configuration->getOnlyRule() !== null || $configuration->getOnlySuffix() !== null;
+        $useDiffCache = $configuration->isDryRun() && ! $isSelectiveRun;
+
+        if ($useDiffCache) {
+            $cachedFileProcessResult = $this->dryRunDiffCache->load($file, $configuration);
+            if ($cachedFileProcessResult instanceof FileProcessResult) {
+                return $cachedFileProcessResult;
+            }
+        }
+
         $fileProcessResult = $this->fileProcessor->processFile($file, $configuration);
+        $fileDiff = $fileProcessResult->getFileDiff();
 
         if ($fileProcessResult->getSystemErrors() !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());
-        } elseif (! $configuration->isDryRun() || ! $fileProcessResult->getFileDiff() instanceof FileDiff) {
-            $this->changedFilesDetector->cacheFile($file->getFilePath());
+        } elseif (! $configuration->isDryRun() || ! $fileDiff instanceof FileDiff) {
+            // a file clean under a subset of rules is not necessarily clean under all rules
+            if (! $isSelectiveRun) {
+                $this->changedFilesDetector->cacheFile($file->getFilePath());
+            }
+        } elseif ($useDiffCache) {
+            $this->dryRunDiffCache->save($file, $configuration, $fileDiff, $fileProcessResult->hasChanged());
         }
 
         return $fileProcessResult;
