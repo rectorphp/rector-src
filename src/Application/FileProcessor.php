@@ -10,6 +10,7 @@ use PHPStan\Parser\ParserErrorsException;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
+use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\FilePathHelper;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
@@ -40,6 +41,7 @@ final readonly class FileProcessor
         private PostFileProcessor $postFileProcessor,
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private UsedImportsResolver $usedImportsResolver,
     ) {
     }
 
@@ -61,13 +63,20 @@ final readonly class FileProcessor
             // 1. change nodes with Rector Rules
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
-            // 2. apply post rectors
+            // 2. refresh used imports on the FileNode from current stmts,
+            // so post rectors read them without re-traversing, yet stay in sync each iteration
+            $fileNode = $newStmts[0] ?? null;
+            if ($fileNode instanceof FileNode) {
+                $fileNode->setUsedImports($this->usedImportsResolver->resolveForStmts($fileNode->stmts));
+            }
+
+            // 3. apply post rectors
             $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
 
-            // 3. this is needed for new tokens added in "afterTraverse()"
+            // 4. this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($postNewStmts);
 
-            // 4. print to file or string
+            // 5. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration, $filePath);
 
@@ -79,7 +88,7 @@ final readonly class FileProcessor
             $fileHasChanged = true;
         } while (true);
 
-        // 5. add as cacheable if not changed at all
+        // 6. add as cacheable if not changed at all
         if (! $fileHasChanged) {
             $this->changedFilesDetector->addCacheableFile($filePath);
         } else {

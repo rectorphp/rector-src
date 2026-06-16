@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitor;
 use Rector\CodingStyle\Application\UseImportsAdder;
+use Rector\CodingStyle\ClassNameImport\ValueObject\UsedImports;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\FileNode;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -39,6 +40,10 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
+        // the used imports are resolved once on file parse and stored on the FileNode root
+        /** @var FileNode $fileNode */
+        $fileNode = $nodes[0];
+
         $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($this->getFile()->getFilePath());
         $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath(
             $this->getFile()
@@ -56,10 +61,9 @@ final class UseAddingPostRector extends AbstractPostRector
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
-        $stmts = $rootNode instanceof FileNode ? $rootNode->stmts : $nodes;
 
         if ($this->processStmtsWithImportedUses(
-            $stmts,
+            $fileNode->getUsedImports(),
             $useImportTypes,
             $constantUseImportTypes,
             $functionUseImportTypes,
@@ -85,36 +89,26 @@ final class UseAddingPostRector extends AbstractPostRector
     }
 
     /**
-     * @param Stmt[] $stmts
      * @param FullyQualifiedObjectType[] $useImportTypes
      * @param FullyQualifiedObjectType[] $constantUseImportTypes
      * @param FullyQualifiedObjectType[] $functionUseImportTypes
      */
     private function processStmtsWithImportedUses(
-        array $stmts,
+        UsedImports $usedImports,
         array $useImportTypes,
         array $constantUseImportTypes,
         array $functionUseImportTypes,
-        FileNode|Namespace_ $namespace
+        FileNode|Namespace_ $node
     ): bool {
-        // A. has namespace? add under it
-        if ($namespace instanceof Namespace_) {
-            // then add, to prevent adding + removing false positive of same short use
-            return $this->useImportsAdder->addImportsToNamespace(
-                $namespace,
-                $useImportTypes,
-                $constantUseImportTypes,
-                $functionUseImportTypes
-            );
+        // no namespace? add in the top, only namespaced names
+        if ($node instanceof FileNode) {
+            $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
         }
-
-        // B. no namespace? add in the top
-        $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
 
         // then add, to prevent adding + removing false positive of same short use
         return $this->useImportsAdder->addImportsToStmts(
-            $namespace,
-            $stmts,
+            $node,
+            $usedImports,
             $useImportTypes,
             $constantUseImportTypes,
             $functionUseImportTypes

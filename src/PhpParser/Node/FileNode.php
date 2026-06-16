@@ -9,12 +9,19 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use Rector\CodingStyle\ClassNameImport\ValueObject\UsedImports;
+use Rector\Exception\ShouldNotHappenException;
 
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/commit/ed81c3ad0b9877e6122c79b4afda9d10f3994092
  */
 class FileNode extends Stmt
 {
+    /**
+     * Resolved once on file parse, so used imports do not have to be re-traversed later
+     */
+    private ?UsedImports $usedImports = null;
+
     /**
      * @param Stmt[] $stmts
      */
@@ -25,6 +32,22 @@ class FileNode extends Stmt
         $attributes = $firstStmt instanceof Node ? $firstStmt->getAttributes() : [];
 
         parent::__construct($attributes);
+    }
+
+    public function setUsedImports(UsedImports $usedImports): void
+    {
+        $this->usedImports = $usedImports;
+    }
+
+    public function getUsedImports(): UsedImports
+    {
+        if (! $this->usedImports instanceof UsedImports) {
+            throw new ShouldNotHappenException(
+                'Used imports are not set yet; call setUsedImports() on file parse first.'
+            );
+        }
+
+        return $this->usedImports;
     }
 
     /**
