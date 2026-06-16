@@ -35,6 +35,8 @@ use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\Validation\RectorAssert;
+use Webmozart\Assert\InvalidArgumentException;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfo\PhpDocInfoTest
@@ -461,7 +463,19 @@ final class PhpDocInfo
 
             // add default original value
             $resolvedClasses[] = $genericTagValueNode->value;
+
             if (! str_contains($genericTagValueNode->value, '::')) {
+                // keep the import for the leading class reference in "@see Foo some description"
+                $leadingReference = strtok($genericTagValueNode->value, " \t\n\r");
+                if ($leadingReference !== false && $leadingReference !== $genericTagValueNode->value) {
+                    try {
+                        RectorAssert::className($leadingReference);
+                        $resolvedClasses[] = $leadingReference;
+                    } catch (InvalidArgumentException) {
+                        continue;
+                    }
+                }
+
                 continue;
             }
 
