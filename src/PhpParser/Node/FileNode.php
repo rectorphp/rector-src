@@ -37,14 +37,6 @@ class FileNode extends Stmt
     }
 
     /**
-     * Seeded once right after node decoration, when namespaced names are resolvable
-     */
-    public function setUsedImports(UsedImports $usedImports): void
-    {
-        $this->usedImports = $usedImports;
-    }
-
-    /**
      * Adds new use imports into the file/namespace and keeps the tracked used imports in sync,
      * so the next traversal iteration converges without re-resolving.
      *
@@ -130,6 +122,38 @@ class FileNode extends Stmt
         $this->appendUsedImports($useImportTypes, $functionUseImportTypes, $constantUseImportTypes);
 
         return true;
+    }
+
+    /**
+     * Removes the given use imports from the file/namespace
+     *
+     * @param string[] $removedUses
+     */
+    public function removeImports(array $removedUses): bool
+    {
+        $node = $this->resolvePlacementNamespace() ?? $this;
+
+        $hasRemoved = false;
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Use_) {
+                continue;
+            }
+
+            if ($this->removeUseFromUse($removedUses, $stmt)) {
+                $hasRemoved = true;
+            }
+
+            // remove empty uses
+            if ($stmt->uses === []) {
+                unset($node->stmts[$key]);
+            }
+        }
+
+        if ($hasRemoved) {
+            $node->stmts = array_values($node->stmts);
+        }
+
+        return $hasRemoved;
     }
 
     /**
@@ -359,5 +383,28 @@ class FileNode extends Stmt
                 $stmts[$indexStmt]->setAttribute(AttributeKey::COMMENTS, []);
             }
         }
+    }
+
+    /**
+     * @param string[] $removedUses
+     */
+    private function removeUseFromUse(array $removedUses, Use_ $use): bool
+    {
+        $hasChanged = false;
+        foreach ($use->uses as $usesKey => $useUse) {
+            $useName = $useUse->name->toString();
+            if (! in_array($useName, $removedUses, true)) {
+                continue;
+            }
+
+            unset($use->uses[$usesKey]);
+            $hasChanged = true;
+        }
+
+        if ($hasChanged) {
+            $use->uses = array_values($use->uses);
+        }
+
+        return $hasChanged;
     }
 }
