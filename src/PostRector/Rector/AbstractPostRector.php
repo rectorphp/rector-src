@@ -29,7 +29,7 @@ abstract class AbstractPostRector extends NodeVisitorAbstract implements PostRec
         $this->file = $file;
     }
 
-    public function getFile(): File
+    protected function getFile(): File
     {
         Assert::isInstanceOf($this->file, File::class);
 

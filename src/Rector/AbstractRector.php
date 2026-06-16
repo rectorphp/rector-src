@@ -99,12 +99,21 @@ CODE_SAMPLE;
     }
 
     /**
-     * @final Avoid override to prevent unintended side-effects. Use enterNode() or @see \Rector\Contract\PhpParser\DecoratingNodeVisitorInterface instead.
-     * @internal
-     *
      * @return Node[]|null
+     *
+     * @internal
      */
-    public function beforeTraverse(array $nodes): ?array
+    final public function beforeTraverse(array $nodes): ?array
+    {
+        return null;
+    }
+
+    /**
+     * @return Node[]|null
+     *
+     * @internal
+     */
+    final public function afterTraverse(array $nodes)
     {
         return null;
     }
@@ -115,13 +124,13 @@ CODE_SAMPLE;
     final public function enterNode(Node $node): int|Node|null|array
     {
         // keep $this->file populated for BC; refactor() is only ever reached through here
-        $file = $this->file = $this->getFile();
+        $this->file = $this->getFile();
 
-        if (is_a($this, HTMLAverseRectorInterface::class, true) && $file->containsHTML()) {
+        if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->file->containsHTML()) {
             return null;
         }
 
-        $filePath = $file->getFilePath();
+        $filePath = $this->file->getFilePath();
         if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
             return null;
         }
@@ -154,7 +163,7 @@ CODE_SAMPLE;
 
             // notify this rule changed code
             $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
-            $file->addRectorClassWithLine($rectorWithLineChange);
+            $this->file->addRectorClassWithLine($rectorWithLineChange);
 
             return $refactoredNodeOrState;
         }
@@ -264,8 +273,7 @@ CODE_SAMPLE;
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
         $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getStartLine());
-        $this->getFile()
-            ->addRectorClassWithLine($rectorWithLineChange);
+        $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
