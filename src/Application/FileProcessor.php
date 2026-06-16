@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Application;
 
 use Nette\Utils\FileSystem;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Caching\Detector\ChangedFilesDetector;
@@ -63,20 +65,13 @@ final readonly class FileProcessor
             // 1. change nodes with Rector Rules
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
-            // 2. refresh used imports on the FileNode from current stmts,
-            // so post rectors read them without re-traversing, yet stay in sync each iteration
-            $fileNode = $newStmts[0] ?? null;
-            if ($fileNode instanceof FileNode) {
-                $fileNode->setUsedImports($this->usedImportsResolver->resolveForStmts($fileNode->stmts));
-            }
-
-            // 3. apply post rectors
+            // 2. apply post rectors
             $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
 
-            // 4. this is needed for new tokens added in "afterTraverse()"
+            // 3. this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($postNewStmts);
 
-            // 5. print to file or string
+            // 4. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration, $filePath);
 
@@ -88,7 +83,7 @@ final readonly class FileProcessor
             $fileHasChanged = true;
         } while (true);
 
-        // 6. add as cacheable if not changed at all
+        // 5. add as cacheable if not changed at all
         if (! $fileHasChanged) {
             $this->changedFilesDetector->addCacheableFile($filePath);
         } else {
@@ -179,8 +174,16 @@ final readonly class FileProcessor
 
         $oldStmts = $stmtsAndTokens->getStmts();
 
-        // wrap in FileNode to allow file-level rules
-        $oldStmts = [new FileNode($oldStmts)];
+        // resolve names up front, so used imports (incl. the class FQN) are resolvable at construction,
+        // before scope decoration runs; only annotates namespacedName, does not replace name nodes
+        $nameResolvingTraverser = new NodeTraverser(new NameResolver(null, [
+            'preserveOriginalNames' => true,
+            'replaceNodes' => false,
+        ]));
+        $nameResolvingTraverser->traverse($oldStmts);
+
+        // wrap in FileNode to allow file-level rules; seed used imports once, kept in sync incrementally
+        $oldStmts = [new FileNode($oldStmts, $this->usedImportsResolver->resolveForStmts($oldStmts))];
 
         $oldTokens = $stmtsAndTokens->getTokens();
 
