@@ -829,6 +829,7 @@ final class RectorConfigBuilder
         bool $symfony = false,
         bool $netteUtils = false,
         bool $laravel = false,
+        bool $drupal = false,
     ): self {
         $setMap = [
             SetGroup::TWIG => $twig,
@@ -837,6 +838,7 @@ final class RectorConfigBuilder
             SetGroup::SYMFONY => $symfony,
             SetGroup::NETTE_UTILS => $netteUtils,
             SetGroup::LARAVEL => $laravel,
+            SetGroup::DRUPAL => $drupal,
         ];
 
         foreach ($setMap as $setPath => $isEnabled) {
