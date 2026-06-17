@@ -249,7 +249,10 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
     private function isSubNamespace(string $name, string $comparedName, string $namespacedPrefix): bool
     {
-        if (str_ends_with($comparedName, '\\' . $name)) {
+        // a partially qualified name like "Foo\Bar" resolves through the import of its first
+        // segment, never through an import whose tail it happens to match, so only a single
+        // segment name (the imported short name) may be matched against the import's tail here
+        if (! str_contains($name, '\\') && str_ends_with($comparedName, '\\' . $name)) {
             return true;
         }
 
