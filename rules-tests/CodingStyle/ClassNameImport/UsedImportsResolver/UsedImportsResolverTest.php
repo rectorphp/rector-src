@@ -6,6 +6,7 @@ namespace Rector\Tests\CodingStyle\ClassNameImport\UsedImportsResolver;
 
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 
@@ -31,7 +32,7 @@ final class UsedImportsResolverTest extends AbstractLazyTestCase
 
         // the class itself, the normal use and the aliased use
         $useImportNames = array_map(
-            static fn ($objectType): string => $objectType->getClassName(),
+            static fn (AliasedObjectType|FullyQualifiedObjectType $objectType): string => $objectType->getClassName(),
             $usedImports->getUseImports()
         );
 
@@ -49,7 +50,7 @@ final class UsedImportsResolverTest extends AbstractLazyTestCase
         );
 
         $functionImportNames = array_map(
-            static fn ($objectType): string => $objectType->getClassName(),
+            static fn (FullyQualifiedObjectType $fullyQualifiedObjectType): string => $fullyQualifiedObjectType->getClassName(),
             $usedImports->getFunctionImports()
         );
         $this->assertSame(
@@ -58,7 +59,7 @@ final class UsedImportsResolverTest extends AbstractLazyTestCase
         );
 
         $constantImportNames = array_map(
-            static fn ($objectType): string => $objectType->getClassName(),
+            static fn (FullyQualifiedObjectType $fullyQualifiedObjectType): string => $fullyQualifiedObjectType->getClassName(),
             $usedImports->getConstantImports()
         );
         $this->assertSame(
@@ -74,7 +75,7 @@ final class UsedImportsResolverTest extends AbstractLazyTestCase
         $usedImports = $this->usedImportsResolver->resolveForStmts($stmts);
 
         $useImportNames = array_map(
-            static fn ($objectType): string => $objectType->getClassName(),
+            static fn (AliasedObjectType|FullyQualifiedObjectType $objectType): string => $objectType->getClassName(),
             $usedImports->getUseImports()
         );
 
@@ -93,7 +94,7 @@ final class UsedImportsResolverTest extends AbstractLazyTestCase
         $usedImports = $this->usedImportsResolver->resolveForStmts($stmts);
 
         $useImportNames = array_map(
-            static fn ($objectType): string => $objectType->getClassName(),
+            static fn (AliasedObjectType|FullyQualifiedObjectType $objectType): string => $objectType->getClassName(),
             $usedImports->getUseImports()
         );
 
@@ -103,7 +104,7 @@ final class UsedImportsResolverTest extends AbstractLazyTestCase
         ], $useImportNames);
 
         $functionImportNames = array_map(
-            static fn ($objectType): string => $objectType->getClassName(),
+            static fn (FullyQualifiedObjectType $fullyQualifiedObjectType): string => $fullyQualifiedObjectType->getClassName(),
             $usedImports->getFunctionImports()
         );
         $this->assertSame(

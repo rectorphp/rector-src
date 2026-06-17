@@ -104,9 +104,9 @@ final readonly class NameImporter
             return null;
         }
 
-        $pendingUsedImports = $fileNode->getPendingUsedImports();
-        if ($pendingUsedImports->isShortImported($fullyQualifiedObjectType)) {
-            if ($pendingUsedImports->isImportShortable($fullyQualifiedObjectType)) {
+        $pendingImports = $fileNode->getPendingImports();
+        if ($pendingImports->isShortImported($fullyQualifiedObjectType)) {
+            if ($pendingImports->isImportShortable($fullyQualifiedObjectType)) {
                 return $fullyQualifiedObjectType->getShortNameNode();
             }
 
@@ -148,13 +148,13 @@ final readonly class NameImporter
             return;
         }
 
-        $pendingUsedImports = $fileNode->getPendingUsedImports();
+        $pendingImports = $fileNode->getPendingImports();
         if ($fullyQualified->getAttribute(AttributeKey::IS_FUNCCALL_NAME) === true) {
-            $pendingUsedImports->addFunctionUseImport($fullyQualifiedObjectType);
+            $pendingImports->addFunctionUseImport($fullyQualifiedObjectType);
         } elseif ($fullyQualified->getAttribute(AttributeKey::IS_CONSTFETCH_NAME) === true) {
-            $pendingUsedImports->addConstantUseImport($fullyQualifiedObjectType);
+            $pendingImports->addConstantUseImport($fullyQualifiedObjectType);
         } else {
-            $pendingUsedImports->addUseImport($fullyQualifiedObjectType);
+            $pendingImports->addUseImport($fullyQualifiedObjectType);
         }
     }
 }

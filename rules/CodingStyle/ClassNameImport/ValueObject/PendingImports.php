@@ -10,7 +10,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
  * Imports queued to be added on the next UseAddingPostRector run; scoped to a single file.
  * Unlike UsedImports, this is mutable and collected during the post-rector chain.
  */
-final class PendingUsedImports
+final class PendingImports
 {
     /**
      * @var FullyQualifiedObjectType[]

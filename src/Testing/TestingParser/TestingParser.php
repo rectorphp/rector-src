@@ -59,11 +59,11 @@ final readonly class TestingParser
 
         // resolve names up front, so used imports are resolvable at construction, before decoration;
         // only annotates namespacedName, does not replace name nodes
-        $nameResolvingTraverser = new NodeTraverser(new NameResolver(null, [
+        $nameResolvingNodeTraverser = new NodeTraverser(new NameResolver(null, [
             'preserveOriginalNames' => true,
             'replaceNodes' => false,
         ]));
-        $stmts = $nameResolvingTraverser->traverse($stmts);
+        $stmts = $nameResolvingNodeTraverser->traverse($stmts);
 
         // wrap in FileNode to enable file-level rules; seed used imports once, kept in sync incrementally
         $stmts = [new FileNode($stmts, $this->usedImportsResolver->resolveForStmts($stmts))];

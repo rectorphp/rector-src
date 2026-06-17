@@ -176,11 +176,11 @@ final readonly class FileProcessor
 
         // resolve names up front, so used imports (incl. the class FQN) are resolvable at construction,
         // before scope decoration runs; only annotates namespacedName, does not replace name nodes
-        $nameResolvingTraverser = new NodeTraverser(new NameResolver(null, [
+        $nameResolvingNodeTraverser = new NodeTraverser(new NameResolver(null, [
             'preserveOriginalNames' => true,
             'replaceNodes' => false,
         ]));
-        $nameResolvingTraverser->traverse($oldStmts);
+        $nameResolvingNodeTraverser->traverse($oldStmts);
 
         // wrap in FileNode to allow file-level rules; seed used imports once, kept in sync incrementally
         $usedImports = $this->usedImportsResolver->resolveForStmts($oldStmts);

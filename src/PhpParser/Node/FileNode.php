@@ -13,7 +13,7 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
-use Rector\CodingStyle\ClassNameImport\ValueObject\PendingUsedImports;
+use Rector\CodingStyle\ClassNameImport\ValueObject\PendingImports;
 use Rector\CodingStyle\ClassNameImport\ValueObject\UsedImports;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -27,7 +27,7 @@ class FileNode extends Stmt
     /**
      * Imports queued to be added on the next UseAddingPostRector run; scoped to this file
      */
-    private PendingUsedImports $pendingUsedImports;
+    private readonly PendingImports $pendingImports;
 
     /**
      * @param Stmt[] $stmts
@@ -37,7 +37,7 @@ class FileNode extends Stmt
         public array $stmts,
         private UsedImports $usedImports,
     ) {
-        $this->pendingUsedImports = new PendingUsedImports();
+        $this->pendingImports = new PendingImports();
 
         $firstStmt = $stmts[0] ?? null;
         $attributes = $firstStmt instanceof Node ? $firstStmt->getAttributes() : [];
@@ -133,9 +133,9 @@ class FileNode extends Stmt
         return true;
     }
 
-    public function getPendingUsedImports(): PendingUsedImports
+    public function getPendingImports(): PendingImports
     {
-        return $this->pendingUsedImports;
+        return $this->pendingImports;
     }
 
     public function hasImport(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
@@ -156,7 +156,7 @@ class FileNode extends Stmt
      */
     public function resolveUsedImportTypes(): array
     {
-        $objectTypes = $this->pendingUsedImports->getUseImports();
+        $objectTypes = $this->pendingImports->getUseImports();
 
         foreach ($this->getUsesAndGroupUses() as $use) {
             $prefix = $use instanceof GroupUse ? $use->prefix . '\\' : '';

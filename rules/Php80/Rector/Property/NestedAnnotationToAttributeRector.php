@@ -216,7 +216,7 @@ CODE_SAMPLE
             return;
         }
 
-        $pendingUsedImports = $fileNode->getPendingUsedImports();
+        $pendingImports = $fileNode->getPendingImports();
 
         foreach ($attributeGroups as $attributeGroup) {
             foreach ($attributeGroup->attrs as $attr) {
@@ -225,7 +225,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $pendingUsedImports->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
+                $pendingImports->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
             }
         }
     }

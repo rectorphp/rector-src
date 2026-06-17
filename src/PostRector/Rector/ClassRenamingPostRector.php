@@ -33,7 +33,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
             // keep only the uses that were actually renamed
             $removedUses = array_values(array_filter(
                 $this->renamedClassesDataCollector->getOldClasses(),
-                fn (string $removedUse): bool => $this->renamedNameCollector->has($removedUse)
+                $this->renamedNameCollector->has(...)
             ));
 
             if ($node->removeImports($removedUses)) {

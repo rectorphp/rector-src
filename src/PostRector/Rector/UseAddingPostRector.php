@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitor;
@@ -21,6 +22,7 @@ final class UseAddingPostRector extends AbstractPostRector
     /**
      * @param Stmt[] $stmts
      */
+    #[Override]
     public function shouldTraverse(array $stmts): bool
     {
         $fileNode = $stmts[0] ?? null;
@@ -28,7 +30,7 @@ final class UseAddingPostRector extends AbstractPostRector
             return false;
         }
 
-        return $fileNode->getPendingUsedImports()
+        return $fileNode->getPendingImports()
             ->hasPendingUseImports();
     }
 
@@ -41,11 +43,11 @@ final class UseAddingPostRector extends AbstractPostRector
         /** @var FileNode $fileNode */
         $fileNode = $nodes[0] ?? null;
 
-        $pendingUsedImports = $fileNode->getPendingUsedImports();
+        $pendingImports = $fileNode->getPendingImports();
 
-        $useImportTypes = $pendingUsedImports->getUseImports();
-        $constantUseImportTypes = $pendingUsedImports->getConstantImports();
-        $functionUseImportTypes = $pendingUsedImports->getFunctionImports();
+        $useImportTypes = $pendingImports->getUseImports();
+        $constantUseImportTypes = $pendingImports->getConstantImports();
+        $functionUseImportTypes = $pendingImports->getFunctionImports();
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
