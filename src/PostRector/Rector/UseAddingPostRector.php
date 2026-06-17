@@ -9,14 +9,12 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\FileNode;
-use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class UseAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly TypeFactory $typeFactory,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector,
     ) {
     }
 
@@ -31,16 +29,9 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
-        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($this->getFile()->getFilePath());
-        $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath(
-            $this->getFile()
-                ->getFilePath()
-        );
-
-        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath(
-            $this->getFile()
-                ->getFilePath()
-        );
+        $useImportTypes = $fileNode->getPendingUseImports();
+        $constantUseImportTypes = $fileNode->getPendingConstantImports();
+        $functionUseImportTypes = $fileNode->getPendingFunctionImports();
 
         if ($useImportTypes === [] && $constantUseImportTypes === [] && $functionUseImportTypes === []) {
             return $nodes;
