@@ -143,14 +143,16 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
+        $pendingUsedImports = $fileNode->getPendingUsedImports();
+
         // should skip because its already used
-        if ($fileNode->isShortImported($fullyQualifiedObjectType)
-            && ! $fileNode->isImportShortable($fullyQualifiedObjectType)) {
+        if ($pendingUsedImports->isShortImported($fullyQualifiedObjectType)
+            && ! $pendingUsedImports->isImportShortable($fullyQualifiedObjectType)) {
             return null;
         }
 
         if ($this->shouldImport($fileNode, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
-            $fileNode->addUseImport($fullyQualifiedObjectType);
+            $pendingUsedImports->addUseImport($fullyQualifiedObjectType);
             $this->hasChanged = true;
 
             return $newNode;

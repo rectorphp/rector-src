@@ -216,6 +216,8 @@ CODE_SAMPLE
             return;
         }
 
+        $pendingUsedImports = $fileNode->getPendingUsedImports();
+
         foreach ($attributeGroups as $attributeGroup) {
             foreach ($attributeGroup->attrs as $attr) {
                 $namespacedAttrName = $attr->name->getAttribute(AttributeKey::EXTRA_USE_IMPORT);
@@ -223,7 +225,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $fileNode->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
+                $pendingUsedImports->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
             }
         }
     }

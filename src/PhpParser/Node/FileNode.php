@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
+use Rector\CodingStyle\ClassNameImport\ValueObject\PendingUsedImports;
 use Rector\CodingStyle\ClassNameImport\ValueObject\UsedImports;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -25,19 +26,8 @@ class FileNode extends Stmt
 {
     /**
      * Imports queued to be added on the next UseAddingPostRector run; scoped to this file
-     * @var FullyQualifiedObjectType[]
      */
-    private array $pendingUseImports = [];
-
-    /**
-     * @var FullyQualifiedObjectType[]
-     */
-    private array $pendingFunctionImports = [];
-
-    /**
-     * @var FullyQualifiedObjectType[]
-     */
-    private array $pendingConstantImports = [];
+    private PendingUsedImports $pendingUsedImports;
 
     /**
      * @param Stmt[] $stmts
@@ -47,6 +37,8 @@ class FileNode extends Stmt
         public array $stmts,
         private UsedImports $usedImports,
     ) {
+        $this->pendingUsedImports = new PendingUsedImports();
+
         $firstStmt = $stmts[0] ?? null;
         $attributes = $firstStmt instanceof Node ? $firstStmt->getAttributes() : [];
 
@@ -141,113 +133,15 @@ class FileNode extends Stmt
         return true;
     }
 
-    public function addUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
+    public function getPendingUsedImports(): PendingUsedImports
     {
-        $this->pendingUseImports[] = $fullyQualifiedObjectType;
-    }
-
-    public function addFunctionUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
-    {
-        $this->pendingFunctionImports[] = $fullyQualifiedObjectType;
-    }
-
-    public function addConstantUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
-    {
-        $this->pendingConstantImports[] = $fullyQualifiedObjectType;
-    }
-
-    public function hasPendingUseImports(): bool
-    {
-        if ($this->pendingUseImports !== []) {
-            return true;
-        }
-
-        if ($this->pendingFunctionImports !== []) {
-            return true;
-        }
-
-        return $this->pendingConstantImports !== [];
-    }
-
-    /**
-     * @return FullyQualifiedObjectType[]
-     */
-    public function getPendingUseImports(): array
-    {
-        return $this->pendingUseImports;
-    }
-
-    /**
-     * @return FullyQualifiedObjectType[]
-     */
-    public function getPendingFunctionImports(): array
-    {
-        return $this->pendingFunctionImports;
-    }
-
-    /**
-     * @return FullyQualifiedObjectType[]
-     */
-    public function getPendingConstantImports(): array
-    {
-        return $this->pendingConstantImports;
+        return $this->pendingUsedImports;
     }
 
     public function hasImport(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
         foreach ($this->resolveUsedImportTypes() as $useImport) {
             if ($useImport->equals($fullyQualifiedObjectType)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function isShortImported(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
-    {
-        $shortName = $fullyQualifiedObjectType->getShortName();
-
-        foreach ($this->pendingConstantImports as $pendingConstantImport) {
-            // don't compare strtolower for use const as insensitive is allowed, see https://3v4l.org/lteVa
-            if ($pendingConstantImport->getShortName() === $shortName) {
-                return true;
-            }
-        }
-
-        $shortName = strtolower($shortName);
-
-        foreach ($this->pendingUseImports as $pendingUseImport) {
-            if (strtolower($pendingUseImport->getShortName()) === $shortName) {
-                return true;
-            }
-        }
-
-        foreach ($this->pendingFunctionImports as $pendingFunctionImport) {
-            if (strtolower($pendingFunctionImport->getShortName()) === $shortName) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function isImportShortable(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
-    {
-        foreach ($this->pendingUseImports as $pendingUseImport) {
-            if ($fullyQualifiedObjectType->equals($pendingUseImport)) {
-                return true;
-            }
-        }
-
-        foreach ($this->pendingConstantImports as $pendingConstantImport) {
-            if ($fullyQualifiedObjectType->equals($pendingConstantImport)) {
-                return true;
-            }
-        }
-
-        foreach ($this->pendingFunctionImports as $pendingFunctionImport) {
-            if ($fullyQualifiedObjectType->equals($pendingFunctionImport)) {
                 return true;
             }
         }
@@ -262,7 +156,7 @@ class FileNode extends Stmt
      */
     public function resolveUsedImportTypes(): array
     {
-        $objectTypes = $this->pendingUseImports;
+        $objectTypes = $this->pendingUsedImports->getUseImports();
 
         foreach ($this->getUsesAndGroupUses() as $use) {
             $prefix = $use instanceof GroupUse ? $use->prefix . '\\' : '';

@@ -28,7 +28,8 @@ final class UseAddingPostRector extends AbstractPostRector
             return false;
         }
 
-        return $fileNode->hasPendingUseImports();
+        return $fileNode->getPendingUsedImports()
+            ->hasPendingUseImports();
     }
 
     /**
@@ -40,9 +41,11 @@ final class UseAddingPostRector extends AbstractPostRector
         /** @var FileNode $fileNode */
         $fileNode = $nodes[0] ?? null;
 
-        $useImportTypes = $fileNode->getPendingUseImports();
-        $constantUseImportTypes = $fileNode->getPendingConstantImports();
-        $functionUseImportTypes = $fileNode->getPendingFunctionImports();
+        $pendingUsedImports = $fileNode->getPendingUsedImports();
+
+        $useImportTypes = $pendingUsedImports->getUseImports();
+        $constantUseImportTypes = $pendingUsedImports->getConstantImports();
+        $functionUseImportTypes = $pendingUsedImports->getFunctionImports();
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
