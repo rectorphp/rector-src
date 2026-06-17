@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Rector\Application;
 
 use Nette\Utils\FileSystem;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
+use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\FilePathHelper;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
@@ -40,6 +43,7 @@ final readonly class FileProcessor
         private PostFileProcessor $postFileProcessor,
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private UsedImportsResolver $usedImportsResolver,
     ) {
     }
 
@@ -170,8 +174,17 @@ final readonly class FileProcessor
 
         $oldStmts = $stmtsAndTokens->getStmts();
 
-        // wrap in FileNode to allow file-level rules
-        $oldStmts = [new FileNode($oldStmts)];
+        // resolve names up front, so used imports (incl. the class FQN) are resolvable at construction,
+        // before scope decoration runs; only annotates namespacedName, does not replace name nodes
+        $nameResolvingNodeTraverser = new NodeTraverser(new NameResolver(null, [
+            'preserveOriginalNames' => true,
+            'replaceNodes' => false,
+        ]));
+        $nameResolvingNodeTraverser->traverse($oldStmts);
+
+        // wrap in FileNode to allow file-level rules; seed used imports once, kept in sync incrementally
+        $usedImports = $this->usedImportsResolver->resolveForStmts($oldStmts);
+        $oldStmts = [new FileNode($oldStmts, $usedImports)];
 
         $oldTokens = $stmtsAndTokens->getTokens();
 

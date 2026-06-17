@@ -6,7 +6,10 @@ namespace Rector\Testing\TestingParser;
 
 use Nette\Utils\FileSystem;
 use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
 use Rector\Application\Provider\CurrentFileProvider;
+use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\Node\FileNode;
@@ -23,6 +26,7 @@ final readonly class TestingParser
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private CurrentFileProvider $currentFileProvider,
         private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
+        private UsedImportsResolver $usedImportsResolver,
     ) {
     }
 
@@ -53,8 +57,16 @@ final readonly class TestingParser
         $file = new File($filePath, $fileContent);
         $stmts = $this->rectorParser->parseString($fileContent);
 
-        // wrap in FileNode to enable file-level rules
-        $stmts = [new FileNode($stmts)];
+        // resolve names up front, so used imports are resolvable at construction, before decoration;
+        // only annotates namespacedName, does not replace name nodes
+        $nameResolvingNodeTraverser = new NodeTraverser(new NameResolver(null, [
+            'preserveOriginalNames' => true,
+            'replaceNodes' => false,
+        ]));
+        $stmts = $nameResolvingNodeTraverser->traverse($stmts);
+
+        // wrap in FileNode to enable file-level rules; seed used imports once, kept in sync incrementally
+        $stmts = [new FileNode($stmts, $this->usedImportsResolver->resolveForStmts($stmts))];
         $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
 
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);

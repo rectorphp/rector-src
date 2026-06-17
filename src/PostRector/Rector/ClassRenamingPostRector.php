@@ -6,9 +6,7 @@ namespace Rector\PostRector\Rector;
 
 use Override;
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitor;
-use Rector\CodingStyle\Application\UseImportsRemover;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\PhpParser\Node\FileNode;
 use Rector\PostRector\Guard\AddUseStatementGuard;
@@ -23,23 +21,22 @@ final class ClassRenamingPostRector extends AbstractPostRector
 
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
-        private readonly UseImportsRemover $useImportsRemover,
         private readonly RenamedNameCollector $renamedNameCollector,
         private readonly AddUseStatementGuard $addUseStatementGuard,
     ) {
     }
 
-    public function enterNode(Node $node): Namespace_|FileNode|int|null
+    public function enterNode(Node $node): FileNode|int
     {
+        // the FileNode resolves the namespace-or-file placement internally
         if ($node instanceof FileNode) {
-            // handle in Namespace_ node
-            if ($node->isNamespaced()) {
-                return null;
-            }
+            // keep only the uses that were actually renamed
+            $removedUses = array_values(array_filter(
+                $this->renamedClassesDataCollector->getOldClasses(),
+                $this->renamedNameCollector->has(...)
+            ));
 
-            // handle here
-            $removedUses = $this->renamedClassesDataCollector->getOldClasses();
-            if ($this->useImportsRemover->removeImportsFromStmts($node, $removedUses)) {
+            if ($node->removeImports($removedUses)) {
                 $this->addRectorClassWithLine($node);
             }
 
@@ -48,18 +45,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
             return $node;
         }
 
-        if ($node instanceof Namespace_) {
-            $removedUses = $this->renamedClassesDataCollector->getOldClasses();
-            if ($this->useImportsRemover->removeImportsFromStmts($node, $removedUses)) {
-                $this->addRectorClassWithLine($node);
-            }
-
-            $this->renamedNameCollector->reset();
-
-            return $node;
-        }
-
-        // nothing else to handle here, as first 2 nodes we'll hit are handled above
+        // nothing else to handle here, as the first node we'll hit is handled above
         return NodeVisitor::STOP_TRAVERSAL;
     }
 

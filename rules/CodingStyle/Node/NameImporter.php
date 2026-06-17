@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\PhpParser\Node\FileNode;
 use Rector\StaticTypeMapper\PhpParser\FullyQualifiedNodeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
@@ -22,7 +22,6 @@ final readonly class NameImporter
     public function __construct(
         private ClassNameImportSkipper $classNameImportSkipper,
         private FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
-        private UseNodesToAddCollector $useNodesToAddCollector,
         private AliasNameResolver $aliasNameResolver
     ) {
     }
@@ -100,15 +99,21 @@ final readonly class NameImporter
             return null;
         }
 
-        if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
-            if ($this->useNodesToAddCollector->isImportShortable($file, $fullyQualifiedObjectType)) {
+        $fileNode = $file->getFileNode();
+        if (! $fileNode instanceof FileNode) {
+            return null;
+        }
+
+        $pendingImports = $fileNode->getPendingImports();
+        if ($pendingImports->isShortImported($fullyQualifiedObjectType)) {
+            if ($pendingImports->isImportShortable($fullyQualifiedObjectType)) {
                 return $fullyQualifiedObjectType->getShortNameNode();
             }
 
             return null;
         }
 
-        $this->addUseImport($file, $fullyQualified, $fullyQualifiedObjectType);
+        $this->addUseImport($fileNode, $fullyQualified, $fullyQualifiedObjectType);
         $name = $fullyQualifiedObjectType->getShortNameNode();
 
         $oldTokens = $file->getOldTokens();
@@ -135,20 +140,21 @@ final readonly class NameImporter
     }
 
     private function addUseImport(
-        File $file,
+        FileNode $fileNode,
         FullyQualified $fullyQualified,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): void {
-        if ($this->useNodesToAddCollector->hasImport($file, $fullyQualifiedObjectType)) {
+        if ($fileNode->hasImport($fullyQualifiedObjectType)) {
             return;
         }
 
+        $pendingImports = $fileNode->getPendingImports();
         if ($fullyQualified->getAttribute(AttributeKey::IS_FUNCCALL_NAME) === true) {
-            $this->useNodesToAddCollector->addFunctionUseImport($fullyQualifiedObjectType);
+            $pendingImports->addFunctionUseImport($fullyQualifiedObjectType);
         } elseif ($fullyQualified->getAttribute(AttributeKey::IS_CONSTFETCH_NAME) === true) {
-            $this->useNodesToAddCollector->addConstantUseImport($fullyQualifiedObjectType);
+            $pendingImports->addConstantUseImport($fullyQualifiedObjectType);
         } else {
-            $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
+            $pendingImports->addUseImport($fullyQualifiedObjectType);
         }
     }
 }

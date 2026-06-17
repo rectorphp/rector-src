@@ -110,6 +110,12 @@ CODE_SAMPLE
             $arg = $args[$position];
 
             if (! $this->valueResolver->isNull($arg->value)) {
+                // a named non-null argument can be skipped over: removing an earlier
+                // named null argument still leaves the remaining named arguments validly bound
+                if ($arg->name instanceof Identifier) {
+                    continue;
+                }
+
                 break;
             }
 

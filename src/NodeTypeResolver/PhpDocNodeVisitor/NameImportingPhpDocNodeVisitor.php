@@ -18,7 +18,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
-use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\PhpParser\Node\FileNode;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierPhpDocTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -33,7 +33,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     public function __construct(
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper
@@ -139,14 +138,21 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $newNode = new IdentifierTypeNode($fullyQualifiedObjectType->getShortName());
 
-        // should skip because its already used
-        if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)
-            && ! $this->useNodesToAddCollector->isImportShortable($file, $fullyQualifiedObjectType)) {
+        $fileNode = $file->getFileNode();
+        if (! $fileNode instanceof FileNode) {
             return null;
         }
 
-        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
-            $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
+        $pendingImports = $fileNode->getPendingImports();
+
+        // should skip because its already used
+        if ($pendingImports->isShortImported($fullyQualifiedObjectType)
+            && ! $pendingImports->isImportShortable($fullyQualifiedObjectType)) {
+            return null;
+        }
+
+        if ($this->shouldImport($fileNode, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
+            $pendingImports->addUseImport($fullyQualifiedObjectType);
             $this->hasChanged = true;
 
             return $newNode;
@@ -156,7 +162,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     }
 
     private function shouldImport(
-        File $file,
+        FileNode $fileNode,
         IdentifierTypeNode $newNode,
         IdentifierTypeNode $identifierTypeNode,
         FullyQualifiedObjectType $fullyQualifiedObjectType
@@ -181,7 +187,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $firstPath = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
         if ($firstPath === null) {
-            return ! $this->useNodesToAddCollector->hasImport($file, $fullyQualifiedObjectType);
+            return ! $fileNode->hasImport($fullyQualifiedObjectType);
         }
 
         if ($firstPath === '') {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
@@ -49,6 +50,11 @@ return RectorConfig::configure()
 
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
+
+        // BC layer
+        RemoveUnusedPublicMethodParameterRector::class => [
+            __DIR__ . '/src/PostRector/Collector/UseNodesToAddCollector.php',
+        ],
 
         RemovePhpVersionIdCheckRector::class => [
             __DIR__ . '/src/Util/FileHasher.php',

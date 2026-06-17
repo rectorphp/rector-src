@@ -58,7 +58,7 @@ CODE_SAMPLE;
     protected NodeComparator $nodeComparator;
 
     /**
-     * @deprecated Use getFile() instead.
+     * @internal Use getFile() instead.
      */
     protected File $file;
 

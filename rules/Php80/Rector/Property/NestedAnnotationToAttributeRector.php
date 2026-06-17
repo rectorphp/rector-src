@@ -24,7 +24,7 @@ use Rector\Php80\NodeFactory\NestedAttrGroupsFactory;
 use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
-use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\PhpVersion;
@@ -47,7 +47,6 @@ final class NestedAnnotationToAttributeRector extends AbstractRector implements 
         private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly NestedAttrGroupsFactory $nestedAttrGroupsFactory,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
@@ -212,6 +211,13 @@ CODE_SAMPLE
      */
     private function completeExtraUseImports(array $attributeGroups): void
     {
+        $fileNode = $this->file->getFileNode();
+        if (! $fileNode instanceof FileNode) {
+            return;
+        }
+
+        $pendingImports = $fileNode->getPendingImports();
+
         foreach ($attributeGroups as $attributeGroup) {
             foreach ($attributeGroup->attrs as $attr) {
                 $namespacedAttrName = $attr->name->getAttribute(AttributeKey::EXTRA_USE_IMPORT);
@@ -219,7 +225,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $this->useNodesToAddCollector->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
+                $pendingImports->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
             }
         }
     }
