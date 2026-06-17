@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -28,7 +27,6 @@ use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\ValueObject\Application\File;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -49,7 +47,6 @@ final class NestedAnnotationToAttributeRector extends AbstractRector implements 
         private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly NestedAttrGroupsFactory $nestedAttrGroupsFactory,
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
@@ -214,12 +211,7 @@ CODE_SAMPLE
      */
     private function completeExtraUseImports(array $attributeGroups): void
     {
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return;
-        }
-
-        $fileNode = $file->getFileNode();
+        $fileNode = $this->file->getFileNode();
         if (! $fileNode instanceof FileNode) {
             return;
         }

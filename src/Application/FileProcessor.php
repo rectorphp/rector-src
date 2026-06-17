@@ -183,7 +183,8 @@ final readonly class FileProcessor
         $nameResolvingTraverser->traverse($oldStmts);
 
         // wrap in FileNode to allow file-level rules; seed used imports once, kept in sync incrementally
-        $oldStmts = [new FileNode($oldStmts, $this->usedImportsResolver->resolveForStmts($oldStmts))];
+        $usedImports = $this->usedImportsResolver->resolveForStmts($oldStmts);
+        $oldStmts = [new FileNode($oldStmts, $usedImports)];
 
         $oldTokens = $stmtsAndTokens->getTokens();
 

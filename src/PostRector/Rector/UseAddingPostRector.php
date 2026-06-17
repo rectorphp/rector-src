@@ -19,23 +19,30 @@ final class UseAddingPostRector extends AbstractPostRector
     }
 
     /**
+     * @param Stmt[] $stmts
+     */
+    public function shouldTraverse(array $stmts): bool
+    {
+        $fileNode = $stmts[0] ?? null;
+        if (! $fileNode instanceof FileNode) {
+            return false;
+        }
+
+        return $fileNode->hasPendingUseImports();
+    }
+
+    /**
      * @param Stmt[] $nodes
      * @return Stmt[]
      */
     public function beforeTraverse(array $nodes): array
     {
+        /** @var FileNode $fileNode */
         $fileNode = $nodes[0] ?? null;
-        if (! $fileNode instanceof FileNode) {
-            return $nodes;
-        }
 
         $useImportTypes = $fileNode->getPendingUseImports();
         $constantUseImportTypes = $fileNode->getPendingConstantImports();
         $functionUseImportTypes = $fileNode->getPendingFunctionImports();
-
-        if ($useImportTypes === [] && $constantUseImportTypes === [] && $functionUseImportTypes === []) {
-            return $nodes;
-        }
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);

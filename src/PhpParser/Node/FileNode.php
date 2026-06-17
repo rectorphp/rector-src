@@ -156,6 +156,19 @@ class FileNode extends Stmt
         $this->pendingConstantImports[] = $fullyQualifiedObjectType;
     }
 
+    public function hasPendingUseImports(): bool
+    {
+        if ($this->pendingUseImports !== []) {
+            return true;
+        }
+
+        if ($this->pendingFunctionImports !== []) {
+            return true;
+        }
+
+        return $this->pendingConstantImports !== [];
+    }
+
     /**
      * @return FullyQualifiedObjectType[]
      */
