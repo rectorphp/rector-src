@@ -72,6 +72,7 @@ use Rector\CodeQuality\Rector\LogicalAnd\LogicalToBooleanRector;
 use Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector;
 use Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector;
 use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
+use Rector\CodeQuality\Rector\Property\FixClassCaseSensitivityVarDocblockRector;
 use Rector\CodeQuality\Rector\StmtsAwareInterface\MoveInnerFunctionToTopLevelRector;
 use Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector;
 use Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector;
@@ -109,6 +110,7 @@ final class CodeQualityLevel
      * @var array<class-string<RectorInterface>>
      */
     public const array RULES = [
+        FixClassCaseSensitivityVarDocblockRector::class,
         CombinedAssignRector::class,
         NewArrayItemConcatAssignToAssignRector::class,
         SimplifyEmptyArrayCheckRector::class,
