@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Config\Level;
 
 use Rector\CodeQuality\Rector\Assign\CombinedAssignRector;
+use Rector\CodeQuality\Rector\AssignOp\NewArrayItemConcatAssignToAssignRector;
 use Rector\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector;
@@ -109,6 +110,7 @@ final class CodeQualityLevel
      */
     public const array RULES = [
         CombinedAssignRector::class,
+        NewArrayItemConcatAssignToAssignRector::class,
         SimplifyEmptyArrayCheckRector::class,
         ReplaceMultipleBooleanNotRector::class,
         ReplaceConstantBooleanNotRector::class,
