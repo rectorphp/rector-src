@@ -73,7 +73,8 @@
                 "rules",
                 "src"
             ],
-            "Rector\\Utils\\": "utils"
+            "Rector\\Utils\\": "utils",
+            "Rector\\Utils\\PHPStan\\": "utils/phpstan/src"
         },
         "files": [
             "src/functions/node_helper.php"
@@ -86,6 +87,7 @@
                 "tests"
             ],
             "Rector\\Utils\\Tests\\": "utils-tests",
+            "Rector\\Utils\\PHPStan\\Tests\\": "utils/phpstan/tests",
             "E2e\\Parallel\\Reflection\\Resolver\\": [
                 "e2e/parallel-reflection-resolver/src/",
                 "e2e/no-parallel-reflection-resolver/src"
