@@ -110,11 +110,7 @@ CODE_SAMPLE
     {
         return array_any(
             $node->getArgs(),
-<<<<<<< HEAD
             fn (Arg $arg): bool => $arg->name instanceof Identifier && $arg->name->toString() === 'escape'
-=======
-            fn ($arg): bool => $arg->name instanceof Identifier && $arg->name->toString() === 'escape'
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 }

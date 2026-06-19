@@ -42,11 +42,7 @@ final readonly class ClassMethodVisibilityGuard
         $methodName = $this->nodeNameResolver->getName($classMethod);
         return array_any(
             $parentTraitReflections,
-<<<<<<< HEAD
             fn (ClassReflection $classReflection): bool => $classReflection->hasMethod($methodName)
-=======
-            fn ($parentTraitReflection) => $parentTraitReflection->hasMethod($methodName)
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 

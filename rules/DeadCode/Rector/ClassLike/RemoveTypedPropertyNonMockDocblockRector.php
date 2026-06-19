@@ -142,16 +142,10 @@ CODE_SAMPLE
         if (! $varTagType instanceof UnionType) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_any(
             $varTagType->getTypes(),
             fn (Type $unionedType): bool => $unionedType->isSuperTypeOf(new ObjectType(ClassName::MOCK_OBJECT))->yes()
-=======
-        return array_any(
-            $varTagType->getTypes(),
-            fn ($unionedType) => $unionedType->isSuperTypeOf(new ObjectType(ClassName::MOCK_OBJECT))->yes()
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 }

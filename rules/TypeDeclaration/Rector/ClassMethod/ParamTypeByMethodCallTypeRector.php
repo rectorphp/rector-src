@@ -236,10 +236,6 @@ CODE_SAMPLE
 
     private function hasAtLeastOneParamWithoutType(ClassMethod|Function_|Closure|ArrowFunction $functionLike): bool
     {
-<<<<<<< HEAD
         return array_any($functionLike->params, fn (Param $param): bool => ! $param->type instanceof Node);
-=======
-        return array_any($functionLike->params, fn ($param): bool => ! $param->type instanceof Node);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

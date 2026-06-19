@@ -113,11 +113,7 @@ final readonly class BetterNodeFinder
 
         return (bool) $this->nodeFinder->findFirst(
             $nodes,
-<<<<<<< HEAD
             static fn (Node $node): bool => array_any($types, fn (string $type): bool => $node instanceof $type)
-=======
-            static fn (Node $node): bool => array_any($types, fn ($type): bool => $node instanceof $type)
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 

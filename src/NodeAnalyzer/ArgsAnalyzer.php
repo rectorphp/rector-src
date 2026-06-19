@@ -20,11 +20,7 @@ final readonly class ArgsAnalyzer
      */
     public function hasNamedArg(array $args): bool
     {
-<<<<<<< HEAD
         return array_any($args, fn (Arg $arg): bool => $arg->name instanceof Identifier);
-=======
-        return array_any($args, fn ($arg): bool => $arg->name instanceof Identifier);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**

@@ -199,16 +199,10 @@ CODE_SAMPLE
         if (! $node instanceof Echo_) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_any(
             $node->exprs,
             fn (Expr $expr): bool => $expr instanceof Variable && $this->isName($expr, $paramName)
-=======
-        return array_any(
-            $node->exprs,
-            fn ($expr): bool => $expr instanceof Variable && $this->isName($expr, $paramName)
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 
@@ -270,16 +264,10 @@ CODE_SAMPLE
         if ($node->expr->isFirstClassCallable()) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_any(
             $node->expr->getArgs(),
             fn (Arg $arg): bool => $arg->value instanceof Variable && $this->isName($arg->value, $paramName)
-=======
-        return array_any(
-            $node->expr->getArgs(),
-            fn ($arg): bool => $arg->value instanceof Variable && $this->isName($arg->value, $paramName)
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 

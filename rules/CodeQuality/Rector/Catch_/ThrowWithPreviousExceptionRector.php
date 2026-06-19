@@ -236,11 +236,7 @@ CODE_SAMPLE
         );
         return array_any(
             $extendedParametersAcceptor->getParameters(),
-<<<<<<< HEAD
             fn (ExtendedParameterReflection $extendedParameterReflection): bool => $extendedParameterReflection->getName() === $parameterName
-=======
-            fn ($extendedParameterReflection): bool => $extendedParameterReflection->getName() === $parameterName
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 
@@ -248,11 +244,7 @@ CODE_SAMPLE
     {
         return array_any(
             $new->getArgs(),
-<<<<<<< HEAD
             fn (Arg $arg): bool => $arg->name instanceof Identifier && $arg->name->toString() === $argumentName
-=======
-            fn ($arg): bool => $arg->name instanceof Identifier && $arg->name->toString() === $argumentName
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 

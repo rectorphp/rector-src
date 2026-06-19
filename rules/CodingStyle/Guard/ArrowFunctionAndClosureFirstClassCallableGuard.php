@@ -189,11 +189,7 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
      */
     private function isUsingByRef(array $params): bool
     {
-<<<<<<< HEAD
         return array_any($params, fn (Param $param): bool => $param->byRef);
-=======
-        return array_any($params, fn ($param) => $param->byRef);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**
@@ -201,11 +197,7 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
      */
     private function isUsingNamedArgs(array $args): bool
     {
-<<<<<<< HEAD
         return array_any($args, fn (Arg $arg): bool => $arg->name instanceof Identifier);
-=======
-        return array_any($args, fn ($arg): bool => $arg->name instanceof Identifier);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     private function isChainedCall(FuncCall|MethodCall|StaticCall $callLike): bool

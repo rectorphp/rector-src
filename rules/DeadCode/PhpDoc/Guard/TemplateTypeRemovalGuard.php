@@ -21,10 +21,6 @@ final class TemplateTypeRemovalGuard
         $types = $docType instanceof UnionType
             ? $docType->getTypes()
             : [$docType];
-<<<<<<< HEAD
         return array_all($types, fn (Type $type): bool => ! $type instanceof TemplateType);
-=======
-        return array_all($types, fn ($type): bool => ! $type instanceof TemplateType);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

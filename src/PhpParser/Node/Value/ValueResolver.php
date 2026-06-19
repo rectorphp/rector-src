@@ -117,11 +117,7 @@ final class ValueResolver
      */
     public function isValues(Expr $expr, array $expectedValues): bool
     {
-<<<<<<< HEAD
         return array_any($expectedValues, fn (mixed $expectedValue): bool => $this->isValue($expr, $expectedValue));
-=======
-        return array_any($expectedValues, fn ($expectedValue): bool => $this->isValue($expr, $expectedValue));
->>>>>>> 0ce3dbd107 ([php] bump to PHP 8.4 syntax)
     }
 
     public function isFalse(Expr $expr): bool

@@ -95,11 +95,7 @@ final class BetterTokenIterator extends TokenIterator
 
     public function containsTokenType(int $type): bool
     {
-<<<<<<< HEAD
         return array_any($this->getTokens(), fn (array $token): bool => $token[1] === $type);
-=======
-        return array_any($this->getTokens(), fn ($token): bool => $token[1] === $type);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     private function nextTokenType(): ?int

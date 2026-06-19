@@ -26,16 +26,10 @@ final readonly class OverrideByParentClassGuard
         )) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_all(
             $class->implements,
             fn (Name $name): bool => $this->reflectionProvider->hasClass($name->toString())
-=======
-        return array_all(
-            $class->implements,
-            fn ($implement): bool => $this->reflectionProvider->hasClass($implement->toString())
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 }

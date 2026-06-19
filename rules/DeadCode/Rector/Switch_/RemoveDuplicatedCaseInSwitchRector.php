@@ -180,15 +180,11 @@ CODE_SAMPLE
         if (! $this->nodeComparator->areNodesEqual($currentCase->stmts, $nextCase->stmts)) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_any(
             $currentCase->stmts,
             fn (Stmt $stmt): bool => $stmt instanceof Break_ || $stmt instanceof Return_
         );
-=======
-        return array_any($currentCase->stmts, fn ($stmt): bool => $stmt instanceof Break_ || $stmt instanceof Return_);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     private function areSwitchStmtsEqualsConsideringComments(Case_ $currentCase, Case_ $nextCase): bool

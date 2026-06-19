@@ -106,11 +106,7 @@ CODE_SAMPLE
     {
         return array_any(
             $classReflection->getParentClassesNames(),
-<<<<<<< HEAD
             fn (string $parentClassesName): bool => str_ends_with($parentClassesName, 'Enum')
-=======
-            fn ($parentClassesName): bool => str_ends_with((string) $parentClassesName, 'Enum')
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 }

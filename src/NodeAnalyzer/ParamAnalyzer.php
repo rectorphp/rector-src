@@ -103,11 +103,7 @@ final readonly class ParamAnalyzer
      */
     public function hasPropertyPromotion(array $params): bool
     {
-<<<<<<< HEAD
         return array_any($params, fn (Param $param): bool => $param->isPromoted());
-=======
-        return array_any($params, fn ($param) => $param->isPromoted());
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     public function isNullable(Param $param): bool
@@ -143,14 +139,10 @@ final readonly class ParamAnalyzer
 
     private function isVariableInClosureUses(Closure $closure, Variable $variable): bool
     {
-<<<<<<< HEAD
         return array_any(
             $closure->uses,
             fn (ClosureUse $use): bool => $this->nodeComparator->areNodesEqual($use->var, $variable)
         );
-=======
-        return array_any($closure->uses, fn ($use): bool => $this->nodeComparator->areNodesEqual($use->var, $variable));
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     private function isUsedAsArg(Node $node, Param $param): bool

@@ -65,7 +65,7 @@ final readonly class NodeComparator
     {
         return array_any(
             $availableNodes,
-            fn (Node|array|null $availableNode): bool => $this->areNodesEqual($singleNode, $availableNode)
+            fn (Node $availableNode): bool => $this->areNodesEqual($singleNode, $availableNode)
         );
     }
 

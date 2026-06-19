@@ -35,14 +35,10 @@ final readonly class MatchSwitchAnalyzer
      */
     public function isReturnCondsAndExprs(array $condAndExprs): bool
     {
-<<<<<<< HEAD
         return array_any(
             $condAndExprs,
             fn (CondAndExpr $condAndExpr): bool => $condAndExpr->equalsMatchKind(MatchKind::RETURN)
         );
-=======
-        return array_any($condAndExprs, fn ($condAndExpr) => $condAndExpr->equalsMatchKind(MatchKind::RETURN));
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**
@@ -111,11 +107,7 @@ final readonly class MatchSwitchAnalyzer
      */
     public function hasCondsAndExprDefaultValue(array $condAndExprs): bool
     {
-<<<<<<< HEAD
         return array_any($condAndExprs, fn (CondAndExpr $condAndExpr): bool => $condAndExpr->getCondExprs() === null);
-=======
-        return array_any($condAndExprs, fn ($condAndExpr): bool => $condAndExpr->getCondExprs() === null);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     public function hasDefaultValue(Match_ $match): bool

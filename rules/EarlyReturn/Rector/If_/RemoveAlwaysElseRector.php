@@ -175,10 +175,7 @@ CODE_SAMPLE
             )) {
                 return true;
             }
-<<<<<<< HEAD
 
-=======
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
             return array_any(
                 $lastStmt->elseifs,
                 fn (If_|ElseIf_|Else_ $elseIf): bool => $this->doesNotLastStatementBreakFlow($elseIf)

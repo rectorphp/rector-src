@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
@@ -208,6 +209,6 @@ CODE_SAMPLE
         /** @var string $propertyName */
         $propertyName = $this->getName($propertyFetch);
         $params = $this->promotedPropertyResolver->resolveFromClass($class);
-        return array_any($params, fn (Node $param): bool => $this->isName($param, $propertyName));
+        return array_any($params, fn (Param $param): bool => $this->isName($param, $propertyName));
     }
 }

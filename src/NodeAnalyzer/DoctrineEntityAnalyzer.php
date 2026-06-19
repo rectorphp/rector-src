@@ -49,16 +49,10 @@ final readonly class DoctrineEntityAnalyzer
         if ($nativeReflectionClass->getAttributes() === []) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_any(
             self::DOCTRINE_MAPPING_CLASSES,
             fn (string $doctrineMappingClass): bool => $nativeReflectionClass->getAttributes(
-=======
-        return array_any(
-            self::DOCTRINE_MAPPING_CLASSES,
-            fn (?string $doctrineMappingClass): bool => $nativeReflectionClass->getAttributes(
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
                 $doctrineMappingClass
             ) !== []
         );

@@ -142,13 +142,9 @@ class FileNode extends Stmt
     {
         return array_any(
             $this->resolveUsedImportTypes(),
-<<<<<<< HEAD
             fn (AliasedObjectType|FullyQualifiedObjectType $useImport): bool => $useImport->equals(
                 $fullyQualifiedObjectType
             )
-=======
-            fn ($useImport) => $useImport->equals($fullyQualifiedObjectType)
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 
@@ -227,11 +223,7 @@ class FileNode extends Stmt
 
     public function isNamespaced(): bool
     {
-<<<<<<< HEAD
         return array_any($this->stmts, fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
-=======
-        return array_any($this->stmts, fn ($stmt): bool => $stmt instanceof Namespace_);
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     public function getNamespace(): ?Namespace_

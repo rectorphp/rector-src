@@ -354,15 +354,11 @@ CODE_SAMPLE
         if (! $type instanceof UnionType) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_any(
             $type->types,
             fn (Identifier|IntersectionType|Name $type): bool => $this->isCallableTypeIdentifier($type)
         );
-=======
-        return array_any($type->types, fn (?Node $type): bool => $this->isCallableTypeIdentifier($type));
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     private function isCallableTypeIdentifier(?Node $node): bool

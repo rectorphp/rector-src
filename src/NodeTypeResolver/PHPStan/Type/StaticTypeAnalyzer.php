@@ -54,10 +54,7 @@ final readonly class StaticTypeAnalyzer
         if (! $type instanceof UnionType) {
             return false;
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         return array_all($type->getTypes(), fn (Type $unionedType): bool => $this->isAlwaysTruableType($unionedType));
     }
 

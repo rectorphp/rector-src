@@ -91,12 +91,8 @@ final readonly class AnnotationToAttributeIntegerValueCaster
         if (! $type instanceof UnionType) {
             return false;
         }
-<<<<<<< HEAD
 
         return array_any($type->getTypes(), fn (Type $unionedType): bool => $unionedType->isInteger()->yes());
-=======
-        return array_any($type->getTypes(), fn ($unionedType) => $unionedType->isInteger()->yes());
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**

@@ -57,16 +57,10 @@ final readonly class ClassMethodManipulator
                 return true;
             }
         }
-<<<<<<< HEAD
 
         return array_any(
             $classReflection->getInterfaces(),
             fn (ClassReflection $classReflection): bool => $classReflection->hasMethod($methodName)
-=======
-        return array_any(
-            $classReflection->getInterfaces(),
-            fn ($interfaceReflection) => $interfaceReflection->hasMethod($methodName)
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 }

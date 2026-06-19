@@ -163,11 +163,7 @@ CODE_SAMPLE
         $constantName = $this->getName($const);
         return array_any(
             $parentClassReflections,
-<<<<<<< HEAD
             fn (ClassReflection $parentClassReflection): bool => $parentClassReflection->hasConstant($constantName)
-=======
-            fn ($parentClassReflection) => $parentClassReflection->hasConstant($constantName)
->>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 
