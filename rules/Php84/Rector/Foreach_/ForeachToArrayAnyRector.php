@@ -22,13 +22,14 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\Php84\Rector\Foreach_\ForeachToArrayAnyRector\ForeachToArrayAnyRectorTest
  */
-final class ForeachToArrayAnyRector extends AbstractRector implements MinPhpVersionInterface
+final class ForeachToArrayAnyRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
     public function __construct(
         private readonly ValueResolver $valueResolver,
@@ -99,6 +100,11 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::ARRAY_ANY;
+    }
+
+    public function providePolyfillPackage(): string
+    {
+        return \Rector\ValueObject\PolyfillPackage::PHP_84;
     }
 
     /**
