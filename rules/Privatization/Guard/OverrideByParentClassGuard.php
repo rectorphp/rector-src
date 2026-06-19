@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\Guard;
 
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
@@ -26,12 +27,9 @@ final readonly class OverrideByParentClassGuard
             return false;
         }
 
-        foreach ($class->implements as $implement) {
-            if (! $this->reflectionProvider->hasClass($implement->toString())) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all(
+            $class->implements,
+            fn (Name $name): bool => $this->reflectionProvider->hasClass($name->toString())
+        );
     }
 }

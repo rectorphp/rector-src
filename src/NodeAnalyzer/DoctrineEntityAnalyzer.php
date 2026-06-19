@@ -50,13 +50,11 @@ final readonly class DoctrineEntityAnalyzer
             return false;
         }
 
-        foreach (self::DOCTRINE_MAPPING_CLASSES as $doctrineMappingClass) {
-            // skip entities
-            if ($nativeReflectionClass->getAttributes($doctrineMappingClass) !== []) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            self::DOCTRINE_MAPPING_CLASSES,
+            fn (string $doctrineMappingClass): bool => $nativeReflectionClass->getAttributes(
+                $doctrineMappingClass
+            ) !== []
+        );
     }
 }

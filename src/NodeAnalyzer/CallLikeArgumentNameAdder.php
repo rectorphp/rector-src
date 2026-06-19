@@ -85,13 +85,7 @@ final readonly class CallLikeArgumentNameAdder
             return true;
         }
 
-        foreach ($args as $arg) {
-            if ($arg->unpack) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($args, fn ($arg) => $arg->unpack);
     }
 
     /**

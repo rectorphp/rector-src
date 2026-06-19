@@ -27,13 +27,7 @@ final readonly class ClassChildAnalyzer
             return false;
         }
 
-        foreach ($parentClassMethods as $parentClassMethod) {
-            if ($parentClassMethod->isAbstract()) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($parentClassMethods, fn ($parentClassMethod) => $parentClassMethod->isAbstract());
     }
 
     /**

@@ -35,13 +35,10 @@ final readonly class MatchSwitchAnalyzer
      */
     public function isReturnCondsAndExprs(array $condAndExprs): bool
     {
-        foreach ($condAndExprs as $condAndExpr) {
-            if ($condAndExpr->equalsMatchKind(MatchKind::RETURN)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $condAndExprs,
+            fn (CondAndExpr $condAndExpr): bool => $condAndExpr->equalsMatchKind(MatchKind::RETURN)
+        );
     }
 
     /**
@@ -110,13 +107,7 @@ final readonly class MatchSwitchAnalyzer
      */
     public function hasCondsAndExprDefaultValue(array $condAndExprs): bool
     {
-        foreach ($condAndExprs as $condAndExpr) {
-            if ($condAndExpr->getCondExprs() === null) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($condAndExprs, fn (CondAndExpr $condAndExpr): bool => $condAndExpr->getCondExprs() === null);
     }
 
     public function hasDefaultValue(Match_ $match): bool

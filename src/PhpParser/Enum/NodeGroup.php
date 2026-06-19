@@ -82,12 +82,6 @@ final class NodeGroup
 
     public static function isStmtAwareNode(Node $node): bool
     {
-        foreach (self::STMTS_AWARE as $stmtAwareClass) {
-            if ($node instanceof $stmtAwareClass) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(self::STMTS_AWARE, fn (string $stmtAwareClass): bool => $node instanceof $stmtAwareClass);
     }
 }

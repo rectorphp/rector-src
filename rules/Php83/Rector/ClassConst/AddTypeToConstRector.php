@@ -161,14 +161,10 @@ CODE_SAMPLE
     public function isConstGuardedByParents(Const_ $const, array $parentClassReflections): bool
     {
         $constantName = $this->getName($const);
-
-        foreach ($parentClassReflections as $parentClassReflection) {
-            if ($parentClassReflection->hasConstant($constantName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $parentClassReflections,
+            fn (ClassReflection $parentClassReflection): bool => $parentClassReflection->hasConstant($constantName)
+        );
     }
 
     private function findValueType(Expr $expr): ?Identifier

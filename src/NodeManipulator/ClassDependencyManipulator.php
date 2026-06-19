@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeManipulator;
 
 use PhpParser\Modifiers;
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\StaticCall;
@@ -334,13 +335,10 @@ final readonly class ClassDependencyManipulator
             return false;
         }
 
-        foreach ($classReflection->getParents() as $parentClassReflection) {
-            if ($parentClassReflection->hasMethod($methodName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $classReflection->getParents(),
+            fn (ClassReflection $parentClassReflection): bool => $parentClassReflection->hasMethod($methodName)
+        );
     }
 
     private function createParentClassMethodCall(string $methodName): Expression
@@ -357,13 +355,10 @@ final readonly class ClassDependencyManipulator
             return false;
         }
 
-        foreach ($constructClassMethod->params as $param) {
-            if ($this->nodeNameResolver->isName($param, $propertyName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $constructClassMethod->params,
+            fn (Node|array $param): bool => $this->nodeNameResolver->isName($param, $propertyName)
+        );
     }
 
     private function hasClassPropertyAndDependency(Class_ $class, PropertyMetadata $propertyMetadata): bool

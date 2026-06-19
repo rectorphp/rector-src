@@ -176,13 +176,10 @@ CODE_SAMPLE
                 return true;
             }
 
-            foreach ($lastStmt->elseifs as $elseIf) {
-                if ($this->doesNotLastStatementBreakFlow($elseIf)) {
-                    return true;
-                }
-            }
-
-            return false;
+            return array_any(
+                $lastStmt->elseifs,
+                fn (If_|ElseIf_|Else_ $elseIf): bool => $this->doesNotLastStatementBreakFlow($elseIf)
+            );
         }
 
         return ! ($lastStmt instanceof Return_

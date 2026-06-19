@@ -40,14 +40,10 @@ final readonly class ClassMethodVisibilityGuard
         $parentTraitReflections = $this->getLocalAndParentTraitReflections($classReflection);
 
         $methodName = $this->nodeNameResolver->getName($classMethod);
-
-        foreach ($parentTraitReflections as $parentTraitReflection) {
-            if ($parentTraitReflection->hasMethod($methodName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $parentTraitReflections,
+            fn (ClassReflection $classReflection): bool => $classReflection->hasMethod($methodName)
+        );
     }
 
     /**

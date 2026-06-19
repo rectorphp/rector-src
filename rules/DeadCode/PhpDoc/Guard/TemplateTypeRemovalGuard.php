@@ -21,13 +21,6 @@ final class TemplateTypeRemovalGuard
         $types = $docType instanceof UnionType
             ? $docType->getTypes()
             : [$docType];
-
-        foreach ($types as $type) {
-            if ($type instanceof TemplateType) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($types, fn (Type $type): bool => ! $type instanceof TemplateType);
     }
 }

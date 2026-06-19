@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport\ValueObject;
 
+use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 /**
@@ -98,13 +99,12 @@ final class PendingImports
             }
         }
 
-        foreach ($this->functionImports as $functionImport) {
-            if (strtolower($functionImport->getShortName()) === $shortName) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->functionImports,
+            fn (FullyQualifiedObjectType $fullyQualifiedObjectType): bool => strtolower(
+                $fullyQualifiedObjectType->getShortName()
+            ) === $shortName
+        );
     }
 
     public function isImportShortable(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
@@ -121,12 +121,6 @@ final class PendingImports
             }
         }
 
-        foreach ($this->functionImports as $functionImport) {
-            if ($fullyQualifiedObjectType->equals($functionImport)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->functionImports, fn (Type $type): bool => $fullyQualifiedObjectType->equals($type));
     }
 }

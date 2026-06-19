@@ -140,13 +140,12 @@ class FileNode extends Stmt
 
     public function hasImport(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
-        foreach ($this->resolveUsedImportTypes() as $useImport) {
-            if ($useImport->equals($fullyQualifiedObjectType)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->resolveUsedImportTypes(),
+            fn (AliasedObjectType|FullyQualifiedObjectType $useImport): bool => $useImport->equals(
+                $fullyQualifiedObjectType
+            )
+        );
     }
 
     /**
@@ -224,13 +223,7 @@ class FileNode extends Stmt
 
     public function isNamespaced(): bool
     {
-        foreach ($this->stmts as $stmt) {
-            if ($stmt instanceof Namespace_) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->stmts, fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
     }
 
     public function getNamespace(): ?Namespace_

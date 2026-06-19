@@ -132,14 +132,10 @@ CODE_SAMPLE
      */
     private function hasAlwaysStringScalarReturn(array $returns): bool
     {
-        foreach ($returns as $return) {
-            // we need exact string "value" return
-            if (! $return->expr instanceof String_ && ! $return->expr instanceof InterpolatedString) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all(
+            $returns,
+            fn (Return_ $return): bool => ! (! $return->expr instanceof String_ && ! $return->expr instanceof InterpolatedString)
+        );
     }
 
     /**

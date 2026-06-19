@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
+use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -353,18 +355,19 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($type->types as $type) {
-            if ($this->isCallableTypeIdentifier($type)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $type->types,
+            fn (Identifier|IntersectionType|Name $type): bool => $this->isCallableTypeIdentifier($type)
+        );
     }
 
     private function isCallableTypeIdentifier(?Node $node): bool
     {
-        return $node instanceof Identifier && $this->isName($node, 'callable');
+        if (! $node instanceof Identifier) {
+            return false;
+        }
+
+        return $this->isName($node, 'callable');
     }
 
     private function shouldSkipPropertyOrParam(Property $property, Param $param): bool
