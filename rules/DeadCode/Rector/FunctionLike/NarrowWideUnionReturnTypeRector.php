@@ -7,8 +7,10 @@ namespace Rector\DeadCode\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
@@ -19,6 +21,7 @@ use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NullType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType as PHPStanUnionType;
@@ -30,6 +33,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\ValueObject\PhpVersionFeature;
@@ -255,10 +259,53 @@ CODE_SAMPLE
                 continue;
             }
 
-            $returnTypes[] = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
+            $returnTypes = [...$returnTypes, ...$this->resolveNativeReturnTypes($returnStatement->expr)];
         }
 
         return $returnTypes;
+    }
+
+    /**
+     * @return Type[]
+     */
+    private function resolveNativeReturnTypes(Expr $expr): array
+    {
+        if (! $expr instanceof Ternary || ! $this->hasVendorClassConstFetch($expr->cond)) {
+            return [$this->nodeTypeResolver->getNativeType($expr)];
+        }
+
+        $ifExpr = $expr->if instanceof Expr ? $expr->if : $expr->cond;
+
+        return [...$this->resolveNativeReturnTypes($ifExpr), ...$this->resolveNativeReturnTypes($expr->else)];
+    }
+
+    private function hasVendorClassConstFetch(Expr $expr): bool
+    {
+        $classConstFetches = $this->betterNodeFinder->findInstanceOf($expr, ClassConstFetch::class);
+
+        foreach ($classConstFetches as $classConstFetch) {
+            $classType = $this->nodeTypeResolver->getType($classConstFetch->class);
+            if (! $classType instanceof ObjectType) {
+                continue;
+            }
+
+            $classReflection = $classType->getClassReflection();
+            if (! $classReflection instanceof ClassReflection) {
+                continue;
+            }
+
+            $fileName = $classReflection->getFileName();
+            if ($fileName === null) {
+                continue;
+            }
+
+            $normalizedFileName = PathNormalizer::normalize($fileName);
+            if (str_contains($normalizedFileName, '/vendor/')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
