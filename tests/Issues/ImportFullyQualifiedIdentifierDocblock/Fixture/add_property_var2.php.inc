@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace Rector\Tests\Issues\ImportFullyQualifiedIdentifierDocblock;
 
 use DateTime;
-use stdClass;
 
 final class AddPropertyVar2
 {
