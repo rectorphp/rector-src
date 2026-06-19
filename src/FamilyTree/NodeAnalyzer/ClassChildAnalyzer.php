@@ -29,7 +29,7 @@ final readonly class ClassChildAnalyzer
 
         return array_any(
             $parentClassMethods,
-            fn (PhpMethodReflection $parentClassMethod) => $parentClassMethod->isAbstract()
+            fn (PhpMethodReflection $phpMethodReflection): bool => $phpMethodReflection->isAbstract()
         );
     }
 

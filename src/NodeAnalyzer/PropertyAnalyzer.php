@@ -34,13 +34,7 @@ final readonly class PropertyAnalyzer
         }
 
         $types = $propertyType->getTypes();
-        foreach ($types as $type) {
-            if ($this->isForbiddenType($type)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($types, fn (Type $type): bool => $this->isForbiddenType($type));
     }
 
     public function isForbiddenType(Type $type): bool

@@ -81,13 +81,7 @@ final class SimpleNodeDumper
      */
     private static function isStringList(array $items): bool
     {
-        foreach ($items as $item) {
-            if (! is_string($item)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($items, fn (mixed $item): bool => is_string($item));
     }
 
     private static function dumpFlags(mixed $flags): string

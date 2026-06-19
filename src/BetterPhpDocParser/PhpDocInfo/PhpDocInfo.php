@@ -168,13 +168,7 @@ final class PhpDocInfo
      */
     public function hasByTypes(array $types): bool
     {
-        foreach ($types as $type) {
-            if ($this->hasByType($type)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($types, fn (string $type): bool => $this->hasByType($type));
     }
 
     /**
@@ -182,13 +176,7 @@ final class PhpDocInfo
      */
     public function hasByNames(array $names): bool
     {
-        foreach ($names as $name) {
-            if ($this->hasByName($name)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($names, fn (string $name): bool => $this->hasByName($name));
     }
 
     public function hasByName(string $name): bool

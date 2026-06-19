@@ -48,13 +48,10 @@ final readonly class PhpAttributeAnalyzer
         Property | ClassLike | ClassMethod | Function_ | Param $node,
         array $attributeClasses
     ): bool {
-        foreach ($attributeClasses as $attributeClass) {
-            if ($this->hasPhpAttribute($node, $attributeClass)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $attributeClasses,
+            fn (string $attributeClass): bool => $this->hasPhpAttribute($node, $attributeClass)
+        );
     }
 
     /**

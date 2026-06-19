@@ -208,13 +208,6 @@ CODE_SAMPLE
         /** @var string $propertyName */
         $propertyName = $this->getName($propertyFetch);
         $params = $this->promotedPropertyResolver->resolveFromClass($class);
-
-        foreach ($params as $param) {
-            if ($this->isName($param, $propertyName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($params, fn (Node $param): bool => $this->isName($param, $propertyName));
     }
 }

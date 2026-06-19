@@ -167,14 +167,10 @@ final readonly class IsClassMethodUsedAnalyzer
 
         $traits = $this->astResolver->parseClassReflectionTraits($classReflection);
         $className = $classReflection->getName();
-
-        foreach ($traits as $trait) {
-            if ($this->isUsedByTrait($trait, $classMethodName, $className)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $traits,
+            fn (Trait_ $trait): bool => $this->isUsedByTrait($trait, $classMethodName, $className)
+        );
     }
 
     private function isUsedByTrait(Trait_ $trait, string $classMethodName, string $className): bool

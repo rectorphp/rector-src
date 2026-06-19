@@ -98,13 +98,7 @@ final class NodeTypeResolver
      */
     public function isObjectTypes(Node $node, array $requiredTypes): bool
     {
-        foreach ($requiredTypes as $requiredType) {
-            if ($this->isObjectType($node, $requiredType)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($requiredTypes, fn (ObjectType $objectType): bool => $this->isObjectType($node, $objectType));
     }
 
     public function isObjectType(Node $node, ObjectType $requiredObjectType): bool
