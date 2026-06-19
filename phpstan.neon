@@ -25,6 +25,12 @@ parameters:
     checkMissingCallableSignature: true
     treatPhpDocTypesAsCertain: false
 
+    symplify:
+        symfonyReturnType: true
+        laravelReturnType: true
+        pathStrings: true
+        ctor: true
+
     paths:
         - rector.php
         - bin
@@ -344,12 +350,13 @@ parameters:
         # list vs array
         - '#Parameter (.*?) expects list<(.*?)>, array<(.*?)> given#'
 
-        - identifier: symplify.noConstructorOverride
-          path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
-
         -
-            identifier: arrayValues.list
-            path: rules/CodingStyle/Application/UseImportsAdder.php
+            identifier: symplify.noConstructorOverride
+            path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
+
+#        -
+#            identifier: arrayValues.list
+#            path: rules/CodingStyle/Application/UseImportsAdder.php
 
         -
             message: '#Offset float\|int\|string might not exist on string#'
@@ -449,8 +456,9 @@ parameters:
 
         - '#Provide more specific return type "Iterator|PhpParser\\Node" over abstract one#'
 
-        # BC layer
+        # false positive
         -
+<<<<<<< HEAD
             message: '#Access to deprecated property \$file of class Rector\\Rector\\AbstractRector#'
             path: src/Rector/AbstractRector.php
 
@@ -458,3 +466,7 @@ parameters:
         -
             message: '#"@\\simplexml_load_string\(\$junitXml\)" is forbidden to use#'
             path: scripts/remove-unused-deps.php
+=======
+            path: src/Util/Reflection/PrivatesAccessor.php
+            identifier: symplify.newOverSetters
+>>>>>>> 16ebfd1c27 (bump deps to PHP 8.4)
