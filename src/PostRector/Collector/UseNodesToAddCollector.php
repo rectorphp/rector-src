@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Collector;
 
+use Deprecated;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\PhpParser\Node\FileNode;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -72,9 +73,8 @@ final readonly class UseNodesToAddCollector
 
     /**
      * @api
-     *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->addUseImport($type) instead.
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->addUseImport($type) instead.')]
     public function addUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
         $this->warn('addUseImport()', '$file->getFileNode()->getPendingImports()->addUseImport($type)');
@@ -90,9 +90,8 @@ final readonly class UseNodesToAddCollector
 
     /**
      * @api
-     *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->addConstantUseImport($type) instead.
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->addConstantUseImport($type) instead.')]
     public function addConstantUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
         $this->warn('addConstantUseImport()', '$file->getFileNode()->getPendingImports()->addConstantUseImport($type)');
@@ -108,9 +107,8 @@ final readonly class UseNodesToAddCollector
 
     /**
      * @api
-     *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->addFunctionUseImport($type) instead.
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->addFunctionUseImport($type) instead.')]
     public function addFunctionUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
         $this->warn('addFunctionUseImport()', '$file->getFileNode()->getPendingImports()->addFunctionUseImport($type)');
@@ -127,10 +125,9 @@ final readonly class UseNodesToAddCollector
     /**
      * @api
      *
-     * @deprecated Use $file->getFileNode()->resolveUsedImportTypes() instead.
-     *
      * @return array<AliasedObjectType|FullyQualifiedObjectType>
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->resolveUsedImportTypes() instead.')]
     public function getUseImportTypesByNode(File $file): array
     {
         $this->warn('getUseImportTypesByNode()', '$file->getFileNode()->resolveUsedImportTypes()');
@@ -145,9 +142,8 @@ final readonly class UseNodesToAddCollector
 
     /**
      * @api
-     *
-     * @deprecated Use $file->getFileNode()->hasImport($type) instead.
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->hasImport($type) instead.')]
     public function hasImport(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
         $this->warn('hasImport()', '$file->getFileNode()->hasImport($type)');
@@ -162,9 +158,8 @@ final readonly class UseNodesToAddCollector
 
     /**
      * @api
-     *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->isShortImported($type) instead.
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->isShortImported($type) instead.')]
     public function isShortImported(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
         $this->warn('isShortImported()', '$file->getFileNode()->getPendingImports()->isShortImported($type)');
@@ -180,9 +175,8 @@ final readonly class UseNodesToAddCollector
 
     /**
      * @api
-     *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->isImportShortable($type) instead.
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->isImportShortable($type) instead.')]
     public function isImportShortable(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
         $this->warn('isImportShortable()', '$file->getFileNode()->getPendingImports()->isImportShortable($type)');
@@ -199,10 +193,9 @@ final readonly class UseNodesToAddCollector
     /**
      * @api
      *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->getUseImports() instead.
-     *
      * @return FullyQualifiedObjectType[]
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->getUseImports() instead.')]
     public function getObjectImportsByFilePath(string $filePath): array
     {
         $this->warn('getObjectImportsByFilePath()', '$file->getFileNode()->getPendingImports()->getUseImports()');
@@ -219,10 +212,9 @@ final readonly class UseNodesToAddCollector
     /**
      * @api
      *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->getConstantImports() instead.
-     *
      * @return FullyQualifiedObjectType[]
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->getConstantImports() instead.')]
     public function getConstantImportsByFilePath(string $filePath): array
     {
         $this->warn(
@@ -242,10 +234,9 @@ final readonly class UseNodesToAddCollector
     /**
      * @api
      *
-     * @deprecated Use $file->getFileNode()->getPendingImports()->getFunctionImports() instead.
-     *
      * @return FullyQualifiedObjectType[]
      */
+    #[Deprecated(message: 'Use $file->getFileNode()->getPendingImports()->getFunctionImports() instead.')]
     public function getFunctionImportsByFilePath(string $filePath): array
     {
         $this->warn(

@@ -63,13 +63,10 @@ final readonly class NodeComparator
      */
     public function isNodeEqual(Node $singleNode, array $availableNodes): bool
     {
-        foreach ($availableNodes as $availableNode) {
-            if ($this->areNodesEqual($singleNode, $availableNode)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $availableNodes,
+            fn (Node|array|null $availableNode): bool => $this->areNodesEqual($singleNode, $availableNode)
+        );
     }
 
     /**

@@ -160,12 +160,6 @@ final class SwitchExprsResolver
 
     private function areCasesValid(Switch_ $newSwitch): bool
     {
-        foreach ($newSwitch->cases as $case) {
-            if (! $this->isValidCase($case)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($newSwitch->cases, fn (Case_ $case): bool => $this->isValidCase($case));
     }
 }

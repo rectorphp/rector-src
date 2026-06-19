@@ -2,6 +2,14 @@ includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
+services:
+    -
+        class: Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
+        arguments:
+            polyfillConfigFilePath: %currentWorkingDirectory%/config/set/php-polyfills.php
+        tags:
+            - phpstan.rules.rule
+
 parameters:
     level: 8
 

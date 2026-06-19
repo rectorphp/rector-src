@@ -23,15 +23,13 @@ final class VendorMissAnalyseGuard
 
     private function hasDowngradeSets(): bool
     {
+        /** @var string[] $registeredRectorSets */
         $registeredRectorSets = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_SETS);
 
-        foreach ($registeredRectorSets as $registeredRectorSet) {
-            if (str_contains((string) $registeredRectorSet, 'downgrade-')) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $registeredRectorSets,
+            fn (string $registeredRectorSet): bool => str_contains($registeredRectorSet, 'downgrade-')
+        );
     }
 
     /**

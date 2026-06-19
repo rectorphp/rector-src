@@ -27,7 +27,10 @@ final readonly class ClassChildAnalyzer
             return false;
         }
 
-        return array_any($parentClassMethods, fn ($parentClassMethod) => $parentClassMethod->isAbstract());
+        return array_any(
+            $parentClassMethods,
+            fn (PhpMethodReflection $phpMethodReflection): bool => $phpMethodReflection->isAbstract()
+        );
     }
 
     /**

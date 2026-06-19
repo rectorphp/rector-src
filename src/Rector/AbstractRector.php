@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Rector;
 
+use Deprecated;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
@@ -171,9 +172,7 @@ CODE_SAMPLE;
         return $this->postRefactorProcess($originalNode, $node, $refactoredNodeOrState, $filePath);
     }
 
-    /**
-     * @deprecated no longer used
-     */
+    #[Deprecated(message: 'no longer used')]
     final public function leaveNode(Node $node): array|int|Node|null
     {
         return null;

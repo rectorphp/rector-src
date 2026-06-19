@@ -62,13 +62,7 @@ final readonly class StrictTypeSafetyChecker
         }
 
         $assigns = $this->betterNodeFinder->findInstanceOf($fileNode->stmts, Assign::class);
-        foreach ($assigns as $assign) {
-            if (! $this->isPropertyAssignSafe($assign)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($assigns, fn (Assign $assign): bool => $this->isPropertyAssignSafe($assign));
     }
 
     private function isCallLikeSafe(CallLike $callLike): bool
