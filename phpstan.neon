@@ -445,3 +445,8 @@ parameters:
         -
             message: '#Access to deprecated property \$file of class Rector\\Rector\\AbstractRector#'
             path: src/Rector/AbstractRector.php
+
+        # allowed
+        -
+            message: '#"@\\simplexml_load_string\(\$junitXml\)" is forbidden to use#'
+            path: scripts/remove-unused-deps.php
