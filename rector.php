@@ -39,8 +39,8 @@ return RectorConfig::configure()
         __DIR__ . '/build/build-preload.php',
     ])
     ->withRootFiles()
-    ->withImportNames(removeUnusedImports: true)
-    ->withRules([RemoveRefactorDuplicatedNodeInstanceCheckRector::class, AddSeeTestAnnotationRector::class])
+    ->withImportNames()
+    ->withRules([AddSeeTestAnnotationRector::class])
     ->withSkip([
         StringClassNameToClassConstantRector::class,
         // tests

@@ -12,5 +12,6 @@ return static function (RectorConfig $rectorConfig): void {
         DeclareStrictTypesRector::class,
         PostIncDecToPreIncDecRector::class,
         FinalizeTestCaseClassRector::class,
+        \Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector::class,
     ]);
 };
