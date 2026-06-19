@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
 use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
@@ -12,7 +14,7 @@ return static function (RectorConfig $rectorConfig): void {
         DeclareStrictTypesRector::class,
         PostIncDecToPreIncDecRector::class,
         FinalizeTestCaseClassRector::class,
-        \Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector::class,
-        \Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector::class,
+        RemoveRefactorDuplicatedNodeInstanceCheckRector::class,
+        AddSeeTestAnnotationRector::class,
     ]);
 };
