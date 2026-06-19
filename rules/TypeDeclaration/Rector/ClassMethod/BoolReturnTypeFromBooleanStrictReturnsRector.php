@@ -170,10 +170,16 @@ CODE_SAMPLE
         if (! $functionReflection->isBuiltin()) {
             return false;
         }
+<<<<<<< HEAD
 
         return array_all(
             $functionReflection->getVariants(),
             fn (ExtendedParametersAcceptor $extendedParametersAcceptor): bool => $extendedParametersAcceptor->getNativeReturnType()
+=======
+        return array_all(
+            $functionReflection->getVariants(),
+            fn ($extendedParametersAcceptor) => $extendedParametersAcceptor->getNativeReturnType()
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
                 ->isBoolean()
                 ->yes()
         );

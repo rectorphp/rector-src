@@ -75,7 +75,10 @@ final readonly class ClosureArrowFunctionAnalyzer
                 if (! $node instanceof FuncCall) {
                     return false;
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
                 return array_any(
                     $variables,
                     fn (Variable $variable): bool => $this->compactFuncCallAnalyzer->isInCompact($node, $variable)

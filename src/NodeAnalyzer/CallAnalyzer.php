@@ -41,11 +41,15 @@ final readonly class CallAnalyzer
 
             return $isObjectCallLeft || $isObjectCallRight;
         }
+<<<<<<< HEAD
 
         return array_any(
             self::OBJECT_CALL_TYPES,
             fn (string $objectCallType): bool => $expr instanceof $objectCallType
         );
+=======
+        return array_any(self::OBJECT_CALL_TYPES, fn ($objectCallType): bool => $expr instanceof $objectCallType);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**
@@ -53,7 +57,11 @@ final readonly class CallAnalyzer
      */
     public function doesIfHasObjectCall(array $ifs): bool
     {
+<<<<<<< HEAD
         return array_any($ifs, fn (If_ $if): bool => $this->isObjectCall($if->cond));
+=======
+        return array_any($ifs, fn ($if): bool => $this->isObjectCall($if->cond));
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     public function isNewInstance(Variable $variable): bool

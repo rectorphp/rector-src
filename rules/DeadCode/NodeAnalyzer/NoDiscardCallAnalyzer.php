@@ -85,9 +85,13 @@ final readonly class NoDiscardCallAnalyzer
      */
     private function hasNoDiscardAttribute(array $attributes): bool
     {
+<<<<<<< HEAD
         return array_any(
             $attributes,
             fn (AttributeReflection $attributeReflection): bool => $attributeReflection->getName() === 'NoDiscard'
         );
+=======
+        return array_any($attributes, fn ($attribute): bool => $attribute->getName() === 'NoDiscard');
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

@@ -27,7 +27,8 @@ final class AutoloadFileParameterResolver
         // handles "--autoload-file path", "--autoload-file=path" and "-a path";
         // parallel workers receive the space-separated form, so all spellings must
         // normalize to the same value or main process and workers would disagree
-        $autoloadFile = (new ArgvInput($argv))->getParameterOption(['--autoload-file', '-a'], null);
+        $autoloadFile = new ArgvInput($argv)
+            ->getParameterOption(['--autoload-file', '-a'], null);
         if (! is_string($autoloadFile) || $autoloadFile === '') {
             return;
         }

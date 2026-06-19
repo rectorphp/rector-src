@@ -239,7 +239,11 @@ CODE_SAMPLE
      */
     private function hasImplicitNullReturn(array $returnStatements): bool
     {
+<<<<<<< HEAD
         return array_any($returnStatements, fn (Return_ $return): bool => ! $return->expr instanceof Expr);
+=======
+        return array_any($returnStatements, fn ($returnStatement): bool => $returnStatement->expr === null);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**

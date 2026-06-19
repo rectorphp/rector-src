@@ -72,7 +72,11 @@ final readonly class ReadonlyClassManipulator
      */
     private function hasNonTypedProperty(array $properties): bool
     {
+<<<<<<< HEAD
         return array_any($properties, fn (Property $property): bool => ! $property->type instanceof Node);
+=======
+        return array_any($properties, fn ($property): bool => $property->type === null);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     private function shouldSkip(Class_ $class, Scope $scope): bool
@@ -155,10 +159,14 @@ final readonly class ReadonlyClassManipulator
      */
     private function hasReadonlyProperty(array $properties): bool
     {
+<<<<<<< HEAD
         return array_any(
             $properties,
             fn (ReflectionProperty $reflectionProperty): bool => ! $reflectionProperty->isReadOnly()
         );
+=======
+        return array_any($properties, fn ($property): bool => ! $property->isReadOnly());
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**
@@ -166,7 +174,11 @@ final readonly class ReadonlyClassManipulator
      */
     private function isExtendsReadonlyClass(array $parents): bool
     {
+<<<<<<< HEAD
         return array_any($parents, fn (ClassReflection $classReflection): bool => $classReflection->isReadOnly());
+=======
+        return array_any($parents, fn ($parent) => $parent->isReadOnly());
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     /**
@@ -174,7 +186,11 @@ final readonly class ReadonlyClassManipulator
      */
     private function hasWritableProperty(array $properties): bool
     {
+<<<<<<< HEAD
         return array_any($properties, fn (Property $property): bool => ! $property->isReadonly());
+=======
+        return array_any($properties, fn ($property): bool => ! $property->isReadonly());
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 
     private function shouldSkipClass(Class_ $class): bool

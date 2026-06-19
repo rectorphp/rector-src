@@ -334,10 +334,16 @@ final readonly class ClassDependencyManipulator
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
+<<<<<<< HEAD
 
         return array_any(
             $classReflection->getParents(),
             fn (ClassReflection $parentClassReflection): bool => $parentClassReflection->hasMethod($methodName)
+=======
+        return array_any(
+            $classReflection->getParents(),
+            fn ($parentClassReflection) => $parentClassReflection->hasMethod($methodName)
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 
@@ -354,7 +360,10 @@ final readonly class ClassDependencyManipulator
         if (! $constructClassMethod instanceof ClassMethod) {
             return false;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         return array_any(
             $constructClassMethod->params,
             fn (Node|array $param): bool => $this->nodeNameResolver->isName($param, $propertyName)

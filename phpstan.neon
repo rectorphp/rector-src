@@ -25,6 +25,7 @@ parameters:
     checkMissingCallableSignature: true
     treatPhpDocTypesAsCertain: false
 
+    # see https://github.com/symplify/phpstan-rules
     symplify:
         symfonyReturnType: true
         laravelReturnType: true

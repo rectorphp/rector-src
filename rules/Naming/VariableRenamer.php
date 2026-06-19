@@ -124,7 +124,10 @@ final readonly class VariableRenamer
         )) {
             return false;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         return array_any(
             $functionLike->getParams(),
             fn (Node|array $param): bool => $this->nodeNameResolver->isName($param, $variableName)

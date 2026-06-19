@@ -34,7 +34,11 @@ final readonly class VariadicAnalyzer
     {
         return array_any(
             $functionLikeReflection->getVariants(),
+<<<<<<< HEAD
             fn (ParametersAcceptor $parametersAcceptor): bool => $parametersAcceptor->isVariadic()
+=======
+            fn ($parametersAcceptor) => $parametersAcceptor->isVariadic()
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 }

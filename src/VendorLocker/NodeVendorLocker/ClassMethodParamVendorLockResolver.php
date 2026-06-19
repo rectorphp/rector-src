@@ -48,7 +48,11 @@ final readonly class ClassMethodParamVendorLockResolver
     {
         return array_any(
             $classReflection->getInterfaces(),
+<<<<<<< HEAD
             fn (ClassReflection $interfaceClassReflection): bool => $interfaceClassReflection->hasMethod($methodName)
+=======
+            fn ($interfaceClassReflection) => $interfaceClassReflection->hasMethod($methodName)
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 }

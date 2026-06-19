@@ -101,6 +101,10 @@ CODE_SAMPLE
 
     private function hasArraySpread(FuncCall $funcCall): bool
     {
+<<<<<<< HEAD
         return array_any($funcCall->getArgs(), fn (Arg $arg): bool => $arg->unpack);
+=======
+        return array_any($funcCall->getArgs(), fn ($arg) => $arg->unpack);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

@@ -72,7 +72,7 @@ final readonly class NoPhpFileInFixturesDetector
     {
         Assert::allDirectory($directories);
 
-        $finder = (new Finder())
+        $finder = new Finder()
             ->files()
             ->in($directories)
             ->path('/Fixture')
@@ -92,7 +92,7 @@ final readonly class NoPhpFileInFixturesDetector
     {
         Assert::allDirectory($directories);
 
-        $finder = (new Finder())
+        $finder = new Finder()
             ->files()
             ->in($directories)
             ->path('Fixture')

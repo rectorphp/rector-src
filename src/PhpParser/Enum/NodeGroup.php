@@ -82,6 +82,10 @@ final class NodeGroup
 
     public static function isStmtAwareNode(Node $node): bool
     {
+<<<<<<< HEAD
         return array_any(self::STMTS_AWARE, fn (string $stmtAwareClass): bool => $node instanceof $stmtAwareClass);
+=======
+        return array_any(self::STMTS_AWARE, fn ($stmtAwareClass): bool => $node instanceof $stmtAwareClass);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

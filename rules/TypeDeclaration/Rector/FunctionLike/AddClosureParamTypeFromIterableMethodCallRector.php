@@ -257,9 +257,13 @@ CODE_SAMPLE
      */
     private function callUsesClosures(array $args): bool
     {
+<<<<<<< HEAD
         return array_any(
             $args,
             fn (Arg|VariadicPlaceholder $arg): bool => $arg instanceof Arg && $arg->value instanceof Closure
         );
+=======
+        return array_any($args, fn ($arg): bool => $arg instanceof Arg && $arg->value instanceof Closure);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

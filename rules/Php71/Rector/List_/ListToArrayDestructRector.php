@@ -115,6 +115,10 @@ CODE_SAMPLE
 
     private function hasPartialDestruct(List_ $list): bool
     {
+<<<<<<< HEAD
         return array_any($list->items, fn (?ArrayItem $arrayItem): bool => ! $arrayItem instanceof ArrayItem);
+=======
+        return array_any($list->items, fn ($listItem): bool => ! $listItem instanceof ArrayItem);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

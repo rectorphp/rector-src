@@ -64,7 +64,11 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
     {
         return array_any(
             $this->annotationPropertiesToAttributeClasses,
+<<<<<<< HEAD
             fn (AnnotationPropertyToAttributeClass $annotationPropertyToAttributeClass): bool => is_string(
+=======
+            fn ($annotationPropertyToAttributeClass): bool => is_string(
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
                 $annotationPropertyToAttributeClass->getAnnotationProperty()
             )
         );

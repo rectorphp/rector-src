@@ -127,6 +127,10 @@ final readonly class SwitchAnalyzer
 
     private function containsCaseReturn(Case_ $case): bool
     {
+<<<<<<< HEAD
         return array_any($case->stmts, fn (Stmt $stmt): bool => $stmt instanceof Return_);
+=======
+        return array_any($case->stmts, fn ($stmt): bool => $stmt instanceof Return_);
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
     }
 }

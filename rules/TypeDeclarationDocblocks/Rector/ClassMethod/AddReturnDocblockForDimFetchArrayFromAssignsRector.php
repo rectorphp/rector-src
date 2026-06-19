@@ -208,7 +208,11 @@ CODE_SAMPLE
         if ($returnedExprType instanceof UnionType) {
             return array_all(
                 $returnedExprType->getTypes(),
+<<<<<<< HEAD
                 fn (Type $unionedType): bool => $unionedType instanceof ConstantArrayType
+=======
+                fn ($unionedType): bool => $unionedType instanceof ConstantArrayType
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
             );
         }
 

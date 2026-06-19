@@ -134,7 +134,11 @@ CODE_SAMPLE
     {
         return array_all(
             $returns,
+<<<<<<< HEAD
             fn (Return_ $return): bool => ! (! $return->expr instanceof String_ && ! $return->expr instanceof InterpolatedString)
+=======
+            fn ($return): bool => ! (! $return->expr instanceof String_ && ! $return->expr instanceof InterpolatedString)
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 

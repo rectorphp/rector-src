@@ -189,7 +189,11 @@ final class PhpDocInfoPrinter
     {
         return array_any(
             self::DOCBLOCK_STARTS,
+<<<<<<< HEAD
             fn (string $docblockStart): bool => str_starts_with($output, $docblockStart)
+=======
+            fn ($docblockStart): bool => str_starts_with($output, (string) $docblockStart)
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 

@@ -25,10 +25,16 @@ final class VendorMissAnalyseGuard
     {
         /** @var string[] $registeredRectorSets */
         $registeredRectorSets = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_SETS);
+<<<<<<< HEAD
 
         return array_any(
             $registeredRectorSets,
             fn (string $registeredRectorSet): bool => str_contains($registeredRectorSet, 'downgrade-')
+=======
+        return array_any(
+            $registeredRectorSets,
+            fn ($registeredRectorSet): bool => str_contains((string) $registeredRectorSet, 'downgrade-')
+>>>>>>> 0ce3dbd107 ([php] bump to PHP 8.4 syntax)
         );
     }
 

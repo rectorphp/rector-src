@@ -98,12 +98,18 @@ final class PendingImports
                 return true;
             }
         }
+<<<<<<< HEAD
 
         return array_any(
             $this->functionImports,
             fn (FullyQualifiedObjectType $fullyQualifiedObjectType): bool => strtolower(
                 $fullyQualifiedObjectType->getShortName()
             ) === $shortName
+=======
+        return array_any(
+            $this->functionImports,
+            fn ($functionImport): bool => strtolower((string) $functionImport->getShortName()) === $shortName
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         );
     }
 
@@ -120,7 +126,10 @@ final class PendingImports
                 return true;
             }
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         return array_any($this->functionImports, fn (Type $type): bool => $fullyQualifiedObjectType->equals($type));
     }
 }

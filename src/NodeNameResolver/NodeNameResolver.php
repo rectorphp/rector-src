@@ -60,7 +60,10 @@ final class NodeNameResolver
         if ($nodeName === null) {
             return false;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         return array_any($names, fn (string $name): bool => $this->isStringName($nodeName, $name));
     }
 

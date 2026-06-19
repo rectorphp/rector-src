@@ -26,11 +26,18 @@ final readonly class ClassChildAnalyzer
         if ($parentClassMethods === []) {
             return false;
         }
+<<<<<<< HEAD
 
+<<<<<<< HEAD
         return array_any(
             $parentClassMethods,
             fn (PhpMethodReflection $phpMethodReflection): bool => $phpMethodReflection->isAbstract()
         );
+=======
+=======
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
+        return array_any($parentClassMethods, fn ($parentClassMethod) => $parentClassMethod->isAbstract());
+>>>>>>> 0ce3dbd107 ([php] bump to PHP 8.4 syntax)
     }
 
     /**

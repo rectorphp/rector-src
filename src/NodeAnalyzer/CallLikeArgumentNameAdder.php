@@ -84,7 +84,10 @@ final readonly class CallLikeArgumentNameAdder
         if ($args === []) {
             return true;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 424f600506 ([php] bump to PHP 8.4 syntax)
         return array_any($args, fn ($arg) => $arg->unpack);
     }
 
