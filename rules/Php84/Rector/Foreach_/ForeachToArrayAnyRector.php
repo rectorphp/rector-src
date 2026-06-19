@@ -21,6 +21,7 @@ use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PolyfillPackage;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -104,7 +105,7 @@ CODE_SAMPLE
 
     public function providePolyfillPackage(): string
     {
-        return \Rector\ValueObject\PolyfillPackage::PHP_84;
+        return PolyfillPackage::PHP_84;
     }
 
     /**
