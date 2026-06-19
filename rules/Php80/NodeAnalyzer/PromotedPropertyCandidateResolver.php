@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php80\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
