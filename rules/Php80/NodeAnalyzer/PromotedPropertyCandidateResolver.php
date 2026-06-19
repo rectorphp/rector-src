@@ -136,6 +136,15 @@ final readonly class PromotedPropertyCandidateResolver
                 continue;
             }
 
+            if ($this->isParamReadAfterPropertyMutation(
+                $constructClassMethod,
+                $assignStmtPosition,
+                $propertyName,
+                $matchedParam
+            )) {
+                continue;
+            }
+
             return new PropertyPromotionCandidate(
                 $property,
                 $matchedParam,
@@ -204,6 +213,61 @@ final readonly class PromotedPropertyCandidateResolver
         }
 
         return $firstVariablePosition < $variable->getStartTokenPos();
+    }
+
+    /**
+     * The rule rewrites later $param reads to $this->property. That is only safe while $this->property still
+     * equals the param. Once the property is mutated in the constructor, a following $param read would diverge,
+     * so the promotion must be skipped.
+     */
+    private function isParamReadAfterPropertyMutation(
+        ClassMethod $constructClassMethod,
+        int $assignStmtPosition,
+        string $propertyName,
+        Param $matchedParam
+    ): bool {
+        $followingStmts = array_slice((array) $constructClassMethod->stmts, $assignStmtPosition + 1);
+        if ($followingStmts === []) {
+            return false;
+        }
+
+        $firstMutationTokenPos = null;
+        foreach ($this->betterNodeFinder->findInstanceOf($followingStmts, Assign::class) as $assign) {
+            $assignVar = $assign->var;
+            while ($assignVar instanceof ArrayDimFetch) {
+                $assignVar = $assignVar->var;
+            }
+
+            if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($assignVar, $propertyName)) {
+                continue;
+            }
+
+            $tokenPos = $assign->var->getStartTokenPos();
+            if ($firstMutationTokenPos === null || $tokenPos < $firstMutationTokenPos) {
+                $firstMutationTokenPos = $tokenPos;
+            }
+        }
+
+        if ($firstMutationTokenPos === null) {
+            return false;
+        }
+
+        $paramName = $this->nodeNameResolver->getName($matchedParam);
+
+        return $this->betterNodeFinder->findFirst($followingStmts, function (Node $node) use (
+            $paramName,
+            $firstMutationTokenPos
+        ): bool {
+            if (! $node instanceof Variable) {
+                return false;
+            }
+
+            if (! $this->nodeNameResolver->isName($node, $paramName)) {
+                return false;
+            }
+
+            return $node->getStartTokenPos() > $firstMutationTokenPos;
+        }) instanceof Node;
     }
 
     /**
