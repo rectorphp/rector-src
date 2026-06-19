@@ -1,0 +1,39 @@
+name: Remove Unused Dependencies
+
+on:
+    pull_request: null
+
+jobs:
+    remove_unused_deps:
+        strategy:
+            fail-fast: false
+
+        runs-on: ubuntu-latest
+        timeout-minutes: 8
+
+        if: github.event.pull_request.head.repo.full_name == 'rectorphp/rector-src'
+        steps:
+            -
+                uses: actions/checkout@v4
+                with:
+                    # Must be used to trigger workflow after push
+                    token: ${{ secrets.ACCESS_TOKEN }}
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.3
+                    coverage: none
+
+            -   run: composer install --no-progress --ansi
+
+            ## detect unused dependencies and remove them from composer.json
+            -   run: php scripts/remove-unused-deps.php --ansi
+
+            -
+                # commit only to core contributors who have repository access
+                uses: stefanzweifel/git-auto-commit-action@v5
+                with:
+                    commit_message: '[ci-review] Remove unused dependencies'
+                    commit_author: 'GitHub Action <actions@github.com>'
+                    commit_user_email: 'action@github.com'
