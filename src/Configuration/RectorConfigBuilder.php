@@ -950,7 +950,7 @@ final class RectorConfigBuilder
         bool $importNames = true,
         bool $importDocBlockNames = true,
         bool $importShortClasses = true,
-        bool $removeUnusedImports = false
+        bool $removeUnusedImports = true
     ): self {
         $this->importNames = $importNames;
         $this->importDocBlockNames = $importDocBlockNames;

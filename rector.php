@@ -7,8 +7,6 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
-use Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -39,8 +37,7 @@ return RectorConfig::configure()
         __DIR__ . '/build/build-preload.php',
     ])
     ->withRootFiles()
-    ->withImportNames(removeUnusedImports: true)
-    ->withRules([RemoveRefactorDuplicatedNodeInstanceCheckRector::class, AddSeeTestAnnotationRector::class])
+    ->withImportNames()
     ->withSkip([
         StringClassNameToClassConstantRector::class,
         // tests
