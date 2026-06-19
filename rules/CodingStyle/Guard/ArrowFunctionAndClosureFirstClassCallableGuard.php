@@ -189,13 +189,7 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
      */
     private function isUsingByRef(array $params): bool
     {
-        foreach ($params as $param) {
-            if ($param->byRef) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($params, fn (Param $param): bool => $param->byRef);
     }
 
     /**
@@ -203,13 +197,7 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
      */
     private function isUsingNamedArgs(array $args): bool
     {
-        foreach ($args as $arg) {
-            if ($arg->name instanceof Identifier) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($args, fn (Arg $arg): bool => $arg->name instanceof Identifier);
     }
 
     private function isChainedCall(FuncCall|MethodCall|StaticCall $callLike): bool

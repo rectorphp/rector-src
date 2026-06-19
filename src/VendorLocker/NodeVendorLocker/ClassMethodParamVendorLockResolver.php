@@ -46,12 +46,9 @@ final readonly class ClassMethodParamVendorLockResolver
      */
     private function hasParentInterfaceMethod(ClassReflection $classReflection, string $methodName): bool
     {
-        foreach ($classReflection->getInterfaces() as $interfaceClassReflection) {
-            if ($interfaceClassReflection->hasMethod($methodName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $classReflection->getInterfaces(),
+            fn (ClassReflection $interfaceClassReflection): bool => $interfaceClassReflection->hasMethod($methodName)
+        );
     }
 }

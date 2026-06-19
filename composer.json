@@ -36,6 +36,7 @@
         "symfony/console": "^6.4.24",
         "symfony/filesystem": "^7.4",
         "symfony/finder": "^6.4",
+        "symfony/polyfill-php84": "^1.38",
         "symfony/process": "^7.4",
         "symplify/easy-parallel": "^11.2.2",
         "symplify/rule-doc-generator-contracts": "^11.2",

@@ -76,13 +76,10 @@ final readonly class ClosureArrowFunctionAnalyzer
                     return false;
                 }
 
-                foreach ($variables as $variable) {
-                    if ($this->compactFuncCallAnalyzer->isInCompact($node, $variable)) {
-                        return true;
-                    }
-                }
-
-                return false;
+                return array_any(
+                    $variables,
+                    fn (Variable $variable): bool => $this->compactFuncCallAnalyzer->isInCompact($node, $variable)
+                );
             }
         );
     }
@@ -111,17 +108,16 @@ final readonly class ClosureArrowFunctionAnalyzer
             return false;
         }
 
-        $isFoundInStmt = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($closure, function (Node $node) use (
-            $referencedValues
-        ): bool {
-            foreach ($referencedValues as $referencedValue) {
-                if ($this->nodeComparator->areNodesEqual($node, $referencedValue)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
+        $isFoundInStmt = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $closure,
+            fn (Node $node): bool => array_any(
+                $referencedValues,
+                fn (Node|array|null $referencedValue): bool => $this->nodeComparator->areNodesEqual(
+                    $node,
+                    $referencedValue
+                )
+            )
+        );
 
         if ($isFoundInStmt) {
             return true;

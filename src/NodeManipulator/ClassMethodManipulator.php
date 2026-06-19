@@ -58,12 +58,9 @@ final readonly class ClassMethodManipulator
             }
         }
 
-        foreach ($classReflection->getInterfaces() as $interfaceReflection) {
-            if ($interfaceReflection->hasMethod($methodName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $classReflection->getInterfaces(),
+            fn (ClassReflection $classReflection): bool => $classReflection->hasMethod($methodName)
+        );
     }
 }

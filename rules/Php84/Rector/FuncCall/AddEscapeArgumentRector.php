@@ -108,13 +108,9 @@ CODE_SAMPLE
 
     private function shouldSkipNamedArg(FuncCall|MethodCall $node): bool
     {
-        foreach ($node->getArgs() as $arg) {
-            // already defined in named arg
-            if ($arg->name instanceof Identifier && $arg->name->toString() === 'escape') {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $node->getArgs(),
+            fn (Arg $arg): bool => $arg->name instanceof Identifier && $arg->name->toString() === 'escape'
+        );
     }
 }

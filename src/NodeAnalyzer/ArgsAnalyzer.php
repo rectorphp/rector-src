@@ -20,13 +20,7 @@ final readonly class ArgsAnalyzer
      */
     public function hasNamedArg(array $args): bool
     {
-        foreach ($args as $arg) {
-            if ($arg->name instanceof Identifier) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($args, fn (Arg $arg): bool => $arg->name instanceof Identifier);
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\FunctionLike;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
@@ -238,13 +239,7 @@ CODE_SAMPLE
      */
     private function hasImplicitNullReturn(array $returnStatements): bool
     {
-        foreach ($returnStatements as $returnStatement) {
-            if ($returnStatement->expr === null) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($returnStatements, fn (Return_ $return): bool => ! $return->expr instanceof Expr);
     }
 
     /**

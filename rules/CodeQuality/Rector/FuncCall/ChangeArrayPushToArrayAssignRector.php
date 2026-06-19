@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
@@ -100,12 +101,6 @@ CODE_SAMPLE
 
     private function hasArraySpread(FuncCall $funcCall): bool
     {
-        foreach ($funcCall->getArgs() as $arg) {
-            if ($arg->unpack) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($funcCall->getArgs(), fn (Arg $arg): bool => $arg->unpack);
     }
 }

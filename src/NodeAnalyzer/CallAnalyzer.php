@@ -42,13 +42,10 @@ final readonly class CallAnalyzer
             return $isObjectCallLeft || $isObjectCallRight;
         }
 
-        foreach (self::OBJECT_CALL_TYPES as $objectCallType) {
-            if ($expr instanceof $objectCallType) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            self::OBJECT_CALL_TYPES,
+            fn (string $objectCallType): bool => $expr instanceof $objectCallType
+        );
     }
 
     /**
@@ -56,13 +53,7 @@ final readonly class CallAnalyzer
      */
     public function doesIfHasObjectCall(array $ifs): bool
     {
-        foreach ($ifs as $if) {
-            if ($this->isObjectCall($if->cond)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($ifs, fn (If_ $if): bool => $this->isObjectCall($if->cond));
     }
 
     public function isNewInstance(Variable $variable): bool

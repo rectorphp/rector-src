@@ -18,12 +18,9 @@ final class ScopeAnalyzer
 
     public function isRefreshable(Node $node): bool
     {
-        foreach (self::NON_REFRESHABLE_NODES as $noScopeNode) {
-            if ($node instanceof $noScopeNode) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all(
+            self::NON_REFRESHABLE_NODES,
+            fn (string $noScopeNode): bool => ! $node instanceof $noScopeNode
+        );
     }
 }

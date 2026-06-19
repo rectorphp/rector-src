@@ -55,13 +55,7 @@ final readonly class StaticTypeAnalyzer
             return false;
         }
 
-        foreach ($type->getTypes() as $unionedType) {
-            if (! $this->isAlwaysTruableType($unionedType)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($type->getTypes(), fn (Type $unionedType): bool => $this->isAlwaysTruableType($unionedType));
     }
 
     private function isAlwaysTruableArrayType(ArrayType $arrayType): bool

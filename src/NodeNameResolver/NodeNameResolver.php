@@ -61,13 +61,7 @@ final class NodeNameResolver
             return false;
         }
 
-        foreach ($names as $name) {
-            if ($this->isStringName($nodeName, $name)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($names, fn (string $name): bool => $this->isStringName($nodeName, $name));
     }
 
     /**
@@ -77,14 +71,7 @@ final class NodeNameResolver
     public function isName(Node | array $node, string $name): bool
     {
         $nodes = is_array($node) ? $node : [$node];
-
-        foreach ($nodes as $node) {
-            if ($this->isSingleName($node, $name)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($nodes, fn (Node $node): bool => $this->isSingleName($node, $name));
     }
 
     /**

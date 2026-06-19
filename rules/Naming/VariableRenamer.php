@@ -125,13 +125,10 @@ final readonly class VariableRenamer
             return false;
         }
 
-        foreach ($functionLike->getParams() as $param) {
-            if ($this->nodeNameResolver->isName($param, $variableName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $functionLike->getParams(),
+            fn (Node|array $param): bool => $this->nodeNameResolver->isName($param, $variableName)
+        );
     }
 
     private function renameVariableIfMatchesName(

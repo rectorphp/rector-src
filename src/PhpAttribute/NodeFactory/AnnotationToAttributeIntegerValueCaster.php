@@ -92,13 +92,7 @@ final readonly class AnnotationToAttributeIntegerValueCaster
             return false;
         }
 
-        foreach ($type->getTypes() as $unionedType) {
-            if ($unionedType->isInteger()->yes()) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($type->getTypes(), fn (Type $unionedType): bool => $unionedType->isInteger()->yes());
     }
 
     /**

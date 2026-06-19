@@ -115,12 +115,6 @@ CODE_SAMPLE
 
     private function hasPartialDestruct(List_ $list): bool
     {
-        foreach ($list->items as $listItem) {
-            if (! $listItem instanceof ArrayItem) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($list->items, fn (?ArrayItem $arrayItem): bool => ! $arrayItem instanceof ArrayItem);
     }
 }

@@ -187,13 +187,10 @@ final class PhpDocInfoPrinter
 
     private function hasDocblockStart(string $output): bool
     {
-        foreach (self::DOCBLOCK_STARTS as $docblockStart) {
-            if (str_starts_with($output, $docblockStart)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            self::DOCBLOCK_STARTS,
+            fn (string $docblockStart): bool => str_starts_with($output, $docblockStart)
+        );
     }
 
     private function printDocChildNode(

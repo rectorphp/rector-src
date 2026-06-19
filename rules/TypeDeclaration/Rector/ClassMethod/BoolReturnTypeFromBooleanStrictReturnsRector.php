@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ExtendedParametersAcceptor;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -170,13 +171,12 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($functionReflection->getVariants() as $extendedParametersAcceptor) {
-            if (! $extendedParametersAcceptor->getNativeReturnType()->isBoolean()->yes()) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all(
+            $functionReflection->getVariants(),
+            fn (ExtendedParametersAcceptor $extendedParametersAcceptor): bool => $extendedParametersAcceptor->getNativeReturnType()
+                ->isBoolean()
+                ->yes()
+        );
     }
 
     /**

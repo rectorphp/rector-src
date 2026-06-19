@@ -257,12 +257,9 @@ CODE_SAMPLE
      */
     private function callUsesClosures(array $args): bool
     {
-        foreach ($args as $arg) {
-            if ($arg instanceof Arg && $arg->value instanceof Closure) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $args,
+            fn (Arg|VariadicPlaceholder $arg): bool => $arg instanceof Arg && $arg->value instanceof Closure
+        );
     }
 }

@@ -62,12 +62,11 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
 
     public function hasExplicitParameters(): bool
     {
-        foreach ($this->annotationPropertiesToAttributeClasses as $annotationPropertyToAttributeClass) {
-            if (is_string($annotationPropertyToAttributeClass->getAnnotationProperty())) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->annotationPropertiesToAttributeClasses,
+            fn (AnnotationPropertyToAttributeClass $annotationPropertyToAttributeClass): bool => is_string(
+                $annotationPropertyToAttributeClass->getAnnotationProperty()
+            )
+        );
     }
 }

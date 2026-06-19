@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -199,13 +200,10 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($node->exprs as $expr) {
-            if ($expr instanceof Variable && $this->isName($expr, $paramName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $node->exprs,
+            fn (Expr $expr): bool => $expr instanceof Variable && $this->isName($expr, $paramName)
+        );
     }
 
     private function shouldStop(Node $node, string $paramName): bool
@@ -267,13 +265,10 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($node->expr->getArgs() as $arg) {
-            if ($arg->value instanceof Variable && $this->isName($arg->value, $paramName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $node->expr->getArgs(),
+            fn (Arg $arg): bool => $arg->value instanceof Variable && $this->isName($arg->value, $paramName)
+        );
     }
 
     private function isEmptyOrEchoedOrCasted(Node $node, string $paramName): bool

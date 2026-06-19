@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php82\NodeManipulator;
 
+use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -71,14 +72,7 @@ final readonly class ReadonlyClassManipulator
      */
     private function hasNonTypedProperty(array $properties): bool
     {
-        foreach ($properties as $property) {
-            // properties of readonly class must always have type
-            if ($property->type === null) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($properties, fn (Property $property): bool => ! $property->type instanceof Node);
     }
 
     private function shouldSkip(Class_ $class, Scope $scope): bool
@@ -161,13 +155,10 @@ final readonly class ReadonlyClassManipulator
      */
     private function hasReadonlyProperty(array $properties): bool
     {
-        foreach ($properties as $property) {
-            if (! $property->isReadOnly()) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $properties,
+            fn (ReflectionProperty $reflectionProperty): bool => ! $reflectionProperty->isReadOnly()
+        );
     }
 
     /**
@@ -175,13 +166,7 @@ final readonly class ReadonlyClassManipulator
      */
     private function isExtendsReadonlyClass(array $parents): bool
     {
-        foreach ($parents as $parent) {
-            if ($parent->isReadOnly()) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($parents, fn (ClassReflection $classReflection): bool => $classReflection->isReadOnly());
     }
 
     /**
@@ -189,13 +174,7 @@ final readonly class ReadonlyClassManipulator
      */
     private function hasWritableProperty(array $properties): bool
     {
-        foreach ($properties as $property) {
-            if (! $property->isReadonly()) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($properties, fn (Property $property): bool => ! $property->isReadonly());
     }
 
     private function shouldSkipClass(Class_ $class): bool
