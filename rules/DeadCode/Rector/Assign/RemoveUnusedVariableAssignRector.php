@@ -28,6 +28,7 @@ use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -45,6 +46,7 @@ final class RemoveUnusedVariableAssignRector extends AbstractRector
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly StmtsManipulator $stmtsManipulator,
         private readonly NoDiscardCallAnalyzer $noDiscardCallAnalyzer,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -116,6 +118,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->isNullResetOfObject($assign)) {
+                continue;
+            }
+
             if ($this->hasCallLikeInAssignExpr($assign)) {
                 // clean safely
                 $cleanAssignedExpr = $this->cleanCastedExpr($assign->expr);
@@ -134,6 +140,18 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isNullResetOfObject(Assign $assign): bool
+    {
+        // resetting a native filesystem object to null releases the held file handle,
+        // e.g. $file = null on a SplFileObject/SplFileInfo/RecursiveDirectoryIterator
+        if (! $this->valueResolver->isNull($assign->expr)) {
+            return false;
+        }
+
+        return (new ObjectType('SplFileInfo'))->isSuperTypeOf($this->getType($assign->var))
+            ->yes();
     }
 
     private function isObjectWithDestructMethod(Expr $expr): bool
