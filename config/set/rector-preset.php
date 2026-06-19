@@ -13,5 +13,6 @@ return static function (RectorConfig $rectorConfig): void {
         PostIncDecToPreIncDecRector::class,
         FinalizeTestCaseClassRector::class,
         \Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector::class,
+        \Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector::class,
     ]);
 };

@@ -7,8 +7,6 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
-use Rector\Utils\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -40,7 +38,6 @@ return RectorConfig::configure()
     ])
     ->withRootFiles()
     ->withImportNames()
-    ->withRules([AddSeeTestAnnotationRector::class])
     ->withSkip([
         StringClassNameToClassConstantRector::class,
         // tests
