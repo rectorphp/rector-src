@@ -186,6 +186,7 @@ EOF
         $this->deprecatedRulesReporter->reportDeprecatedRectorUnsupportedMethods();
 
         $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
+        $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
         return $this->resolveReturnCode($processResult, $configuration);
     }

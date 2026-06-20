@@ -40,6 +40,7 @@ jobs:
                     - 'e2e/only-option-quote-single-bsdouble'
                     - 'e2e/only-option-quote-single-equalnone'
                     - 'e2e/parallel-custom-config'
+                    - 'e2e/parallel-unused-skips'
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/parallel with space'
                     - 'e2e/print-new-node'
@@ -72,6 +73,11 @@ jobs:
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
 
+            # tests parallel aggregation of used skips for ->reportUnusedSkips()
+            -   run: php ../e2eTestRunner.php --config custom/config/rector.php
+                working-directory: ${{ matrix.directory }}
+                if: ${{ matrix.directory == 'e2e/parallel-unused-skips' }}
+
             -   run: php ../e2eTestRunner.php
                 working-directory: ${{ matrix.directory }}
-                if: ${{ matrix.directory != 'e2e/parallel-custom-config' }}
+                if: ${{ matrix.directory != 'e2e/parallel-custom-config' && matrix.directory != 'e2e/parallel-unused-skips' }}

@@ -14,14 +14,17 @@ final class ProcessResult
     /**
      * @param SystemError[] $systemErrors
      * @param FileDiff[] $fileDiffs
+     * @param string[] $usedSkips
      */
     public function __construct(
         private array $systemErrors,
         private readonly array $fileDiffs,
-        private readonly int $totalChanged
+        private readonly int $totalChanged,
+        private readonly array $usedSkips = []
     ) {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
         Assert::allIsInstanceOf($fileDiffs, FileDiff::class);
+        Assert::allString($usedSkips);
     }
 
     /**
@@ -57,6 +60,14 @@ final class ProcessResult
     public function getTotalChanged(): int
     {
         return $this->totalChanged;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getUsedSkips(): array
+    {
+        return $this->usedSkips;
     }
 
     /**

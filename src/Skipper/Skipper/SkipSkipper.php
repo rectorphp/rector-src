@@ -9,7 +9,8 @@ use Rector\Skipper\Matcher\FileInfoMatcher;
 final readonly class SkipSkipper
 {
     public function __construct(
-        private FileInfoMatcher $fileInfoMatcher
+        private FileInfoMatcher $fileInfoMatcher,
+        private UsedSkipCollector $usedSkipCollector
     ) {
     }
 
@@ -25,10 +26,12 @@ final readonly class SkipSkipper
 
             // skip everywhere
             if (! is_array($skippedFiles)) {
+                $this->usedSkipCollector->markUsed($skippedClass);
                 return true;
             }
 
             if ($this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedFiles)) {
+                $this->usedSkipCollector->markUsed($skippedClass);
                 return true;
             }
         }
