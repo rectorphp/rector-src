@@ -45,6 +45,7 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::SKIP, []);
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, false);
+        SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, false);
     }
 
     public function testResolvesUnusedSkipsAsRuleAndPath(): void
@@ -95,6 +96,18 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
             FifthElement::class . ' => [ src/Reporting/UnusedSkipResolver.php' . "\n    " . 'src/Reporting/MissConfigurationReporter.php ]',
             $unusedSkips
         );
+    }
+
+    public function testResolvesNothingWhenRunIsNarrowed(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+        SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
+
+        // narrowed run (cli paths, "--only", "--only-suffix") only touches part of the codebase,
+        // so skips outside that scope are not false positives
+        $processResult = new ProcessResult([], [], 0, []);
+
+        $this->assertSame([], $this->unusedSkipResolver->resolve($processResult));
     }
 
     public function testResolvesNothingWhenDisabled(): void

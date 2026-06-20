@@ -37,6 +37,12 @@ final readonly class UnusedSkipResolver
             return [];
         }
 
+        // a narrowed run (cli paths, "--only" or "--only-suffix") only touches part of the codebase,
+        // so skips outside that scope look falsely unused - reporting them would be noise
+        if (SimpleParameterProvider::provideBoolParameter(Option::IS_RUN_NARROWED, false)) {
+            return [];
+        }
+
         // map of rule => (trackable skip path => relative display path); skips are tracked at
         // runtime by their path, but rule-scoped ones are printed grouped under their rule so the
         // user knows exactly what to remove. Skip-everywhere rule skips (null path) are forgotten
