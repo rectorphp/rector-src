@@ -28,12 +28,12 @@ use PHPStan\Type\UnionType as PHPStanUnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Composer\ComposerJsonPackageVersionResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
-use Rector\Skipper\FileSystem\PathNormalizer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\ValueObject\PhpVersionFeature;
@@ -53,7 +53,8 @@ final class NarrowWideUnionReturnTypeRector extends AbstractRector implements Mi
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly TypeFactory $typeFactory
+        private readonly TypeFactory $typeFactory,
+        private readonly ComposerJsonPackageVersionResolver $composerJsonPackageVersionResolver
     ) {
     }
 
@@ -299,8 +300,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $normalizedFileName = PathNormalizer::normalize($fileName);
-            if (str_contains($normalizedFileName, '/vendor/')) {
+            if ($this->composerJsonPackageVersionResolver->hasPackageMultiMajorVersions($fileName)) {
                 return true;
             }
         }
