@@ -169,6 +169,15 @@ final readonly class ExprAnalyzer
             return true;
         }
 
+        if ($nativeType instanceof UnionType && ! $nativeType->equals($type)) {
+            return true;
+        }
+
+        if (! $nativeType->isSuperTypeOf($type)
+            ->yes()) {
+            return true;
+        }
+
         $definedVariables = $scope->getDefinedVariables();
         foreach ($definedVariables as $definedVariable) {
             $variableType = $scope->getVariableType($definedVariable);
@@ -178,12 +187,7 @@ final readonly class ExprAnalyzer
             }
         }
 
-        if ($nativeType instanceof UnionType) {
-            return ! $nativeType->equals($type);
-        }
-
-        return ! $nativeType->isSuperTypeOf($type)
-            ->yes();
+        return false;
     }
 
     public function isDynamicExpr(Expr $expr): bool
