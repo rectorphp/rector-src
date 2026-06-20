@@ -45,6 +45,7 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::SKIP, []);
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, false);
+        SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, false);
     }
 
     public function testResolvesUnusedSkipsAsRuleAndPath(): void
@@ -76,6 +77,37 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
 
         // the absolute path is shortened to a relative one, matching the "->withSkip()" syntax
         $this->assertContains(FifthElement::class . ' => src/Reporting/UnusedSkipResolver.php', $unusedSkips);
+    }
+
+    public function testGroupsMultipleUnusedPathsUnderRule(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+
+        $firstPath = getcwd() . '/src/Reporting/UnusedSkipResolver.php';
+        $secondPath = getcwd() . '/src/Reporting/MissConfigurationReporter.php';
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            FifthElement::class => [$firstPath, $secondPath],
+        ]);
+
+        $unusedSkips = $this->unusedSkipResolver->resolve(new ProcessResult([], [], 0, []));
+
+        // multiple unused paths are grouped under their rule, not repeated per line
+        $this->assertContains(
+            FifthElement::class . ' => [ src/Reporting/UnusedSkipResolver.php' . "\n    " . 'src/Reporting/MissConfigurationReporter.php ]',
+            $unusedSkips
+        );
+    }
+
+    public function testResolvesNothingWhenRunIsNarrowed(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+        SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
+
+        // narrowed run (cli paths, "--only", "--only-suffix") only touches part of the codebase,
+        // so skips outside that scope are not false positives
+        $processResult = new ProcessResult([], [], 0, []);
+
+        $this->assertSame([], $this->unusedSkipResolver->resolve($processResult));
     }
 
     public function testResolvesNothingWhenDisabled(): void

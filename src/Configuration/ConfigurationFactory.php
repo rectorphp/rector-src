@@ -71,6 +71,12 @@ final readonly class ConfigurationFactory
 
         $onlySuffix = $input->getOption(Option::ONLY_SUFFIX);
 
+        // "--only"/"--only-suffix" narrow the run, so skips outside the scope look falsely unused;
+        // mark the run as narrowed to disable unused skip reporting and avoid false positives
+        if ($onlyRule !== null || $onlySuffix !== null) {
+            SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
+        }
+
         $isParallel = SimpleParameterProvider::provideBoolParameter(Option::PARALLEL);
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
         $parallelIdentifier = (string) $input->getOption(Option::PARALLEL_IDENTIFIER);
@@ -144,6 +150,8 @@ final readonly class ConfigurationFactory
 
         // give priority to command line
         if ($commandLinePaths !== []) {
+            // mark the run as narrowed, so unused skip reporting can be disabled to avoid false positives
+            SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
             $this->setFilesWithoutExtensionParameter($commandLinePaths);
             return $commandLinePaths;
         }

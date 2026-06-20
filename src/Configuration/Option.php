@@ -110,6 +110,15 @@ final class Option
     public const string REPORT_UNUSED_SKIPS = 'report_unused_skips';
 
     /**
+     * True when the run is narrowed on the command line - via paths argument, "--only" or
+     * "--only-suffix". Unused skip reporting is then disabled, as skips outside the narrowed scope
+     * look falsely unused and would produce many false positives.
+     *
+     * @internal
+     */
+    public const string IS_RUN_NARROWED = 'is_run_narrowed';
+
+    /**
      * @internal Use RectorConfig::fileExtensions() instead
      */
     public const string FILE_EXTENSIONS = 'file_extensions';
