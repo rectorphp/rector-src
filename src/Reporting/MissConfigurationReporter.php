@@ -8,8 +8,6 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
-use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
-use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -21,8 +19,7 @@ final readonly class MissConfigurationReporter
     public function __construct(
         private SymfonyStyle $symfonyStyle,
         private VendorMissAnalyseGuard $vendorMissAnalyseGuard,
-        private SkippedClassResolver $skippedClassResolver,
-        private SkippedPathsResolver $skippedPathsResolver,
+        private UnusedSkipResolver $unusedSkipResolver,
     ) {
     }
 
@@ -32,44 +29,7 @@ final readonly class MissConfigurationReporter
      */
     public function reportUnusedSkips(ProcessResult $processResult): void
     {
-        if (! SimpleParameterProvider::provideBoolParameter(Option::REPORT_UNUSED_SKIPS, false)) {
-            return;
-        }
-
-        // map of trackable skip path => human-readable display; skips are tracked at runtime by
-        // their path, but rule-scoped ones are printed as "rule => path" so the user knows exactly
-        // what to remove. Skip-everywhere rule skips (null path) are forgotten from the container
-        // at boot, so they never reach the skipper and cannot be tracked.
-        $skipDisplaysByPath = [];
-        foreach ($this->skippedClassResolver->resolve() as $rectorClass => $paths) {
-            if ($paths === null) {
-                continue;
-            }
-
-            // rule-scoped paths are intentional, so they are reported even as mask paths
-            foreach ($paths as $path) {
-                $skipDisplaysByPath[$path] = $rectorClass . ' => ' . $path;
-            }
-        }
-
-        // global mask paths like "*/some/*" are hard to spot and report false positives, skip them
-        foreach ($this->skippedPathsResolver->resolve() as $globalPath) {
-            if (str_contains($globalPath, '*')) {
-                continue;
-            }
-
-            $skipDisplaysByPath[$globalPath] = $globalPath;
-        }
-
-        $usedSkips = $processResult->getUsedSkips();
-
-        $unusedSkips = [];
-        foreach ($skipDisplaysByPath as $path => $skipDisplay) {
-            if (! in_array($path, $usedSkips, true)) {
-                $unusedSkips[] = $skipDisplay;
-            }
-        }
-
+        $unusedSkips = $this->unusedSkipResolver->resolve($processResult);
         if ($unusedSkips === []) {
             return;
         }

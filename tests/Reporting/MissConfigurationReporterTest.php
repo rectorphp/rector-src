@@ -8,8 +8,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Reporting\MissConfigurationReporter;
-use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
-use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
+use Rector\Reporting\UnusedSkipResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\ThreeMan;
@@ -41,8 +40,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
         $this->missConfigurationReporter = new MissConfigurationReporter(
             $symfonyStyle,
             new VendorMissAnalyseGuard(),
-            $this->make(SkippedClassResolver::class),
-            $this->make(SkippedPathsResolver::class),
+            $this->make(UnusedSkipResolver::class),
         );
 
         SimpleParameterProvider::setParameter(Option::SKIP, [
