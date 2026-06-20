@@ -10,6 +10,7 @@ use Rector\Skipper\Skipper\Skipper;
 use Rector\Skipper\Skipper\UsedSkipCollector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
+use Rector\Tests\Skipper\Skipper\Source\AnotherClassToSkip;
 
 final class UsedSkipCollectorTest extends AbstractLazyTestCase
 {
@@ -61,6 +62,32 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
         ));
 
         // unmatched skip is never collected
+        $this->assertNotContains(self::UNUSED_SKIP_MARKER, $usedSkips);
+    }
+
+    public function testCollectsMatchedPathNotRuleClassForRuleScopedSkip(): void
+    {
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            AnotherClassToSkip::class => [
+                // matched path
+                '*/someDirectory/*',
+                // sibling path that never matches
+                self::UNUSED_SKIP_MARKER,
+            ],
+        ]);
+
+        $this->skipper->shouldSkipElementAndFilePath(
+            AnotherClassToSkip::class,
+            __DIR__ . '/Fixture/someDirectory/anotherFile.php'
+        );
+
+        $usedSkips = $this->usedSkipCollector->provide();
+
+        // the specific matched path is collected, not the rule class
+        $this->assertContains('*/someDirectory/*', $usedSkips);
+        $this->assertNotContains(AnotherClassToSkip::class, $usedSkips);
+
+        // the unmatched sibling path under the same rule is never collected
         $this->assertNotContains(self::UNUSED_SKIP_MARKER, $usedSkips);
     }
 }

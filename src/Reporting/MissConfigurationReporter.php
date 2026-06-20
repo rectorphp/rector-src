@@ -36,8 +36,9 @@ final readonly class MissConfigurationReporter
             return;
         }
 
-        // only concrete path-scoped skips are trackable at runtime; skip-everywhere rule skips
-        // (null path) are forgotten from the container at boot, so they never reach the skipper
+        // rule-scoped path skips are trackable at runtime; skip-everywhere rule skips
+        // (null path) are forgotten from the container at boot, so they never reach the skipper.
+        // rule-scoped paths are intentional, so they are reported even as mask paths
         $skippedClassPaths = [];
         foreach ($this->skippedClassResolver->resolve() as $paths) {
             if ($paths === null) {
@@ -47,13 +48,13 @@ final readonly class MissConfigurationReporter
             $skippedClassPaths = [...$skippedClassPaths, ...$paths];
         }
 
-        $configuredSkips = [...$skippedClassPaths, ...$this->skippedPathsResolver->resolve()];
-
-        // skip mask paths like "*/some/*"; they are hard to spot and report false positives
-        $configuredSkips = array_filter(
-            $configuredSkips,
+        // global mask paths like "*/some/*" are hard to spot and report false positives, skip them
+        $globalPaths = array_filter(
+            $this->skippedPathsResolver->resolve(),
             static fn (string $skip): bool => ! str_contains($skip, '*')
         );
+
+        $configuredSkips = [...$skippedClassPaths, ...$globalPaths];
 
         $unusedSkips = array_values(array_diff($configuredSkips, $processResult->getUsedSkips()));
         if ($unusedSkips === []) {

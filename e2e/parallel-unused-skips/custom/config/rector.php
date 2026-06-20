@@ -14,12 +14,13 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->reportUnusedSkips();
 
-    // two concrete paths under one rule: first matched in the worker (proves parallel aggregation),
-    // second never matches and must be reported per-path as unused
+    // two rule-scoped masks: first matched in the worker (proves parallel aggregation),
+    // second never matches and must be reported per-path as unused.
+    // a global mask "*/NonexistentGlobal/*" would NOT be reported, only rule-scoped ones are
     $rectorConfig->skip([
         SimplifyUselessVariableRector::class => [
-            dirname(__DIR__, 2) . '/src/SomeClass.php',
-            dirname(__DIR__, 2) . '/src/NonexistentUnused.php',
+            '*/src/*',
+            '*/NonexistentUnused/*',
         ],
     ]);
 };

@@ -9,6 +9,9 @@ use Rector\Skipper\FileSystem\PathNormalizer;
 use Rector\Skipper\Fnmatcher;
 use Rector\Skipper\RealpathMatcher;
 
+/**
+ * @see \Rector\Tests\Skipper\Matcher\FileInfoMatcherTest
+ */
 final readonly class FileInfoMatcher
 {
     public function __construct(
