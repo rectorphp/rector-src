@@ -28,6 +28,9 @@ final class RuleUsingFunctionRector extends AbstractRector
         return [Function_::class];
     }
 
+    /**
+     * @param Function_ $node
+     */
     public function refactor(Node $node): Node
     {
         return $node;

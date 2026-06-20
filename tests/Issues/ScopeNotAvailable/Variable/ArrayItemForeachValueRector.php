@@ -26,6 +26,9 @@ final class ArrayItemForeachValueRector extends AbstractRector
         return [Variable::class];
     }
 
+    /**
+     * @param Variable $node
+     */
     public function refactor(Node $node): Node
     {
         return $node;
