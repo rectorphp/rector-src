@@ -112,6 +112,11 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
             return null;
         }
 
+        if ($node instanceof Variable && $node->name instanceof Expr) {
+            $node->setAttribute(AttributeKey::IS_DYNAMIC_VARIABLE, true);
+            return null;
+        }
+
         $this->processContextInClass($node);
         return null;
     }
