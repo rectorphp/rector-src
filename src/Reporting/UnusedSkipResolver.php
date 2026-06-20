@@ -6,6 +6,7 @@ namespace Rector\Reporting;
 
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilePathHelper;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Rector\ValueObject\ProcessResult;
@@ -18,6 +19,7 @@ final readonly class UnusedSkipResolver
     public function __construct(
         private SkippedClassResolver $skippedClassResolver,
         private SkippedPathsResolver $skippedPathsResolver,
+        private FilePathHelper $filePathHelper,
     ) {
     }
 
@@ -47,7 +49,7 @@ final readonly class UnusedSkipResolver
 
             // rule-scoped paths are intentional, so they are reported even as mask paths
             foreach ($paths as $path) {
-                $skipDisplaysByPath[$path] = $rectorClass . ' => ' . $path;
+                $skipDisplaysByPath[$path] = $rectorClass . ' => ' . $this->filePathHelper->relativePath($path);
             }
         }
 
@@ -57,7 +59,7 @@ final readonly class UnusedSkipResolver
                 continue;
             }
 
-            $skipDisplaysByPath[$globalPath] = $globalPath;
+            $skipDisplaysByPath[$globalPath] = $this->filePathHelper->relativePath($globalPath);
         }
 
         $usedSkips = $processResult->getUsedSkips();
