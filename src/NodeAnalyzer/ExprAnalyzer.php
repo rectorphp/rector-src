@@ -171,10 +171,6 @@ final readonly class ExprAnalyzer
 
         $definedVariables = $scope->getDefinedVariables();
         foreach ($definedVariables as $definedVariable) {
-            if (! $scope->hasVariableType($definedVariable)->yes()) {
-                continue;
-            }
-
             $variableType = $scope->getVariableType($definedVariable);
             if ($variableType instanceof ConstantStringType
                 && in_array($variableType->getValue(), $definedVariables, true)) {
