@@ -21,7 +21,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MissConfigurationReporterTest extends AbstractLazyTestCase
 {
-    private const string UNUSED_GLOB = '*/UnusedGlobMarker/*';
+    private const string UNUSED_ENTITY_PATH = '/app/bundles/UserBundle/Entity';
+
+    private const string USED_ENTITY_PATH = '/app/bundles/AdminBundle/Entity';
+
+    private const string MASK_PATH = '*/SomeMask/*';
 
     private BufferedOutput $bufferedOutput;
 
@@ -44,12 +48,12 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::SKIP, [
             // skip-everywhere rule skip - forgotten at boot, not trackable, must be excluded
             ThreeMan::class,
-            // path-scoped class skip, never matched - must be reported
-            FifthElement::class => ['*/some/*'],
-            // path-scoped class skip, matched - must not be reported
-            AnotherClassToSkip::class => ['*/other/*'],
-            // glob path skip, never matched - must be reported
-            self::UNUSED_GLOB,
+            // concrete path-scoped class skip, never matched - must be reported
+            FifthElement::class => [self::UNUSED_ENTITY_PATH],
+            // concrete path-scoped class skip, matched - must not be reported
+            AnotherClassToSkip::class => [self::USED_ENTITY_PATH],
+            // mask path skip - hard to spot, false-positive prone, must not be reported
+            self::MASK_PATH,
         ]);
     }
 
@@ -63,20 +67,23 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
 
-        $processResult = new ProcessResult([], [], 0, [AnotherClassToSkip::class]);
+        // matched path is marked used by its concrete path, not by the rule class
+        $processResult = new ProcessResult([], [], 0, [self::USED_ENTITY_PATH]);
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
         $output = $this->bufferedOutput->fetch();
 
-        // unused, trackable skips are reported
-        $this->assertStringContainsString('FifthElement', $output);
-        $this->assertStringContainsString('UnusedGlobMarker', $output);
+        // unused concrete path is reported by path, not rule class
+        $this->assertStringContainsString('UserBundle', $output);
+
+        // matched concrete path is excluded
+        $this->assertStringNotContainsString('AdminBundle', $output);
+
+        // mask path is excluded (hard to spot, false-positive prone)
+        $this->assertStringNotContainsString('SomeMask', $output);
 
         // skip-everywhere rule skip is excluded (not trackable at runtime)
         $this->assertStringNotContainsString('ThreeMan', $output);
-
-        // matched skip is excluded
-        $this->assertStringNotContainsString('AnotherClassToSkip', $output);
     }
 
     public function testReportsNothingWhenDisabled(): void
