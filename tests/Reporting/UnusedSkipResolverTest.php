@@ -78,6 +78,25 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
         $this->assertContains(FifthElement::class . ' => src/Reporting/UnusedSkipResolver.php', $unusedSkips);
     }
 
+    public function testGroupsMultipleUnusedPathsUnderRule(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+
+        $firstPath = getcwd() . '/src/Reporting/UnusedSkipResolver.php';
+        $secondPath = getcwd() . '/src/Reporting/MissConfigurationReporter.php';
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            FifthElement::class => [$firstPath, $secondPath],
+        ]);
+
+        $unusedSkips = $this->unusedSkipResolver->resolve(new ProcessResult([], [], 0, []));
+
+        // multiple unused paths are grouped under their rule, not repeated per line
+        $this->assertContains(
+            FifthElement::class . ' => [ src/Reporting/UnusedSkipResolver.php' . "\n    " . 'src/Reporting/MissConfigurationReporter.php ]',
+            $unusedSkips
+        );
+    }
+
     public function testResolvesNothingWhenDisabled(): void
     {
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, false);
