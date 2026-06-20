@@ -61,7 +61,7 @@ if ($errorMessages !== []) {
 }
 
 $symfonyStyle->writeln('Scanned paths:');
-$symfonyStyle->listing(array_map(static fn (string $directory): string => realpath($directory), $ruleDirectories));
+$symfonyStyle->listing(array_map(realpath(...), $ruleDirectories));
 
 $symfonyStyle->success(sprintf('All %d Rector rule definitions are valid!', count($rectorClasses)));
 
