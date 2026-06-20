@@ -101,6 +101,10 @@ final class ApplicationFileProcessor
 
         $processResult->addSystemErrors($this->systemErrors);
 
+        // path-only skips are matched in the main process while finding files; in parallel runs the
+        // result comes from workers only, so merge those marks back in to avoid false "unused skip"
+        $processResult->addUsedSkips($this->usedSkipCollector->provide());
+
         $this->restoreErrorHandler();
 
         return $processResult;

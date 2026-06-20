@@ -63,6 +63,21 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
         $this->assertNotContains(ThreeMan::class, $unusedSkips);
     }
 
+    public function testReportsUnusedSkipAsRelativePath(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+
+        $absolutePath = getcwd() . '/src/Reporting/UnusedSkipResolver.php';
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            FifthElement::class => [$absolutePath],
+        ]);
+
+        $unusedSkips = $this->unusedSkipResolver->resolve(new ProcessResult([], [], 0, []));
+
+        // the absolute path is shortened to a relative one, matching the "->withSkip()" syntax
+        $this->assertContains(FifthElement::class . ' => src/Reporting/UnusedSkipResolver.php', $unusedSkips);
+    }
+
     public function testResolvesNothingWhenDisabled(): void
     {
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, false);
