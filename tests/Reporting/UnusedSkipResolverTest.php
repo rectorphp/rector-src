@@ -55,11 +55,11 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
         $processResult = new ProcessResult([], [], 0, [self::USED_RULE_MASK]);
         $unusedSkips = $this->unusedSkipResolver->resolve($processResult);
 
-        // rule-scoped unused skip is reported as "rule => path"
-        $this->assertContains(FifthElement::class . ' => ' . self::UNUSED_RULE_MASK, $unusedSkips);
+        // rule-scoped unused skip is reported as "rule:" with the path nested below
+        $this->assertContains(FifthElement::class . ':' . "\n     * " . self::UNUSED_RULE_MASK, $unusedSkips);
 
         // matched rule-scoped skip, global mask and skip-everywhere rule are excluded
-        $this->assertNotContains(AnotherClassToSkip::class . ' => ' . self::USED_RULE_MASK, $unusedSkips);
+        $this->assertNotContains(AnotherClassToSkip::class . ':' . "\n     * " . self::USED_RULE_MASK, $unusedSkips);
         $this->assertNotContains(self::GLOBAL_MASK, $unusedSkips);
         $this->assertNotContains(ThreeMan::class, $unusedSkips);
     }
@@ -76,7 +76,10 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
         $unusedSkips = $this->unusedSkipResolver->resolve(new ProcessResult([], [], 0, []));
 
         // the absolute path is shortened to a relative one, matching the "->withSkip()" syntax
-        $this->assertContains(FifthElement::class . ' => src/Reporting/UnusedSkipResolver.php', $unusedSkips);
+        $this->assertContains(
+            FifthElement::class . ':' . "\n     * " . 'src/Reporting/UnusedSkipResolver.php',
+            $unusedSkips
+        );
     }
 
     public function testGroupsMultipleUnusedPathsUnderRule(): void
@@ -91,9 +94,9 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
 
         $unusedSkips = $this->unusedSkipResolver->resolve(new ProcessResult([], [], 0, []));
 
-        // multiple unused paths are grouped under their rule, not repeated per line
+        // multiple unused paths are grouped under their rule, each nested on its own line
         $this->assertContains(
-            FifthElement::class . ' => [ src/Reporting/UnusedSkipResolver.php' . "\n    " . 'src/Reporting/MissConfigurationReporter.php ]',
+            FifthElement::class . ':' . "\n     * " . 'src/Reporting/UnusedSkipResolver.php' . "\n     * " . 'src/Reporting/MissConfigurationReporter.php',
             $unusedSkips
         );
     }
