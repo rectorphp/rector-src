@@ -13,7 +13,6 @@
         <testsuite name="main">
             <directory>tests</directory>
             <directory>rules-tests</directory>
-            <directory>utils-tests</directory>
             <directory>utils/phpstan/tests</directory>
             <exclude>rules-tests/Php83/Rector/ClassMethod/AddOverrideAttributeToOverriddenMethodsRector/Source/SomeAbstractTest.php</exclude>
         </testsuite>

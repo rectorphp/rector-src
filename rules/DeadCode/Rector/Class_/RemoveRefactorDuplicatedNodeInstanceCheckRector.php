@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Utils\Rector;
+namespace Rector\DeadCode\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -23,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Utils\Tests\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector\RemoveRefactorDuplicatedNodeInstanceCheckRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\Class_\RemoveRefactorDuplicatedNodeInstanceCheckRector\RemoveRefactorDuplicatedNodeInstanceCheckRectorTest
  */
 final class RemoveRefactorDuplicatedNodeInstanceCheckRector extends AbstractRector
 {
