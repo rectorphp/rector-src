@@ -113,9 +113,11 @@ final class ComposerJsonPackageVersionResolver
                 if (! is_string($packageName)) {
                     continue;
                 }
+
                 if (! is_string($versionConstraint)) {
                     continue;
                 }
+
                 $packageVersionConstraints[$packageName] = $versionConstraint;
             }
         }
