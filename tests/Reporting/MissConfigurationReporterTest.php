@@ -21,11 +21,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MissConfigurationReporterTest extends AbstractLazyTestCase
 {
-    private const string UNUSED_ENTITY_PATH = '/app/bundles/UserBundle/Entity';
+    private const string UNUSED_RULE_MASK = '*/dead-rule/*';
 
-    private const string USED_ENTITY_PATH = '/app/bundles/AdminBundle/Entity';
+    private const string USED_RULE_MASK = '*/matched-rule/*';
 
-    private const string MASK_PATH = '*/SomeMask/*';
+    private const string GLOBAL_MASK = '*/global-mask/*';
 
     private BufferedOutput $bufferedOutput;
 
@@ -48,12 +48,12 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::SKIP, [
             // skip-everywhere rule skip - forgotten at boot, not trackable, must be excluded
             ThreeMan::class,
-            // concrete path-scoped class skip, never matched - must be reported
-            FifthElement::class => [self::UNUSED_ENTITY_PATH],
-            // concrete path-scoped class skip, matched - must not be reported
-            AnotherClassToSkip::class => [self::USED_ENTITY_PATH],
-            // mask path skip - hard to spot, false-positive prone, must not be reported
-            self::MASK_PATH,
+            // rule-scoped path skip, never matched - intentional, must be reported even as mask
+            FifthElement::class => [self::UNUSED_RULE_MASK],
+            // rule-scoped path skip, matched - must not be reported
+            AnotherClassToSkip::class => [self::USED_RULE_MASK],
+            // global mask path skip - hard to spot, false-positive prone, must not be reported
+            self::GLOBAL_MASK,
         ]);
     }
 
@@ -67,20 +67,21 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
 
-        // matched path is marked used by its concrete path, not by the rule class
-        $processResult = new ProcessResult([], [], 0, [self::USED_ENTITY_PATH]);
+        // matched rule-scoped path is marked used by its path, not by the rule class
+        $processResult = new ProcessResult([], [], 0, [self::USED_RULE_MASK]);
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
         $output = $this->bufferedOutput->fetch();
 
-        // unused concrete path is reported by path, not rule class
-        $this->assertStringContainsString('UserBundle', $output);
+        // unused rule-scoped path is reported by path, not rule class
+        $this->assertStringContainsString('dead-rule', $output);
+        $this->assertStringNotContainsString('FifthElement', $output);
 
-        // matched concrete path is excluded
-        $this->assertStringNotContainsString('AdminBundle', $output);
+        // matched rule-scoped path is excluded
+        $this->assertStringNotContainsString('matched-rule', $output);
 
-        // mask path is excluded (hard to spot, false-positive prone)
-        $this->assertStringNotContainsString('SomeMask', $output);
+        // global mask path is excluded (hard to spot, false-positive prone)
+        $this->assertStringNotContainsString('global-mask', $output);
 
         // skip-everywhere rule skip is excluded (not trackable at runtime)
         $this->assertStringNotContainsString('ThreeMan', $output);
