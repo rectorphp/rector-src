@@ -14,7 +14,7 @@ Project-specific conventions for `rector/rector-src`. See `CONTRIBUTING.md` for 
 - `rules/` — built-in Rector rules, also under `Rector\` namespace (PSR-4 maps both `src/` and `rules/` to `Rector\`).
 - `rules-tests/` — tests for `rules/`, namespace `Rector\Tests\`.
 - `tests/` — tests for `src/`, same `Rector\Tests\` namespace.
-- `utils/` + `utils-tests/` — internal dev tooling (`Rector\Utils\`).
+- `utils/` — internal dev tooling (`Rector\Utils\`).
 - `config/` — config sets/presets (kept as plain class-string literals; do not let Rector rewrite them).
 - `build/target-repository/docs` — documentation lives here, not in repo root.
 

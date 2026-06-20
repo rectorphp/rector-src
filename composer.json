@@ -86,7 +86,6 @@
                 "rules-tests",
                 "tests"
             ],
-            "Rector\\Utils\\Tests\\": "utils-tests",
             "Rector\\Utils\\PHPStan\\Tests\\": "utils/phpstan/tests",
             "E2e\\Parallel\\Reflection\\Resolver\\": [
                 "e2e/parallel-reflection-resolver/src/",

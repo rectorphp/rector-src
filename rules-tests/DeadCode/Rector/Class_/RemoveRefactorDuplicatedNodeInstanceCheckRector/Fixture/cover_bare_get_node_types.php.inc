@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Utils\Tests\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Class_\RemoveRefactorDuplicatedNodeInstanceCheckRector\Fixture;
 
 use PhpParser\Node;
 use Rector\Rector\AbstractRector;
@@ -29,7 +29,7 @@ final class CoverBareGetNodeTypes extends AbstractRector
 -----
 <?php
 
-namespace Rector\Utils\Tests\Rector\RemoveRefactorDuplicatedNodeInstanceCheckRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Class_\RemoveRefactorDuplicatedNodeInstanceCheckRector\Fixture;
 
 use PhpParser\Node;
 use Rector\Rector\AbstractRector;
