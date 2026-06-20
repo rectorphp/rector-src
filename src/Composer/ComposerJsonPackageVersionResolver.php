@@ -19,6 +19,16 @@ final class ComposerJsonPackageVersionResolver
      */
     private ?array $packageVersionConstraints = null;
 
+    /**
+     * @var array<string, bool>
+     */
+    private array $packageMultiMajorVersions = [];
+
+    /**
+     * @var array<string, null|string>
+     */
+    private array $packageNamesByFilePath = [];
+
     private readonly string $composerJsonFilePath;
 
     public function __construct(?string $composerJsonFilePath = null)
@@ -33,6 +43,13 @@ final class ComposerJsonPackageVersionResolver
             return false;
         }
 
+        return $this->packageMultiMajorVersions[$packageName] ??= $this->resolveHasPackageMultiMajorVersions(
+            $packageName
+        );
+    }
+
+    private function resolveHasPackageMultiMajorVersions(string $packageName): bool
+    {
         $versionConstraint = $this->resolvePackageVersionConstraints()[$packageName] ?? null;
         if ($versionConstraint === null) {
             return false;
@@ -70,21 +87,25 @@ final class ComposerJsonPackageVersionResolver
 
     private function resolvePackageName(string $filePath): ?string
     {
+        if (array_key_exists($filePath, $this->packageNamesByFilePath)) {
+            return $this->packageNamesByFilePath[$filePath];
+        }
+
         $normalizedFilePath = PathNormalizer::normalize($filePath);
         $vendorPosition = strpos($normalizedFilePath, '/vendor/');
 
         if ($vendorPosition === false) {
-            return null;
+            return $this->packageNamesByFilePath[$filePath] = null;
         }
 
         $vendorRelativePath = substr($normalizedFilePath, $vendorPosition + strlen('/vendor/'));
         $pathParts = explode('/', $vendorRelativePath);
 
         if (count($pathParts) < 2) {
-            return null;
+            return $this->packageNamesByFilePath[$filePath] = null;
         }
 
-        return $pathParts[0] . '/' . $pathParts[1];
+        return $this->packageNamesByFilePath[$filePath] = $pathParts[0] . '/' . $pathParts[1];
     }
 
     /**

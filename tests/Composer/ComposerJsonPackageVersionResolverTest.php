@@ -21,6 +21,18 @@ final class ComposerJsonPackageVersionResolverTest extends TestCase
         );
 
         $this->assertSame($expected, $hasPackageMultiMajorVersions);
+        $this->assertSame(
+            $expected,
+            $composerJsonPackageVersionResolver->hasPackageMultiMajorVersions(
+                '/project/vendor/monolog/monolog/src/Logger.php'
+            )
+        );
+        $this->assertSame(
+            $expected,
+            $composerJsonPackageVersionResolver->hasPackageMultiMajorVersions(
+                '/project/vendor/monolog/monolog/src/Handler/StreamHandler.php'
+            )
+        );
     }
 
     /**
