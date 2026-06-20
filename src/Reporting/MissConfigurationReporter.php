@@ -13,6 +13,9 @@ use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @see \Rector\Tests\Reporting\MissConfigurationReporterTest
+ */
 final readonly class MissConfigurationReporter
 {
     public function __construct(

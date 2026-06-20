@@ -15,10 +15,8 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
 {
     /**
      * Uniquely named on purpose, so the shared collector is never polluted by another test.
-     *
-     * @var string
      */
-    private const UNUSED_SKIP_MARKER = '*/UniqueUnusedSkipMarker/*';
+    private const string UNUSED_SKIP_MARKER = '*/UniqueUnusedSkipMarker/*';
 
     private Skipper $skipper;
 

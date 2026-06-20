@@ -21,7 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MissConfigurationReporterTest extends AbstractLazyTestCase
 {
-    private const UNUSED_GLOB = '*/UnusedGlobMarker/*';
+    private const string UNUSED_GLOB = '*/UnusedGlobMarker/*';
 
     private BufferedOutput $bufferedOutput;
 
