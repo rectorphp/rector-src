@@ -50,6 +50,7 @@ use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\UnionType;
@@ -166,6 +167,19 @@ final readonly class ExprAnalyzer
 
         if (! $scope->hasVariableType((string) $this->nodeNameResolver->getName($expr))->yes()) {
             return true;
+        }
+
+        $definedVariables = $scope->getDefinedVariables();
+        foreach ($definedVariables as $definedVariable) {
+            if (! $scope->hasVariableType($definedVariable)->yes()) {
+                continue;
+            }
+
+            $variableType = $scope->getVariableType($definedVariable);
+            if ($variableType instanceof ConstantStringType
+                && in_array($variableType->getValue(), $definedVariables, true)) {
+                return true;
+            }
         }
 
         if ($nativeType instanceof UnionType) {

@@ -19,7 +19,6 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\IntersectionType;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\NodeAnalyzer\ExprAnalyzer;
@@ -163,21 +162,6 @@ CODE_SAMPLE
                         return true;
                     }
                 }
-            }
-        }
-
-        $scope = ScopeFetcher::fetch($expr);
-        $definedVariables = $scope->getDefinedVariables();
-
-        foreach ($definedVariables as $definedVariable) {
-            if (! $scope->hasVariableType($definedVariable)->yes()) {
-                continue;
-            }
-
-            $variableType = $scope->getVariableType($definedVariable);
-            if ($variableType instanceof ConstantStringType
-                && in_array($variableType->getValue(), $definedVariables, true)) {
-                return true;
             }
         }
 
