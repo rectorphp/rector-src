@@ -28,6 +28,9 @@ final class RuleUsingClassLikeRector extends AbstractRector
         return [ClassLike::class];
     }
 
+    /**
+     * @param ClassLike $node
+     */
     public function refactor(Node $node): Node
     {
         return $node;
