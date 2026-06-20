@@ -141,7 +141,7 @@ final readonly class ExprAnalyzer
     public function isNonTypedFromParam(Expr $expr): bool
     {
         if (! $expr instanceof Variable) {
-            return false;
+            return true;
         }
 
         $scope = $expr->getAttribute(AttributeKey::SCOPE);
