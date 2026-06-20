@@ -11,13 +11,20 @@ final readonly class PathSkipper
 {
     public function __construct(
         private FileInfoMatcher $fileInfoMatcher,
-        private SkippedPathsResolver $skippedPathsResolver
+        private SkippedPathsResolver $skippedPathsResolver,
+        private UsedSkipCollector $usedSkipCollector
     ) {
     }
 
     public function shouldSkip(string $filePath): bool
     {
-        $skippedPaths = $this->skippedPathsResolver->resolve();
-        return $this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedPaths);
+        foreach ($this->skippedPathsResolver->resolve() as $skippedPath) {
+            if ($this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, [$skippedPath])) {
+                $this->usedSkipCollector->markUsed($skippedPath);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

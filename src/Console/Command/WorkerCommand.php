@@ -166,6 +166,7 @@ final class WorkerCommand extends Command
                     Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
                     Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
                     Bridge::TOTAL_CHANGED => $processResult->getTotalChanged(),
+                    Bridge::USED_SKIPS => $processResult->getUsedSkips(),
                 ],
             ]);
         });

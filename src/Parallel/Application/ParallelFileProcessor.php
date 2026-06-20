@@ -75,6 +75,9 @@ final class ParallelFileProcessor
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
+        /** @var array<string, true> $usedSkips */
+        $usedSkips = [];
+
         $tcpServer = new TcpServer('127.0.0.1:0', $streamSelectLoop);
         $this->processPool = new ProcessPool($tcpServer);
 
@@ -143,6 +146,7 @@ final class ParallelFileProcessor
         $processSpawner = function () use (
             &$systemErrors,
             &$fileDiffs,
+            &$usedSkips,
             &$jobs,
             $postFileCallback,
             &$systemErrorsCount,
@@ -176,6 +180,7 @@ final class ParallelFileProcessor
                     $parallelProcess,
                     &$systemErrors,
                     &$fileDiffs,
+                    &$usedSkips,
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
@@ -190,9 +195,14 @@ final class ParallelFileProcessor
                      *      system_errors: mixed[],
                      *      file_diffs: array<string, mixed>,
                      *      files_count: int,
-                     *      system_errors_count: int
+                     *      system_errors_count: int,
+                     *      used_skips: string[]
                      * } $json */
                     $totalChanged += $json[Bridge::TOTAL_CHANGED];
+
+                    foreach ($json[Bridge::USED_SKIPS] as $usedSkip) {
+                        $usedSkips[$usedSkip] = true;
+                    }
 
                     // decode arrays to objects
                     foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
@@ -276,6 +286,6 @@ final class ParallelFileProcessor
             ));
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged);
+        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged, array_keys($usedSkips));
     }
 }

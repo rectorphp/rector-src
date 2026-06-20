@@ -8,14 +8,55 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
+use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
+use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
+use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @see \Rector\Tests\Reporting\MissConfigurationReporterTest
+ */
 final readonly class MissConfigurationReporter
 {
     public function __construct(
         private SymfonyStyle $symfonyStyle,
         private VendorMissAnalyseGuard $vendorMissAnalyseGuard,
+        private SkippedClassResolver $skippedClassResolver,
+        private SkippedPathsResolver $skippedPathsResolver,
     ) {
+    }
+
+    /**
+     * Reports skips configured via "->withSkip()" that never matched any element during the run.
+     * Enabled with "->reportUnusedSkips()".
+     */
+    public function reportUnusedSkips(ProcessResult $processResult): void
+    {
+        if (! SimpleParameterProvider::provideBoolParameter(Option::REPORT_UNUSED_SKIPS, false)) {
+            return;
+        }
+
+        // only path-scoped class skips are trackable at runtime; skip-everywhere rule skips
+        // (null path) are forgotten from the container at boot, so they never reach the skipper
+        $pathScopedClassSkips = array_keys(array_filter(
+            $this->skippedClassResolver->resolve(),
+            static fn (?array $paths): bool => $paths !== null
+        ));
+
+        $configuredSkips = [...$pathScopedClassSkips, ...$this->skippedPathsResolver->resolve()];
+
+        $unusedSkips = array_values(array_diff($configuredSkips, $processResult->getUsedSkips()));
+        if ($unusedSkips === []) {
+            return;
+        }
+
+        $this->symfonyStyle->warning(sprintf(
+            '%s never matched any element. You can remove %s from "->withSkip()"',
+            count($unusedSkips) > 1 ? 'These skips are unused, they' : 'This skip is unused, it',
+            count($unusedSkips) > 1 ? 'them' : 'it'
+        ));
+
+        $this->symfonyStyle->listing($unusedSkips);
     }
 
     public function reportSkippedNeverRegisteredRules(): void

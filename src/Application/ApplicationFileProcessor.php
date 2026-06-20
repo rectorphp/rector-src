@@ -14,6 +14,7 @@ use Rector\FileSystem\FilesFinder;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\PhpParser\Parser\ParserErrors;
 use Rector\Reporting\MissConfigurationReporter;
+use Rector\Skipper\Skipper\UsedSkipCollector;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\Util\ArrayParametersMerger;
 use Rector\ValueObject\Application\File;
@@ -49,6 +50,7 @@ final class ApplicationFileProcessor
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
+        private readonly UsedSkipCollector $usedSkipCollector,
     ) {
     }
 
@@ -161,7 +163,7 @@ final class ApplicationFileProcessor
             }
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged);
+        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged, $this->usedSkipCollector->provide());
     }
 
     private function processFile(File $file, Configuration $configuration): FileProcessResult

@@ -20,4 +20,6 @@ final class Bridge
     public const string FILES_COUNT = 'files_count';
 
     public const string TOTAL_CHANGED = 'total_changed';
+
+    public const string USED_SKIPS = 'used_skips';
 }
