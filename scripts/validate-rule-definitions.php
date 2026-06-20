@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 use Rector\Console\ExitCode;
 use Rector\Scripts\Finder\RectorClassFinder;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+$symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+
+// core rules + all installed rector extensions (rector-doctrine, rector-symfony, rector-phpunit, ...)
+$ruleDirectories = array_merge(
+    [__DIR__ . '/../rules'],
+    glob(__DIR__ . '/../vendor/rector/rector-*', GLOB_ONLYDIR) ?: []
+);
+
 $rectorClassFinder = new RectorClassFinder();
-$rectorClasses = $rectorClassFinder->find([
-    __DIR__ . '/../rules',
-    __DIR__ . '/../vendor/rector/rector-doctrine',
-    __DIR__ . '/../vendor/rector/rector-phpunit',
-    __DIR__ . '/../vendor/rector/rector-symfony',
-    __DIR__ . '/../vendor/rector/rector-downgrade-php',
-]);
+$rectorClasses = $rectorClassFinder->find($ruleDirectories);
 
 $errorMessages = [];
 
@@ -49,14 +54,15 @@ foreach ($rectorClasses as $rectorClass) {
 }
 
 if ($errorMessages !== []) {
-    echo sprintf("Found %d rule definition error(s):\n\n", count($errorMessages));
-    foreach ($errorMessages as $errorMessage) {
-        echo sprintf("- %s\n", $errorMessage);
-    }
+    $symfonyStyle->listing($errorMessages);
+    $symfonyStyle->error(sprintf('Found %d rule definition error(s), see above', count($errorMessages)));
 
     exit(ExitCode::FAILURE);
 }
 
-echo sprintf("All %d Rector rule definitions are valid!\n", count($rectorClasses));
+$symfonyStyle->writeln('Scanned paths:');
+$symfonyStyle->listing(array_map(static fn (string $directory): string => realpath($directory), $ruleDirectories));
+
+$symfonyStyle->success(sprintf('All %d Rector rule definitions are valid!', count($rectorClasses)));
 
 exit(ExitCode::SUCCESS);
