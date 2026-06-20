@@ -115,7 +115,6 @@ final class Option
      * look falsely unused and would produce many false positives.
      *
      * @internal
-     * @var string
      */
     public const string IS_RUN_NARROWED = 'is_run_narrowed';
 
