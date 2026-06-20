@@ -3,4 +3,4 @@
  [WARNING] This skip is unused, it never matched any element. You can remove it
            from "->withSkip()"
 
- * */NonexistentUnused/*
+ * Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector => */NonexistentUnused/*

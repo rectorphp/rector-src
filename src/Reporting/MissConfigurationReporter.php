@@ -36,27 +36,40 @@ final readonly class MissConfigurationReporter
             return;
         }
 
-        // rule-scoped path skips are trackable at runtime; skip-everywhere rule skips
-        // (null path) are forgotten from the container at boot, so they never reach the skipper.
-        // rule-scoped paths are intentional, so they are reported even as mask paths
-        $skippedClassPaths = [];
-        foreach ($this->skippedClassResolver->resolve() as $paths) {
+        // map of trackable skip path => human-readable display; skips are tracked at runtime by
+        // their path, but rule-scoped ones are printed as "rule => path" so the user knows exactly
+        // what to remove. Skip-everywhere rule skips (null path) are forgotten from the container
+        // at boot, so they never reach the skipper and cannot be tracked.
+        $skipDisplaysByPath = [];
+        foreach ($this->skippedClassResolver->resolve() as $rectorClass => $paths) {
             if ($paths === null) {
                 continue;
             }
 
-            $skippedClassPaths = [...$skippedClassPaths, ...$paths];
+            // rule-scoped paths are intentional, so they are reported even as mask paths
+            foreach ($paths as $path) {
+                $skipDisplaysByPath[$path] = $rectorClass . ' => ' . $path;
+            }
         }
 
         // global mask paths like "*/some/*" are hard to spot and report false positives, skip them
-        $globalPaths = array_filter(
-            $this->skippedPathsResolver->resolve(),
-            static fn (string $skip): bool => ! str_contains($skip, '*')
-        );
+        foreach ($this->skippedPathsResolver->resolve() as $globalPath) {
+            if (str_contains($globalPath, '*')) {
+                continue;
+            }
 
-        $configuredSkips = [...$skippedClassPaths, ...$globalPaths];
+            $skipDisplaysByPath[$globalPath] = $globalPath;
+        }
 
-        $unusedSkips = array_values(array_diff($configuredSkips, $processResult->getUsedSkips()));
+        $usedSkips = $processResult->getUsedSkips();
+
+        $unusedSkips = [];
+        foreach ($skipDisplaysByPath as $path => $skipDisplay) {
+            if (! in_array($path, $usedSkips, true)) {
+                $unusedSkips[] = $skipDisplay;
+            }
+        }
+
         if ($unusedSkips === []) {
             return;
         }

@@ -73,12 +73,13 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
 
         $output = $this->bufferedOutput->fetch();
 
-        // unused rule-scoped path is reported by path, not rule class
+        // unused rule-scoped path is reported as "rule => path", so both are shown
         $this->assertStringContainsString('dead-rule', $output);
-        $this->assertStringNotContainsString('FifthElement', $output);
+        $this->assertStringContainsString('FifthElement', $output);
 
         // matched rule-scoped path is excluded
         $this->assertStringNotContainsString('matched-rule', $output);
+        $this->assertStringNotContainsString('AnotherClassToSkip', $output);
 
         // global mask path is excluded (hard to spot, false-positive prone)
         $this->assertStringNotContainsString('global-mask', $output);
