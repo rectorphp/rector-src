@@ -65,8 +65,10 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
 
-        // matched rule-scoped path is marked used scoped to its rule as "class|path"
-        $processResult = new ProcessResult([], [], 0, [AnotherClassToSkip::class . '|' . self::USED_RULE_MASK]);
+        // matched rule-scoped path is marked used scoped to its rule (class => [path])
+        $processResult = new ProcessResult([], [], 0, [
+            AnotherClassToSkip::class => [self::USED_RULE_MASK],
+        ]);
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
         $output = $this->bufferedOutput->fetch();

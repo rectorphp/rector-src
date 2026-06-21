@@ -106,7 +106,7 @@ final readonly class UnusedSkipResolver
     }
 
     /**
-     * @param string[] $usedSkips
+     * @param array<string, string[]> $usedSkips
      * @return string[]
      */
     private function resolveUnusedRuleScopedSkips(array $usedSkips): array
@@ -117,9 +117,9 @@ final readonly class UnusedSkipResolver
         foreach ($this->resolveRelativePathsByClass() as $rectorClass => $relativePaths) {
             $unusedRelativePaths = [];
             foreach ($relativePaths as $path => $relativePath) {
-                // used skips are tracked scoped to their rule as "class|path", so the same path
+                // used skips are tracked scoped to their rule (class => [path]), so the same path
                 // skipped under another rule does not mark this one used (see SkipSkipper)
-                if (! in_array($rectorClass . '|' . $path, $usedSkips, true)) {
+                if (! in_array($path, $usedSkips[$rectorClass] ?? [], true)) {
                     $unusedRelativePaths[] = $relativePath;
                 }
             }
@@ -136,14 +136,15 @@ final readonly class UnusedSkipResolver
     }
 
     /**
-     * @param string[] $usedSkips
+     * @param array<string, string[]> $usedSkips
      * @return string[]
      */
     private function resolveUnusedGlobalSkips(array $usedSkips): array
     {
         $unusedSkips = [];
         foreach ($this->resolveGlobalRelativePaths() as $path => $relativePath) {
-            if (! in_array($path, $usedSkips, true)) {
+            // global path skips are tracked by their own path key, with no nested paths
+            if (! array_key_exists($path, $usedSkips)) {
                 $unusedSkips[] = $relativePath;
             }
         }

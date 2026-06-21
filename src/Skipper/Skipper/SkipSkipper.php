@@ -30,11 +30,11 @@ final readonly class SkipSkipper
                 return true;
             }
 
-            // mark the specific matched path used, scoped to its rule via "class|path" - the same
-            // path can be skipped under multiple rules, so a path-only key would mark them all used
+            // mark the specific matched path used, scoped to its rule - the same path can be skipped
+            // under multiple rules, so the path is nested under its rule, not tracked on its own
             $matchedPath = $this->fileInfoMatcher->matchPattern($filePath, $skippedFiles);
             if ($matchedPath !== null) {
-                $this->usedSkipCollector->markUsed($skippedClass . '|' . $matchedPath);
+                $this->usedSkipCollector->markUsed($skippedClass, $matchedPath);
                 return true;
             }
         }

@@ -54,15 +54,15 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
 
         $usedSkips = $this->usedSkipCollector->provide();
 
-        // matched skips are collected
-        $this->assertContains(FifthElement::class, $usedSkips);
+        // matched skips are collected as keys
+        $this->assertArrayHasKey(FifthElement::class, $usedSkips);
         $this->assertNotEmpty(array_filter(
-            $usedSkips,
+            array_keys($usedSkips),
             static fn (string $usedSkip): bool => str_ends_with($usedSkip, 'SomeSkippedPath')
         ));
 
         // unmatched skip is never collected
-        $this->assertNotContains(self::UNUSED_SKIP_MARKER, $usedSkips);
+        $this->assertArrayNotHasKey(self::UNUSED_SKIP_MARKER, $usedSkips);
     }
 
     public function testCollectsMatchedPathNotRuleClassForRuleScopedSkip(): void
@@ -83,11 +83,11 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
 
         $usedSkips = $this->usedSkipCollector->provide();
 
-        // the specific matched path is collected scoped to its rule as "class|path"
-        $this->assertContains(AnotherClassToSkip::class . '|' . '*/someDirectory/*', $usedSkips);
-        $this->assertNotContains(AnotherClassToSkip::class, $usedSkips);
+        // the specific matched path is collected nested under its rule class
+        $this->assertArrayHasKey(AnotherClassToSkip::class, $usedSkips);
+        $this->assertContains('*/someDirectory/*', $usedSkips[AnotherClassToSkip::class]);
 
         // the unmatched sibling path under the same rule is never collected
-        $this->assertNotContains(AnotherClassToSkip::class . '|' . self::UNUSED_SKIP_MARKER, $usedSkips);
+        $this->assertNotContains(self::UNUSED_SKIP_MARKER, $usedSkips[AnotherClassToSkip::class]);
     }
 }

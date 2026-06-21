@@ -53,8 +53,10 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
 
-        // used skips are tracked scoped to their rule as "class|path"
-        $processResult = new ProcessResult([], [], 0, [AnotherClassToSkip::class . '|' . self::USED_RULE_MASK]);
+        // used skips are tracked scoped to their rule (class => [path])
+        $processResult = new ProcessResult([], [], 0, [
+            AnotherClassToSkip::class => [self::USED_RULE_MASK],
+        ]);
         $unusedSkips = $this->unusedSkipResolver->resolve($processResult);
 
         // rule-scoped unused skip is reported as "rule:" with the path nested below
@@ -78,7 +80,9 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
         ]);
 
         // used skip is scoped to its rule, so the shared path stays unused under the other rule
-        $processResult = new ProcessResult([], [], 0, [AnotherClassToSkip::class . '|' . $sharedMask]);
+        $processResult = new ProcessResult([], [], 0, [
+            AnotherClassToSkip::class => [$sharedMask],
+        ]);
         $unusedSkips = $this->unusedSkipResolver->resolve($processResult);
 
         // the never-matched rule still reports its shared path as unused
