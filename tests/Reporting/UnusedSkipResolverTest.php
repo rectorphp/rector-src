@@ -53,7 +53,8 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
 
-        $processResult = new ProcessResult([], [], 0, [self::USED_RULE_MASK]);
+        // used skips are tracked scoped to their rule as "class|path"
+        $processResult = new ProcessResult([], [], 0, [AnotherClassToSkip::class . '|' . self::USED_RULE_MASK]);
         $unusedSkips = $this->unusedSkipResolver->resolve($processResult);
 
         // rule-scoped unused skip is reported as "rule:" with the path nested below
@@ -63,6 +64,28 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
         $this->assertNotContains(AnotherClassToSkip::class . ':' . "\n     * " . self::USED_RULE_MASK, $unusedSkips);
         $this->assertNotContains(self::GLOBAL_MASK, $unusedSkips);
         $this->assertNotContains(ThreeMan::class, $unusedSkips);
+    }
+
+    public function testSamePathUnderAnotherRuleDoesNotMarkSkipUsed(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+
+        $sharedMask = '*/shared-mask/*';
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            // same path skipped under two rules - only the first one actually matched a file
+            AnotherClassToSkip::class => [$sharedMask],
+            FifthElement::class => [$sharedMask],
+        ]);
+
+        // used skip is scoped to its rule, so the shared path stays unused under the other rule
+        $processResult = new ProcessResult([], [], 0, [AnotherClassToSkip::class . '|' . $sharedMask]);
+        $unusedSkips = $this->unusedSkipResolver->resolve($processResult);
+
+        // the never-matched rule still reports its shared path as unused
+        $this->assertContains(FifthElement::class . ':' . "\n     * " . $sharedMask, $unusedSkips);
+
+        // the matched rule is excluded
+        $this->assertNotContains(AnotherClassToSkip::class . ':' . "\n     * " . $sharedMask, $unusedSkips);
     }
 
     public function testReportsUnusedSkipAsRelativePath(): void
