@@ -40,7 +40,10 @@ final readonly class MissConfigurationReporter
             count($unusedSkips) > 1 ? 'them' : 'it'
         ));
 
-        $this->symfonyStyle->listing($unusedSkips);
+        // add a blank line between items, so grouped rule skips stay visually separated
+        $spacedUnusedSkips = array_map(static fn (string $unusedSkip): string => $unusedSkip . "\n", $unusedSkips);
+
+        $this->symfonyStyle->listing($spacedUnusedSkips);
     }
 
     public function reportSkippedNeverRegisteredRules(): void
