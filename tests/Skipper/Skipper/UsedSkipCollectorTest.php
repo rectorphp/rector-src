@@ -83,11 +83,11 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
 
         $usedSkips = $this->usedSkipCollector->provide();
 
-        // the specific matched path is collected, not the rule class
-        $this->assertContains('*/someDirectory/*', $usedSkips);
+        // the specific matched path is collected scoped to its rule as "class|path"
+        $this->assertContains(AnotherClassToSkip::class . '|' . '*/someDirectory/*', $usedSkips);
         $this->assertNotContains(AnotherClassToSkip::class, $usedSkips);
 
         // the unmatched sibling path under the same rule is never collected
-        $this->assertNotContains(self::UNUSED_SKIP_MARKER, $usedSkips);
+        $this->assertNotContains(AnotherClassToSkip::class . '|' . self::UNUSED_SKIP_MARKER, $usedSkips);
     }
 }
