@@ -46,6 +46,7 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::SKIP, []);
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, false);
         SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, false);
+        SimpleParameterProvider::setParameter(Option::IS_CACHED_RUN, false);
     }
 
     public function testResolvesUnusedSkipsAsRuleAndPath(): void
@@ -108,6 +109,18 @@ final class UnusedSkipResolverTest extends AbstractLazyTestCase
 
         // narrowed run (cli paths, "--only", "--only-suffix") only touches part of the codebase,
         // so skips outside that scope are not false positives
+        $processResult = new ProcessResult([], [], 0, []);
+
+        $this->assertSame([], $this->unusedSkipResolver->resolve($processResult));
+    }
+
+    public function testResolvesNothingWhenRunIsCached(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+        SimpleParameterProvider::setParameter(Option::IS_CACHED_RUN, true);
+
+        // a cached run only re-processes changed files, so skips on cached files never match and
+        // are not false positives
         $processResult = new ProcessResult([], [], 0, []);
 
         $this->assertSame([], $this->unusedSkipResolver->resolve($processResult));
