@@ -7,6 +7,7 @@ namespace Rector\Skipper\SkipVoter;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\Skipper\SkipSkipper;
+use Rector\Skipper\ValueObject\SkipMatch;
 
 final readonly class ClassSkipVoter
 {
@@ -26,9 +27,9 @@ final readonly class ClassSkipVoter
         return $this->reflectionProvider->hasClass($element);
     }
 
-    public function shouldSkip(string | object $element, string $filePath): bool
+    public function matchSkip(string | object $element, string $filePath): ?SkipMatch
     {
         $skippedClasses = $this->skippedClassResolver->resolve();
-        return $this->skipSkipper->doesMatchSkip($element, $filePath, $skippedClasses);
+        return $this->skipSkipper->match($element, $filePath, $skippedClasses);
     }
 }
