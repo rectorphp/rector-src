@@ -145,18 +145,20 @@ CODE_SAMPLE;
         // whether it would actually have changed anything. Only a skip that prevents a real change
         // counts as used; the original node is left untouched, so the file stays skipped either way.
         $skipMatch = $this->skipper->matchSkip($this, $filePath);
+        $nodeToRefactor = $skipMatch instanceof SkipMatch ? $this->cloneNode($node) : $node;
+
+        // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
+
+        $refactoredNodeOrState = $this->refactor($nodeToRefactor);
+
         if ($skipMatch instanceof SkipMatch) {
-            if ($this->refactor($this->cloneNode($node)) !== null) {
+            if ($refactoredNodeOrState !== null) {
                 $this->skipper->markSkipUsed($skipMatch);
             }
 
             return null;
         }
-
-        // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
-
-        $refactoredNodeOrState = $this->refactor($node);
 
         // nothing to change → continue
         if ($refactoredNodeOrState === null) {
