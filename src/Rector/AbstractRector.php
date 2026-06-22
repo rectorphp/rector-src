@@ -281,7 +281,16 @@ CODE_SAMPLE;
     private function cloneNode(Node $node): Node
     {
         $nodeTraverser = new NodeTraverser(new CloningVisitor());
-        return $nodeTraverser->traverse([$node])[0];
+        $clonedNode = $nodeTraverser->traverse([$node])[0];
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $clonedNode,
+            static function (Node $subNode): void {
+                $subNode->setAttribute(AttributeKey::PHP_DOC_INFO, null);
+            }
+        );
+
+        return $clonedNode;
     }
 
     /**
