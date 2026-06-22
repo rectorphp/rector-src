@@ -8,6 +8,7 @@ use PhpParser\Node;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Skipper\SkipVoter\ClassSkipVoter;
+use Rector\Skipper\ValueObject\SkipMatch;
 
 /**
  * @api
@@ -19,6 +20,7 @@ final readonly class Skipper
         private RectifiedAnalyzer $rectifiedAnalyzer,
         private PathSkipper $pathSkipper,
         private ClassSkipVoter $classSkipVoter,
+        private UsedSkipCollector $usedSkipCollector,
     ) {
     }
 
@@ -34,26 +36,38 @@ final readonly class Skipper
 
     public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
     {
-        if (! $this->classSkipVoter->match($element)) {
+        $skipMatch = $this->matchSkip($element, $filePath);
+        if (! $skipMatch instanceof SkipMatch) {
             return false;
         }
 
-        return $this->classSkipVoter->shouldSkip($element, $filePath);
+        $this->markSkipUsed($skipMatch);
+        return true;
+    }
+
+    /**
+     * Match a class/path skip without marking it used. Callers that can only tell whether the skip
+     * actually prevented a change later on must mark it used themselves via markSkipUsed().
+     */
+    public function matchSkip(string | object $element, string $filePath): ?SkipMatch
+    {
+        if (! $this->classSkipVoter->match($element)) {
+            return null;
+        }
+
+        return $this->classSkipVoter->matchSkip($element, $filePath);
+    }
+
+    public function markSkipUsed(SkipMatch $skipMatch): void
+    {
+        $this->usedSkipCollector->markUsed($skipMatch->getSkippedClass(), $skipMatch->getMatchedPath());
     }
 
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
-    public function shouldSkipCurrentNode(
-        string | object $element,
-        string $filePath,
-        string $rectorClass,
-        Node $node
-    ): bool {
-        if ($this->shouldSkipElementAndFilePath($element, $filePath)) {
-            return true;
-        }
-
+    public function shouldSkipCurrentNode(string $rectorClass, Node $node): bool
+    {
         return $this->rectifiedAnalyzer->hasRectified($rectorClass, $node);
     }
 }
