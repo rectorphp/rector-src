@@ -153,9 +153,9 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 return null;
             }
 
+            $nodeToCheck = clone $node;
             foreach ($docs as $doc) {
                 // parse the current comment independently of potentially mutated cached PHPDoc
-                $nodeToCheck = clone $node;
                 $nodeToCheck->setAttribute(AttributeKey::PHP_DOC_INFO, null);
                 $nodeToCheck->setDocComment($doc);
 
