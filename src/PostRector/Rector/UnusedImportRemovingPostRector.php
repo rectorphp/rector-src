@@ -153,12 +153,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 return null;
             }
 
-            $totalDocs = count($docs);
             foreach ($docs as $doc) {
-                $nodeToCheck = $totalDocs === 1 ? $node : clone $node;
-                if ($totalDocs > 1) {
-                    $nodeToCheck->setDocComment($doc);
-                }
+                // parse the current comment independently of potentially mutated cached PHPDoc
+                $nodeToCheck = clone $node;
+                $nodeToCheck->setAttribute(AttributeKey::PHP_DOC_INFO, null);
+                $nodeToCheck->setDocComment($doc);
 
                 $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nodeToCheck);
                 $names = [...$names, ...$phpDocInfo->getAnnotationClassNames()];
