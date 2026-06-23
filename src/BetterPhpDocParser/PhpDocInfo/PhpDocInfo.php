@@ -44,7 +44,6 @@ use Webmozart\Assert\InvalidArgumentException;
 final class PhpDocInfo
 {
     /**
-     * @var string
      * @see https://regex101.com/r/7GCrlj/1
      */
     private const string INLINE_SEE_CLASS_REFERENCE_REGEX = '#\{@see\s+([^}\s]+)#';
