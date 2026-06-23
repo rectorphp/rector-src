@@ -11,8 +11,8 @@ use Rector\Tests\Issues\NamespacedUse\Source\SomeClassThird;
 final class SkipInlineSee
 {
     /**
-     * See {@see SomeClassFirst} for more information.
-     * See {@see SomeClassSecond::test()} for more information.
+     * See {@uses SomeClassFirst} for more information.
+     * See {@used-by SomeClassSecond::test()} for more information.
      * See {@see SomeClassThird::$property} for more information.
      */
     public function test(): void {}

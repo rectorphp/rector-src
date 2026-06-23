@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocInfo;
 
+use Nette\Utils\Strings;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
@@ -44,9 +45,10 @@ use Webmozart\Assert\InvalidArgumentException;
 final class PhpDocInfo
 {
     /**
-     * @see https://regex101.com/r/7GCrlj/1
+     * @var string
+     * @see https://regex101.com/r/7GCrlj/2
      */
-    private const string INLINE_SEE_CLASS_REFERENCE_REGEX = '#\{@see\s+([^}\s]+)#';
+    private const string INLINE_GENERIC_USES_CLASS_REFERENCE_REGEX = '#\{@(?:uses|used-by|see)\s+(?<class_name>[^}\s]+)#';
 
     /**
      * @var array<class-string<PhpDocTagValueNode>, string>
@@ -488,13 +490,14 @@ final class PhpDocInfo
     /**
      * @return string[]
      */
-    public function getInlineSeeTagClassNames(): array
+    public function getInlineGenericUsesTagClassNames(): array
     {
-        preg_match_all(self::INLINE_SEE_CLASS_REFERENCE_REGEX, (string) $this->phpDocNode, $matches);
+        $matches = Strings::matchAll((string) $this->phpDocNode, self::INLINE_GENERIC_USES_CLASS_REFERENCE_REGEX);
 
         $classNames = [];
-        foreach ($matches[1] as $reference) {
-            $className = $this->resolveInlineSeeReferenceClassName($reference);
+        foreach ($matches as $match) {
+            $reference = $match['class_name'];
+            $className = $this->resolveInlineGenericUsesReferenceClassName($reference);
             if ($className === null) {
                 continue;
             }
@@ -581,7 +584,7 @@ final class PhpDocInfo
         return null;
     }
 
-    private function resolveInlineSeeReferenceClassName(string $reference): ?string
+    private function resolveInlineGenericUsesReferenceClassName(string $reference): ?string
     {
         $reference = explode('|', $reference, 2)[0];
         $reference = explode('::', $reference, 2)[0];
