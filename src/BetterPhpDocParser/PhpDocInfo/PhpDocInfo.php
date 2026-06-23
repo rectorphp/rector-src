@@ -45,7 +45,6 @@ use Webmozart\Assert\InvalidArgumentException;
 final class PhpDocInfo
 {
     /**
-     * @var string
      * @see https://regex101.com/r/7GCrlj/2
      */
     private const string INLINE_GENERIC_USES_CLASS_REFERENCE_REGEX = '#\{@(?:uses|used-by|see)\s+(?<class_name>[^}\s]+)#';
