@@ -44,6 +44,12 @@ use Webmozart\Assert\InvalidArgumentException;
 final class PhpDocInfo
 {
     /**
+     * @var string
+     * @see https://regex101.com/r/7GCrlj/1
+     */
+    private const string INLINE_SEE_CLASS_REFERENCE_REGEX = '#\{@see\s+([^}\s]+)#';
+
+    /**
      * @var array<class-string<PhpDocTagValueNode>, string>
      */
     private const array TAGS_TYPES_TO_NAMES = [
@@ -483,6 +489,26 @@ final class PhpDocInfo
     /**
      * @return string[]
      */
+    public function getInlineSeeTagClassNames(): array
+    {
+        preg_match_all(self::INLINE_SEE_CLASS_REFERENCE_REGEX, (string) $this->phpDocNode, $matches);
+
+        $classNames = [];
+        foreach ($matches[1] as $reference) {
+            $className = $this->resolveInlineSeeReferenceClassName($reference);
+            if ($className === null) {
+                continue;
+            }
+
+            $classNames[] = $className;
+        }
+
+        return array_unique($classNames);
+    }
+
+    /**
+     * @return string[]
+     */
     public function getConstFetchNodeClassNames(): array
     {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
@@ -554,6 +580,21 @@ final class PhpDocInfo
         }
 
         return null;
+    }
+
+    private function resolveInlineSeeReferenceClassName(string $reference): ?string
+    {
+        $reference = explode('|', $reference, 2)[0];
+        $reference = explode('::', $reference, 2)[0];
+        $reference = ltrim($reference, '\\');
+
+        try {
+            RectorAssert::className($reference);
+        } catch (InvalidArgumentException) {
+            return null;
+        }
+
+        return $reference;
     }
 
     private function getTypeOrMixed(?PhpDocTagValueNode $phpDocTagValueNode): MixedType | Type
