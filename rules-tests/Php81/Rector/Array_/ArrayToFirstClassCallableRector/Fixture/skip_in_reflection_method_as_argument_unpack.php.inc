@@ -4,7 +4,7 @@ namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixtu
 
 use ReflectionMethod;
 
-class SkipInReflectionMethod
+class SkipInReflectionMethodAsArgumentUnpack
 {
     function methodInjection()
     {}
