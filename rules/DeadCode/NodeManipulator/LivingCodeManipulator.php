@@ -56,12 +56,8 @@ final readonly class LivingCodeManipulator
             return [];
         }
 
-        if ($expr instanceof Clone_) {
-            if ($this->hasCloneMagicMethod($expr)) {
-                return [$expr];
-            }
-
-            return $this->keepLivingCodeFromExpr($expr->expr);
+        if ($expr instanceof Clone_ && $this->hasCloneMagicMethod($expr)) {
+            return [$expr];
         }
 
         if ($this->isNestedExpr($expr)) {
@@ -117,7 +113,8 @@ final readonly class LivingCodeManipulator
             $expr instanceof UnaryMinus ||
             $expr instanceof UnaryPlus ||
             $expr instanceof BitwiseNot ||
-            $expr instanceof BooleanNot;
+            $expr instanceof BooleanNot ||
+            $expr instanceof Clone_;
     }
 
     private function hasCloneMagicMethod(Clone_ $clone): bool
