@@ -148,7 +148,7 @@ CODE_SAMPLE
             return;
         }
 
-        if (! (isset($node->params[$position]) && $this->isName($node->params[$position], $name))) {
+        if (!isset($node->params[$position]) || !$this->isName($node->params[$position], $name)) {
             return;
         }
 

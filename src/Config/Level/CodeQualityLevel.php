@@ -10,6 +10,7 @@ use Rector\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
+use Rector\CodeQuality\Rector\BooleanNot\NegatedAndsToPositiveOrsRector;
 use Rector\CodeQuality\Rector\BooleanNot\ReplaceConstantBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
@@ -132,6 +133,7 @@ final class CodeQualityLevel
         UnnecessaryTernaryExpressionRector::class,
         RemoveExtraParametersRector::class,
         SimplifyDeMorganBinaryRector::class,
+        NegatedAndsToPositiveOrsRector::class,
         SimplifyTautologyTernaryRector::class,
         SingleInArrayToCompareRector::class,
         SimplifyIfElseToTernaryRector::class,
