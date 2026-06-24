@@ -493,7 +493,12 @@ final class PhpDocInfo
      */
     public function getInlineGenericUsesTagClassNames(): array
     {
-        $matches = Strings::matchAll((string) $this->phpDocNode, self::INLINE_GENERIC_USES_CLASS_REFERENCE_REGEX);
+        $printedPhpDocNode = (string) $this->phpDocNode;
+        if (! str_contains($printedPhpDocNode, '{')) {
+            return [];
+        }
+
+        $matches = Strings::matchAll($printedPhpDocNode, self::INLINE_GENERIC_USES_CLASS_REFERENCE_REGEX);
 
         $classNames = [];
         foreach ($matches as $match) {
@@ -604,7 +609,7 @@ final class PhpDocInfo
 
         // fqcn not reference to any use statements
         if (str_starts_with($referenceToResolve, '\\')) {
-            return [];
+            return [$referenceToResolve];
         }
 
         $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($this->node);
