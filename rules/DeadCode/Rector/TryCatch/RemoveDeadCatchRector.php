@@ -110,7 +110,7 @@ CODE_SAMPLE
         }
 
         $catchItemStmt = $catch->stmts[0];
-        if (! ($catchItemStmt instanceof Expression && $catchItemStmt->expr instanceof Throw_)) {
+        if (!$catchItemStmt instanceof Expression || !$catchItemStmt->expr instanceof Throw_) {
             return false;
         }
 

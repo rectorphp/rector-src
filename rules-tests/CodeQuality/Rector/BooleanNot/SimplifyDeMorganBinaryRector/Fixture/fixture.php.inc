@@ -26,7 +26,7 @@ function deMorgan()
 
     $c = 1000;
     $d = $a !== null && $b >= $c;
-    $d = !($a === null && $b < $c);
+    $d = $a !== null || $b >= $c;
 
     $e = $a && $b === $c;
     $f = $a <= $b && $c > $d;

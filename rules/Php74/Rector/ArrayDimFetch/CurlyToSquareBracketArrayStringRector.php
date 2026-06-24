@@ -79,7 +79,7 @@ CODE_SAMPLE
 
         if (isset($oldTokens[$endTokenPost]) && (string) $oldTokens[$endTokenPost] === '}') {
             $startTokenPos = $arrayDimFetch->getStartTokenPos();
-            return ! (isset($oldTokens[$startTokenPos]) && (string) $oldTokens[$startTokenPos] === '${');
+            return !isset($oldTokens[$startTokenPos]) || (string) $oldTokens[$startTokenPos] !== '${';
         }
 
         return false;

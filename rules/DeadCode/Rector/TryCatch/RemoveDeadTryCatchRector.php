@@ -87,7 +87,7 @@ CODE_SAMPLE
         }
 
         $onlyCatchStmt = $onlyCatch->stmts[0];
-        if (! ($onlyCatchStmt instanceof Expression && $onlyCatchStmt->expr instanceof Throw_)) {
+        if (!$onlyCatchStmt instanceof Expression || !$onlyCatchStmt->expr instanceof Throw_) {
             return null;
         }
 

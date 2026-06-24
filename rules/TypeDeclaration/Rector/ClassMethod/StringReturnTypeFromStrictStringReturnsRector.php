@@ -134,7 +134,7 @@ CODE_SAMPLE
     {
         return array_all(
             $returns,
-            fn (Return_ $return): bool => ! (! $return->expr instanceof String_ && ! $return->expr instanceof InterpolatedString)
+            fn (Return_ $return): bool => $return->expr instanceof String_ || $return->expr instanceof InterpolatedString
         );
     }
 
