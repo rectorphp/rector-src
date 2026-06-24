@@ -605,9 +605,13 @@ final class PhpDocInfo
         $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($this->node);
         $resolvedClassName = $nameScope->resolveStringName($referenceToResolve);
 
-        // Keep both forms: resolved class for namespace-aware matching and original class
-        // for alias-partial matching in unused import checks.
-        return array_unique([$resolvedClassName, $reference]);
+        if (str_contains($reference, '\\')) {
+            // Keep both forms: resolved class for namespace-aware matching and original class
+            // for alias-partial matching in unused import checks.
+            return array_unique([$resolvedClassName, $reference]);
+        }
+
+        return [$resolvedClassName];
     }
 
     private function getTypeOrMixed(?PhpDocTagValueNode $phpDocTagValueNode): MixedType | Type
