@@ -129,6 +129,8 @@ final class AttributeKey
 
     public const string IS_ARG_VALUE = 'is_arg_value';
 
+    public const string IS_UNPACKED_ARG_VALUE = 'is_unpacked_arg_value';
+
     public const string IS_PARAM_VAR = 'is_param_var';
 
     public const string IS_PARAM_DEFAULT = 'is_param_default';

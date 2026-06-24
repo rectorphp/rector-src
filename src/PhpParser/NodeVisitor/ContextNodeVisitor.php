@@ -94,6 +94,10 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
 
         if ($node instanceof Arg) {
             $node->value->setAttribute(AttributeKey::IS_ARG_VALUE, true);
+            if ($node->unpack) {
+                $node->value->setAttribute(AttributeKey::IS_UNPACKED_ARG_VALUE, true);
+            }
+
             return null;
         }
 
