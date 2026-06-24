@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\BooleanNot\NegatedAndsToPositiveOrsRector\Fixture;
 
-class BinaryAnd
+class EmptyInArray
 {
     public static function validateAssetDownload($assetId, array $limitToAssets): bool
     {
@@ -14,9 +14,9 @@ class BinaryAnd
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\BooleanNot\NegatedAndsToPositiveOrsRector\Fixture;
 
-class BinaryAnd
+class EmptyInArray
 {
     public static function validateAssetDownload($assetId, array $limitToAssets): bool
     {
