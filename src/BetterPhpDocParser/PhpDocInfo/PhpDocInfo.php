@@ -35,6 +35,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\Validation\RectorAssert;
 use Webmozart\Assert\InvalidArgumentException;
@@ -72,7 +73,8 @@ final class PhpDocInfo
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly \PhpParser\Node $node,
         private readonly AnnotationNaming $annotationNaming,
-        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder
+        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder,
+        private readonly NameScopeFactory $nameScopeFactory
     ) {
         $this->originalPhpDocNode = clone $phpDocNode;
 
@@ -496,12 +498,12 @@ final class PhpDocInfo
         $classNames = [];
         foreach ($matches as $match) {
             $reference = $match['class_name'];
-            $className = $this->resolveInlineGenericUsesReferenceClassName($reference);
-            if ($className === null) {
+            $resolvedClassNames = $this->resolveInlineGenericUsesReferenceClassNames($reference);
+            if ($resolvedClassNames === []) {
                 continue;
             }
 
-            $classNames[] = $className;
+            $classNames = [...$classNames, ...$resolvedClassNames];
         }
 
         return array_unique($classNames);
@@ -583,19 +585,29 @@ final class PhpDocInfo
         return null;
     }
 
-    private function resolveInlineGenericUsesReferenceClassName(string $reference): ?string
+    /**
+     * @return string[]
+     */
+    private function resolveInlineGenericUsesReferenceClassNames(string $reference): array
     {
         $reference = explode('|', $reference, 2)[0];
         $reference = explode('::', $reference, 2)[0];
+
+        $referenceToResolve = $reference;
         $reference = ltrim($reference, '\\');
 
         try {
             RectorAssert::className($reference);
         } catch (InvalidArgumentException) {
-            return null;
+            return [];
         }
 
-        return $reference;
+        $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($this->node);
+        $resolvedClassName = $nameScope->resolveStringName($referenceToResolve);
+
+        // Keep both forms: resolved class for namespace-aware matching and original class
+        // for alias-partial matching in unused import checks.
+        return array_unique([$resolvedClassName, $reference]);
     }
 
     private function getTypeOrMixed(?PhpDocTagValueNode $phpDocTagValueNode): MixedType | Type

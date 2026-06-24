@@ -16,6 +16,7 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class PhpDocInfoFactory
@@ -31,7 +32,8 @@ final class PhpDocInfoFactory
         private readonly BetterPhpDocParser $betterPhpDocParser,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly AnnotationNaming $annotationNaming,
-        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder
+        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder,
+        private readonly NameScopeFactory $nameScopeFactory
     ) {
     }
 
@@ -127,7 +129,8 @@ final class PhpDocInfoFactory
             $this->staticTypeMapper,
             $node,
             $this->annotationNaming,
-            $this->phpDocNodeByTypeFinder
+            $this->phpDocNodeByTypeFinder,
+            $this->nameScopeFactory
         );
 
         $node->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
