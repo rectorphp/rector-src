@@ -602,6 +602,11 @@ final class PhpDocInfo
             return [];
         }
 
+        // fqcn not reference to any use statements
+        if (str_starts_with($referenceToResolve, '\\')) {
+            return [];
+        }
+
         $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($this->node);
         $resolvedClassName = $nameScope->resolveStringName($referenceToResolve);
 
