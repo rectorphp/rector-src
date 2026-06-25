@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFr
 
 use Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFromPropertyDefaultsRector\Source\BaseWithPropertyDocblock;
 
-final class SkipChildWithParentPropertyDocblock extends BaseWithPropertyDocblock
+final class SkipAlreadyDefinedInParent extends BaseWithPropertyDocblock
 {
     public array $myArray = ['d', 'e', 'f'];
 }
