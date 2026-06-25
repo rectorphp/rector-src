@@ -6,6 +6,7 @@ namespace Rector\Php70\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\Ternary;
@@ -110,6 +111,11 @@ CODE_SAMPLE
 
             $ifIsset = $previousStmt->cond;
             if (! $this->nodeComparator->areNodesEqual($ifOnlyStmt->expr, $ifIsset->vars[0])) {
+                continue;
+            }
+
+            if ($stmt->expr instanceof Assign &&
+                $this->nodeComparator->areNodesEqual($ifOnlyStmt->expr, $stmt->expr->var)) {
                 continue;
             }
 
