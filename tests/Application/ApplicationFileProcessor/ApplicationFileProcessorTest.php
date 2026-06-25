@@ -38,7 +38,7 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
     }
 
-    public function testOnlyRuleRunDoesNotCacheFileAsUnchanged(): void
+    public function testOnlyRuleRunCachesUnderOwnScopeWithoutPoisoningFullRun(): void
     {
         $filePath = __DIR__ . '/Source/CleanFile.php';
 
@@ -47,11 +47,16 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
             onlyRule: RemoveEmptyClassMethodRector::class
         ));
 
-        // a file clean under one rule is not necessarily clean under all rules
+        // a repeated --only run hits its own scoped cache entry
+        $this->changedFilesDetector->setActiveScope(RemoveEmptyClassMethodRector::class, null);
+        $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
+
+        // a full run uses a different scope key, so it is not poisoned
+        $this->changedFilesDetector->setActiveScope(null, null);
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
 
-    public function testOnlySuffixRunDoesNotCacheFileAsUnchanged(): void
+    public function testOnlySuffixRunCachesUnderOwnScopeWithoutPoisoningFullRun(): void
     {
         $filePath = __DIR__ . '/Source/CleanFile.php';
 
@@ -60,6 +65,10 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
             onlySuffix: 'Controller.php'
         ));
 
+        $this->changedFilesDetector->setActiveScope(null, 'Controller.php');
+        $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
+
+        $this->changedFilesDetector->setActiveScope(null, null);
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
 }
