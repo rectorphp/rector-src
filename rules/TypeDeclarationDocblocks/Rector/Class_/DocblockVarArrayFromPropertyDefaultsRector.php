@@ -16,8 +16,8 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -31,8 +31,7 @@ final class DocblockVarArrayFromPropertyDefaultsRector extends AbstractRector
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
-        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
     ) {
     }
 
@@ -126,7 +125,14 @@ CODE_SAMPLE
             return false;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        // private property doesn't override parent property
+        if ($property->isPrivate()) {
+            return false;
+        }
+
+        $scope = ScopeFetcher::fetch($class);
+
+        $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
@@ -138,7 +144,7 @@ CODE_SAMPLE
 
             $parentPropertyReflection = $parentClassReflection->getNativeProperty($propertyName);
             if ($parentPropertyReflection->isPrivate()) {
-                continue;
+                return false;
             }
 
             if (! $parentPropertyReflection->hasPhpDocType()) {
