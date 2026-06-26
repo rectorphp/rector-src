@@ -71,7 +71,7 @@ final readonly class MatchSwitchAnalyzer
             return false;
         }
 
-        return !$nextStmt instanceof Expression || !$nextStmt->expr instanceof Throw_;
+        return ! $nextStmt instanceof Expression || ! $nextStmt->expr instanceof Throw_;
     }
 
     /**
