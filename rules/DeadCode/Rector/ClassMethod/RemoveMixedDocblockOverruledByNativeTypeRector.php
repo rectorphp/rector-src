@@ -24,9 +24,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveMixedDocblockRector\RemoveMixedDocblockRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveMixedDocblockOverruledByNativeTypeRector\RemoveMixedDocblockOverruledByNativeTypeRectorTest
  */
-final class RemoveMixedDocblockRector extends AbstractRector
+final class RemoveMixedDocblockOverruledByNativeTypeRector extends AbstractRector
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,

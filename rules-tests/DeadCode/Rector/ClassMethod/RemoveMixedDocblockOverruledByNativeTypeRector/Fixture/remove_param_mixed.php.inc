@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveMixedDocblockRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveMixedDocblockOverruledByNativeTypeRector\Fixture;
 
 final class RemoveParamMixed
 {
@@ -16,7 +16,7 @@ final class RemoveParamMixed
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveMixedDocblockRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveMixedDocblockOverruledByNativeTypeRector\Fixture;
 
 final class RemoveParamMixed
 {
