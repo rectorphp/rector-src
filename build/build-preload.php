@@ -216,7 +216,7 @@ CODE_SAMPLE;
      */
     private function findPhpParserFiles(string $vendorDir): array
     {
-        $finder = (new Finder())
+        $finder = new Finder()
             ->files()
             ->name('*.php')
             ->in($vendorDir . '/nikic/php-parser/lib/PhpParser')
@@ -233,7 +233,7 @@ CODE_SAMPLE;
      */
     private function findPhpDocParserFiles(string $vendorDir): array
     {
-        $finder = (new Finder())
+        $finder = new Finder()
             ->files()
             ->name('*.php')
             ->in($vendorDir . '/phpstan/phpdoc-parser')

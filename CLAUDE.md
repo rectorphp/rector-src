@@ -4,7 +4,7 @@ Project-specific conventions for `rector/rector-src`. See `CONTRIBUTING.md` for 
 
 ## Project
 
-- PHP `^8.3` required. Do not use syntax that breaks on 8.3.
+- PHP `^8.4` required. Do not use syntax that breaks on 8.4.
 - The package is `rector/rector-src`; it `replace`s `rector/rector`.
 - Sibling extension packages (`rector-doctrine`, `rector-symfony`, `rector-phpunit`, `rector-downgrade-php`) are pulled in as `dev-main`.
 

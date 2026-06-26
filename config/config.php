@@ -29,7 +29,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     // use faster in-memory cache in CI.
     // CI always starts from scratch, therefore IO intensive caching is not worth it
-    if ((new CiDetector())->isCiDetected()) {
+    if (new CiDetector()->isCiDetected()) {
         $rectorConfig->cacheClass(MemoryCacheStorage::class);
     }
 

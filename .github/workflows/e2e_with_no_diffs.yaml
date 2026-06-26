@@ -22,7 +22,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php_version: ['8.3']
+                php_version: ['8.4']
                 directory:
                     - 'e2e/applied-rule-removed-node-no-diffs'
                     - 'e2e/applied-no-diffs-format-json'
