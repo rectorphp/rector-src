@@ -27,7 +27,7 @@ jobs:
                     -
                         name: 'Rector dev + PHPUnit 12'
                         run: composer require "phpunit/phpunit:12.*" -W
-                        php: 8.3
+                        php: 8.4
 
         name: ${{ matrix.actions.name }}
 

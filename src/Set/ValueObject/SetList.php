@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Set\ValueObject;
 
-use Deprecated;
-
 /**
  * @api
  */
@@ -22,7 +20,9 @@ final class SetList
 
     public const string DEAD_CODE = __DIR__ . '/../../../config/set/dead-code.php';
 
-    #[Deprecated(message: 'As too strict and not practical. Use code quality and coding style sets instead.')]
+    /**
+     * @deprecated As too strict and not practical. Use code quality and coding style sets instead.
+     */
     public const string STRICT_BOOLEANS = __DIR__ . '/../../../config/set/strict-booleans.php';
 
     public const string GMAGICK_TO_IMAGICK = __DIR__ . '/../../../config/set/gmagick-to-imagick.php';

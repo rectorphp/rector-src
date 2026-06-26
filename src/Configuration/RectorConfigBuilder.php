@@ -444,7 +444,8 @@ final class RectorConfigBuilder
      */
     public function withRootFiles(): self
     {
-        $rootPhpFilesFinder = (new Finder())->files()
+        $rootPhpFilesFinder = new Finder()
+            ->files()
             ->in(getcwd())
             ->depth(0)
             ->ignoreDotFiles(false)
