@@ -16,7 +16,6 @@ use Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector;
 use Rector\Php70\Rector\If_\IfToSpaceshipRector;
 use Rector\Php70\Rector\List_\EmptyListRector;
 use Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector;
-use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php70\Rector\Switch_\ReduceMultipleDefaultSwitchRector;
 use Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector;
@@ -32,7 +31,6 @@ return static function (RectorConfig $rectorConfig): void {
         MultiDirnameRector::class,
         ListSplitStringRector::class,
         EmptyListRector::class,
-        // be careful, run this just once, since it can keep swapping order back and forth
         ListSwapArrayOrderRector::class,
         CallUserMethodRector::class,
         EregToPregMatchRector::class,
@@ -40,7 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
         TernaryToSpaceshipRector::class,
         WrapVariableVariableNameInCurlyBracesRector::class,
         IfToSpaceshipRector::class,
-        StaticCallOnNonStaticToInstanceCallRector::class,
         ThisCallOnStaticMethodToStaticCallRector::class,
         BreakNotInLoopOrSwitchToReturnRector::class,
         RenameMktimeWithoutArgsToTimeRector::class,

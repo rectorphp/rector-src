@@ -16,9 +16,6 @@ return Architecture::define()
             // no namespace on purpose
             __DIR__ . '/rules-tests/Php70/Rector/ClassMethod/Php4ConstructorRector/Source/ParentClass.php',
 
-            // multi classes in one file on purpose
-            __DIR__ . '/rules-tests/Php70/Rector/StaticCall/StaticCallOnNonStaticToInstanceCallRector/Source/Service.php',
-
             // simulate under phpstan.phar
             __DIR__ . '/rules-tests/Php71/Rector/FuncCall/RemoveExtraParametersRector/Source/phpstan.phar',
         ],
