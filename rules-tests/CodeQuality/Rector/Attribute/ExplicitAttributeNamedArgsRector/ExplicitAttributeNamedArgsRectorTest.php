@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodeQuality\Rector\Attribute\AttributeNamedArgsRector;
+namespace Rector\Tests\CodeQuality\Rector\Attribute\ExplicitAttributeNamedArgsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class AttributeNamedArgsRectorTest extends AbstractRectorTestCase
+final class ExplicitAttributeNamedArgsRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\Attribute\ExplicitAttributeNamedArgsRector;
 use Rector\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector;
 use Rector\CodeQuality\Rector\CallLike\AddNameToBooleanArgumentRector;
 use Rector\CodeQuality\Rector\CallLike\AddNameToNullArgumentRector;
@@ -17,6 +18,7 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveNullNamedArgOnNullDefaultParamRector::class,
         SortCallLikeNamedArgsRector::class,
         SortAttributeNamedArgsRector::class,
+        ExplicitAttributeNamedArgsRector::class,
         UtilsJsonStaticCallNamedArgRector::class,
     ]);
 };

@@ -11,26 +11,18 @@ use PhpParser\Node\Identifier;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use Rector\CodeQuality\ValueObject\AttributeNamedArgs;
-use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\CodeQuality\Rector\Attribute\AttributeNamedArgsRector\AttributeNamedArgsRectorTest
+ * @see \Rector\Tests\CodeQuality\Rector\Attribute\ExplicitAttributeNamedArgsRector\ExplicitAttributeNamedArgsRectorTest
  */
-final class AttributeNamedArgsRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
+final class ExplicitAttributeNamedArgsRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var AttributeNamedArgs[]
-     */
-    private array $attributeNamedArgs = [];
-
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver
     ) {
@@ -39,9 +31,9 @@ final class AttributeNamedArgsRector extends AbstractRector implements Configura
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Convert positional arguments on configured attributes into named arguments, using the attribute constructor parameter names',
+            'Convert positional arguments on attributes into named arguments, using the attribute constructor parameter names',
             [
-                new ConfiguredCodeSample(
+                new CodeSample(
                     <<<'CODE_SAMPLE'
 #[SomeAttribute(SomeClass::class, null, ['home'])]
 class SomeClass
@@ -55,8 +47,6 @@ class SomeClass
 {
 }
 CODE_SAMPLE
-                    ,
-                    [new AttributeNamedArgs('Some\Attribute\SomeAttribute')]
                 ),
             ]
         );
@@ -75,33 +65,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->attributeNamedArgs as $attributeNamedArg) {
-            if ($this->isName($node->name, $attributeNamedArg->getAttributeClass())) {
-                return $this->nameArguments($node, $attributeNamedArg);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allIsAOf($configuration, AttributeNamedArgs::class);
-
-        $this->attributeNamedArgs = $configuration;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::NAMED_ARGUMENTS;
-    }
-
-    private function nameArguments(Attribute $attribute, AttributeNamedArgs $attributeNamedArgs): ?Attribute
-    {
-        $methodReflection = $this->reflectionResolver->resolveConstructorReflectionFromAttribute($attribute);
+        $methodReflection = $this->reflectionResolver->resolveConstructorReflectionFromAttribute($node);
         if (! $methodReflection instanceof MethodReflection) {
             return null;
         }
@@ -109,41 +73,39 @@ CODE_SAMPLE
         $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
         $parameters = $extendedParametersAcceptor->getParameters();
 
-        $namesToApply = $this->resolveArgNamesToApply(
-            $attribute->args,
-            $parameters,
-            $attributeNamedArgs->getFirstNamedPosition()
-        );
+        $namesToApply = $this->resolveArgNamesToApply($node->args, $parameters);
         if ($namesToApply === []) {
             return null;
         }
 
         foreach ($namesToApply as $position => $name) {
-            $attribute->args[$position]->name = new Identifier($name);
+            $node->args[$position]->name = new Identifier($name);
         }
 
-        return $attribute;
+        return $node;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NAMED_ARGUMENTS;
     }
 
     /**
      * Resolve the positional arguments to name, as a position => parameter-name map, or [] when
      * nothing should change. Naming an argument forces every later positional argument to be named
-     * too (PHP forbids a positional argument after a named one). So if any argument in the named
-     * range maps to a variadic parameter, or to no parameter at all (overflow past a variadic),
-     * the whole attribute is left untouched rather than producing invalid PHP.
+     * too (PHP forbids a positional argument after a named one). So if any argument maps to a
+     * variadic parameter, or to no parameter at all (overflow past a variadic), the whole attribute
+     * is left untouched rather than producing invalid PHP.
      *
      * @param Arg[]                 $args
      * @param ParameterReflection[] $parameters
      * @return array<int, string>
      */
-    private function resolveArgNamesToApply(array $args, array $parameters, int $firstNamedPosition): array
+    private function resolveArgNamesToApply(array $args, array $parameters): array
     {
         $namesToApply = [];
 
-        $count = count($args);
-        for ($position = $firstNamedPosition; $position < $count; ++$position) {
-            $arg = $args[$position];
-
+        foreach ($args as $position => $arg) {
             // already named
             if ($arg->name instanceof Identifier) {
                 continue;
