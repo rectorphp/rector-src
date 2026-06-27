@@ -7,8 +7,10 @@ namespace Rector\DeadCode\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
@@ -19,12 +21,14 @@ use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NullType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType as PHPStanUnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Composer\ComposerJsonPackageVersionResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -49,7 +53,8 @@ final class NarrowWideUnionReturnTypeRector extends AbstractRector implements Mi
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly TypeFactory $typeFactory
+        private readonly TypeFactory $typeFactory,
+        private readonly ComposerJsonPackageVersionResolver $composerJsonPackageVersionResolver
     ) {
     }
 
@@ -255,10 +260,52 @@ CODE_SAMPLE
                 continue;
             }
 
-            $returnTypes[] = $this->nodeTypeResolver->getNativeType($returnStatement->expr);
+            $returnTypes = [...$returnTypes, ...$this->resolveNativeReturnTypes($returnStatement->expr)];
         }
 
         return $returnTypes;
+    }
+
+    /**
+     * @return Type[]
+     */
+    private function resolveNativeReturnTypes(Expr $expr): array
+    {
+        if (! $expr instanceof Ternary || ! $this->hasVendorClassConstFetch($expr->cond)) {
+            return [$this->nodeTypeResolver->getNativeType($expr)];
+        }
+
+        $ifExpr = $expr->if instanceof Expr ? $expr->if : $expr->cond;
+
+        return [...$this->resolveNativeReturnTypes($ifExpr), ...$this->resolveNativeReturnTypes($expr->else)];
+    }
+
+    private function hasVendorClassConstFetch(Expr $expr): bool
+    {
+        $classConstFetches = $this->betterNodeFinder->findInstanceOf($expr, ClassConstFetch::class);
+
+        foreach ($classConstFetches as $classConstFetch) {
+            $classType = $this->nodeTypeResolver->getType($classConstFetch->class);
+            if (! $classType instanceof ObjectType) {
+                continue;
+            }
+
+            $classReflection = $classType->getClassReflection();
+            if (! $classReflection instanceof ClassReflection) {
+                continue;
+            }
+
+            $fileName = $classReflection->getFileName();
+            if ($fileName === null) {
+                continue;
+            }
+
+            if ($this->composerJsonPackageVersionResolver->hasPackageMultiMajorVersions($fileName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
