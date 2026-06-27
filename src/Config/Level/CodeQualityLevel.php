@@ -74,6 +74,7 @@ use Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector;
 use Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector;
 use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
 use Rector\CodeQuality\Rector\Property\FixClassCaseSensitivityVarDocblockRector;
+use Rector\CodeQuality\Rector\StmtsAwareInterface\InitVariableDefaultBeforeNullCoalesceReturnRector;
 use Rector\CodeQuality\Rector\StmtsAwareInterface\MoveInnerFunctionToTopLevelRector;
 use Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector;
 use Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector;
@@ -121,6 +122,7 @@ final class CodeQualityLevel
         RepeatedOrEqualToInArrayRector::class,
         RepeatedAndNotEqualToNotInArrayRector::class,
         MoveInnerFunctionToTopLevelRector::class,
+        InitVariableDefaultBeforeNullCoalesceReturnRector::class,
         InnerFunctionToPrivateMethodRector::class,
         SimplifyForeachToCoalescingRector::class,
         SimplifyFuncGetArgsCountRector::class,
