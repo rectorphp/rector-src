@@ -20,6 +20,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Coalesce\CoalesceToTernaryRector\CoalesceToTernaryRectorTest
+ *
+ * @see https://github.com/rectorphp/rector/issues/9730
  */
 final class CoalesceToTernaryRector extends AbstractRector
 {
