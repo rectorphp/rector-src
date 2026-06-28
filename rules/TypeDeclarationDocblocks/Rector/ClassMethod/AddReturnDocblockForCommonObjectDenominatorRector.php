@@ -109,13 +109,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
+        // definitely not an array return
+        if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'array')) {
             return null;
         }
 
-        // definitely not an array return
-        if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'array')) {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
             return null;
         }
 

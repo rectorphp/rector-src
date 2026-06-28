@@ -66,9 +66,6 @@ CODE_SAMPLE
         }
 
         $binaryOp = $node->cond;
-        if (! $this->areIntegersCompared($binaryOp)) {
-            return null;
-        }
 
         if ($binaryOp instanceof Smaller || $binaryOp instanceof SmallerOrEqual) {
             if (! $this->nodeComparator->areNodesEqual($binaryOp->left, $node->else)) {
@@ -76,6 +73,10 @@ CODE_SAMPLE
             }
 
             if (! $this->nodeComparator->areNodesEqual($binaryOp->right, $node->if)) {
+                return null;
+            }
+
+            if (! $this->areIntegersCompared($binaryOp)) {
                 return null;
             }
 
@@ -88,6 +89,10 @@ CODE_SAMPLE
             }
 
             if (! $this->nodeComparator->areNodesEqual($binaryOp->right, $node->else)) {
+                return null;
+            }
+
+            if (! $this->areIntegersCompared($binaryOp)) {
                 return null;
             }
 
