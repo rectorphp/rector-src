@@ -204,8 +204,7 @@ EOF
         }
 
         // clear cache
-        $optionClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
-        if ($optionDebug || $optionClearCache) {
+        if ($optionDebug) {
             $this->changedFilesDetector->clear();
         }
     }
