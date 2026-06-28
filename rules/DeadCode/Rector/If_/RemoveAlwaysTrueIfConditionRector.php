@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
@@ -34,6 +35,25 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
 {
+    /**
+     * Functions that depend on runtime state (autoloading, eval(), loaded extensions).
+     * PHPStan may narrow their result to a constant true, but it can change at runtime,
+     * so the condition must not be treated as always true.
+     *
+     * @var string[]
+     */
+    private const array RUNTIME_STATE_FUNCTIONS = [
+        'class_exists',
+        'interface_exists',
+        'trait_exists',
+        'enum_exists',
+        'function_exists',
+        'method_exists',
+        'property_exists',
+        'defined',
+        'extension_loaded',
+    ];
+
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -170,7 +190,7 @@ CODE_SAMPLE
 
     private function shouldSkipExpr(Expr $expr): bool
     {
-        return (bool) $this->betterNodeFinder->findInstancesOf(
+        $hasNonStaticNode = (bool) $this->betterNodeFinder->findInstancesOf(
             $expr,
             [
                 PropertyFetch::class,
@@ -180,6 +200,20 @@ CODE_SAMPLE
                 StaticCall::class,
             ]
         );
+
+        if ($hasNonStaticNode) {
+            return true;
+        }
+
+        /** @var FuncCall[] $funcCalls */
+        $funcCalls = $this->betterNodeFinder->findInstancesOf($expr, [FuncCall::class]);
+        foreach ($funcCalls as $funcCall) {
+            if ($this->isNames($funcCall, self::RUNTIME_STATE_FUNCTIONS)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function refactorIfWithBooleanAnd(If_ $if): ?If_
