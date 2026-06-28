@@ -199,12 +199,9 @@ EOF
         }
 
         $optionDebug = (bool) $input->getOption(Option::DEBUG);
-        if ($optionDebug) {
-            $application->setCatchExceptions(false);
-        }
-
         // clear cache
         if ($optionDebug) {
+            $application->setCatchExceptions(false);
             $this->changedFilesDetector->clear();
         }
     }
