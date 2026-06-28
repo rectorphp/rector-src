@@ -65,11 +65,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $objectType = new ObjectType('finfo');
-        if ($node instanceof MethodCall && (! $this->nodeTypeResolver->isObjectType(
-            $node->var,
-            $objectType
-        ) || ! $this->isName($node->name, 'buffer'))) {
+        if ($node instanceof MethodCall && (! $this->isName(
+            $node->name,
+            'buffer'
+        ) || ! $this->nodeTypeResolver->isObjectType($node->var, new ObjectType('finfo')))) {
             return null;
         }
 

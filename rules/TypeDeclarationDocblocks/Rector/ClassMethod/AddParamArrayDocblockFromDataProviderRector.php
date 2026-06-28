@@ -109,12 +109,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-
             $dataProviderNodes = $this->dataProviderMethodsFinder->findDataProviderNodes($node, $classMethod);
             if ($dataProviderNodes->getClassMethods() === []) {
                 continue;
             }
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
             foreach ($classMethod->getParams() as $paramPosition => $param) {
                 // we are interested only in array params

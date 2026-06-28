@@ -101,15 +101,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            // first condition must be without side effect
-            if ($this->sideEffectNodeDetector->detect($stmt->cond)) {
-                continue;
-            }
-
-            if ($this->isCondVariableUsedInIfBody($stmt)) {
-                continue;
-            }
-
             $nextStmt = $node->stmts[$key + 1] ?? null;
             if (! $nextStmt instanceof If_) {
                 continue;
@@ -125,6 +116,15 @@ CODE_SAMPLE
             }
 
             if ($nextStmt->else instanceof Else_) {
+                continue;
+            }
+
+            // first condition must be without side effect
+            if ($this->sideEffectNodeDetector->detect($stmt->cond)) {
+                continue;
+            }
+
+            if ($this->isCondVariableUsedInIfBody($stmt)) {
                 continue;
             }
 

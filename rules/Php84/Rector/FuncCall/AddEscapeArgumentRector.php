@@ -75,13 +75,13 @@ CODE_SAMPLE
             return $node;
         }
 
-        if (! $this->isObjectType($node->var, new ObjectType('SplFileObject'))) {
-            return null;
-        }
-
         $name = $this->getName($node->name);
 
         if (! in_array($name, ['setCsvControl', 'fputcsv', 'fgetcsv'], true)) {
+            return null;
+        }
+
+        if (! $this->isObjectType($node->var, new ObjectType('SplFileObject'))) {
             return null;
         }
 
