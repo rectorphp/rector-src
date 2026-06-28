@@ -7,12 +7,14 @@ namespace Rector\Arguments\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Expr\Variable;
+use PHPStan\Reflection\FunctionReflection;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\Arguments\ValueObject\RemoveMethodCallParam;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
-use Rector\PhpParser\AstResolver;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -29,7 +31,7 @@ final class RemoveMethodCallParamRector extends AbstractRector implements Config
     private array $removeMethodCallParams = [];
 
     public function __construct(
-        private readonly AstResolver $astResolver,
+        private readonly ReflectionResolver $reflectionResolver,
         private readonly ArgsAnalyzer $argsAnalyzer,
     ) {
     }
@@ -100,20 +102,21 @@ CODE_SAMPLE
             // if it is, we use the position of the named argument as the position to remove
             // if it is not, we cannot remove it
             if ($firstNamedArgPosition !== null && $position >= $firstNamedArgPosition) {
-                $call = $this->astResolver->resolveClassMethodOrFunctionFromCall($node);
-                if ($call === null) {
+                $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
+                if (! $reflection instanceof MethodReflection && ! $reflection instanceof FunctionReflection) {
                     return null;
                 }
 
-                $paramName = null;
-                $variable = $call->params[$position]->var;
-                if ($variable instanceof Variable) {
-                    $paramName = $variable->name;
-                }
+                $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors($reflection->getVariants());
+                $parameterReflection = $parametersAcceptor->getParameters()[$position] ?? null;
 
                 $newPosition = -1;
-                if (is_string($paramName)) {
-                    $newPosition = $this->argsAnalyzer->resolveArgPosition($args, $paramName, $newPosition);
+                if ($parameterReflection !== null) {
+                    $newPosition = $this->argsAnalyzer->resolveArgPosition(
+                        $args,
+                        $parameterReflection->getName(),
+                        $newPosition
+                    );
                 }
 
                 if ($newPosition === -1) {
