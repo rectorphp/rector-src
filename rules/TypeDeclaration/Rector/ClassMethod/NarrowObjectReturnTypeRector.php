@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\ObjectType;
@@ -19,7 +20,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -37,7 +37,6 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly AstResolver $astResolver,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -242,6 +241,8 @@ CODE_SAMPLE
 
         $methodName = $this->getName($classMethod);
 
+        $actualObjectType = new ObjectType($actualReturnClass);
+
         foreach ($ancestors as $ancestor) {
             if ($ancestor->getFileName() === null) {
                 continue;
@@ -251,19 +252,23 @@ CODE_SAMPLE
                 continue;
             }
 
-            $parentClassMethod = $this->astResolver->resolveClassMethod($ancestor->getName(), $methodName);
-            if (! $parentClassMethod instanceof ClassMethod) {
+            $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
+                $ancestor->getNativeMethod($methodName)
+                    ->getVariants()
+            );
+
+            // only a single, bare class-name return type can constrain narrowing
+            $parentNativeReturnType = $parametersAcceptor->getNativeReturnType();
+            if (! $parentNativeReturnType instanceof ObjectType) {
                 continue;
             }
 
-            $parentReturnType = $parentClassMethod->returnType;
-            if (! $parentReturnType instanceof Identifier && ! $parentReturnType instanceof FullyQualified) {
-                continue;
+            if (! $parentNativeReturnType->isSuperTypeOf($actualObjectType)->yes()) {
+                return false;
             }
 
-            $parentReturnTypeName = $parentReturnType->toString();
-
-            if (! $this->isNarrowingValid($parentClassMethod, $parentReturnTypeName, $actualReturnClass)) {
+            // skip narrowing when the parent @return is a generic type, e.g. Collection<int, Foo>
+            if ($parametersAcceptor->getReturnType() instanceof GenericObjectType) {
                 return false;
             }
         }
