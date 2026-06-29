@@ -70,6 +70,9 @@ CODE_SAMPLE
         return [Switch_::class];
     }
 
+    /**
+     * @param Switch_ $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
