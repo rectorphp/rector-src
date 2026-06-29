@@ -110,14 +110,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'array')) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $returnType = $phpDocInfo->getReturnType();
 
         if (! $returnType instanceof MixedType || $returnType->isExplicitMixed()) {
-            return null;
-        }
-
-        if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'array')) {
             return null;
         }
 

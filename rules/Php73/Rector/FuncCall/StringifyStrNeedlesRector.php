@@ -86,12 +86,12 @@ CODE_SAMPLE
         // is argument string?
         $needleArgValue = $node->args[1]->value;
 
-        $needleType = $this->getType($needleArgValue);
-        if ($needleType->isString()->yes()) {
+        if ($needleArgValue instanceof InterpolatedString) {
             return null;
         }
 
-        if ($needleArgValue instanceof InterpolatedString) {
+        $needleType = $this->getType($needleArgValue);
+        if ($needleType->isString()->yes()) {
             return null;
         }
 
