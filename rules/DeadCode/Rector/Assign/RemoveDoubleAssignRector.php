@@ -100,6 +100,15 @@ CODE_SAMPLE
                 continue;
             }
 
+            // the assignment target itself may contain a call with side effects,
+            // e.g. $object->getService()->property = 1; — removing the first assign would skip the call
+            if ($this->betterNodeFinder->findFirst(
+                $stmt->expr->var,
+                fn (Node $subNode): bool => $this->sideEffectNodeDetector->detectCallExpr($subNode)
+            ) instanceof Node) {
+                continue;
+            }
+
             // next stmts can have side effect as well
             if (($nextAssign->var instanceof PropertyFetch || $nextAssign->var instanceof StaticPropertyFetch) && $this->sideEffectNodeDetector->detectCallExpr(
                 $nextAssign->expr
