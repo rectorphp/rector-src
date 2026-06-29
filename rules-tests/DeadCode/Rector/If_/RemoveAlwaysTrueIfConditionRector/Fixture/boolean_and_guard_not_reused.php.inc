@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector\Fixture;
 
-final class BooleanAndWithObject
+final class BooleanAndGuardNotReused
 {
-    public function run(\stdClass $someObject)
+    public function run(\stdClass $someObject, bool $flag)
     {
-        if (is_object($someObject) && method_exists($someObject, 'some_method')) {
+        if (is_object($someObject) && $flag) {
             return 100;
         }
 
@@ -20,11 +20,11 @@ final class BooleanAndWithObject
 
 namespace Rector\Tests\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector\Fixture;
 
-final class BooleanAndWithObject
+final class BooleanAndGuardNotReused
 {
-    public function run(\stdClass $someObject)
+    public function run(\stdClass $someObject, bool $flag)
     {
-        if (method_exists($someObject, 'some_method')) {
+        if ($flag) {
             return 100;
         }
 

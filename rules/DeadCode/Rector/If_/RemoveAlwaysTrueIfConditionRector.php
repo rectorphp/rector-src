@@ -54,6 +54,31 @@ final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
         'extension_loaded',
     ];
 
+    /**
+     * Type-assertion guards. Their "always true" result may come from a phpdoc-narrowed type
+     * that runtime can violate (e.g. user config, decoded JSON), so when the right operand reuses
+     * the guarded variable, removing the guard would change behavior.
+     *
+     * @var string[]
+     */
+    private const array TYPE_ASSERTION_FUNCTIONS = [
+        'is_string',
+        'is_int',
+        'is_integer',
+        'is_float',
+        'is_double',
+        'is_bool',
+        'is_array',
+        'is_object',
+        'is_callable',
+        'is_iterable',
+        'is_numeric',
+        'is_scalar',
+        'is_countable',
+        'is_null',
+        'is_a',
+    ];
+
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -233,7 +258,49 @@ CODE_SAMPLE
             return null;
         }
 
+        // keep a type-assertion guard (e.g. is_string($x)) when the right operand reuses the same
+        // variable: its "always true" type may be phpdoc-only and violated at runtime, so dropping
+        // the guard would let the right operand run on an unexpected type
+        if ($this->isReusedTypeGuard($booleanAnd)) {
+            return null;
+        }
+
         $if->cond = $booleanAnd->right;
         return $if;
+    }
+
+    private function isReusedTypeGuard(BooleanAnd $booleanAnd): bool
+    {
+        /** @var FuncCall[] $funcCalls */
+        $funcCalls = $this->betterNodeFinder->findInstancesOf($booleanAnd->left, [FuncCall::class]);
+        foreach ($funcCalls as $funcCall) {
+            if (! $this->isNames($funcCall, self::TYPE_ASSERTION_FUNCTIONS)) {
+                continue;
+            }
+
+            $args = $funcCall->getArgs();
+            if (! isset($args[0])) {
+                continue;
+            }
+
+            $subject = $args[0]->value;
+            if (! $subject instanceof Variable) {
+                continue;
+            }
+
+            $isReusedOnRight = (bool) $this->betterNodeFinder->findFirst(
+                $booleanAnd->right,
+                fn (Node $subNode): bool => $subNode instanceof Variable && $this->nodeComparator->areNodesEqual(
+                    $subNode,
+                    $subject
+                )
+            );
+
+            if ($isReusedOnRight) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
