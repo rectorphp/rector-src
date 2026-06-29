@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Utils\PHPStan\Rule;
 
+use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Name;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -35,17 +41,14 @@ use PHPStan\Rules\RuleErrorBuilder;
  */
 final class CheaperGuardFirstRule implements Rule
 {
-    /**
-     * @var string
-     */
-    private const ERROR_MESSAGE = 'Cheap guard on line %d can run before the expensive call on line %d; move the early return up to bail before the costly analysis.';
+    private const string ERROR_MESSAGE = 'Cheap guard on line %d can run before the expensive call on line %d; move the early return up to bail before the costly analysis.';
 
     /**
      * Calls that trigger heavy analysis (type resolution, docblock parsing, file re-parsing).
      *
      * @var string[]
      */
-    private const EXPENSIVE_CALLS = [
+    private const array EXPENSIVE_CALLS = [
         'getType',
         'getNativeType',
         'isObjectType',
@@ -59,12 +62,9 @@ final class CheaperGuardFirstRule implements Rule
      *
      * @var string[]
      */
-    private const CHEAP_CALLS = ['isName', 'isNames', 'isFirstClassCallable', 'in_array', 'count'];
+    private const array CHEAP_CALLS = ['isName', 'isNames', 'isFirstClassCallable', 'in_array', 'count'];
 
-    /**
-     * @var string
-     */
-    private const ABSTRACT_RECTOR_CLASS = 'Rector\Rector\AbstractRector';
+    private const string ABSTRACT_RECTOR_CLASS = 'Rector\Rector\AbstractRector';
 
     public function getNodeType(): string
     {
@@ -97,8 +97,9 @@ final class CheaperGuardFirstRule implements Rule
         }
 
         $assignedVariableNames = $this->resolveAssignedVariableNames($stmts[$anchorIndex]);
+        $counter = count($stmts);
 
-        for ($index = $anchorIndex + 1; $index < count($stmts); ++$index) {
+        for ($index = $anchorIndex + 1; $index < $counter; ++$index) {
             $stmt = $stmts[$index];
 
             if ($this->isPureBailGuard($stmt)) {
@@ -154,7 +155,7 @@ final class CheaperGuardFirstRule implements Rule
             return false;
         }
 
-        if ($stmt->elseifs !== [] || $stmt->else !== null) {
+        if ($stmt->elseifs !== [] || $stmt->else instanceof Else_) {
             return false;
         }
 
@@ -179,10 +180,10 @@ final class CheaperGuardFirstRule implements Rule
         return $onlyStmt->expr instanceof ConstFetch && $onlyStmt->expr->name->toLowerString() === 'null';
     }
 
-    private function isCheapCondition(Expr $cond): bool
+    private function isCheapCondition(Expr $expr): bool
     {
         $nodeFinder = new NodeFinder();
-        $callLikes = $nodeFinder->findInstanceOf($cond, CallLike::class);
+        $callLikes = $nodeFinder->findInstanceOf($expr, CallLike::class);
 
         foreach ($callLikes as $callLike) {
             $name = $this->resolveCallName($callLike);
@@ -201,14 +202,14 @@ final class CheaperGuardFirstRule implements Rule
     /**
      * @param string[] $assignedVariableNames
      */
-    private function isIndependent(Expr $cond, array $assignedVariableNames): bool
+    private function isIndependent(Expr $expr, array $assignedVariableNames): bool
     {
         if ($assignedVariableNames === []) {
             return true;
         }
 
         $nodeFinder = new NodeFinder();
-        $variables = $nodeFinder->findInstanceOf($cond, Variable::class);
+        $variables = $nodeFinder->findInstanceOf($expr, Variable::class);
 
         foreach ($variables as $variable) {
             if (! is_string($variable->name)) {
@@ -243,12 +244,12 @@ final class CheaperGuardFirstRule implements Rule
 
     private function resolveCallName(CallLike $callLike): ?string
     {
-        if ($callLike instanceof Node\Expr\MethodCall || $callLike instanceof Node\Expr\NullsafeMethodCall || $callLike instanceof Node\Expr\StaticCall) {
+        if ($callLike instanceof MethodCall || $callLike instanceof NullsafeMethodCall || $callLike instanceof StaticCall) {
             return $callLike->name instanceof Identifier ? $callLike->name->toString() : null;
         }
 
-        if ($callLike instanceof Node\Expr\FuncCall) {
-            return $callLike->name instanceof Node\Name ? $callLike->name->toString() : null;
+        if ($callLike instanceof FuncCall) {
+            return $callLike->name instanceof Name ? $callLike->name->toString() : null;
         }
 
         return null;
