@@ -85,8 +85,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
         // definitely not an array return
         if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'array')) {
             return null;
@@ -106,9 +104,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $classMethodDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($classMethodDocInfo->getReturnTagValue())) {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
             return null;
         }
 
