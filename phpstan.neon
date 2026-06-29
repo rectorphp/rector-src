@@ -418,6 +418,7 @@ parameters:
         - '#Class "Rector\\Php70\\Rector\\StaticCall\\StaticCallOnNonStaticToInstanceCallRector" is missing @see annotation with test case class reference#'
         - '#Class "Rector\\TypeDeclaration\\Rector\\ClassMethod\\StrictStringParamConcatRector" is missing @see annotation with test case class reference#'
         - '#Class "Rector\\CodingStyle\\Rector\\Enum_\\EnumCaseToPascalCaseRector" is missing @see annotation with test case class reference#'
+        - '#Class "Rector\\CodeQuality\\Rector\\Concat\\JoinStringConcatRector" is missing @see annotation with test case class reference#'
 
         # false positive
         -

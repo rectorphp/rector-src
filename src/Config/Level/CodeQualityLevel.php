@@ -26,7 +26,6 @@ use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
-use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
 use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
@@ -138,7 +137,6 @@ final class CodeQualityLevel
         SingleInArrayToCompareRector::class,
         SimplifyIfElseToTernaryRector::class,
         TernaryImplodeToImplodeRector::class,
-        JoinStringConcatRector::class,
         ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
         ExplicitBoolCompareRector::class,
         CombineIfRector::class,
