@@ -166,6 +166,11 @@ CODE_SAMPLE
             return;
         }
 
+        // the iterated expression itself may have side effects, e.g. foreach (generator() as $event) {}
+        if ($this->hasNodeSideEffect($for->expr)) {
+            return;
+        }
+
         $exprs = [$for->expr, $for->valueVar, $for->valueVar];
         $variables = $this->betterNodeFinder->findInstanceOf($exprs, Variable::class);
         foreach ($variables as $variable) {
