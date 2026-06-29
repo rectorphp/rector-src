@@ -4,28 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Concat;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Concat;
-use PhpParser\Node\Scalar\String_;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\Util\StringUtils;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodeQuality\Rector\Concat\JoinStringConcatRector\JoinStringConcatRectorTest
+ * @deprecated as depends on context and personal preference, hard to generalize. Handle it manually or via a custom rule instead.
  */
-final class JoinStringConcatRector extends AbstractRector
+final class JoinStringConcatRector extends AbstractRector implements DeprecatedInterface
 {
-    private const int LINE_BREAK_POINT = 100;
-
-    /**
-     * @see https://regex101.com/r/VaXM1t/1
-     * @see https://stackoverflow.com/questions/4147646/determine-if-utf-8-text-is-all-ascii
-     */
-    private const string ASCII_REGEX = '#[^\x00-\x7F]#';
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -69,42 +60,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->left instanceof String_) {
-            return null;
-        }
-
-        if (! $node->right instanceof String_) {
-            return null;
-        }
-
-        $leftStartLine = $node->left->getStartLine();
-        $rightStartLine = $node->right->getStartLine();
-
-        if ($leftStartLine > 0 && $rightStartLine > 0 && $rightStartLine > $leftStartLine) {
-            return null;
-        }
-
-        return $this->joinConcatIfStrings($node->left, $node->right);
-    }
-
-    private function joinConcatIfStrings(String_ $leftString, String_ $rightString): ?String_
-    {
-        $leftValue = $leftString->value;
-        $rightValue = $rightString->value;
-
-        if (str_contains($leftValue, "\n") || str_contains($rightValue, "\n")) {
-            return null;
-        }
-
-        $joinedStringValue = $leftValue . $rightValue;
-        if (StringUtils::isMatch($joinedStringValue, self::ASCII_REGEX)) {
-            return null;
-        }
-
-        if (Strings::length($joinedStringValue) >= self::LINE_BREAK_POINT) {
-            return null;
-        }
-
-        return new String_($joinedStringValue);
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" is deprecated as depends on context and personal preference, hard to generalize. Handle it manually or via a custom rule instead',
+            self::class
+        ));
     }
 }
