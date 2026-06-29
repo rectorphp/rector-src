@@ -75,7 +75,6 @@ use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperator
 use Rector\CodeQuality\Rector\Property\FixClassCaseSensitivityVarDocblockRector;
 use Rector\CodeQuality\Rector\StmtsAwareInterface\MoveInnerFunctionToTopLevelRector;
 use Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector;
-use Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector;
 use Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector;
 use Rector\CodeQuality\Rector\Ternary\NumberCompareToMaxFuncCallRector;
 use Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector;
@@ -181,7 +180,6 @@ final class CodeQualityLevel
         TernaryEmptyArrayArrayDimFetchToCoalesceRector::class,
         OptionalParametersAfterRequiredRector::class,
         SimplifyEmptyCheckOnEmptyArrayRector::class,
-        SwitchTrueToIfRector::class,
         CleanupUnneededNullsafeOperatorRector::class,
         DisallowedEmptyRuleFixerRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
