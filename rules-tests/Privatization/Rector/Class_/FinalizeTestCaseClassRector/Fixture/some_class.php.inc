@@ -4,7 +4,7 @@ namespace Rector\Tests\Privatization\Rector\Class_\FinalizeTestCaseClassRector\F
 
 use PHPUnit\Framework\TestCase;
 
-class SomeClass extends TestCase
+class SomeClassTest extends TestCase
 {
 }
 
@@ -16,7 +16,7 @@ namespace Rector\Tests\Privatization\Rector\Class_\FinalizeTestCaseClassRector\F
 
 use PHPUnit\Framework\TestCase;
 
-final class SomeClass extends TestCase
+final class SomeClassTest extends TestCase
 {
 }
 

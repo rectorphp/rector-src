@@ -5,7 +5,7 @@ namespace Rector\Tests\Privatization\Rector\Class_\FinalizeTestCaseClassRector\F
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Advisor::class)]
-class WithAttributeNewLine extends TestCase
+class WithAttributeNewLineTest extends TestCase
 {
 }
 
@@ -18,7 +18,7 @@ namespace Rector\Tests\Privatization\Rector\Class_\FinalizeTestCaseClassRector\F
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Advisor::class)]
-final class WithAttributeNewLine extends TestCase
+final class WithAttributeNewLineTest extends TestCase
 {
 }
 
