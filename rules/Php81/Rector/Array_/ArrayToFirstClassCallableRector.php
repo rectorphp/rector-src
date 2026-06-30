@@ -94,6 +94,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->getAttribute(AttributeKey::IS_ARRAY_AS_STRING_CALLABLE)) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
 
         $arrayCallable = $this->arrayCallableMethodMatcher->match($node, $scope);
