@@ -24,9 +24,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * Class-string static call detection mirrors PHPStan's UnusedPrivateMethodRule fix
- * @see https://github.com/phpstan/phpstan-src/pull/5953
- *
  * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector\RemoveUnusedPrivateMethodRectorTest
  */
 final class RemoveUnusedPrivateMethodRector extends AbstractRector
@@ -168,6 +165,9 @@ CODE_SAMPLE
     }
 
     /**
+     * Mirrors PHPStan's UnusedPrivateMethodRule fix for class-string static calls
+     * @see https://github.com/phpstan/phpstan-src/pull/5953
+     *
      * @return string[]
      */
     private function resolveClassStringStaticCallNames(Class_ $class): array
