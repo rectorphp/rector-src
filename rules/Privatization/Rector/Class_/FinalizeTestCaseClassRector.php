@@ -74,6 +74,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // skip classes without "Test" suffix, as those are meant to be extended
+        if (! str_ends_with($className, 'Test')) {
+            return null;
+        }
+
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }
