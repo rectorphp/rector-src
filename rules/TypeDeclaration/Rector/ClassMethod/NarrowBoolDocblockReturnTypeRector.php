@@ -150,6 +150,13 @@ CODE_SAMPLE
 
     private function narrowBoolInUnion(UnionTypeNode $unionTypeNode, string $constantBoolName): bool
     {
+        // already contains the constant? replacing "bool" would create a duplicate
+        foreach ($unionTypeNode->types as $typeNode) {
+            if ($typeNode instanceof IdentifierTypeNode && $typeNode->name === $constantBoolName) {
+                return false;
+            }
+        }
+
         $hasChanged = false;
 
         foreach ($unionTypeNode->types as $key => $typeNode) {
