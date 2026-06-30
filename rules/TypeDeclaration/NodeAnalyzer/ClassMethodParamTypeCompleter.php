@@ -94,6 +94,12 @@ final readonly class ClassMethodParamTypeCompleter
         }
 
         $parameter = $classMethod->params[$position];
+
+        // skip variadic param, as resolved type belongs to single element, not the whole array
+        if ($parameter->variadic) {
+            return true;
+        }
+
         if ($parameter->type === null) {
             return false;
         }
