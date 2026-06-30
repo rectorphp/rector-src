@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
@@ -180,6 +181,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // changed via reference in foreach, e.g. foreach ($this->items as &$item), so it cannot be readonly
+        if ($this->isPropertyChangedInByRefForeach($class, (string) $this->getName($property))) {
+            return null;
+        }
+
         $this->visibilityManipulator->makeReadonly($property);
         $this->removeReadOnlyDoc($property);
 
@@ -247,6 +253,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // changed via reference in foreach, e.g. foreach ($this->items as &$item), so it cannot be readonly
+        if ($this->isPropertyChangedInByRefForeach($class, (string) $this->getName($param))) {
+            return null;
+        }
+
         $this->visibilityManipulator->makeReadonly($param);
 
         $this->removeReadOnlyDoc($param);
@@ -281,6 +292,26 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function isPropertyChangedInByRefForeach(Class_ $class, string $propertyName): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst($class, function (Node $node) use ($propertyName): bool {
+            if (! $node instanceof Foreach_) {
+                return false;
+            }
+
+            if (! $node->byRef) {
+                return false;
+            }
+
+            if (! $node->expr instanceof PropertyFetch) {
+                return false;
+            }
+
+            return $this->isName($node->expr->var, 'this')
+                && $this->isName($node->expr, $propertyName);
+        });
     }
 
     private function isPromotedPropertyAssigned(Class_ $class, Param $param): bool
