@@ -37,9 +37,6 @@ final class PlainValueParser
         $this->arrayParser = $arrayParser;
     }
 
-    /**
-     * @return string|mixed[]|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode
-     */
     public function parseValue(
         BetterTokenIterator $tokenIterator,
         Node $currentPhpNode

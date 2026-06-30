@@ -51,7 +51,6 @@ final readonly class StaticDoctrineAnnotationParser
     /**
      * @api tests
      * @see https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L1215-L1224
-     * @return CurlyListNode|string|array<mixed>|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode
      */
     public function resolveAnnotationValue(
         BetterTokenIterator $tokenIterator,
@@ -120,9 +119,6 @@ final readonly class StaticDoctrineAnnotationParser
         return $this->arrayParser->createArrayFromValues($values);
     }
 
-    /**
-     * @return CurlyListNode|string|array<mixed>|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode
-     */
     private function parseValue(
         BetterTokenIterator $tokenIterator,
         Node $currentPhpNode

@@ -240,9 +240,6 @@ final class ValueResolver
         return $file->getFilePath();
     }
 
-    /**
-     * @return mixed[]|null
-     */
     private function extractConstantArrayTypeValue(ConstantArrayType $constantArrayType): ?array
     {
         $keys = [];
