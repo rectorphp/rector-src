@@ -38,7 +38,7 @@ jobs:
                 working-directory: compat-tests
 
         steps:
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v7
 
             -
                 uses: shivammathur/setup-php@v2
