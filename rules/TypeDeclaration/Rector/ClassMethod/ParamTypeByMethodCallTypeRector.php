@@ -4,52 +4,30 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
-use PhpParser\Node;
-use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
-use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
-use Rector\TypeDeclaration\NodeAnalyzer\CallerParamMatcher;
-use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
+use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * Handles the remaining compound param type group: everything that is neither a pure object,
+ * a pure scalar, nor a pure array (e.g. cross-group unions like array|string, iterable, callable).
+ *
+ * @see \Rector\TypeDeclaration\Rector\ClassMethod\ObjectParamTypeByMethodCallTypeRector for object types
+ * @see \Rector\TypeDeclaration\Rector\ClassMethod\ScalarParamTypeByMethodCallTypeRector for scalar types
+ * @see \Rector\TypeDeclaration\Rector\ClassMethod\ArrayParamTypeByMethodCallTypeRector for array types
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector\ParamTypeByMethodCallTypeRectorTest
  */
-final class ParamTypeByMethodCallTypeRector extends AbstractRector
+final class ParamTypeByMethodCallTypeRector extends AbstractParamTypeByMethodCallTypeRector
 {
-    public function __construct(
-        private readonly CallerParamMatcher $callerParamMatcher,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly ParamTypeAddGuard $paramTypeAddGuard,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly PhpParserNodeMapper $phpParserNodeMapper,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly TypeFactory $typeFactory
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change param type based on passed method call type', [
+        return new RuleDefinition('Change compound param type based on passed method call type', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeTypedService
 {
-    public function run(string $name)
+    public function run(iterable $values)
     {
     }
 }
@@ -71,7 +49,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeTypedService
 {
-    public function run(string $name)
+    public function run(iterable $values)
     {
     }
 }
@@ -83,7 +61,7 @@ final class UseDependency
     ) {
     }
 
-    public function go(string $value)
+    public function go(iterable $value)
     {
         $this->someTypedService->run($value);
     }
@@ -93,149 +71,16 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
-    public function getNodeTypes(): array
+    protected function isMatchingParamType(Type $type): bool
     {
-        return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
-    }
+        $bareType = TypeCombinator::removeNull($type);
 
-    /**
-     * @param ClassMethod|Function_|Closure|ArrowFunction $node
-     */
-    public function refactor(Node $node): ?Node
-    {
-        if ($node->params === []) {
-            return null;
-        }
-
-        // has params with at least one missing type
-        if (! $this->hasAtLeastOneParamWithoutType($node)) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod && $this->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
-        /** @var array<StaticCall|MethodCall|FuncCall> $callers */
-        $callers = $this->betterNodeFinder->findInstancesOfScoped(
-            [$node],
-            [StaticCall::class, MethodCall::class, FuncCall::class]
-        );
-
-        // keep only callers with args
-        $callersWithArgs = array_filter(
-            $callers,
-            fn (StaticCall|MethodCall|FuncCall $caller): bool => $caller->args !== []
-        );
-
-        if ($callersWithArgs === []) {
-            return null;
-        }
-
-        $hasChanged = $this->refactorFunctionLike($node, $callersWithArgs);
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
-    }
-
-    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
-    {
-        $isMissingParameterTypes = false;
-        foreach ($classMethod->params as $param) {
-            if ($param->type instanceof Node) {
-                continue;
-            }
-
-            if ($param->variadic) {
-                continue;
-            }
-
-            $isMissingParameterTypes = true;
-        }
-
-        if ($isMissingParameterTypes === false) {
-            return true;
-        }
-
-        return $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod);
-    }
-
-    private function shouldSkipParam(
-        Param $param,
-        ClassMethod|Function_|Closure|ArrowFunction $functionLike
-    ): bool {
-        // already has type, skip
-        if ($param->type instanceof Node) {
-            return true;
-        }
-
-        if ($param->variadic) {
-            return true;
-        }
-
-        return ! $this->paramTypeAddGuard->isLegal($param, $functionLike);
-    }
-
-    /**
-     * @param array<StaticCall|MethodCall|FuncCall> $callers
-     */
-    private function refactorFunctionLike(
-        ClassMethod|Closure|Function_|ArrowFunction $functionLike,
-        array $callers
-    ): bool {
-        $hasChanged = false;
-
-        foreach ($functionLike->params as $param) {
-            if ($this->shouldSkipParam($param, $functionLike)) {
-                continue;
-            }
-
-            $paramTypes = [];
-            foreach ($callers as $caller) {
-                $matchCallParam = $this->callerParamMatcher->matchCallParam($caller, $param);
-
-                // nothing to do with param, continue
-                if (! $matchCallParam instanceof Param) {
-                    continue;
-                }
-
-                $paramType = $this->callerParamMatcher->matchCallParamType($param, $matchCallParam);
-                if (! $paramType instanceof Node) {
-                    $paramTypes = [];
-                    break;
-                }
-
-                if ($caller->getAttribute(AttributeKey::IS_RIGHT_AND)) {
-                    $paramTypes = [];
-                    break;
-                }
-
-                $paramTypes[] = $this->phpParserNodeMapper->mapToPHPStanType($paramType);
-            }
-
-            if ($paramTypes === []) {
-                continue;
-            }
-
-            $type = $this->typeFactory->createMixedPassedOrUnionType($paramTypes);
-            $paramNodeType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
-
-            if ($paramNodeType instanceof Node) {
-                $param->type = $paramNodeType;
-                $hasChanged = true;
-            }
-        }
-
-        return $hasChanged;
-    }
-
-    private function hasAtLeastOneParamWithoutType(ClassMethod|Function_|Closure|ArrowFunction $functionLike): bool
-    {
-        return array_any($functionLike->params, fn (Param $param): bool => ! $param->type instanceof Node);
+        // remaining compound types: not a pure object, scalar, nor array (iterable, callable, cross-group unions)
+        return ! $bareType->isObject()
+            ->yes()
+            && ! $bareType->isScalar()
+                ->yes()
+            && ! $bareType->isArray()
+                ->yes();
     }
 }
