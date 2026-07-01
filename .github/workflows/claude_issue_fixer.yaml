@@ -12,6 +12,9 @@ permissions:
 
 jobs:
     pick-and-fix:
+        # Don't run on forks.
+        if: github.repository == 'rectorphp/rector-src'
+
         runs-on: ubuntu-latest
         timeout-minutes: 30
 
