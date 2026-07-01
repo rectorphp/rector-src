@@ -286,4 +286,10 @@ final class Option
      * @internal to allow process file without extension if explicitly registered
      */
     public const string FILES_WITHOUT_EXTENSION = 'files_without_extension';
+
+    /**
+     * @internal Use @see \Rector\Config\RectorConfig::typeGuardedClasses() instead
+     * @var string
+     */
+    public const string TYPE_GUARDED_CLASSES = 'type_guarded_classes';
 }
