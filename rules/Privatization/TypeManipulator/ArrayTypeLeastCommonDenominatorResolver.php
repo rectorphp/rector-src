@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Privatization\TypeManipulator;
 
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
