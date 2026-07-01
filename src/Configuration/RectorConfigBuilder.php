@@ -163,6 +163,11 @@ final class RectorConfigBuilder
     private ?bool $isTreatClassesAsFinal = null;
 
     /**
+     * @var string[]
+     */
+    private array $typeGuardedClasses = [];
+
+    /**
      * @var RegisteredService[]
      */
     private array $registerServices = [];
@@ -386,6 +391,10 @@ final class RectorConfigBuilder
 
         if ($this->isFluentNewLine !== null) {
             $rectorConfig->newLineOnFluentCall($this->isFluentNewLine);
+        }
+
+        if ($this->typeGuardedClasses !== []) {
+            $rectorConfig->typeGuardedClasses($this->typeGuardedClasses);
         }
 
         if ($this->isTreatClassesAsFinal !== null) {
@@ -1245,6 +1254,18 @@ final class RectorConfigBuilder
     public function withTreatClassesAsFinal(bool $isTreatClassesAsFinal = true): self
     {
         $this->isTreatClassesAsFinal = $isTreatClassesAsFinal;
+        return $this;
+    }
+
+    /**
+     * Guard the listed classes and their non-final descendants against method signature changes
+     * that would break child classes - e.g. adding a return type or a param type.
+     *
+     * @param string[] $typeGuardedClasses
+     */
+    public function withTypeGuardedClasses(array $typeGuardedClasses): self
+    {
+        $this->typeGuardedClasses = $typeGuardedClasses;
         return $this;
     }
 
