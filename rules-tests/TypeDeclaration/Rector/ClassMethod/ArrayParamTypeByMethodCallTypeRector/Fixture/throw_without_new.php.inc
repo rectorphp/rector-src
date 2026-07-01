@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ArrayParamTypeByMethodCallTypeRector\Fixture;
 
 final class ThrowWithoutNew
 {
@@ -20,7 +20,7 @@ final class ThrowWithoutNew
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ArrayParamTypeByMethodCallTypeRector\Fixture;
 
 final class ThrowWithoutNew
 {
