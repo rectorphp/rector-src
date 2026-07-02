@@ -7,19 +7,16 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\PhpParser\Comparing\NodeComparator;
 
 final readonly class ClassMethodAndPropertyAnalyzer
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver,
-        private NodeComparator $nodeComparator
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -53,38 +50,6 @@ final readonly class ClassMethodAndPropertyAnalyzer
 
         $onlyClassMethodStmt = $stmts[0];
         return $this->isLocalPropertyVariableAssign($onlyClassMethodStmt, $propertyName);
-    }
-
-    /**
-     * Matches a strict setter shape: single statement `$this->propertyName = $firstParam;`,
-     * where the assigned value is exactly the method's first parameter variable.
-     */
-    public function hasOnlyFirstParamPropertyAssign(ClassMethod $classMethod, string $propertyName): bool
-    {
-        if (! $this->hasOnlyPropertyAssign($classMethod, $propertyName)) {
-            return false;
-        }
-
-        $firstParam = $classMethod->params[0] ?? null;
-        if (! $firstParam instanceof Param) {
-            return false;
-        }
-
-        $onlyClassMethodStmt = ((array) $classMethod->stmts)[0];
-        if (! $onlyClassMethodStmt instanceof Expression) {
-            return false;
-        }
-
-        $assign = $onlyClassMethodStmt->expr;
-        if (! $assign instanceof Assign) {
-            return false;
-        }
-
-        if (! $assign->expr instanceof Variable) {
-            return false;
-        }
-
-        return $this->nodeComparator->areNodesEqual($assign->expr, $firstParam->var);
     }
 
     public function hasPropertyAssignWithReturnThis(ClassMethod $classMethod): bool

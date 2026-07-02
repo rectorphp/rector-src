@@ -27,7 +27,7 @@ final readonly class SetterTypeDeclarationPropertyTypeInferer
         $propertyName = $this->nodeNameResolver->getName($property);
 
         foreach ($class->getMethods() as $classMethod) {
-            if (! $this->classMethodAndPropertyAnalyzer->hasOnlyFirstParamPropertyAssign($classMethod, $propertyName)) {
+            if (! $this->classMethodAndPropertyAnalyzer->hasOnlyPropertyAssign($classMethod, $propertyName)) {
                 continue;
             }
 
