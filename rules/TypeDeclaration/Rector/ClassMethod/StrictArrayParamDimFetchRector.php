@@ -16,7 +16,10 @@ use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
@@ -244,6 +247,14 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($this->isPropertyFetchedOnArrayDimFetch($node, $paramName)) {
+            return true;
+        }
+
+        if ($this->isInstanceofParam($node, $paramName)) {
+            return true;
+        }
+
         return $this->isReassignAndUseAsArg($node, $paramName);
     }
 
@@ -286,6 +297,28 @@ CODE_SAMPLE
         }
 
         return $node instanceof Array_ && $node->expr instanceof Variable && $this->isName($node->expr, $paramName);
+    }
+
+    private function isPropertyFetchedOnArrayDimFetch(Node $node, string $paramName): bool
+    {
+        if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
+            return false;
+        }
+
+        $fetchedOn = $node instanceof PropertyFetch ? $node->var : $node->class;
+        if (! $fetchedOn instanceof ArrayDimFetch) {
+            return false;
+        }
+
+        return $fetchedOn->var instanceof Variable && $this->isName($fetchedOn->var, $paramName);
+    }
+
+    private function isInstanceofParam(Node $node, string $paramName): bool
+    {
+        return $node instanceof Instanceof_ && $node->expr instanceof Variable && $this->isName(
+            $node->expr,
+            $paramName
+        );
     }
 
     private function isMethodCall(string $paramName, ?Node $node): bool
