@@ -174,6 +174,7 @@ final class TypeDeclarationLevel
         ScalarTypedPropertyFromJMSSerializerAttributeTypeRector::class,
 
         // array parameter from dim fetch assign inside
+        AddClosureParamTypeFromVariableCallRector::class,
         StrictArrayParamDimFetchRector::class,
         AddParamFromDimFetchKeyUseRector::class,
         AddParamStringTypeFromSprintfUseRector::class,
@@ -187,6 +188,5 @@ final class TypeDeclarationLevel
         NarrowArrayAnyAllNullableParamTypeRector::class,
         AddArrayAnyAllClosureParamTypeRector::class,
         ClosureReturnTypeFromAssertInstanceOfRector::class,
-        AddClosureParamTypeFromVariableCallRector::class,
     ];
 }
