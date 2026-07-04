@@ -23,6 +23,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -138,6 +139,10 @@ CODE_SAMPLE
 
         $paramName = $this->getName($param);
 
+        if ($this->isDimFetchResultFedToSelfCall($functionLike, $paramName)) {
+            return false;
+        }
+
         $isParamAccessedArrayDimFetch = false;
         $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
             $paramName,
@@ -199,6 +204,111 @@ CODE_SAMPLE
         });
 
         return $isParamAccessedArrayDimFetch;
+    }
+
+    /**
+     * Skip when a value read from $param[dim] is fed back as an argument into the same
+     * closure/function (recursion). That element-as-container use signals an ArrayAccess
+     * tree (e.g. Symfony FormView), not a plain array.
+     */
+    private function isDimFetchResultFedToSelfCall(
+        ClassMethod|Function_|Closure $functionLike,
+        string $paramName
+    ): bool {
+        if ($functionLike->stmts === null) {
+            return false;
+        }
+
+        $selfCallNames = $this->resolveSelfCallNames($functionLike);
+        if ($selfCallNames === []) {
+            return false;
+        }
+
+        // collect variables assigned from $param[dim]
+        $dimFetchedVariableNames = [];
+        $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
+            $paramName,
+            &$dimFetchedVariableNames
+        ): null {
+            if ($node instanceof Assign
+                && $node->var instanceof Variable
+                && $node->expr instanceof ArrayDimFetch
+                && $node->expr->var instanceof Variable
+                && $this->isName($node->expr->var, $paramName)) {
+                $dimFetchedVariableNames[] = $this->getName($node->var);
+            }
+
+            return null;
+        });
+
+        $isFed = false;
+        $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
+            $selfCallNames,
+            $dimFetchedVariableNames,
+            $paramName,
+            &$isFed
+        ): null {
+            if ($isFed) {
+                return null;
+            }
+
+            if (! $node instanceof FuncCall || $node->isFirstClassCallable()) {
+                return null;
+            }
+
+            if (! $node->name instanceof Variable && ! $node->name instanceof Name) {
+                return null;
+            }
+
+            if (! in_array($this->getName($node->name), $selfCallNames, true)) {
+                return null;
+            }
+
+            foreach ($node->getArgs() as $arg) {
+                if ($arg->value instanceof Variable
+                    && in_array($this->getName($arg->value), $dimFetchedVariableNames, true)) {
+                    $isFed = true;
+                    return null;
+                }
+
+                if ($arg->value instanceof ArrayDimFetch
+                    && $arg->value->var instanceof Variable
+                    && $this->isName($arg->value->var, $paramName)) {
+                    $isFed = true;
+                    return null;
+                }
+            }
+
+            return null;
+        });
+
+        return $isFed;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveSelfCallNames(ClassMethod|Function_|Closure $functionLike): array
+    {
+        if ($functionLike instanceof Closure) {
+            $selfCallNames = [];
+            foreach ($functionLike->uses as $use) {
+                if ($use->byRef) {
+                    $useName = $this->getName($use->var);
+                    if ($useName !== null) {
+                        $selfCallNames[] = $useName;
+                    }
+                }
+            }
+
+            return $selfCallNames;
+        }
+
+        if ($functionLike instanceof Function_) {
+            return [$functionLike->name->toString()];
+        }
+
+        return [];
     }
 
     private function isEchoed(Node $node, string $paramName): bool
