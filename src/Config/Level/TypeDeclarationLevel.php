@@ -70,6 +70,7 @@ use Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoRetu
 use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayReduceRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromIterableMethodCallRector;
+use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromVariableCallRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
@@ -186,5 +187,6 @@ final class TypeDeclarationLevel
         NarrowArrayAnyAllNullableParamTypeRector::class,
         AddArrayAnyAllClosureParamTypeRector::class,
         ClosureReturnTypeFromAssertInstanceOfRector::class,
+        AddClosureParamTypeFromVariableCallRector::class,
     ];
 }
