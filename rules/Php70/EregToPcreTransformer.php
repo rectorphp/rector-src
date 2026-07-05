@@ -245,6 +245,7 @@ final class EregToPcreTransformer
                         $cls .= $this->_ere2pcre_escape($a) . '\-';
                         break;
                     }
+
                     if (ord($a) > ord($b)) {
                         $errorMessage = sprintf('an invalid character range %d-%d"', (int) $a, (int) $b);
                         throw new InvalidEregException($errorMessage);
