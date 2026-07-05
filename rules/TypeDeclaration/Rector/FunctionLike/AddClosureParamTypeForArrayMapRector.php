@@ -117,6 +117,7 @@ CODE_SAMPLE
                 $values = [];
                 break;
             }
+
             if ($value instanceof UnionType) {
                 $values = [...$values, ...$value->getTypes()];
             }
@@ -127,6 +128,7 @@ CODE_SAMPLE
                 $keys = [];
                 break;
             }
+
             if ($key instanceof UnionType) {
                 $keys = [...$keys, ...$key->getTypes()];
             }
