@@ -11,8 +11,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(
         RenameClassRector::class,
         [
-            'Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency'
-                => 'stdClass',
+            'Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\Source\SomeDependency' => 'stdClass',
         ]
     );
 };

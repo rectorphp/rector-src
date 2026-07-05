@@ -88,7 +88,7 @@ final readonly class UselessIfCondBeforeForeachDetector
         return $this->isMatchingNotBinaryOp($notIdentical, $foreachExpr);
     }
 
-    private function isMatchingNotBinaryOp(NotIdentical | NotEqual $binaryOp, Expr $foreachExpr): bool
+    private function isMatchingNotBinaryOp(NotIdentical|NotEqual $binaryOp, Expr $foreachExpr): bool
     {
         if ($this->isEmptyArrayAndForeachedVariable($binaryOp->left, $binaryOp->right, $foreachExpr)) {
             return true;

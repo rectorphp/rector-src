@@ -72,7 +72,7 @@ final readonly class VarTagRemover
         return true;
     }
 
-    public function removeVarPhpTagValueNodeIfNotComment(Expression | Property | Param $node, Type $type): void
+    public function removeVarPhpTagValueNodeIfNotComment(Expression|Property|Param $node, Type $type): void
     {
         if ($type instanceof TemplateObjectWithoutClassType) {
             return;

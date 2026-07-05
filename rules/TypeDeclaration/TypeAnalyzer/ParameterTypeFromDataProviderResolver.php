@@ -109,7 +109,7 @@ final readonly class ParameterTypeFromDataProviderResolver
         return $this->typeFactory->createMixedPassedOrUnionType($paramOnPositionTypes);
     }
 
-    private function getTypeFromClassMethodYield(Array_ $classMethodYieldArray): MixedType | ConstantArrayType
+    private function getTypeFromClassMethodYield(Array_ $classMethodYieldArray): MixedType|ConstantArrayType
     {
         $arrayType = $this->nodeTypeResolver->getType($classMethodYieldArray);
 

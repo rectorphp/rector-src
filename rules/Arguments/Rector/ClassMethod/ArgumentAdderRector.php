@@ -111,7 +111,7 @@ CODE_SAMPLE
     /**
      * @param MethodCall|StaticCall|Class_ $node
      */
-    public function refactor(Node $node): MethodCall | StaticCall | Class_ | null
+    public function refactor(Node $node): MethodCall|StaticCall|Class_|null
     {
         $this->hasChanged = false;
 
@@ -139,7 +139,7 @@ CODE_SAMPLE
         $this->addedArguments = $configuration;
     }
 
-    private function isObjectTypeMatch(MethodCall | StaticCall $call, ObjectType $objectType): bool
+    private function isObjectTypeMatch(MethodCall|StaticCall $call, ObjectType $objectType): bool
     {
         if ($call instanceof MethodCall) {
             return $this->isObjectType($call->var, $objectType);
@@ -149,7 +149,7 @@ CODE_SAMPLE
     }
 
     private function processPositionWithDefaultValues(
-        ClassMethod | MethodCall | StaticCall $node,
+        ClassMethod|MethodCall|StaticCall $node,
         ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder
     ): void {
         if ($this->shouldSkipParameter($node, $argumentAdder)) {
@@ -202,7 +202,7 @@ CODE_SAMPLE
         $this->hasChanged = true;
     }
 
-    private function fillGapBetweenWithDefaultValue(MethodCall | StaticCall $node, int $position): void
+    private function fillGapBetweenWithDefaultValue(MethodCall|StaticCall $node, int $position): void
     {
         $lastPosition = count($node->getArgs()) - 1;
         if ($position <= $lastPosition) {
@@ -229,7 +229,7 @@ CODE_SAMPLE
     }
 
     private function shouldSkipParameter(
-        ClassMethod | MethodCall | StaticCall $node,
+        ClassMethod|MethodCall|StaticCall $node,
         ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder
     ): bool {
         $position = $argumentAdder->getPosition();
@@ -266,7 +266,7 @@ CODE_SAMPLE
         if ($firstNamedArgumentPosition !== null) {
             // Check if the parameter we're trying to add is before the first named argument
             if ($position < $firstNamedArgumentPosition) {
-                return true; //if that is the case, the parameter already exists, skip
+                return true; // if that is the case, the parameter already exists, skip
             }
 
             // Check if the parameter we're trying to add is already present as a named argument

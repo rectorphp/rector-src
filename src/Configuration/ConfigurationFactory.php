@@ -181,7 +181,7 @@ final readonly class ConfigurationFactory
         }
     }
 
-    private function resolveMemoryLimit(InputInterface $input): string | null
+    private function resolveMemoryLimit(InputInterface $input): string|null
     {
         $memoryLimit = $input->getOption(Option::MEMORY_LIMIT);
         if ($memoryLimit !== null) {

@@ -51,7 +51,7 @@ final class ConflictingNameResolver
 
     public function hasNameIsInFunctionLike(
         string $variableName,
-        ClassMethod | Function_ | Closure | ArrowFunction $functionLike
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike
     ): bool {
         $conflictingVariableNames = $this->resolveConflictingVariableNamesForNew($functionLike);
         return in_array($variableName, $conflictingVariableNames, true);
@@ -61,7 +61,7 @@ final class ConflictingNameResolver
      * @return string[]
      */
     private function resolveConflictingVariableNamesForNew(
-        ClassMethod | Function_ | Closure | ArrowFunction $functionLike
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike
     ): array {
         // cache it!
         $classMethodId = spl_object_id($functionLike);
@@ -85,7 +85,7 @@ final class ConflictingNameResolver
     /**
      * @return string[]
      */
-    private function resolveForNewAssigns(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): array
+    private function resolveForNewAssigns(ClassMethod|Function_|Closure|ArrowFunction $functionLike): array
     {
         $names = [];
 
@@ -106,7 +106,7 @@ final class ConflictingNameResolver
     /**
      * @return string[]
      */
-    private function resolveForNonNewAssigns(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): array
+    private function resolveForNonNewAssigns(ClassMethod|Function_|Closure|ArrowFunction $functionLike): array
     {
         $names = [];
 

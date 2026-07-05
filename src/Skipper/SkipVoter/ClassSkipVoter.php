@@ -18,7 +18,7 @@ final readonly class ClassSkipVoter
     ) {
     }
 
-    public function match(string | object $element): bool
+    public function match(string|object $element): bool
     {
         if (is_object($element)) {
             return true;
@@ -27,7 +27,7 @@ final readonly class ClassSkipVoter
         return $this->reflectionProvider->hasClass($element);
     }
 
-    public function matchSkip(string | object $element, string $filePath): ?SkipMatch
+    public function matchSkip(string|object $element, string $filePath): ?SkipMatch
     {
         $skippedClasses = $this->skippedClassResolver->resolve();
         return $this->skipSkipper->match($element, $filePath, $skippedClasses);

@@ -16,9 +16,9 @@ final readonly class VariableAndCallForeach
 {
     public function __construct(
         private Variable $variable,
-        private FuncCall | StaticCall | MethodCall $expr,
+        private FuncCall|StaticCall|MethodCall $expr,
         private string $variableName,
-        private ClassMethod | Function_ | Closure $functionLike
+        private ClassMethod|Function_|Closure $functionLike
     ) {
     }
 
@@ -27,7 +27,7 @@ final readonly class VariableAndCallForeach
         return $this->variable;
     }
 
-    public function getCall(): FuncCall | MethodCall | StaticCall
+    public function getCall(): FuncCall|MethodCall|StaticCall
     {
         return $this->expr;
     }
@@ -37,7 +37,7 @@ final readonly class VariableAndCallForeach
         return $this->variableName;
     }
 
-    public function getFunctionLike(): Closure | ClassMethod | Function_
+    public function getFunctionLike(): Closure|ClassMethod|Function_
     {
         return $this->functionLike;
     }

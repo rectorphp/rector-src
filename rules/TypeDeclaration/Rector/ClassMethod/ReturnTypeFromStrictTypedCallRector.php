@@ -156,7 +156,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isUnionPossibleReturnsVoid(ClassMethod | Function_ | Closure $node): bool
+    private function isUnionPossibleReturnsVoid(ClassMethod|Function_|Closure $node): bool
     {
         $inferReturnType = $this->returnTypeInferer->inferFunctionLike($node);
         if ($inferReturnType instanceof UnionType) {
@@ -171,10 +171,10 @@ CODE_SAMPLE
     }
 
     private function processSingleUnionType(
-        ClassMethod | Function_ | Closure $node,
+        ClassMethod|Function_|Closure $node,
         UnionType $unionType,
         NullableType $nullableType
-    ): Closure | ClassMethod | Function_ {
+    ): Closure|ClassMethod|Function_ {
         $types = $unionType->getTypes();
         $returnType = $types[0] instanceof ObjectType && $types[1]->isNull()->yes()
             ? new NullableType(new FullyQualified($types[0]->getClassName()))
@@ -184,7 +184,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
+    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool
     {
         if ($node->returnType instanceof Node) {
             return true;
@@ -203,8 +203,8 @@ CODE_SAMPLE
     private function refactorSingleReturnType(
         Return_ $return,
         Identifier|Name|NullableType|ComplexType $returnedStrictTypeNode,
-        ClassMethod | Function_ | Closure $functionLike
-    ): Closure | ClassMethod | Function_ {
+        ClassMethod|Function_|Closure $functionLike
+    ): Closure|ClassMethod|Function_ {
         $resolvedType = $this->nodeTypeResolver->getType($return);
 
         if ($resolvedType instanceof UnionType) {

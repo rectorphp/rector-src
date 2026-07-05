@@ -53,7 +53,7 @@ final readonly class PropertyFetchFinder
      */
     public function findPrivatePropertyFetches(
         Class_ $class,
-        Property | Param $propertyOrPromotedParam,
+        Property|Param $propertyOrPromotedParam,
         Scope $scope
     ): array {
         $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
@@ -240,7 +240,7 @@ final readonly class PropertyFetchFinder
         }
     }
 
-    private function isFoundByRefParam(MethodCall | StaticCall | FuncCall $node, int $key, Scope $scope): bool
+    private function isFoundByRefParam(MethodCall|StaticCall|FuncCall $node, int $key, Scope $scope): bool
     {
         $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
         if ($functionLikeReflection === null) {
@@ -297,7 +297,7 @@ final readonly class PropertyFetchFinder
         return $propertyFetchVarTypeClassName === $classLikeName;
     }
 
-    private function resolvePropertyName(Property | Param $propertyOrPromotedParam): ?string
+    private function resolvePropertyName(Property|Param $propertyOrPromotedParam): ?string
     {
         if ($propertyOrPromotedParam instanceof Property) {
             return $this->nodeNameResolver->getName($propertyOrPromotedParam->props[0]);

@@ -66,7 +66,7 @@ final class AstResolver
     /**
      * @api downgrade
      */
-    public function resolveClassFromName(string $className): Class_ | Trait_ | Interface_ | Enum_ | null
+    public function resolveClassFromName(string $className): Class_|Trait_|Interface_|Enum_|null
     {
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
@@ -112,8 +112,8 @@ final class AstResolver
     }
 
     public function resolveClassMethodOrFunctionFromCall(
-        FuncCall | StaticCall | MethodCall | New_ | NullsafeMethodCall $call
-    ): ClassMethod | Function_ | null {
+        FuncCall|StaticCall|MethodCall|New_|NullsafeMethodCall $call
+    ): ClassMethod|Function_|null {
         if ($call instanceof FuncCall) {
             return $this->resolveFunctionFromFuncCall($call);
         }
@@ -166,7 +166,7 @@ final class AstResolver
         return $classMethod;
     }
 
-    public function resolveClassMethodFromCall(MethodCall | StaticCall | NullsafeMethodCall | New_ $call): ?ClassMethod
+    public function resolveClassMethodFromCall(MethodCall|StaticCall|NullsafeMethodCall|New_ $call): ?ClassMethod
     {
         if ($call instanceof New_) {
             if ($call->class instanceof Class_) {
@@ -200,7 +200,7 @@ final class AstResolver
 
     public function resolveClassFromClassReflection(
         ClassReflection $classReflection
-    ): Trait_ | Class_ | Interface_ | Enum_ | null {
+    ): Trait_|Class_|Interface_|Enum_|null {
         if ($classReflection->isBuiltin()) {
             return null;
         }
@@ -260,7 +260,7 @@ final class AstResolver
 
     public function resolvePropertyFromPropertyReflection(
         PhpPropertyReflection $phpPropertyReflection
-    ): Property | Param | null {
+    ): Property|Param|null {
         $classReflection = $phpPropertyReflection->getDeclaringClass();
 
         $fileName = $classReflection->getFileName();

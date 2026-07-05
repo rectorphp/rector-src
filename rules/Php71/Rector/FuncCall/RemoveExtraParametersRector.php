@@ -124,7 +124,7 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
         return false;
     }
 
-    private function shouldSkip(FuncCall | MethodCall | StaticCall $call): bool
+    private function shouldSkip(FuncCall|MethodCall|StaticCall $call): bool
     {
         if ($call->args === []) {
             return true;
@@ -144,7 +144,7 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
     }
 
     private function resolveMaximumAllowedParameterCount(
-        MethodReflection | FunctionReflection $functionLikeReflection
+        MethodReflection|FunctionReflection $functionLikeReflection
     ): int {
         $parameterCounts = [0];
         foreach ($functionLikeReflection->getVariants() as $parametersAcceptor) {

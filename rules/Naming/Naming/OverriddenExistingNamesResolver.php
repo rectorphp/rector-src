@@ -30,7 +30,7 @@ final class OverriddenExistingNamesResolver
 
     public function hasNameInClassMethodForNew(
         string $variableName,
-        ClassMethod | Function_ | Closure $functionLike
+        ClassMethod|Function_|Closure $functionLike
     ): bool {
         $overriddenVariableNames = $this->resolveOverriddenNamesForNew($functionLike);
         return in_array($variableName, $overriddenVariableNames, true);
@@ -63,7 +63,7 @@ final class OverriddenExistingNamesResolver
     /**
      * @return string[]
      */
-    private function resolveOverriddenNamesForNew(ClassMethod | Function_ | Closure $functionLike): array
+    private function resolveOverriddenNamesForNew(ClassMethod|Function_|Closure $functionLike): array
     {
         $classMethodId = spl_object_id($functionLike);
 

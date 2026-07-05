@@ -17,10 +17,10 @@ final readonly class VariableAndCallAssign
 {
     public function __construct(
         private Variable $variable,
-        private FuncCall | StaticCall | MethodCall $expr,
+        private FuncCall|StaticCall|MethodCall $expr,
         private Assign $assign,
         private string $variableName,
-        private ClassMethod | Function_ | Closure $functionLike
+        private ClassMethod|Function_|Closure $functionLike
     ) {
     }
 
@@ -29,7 +29,7 @@ final readonly class VariableAndCallAssign
         return $this->variable;
     }
 
-    public function getCall(): FuncCall | MethodCall | StaticCall
+    public function getCall(): FuncCall|MethodCall|StaticCall
     {
         return $this->expr;
     }
@@ -39,7 +39,7 @@ final readonly class VariableAndCallAssign
         return $this->variableName;
     }
 
-    public function getFunctionLike(): Closure | ClassMethod | Function_
+    public function getFunctionLike(): Closure|ClassMethod|Function_
     {
         return $this->functionLike;
     }

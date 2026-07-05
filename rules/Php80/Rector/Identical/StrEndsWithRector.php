@@ -126,7 +126,7 @@ CODE_SAMPLE
      * $isMatch = substr($haystack, -strlen($needle)) === $needle;
      * $isMatch = 'needle' === substr($haystack, -6)
      */
-    private function refactorSubstr(BinaryOp $binaryOp): FuncCall | BooleanNot | null
+    private function refactorSubstr(BinaryOp $binaryOp): FuncCall|BooleanNot|null
     {
         if ($binaryOp->left instanceof FuncCall && $this->isName($binaryOp->left, 'substr')) {
             $substrFuncCall = $binaryOp->left;
@@ -163,7 +163,7 @@ CODE_SAMPLE
         return $this->buildReturnNode($haystack, $comparedNeedleExpr, $isPositive);
     }
 
-    private function refactorSubstrCompare(BinaryOp $binaryOp): FuncCall | BooleanNot | null
+    private function refactorSubstrCompare(BinaryOp $binaryOp): FuncCall|BooleanNot|null
     {
         $funcCallAndExpr = $this->binaryOpAnalyzer->matchFuncCallAndOtherExpr($binaryOp, 'substr_compare');
 
@@ -252,7 +252,7 @@ CODE_SAMPLE
         return $lNumber->value === strlen($needle->value);
     }
 
-    private function buildReturnNode(Expr $haystack, Expr $needle, bool $isPositive): FuncCall | BooleanNot
+    private function buildReturnNode(Expr $haystack, Expr $needle, bool $isPositive): FuncCall|BooleanNot
     {
         $funcCall = $this->nodeFactory->createFuncCall('str_ends_with', [$haystack, $needle]);
 

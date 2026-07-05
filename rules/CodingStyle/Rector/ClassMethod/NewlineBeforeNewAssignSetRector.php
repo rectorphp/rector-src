@@ -159,7 +159,7 @@ CODE_SAMPLE
 
     private function shouldAddEmptyLine(
         ?string $currentStmtVariableName,
-        ClassMethod | Function_ | Closure $node,
+        ClassMethod|Function_|Closure $node,
         int $key
     ): bool {
         if (! $this->isNewVariableThanBefore($currentStmtVariableName)) {
@@ -170,7 +170,7 @@ CODE_SAMPLE
         return ! $this->isPrecededByEmptyLine($node, $key);
     }
 
-    private function shouldSkipLeftVariable(Assign | MethodCall $node): bool
+    private function shouldSkipLeftVariable(Assign|MethodCall $node): bool
     {
         if (! $node->var instanceof Variable) {
             return false;
@@ -201,7 +201,7 @@ CODE_SAMPLE
         return $this->previousStmtVariableName !== $currentStmtVariableName;
     }
 
-    private function isPrecededByEmptyLine(ClassMethod | Function_ | Closure $node, int $key): bool
+    private function isPrecededByEmptyLine(ClassMethod|Function_|Closure $node, int $key): bool
     {
         if ($node->stmts === null) {
             return false;

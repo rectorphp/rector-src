@@ -213,7 +213,7 @@ CODE_SAMPLE
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
     }
 
-    private function refactorParam(Class_ $class, ClassMethod $classMethod, Param $param, Scope $scope): Param | null
+    private function refactorParam(Class_ $class, ClassMethod $classMethod, Param $param, Scope $scope): Param|null
     {
         if (! $this->visibilityManipulator->hasVisibility($param, Visibility::PRIVATE)) {
             return null;

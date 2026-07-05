@@ -23,10 +23,10 @@ final readonly class OnlyRuleResolver
 
     public function resolve(string $rule): string
     {
-        //fix wrongly double escaped backslashes
+        // fix wrongly double escaped backslashes
         $rule = str_replace('\\\\', '\\', $rule);
 
-        //remove single quotes appearing when single-quoting arguments on windows
+        // remove single quotes appearing when single-quoting arguments on windows
         if (str_starts_with($rule, "'") && str_ends_with($rule, "'")) {
             $rule = substr($rule, 1, -1);
         }
@@ -39,7 +39,7 @@ final readonly class OnlyRuleResolver
             }
         }
 
-        //allow short rule names if there are not duplicates
+        // allow short rule names if there are not duplicates
         $matching = [];
         foreach ($this->rectors as $rector) {
             if (str_ends_with($rector::class, '\\' . $rule)) {

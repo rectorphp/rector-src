@@ -110,9 +110,9 @@ CODE_SAMPLE
     }
 
     private function applyVariadicParams(
-        ClassMethod | Function_ | Closure $node,
+        ClassMethod|Function_|Closure $node,
         string $variableName
-    ): ClassMethod | Function_ | Closure | null {
+    ): ClassMethod|Function_|Closure|null {
         $param = $this->createVariadicParam($variableName);
 
         if ($param->var instanceof Variable && $this->hasFunctionOrClosureInside($node, $param->var)) {
@@ -124,7 +124,7 @@ CODE_SAMPLE
     }
 
     private function hasFunctionOrClosureInside(
-        ClassMethod | Function_ | Closure $functionLike,
+        ClassMethod|Function_|Closure $functionLike,
         Variable $variable
     ): bool {
         if ($functionLike->stmts === null) {
@@ -156,7 +156,7 @@ CODE_SAMPLE
     /**
      * @return Expression<Assign>|null
      */
-    private function matchFuncGetArgsVariableAssign(ClassMethod | Function_ | Closure $functionLike): ?Expression
+    private function matchFuncGetArgsVariableAssign(ClassMethod|Function_|Closure $functionLike): ?Expression
     {
         /** @var Expression[] $expressions */
         $expressions = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Expression::class);

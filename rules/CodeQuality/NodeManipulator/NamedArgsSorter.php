@@ -18,7 +18,7 @@ final class NamedArgsSorter
      */
     public function sortArgsToMatchReflectionParameters(
         array $currentArgs,
-        FunctionReflection | MethodReflection $functionLikeReflection,
+        FunctionReflection|MethodReflection $functionLikeReflection,
     ): array {
         $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors(
             $functionLikeReflection->getVariants()

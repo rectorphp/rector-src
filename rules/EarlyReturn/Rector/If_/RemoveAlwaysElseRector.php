@@ -165,7 +165,7 @@ CODE_SAMPLE
         return $statements;
     }
 
-    private function doesNotLastStatementBreakFlow(If_ | ElseIf_ | Else_ $node): bool
+    private function doesNotLastStatementBreakFlow(If_|ElseIf_|Else_ $node): bool
     {
         $lastStmt = end($node->stmts);
 
@@ -188,7 +188,7 @@ CODE_SAMPLE
             || ($lastStmt instanceof Expression && $lastStmt->expr instanceof Exit_));
     }
 
-    private function createIfFromNode(If_ | ElseIf_ $node): If_
+    private function createIfFromNode(If_|ElseIf_ $node): If_
     {
         $if = new If_($node->cond);
         $if->stmts = $node->stmts;

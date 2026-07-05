@@ -36,7 +36,7 @@ final readonly class ConditionEvaluator
 
     private function evaluateVersionCompareCondition(
         VersionCompareCondition $versionCompareCondition
-    ): bool | int | null {
+    ): bool|int|null {
         $compareSign = $versionCompareCondition->getCompareSign();
         if ($compareSign !== null) {
             if ($compareSign === '<' && $this->phpVersionProvider->provide() < $versionCompareCondition->getSecondVersion()) {

@@ -36,7 +36,7 @@ final readonly class FuncCallStaticCallToMethodCallAnalyzer
         Class_ $class,
         ClassMethod $classMethod,
         ObjectType $objectType,
-    ): MethodCall | PropertyFetch | Variable | null {
+    ): MethodCall|PropertyFetch|Variable|null {
         $expr = $this->typeProvidingExprFromClassResolver->resolveTypeProvidingExprFromClass(
             $class,
             $classMethod,
@@ -68,7 +68,7 @@ final readonly class FuncCallStaticCallToMethodCallAnalyzer
     private function addClassMethodParamForVariable(
         Variable $variable,
         ObjectType $objectType,
-        ClassMethod | Function_ $functionLike
+        ClassMethod|Function_ $functionLike
     ): void {
         /** @var string $variableName */
         $variableName = $this->nodeNameResolver->getName($variable);

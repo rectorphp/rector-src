@@ -60,7 +60,7 @@ final class NameTypeResolver implements NodeTypeResolverInterface
         return $scope->getClassReflection();
     }
 
-    private function resolveParent(Name $name): MixedType | ObjectType | UnionType
+    private function resolveParent(Name $name): MixedType|ObjectType|UnionType
     {
         $classReflection = $this->resolveClassReflection($name);
         if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {

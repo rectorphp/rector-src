@@ -146,8 +146,7 @@ CODE_SAMPLE
 
         $ancestorClassReflections = array_filter(
             $classReflection->getAncestors(),
-            fn (ClassReflection $ancestorClassReflection): bool =>
-            $classReflection->getName() !== $ancestorClassReflection->getName()
+            fn (ClassReflection $ancestorClassReflection): bool => $classReflection->getName() !== $ancestorClassReflection->getName()
         );
 
         $methodName = $this->getName($classMethod);

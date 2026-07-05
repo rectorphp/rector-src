@@ -43,7 +43,7 @@ final readonly class ObjectTypeSpecifier
         ObjectType $objectType,
         Scope|null $scope,
         bool $withPreslash = false
-    ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType | TemplateType {
+    ): TypeWithClassName|NonExistingObjectType|UnionType|MixedType|TemplateType {
         $className = ltrim($objectType->getClassName(), '\\');
         if (str_starts_with($objectType->getClassName(), '\\')) {
             return new FullyQualifiedObjectType($className);

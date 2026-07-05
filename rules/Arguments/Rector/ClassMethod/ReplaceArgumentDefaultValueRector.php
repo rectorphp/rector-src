@@ -75,7 +75,7 @@ CODE_SAMPLE
     /**
      * @param MethodCall|StaticCall|ClassMethod|New_ $node
      */
-    public function refactor(Node $node): MethodCall | StaticCall | ClassMethod | New_ | null
+    public function refactor(Node $node): MethodCall|StaticCall|ClassMethod|New_|null
     {
         if ($node instanceof New_) {
             return $this->refactorNew($node);

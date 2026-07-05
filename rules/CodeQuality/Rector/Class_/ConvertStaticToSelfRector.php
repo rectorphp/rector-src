@@ -111,7 +111,7 @@ CODE_SAMPLE
     }
 
     private function shouldSkip(
-        StaticPropertyFetch | StaticCall | ClassConstFetch $node,
+        StaticPropertyFetch|StaticCall|ClassConstFetch $node,
         ClassReflection $classReflection,
         bool $isFinal,
         Scope $scope,

@@ -98,7 +98,7 @@ final readonly class ExpectedNameResolver
         return $expectedName->getName();
     }
 
-    public function resolveForCall(MethodCall | StaticCall | FuncCall $expr): ?string
+    public function resolveForCall(MethodCall|StaticCall|FuncCall $expr): ?string
     {
         if ($this->isDynamicNameCall($expr)) {
             return null;
@@ -183,7 +183,7 @@ final readonly class ExpectedNameResolver
         return ($returnedType instanceof ArrayType) && $expectedName instanceof ExpectedName;
     }
 
-    private function isDynamicNameCall(MethodCall | StaticCall | FuncCall $expr): bool
+    private function isDynamicNameCall(MethodCall|StaticCall|FuncCall $expr): bool
     {
         if ($expr->name instanceof StaticCall) {
             return true;

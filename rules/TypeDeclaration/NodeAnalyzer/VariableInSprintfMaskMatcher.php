@@ -80,7 +80,7 @@ final readonly class VariableInSprintfMaskMatcher
                 continue;
             }
 
-            if (! $this-> nodeNameResolver->isName($arg->value, $variableName)) {
+            if (! $this->nodeNameResolver->isName($arg->value, $variableName)) {
                 continue;
             }
 

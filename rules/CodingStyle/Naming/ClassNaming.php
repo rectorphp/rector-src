@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt\ClassLike;
 
 final class ClassNaming
 {
-    public function getShortName(string | Name | Identifier | ClassLike $name): string
+    public function getShortName(string|Name|Identifier|ClassLike $name): string
     {
         if ($name instanceof ClassLike) {
             if (! $name->name instanceof Identifier) {

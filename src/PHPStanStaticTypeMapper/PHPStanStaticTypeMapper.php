@@ -41,7 +41,7 @@ final readonly class PHPStanStaticTypeMapper
     /**
      * @param TypeKind::* $typeKind
      */
-    public function mapToPhpParserNode(Type $type, string $typeKind): Name | ComplexType | Identifier | null
+    public function mapToPhpParserNode(Type $type, string $typeKind): Name|ComplexType|Identifier|null
     {
         foreach ($this->typeMappers as $typeMapper) {
             if (! is_a($type, $typeMapper->getNodeClass(), true)) {

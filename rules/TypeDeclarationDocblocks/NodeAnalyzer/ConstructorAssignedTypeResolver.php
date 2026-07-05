@@ -41,11 +41,11 @@ final readonly class ConstructorAssignedTypeResolver
             }
 
             $propertyFetch = $assign->var;
-            if (! $this->nodeNameResolver-> isName($propertyFetch->var, 'this')) {
+            if (! $this->nodeNameResolver->isName($propertyFetch->var, 'this')) {
                 continue;
             }
 
-            if (! $this->nodeNameResolver-> isName($propertyFetch->name, $propertyName)) {
+            if (! $this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
                 continue;
             }
 

@@ -36,7 +36,7 @@ final class DeprecatedMethodCallReplacementResolverTest extends AbstractLazyTest
     }
 
     /**
-     * @return Iterator<string, array{string, (string | null)}>
+     * @return Iterator<string, array{string, (string|null)}>
      */
     public static function provideData(): Iterator
     {

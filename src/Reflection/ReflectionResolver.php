@@ -190,7 +190,7 @@ final readonly class ReflectionResolver
 
     public function resolveFunctionLikeReflectionFromCall(
         CallLike $callLike
-    ): MethodReflection | FunctionReflection | null {
+    ): MethodReflection|FunctionReflection|null {
         if ($callLike instanceof MethodCall) {
             return $this->resolveMethodReflectionFromMethodCall($callLike);
         }
@@ -254,7 +254,7 @@ final readonly class ReflectionResolver
     }
 
     public function resolvePropertyReflectionFromPropertyFetch(
-        PropertyFetch | StaticPropertyFetch $propertyFetch
+        PropertyFetch|StaticPropertyFetch $propertyFetch
     ): ?PhpPropertyReflection {
         $propertyName = $this->nodeNameResolver->getName($propertyFetch->name);
         if ($propertyName === null) {
@@ -285,7 +285,7 @@ final readonly class ReflectionResolver
 
     private function resolveFunctionReflectionFromFuncCall(
         FuncCall $funcCall
-    ): FunctionReflection | MethodReflection | null {
+    ): FunctionReflection|MethodReflection|null {
         if (! $funcCall->name instanceof Name) {
             return null;
         }

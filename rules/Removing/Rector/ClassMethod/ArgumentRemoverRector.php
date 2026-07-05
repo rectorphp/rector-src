@@ -68,7 +68,7 @@ CODE_SAMPLE
     /**
      * @param MethodCall|StaticCall|ClassMethod $node
      */
-    public function refactor(Node $node): MethodCall | StaticCall | ClassMethod | null
+    public function refactor(Node $node): MethodCall|StaticCall|ClassMethod|null
     {
         $this->hasChanged = false;
 
@@ -104,7 +104,7 @@ CODE_SAMPLE
     }
 
     private function processPosition(
-        ClassMethod | StaticCall | MethodCall $node,
+        ClassMethod|StaticCall|MethodCall $node,
         ArgumentRemover $argumentRemover
     ): void {
         if ($argumentRemover->getValue() === null) {
@@ -138,7 +138,7 @@ CODE_SAMPLE
         }
     }
 
-    private function removeByName(ClassMethod | StaticCall | MethodCall $node, int $position, string $name): void
+    private function removeByName(ClassMethod|StaticCall|MethodCall $node, int $position, string $name): void
     {
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
             if (isset($node->args[$position]) && $this->isName($node->args[$position], $name)) {

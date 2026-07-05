@@ -143,7 +143,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorGreaterOrSmaller(Greater | Smaller $binaryOp): NotIdentical | null
+    private function refactorGreaterOrSmaller(Greater|Smaller $binaryOp): NotIdentical|null
     {
         if ($binaryOp instanceof Greater) {
             $leftExpr = $this->matchCountFuncCallArgExpr($binaryOp->left);
@@ -170,7 +170,7 @@ CODE_SAMPLE
         return new NotIdentical(new Array_([]), $rightExpr);
     }
 
-    private function refactorIfElseIf(If_ | ElseIf_ $ifElseIf): If_ | ElseIf_ | null
+    private function refactorIfElseIf(If_|ElseIf_ $ifElseIf): If_|ElseIf_|null
     {
         $expr = $this->matchCountFuncCallArgExpr($ifElseIf->cond);
         if (! $expr instanceof Expr) {

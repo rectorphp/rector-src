@@ -167,7 +167,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveCount(bool $isNegated, FuncCall $funcCall): Identical | Greater | null
+    private function resolveCount(bool $isNegated, FuncCall $funcCall): Identical|Greater|null
     {
         if ($funcCall->isFirstClassCallable()) {
             return null;
@@ -208,7 +208,7 @@ CODE_SAMPLE
         return new NotIdentical($expr, $array);
     }
 
-    private function resolveString(bool $isNegated, Expr $expr): Identical | NotIdentical | BooleanAnd | BooleanOr
+    private function resolveString(bool $isNegated, Expr $expr): Identical|NotIdentical|BooleanAnd|BooleanOr
     {
         $emptyString = new String_('');
 
@@ -231,7 +231,7 @@ CODE_SAMPLE
         return $identical;
     }
 
-    private function resolveIdentical(Expr $expr, bool $isNegated, String_ $string): Identical | NotIdentical
+    private function resolveIdentical(Expr $expr, bool $isNegated, String_ $string): Identical|NotIdentical
     {
         /**
          * // compare === ''
@@ -244,17 +244,17 @@ CODE_SAMPLE
     }
 
     private function resolveZeroIdenticalString(
-        Identical | NotIdentical $identical,
+        Identical|NotIdentical $identical,
         bool $isNegated,
         Expr $expr
-    ): BooleanAnd | BooleanOr {
+    ): BooleanAnd|BooleanOr {
         $string = new String_('0');
 
         $zeroIdentical = $isNegated ? new Identical($expr, $string) : new NotIdentical($expr, $string);
         return $isNegated ? new BooleanOr($identical, $zeroIdentical) : new BooleanAnd($identical, $zeroIdentical);
     }
 
-    private function resolveInteger(bool $isNegated, Expr $expr): Identical | NotIdentical
+    private function resolveInteger(bool $isNegated, Expr $expr): Identical|NotIdentical
     {
         $int = new Int_(0);
 
@@ -265,7 +265,7 @@ CODE_SAMPLE
         return new NotIdentical($expr, $int);
     }
 
-    private function resolveFloat(bool $isNegated, Expr $expr): Identical | NotIdentical
+    private function resolveFloat(bool $isNegated, Expr $expr): Identical|NotIdentical
     {
         $float = new Float_(0.0);
 
@@ -280,7 +280,7 @@ CODE_SAMPLE
         bool $isNegated,
         Expr $expr,
         ObjectType $objectType
-    ): BooleanNot | Instanceof_ {
+    ): BooleanNot|Instanceof_ {
         $fullyQualified = new FullyQualified($objectType->getClassName());
         $instanceof = new Instanceof_($expr, $fullyQualified);
 

@@ -29,7 +29,7 @@ final class ContextAnalyzer
     }
 
     public function isChangeableContext(
-        PropertyFetch | StaticPropertyFetch | NullsafePropertyFetch $propertyFetch
+        PropertyFetch|StaticPropertyFetch|NullsafePropertyFetch $propertyFetch
     ): bool {
         if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR, false)) {
             return true;

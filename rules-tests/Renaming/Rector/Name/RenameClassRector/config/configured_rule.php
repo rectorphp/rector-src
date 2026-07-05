@@ -25,8 +25,7 @@ return static function (RectorConfig $rectorConfig): void {
         ->ruleWithConfiguration(RenameClassRector::class, [
             OldClass::class => NewClass::class,
             // interface to class
-            SomeBasicDateTime::class =>
-            SomeBasicDateTimeInterface::class,
+            SomeBasicDateTime::class => SomeBasicDateTimeInterface::class,
 
             // test casing
             OldClassWithTypo::class => NewClassWithoutTypo::class,

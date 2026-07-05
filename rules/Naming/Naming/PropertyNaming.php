@@ -112,7 +112,7 @@ final readonly class PropertyNaming
         return new ExpectedName($originalName, $this->rectorNamingInflector->singularize($originalName));
     }
 
-    public function fqnToVariableName(ThisType | ObjectType | Name | string $objectType): string
+    public function fqnToVariableName(ThisType|ObjectType|Name|string $objectType): string
     {
         if ($objectType instanceof Name) {
             $objectType = $objectType->toString();
@@ -194,7 +194,7 @@ final readonly class PropertyNaming
         return lcfirst($shortClassName);
     }
 
-    private function resolveClassName(ObjectType | string $objectType): string
+    private function resolveClassName(ObjectType|string $objectType): string
     {
         if ($objectType instanceof ObjectType) {
             return $objectType->getClassName();
