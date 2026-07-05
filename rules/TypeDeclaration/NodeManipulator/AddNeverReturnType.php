@@ -44,7 +44,7 @@ final readonly class AddNeverReturnType
         return $node;
     }
 
-    private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
+    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool
     {
         // already has return type, and non-void
         // it can be "never" return itself, or other return type

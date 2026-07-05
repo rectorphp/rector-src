@@ -48,7 +48,7 @@ final readonly class ArrayCallableMethodMatcher
         Array_ $array,
         Scope $scope,
         ?string $classMethodName = null
-    ): null | ArrayCallableDynamicMethod | ArrayCallable {
+    ): null|ArrayCallableDynamicMethod|ArrayCallable {
         if (count($array->items) !== 2) {
             return null;
         }
@@ -141,7 +141,7 @@ final readonly class ArrayCallableMethodMatcher
         ClassConstFetch|Class_ $classContext,
         Scope $scope,
         ?string $classMethodName
-    ): MixedType | ObjectType {
+    ): MixedType|ObjectType {
         $classConstantReference = $this->valueResolver->getValue($classContext);
 
         // non-class value

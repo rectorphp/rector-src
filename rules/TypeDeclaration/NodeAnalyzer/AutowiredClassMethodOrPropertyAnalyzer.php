@@ -40,7 +40,7 @@ final readonly class AutowiredClassMethodOrPropertyAnalyzer
         return null;
     }
 
-    public function detect(ClassMethod | Param | Property $node): bool
+    public function detect(ClassMethod|Param|Property $node): bool
     {
         $nodePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         if ($nodePhpDocInfo->hasByNames(['required', 'inject'])) {

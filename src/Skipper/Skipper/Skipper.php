@@ -24,7 +24,7 @@ final readonly class Skipper
     ) {
     }
 
-    public function shouldSkipElement(string | object $element): bool
+    public function shouldSkipElement(string|object $element): bool
     {
         return $this->shouldSkipElementAndFilePath($element, __FILE__);
     }
@@ -34,7 +34,7 @@ final readonly class Skipper
         return $this->pathSkipper->shouldSkip($filePath);
     }
 
-    public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
+    public function shouldSkipElementAndFilePath(string|object $element, string $filePath): bool
     {
         $skipMatch = $this->matchSkip($element, $filePath);
         if (! $skipMatch instanceof SkipMatch) {
@@ -49,7 +49,7 @@ final readonly class Skipper
      * Match a class/path skip without marking it used. Callers that can only tell whether the skip
      * actually prevented a change later on must mark it used themselves via markSkipUsed().
      */
-    public function matchSkip(string | object $element, string $filePath): ?SkipMatch
+    public function matchSkip(string|object $element, string $filePath): ?SkipMatch
     {
         if (! $this->classSkipVoter->match($element)) {
             return null;

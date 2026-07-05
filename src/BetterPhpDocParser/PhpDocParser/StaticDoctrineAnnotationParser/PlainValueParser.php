@@ -43,7 +43,7 @@ final class PlainValueParser
     public function parseValue(
         BetterTokenIterator $tokenIterator,
         Node $currentPhpNode
-    ): string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
+    ): string|array|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode {
         $currentTokenValue = $tokenIterator->currentTokenValue();
 
         // temporary hackaround multi-line doctrine annotations
@@ -125,7 +125,7 @@ final class PlainValueParser
                 $tokenIterator->currentTokenValue(),
                 '"'
             ) && $currentTokenValue !== $tokenIterator->currentTokenValue()) {
-                //starts with '"' and current token contains '"', should be the end
+                // starts with '"' and current token contains '"', should be the end
                 $currentTokenValue .= substr(
                     $tokenIterator->currentTokenValue(),
                     0,
@@ -174,7 +174,7 @@ final class PlainValueParser
         return new DoctrineAnnotationTagValueNode($identifierTypeNode, $annotationShortName, $values);
     }
 
-    private function matchConstantValue(string $currentTokenValue): ConstExprNode | null
+    private function matchConstantValue(string $currentTokenValue): ConstExprNode|null
     {
         if (strtolower($currentTokenValue) === 'false') {
             return new ConstExprFalseNode();

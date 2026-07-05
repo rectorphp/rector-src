@@ -146,7 +146,7 @@ CODE_SAMPLE
         return $this->nodeTypeResolver->isNumberType($binaryOp->right);
     }
 
-    private function processBinaryPlusAndMinus(Plus | Minus $binaryOp): ?Expr
+    private function processBinaryPlusAndMinus(Plus|Minus $binaryOp): ?Expr
     {
         if (! $this->areNumberType($binaryOp)) {
             return null;
@@ -201,7 +201,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function processBinaryMulAndDiv(Mul | Div $binaryOp): ?Expr
+    private function processBinaryMulAndDiv(Mul|Div $binaryOp): ?Expr
     {
         if ($binaryOp->left instanceof ClassConstFetch || $binaryOp->right instanceof ClassConstFetch) {
             return null;

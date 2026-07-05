@@ -48,7 +48,7 @@ final readonly class YieldTypeResolver
         return new FullyQualifiedGenericObjectType($className, [$yieldedTypes]);
     }
 
-    private function resolveYieldValue(Yield_ | YieldFrom $yield): ?Expr
+    private function resolveYieldValue(Yield_|YieldFrom $yield): ?Expr
     {
         if ($yield instanceof Yield_) {
             return $yield->value;

@@ -25,7 +25,7 @@ final readonly class NamingConventionAnalyzer
      * $someName = $this->getSomeName();
      */
     public function isCallMatchingVariableName(
-        FuncCall | StaticCall | MethodCall $expr,
+        FuncCall|StaticCall|MethodCall $expr,
         string $currentName,
         string $expectedName
     ): bool {

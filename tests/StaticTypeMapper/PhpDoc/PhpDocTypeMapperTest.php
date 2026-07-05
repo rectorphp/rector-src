@@ -44,7 +44,7 @@ final class PhpDocTypeMapperTest extends AbstractLazyTestCase
     }
 
     /**
-     * @return Iterator<(class-string<ConstantArrayType>[] | ArrayShapeNode[])>
+     * @return Iterator<(class-string<ConstantArrayType>[]|ArrayShapeNode[])>
      */
     public static function provideData(): Iterator
     {

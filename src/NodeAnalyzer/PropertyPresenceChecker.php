@@ -35,7 +35,7 @@ final readonly class PropertyPresenceChecker
     public function getClassContextProperty(
         Class_ $class,
         DefinedPropertyWithType|PropertyMetadata $definedPropertyWithType
-    ): Property | Param | null {
+    ): Property|Param|null {
         $className = $this->nodeNameResolver->getName($class);
         if ($className === null) {
             return null;

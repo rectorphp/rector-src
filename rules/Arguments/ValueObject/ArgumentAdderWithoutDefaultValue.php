@@ -15,7 +15,7 @@ final readonly class ArgumentAdderWithoutDefaultValue
         private string $method,
         private int $position,
         private ?string $argumentName = null,
-        private Type | null $argumentType = null,
+        private Type|null $argumentType = null,
         private ?string $scope = null
     ) {
         RectorAssert::className($class);

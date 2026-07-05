@@ -73,7 +73,7 @@ final readonly class PropertyManipulator
 
     public function isPropertyChangeableExceptConstructor(
         Class_ $class,
-        Property | Param $propertyOrParam,
+        Property|Param $propertyOrParam,
         Scope $scope
     ): bool {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);

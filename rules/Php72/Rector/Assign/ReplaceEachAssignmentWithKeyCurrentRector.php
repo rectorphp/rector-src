@@ -129,7 +129,7 @@ CODE_SAMPLE
     private function createDimFetchAssignWithFuncCall(
         Expr $assignVariable,
         Expr $eachedVariable,
-        string | int $dimValue,
+        string|int $dimValue,
         string $functionName
     ): Assign {
         $dimExpr = BuilderHelpers::normalizeValue($dimValue);

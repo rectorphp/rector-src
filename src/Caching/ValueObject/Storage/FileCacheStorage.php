@@ -50,7 +50,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
     public function save(string $key, string $variableKey, mixed $data): void
     {
         $cacheFilePaths = $this->getCacheFilePaths($key);
-        $this->filesystem-> mkdir($cacheFilePaths->getFirstDirectory());
+        $this->filesystem->mkdir($cacheFilePaths->getFirstDirectory());
         $this->filesystem->mkdir($cacheFilePaths->getSecondDirectory());
 
         $filePath = $cacheFilePaths->getFilePath();

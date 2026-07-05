@@ -12,7 +12,7 @@ use Rector\Php80\ValueObject\StrStartsWith;
 
 final class StrStartsWithFuncCallFactory
 {
-    public function createStrStartsWith(StrStartsWith $strStartsWith): FuncCall | BooleanNot
+    public function createStrStartsWith(StrStartsWith $strStartsWith): FuncCall|BooleanNot
     {
         $args = [new Arg($strStartsWith->getHaystackExpr()), new Arg($strStartsWith->getNeedleExpr())];
 

@@ -16,7 +16,7 @@ final class CallMatcher
     /**
      * @return FuncCall|StaticCall|MethodCall|null
      */
-    public function matchCall(Assign | Foreach_ $node): ?Node
+    public function matchCall(Assign|Foreach_ $node): ?Node
     {
         if ($node->expr instanceof MethodCall) {
             return $node->expr;

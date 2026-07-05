@@ -81,7 +81,7 @@ final class BetterStandardPrinter extends Standard
     /**
      * @param Node|Node[]|null $node
      */
-    public function print(Node | array | null $node): string
+    public function print(Node|array|null $node): string
     {
 
         if ($node === null) {

@@ -109,7 +109,7 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
         );
     }
 
-    private function mapSelf(Node $node): MixedType | SelfObjectType
+    private function mapSelf(Node $node): MixedType|SelfObjectType
     {
         // @todo check FQN
         $className = $this->resolveClassName($node);
@@ -121,7 +121,7 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
         return new SelfObjectType($className);
     }
 
-    private function mapParent(Node $node): ParentStaticType | MixedType
+    private function mapParent(Node $node): ParentStaticType|MixedType
     {
         $className = $this->resolveClassName($node);
         if (! is_string($className)) {
@@ -143,7 +143,7 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
         return new ParentStaticType($parentClassReflection);
     }
 
-    private function mapStatic(Node $node): MixedType | StaticType
+    private function mapStatic(Node $node): MixedType|StaticType
     {
         $className = $this->resolveClassName($node);
         if (! is_string($className)) {

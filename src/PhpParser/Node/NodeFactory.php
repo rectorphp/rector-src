@@ -216,7 +216,7 @@ final readonly class NodeFactory
         return $this->builderFactory->methodCall($callerExpr, $method, $arguments);
     }
 
-    public function createPropertyFetch(string | Expr $variableNameOrExpr, string $property): PropertyFetch
+    public function createPropertyFetch(string|Expr $variableNameOrExpr, string $property): PropertyFetch
     {
         $fetcherExpr = is_string($variableNameOrExpr) ? new Variable($variableNameOrExpr) : $variableNameOrExpr;
         return $this->builderFactory->propertyFetch($fetcherExpr, $property);
@@ -375,7 +375,7 @@ final readonly class NodeFactory
         return $node;
     }
 
-    private function createArrayItem(mixed $item, string | int | null $key = null): ArrayItem
+    private function createArrayItem(mixed $item, string|int|null $key = null): ArrayItem
     {
         $arrayItem = null;
 
@@ -442,7 +442,7 @@ final readonly class NodeFactory
         return $arrayItem;
     }
 
-    private function decorateArrayItemWithKey(int | string | null $key, ArrayItem $arrayItem): void
+    private function decorateArrayItemWithKey(int|string|null $key, ArrayItem $arrayItem): void
     {
         if ($key === null) {
             return;

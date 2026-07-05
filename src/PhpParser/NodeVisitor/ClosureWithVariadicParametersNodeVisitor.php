@@ -54,7 +54,7 @@ final class ClosureWithVariadicParametersNodeVisitor extends NodeVisitorAbstract
                 );
 
                 foreach ($parametersAcceptors->getParameters() as $extendedParameterReflection) {
-                    if ($extendedParameterReflection->getType() instanceof CallableType && $extendedParameterReflection->getType()  ->isVariadic()) {
+                    if ($extendedParameterReflection->getType() instanceof CallableType && $extendedParameterReflection->getType()->isVariadic()) {
                         $arg->value->setAttribute(AttributeKey::HAS_CLOSURE_WITH_VARIADIC_ARGS, true);
                     }
                 }

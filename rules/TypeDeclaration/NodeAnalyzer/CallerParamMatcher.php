@@ -40,7 +40,7 @@ final readonly class CallerParamMatcher
     public function matchCallParamType(
         Param $param,
         Param $callParam
-    ): null | Identifier | Name | NullableType | UnionType | ComplexType {
+    ): null|Identifier|Name|NullableType|UnionType|ComplexType {
         if (! $callParam->type instanceof Node) {
             return null;
         }
@@ -101,7 +101,7 @@ final readonly class CallerParamMatcher
         return $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
     }
 
-    public function matchCallParam(StaticCall | MethodCall | FuncCall $call, Param $param): ?Param
+    public function matchCallParam(StaticCall|MethodCall|FuncCall $call, Param $param): ?Param
     {
         $callArgPosition = $this->matchCallArgPosition($call, $param);
         if ($callArgPosition === null) {
@@ -116,7 +116,7 @@ final readonly class CallerParamMatcher
         return $classMethodOrFunction->params[$callArgPosition] ?? null;
     }
 
-    private function matchCallArgPosition(StaticCall | MethodCall | FuncCall $call, Param $param): int | null
+    private function matchCallArgPosition(StaticCall|MethodCall|FuncCall $call, Param $param): int|null
     {
         $paramName = $this->nodeNameResolver->getName($param);
 

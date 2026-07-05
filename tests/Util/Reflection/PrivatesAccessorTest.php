@@ -27,7 +27,7 @@ final class PrivatesAccessorTest extends TestCase
      */
     #[DataProvider('provideData')]
     public function test(
-        string | SomeClassWithPrivateMethods $object,
+        string|SomeClassWithPrivateMethods $object,
         string $methodName,
         array $arguments,
         int $expectedResult

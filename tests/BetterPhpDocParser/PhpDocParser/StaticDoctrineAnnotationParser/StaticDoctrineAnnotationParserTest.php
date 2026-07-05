@@ -32,7 +32,7 @@ final class StaticDoctrineAnnotationParserTest extends AbstractLazyTestCase
      * @param CurlyListNode|array<string, CurlyListNode> $expectedValue
      */
     #[DataProvider('provideData')]
-    public function test(string $docContent, CurlyListNode | array $expectedValue): void
+    public function test(string $docContent, CurlyListNode|array $expectedValue): void
     {
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
 

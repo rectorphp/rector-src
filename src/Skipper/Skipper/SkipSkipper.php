@@ -17,7 +17,7 @@ final readonly class SkipSkipper
     /**
      * @param array<string, string[]|null> $skippedClasses
      */
-    public function match(object | string $checker, string $filePath, array $skippedClasses): ?SkipMatch
+    public function match(object|string $checker, string $filePath, array $skippedClasses): ?SkipMatch
     {
         foreach ($skippedClasses as $skippedClass => $skippedFiles) {
             if (! is_a($checker, $skippedClass, true)) {

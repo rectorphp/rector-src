@@ -46,9 +46,9 @@ final readonly class ArgumentDefaultValueReplacer
      * @return TCall|null
      */
     public function processReplaces(
-        MethodCall | StaticCall | ClassMethod | FuncCall | New_ $node,
+        MethodCall|StaticCall|ClassMethod|FuncCall|New_ $node,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
-    ): MethodCall | StaticCall | ClassMethod | FuncCall | New_ |null {
+    ): MethodCall|StaticCall|ClassMethod|FuncCall|New_|null {
         if ($node instanceof ClassMethod) {
             if (! isset($node->params[$replaceArgumentDefaultValue->getPosition()])) {
                 return null;
@@ -103,7 +103,7 @@ final readonly class ArgumentDefaultValueReplacer
      * @return TCall|null
      */
     private function processArgs(
-        MethodCall | StaticCall | FuncCall | New_ $expr,
+        MethodCall|StaticCall|FuncCall|New_ $expr,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
     ): ?Expr {
         if ($expr->isFirstClassCallable()) {

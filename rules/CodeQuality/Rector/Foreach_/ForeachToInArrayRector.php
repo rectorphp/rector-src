@@ -208,7 +208,7 @@ CODE_SAMPLE
         return $this->valueResolver->isTrueOrFalse($ifStatement->expr);
     }
 
-    private function createInArrayFunction(Expr $expr, Identical | Equal $binaryOp, Foreach_ $foreach): FuncCall
+    private function createInArrayFunction(Expr $expr, Identical|Equal $binaryOp, Foreach_ $foreach): FuncCall
     {
         $arguments = $this->nodeFactory->createArgs([$expr, $foreach->expr]);
 

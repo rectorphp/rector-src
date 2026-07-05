@@ -149,7 +149,6 @@ final readonly class PHPStanNodeScopeResolver
          * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
          * @see vendor/phpstan/phpstan/phpstan.phar/src/Analyser/NodeScopeResolver.php:282
          */
-
         Assert::allIsInstanceOf($stmts, Stmt::class);
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
@@ -652,7 +651,7 @@ final readonly class PHPStanNodeScopeResolver
     }
 
     private function resolveClassOrInterfaceScope(
-        Class_ | Interface_ | Enum_ $classLike,
+        Class_|Interface_|Enum_ $classLike,
         MutatingScope $mutatingScope
     ): MutatingScope {
         $isAnonymous = $this->classAnalyzer->isAnonymousClass($classLike);
@@ -685,7 +684,7 @@ final readonly class PHPStanNodeScopeResolver
         return $mutatingScope;
     }
 
-    private function resolveClassName(Class_ | Interface_ | Trait_| Enum_ $classLike): string
+    private function resolveClassName(Class_|Interface_|Trait_|Enum_ $classLike): string
     {
         if ($classLike->namespacedName instanceof Name) {
             return (string) $classLike->namespacedName;

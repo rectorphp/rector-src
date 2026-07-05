@@ -151,7 +151,7 @@ CODE_SAMPLE
         );
     }
 
-    private function processVariableNum(Continue_ $continue, Variable $numVariable): Continue_ | Break_
+    private function processVariableNum(Continue_ $continue, Variable $numVariable): Continue_|Break_
     {
         $staticType = $this->getType($numVariable);
         if (! $staticType->isConstantValue()->yes()) {

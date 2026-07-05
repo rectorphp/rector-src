@@ -88,7 +88,7 @@ CODE_SAMPLE
         return $for;
     }
 
-    private function processPrePost(PostInc | PostDec $node): PreInc | PreDec
+    private function processPrePost(PostInc|PostDec $node): PreInc|PreDec
     {
         if ($node instanceof PostInc) {
             return new PreInc($node->var);

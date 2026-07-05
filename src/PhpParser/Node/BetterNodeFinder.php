@@ -40,7 +40,7 @@ final readonly class BetterNodeFinder
      * @param Node|Node[]|Stmt[] $nodes
      * @return T[]
      */
-    public function findInstancesOf(Node | array $nodes, array $types): array
+    public function findInstancesOf(Node|array $nodes, array $types): array
     {
         $foundInstances = [];
         foreach ($types as $type) {
@@ -57,7 +57,7 @@ final readonly class BetterNodeFinder
      * @param Node|Node[]|Stmt[] $nodes
      * @return T[]
      */
-    public function findInstanceOf(Node | array $nodes, string $type): array
+    public function findInstanceOf(Node|array $nodes, string $type): array
     {
         return $this->nodeFinder->findInstanceOf($nodes, $type);
     }
@@ -69,7 +69,7 @@ final readonly class BetterNodeFinder
      *
      * @return T|null
      */
-    public function findFirstInstanceOf(Node | array $nodes, string $type): ?Node
+    public function findFirstInstanceOf(Node|array $nodes, string $type): ?Node
     {
         Assert::isAOf($type, Node::class);
         return $this->nodeFinder->findFirstInstanceOf($nodes, $type);
@@ -98,7 +98,7 @@ final readonly class BetterNodeFinder
      * @param Node|Node[] $nodes
      * @return Variable|null
      */
-    public function findVariableOfName(Node | array $nodes, string $name): ?Node
+    public function findVariableOfName(Node|array $nodes, string $name): ?Node
     {
         return $this->findInstanceOfName($nodes, Variable::class, $name);
     }
@@ -107,7 +107,7 @@ final readonly class BetterNodeFinder
      * @param Node|Node[] $nodes
      * @param array<class-string<Node>> $types
      */
-    public function hasInstancesOf(Node | array $nodes, array $types): bool
+    public function hasInstancesOf(Node|array $nodes, array $types): bool
     {
         Assert::allIsAOf($types, Node::class);
 
@@ -122,7 +122,7 @@ final readonly class BetterNodeFinder
      * @param callable(Node $node): bool $filter
      * @return Node[]
      */
-    public function find(Node | array $nodes, callable $filter): array
+    public function find(Node|array $nodes, callable $filter): array
     {
         return $this->nodeFinder->find($nodes, $filter);
     }
@@ -135,15 +135,14 @@ final readonly class BetterNodeFinder
     public function findFirstNonAnonymousClass(array $nodes): ?Node
     {
         // skip anonymous classes
-        return $this->findFirst($nodes, fn (Node $node): bool =>
-            $node instanceof Class_ && ! $this->classAnalyzer->isAnonymousClass($node));
+        return $this->findFirst($nodes, fn (Node $node): bool => $node instanceof Class_ && ! $this->classAnalyzer->isAnonymousClass($node));
     }
 
     /**
      * @param Node|Node[] $nodes
      * @param callable(Node $filter): bool $filter
      */
-    public function findFirst(Node | array $nodes, callable $filter): ?Node
+    public function findFirst(Node|array $nodes, callable $filter): ?Node
     {
         return $this->nodeFinder->findFirst($nodes, $filter);
     }
@@ -295,11 +294,10 @@ final readonly class BetterNodeFinder
      * @param Node|Node[] $nodes
      * @param class-string<T> $type
      */
-    private function findInstanceOfName(Node | array $nodes, string $type, string $name): ?Node
+    private function findInstanceOfName(Node|array $nodes, string $type, string $name): ?Node
     {
         Assert::isAOf($type, Node::class);
 
-        return $this->nodeFinder->findFirst($nodes, fn (Node $node): bool =>
-            $node instanceof $type && $this->nodeNameResolver->isName($node, $name));
+        return $this->nodeFinder->findFirst($nodes, fn (Node $node): bool => $node instanceof $type && $this->nodeNameResolver->isName($node, $name));
     }
 }

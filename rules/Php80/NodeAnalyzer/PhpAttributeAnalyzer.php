@@ -25,7 +25,7 @@ final readonly class PhpAttributeAnalyzer
     }
 
     public function hasPhpAttribute(
-        Property | ClassLike | ClassMethod | Function_ | Param $node,
+        Property|ClassLike|ClassMethod|Function_|Param $node,
         string $attributeClass
     ): bool {
         foreach ($node->attrGroups as $attrGroup) {
@@ -45,7 +45,7 @@ final readonly class PhpAttributeAnalyzer
      * @param string[] $attributeClasses
      */
     public function hasPhpAttributes(
-        Property | ClassLike | ClassMethod | Function_ | Param $node,
+        Property|ClassLike|ClassMethod|Function_|Param $node,
         array $attributeClasses
     ): bool {
         return array_any(

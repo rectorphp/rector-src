@@ -48,7 +48,7 @@ final readonly class BreakingVariableRenameGuard
     public function shouldSkipVariable(
         string $currentName,
         string $expectedName,
-        ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
         Variable $variable
     ): bool {
         // is the suffix? → also accepted
@@ -151,7 +151,7 @@ final readonly class BreakingVariableRenameGuard
     }
 
     private function hasConflictVariable(
-        ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
         string $newName
     ): bool {
         if ($functionLike instanceof ArrowFunction) {
@@ -171,7 +171,7 @@ final readonly class BreakingVariableRenameGuard
 
     private function isUsedInClosureUsesName(
         string $expectedName,
-        ClassMethod | Function_ | Closure $functionLike
+        ClassMethod|Function_|Closure $functionLike
     ): bool {
         if (! $functionLike instanceof Closure) {
             return false;

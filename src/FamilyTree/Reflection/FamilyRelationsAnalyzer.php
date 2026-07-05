@@ -23,7 +23,7 @@ final readonly class FamilyRelationsAnalyzer
      * @api
      * @return string[]
      */
-    public function getClassLikeAncestorNames(Class_ | Interface_ | Name $classOrName): array
+    public function getClassLikeAncestorNames(Class_|Interface_|Name $classOrName): array
     {
         $ancestorNames = [];
 

@@ -56,7 +56,7 @@ final readonly class StaticDoctrineAnnotationParser
     public function resolveAnnotationValue(
         BetterTokenIterator $tokenIterator,
         Node $currentPhpNode
-    ): CurlyListNode | string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
+    ): CurlyListNode|string|array|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode {
         // skips dummy tokens like newlines
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 
@@ -126,7 +126,7 @@ final readonly class StaticDoctrineAnnotationParser
     private function parseValue(
         BetterTokenIterator $tokenIterator,
         Node $currentPhpNode
-    ): CurlyListNode | string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
+    ): CurlyListNode|string|array|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode {
         if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_CURLY_BRACKET)) {
             $items = $this->arrayParser->parseCurlyArray($tokenIterator, $currentPhpNode);
             return new CurlyListNode($items);

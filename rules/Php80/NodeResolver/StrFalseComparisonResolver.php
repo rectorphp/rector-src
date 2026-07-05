@@ -23,7 +23,7 @@ final readonly class StrFalseComparisonResolver
     /**
      * @param string[] $oldStrFuncNames
      */
-    public function resolve(Identical | NotIdentical | Equal | NotEqual $expr, array $oldStrFuncNames): ?FuncCall
+    public function resolve(Identical|NotIdentical|Equal|NotEqual $expr, array $oldStrFuncNames): ?FuncCall
     {
         if ($this->valueResolver->isFalse($expr->left)) {
             if (! $expr->right instanceof FuncCall) {

@@ -19,7 +19,7 @@ final class SimpleCallableNodeTraverser
      * @param callable(Node $node): (int|Node|null|Node[]) $callable
      * @api shortcut helper
      */
-    public static function traverse(Node | array | null $node, callable $callable): void
+    public static function traverse(Node|array|null $node, callable $callable): void
     {
         self::traverseNodesWithCallable($node, $callable);
     }
@@ -28,7 +28,7 @@ final class SimpleCallableNodeTraverser
      * @param callable(Node $node): (int|Node|null|Node[]) $callable
      * @param Node|Node[]|null $node
      */
-    public static function traverseNodesWithCallable(Node | array | null $node, callable $callable): void
+    public static function traverseNodesWithCallable(Node|array|null $node, callable $callable): void
     {
         if ($node === null || $node === []) {
             return;

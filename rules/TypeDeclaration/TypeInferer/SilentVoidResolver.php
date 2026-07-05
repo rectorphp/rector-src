@@ -49,7 +49,7 @@ final readonly class SilentVoidResolver
     ) {
     }
 
-    public function hasExclusiveVoid(ClassMethod | Closure | Function_ $functionLike): bool
+    public function hasExclusiveVoid(ClassMethod|Closure|Function_ $functionLike): bool
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
         if ($classReflection instanceof ClassReflection && $classReflection->isInterface()) {

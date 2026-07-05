@@ -14,7 +14,7 @@ final class CreatedByRuleDecorator
      * @param array<Node>|Node $node
      * @param class-string<RectorInterface> $rectorClass
      */
-    public function decorate(array | Node $node, Node $originalNode, string $rectorClass): void
+    public function decorate(array|Node $node, Node $originalNode, string $rectorClass): void
     {
         if ($node instanceof Node && $node === $originalNode) {
             $this->createByRule($node, $rectorClass);

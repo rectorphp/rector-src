@@ -20,7 +20,7 @@ final readonly class VariadicAnalyzer
     ) {
     }
 
-    public function hasVariadicParameters(FuncCall | StaticCall | MethodCall | New_ $call): bool
+    public function hasVariadicParameters(FuncCall|StaticCall|MethodCall|New_ $call): bool
     {
         $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($call);
         if ($functionLikeReflection === null) {
@@ -30,7 +30,7 @@ final readonly class VariadicAnalyzer
         return $this->hasVariadicVariant($functionLikeReflection);
     }
 
-    private function hasVariadicVariant(MethodReflection | FunctionReflection $functionLikeReflection): bool
+    private function hasVariadicVariant(MethodReflection|FunctionReflection $functionLikeReflection): bool
     {
         return array_any(
             $functionLikeReflection->getVariants(),

@@ -148,7 +148,7 @@ final readonly class IsClassMethodUsedAnalyzer
         return false;
     }
 
-    private function shouldSkipArrayCallable(Class_ $class, null | ArrayCallable $arrayCallable): bool
+    private function shouldSkipArrayCallable(Class_ $class, null|ArrayCallable $arrayCallable): bool
     {
         if (! $arrayCallable instanceof ArrayCallable) {
             return true;
@@ -183,7 +183,6 @@ final readonly class IsClassMethodUsedAnalyzer
             /**
              * Trait can't detect class type, so it rely on "this" or "self" or "static" or "ClassName::methodName()" usage...
              */
-
             $callMethod = null;
             $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
                 (array) $classMethod->stmts,

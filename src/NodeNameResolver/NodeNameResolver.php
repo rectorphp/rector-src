@@ -68,7 +68,7 @@ final class NodeNameResolver
      * @param Node|Node[] $node
      * @param MethodName::*|string $name
      */
-    public function isName(Node | array $node, string $name): bool
+    public function isName(Node|array $node, string $name): bool
     {
         $nodes = is_array($node) ? $node : [$node];
         return array_any($nodes, fn (Node $node): bool => $this->isSingleName($node, $name));
@@ -89,7 +89,7 @@ final class NodeNameResolver
      *  ($node is Name ? string :
      *      string|null )))))))))
      */
-    public function getName(Node | string $node): ?string
+    public function getName(Node|string $node): ?string
     {
         if (is_string($node)) {
             return $node;
@@ -161,7 +161,7 @@ final class NodeNameResolver
         return $names;
     }
 
-    public function getShortName(string | Name | Identifier | ClassLike $name): string
+    public function getShortName(string|Name|Identifier|ClassLike $name): string
     {
         return $this->classNaming->getShortName($name);
     }

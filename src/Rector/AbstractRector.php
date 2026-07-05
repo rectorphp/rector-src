@@ -266,7 +266,7 @@ CODE_SAMPLE;
      * @param Node|Node[] $nodes
      * @param callable(Node): (int|Node|null|Node[]) $callable
      */
-    protected function traverseNodesWithCallable(Node | array $nodes, callable $callable): void
+    protected function traverseNodesWithCallable(Node|array $nodes, callable $callable): void
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, $callable);
     }
@@ -311,7 +311,7 @@ CODE_SAMPLE;
     /**
      * @param Node[]|Node $node
      */
-    private function refreshScopeNodes(array | Node $node, string $filePath, ?MutatingScope $mutatingScope): void
+    private function refreshScopeNodes(array|Node $node, string $filePath, ?MutatingScope $mutatingScope): void
     {
         $nodes = $node instanceof Node ? [$node] : $node;
 
