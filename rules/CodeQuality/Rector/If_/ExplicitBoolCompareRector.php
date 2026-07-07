@@ -276,11 +276,8 @@ CODE_SAMPLE
         return new NotIdentical($expr, $float);
     }
 
-    private function resolveNullable(
-        bool $isNegated,
-        Expr $expr,
-        ObjectType $objectType
-    ): BooleanNot|Instanceof_ {
+    private function resolveNullable(bool $isNegated, Expr $expr, ObjectType $objectType): BooleanNot|Instanceof_
+    {
         $fullyQualified = new FullyQualified($objectType->getClassName());
         $instanceof = new Instanceof_($expr, $fullyQualified);
 

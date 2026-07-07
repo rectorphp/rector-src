@@ -7,14 +7,11 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Function_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Type\Accessory\AccessoryArrayListType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -26,24 +23,21 @@ use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\ValueObject\PhpVersion;
-use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\ReturnTypeFromStrictNewArrayRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\PrivateMethodReturnTypeFromStrictNewArrayRector\PrivateMethodReturnTypeFromStrictNewArrayRectorTest
  */
-final class ReturnTypeFromStrictNewArrayRector extends AbstractRector implements MinPhpVersionInterface
+final class PrivateMethodReturnTypeFromStrictNewArrayRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -53,12 +47,14 @@ final class ReturnTypeFromStrictNewArrayRector extends AbstractRector implements
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add strict return array type based on created empty array and returned', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Add strict return array type to private methods based on created empty array and returned',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function run()
+    private function run()
     {
         $values = [];
 
@@ -67,11 +63,11 @@ final class SomeClass
 }
 CODE_SAMPLE
 
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function run(): array
+    private function run(): array
     {
         $values = [];
 
@@ -79,8 +75,9 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-            ),
-        ]);
+                ),
+            ]
+        );
     }
 
     /**
@@ -88,16 +85,15 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
-        if ($this->shouldSkip($node, $scope)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -145,45 +141,35 @@ CODE_SAMPLE
         return PhpVersion::PHP_70;
     }
 
-    private function processAddArrayReturnType(
-        ClassMethod|Function_|Closure $node,
-        Type $returnType
-    ): ClassMethod|Function_|Closure|null {
+    private function processAddArrayReturnType(ClassMethod $classMethod, Type $returnType): ?ClassMethod
+    {
         if (! $returnType->isArray()->yes()) {
             return null;
         }
 
         // always returns array
-        $node->returnType = new Identifier('array');
+        $classMethod->returnType = new Identifier('array');
 
         // add more precise array type if suitable
         if ($this->shouldAddReturnArrayDocType($returnType)) {
-            $this->changeReturnType($node, $returnType);
+            $this->changeReturnType($classMethod, $returnType);
         }
 
-        return $node;
+        return $classMethod;
     }
 
-    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool
+    private function shouldSkip(ClassMethod $classMethod): bool
     {
-        if ($node->returnType instanceof Node) {
+        if (! $classMethod->isPrivate()) {
             return true;
         }
 
-        // private methods are handled by PrivateMethodReturnTypeFromStrictNewArrayRector
-        if ($node instanceof ClassMethod && $node->isPrivate()) {
-            return true;
-        }
-
-        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $scope
-        );
+        return $classMethod->returnType instanceof Node;
     }
 
-    private function changeReturnType(ClassMethod|Function_|Closure $node, Type $arrayType): void
+    private function changeReturnType(ClassMethod $classMethod, Type $arrayType): void
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
         // skip already filled type, on purpose
         if (! $phpDocInfo->getReturnType() instanceof MixedType) {
@@ -206,20 +192,18 @@ CODE_SAMPLE
             $narrowArrayType = TypeCombinator::intersect($narrowArrayType, new AccessoryArrayListType());
         }
 
-        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $narrowArrayType);
+        $this->phpDocTypeChanger->changeReturnType($classMethod, $phpDocInfo, $narrowArrayType);
     }
 
     /**
      * @param Variable[] $variables
      * @return Variable[]
      */
-    private function matchVariableNotOverriddenByNonArray(
-        ClassMethod|Function_ $functionLike,
-        array $variables
-    ): array {
+    private function matchVariableNotOverriddenByNonArray(ClassMethod $classMethod, array $variables): array
+    {
         // is variable overridden?
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($classMethod, Assign::class);
         foreach ($assigns as $assign) {
             if (! $assign->var instanceof Variable) {
                 continue;
