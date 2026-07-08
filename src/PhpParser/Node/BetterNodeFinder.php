@@ -135,7 +135,10 @@ final readonly class BetterNodeFinder
     public function findFirstNonAnonymousClass(array $nodes): ?Node
     {
         // skip anonymous classes
-        return $this->findFirst($nodes, fn (Node $node): bool => $node instanceof Class_ && ! $this->classAnalyzer->isAnonymousClass($node));
+        return $this->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof Class_ && ! $this->classAnalyzer->isAnonymousClass($node)
+        );
     }
 
     /**
@@ -298,6 +301,9 @@ final readonly class BetterNodeFinder
     {
         Assert::isAOf($type, Node::class);
 
-        return $this->nodeFinder->findFirst($nodes, fn (Node $node): bool => $node instanceof $type && $this->nodeNameResolver->isName($node, $name));
+        return $this->nodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof $type && $this->nodeNameResolver->isName($node, $name)
+        );
     }
 }

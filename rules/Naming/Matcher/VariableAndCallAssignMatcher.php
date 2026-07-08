@@ -41,7 +41,10 @@ final readonly class VariableAndCallAssignMatcher
 
         $isVariableFoundInCallArgs = (bool) $this->betterNodeFinder->findFirst(
             $call->isFirstClassCallable() ? [] : $call->getArgs(),
-            fn (Node $subNode): bool => $subNode instanceof Variable && $this->nodeNameResolver->isName($subNode, $variableName)
+            fn (Node $subNode): bool => $subNode instanceof Variable && $this->nodeNameResolver->isName(
+                $subNode,
+                $variableName
+            )
         );
 
         if ($isVariableFoundInCallArgs) {

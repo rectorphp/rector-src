@@ -188,10 +188,8 @@ final class VisibilityManipulator
     /**
      * @api
      */
-    private function addVisibilityFlag(
-        Class_|ClassMethod|Property|ClassConst|Param $node,
-        int $visibility
-    ): void {
+    private function addVisibilityFlag(Class_|ClassMethod|Property|ClassConst|Param $node, int $visibility): void
+    {
         $node->flags |= $visibility;
     }
 
