@@ -478,9 +478,7 @@ final class BetterStandardPrinter extends Standard
             $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
-        if ($node->right instanceof Assign
-            && $this->origTokens instanceof TokenStream
-            && ! $this->origTokens->haveParens($node->right->getStartTokenPos(), $node->right->getEndTokenPos())) {
+        if ($node->right instanceof Assign && $this->origTokens instanceof TokenStream) {
             $node->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
