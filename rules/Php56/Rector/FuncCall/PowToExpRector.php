@@ -7,7 +7,7 @@ namespace Rector\Php56\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Pow;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\UnaryMinus;
+use Rector\NodeAnalyzer\PowOperandAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -20,6 +20,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class PowToExpRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly PowOperandAnalyzer $powOperandAnalyzer
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -54,8 +59,14 @@ final class PowToExpRector extends AbstractRector implements MinPhpVersionInterf
         $secondExpr = $node->getArgs()[1]
             ->value;
 
-        if ($firstExpr instanceof UnaryMinus) {
-            $firstExpr->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        // ** binds tighter than most operators, so operands with lower precedence must be
+        // wrapped in parentheses to keep the original semantics, e.g. pow(~3, 4) => (~3) ** 4
+        if ($this->powOperandAnalyzer->isLowerPrecedenceAsLeftOperand($firstExpr)) {
+            $firstExpr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        }
+
+        if ($this->powOperandAnalyzer->isLowerPrecedenceAsRightOperand($secondExpr)) {
+            $secondExpr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
         return new Pow($firstExpr, $secondExpr);
