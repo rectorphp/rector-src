@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Nop;
+use PhpParser\Token;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
@@ -89,6 +90,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // alternative syntax (if/else/endif) cannot be merged to elseif without producing mixed brace/colon syntax
+        if ($this->isAlternativeSyntax($node) || $this->isAlternativeSyntax($if)) {
+            return null;
+        }
+
         // Try to shorten the nested if before transforming it to elseif
         $refactored = $this->shortenElseIf($if);
 
@@ -113,5 +119,33 @@ CODE_SAMPLE
         $node->elseifs = array_merge($node->elseifs, $if->elseifs);
 
         return $node;
+    }
+
+    private function isAlternativeSyntax(If_ $if): bool
+    {
+        $startTokenPos = $if->cond->getEndTokenPos();
+        if ($startTokenPos < 0) {
+            return false;
+        }
+
+        $oldTokens = $this->getFile()
+            ->getOldTokens();
+
+        for ($i = $startTokenPos + 1; isset($oldTokens[$i]); ++$i) {
+            $token = $oldTokens[$i];
+            if (! $token instanceof Token) {
+                continue;
+            }
+
+            if ($token->text === ':') {
+                return true;
+            }
+
+            if ($token->text === '{') {
+                return false;
+            }
+        }
+
+        return false;
     }
 }
