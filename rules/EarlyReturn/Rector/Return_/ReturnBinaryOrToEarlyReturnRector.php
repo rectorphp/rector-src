@@ -93,8 +93,8 @@ CODE_SAMPLE
             $leftOperands = $left instanceof BooleanOr ? $this->flattenBooleanOr($left) : [$left];
 
             $ifs = [];
-            foreach ($leftOperands as $operand) {
-                $ifs[] = new If_($operand, [
+            foreach ($leftOperands as $leftOperand) {
+                $ifs[] = new If_($leftOperand, [
                     'stmts' => [new Return_($this->nodeFactory->createTrue())],
                 ]);
             }
