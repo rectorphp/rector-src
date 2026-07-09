@@ -6,7 +6,6 @@ namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
@@ -17,10 +16,7 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
@@ -29,8 +25,6 @@ use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
-use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\NodeTypeResolver\TypeAnalyzer\StringTypeAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -44,7 +38,6 @@ final class ExplicitBoolCompareRector extends AbstractRector
 {
     public function __construct(
         private readonly StringTypeAnalyzer $stringTypeAnalyzer,
-        private readonly ArrayTypeAnalyzer $arrayTypeAnalyzer,
         private readonly ValueResolver $valueResolver,
     ) {
     }
@@ -121,7 +114,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof If_ && $node->cond instanceof Assign && $binaryOp instanceof BinaryOp && $binaryOp->left instanceof NotIdentical && $binaryOp->right instanceof NotIdentical) {
+        if ($node instanceof If_ && $node->cond instanceof Assign && $binaryOp->left instanceof NotIdentical && $binaryOp->right instanceof NotIdentical) {
             $expression = new Expression($node->cond);
             $binaryOp->left->left = $node->cond->var;
             $binaryOp->right->left = $node->cond->var;
@@ -136,14 +129,10 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveNewConditionNode(Expr $expr, bool $isNegated): BinaryOp|Instanceof_|BooleanNot|null
+    private function resolveNewConditionNode(Expr $expr, bool $isNegated): ?BinaryOp
     {
         if ($expr instanceof FuncCall && $this->isName($expr, 'count')) {
             return $this->resolveCount($isNegated, $expr);
-        }
-
-        if ($this->arrayTypeAnalyzer->isArrayType($expr)) {
-            return $this->resolveArray($isNegated, $expr);
         }
 
         if ($this->stringTypeAnalyzer->isStringOrUnionStringOnlyType($expr)) {
@@ -157,11 +146,6 @@ CODE_SAMPLE
 
         if ($exprType->isFloat()->yes()) {
             return $this->resolveFloat($isNegated, $expr);
-        }
-
-        $objectType = $this->nodeTypeResolver->matchNullableTypeOfSpecificType($expr, ObjectType::class);
-        if ($objectType instanceof ObjectType) {
-            return $this->resolveNullable($isNegated, $expr, $objectType);
         }
 
         return null;
@@ -187,25 +171,6 @@ CODE_SAMPLE
         }
 
         return new Greater($funcCall, $int);
-    }
-
-    /**
-     * @return Identical|NotIdentical|null
-     */
-    private function resolveArray(bool $isNegated, Expr $expr): ?BinaryOp
-    {
-        if (! $expr instanceof Variable) {
-            return null;
-        }
-
-        $array = new Array_([]);
-
-        // compare === []
-        if ($isNegated) {
-            return new Identical($expr, $array);
-        }
-
-        return new NotIdentical($expr, $array);
     }
 
     private function resolveString(bool $isNegated, Expr $expr): Identical|NotIdentical|BooleanAnd|BooleanOr
@@ -274,13 +239,5 @@ CODE_SAMPLE
         }
 
         return new NotIdentical($expr, $float);
-    }
-
-    private function resolveNullable(bool $isNegated, Expr $expr, ObjectType $objectType): BooleanNot|Instanceof_
-    {
-        $fullyQualified = new FullyQualified($objectType->getClassName());
-        $instanceof = new Instanceof_($expr, $fullyQualified);
-
-        return $isNegated ? new BooleanNot($instanceof) : $instanceof;
     }
 }

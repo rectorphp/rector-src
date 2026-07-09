@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\Fixture;
 
 final class Nullable
 {
@@ -30,7 +30,7 @@ final class Nullable
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\Fixture;
 
 final class Nullable
 {
