@@ -25,6 +25,8 @@ use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectType;
+use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\NodeTypeResolver\TypeAnalyzer\StringTypeAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -38,6 +40,7 @@ final class ExplicitBoolCompareRector extends AbstractRector
 {
     public function __construct(
         private readonly StringTypeAnalyzer $stringTypeAnalyzer,
+        private readonly ArrayTypeAnalyzer $arrayTypeAnalyzer,
         private readonly ValueResolver $valueResolver,
     ) {
     }
@@ -106,6 +109,19 @@ CODE_SAMPLE
 
         $conditionStaticType = $this->nodeTypeResolver->getNativeType($conditionNode);
         if ($conditionStaticType instanceof MixedType || $conditionStaticType->isBoolean()->yes()) {
+            return null;
+        }
+
+        // handled by ArrayExplicitBoolCompareRector
+        if ($this->arrayTypeAnalyzer->isArrayType($conditionNode)) {
+            return null;
+        }
+
+        // handled by ObjectExplicitBoolCompareRector
+        if ($this->nodeTypeResolver->matchNullableTypeOfSpecificType(
+            $conditionNode,
+            ObjectType::class
+        ) instanceof ObjectType) {
             return null;
         }
 
