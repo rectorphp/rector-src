@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector\Fixture;
 
 final class ArrayCompare
 {
@@ -20,7 +20,7 @@ final class ArrayCompare
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector\Fixture;
 
 final class ArrayCompare
 {
