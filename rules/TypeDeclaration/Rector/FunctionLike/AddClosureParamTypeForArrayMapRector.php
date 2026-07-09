@@ -9,14 +9,10 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Param;
-use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
-use PHPStan\Type\UnionTypeHelper;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -30,7 +26,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AddClosureParamTypeForArrayMapRector extends AbstractRector
 {
     public function __construct(
-        private readonly TypeComparator $typeComparator,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ReflectionResolver $reflectionResolver,
     ) {
@@ -43,14 +38,14 @@ final class AddClosureParamTypeForArrayMapRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-array_map(function ($value, $key): string {
-    return $value . $key;
+array_map(function ($value) {
+    return strlen($value);
 }, $strings);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-array_map(function (string $value, int $key): bool {
-    return $value . $key;
+array_map(function (string $value) {
+    return strlen($value);
 }, $strings);
 CODE_SAMPLE
                     ,
@@ -89,88 +84,44 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var ArrayType[] $types */
-        $types = array_filter(array_map(function (Arg|VariadicPlaceholder $arg): ?ArrayType {
-            if (! $arg instanceof Arg) {
+        // array_map passes the value of each array positionally to the closure:
+        // the i-th closure param receives values from the i-th array argument.
+        $arrayArgs = array_slice($node->args, 1);
+
+        $closure = $args[0]->value;
+        $changed = false;
+
+        foreach ($arrayArgs as $position => $arg) {
+            // spread (...$arrays) cannot be mapped positionally, bail out
+            if (! $arg instanceof Arg || $arg->unpack) {
                 return null;
             }
 
-            $type = $this->getType($arg->value);
-
-            if ($type instanceof ArrayType) {
-                return $type;
+            $param = $closure->params[$position] ?? null;
+            if (! $param instanceof Param) {
+                continue;
             }
 
-            return null;
-        }, array_slice($node->args, 1)));
-
-        $values = [];
-        $keys = [];
-
-        foreach ($types as $type) {
-            $values[] = $type->getIterableValueType();
-            $keys[] = $type->getIterableKeyType();
-        }
-
-        foreach ($values as $value) {
-            if ($value instanceof MixedType) {
-                $values = [];
-                break;
+            $arrayType = $this->getType($arg->value);
+            if (! $arrayType instanceof ArrayType) {
+                continue;
             }
 
-            if ($value instanceof UnionType) {
-                $values = [...$values, ...$value->getTypes()];
+            $valueType = $arrayType->getIterableValueType();
+            if ($valueType instanceof MixedType) {
+                continue;
+            }
+
+            if ($this->refactorParameter($param, $valueType)) {
+                $changed = true;
             }
         }
 
-        foreach ($keys as $key) {
-            if ($key instanceof MixedType) {
-                $keys = [];
-                break;
-            }
-
-            if ($key instanceof UnionType) {
-                $keys = [...$keys, ...$key->getTypes()];
-            }
-        }
-
-        $filter = fn (Type $type): bool => ! $type instanceof UnionType;
-
-        $valueType = $this->combineTypes(array_filter($values, $filter));
-        $keyType = $this->combineTypes(array_filter($keys, $filter));
-
-        if (! $keyType instanceof Type && ! $valueType instanceof Type) {
-            return null;
-        }
-
-        if ($this->updateClosureWithTypes($args[0]->value, $keyType, $valueType)) {
+        if ($changed) {
             return $node;
         }
 
         return null;
-    }
-
-    private function updateClosureWithTypes(Closure $closure, ?Type $keyType, ?Type $valueType): bool
-    {
-        $changes = false;
-        $valueParam = $closure->params[0] ?? null;
-        $keyParam = $closure->params[1] ?? null;
-
-        if ($valueParam instanceof Param && $valueType instanceof Type && $this->refactorParameter(
-            $closure->params[0],
-            $valueType
-        )) {
-            $changes = true;
-        }
-
-        if ($keyParam instanceof Param && $keyType instanceof Type && $this->refactorParameter(
-            $closure->params[1],
-            $keyType
-        )) {
-            return true;
-        }
-
-        return $changes;
     }
 
     private function refactorParameter(Param $param, Type $type): bool
@@ -189,32 +140,5 @@ CODE_SAMPLE
         $param->type = $paramTypeNode;
 
         return true;
-    }
-
-    /**
-     * @param Type[] $types
-     */
-    private function combineTypes(array $types): ?Type
-    {
-        if ($types === []) {
-            return null;
-        }
-
-        $types = array_reduce($types, function (array $types, Type $type): array {
-            foreach ($types as $previousType) {
-                if ($this->typeComparator->areTypesEqual($type, $previousType)) {
-                    return $types;
-                }
-            }
-
-            $types[] = $type;
-            return $types;
-        }, []);
-
-        if (count($types) === 1) {
-            return $types[0];
-        }
-
-        return new UnionType(UnionTypeHelper::sortTypes($types));
     }
 }
