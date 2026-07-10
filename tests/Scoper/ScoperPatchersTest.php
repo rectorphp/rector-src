@@ -89,14 +89,18 @@ PHP;
             );
         }
 
-        $this->assertStringContainsString('use Webmozart\Assert\Assert;', (string) $content);
+        preg_match_all("#<<<'CODE_SAMPLE'\R(.*?)\RCODE_SAMPLE#s", (string) $content, $matches);
+        $codeSampleContent = implode("\n", $matches[1]);
+
         $this->assertStringContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', (string) $content);
-        $this->assertStringContainsString('\Webmozart\Assert\Assert::allString($items);', (string) $content);
+        $this->assertStringContainsString('use Webmozart\Assert\Assert;', $codeSampleContent);
+        $this->assertStringContainsString('\Webmozart\Assert\Assert::allString($items);', $codeSampleContent);
         $this->assertStringContainsString("'SomeVendor\ValueObject::class'", (string) $content);
         $this->assertStringContainsString('$metadata = \'Webmozart\Assert\Assert\';', (string) $content);
         $this->assertStringContainsString('\RectorPrefix202607\SomeVendor\Runtime::class;', (string) $content);
-        $this->assertStringNotContainsString('namespace RectorPrefix202607;', (string) $content);
-        $this->assertStringNotContainsString('\class_alias', (string) $content);
+        $this->assertStringNotContainsString('namespace RectorPrefix202607;', $codeSampleContent);
+        $this->assertStringNotContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', $codeSampleContent);
+        $this->assertStringNotContainsString('\class_alias', $codeSampleContent);
     }
 
     public function testRemovesPrefixedNamespaceInGetRuleDefinitionWithWindowsLineEndings(): void
