@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Scoper;
 
+use Webmozart\Assert\Assert;
 use Closure;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
@@ -68,14 +69,14 @@ PHP;
             );
         }
 
-        $this->assertStringContainsString('use Webmozart\Assert\Assert;', $content);
-        $this->assertStringContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', $content);
-        $this->assertStringContainsString('\Webmozart\Assert\Assert::allString($items);', $content);
-        $this->assertStringContainsString("'SomeVendor\ValueObject::class'", $content);
-        $this->assertStringContainsString("'new SomeVendor\ValueObject()'", $content);
-        $this->assertStringContainsString('$metadata = \'Webmozart\Assert\Assert\';', $content);
-        $this->assertStringContainsString('\RectorPrefix202607\SomeVendor\Runtime::class;', $content);
-        $this->assertStringNotContainsString('namespace RectorPrefix202607;', $content);
+        $this->assertStringContainsString('use Webmozart\Assert\Assert;', (string) $content);
+        $this->assertStringContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', (string) $content);
+        $this->assertStringContainsString(Assert::class . '::allString($items);', (string) $content);
+        $this->assertStringContainsString("'SomeVendor\ValueObject::class'", (string) $content);
+        $this->assertStringContainsString("'new SomeVendor\ValueObject()'", (string) $content);
+        $this->assertStringContainsString('$metadata = \'Webmozart\Assert\Assert\';', (string) $content);
+        $this->assertStringContainsString('\RectorPrefix202607\SomeVendor\Runtime::class;', (string) $content);
+        $this->assertStringNotContainsString('namespace RectorPrefix202607;', (string) $content);
     }
 
     public function testRemovesPrefixedNamespaceInGetRuleDefinitionWithWindowsLineEndings(): void
@@ -111,8 +112,8 @@ PHP
             );
         }
 
-        $this->assertStringNotContainsString('namespace RectorPrefix202607;', $content);
-        $this->assertStringContainsString('SomeVendor\ValueObject::class;', $content);
+        $this->assertStringNotContainsString('namespace RectorPrefix202607;', (string) $content);
+        $this->assertStringContainsString('SomeVendor\ValueObject::class;', (string) $content);
     }
 
     /**
