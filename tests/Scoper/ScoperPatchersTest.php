@@ -102,6 +102,10 @@ PHP;
         $this->assertStringNotContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', $codeSampleContent);
         $this->assertStringNotContainsString('\class_alias', $codeSampleContent);
         $this->assertStringContainsString('\RectorPrefix202607\ShouldStayPrefixed::run();', (string) $content);
+
+        foreach ($matches[1] as $codeSample) {
+            $this->assertStringEndsNotWith("\n", $codeSample);
+        }
     }
 
     public function testRemovesPrefixedNamespaceInGetRuleDefinitionWithWindowsLineEndings(): void
