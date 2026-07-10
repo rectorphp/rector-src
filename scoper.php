@@ -107,6 +107,28 @@ return [
             );
         },
 
+        // keep public documentation examples readable
+        static function (string $filePath, string $prefix, string $content): string {
+            if (! \str_contains($filePath, 'rules/')) {
+                return $content;
+            }
+
+            if (! \str_ends_with($filePath, 'Rector.php')) {
+                return $content;
+            }
+
+            return Strings::replace(
+                $content,
+                '#(public function getRuleDefinition\(\): RuleDefinition\s+\{\R)(.*?)(\R    \})#s',
+                static function (array $match) use ($prefix): string {
+                    $body = str_replace($prefix . '\\', '', $match[2]);
+                    $body = Strings::replace($body, '#^\s*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m', '');
+
+                    return $match[1] . $body . $match[3];
+                }
+            );
+        },
+
         // un-prefix composer plugin
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'vendor/rector/extension-installer/src/Plugin.php')) {
