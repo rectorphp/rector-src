@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Scoper;
 
+use Webmozart\Assert\Assert;
 use Closure;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
@@ -95,7 +96,7 @@ PHP;
 
         $this->assertStringContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', (string) $content);
         $this->assertStringContainsString('use Webmozart\Assert\Assert;', $codeSampleContent);
-        $this->assertStringContainsString('\Webmozart\Assert\Assert::allString($items);', $codeSampleContent);
+        $this->assertStringContainsString(Assert::class . '::allString($items);', $codeSampleContent);
         $this->assertStringContainsString('\RectorPrefix202607\SomeVendor\Runtime::class;', (string) $content);
         $this->assertStringNotContainsString('namespace RectorPrefix202607;', $codeSampleContent);
         $this->assertStringNotContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', $codeSampleContent);
