@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Scoper;
 
-use Webmozart\Assert\Assert;
 use Closure;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
@@ -30,28 +29,39 @@ final class AddAssertArrayFromClassMethodDocblockRector
     {
         $metadata = 'RectorPrefix202607\Webmozart\Assert\Assert';
 
-        new ConfiguredCodeSample(
-            <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Demo',
+            [
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
 <?php
 
 namespace RectorPrefix202607;
 
-use RectorPrefix202607\Webmozart\Assert\Assert;
+class SomeClass
+{
+    public function run()
+    {
+    }
+}
 CODE_SAMPLE
-            ,
-            <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 <?php
+
+use RectorPrefix202607\Webmozart\Assert\Assert;
 
 \RectorPrefix202607\Webmozart\Assert\Assert::allString($items);
 CODE_SAMPLE
-            ,
-            []
-        );
-
-        new CodeSample(
-            'RectorPrefix202607\SomeVendor\ValueObject::class',
-            'new RectorPrefix202607\SomeVendor\ValueObject()'
-        );
+                    ,
+                    []
+                ),
+                new CodeSample(
+                    'RectorPrefix202607\SomeVendor\ValueObject::class',
+                    'new RectorPrefix202607\SomeVendor\ValueObject()'
+                ),
+            ]
+          );
     }
 
     public function refactor(): void
@@ -71,7 +81,7 @@ PHP;
 
         $this->assertStringContainsString('use Webmozart\Assert\Assert;', (string) $content);
         $this->assertStringContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', (string) $content);
-        $this->assertStringContainsString(Assert::class . '::allString($items);', (string) $content);
+        $this->assertStringContainsString('\Webmozart\Assert\Assert::allString($items);', (string) $content);
         $this->assertStringContainsString("'SomeVendor\ValueObject::class'", (string) $content);
         $this->assertStringContainsString("'new SomeVendor\ValueObject()'", (string) $content);
         $this->assertStringContainsString('$metadata = \'Webmozart\Assert\Assert\';', (string) $content);
