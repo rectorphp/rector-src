@@ -119,13 +119,21 @@ return [
 
             return Strings::replace(
                 $content,
-                "#(<<<'?(?<label>CODE_SAMPLE|SAMPLE)'?\\R)(.*?)(\\R\\s*\\k<label>)#s",
-                static function (array $match) use ($prefix): string {
-                    $body = str_replace($prefix . '\\', '', $match[3]);
-                    $body = Strings::replace($body, '#^[ \t]*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m', '');
-                    $body = Strings::replace($body, '#^[ \t]*\\\\class_alias\(.*?\);\R?#m', '');
+                '#(public function getRuleDefinition\(\): RuleDefinition\s+\{\R)(.*?)(\R\s*\);\R\s*\})#s',
+                static function (array $ruleDefinitionMatch) use ($prefix): string {
+                    $ruleDefinitionContent = Strings::replace(
+                        $ruleDefinitionMatch[2],
+                        "#(<<<'?(?<label>CODE_SAMPLE|SAMPLE)'?\\R)(.*?)(\\R\\s*\\k<label>)#s",
+                        static function (array $codeSampleMatch) use ($prefix): string {
+                            $body = str_replace($prefix . '\\', '', $codeSampleMatch[3]);
+                            $body = Strings::replace($body, '#^[ \t]*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m', '');
+                            $body = Strings::replace($body, '#^[ \t]*\\\\class_alias\(.*?\);\R?#m', '');
 
-                    return $match[1] . $body . $match[4];
+                            return $codeSampleMatch[1] . $body . $codeSampleMatch[4];
+                        }
+                    );
+
+                    return $ruleDefinitionMatch[1] . $ruleDefinitionContent . $ruleDefinitionMatch[3];
                 }
             );
         },

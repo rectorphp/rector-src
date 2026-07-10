@@ -76,6 +76,15 @@ CODE_SAMPLE
 
     public function refactor(): void
     {
+        $sample = <<<'CODE_SAMPLE'
+<?php
+
+namespace RectorPrefix202607;
+
+\RectorPrefix202607\ShouldStayPrefixed::run();
+\class_alias('SomeClass', 'SomeClass', \false);
+CODE_SAMPLE;
+
         \RectorPrefix202607\SomeVendor\Runtime::class;
     }
 }
@@ -89,7 +98,14 @@ PHP;
             );
         }
 
-        preg_match_all("#<<<'CODE_SAMPLE'\R(.*?)\RCODE_SAMPLE#s", (string) $content, $matches);
+        preg_match(
+            '#public function getRuleDefinition\(\): RuleDefinition\s+\{\R(.*?)\R    \}\R\R    public function refactor\(\): void#s',
+            (string) $content,
+            $getRuleDefinitionMatches
+        );
+        $this->assertNotSame([], $getRuleDefinitionMatches);
+
+        preg_match_all("#<<<'CODE_SAMPLE'\R(.*?)\RCODE_SAMPLE#s", $getRuleDefinitionMatches[1], $matches);
         $codeSampleContent = implode("\n", $matches[1]);
 
         $this->assertStringContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', (string) $content);
@@ -101,6 +117,7 @@ PHP;
         $this->assertStringNotContainsString('namespace RectorPrefix202607;', $codeSampleContent);
         $this->assertStringNotContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', $codeSampleContent);
         $this->assertStringNotContainsString('\class_alias', $codeSampleContent);
+        $this->assertStringContainsString('\RectorPrefix202607\ShouldStayPrefixed::run();', (string) $content);
     }
 
     public function testRemovesPrefixedNamespaceInGetRuleDefinitionWithWindowsLineEndings(): void
