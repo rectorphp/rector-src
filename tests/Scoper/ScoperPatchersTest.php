@@ -12,7 +12,7 @@ final class ScoperPatchersTest extends TestCase
 {
     private static bool $isFinderAliased = false;
 
-    public function testKeepsPrefixedClassesInGetRuleDefinitionUnprefixed(): void
+    public function testKeepsPrefixedClassesInCodeSampleBlocksUnprefixed(): void
     {
         $scoperConfig = $this->provideScoperConfig();
 
@@ -44,14 +44,24 @@ class SomeClass
     {
     }
 }
+\class_alias('SomeClass', 'SomeClass', \false);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 <?php
 
+namespace RectorPrefix202607;
+
 use RectorPrefix202607\Webmozart\Assert\Assert;
 
-\RectorPrefix202607\Webmozart\Assert\Assert::allString($items);
+class SomeClass
+{
+    public function run()
+    {
+        \RectorPrefix202607\Webmozart\Assert\Assert::allString($items);
+    }
+}
+\class_alias('SomeClass', 'SomeClass', \false);
 CODE_SAMPLE
                     ,
                     []
@@ -83,10 +93,10 @@ PHP;
         $this->assertStringContainsString('use RectorPrefix202607\Webmozart\Assert\Assert;', (string) $content);
         $this->assertStringContainsString('\Webmozart\Assert\Assert::allString($items);', (string) $content);
         $this->assertStringContainsString("'SomeVendor\ValueObject::class'", (string) $content);
-        $this->assertStringContainsString("'new SomeVendor\ValueObject()'", (string) $content);
         $this->assertStringContainsString('$metadata = \'Webmozart\Assert\Assert\';', (string) $content);
         $this->assertStringContainsString('\RectorPrefix202607\SomeVendor\Runtime::class;', (string) $content);
         $this->assertStringNotContainsString('namespace RectorPrefix202607;', (string) $content);
+        $this->assertStringNotContainsString('\class_alias', (string) $content);
     }
 
     public function testRemovesPrefixedNamespaceInGetRuleDefinitionWithWindowsLineEndings(): void
@@ -103,12 +113,15 @@ final class SomeRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new CodeSample(
-            '<?php
+        return new CodeSample(<<<'CODE_SAMPLE'
+<?php
+
 namespace RectorPrefix202607;
 
-RectorPrefix202607\SomeVendor\ValueObject::class;'
-        );
+RectorPrefix202607\SomeVendor\ValueObject::class;
+\class_alias('SomeClass', 'SomeClass', \false);
+CODE_SAMPLE
+        , '');
     }
 }
 PHP
@@ -124,6 +137,7 @@ PHP
 
         $this->assertStringNotContainsString('namespace RectorPrefix202607;', (string) $content);
         $this->assertStringContainsString('SomeVendor\ValueObject::class;', (string) $content);
+        $this->assertStringNotContainsString('\class_alias', (string) $content);
     }
 
     /**

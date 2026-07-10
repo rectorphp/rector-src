@@ -119,12 +119,13 @@ return [
 
             return Strings::replace(
                 $content,
-                '#(public function getRuleDefinition\(\): RuleDefinition\s+\{\R)(.*?)(\R\s*\);\R\s*\})#s',
+                "#(<<<'?(?<label>CODE_SAMPLE|SAMPLE)'?\\R)(.*?)(\\R\\s*\\k<label>)#s",
                 static function (array $match) use ($prefix): string {
-                    $body = str_replace($prefix . '\\', '', $match[2]);
-                    $body = Strings::replace($body, '#^\s*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m', '');
+                    $body = str_replace($prefix . '\\', '', $match[3]);
+                    $body = Strings::replace($body, '#^[ \t]*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m', '');
+                    $body = Strings::replace($body, '#^[ \t]*\\\\class_alias\(.*?\);\R?#m', '');
 
-                    return $match[1] . $body . $match[3];
+                    return $match[1] . $body . $match[4];
                 }
             );
         },
