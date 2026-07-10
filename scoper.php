@@ -119,7 +119,7 @@ return [
 
             return Strings::replace(
                 $content,
-                '#(public function getRuleDefinition\(\): RuleDefinition\s+\{\R)(.*?)(\R        \);\R    \})#s',
+                '#(public function getRuleDefinition\(\): RuleDefinition\s+\{\R)(.*?)(\R\s*\);\R\s*\})#s',
                 static function (array $match) use ($prefix): string {
                     $body = str_replace($prefix . '\\', '', $match[2]);
                     $body = Strings::replace($body, '#^\s*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m', '');

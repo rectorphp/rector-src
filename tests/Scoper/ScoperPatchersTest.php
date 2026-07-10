@@ -61,7 +61,7 @@ CODE_SAMPLE
                     'new RectorPrefix202607\SomeVendor\ValueObject()'
                 ),
             ]
-        );
+          );
     }
 
     public function refactor(): void
