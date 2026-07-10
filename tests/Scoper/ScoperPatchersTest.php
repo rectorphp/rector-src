@@ -134,7 +134,8 @@ final class SomeRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new CodeSample(<<<'CODE_SAMPLE'
+        return new RuleDefinition('Demo', [
+            new CodeSample(<<<'CODE_SAMPLE'
 <?php
 
 namespace RectorPrefix202607;
@@ -142,7 +143,8 @@ namespace RectorPrefix202607;
 RectorPrefix202607\SomeVendor\ValueObject::class;
 \class_alias('SomeClass', 'SomeClass', \false);
 CODE_SAMPLE
-        , '');
+            , ''),
+        ]);
     }
 }
 PHP
