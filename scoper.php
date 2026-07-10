@@ -119,7 +119,7 @@ return [
 
             return Strings::replace(
                 $content,
-                '#(public function getRuleDefinition\(\): RuleDefinition\s+\{\R)(.*?)(\R[^\r\n]*[\]\)]+;\R\s*\})#s',
+                '#(public function getRuleDefinition\(\): RuleDefinition\s+\{\R)(.*?)(\R[^\r\n]*[\]\)]{2,};\R\s*\})#s',
                 static function (array $ruleDefinitionMatch) use ($prefix): string {
                     $ruleDefinitionContent = Strings::replace(
                         $ruleDefinitionMatch[2],
