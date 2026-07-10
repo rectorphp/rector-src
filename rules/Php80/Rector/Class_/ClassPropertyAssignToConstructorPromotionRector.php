@@ -220,6 +220,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->shouldSkipWiderPropertyType($property, $param)) {
+                continue;
+            }
+
             $hasChanged = true;
 
             // remove property from class
@@ -478,5 +482,33 @@ CODE_SAMPLE
         $paramTypeWithoutNull = TypeCombinator::removeNull($paramType);
 
         return $this->typeComparator->areTypesEqual($type, $paramTypeWithoutNull);
+    }
+
+    /**
+     * Promotion shares one type. When processUnionType would copy the property type onto the
+     * param and that type is strictly wider (e.g. ?object vs object), skip — otherwise the
+     * constructor contract is loosened. Narrowing (object vs ?object) stays allowed.
+     * Interface vs implementation does not fire here: shouldUsePropertyTypeForPromotedParam
+     * is false when the non-null base types differ.
+     */
+    private function shouldSkipWiderPropertyType(Property $property, Param $param): bool
+    {
+        if (! $this->shouldUsePropertyTypeForPromotedParam($property, $param)) {
+            return false;
+        }
+
+        if (! $property->type instanceof Node || ! $param->type instanceof Node) {
+            return false;
+        }
+
+        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
+        $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+
+        if ($param->default instanceof Expr) {
+            $paramType = TypeCombinator::union($paramType, $this->getType($param->default));
+        }
+
+        return $this->typeComparator->isSubtype($paramType, $propertyType)
+            && ! $this->typeComparator->areTypesEqual($propertyType, $paramType);
     }
 }
