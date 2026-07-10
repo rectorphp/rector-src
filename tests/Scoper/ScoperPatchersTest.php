@@ -129,6 +129,10 @@ CODE_SAMPLE
             , ''),
         ]);
     }
+
+    public function refactor(): void
+    {
+    }
 }
 PHP
         );
