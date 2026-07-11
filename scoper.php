@@ -126,7 +126,11 @@ return [
                         "#(<<<'?(?<label>CODE_SAMPLE|SAMPLE)'?\\R)(.*?)(\\R\\s*\\k<label>)#s",
                         static function (array $codeSampleMatch) use ($prefix): string {
                             $body = str_replace($prefix . '\\', '', $codeSampleMatch[3]);
-                            $body = Strings::replace($body, '#^[ \t]*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m', '');
+                            $body = Strings::replace(
+                                $body,
+                                '#^[ \t]*namespace ' . preg_quote($prefix, '#') . ';\R\R?#m',
+                                ''
+                            );
                             $body = Strings::replace($body, '#\R[ \t]*\\\\class_alias\(.*?\);$#', '');
 
                             return $codeSampleMatch[1] . $body . $codeSampleMatch[4];

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Scoper;
 
-use Webmozart\Assert\Assert;
 use Closure;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
+use Webmozart\Assert\Assert;
 
 final class ScoperPatchersTest extends TestCase
 {
