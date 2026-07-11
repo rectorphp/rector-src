@@ -19,6 +19,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveMixedDocblockOverruledByNativeTypeRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveParentDelegatingConstructorRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveReturnTagIncompatibleWithNativeTypeRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
@@ -120,6 +121,7 @@ final class DeadCodeLevel
         RemoveUselessReturnTagRector::class,
         RemoveDuplicatedReturnSelfDocblockRector::class,
         RemoveMixedDocblockOverruledByNativeTypeRector::class,
+        RemoveReturnTagIncompatibleWithNativeTypeRector::class,
         RemoveUselessUnionReturnDocblockRector::class,
         RemoveUselessReadOnlyTagRector::class,
         RemoveNonExistingVarAnnotationRector::class,
