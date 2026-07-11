@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
@@ -35,6 +36,7 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\DocBlock\PropertyPromotionDocBlockMerger;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
@@ -98,6 +100,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ValueResolver $valueResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -220,7 +223,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->shouldSkipWiderPropertyType($property, $param)) {
+            if ($this->shouldSkipPropertyAssignedNull($node, $propertyName)) {
                 continue;
             }
 
@@ -484,31 +487,29 @@ CODE_SAMPLE
         return $this->typeComparator->areTypesEqual($type, $paramTypeWithoutNull);
     }
 
-    /**
-     * Promotion shares one type. When processUnionType would copy the property type onto the
-     * param and that type is strictly wider (e.g. ?object vs object), skip — otherwise the
-     * constructor contract is loosened. Narrowing (object vs ?object) stays allowed.
-     * Interface vs implementation does not fire here: shouldUsePropertyTypeForPromotedParam
-     * is false when the non-null base types differ.
-     */
-    private function shouldSkipWiderPropertyType(Property $property, Param $param): bool
+    private function shouldSkipPropertyAssignedNull(Class_ $class, string $propertyName): bool
     {
-        if (! $this->shouldUsePropertyTypeForPromotedParam($property, $param)) {
-            return false;
-        }
+        return (bool) $this->betterNodeFinder->findFirst(
+            $class,
+            function (Node $node) use ($propertyName): bool {
+                if (! $node instanceof Assign) {
+                    return false;
+                }
 
-        if (! $property->type instanceof Node || ! $param->type instanceof Node) {
-            return false;
-        }
+                if (! $node->var instanceof PropertyFetch) {
+                    return false;
+                }
 
-        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
-        $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+                if (! $this->isName($node->var->var, 'this')) {
+                    return false;
+                }
 
-        if ($param->default instanceof Expr) {
-            $paramType = TypeCombinator::union($paramType, $this->getType($param->default));
-        }
+                if (! $this->isName($node->var->name, $propertyName)) {
+                    return false;
+                }
 
-        return $this->typeComparator->isSubtype($paramType, $propertyType)
-            && ! $this->typeComparator->areTypesEqual($propertyType, $paramType);
+                return $this->valueResolver->isNull($node->expr);
+            }
+        );
     }
 }

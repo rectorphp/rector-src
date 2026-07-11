@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class SkipWiderPropertyType
 {
-    public private(set) ?object $entity = null;
+    private(set) ?object $entity;
 
     public function __construct(object $entity)
     {
