@@ -484,7 +484,20 @@ CODE_SAMPLE
         $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
         $paramTypeWithoutNull = TypeCombinator::removeNull($paramType);
 
-        return $this->typeComparator->areTypesEqual($type, $paramTypeWithoutNull);
+        if (! $this->typeComparator->areTypesEqual($type, $paramTypeWithoutNull)) {
+            return false;
+        }
+
+        if ($param->default instanceof Expr) {
+            $paramType = TypeCombinator::union($paramType, $this->getType($param->default));
+        }
+
+        if ($this->typeComparator->isSubtype($paramType, $propertyType)
+            && ! $this->typeComparator->areTypesEqual($propertyType, $paramType)) {
+            return false;
+        }
+
+        return true;
     }
 
     private function shouldSkipPropertyAssignedNull(Class_ $class, string $propertyName): bool
