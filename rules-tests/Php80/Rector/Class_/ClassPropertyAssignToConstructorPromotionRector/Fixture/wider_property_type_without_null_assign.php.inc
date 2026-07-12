@@ -21,7 +21,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class WiderPropertyTypeWithoutNullAssign
 {
-    public function __construct(private(set) ?object $entity)
+    public function __construct(private(set) object $entity)
     {
     }
 
