@@ -8,7 +8,7 @@ use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return ECSConfig::configure()
-    ->withPreparedSets(symplify: true, common: true, psr12: true)
+    ->withPreparedSets(common: true, psr12: true)
     ->withPaths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
