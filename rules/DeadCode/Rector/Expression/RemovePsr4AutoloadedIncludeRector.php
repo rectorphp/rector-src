@@ -9,8 +9,14 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Nop;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitor;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\FileSystem\JsonFileSystem;
@@ -164,6 +170,11 @@ CODE_SAMPLE
     {
         $stmts = $this->rectorParser->parseFile($filePath);
 
+        // the autoloader replays only type declarations, so top-level side effects, functions or constants keep the require load-bearing
+        if (! $this->containsOnlyTypeDeclarations($stmts)) {
+            return null;
+        }
+
         $classLikes = $this->betterNodeFinder->findInstanceOf($stmts, ClassLike::class);
 
         // require must define exactly one class, or removing it would drop the other definitions
@@ -173,6 +184,35 @@ CODE_SAMPLE
 
         // RichParser resolves names, so this is already the fully-qualified class name
         return $this->getName($classLikes[0]);
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function containsOnlyTypeDeclarations(array $stmts): bool
+    {
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof ClassLike || $stmt instanceof Use_ || $stmt instanceof GroupUse || $stmt instanceof Nop) {
+                continue;
+            }
+
+            // declare(strict_types=1); is fine, but the block form declare(...) { ... } executes its body
+            if ($stmt instanceof Declare_ && $stmt->stmts === null) {
+                continue;
+            }
+
+            if ($stmt instanceof Namespace_) {
+                if (! $this->containsOnlyTypeDeclarations($stmt->stmts)) {
+                    return false;
+                }
+
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
