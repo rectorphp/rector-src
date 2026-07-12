@@ -44,6 +44,13 @@ final class ConsoleApplication extends Application
     #[Override]
     public function doRun(InputInterface $input, OutputInterface $output): int
     {
+        // support "-v" as an alias for "--version", as "verbose" option is removed
+        if ($input->hasParameterOption('-v', true)) {
+            $output->writeln($this->getLongVersion());
+
+            return ExitCode::SUCCESS;
+        }
+
         $this->enableXdebug($input);
 
         $shouldFollowByNewline = false;
