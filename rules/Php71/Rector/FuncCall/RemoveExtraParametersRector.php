@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
+use PHPStan\Reflection\Annotations\AnnotationMethodReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
@@ -69,6 +70,11 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
         }
 
         if ($functionLikeReflection === null) {
+            return null;
+        }
+
+        // magic @method has no real parameters to compare against
+        if ($functionLikeReflection instanceof AnnotationMethodReflection) {
             return null;
         }
 
