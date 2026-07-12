@@ -7,7 +7,11 @@ namespace Rector\StaticTypeMapper\Mapper;
 use Nette\Utils\Strings;
 use PHPStan\Type\Accessory\AccessoryArrayListType;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
+use PHPStan\Type\Accessory\AccessoryLowercaseStringType;
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
+use PHPStan\Type\Accessory\AccessoryNonFalsyStringType;
+use PHPStan\Type\Accessory\AccessoryNumericStringType;
+use PHPStan\Type\Accessory\AccessoryUppercaseStringType;
 use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
@@ -26,6 +30,7 @@ use PHPStan\Type\ResourceType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 
 final class ScalarStringToTypeMapper
@@ -37,6 +42,10 @@ final class ScalarStringToTypeMapper
         StringType::class => ['string'],
         AccessoryNonEmptyStringType::class => ['non-empty-string'],
         AccessoryLiteralStringType::class => ['literal-string'],
+        AccessoryNumericStringType::class => ['numeric-string'],
+        AccessoryNonFalsyStringType::class => ['non-falsy-string', 'truthy-string'],
+        AccessoryLowercaseStringType::class => ['lowercase-string'],
+        AccessoryUppercaseStringType::class => ['uppercase-string'],
         NonEmptyArrayType::class => ['non-empty-array'],
         ClassStringType::class => ['class-string'],
         FloatType::class => ['float', 'real', 'double'],
@@ -68,6 +77,18 @@ final class ScalarStringToTypeMapper
 
         if ($loweredScalarName === 'negative-int') {
             return IntegerRangeType::createAllSmallerThan(0);
+        }
+
+        if ($loweredScalarName === 'non-negative-int') {
+            return IntegerRangeType::fromInterval(0, null);
+        }
+
+        if ($loweredScalarName === 'non-positive-int') {
+            return IntegerRangeType::fromInterval(null, 0);
+        }
+
+        if ($loweredScalarName === 'array-key') {
+            return new UnionType([new IntegerType(), new StringType()]);
         }
 
         foreach (self::SCALAR_NAME_BY_TYPE as $objectType => $scalarNames) {
