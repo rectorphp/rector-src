@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDoc\ResolvedPhpDocBlock;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -100,6 +101,11 @@ CODE_SAMPLE
 
         // keep any documented explanation
         if ($returnTagValueNode->description !== '') {
+            return null;
+        }
+
+        // keep generic return types, because they carry template info the native type cannot express
+        if ($returnTagValueNode->type instanceof GenericTypeNode) {
             return null;
         }
 
