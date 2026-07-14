@@ -116,13 +116,15 @@ CODE_SAMPLE
             return null;
         }
 
+        $nativeReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node->returnType);
         $classReflection = $scope->getClassReflection();
         if ($scope->isInClass() && $classReflection->isTrait()
-            && $returnTagValueNode->type instanceof ThisTypeNode) {
+            && $returnTagValueNode->type instanceof ThisTypeNode
+            && $nativeReturnType instanceof ObjectType
+        ) {
             return null;
         }
 
-        $nativeReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node->returnType);
         if ($this->isReturnTemplate($phpDocInfo, $returnTagValueNode)) {
             return null;
         }
