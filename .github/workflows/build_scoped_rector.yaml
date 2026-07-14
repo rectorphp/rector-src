@@ -8,6 +8,8 @@ on:
             - main
         tags:
             - '*'
+    # allows rector-* package repositories to rebuild after their pull request is merged
+    workflow_dispatch: null
 
 env:
     # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
@@ -108,6 +110,8 @@ jobs:
             -
                 name: "Get Git log"
                 id: git-log
+                # "before"/"after" exist only in the push event payload
+                if: github.event_name == 'push'
                 run: |
                     echo "log<<EOF" >> $GITHUB_OUTPUT
                     echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='https://github.com/rectorphp/rector-src/commit/%H %s')" >> $GITHUB_OUTPUT
@@ -122,7 +126,8 @@ jobs:
                     INPUT_LOG: ${{ steps.git-log.outputs.log }}
                 run: |
                     git add --all
-                    git commit -m "Updated Rector to commit ${{ github.event.after }}" -m "$INPUT_LOG"
+                    # a dispatched build can produce no change at all, e.g. after a test-only pull request
+                    git diff --staged --quiet || git commit -m "Updated Rector to commit ${{ github.sha }}" -m "$INPUT_LOG"
                     git push --quiet origin main
 
             # 8.B publish it to remote repository with tag
