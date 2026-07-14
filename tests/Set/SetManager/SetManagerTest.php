@@ -20,7 +20,7 @@ final class SetManagerTest extends AbstractLazyTestCase
         $setManager = $this->createSetManagerWithProjectDirectory(getcwd());
 
         $twigComposerTriggeredSet = $setManager->matchComposerTriggered(SetGroup::TWIG);
-        $this->assertCount(6, $twigComposerTriggeredSet);
+        $this->assertCount(7, $twigComposerTriggeredSet);
     }
 
     /**
