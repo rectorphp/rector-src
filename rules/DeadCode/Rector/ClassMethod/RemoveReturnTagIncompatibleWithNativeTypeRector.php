@@ -13,6 +13,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -118,7 +119,7 @@ CODE_SAMPLE
 
         $nativeReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node->returnType);
         $classReflection = $scope->getClassReflection();
-        if ($scope->isInClass() && $classReflection->isTrait()
+        if ($classReflection instanceof ClassReflection && $classReflection->isTrait()
             && $returnTagValueNode->type instanceof ThisTypeNode
             && $nativeReturnType instanceof ObjectType
         ) {
