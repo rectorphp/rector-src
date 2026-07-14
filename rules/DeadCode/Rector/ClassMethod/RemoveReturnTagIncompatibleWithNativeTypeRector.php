@@ -12,10 +12,12 @@ use PHPStan\PhpDoc\ResolvedPhpDocBlock;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -109,7 +111,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isClassTypeAlias($node, $returnTagValueNode)) {
+        $scope = ScopeFetcher::fetch($node);
+        if ($this->isClassTypeAlias($scope, $node, $returnTagValueNode)) {
+            return null;
+        }
+
+        $classReflection = $scope->getClassReflection();
+        if ($scope->isInClass() && $classReflection->isTrait()
+            && $returnTagValueNode->type instanceof ThisTypeNode) {
             return null;
         }
 
@@ -134,10 +143,9 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isClassTypeAlias(Node $node, ReturnTagValueNode $returnTagValueNode): bool
+    private function isClassTypeAlias(Scope $scope, Node $node, ReturnTagValueNode $returnTagValueNode): bool
     {
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope || ! $scope->isInClass()) {
+        if (! $scope->isInClass()) {
             return false;
         }
 
