@@ -13,10 +13,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
+use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -112,7 +112,7 @@ CODE_SAMPLE
         }
 
         $scope = ScopeFetcher::fetch($node);
-        if ($this->isClassTypeAlias($scope, $node, $returnTagValueNode)) {
+        if ($this->isClassTypeAlias($scope, $returnTagValueNode)) {
             return null;
         }
 
@@ -145,7 +145,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isClassTypeAlias(Scope $scope, Node $node, ReturnTagValueNode $returnTagValueNode): bool
+    private function isClassTypeAlias(Scope $scope, ReturnTagValueNode $returnTagValueNode): bool
     {
         if (! $scope->isInClass()) {
             return false;
