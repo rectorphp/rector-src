@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
@@ -35,6 +36,7 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\DocBlock\PropertyPromotionDocBlockMerger;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
@@ -98,6 +100,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ValueResolver $valueResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -217,6 +220,10 @@ CODE_SAMPLE
             }
 
             if ($this->shouldSkipNarrowingVarDoc($property, $param, $constructorPhpDocInfo, $paramName)) {
+                continue;
+            }
+
+            if ($this->shouldSkipPropertyAssignedNull($node, $propertyName)) {
                 continue;
             }
 
@@ -477,6 +484,45 @@ CODE_SAMPLE
         $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
         $paramTypeWithoutNull = TypeCombinator::removeNull($paramType);
 
-        return $this->typeComparator->areTypesEqual($type, $paramTypeWithoutNull);
+        if (! $this->typeComparator->areTypesEqual($type, $paramTypeWithoutNull)) {
+            return false;
+        }
+
+        if ($param->default instanceof Expr) {
+            $paramType = TypeCombinator::union($paramType, $this->getType($param->default));
+        }
+
+        if ($this->typeComparator->isSubtype($paramType, $propertyType)
+            && ! $this->typeComparator->areTypesEqual($propertyType, $paramType)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function shouldSkipPropertyAssignedNull(Class_ $class, string $propertyName): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst(
+            $class,
+            function (Node $node) use ($propertyName): bool {
+                if (! $node instanceof Assign) {
+                    return false;
+                }
+
+                if (! $node->var instanceof PropertyFetch) {
+                    return false;
+                }
+
+                if (! $this->isName($node->var->var, 'this')) {
+                    return false;
+                }
+
+                if (! $this->isName($node->var->name, $propertyName)) {
+                    return false;
+                }
+
+                return $this->valueResolver->isNull($node->expr);
+            }
+        );
     }
 }
