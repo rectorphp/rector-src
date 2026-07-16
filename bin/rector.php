@@ -6,10 +6,12 @@ use Nette\Utils\Json;
 use Rector\Bootstrap\AutoloadFileParameterResolver;
 use Rector\Bootstrap\RectorConfigsResolver;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
+use Rector\Config\RectorConfig;
 use Rector\Configuration\Option;
 use Rector\Console\Style\SymfonyStyleFactory;
 use Rector\DependencyInjection\LazyContainerFactory;
 use Rector\DependencyInjection\RectorContainerFactory;
+use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -72,7 +74,7 @@ final class AutoloadIncluder
         $this->loadIfExistsAndNotLoadedYet('vendor/autoload.php');
     }
 
-    public function autoloadFromCommandLine(\Rector\Config\RectorConfig $rectorConfig): void
+    public function autoloadFromCommandLine(RectorConfig $rectorConfig): void
     {
         $cliArgs = $_SERVER['argv'];
 
@@ -96,7 +98,7 @@ final class AutoloadIncluder
         $this->loadIfExistsAndNotLoadedYet($fileToAutoload, $rectorConfig);
     }
 
-    public function loadIfExistsAndNotLoadedYet(string $filePath, \Rector\Config\RectorConfig $rectorConfig): void
+    public function loadIfExistsAndNotLoadedYet(string $filePath, RectorConfig $rectorConfig): void
     {
         if (! file_exists($filePath)) {
             return;
@@ -111,7 +113,7 @@ final class AutoloadIncluder
         $this->alreadyLoadedAutoloadFiles[] = $realPath;
 
         // mimic PHPStan bootstrap file inclusion (bootstrap files have access to the global $container variable)
-        $container = $rectorConfig->get(\Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory::class)->getContainer();
+        $container = $rectorConfig->get(PHPStanServicesFactory::class)->getContainer();
         (static function (string $file) use ($container): void {
             require_once $file;
         })($filePath);
