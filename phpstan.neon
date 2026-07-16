@@ -379,6 +379,13 @@ parameters:
             identifier: offsetAccess.nonArray
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
 
+        # variable is expected in included/required file
+        -
+            identifier: closure.unusedUse
+            message: '#Anonymous function has an unused use \$container#'
+            paths:
+                - bin/rector.php
+
         # false positive
         -
             message: '#Method (.*?)refactor\(\) (never returns|should return) (.*?)#'
