@@ -72,7 +72,7 @@ final class AutoloadIncluder
         $this->loadIfExistsAndNotLoadedYet('vendor/autoload.php');
     }
 
-    public function autoloadFromCommandLine(): void
+    public function autoloadFromCommandLine(\Rector\Config\RectorConfig $rectorConfig): void
     {
         $cliArgs = $_SERVER['argv'];
 
@@ -93,10 +93,10 @@ final class AutoloadIncluder
             return;
         }
 
-        $this->loadIfExistsAndNotLoadedYet($fileToAutoload);
+        $this->loadIfExistsAndNotLoadedYet($fileToAutoload, $rectorConfig);
     }
 
-    public function loadIfExistsAndNotLoadedYet(string $filePath): void
+    public function loadIfExistsAndNotLoadedYet(string $filePath, \Rector\Config\RectorConfig $rectorConfig): void
     {
         if (! file_exists($filePath)) {
             return;
@@ -110,7 +110,11 @@ final class AutoloadIncluder
         $realPath = realpath($filePath);
         $this->alreadyLoadedAutoloadFiles[] = $realPath;
 
-        require_once $filePath;
+        // mimic PHPStan bootstrap file inclusion (bootstrap files have access to the global $container variable)
+        $container = $rectorConfig->get(\Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory::class)->getContainer();
+        (static function (string $file) use ($container): void {
+            require_once $file;
+        })($filePath);
     }
 }
 
@@ -126,7 +130,6 @@ if (file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '
 $autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
 $autoloadIncluder->autoloadProjectAutoloaderFile();
 $autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
-$autoloadIncluder->autoloadFromCommandLine();
 
 AutoloadFileParameterResolver::resolveFromArgv($_SERVER['argv']);
 
@@ -155,6 +158,8 @@ try {
 
     exit(Command::FAILURE);
 }
+
+$autoloadIncluder->autoloadFromCommandLine($container);
 
 /** @var Application $application */
 $application = $container->get(Application::class);

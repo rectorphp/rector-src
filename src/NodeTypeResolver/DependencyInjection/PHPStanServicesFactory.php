@@ -145,6 +145,14 @@ MESSAGE_ERROR;
     }
 
     /**
+     * @api
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    /**
      * @return string[]
      */
     private function resolveAdditionalConfigFiles(): array
