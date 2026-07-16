@@ -7,6 +7,7 @@ namespace Rector\DependencyInjection;
 use Rector\Autoloading\BootstrapFilesIncluder;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Config\RectorConfig;
+use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\ValueObject\Bootstrap\BootstrapConfigs;
 
 final class RectorContainerFactory
@@ -25,7 +26,7 @@ final class RectorContainerFactory
 
         /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
         $bootstrapFilesIncluder = $rectorConfig->get(BootstrapFilesIncluder::class);
-        $bootstrapFilesIncluder->includeBootstrapFiles();
+        $bootstrapFilesIncluder->includeBootstrapFiles($rectorConfig->get(PHPStanServicesFactory::class)->getContainer());
 
         return $rectorConfig;
     }
