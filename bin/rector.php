@@ -74,7 +74,7 @@ final class AutoloadIncluder
         $this->loadIfExistsAndNotLoadedYet('vendor/autoload.php');
     }
 
-    public function autoloadFromCommandLine(?RectorConfig $rectorConfig = null): void
+    public function autoloadFromCommandLine(RectorConfig $rectorConfig): void
     {
         $cliArgs = $_SERVER['argv'];
 
