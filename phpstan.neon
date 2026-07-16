@@ -384,7 +384,7 @@ parameters:
             identifier: closure.unusedUse
             message: '#Anonymous function has an unused use \$container#'
             paths:
-                - bin/rector.php
+                - src/Autoloading/BootstrapFilesIncluder.php
 
         # false positive
         -
