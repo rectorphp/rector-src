@@ -74,7 +74,7 @@ final class AutoloadIncluder
         $this->loadIfExistsAndNotLoadedYet('vendor/autoload.php');
     }
 
-    public function autoloadFromCommandLine(RectorConfig $rectorConfig): void
+    public function autoloadFromCommandLine(?RectorConfig $rectorConfig = null): void
     {
         $cliArgs = $_SERVER['argv'];
 
@@ -98,7 +98,7 @@ final class AutoloadIncluder
         $this->loadIfExistsAndNotLoadedYet($fileToAutoload, $rectorConfig);
     }
 
-    public function loadIfExistsAndNotLoadedYet(string $filePath, RectorConfig $rectorConfig): void
+    public function loadIfExistsAndNotLoadedYet(string $filePath, ?RectorConfig $rectorConfig = null): void
     {
         if (! file_exists($filePath)) {
             return;
@@ -112,8 +112,11 @@ final class AutoloadIncluder
         $realPath = realpath($filePath);
         $this->alreadyLoadedAutoloadFiles[] = $realPath;
 
+        $container = null;
+        if ($rectorConfig !== null) {
+            $container = $rectorConfig->get(PHPStanServicesFactory::class)->getContainer();
+        }
         // mimic PHPStan bootstrap file inclusion (bootstrap files have access to the global $container variable)
-        $container = $rectorConfig->get(PHPStanServicesFactory::class)->getContainer();
         (static function (string $file) use ($container): void {
             require_once $file;
         })($filePath);
