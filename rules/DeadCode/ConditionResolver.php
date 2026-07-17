@@ -127,8 +127,17 @@ final readonly class ConditionResolver
             return $this->phpVersionProvider->provide();
         }
 
+        // version_compare() juggles the version to string first, e.g. 7.3 to "7.3"
+        if (is_float($version)) {
+            $version = (string) $version;
+        }
+
         if (is_string($version)) {
             return PhpVersionFactory::createIntVersion($version);
+        }
+
+        if (! is_int($version)) {
+            return null;
         }
 
         return $version;
