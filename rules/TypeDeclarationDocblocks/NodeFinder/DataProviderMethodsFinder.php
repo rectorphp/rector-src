@@ -15,6 +15,11 @@ use Rector\TypeDeclarationDocblocks\Enum\TestClassName;
 
 final readonly class DataProviderMethodsFinder
 {
+    private const array DATA_PROVIDER_ATTRIBUTES = [
+        TestClassName::PHPUNIT_DATA_PROVIDER,
+        TestClassName::CODECEPTION_DATA_PROVIDER,
+    ];
+
     public function __construct(
         private PhpDocInfoFactory $phpDocInfoFactory,
         private NodeNameResolver $nodeNameResolver
@@ -62,7 +67,7 @@ final readonly class DataProviderMethodsFinder
 
         foreach ($classMethod->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attribute) {
-                if (! $this->nodeNameResolver->isName($attribute->name, TestClassName::DATA_PROVIDER)) {
+                if (! $this->nodeNameResolver->isNames($attribute->name, self::DATA_PROVIDER_ATTRIBUTES)) {
                     continue;
                 }
 

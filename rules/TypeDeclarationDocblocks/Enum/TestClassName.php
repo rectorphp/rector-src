@@ -6,5 +6,7 @@ namespace Rector\TypeDeclarationDocblocks\Enum;
 
 final class TestClassName
 {
-    public const string DATA_PROVIDER = 'PHPUnit\Framework\Attributes\DataProvider';
+    public const string PHPUNIT_DATA_PROVIDER = 'PHPUnit\Framework\Attributes\DataProvider';
+
+    public const string CODECEPTION_DATA_PROVIDER = 'Codeception\Attribute\DataProvider';
 }
