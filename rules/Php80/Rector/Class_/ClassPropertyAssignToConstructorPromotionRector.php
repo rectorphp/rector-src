@@ -492,7 +492,7 @@ CODE_SAMPLE
             $paramType = TypeCombinator::union($paramType, $this->getType($param->default));
         }
 
-        if (!$this->typeComparator->isSubtype($paramType, $propertyType)) {
+        if (! $this->typeComparator->isSubtype($paramType, $propertyType)) {
             return true;
         }
 
