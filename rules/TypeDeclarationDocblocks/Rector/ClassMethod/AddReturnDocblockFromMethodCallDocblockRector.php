@@ -7,16 +7,17 @@ namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Doctrine\Enum\DoctrineClass;
-use Rector\PhpParser\AstResolver;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -31,7 +32,7 @@ final class AddReturnDocblockFromMethodCallDocblockRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReturnNodeFinder $returnNodeFinder,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly AstResolver $astResolver,
+        private readonly ReflectionResolver $reflectionResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
@@ -130,31 +131,25 @@ CODE_SAMPLE
             return null;
         }
 
-        $calledClassMethod = $this->astResolver->resolveClassMethodFromCall($returnedMethodCall);
-        if (! $calledClassMethod instanceof ClassMethod) {
+        $calledMethodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($returnedMethodCall);
+        if (! $calledMethodReflection instanceof MethodReflection) {
             return null;
         }
 
-        if (! $calledClassMethod->returnType instanceof Identifier) {
+        $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors($calledMethodReflection->getVariants());
+
+        // native return type must be a plain array
+        if (! $parametersAcceptor->getNativeReturnType()->isArray()->yes()) {
             return null;
         }
 
-        if (! $this->isName($calledClassMethod->returnType, 'array')) {
+        // docblock must carry a more specific array value type, e.g. SomeEntity[]
+        $calledReturnType = $parametersAcceptor->getReturnType();
+        if ($calledReturnType->getIterableValueType() instanceof MixedType) {
             return null;
         }
 
-        $calledClassMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($calledClassMethod);
-
-        $calledReturnTagValue = $calledClassMethodPhpDocInfo->getReturnTagValue();
-        if (! $calledReturnTagValue instanceof ReturnTagValueNode) {
-            return null;
-        }
-
-        if (! $this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($calledReturnTagValue)) {
-            return null;
-        }
-
-        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $calledClassMethodPhpDocInfo->getReturnType());
+        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $calledReturnType);
 
         return $node;
     }
