@@ -136,15 +136,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors($calledMethodReflection->getVariants());
+        $extendedParametersAcceptor = ParametersAcceptorSelector::combineAcceptors($calledMethodReflection->getVariants());
 
         // native return type must be a plain array
-        if (! $parametersAcceptor->getNativeReturnType()->isArray()->yes()) {
+        if (! $extendedParametersAcceptor->getNativeReturnType()->isArray()->yes()) {
             return null;
         }
 
         // docblock must carry a more specific array value type, e.g. SomeEntity[]
-        $calledReturnType = $parametersAcceptor->getReturnType();
+        $calledReturnType = $extendedParametersAcceptor->getReturnType();
         if ($calledReturnType->getIterableValueType() instanceof MixedType) {
             return null;
         }
