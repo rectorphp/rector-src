@@ -28,8 +28,6 @@ use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRe
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
-use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
-use Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
@@ -56,14 +54,7 @@ use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
-use Rector\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector;
-use Rector\CodeQuality\Rector\If_\CombineIfRector;
-use Rector\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector;
 use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector;
-use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
-use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
-use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
-use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
@@ -85,7 +76,6 @@ use Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector;
 use Rector\CodeQuality\Rector\Ternary\TernaryImplodeToImplodeRector;
 use Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector;
-use Rector\CodingStyle\Rector\If_\AlternativeIfToBracketRector;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
@@ -138,13 +128,8 @@ final class CodeQualityLevel
         NegatedAndsToPositiveOrsRector::class,
         SimplifyTautologyTernaryRector::class,
         SingleInArrayToCompareRector::class,
-        SimplifyIfElseToTernaryRector::class,
         TernaryImplodeToImplodeRector::class,
         ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
-        ArrayExplicitBoolCompareRector::class,
-        ObjectExplicitBoolCompareRector::class,
-        ExplicitBoolCompareRector::class,
-        CombineIfRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
         SimplifyBoolIdenticalTrueRector::class,
         SimplifyRegexPatternRector::class,
@@ -156,7 +141,6 @@ final class CodeQualityLevel
         StrlenZeroToIdenticalEmptyStringRector::class,
         ThrowWithPreviousExceptionRector::class,
         RemoveSoleValueSprintfRector::class,
-        ShortenElseIfRector::class,
         ExplicitReturnNullRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,
         ArrayKeyExistsTernaryThenValueToCoalescingRector::class,
@@ -164,7 +148,6 @@ final class CodeQualityLevel
         ChangeArrayPushToArrayAssignRector::class,
         ForRepeatedCountToOwnVariableRector::class,
         ForeachItemsAssignToEmptyArrayToAssignRector::class,
-        InlineIfToExplicitIfRector::class,
         UnusedForeachValueToArrayKeysRector::class,
         CommonNotEqualRector::class,
         SetTypeToCastRector::class,
@@ -182,7 +165,6 @@ final class CodeQualityLevel
         FlipTypeControlToUseExclusiveTypeRector::class,
         InlineArrayReturnAssignRector::class,
         InlineIsAInstanceOfRector::class,
-        TernaryFalseExpressionToIfRector::class,
         InlineConstructorDefaultToPropertyRector::class,
         TernaryEmptyArrayArrayDimFetchToCoalesceRector::class,
         OptionalParametersAfterRequiredRector::class,
@@ -191,8 +173,6 @@ final class CodeQualityLevel
         DisallowedEmptyRuleFixerRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
         NumberCompareToMaxFuncCallRector::class,
-        AlternativeIfToBracketRector::class,
-        CompleteMissingIfElseBracketRector::class,
         RemoveUselessIsObjectCheckRector::class,
         ConvertStaticToSelfRector::class,
         SortCallLikeNamedArgsRector::class,
