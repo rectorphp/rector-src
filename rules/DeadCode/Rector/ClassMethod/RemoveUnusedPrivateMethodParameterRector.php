@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -17,7 +20,10 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeCollector\UnusedParameterResolver;
+use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
+use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -33,6 +39,7 @@ final class RemoveUnusedPrivateMethodParameterRector extends AbstractRector
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
     ) {
     }
 
@@ -91,6 +98,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            // method used via reflection, eg: new ReflectionMethod(...[$this, 'method'])
+            if ($this->isUsedByReflectionMethod($node, (string) $this->getName($classMethod))) {
+                continue;
+            }
+
             // early remove callers
             if (! $this->removeCallerArgs($node, $classMethod, $unusedParameters)) {
                 continue;
@@ -118,6 +130,45 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isUsedByReflectionMethod(Class_ $class, string $methodName): bool
+    {
+        $scope = ScopeFetcher::fetch($class);
+
+        $reflectionMethodUsage = $this->betterNodeFinder->findFirst(
+            $class,
+            function (Node $subNode) use ($class, $scope, $methodName): bool {
+                if (! $subNode instanceof New_ || ! $subNode->class instanceof Name) {
+                    return false;
+                }
+
+                if (! $this->isName($subNode->class, 'ReflectionMethod')) {
+                    return false;
+                }
+
+                if ($subNode->isFirstClassCallable()) {
+                    return false;
+                }
+
+                foreach ($subNode->getArgs() as $arg) {
+                    if (! $arg->value instanceof Array_) {
+                        continue;
+                    }
+
+                    $arrayCallable = $this->arrayCallableMethodMatcher->match($arg->value, $scope, $methodName);
+                    if ($arrayCallable instanceof ArrayCallable
+                        && $this->isName($class, $arrayCallable->getClass())
+                        && strcasecmp($arrayCallable->getMethod(), $methodName) === 0) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        );
+
+        return $reflectionMethodUsage instanceof Node;
     }
 
     /**
