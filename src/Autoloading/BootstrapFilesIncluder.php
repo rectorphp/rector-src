@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Autoloading;
 
+use PHPStan\DependencyInjection\Container;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
@@ -11,7 +12,6 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 use Webmozart\Assert\Assert;
-use PHPStan\DependencyInjection\Container;
 
 /**
  * @see \Rector\Tests\Autoloading\BootstrapFilesIncluderTest

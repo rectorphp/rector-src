@@ -22,6 +22,7 @@ return ECSConfig::configure()
     ])
     ->withSkip([
         '*/Source/*',
+        '*/SourcePhp81/*',
         '*/Fixture/*',
         '*/Expected/*',
 
