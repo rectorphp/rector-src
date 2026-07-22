@@ -21,6 +21,15 @@ use Rector\Reflection\ClassReflectionAnalyzer;
 
 final readonly class ParentPropertyLookupGuard
 {
+    /**
+     * Symfony Console Command reserved static properties, read by the parent class via reflection
+     * even when not declared on the parent class itself
+     * @see https://github.com/symfony/console/blob/7.1/Command/Command.php
+     *
+     * @var string[]
+     */
+    private const SYMFONY_COMMAND_RESERVED_PROPERTY_NAMES = ['defaultName', 'defaultDescription'];
+
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private NodeNameResolver $nodeNameResolver,
@@ -49,6 +58,10 @@ final readonly class ParentPropertyLookupGuard
             return false;
         }
 
+        if ($this->isSymfonyCommandReservedProperty($classReflection, $propertyName)) {
+            return false;
+        }
+
         $parentClassName = $this->classReflectionAnalyzer->resolveParentClassName($classReflection);
         if ($parentClassName === null) {
             return true;
@@ -63,6 +76,15 @@ final readonly class ParentPropertyLookupGuard
         }
 
         return $this->isGuardedByParents($parentClassReflections, $propertyName, $className);
+    }
+
+    private function isSymfonyCommandReservedProperty(ClassReflection $classReflection, string $propertyName): bool
+    {
+        if (! in_array($propertyName, self::SYMFONY_COMMAND_RESERVED_PROPERTY_NAMES, true)) {
+            return false;
+        }
+
+        return $classReflection->is('Symfony\Component\Console\Command\Command');
     }
 
     private function isFoundInParentClassMethods(
