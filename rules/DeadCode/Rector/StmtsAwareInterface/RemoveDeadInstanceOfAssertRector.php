@@ -148,6 +148,7 @@ CODE_SAMPLE
         if ($classType->equals($exprType)) {
             return true;
         }
+
         return $classType->isSuperTypeOf($exprType)
             ->yes();
     }
