@@ -28,7 +28,7 @@ final readonly class ParentPropertyLookupGuard
      *
      * @var string[]
      */
-    private const SYMFONY_COMMAND_RESERVED_PROPERTY_NAMES = ['defaultName', 'defaultDescription'];
+    private const array SYMFONY_COMMAND_RESERVED_PROPERTY_NAMES = ['defaultName', 'defaultDescription'];
 
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
