@@ -791,6 +791,7 @@ final class RectorConfigBuilder
         bool $naming = false,
         bool $namedArgs = false,
         bool $instanceOf = false,
+        bool $if = false,
         bool $earlyReturn = false,
         /** @deprecated */
         bool $strictBooleans = false,
@@ -822,6 +823,7 @@ final class RectorConfigBuilder
             SetList::NAMING => $naming,
             SetList::NAMED_ARGS => $namedArgs,
             SetList::INSTANCEOF => $instanceOf,
+            SetList::IF => $if,
             SetList::EARLY_RETURN => $earlyReturn,
             SetList::CARBON => $carbon,
             SetList::RECTOR_PRESET => $rectorPreset,

@@ -80,6 +80,8 @@ final class SetList
 
     public const string INSTANCEOF = __DIR__ . '/../../../config/set/instanceof.php';
 
+    public const string IF = __DIR__ . '/../../../config/set/if.php';
+
     public const string CARBON = __DIR__ . '/../../../config/set/datetime-to-carbon.php';
 
     public const string BEHAT_ANNOTATIONS_TO_ATTRIBUTES = __DIR__ . '/../../../config/set/behat-annotations-to-attributes.php';
