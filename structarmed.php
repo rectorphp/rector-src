@@ -26,7 +26,7 @@ return Architecture::define()
         ],
         'source.must_be_final' => [
             '*/Source/*',
-            '*/Source/*',
+            '*/Fixture*',
         ],
     ])
     ->withPreset(Preset::PSR4());
