@@ -16,6 +16,9 @@ return Architecture::define()
             // no namespace on purpose
             __DIR__ . '/rules-tests/Php70/Rector/ClassMethod/Php4ConstructorRector/Source/ParentClass.php',
 
+            // multiple classes in one file on purpose, to test the skip
+            __DIR__ . '/rules-tests/DeadCode/Rector/Expression/RemovePsr4AutoloadedIncludeRector/Source/src/TwoClasses.php',
+
             // simulate under phpstan.phar
             __DIR__ . '/rules-tests/Php71/Rector/FuncCall/RemoveExtraParametersRector/Source/phpstan.phar',
         ],
