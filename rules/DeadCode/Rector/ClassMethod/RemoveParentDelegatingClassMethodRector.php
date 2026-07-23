@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
+use PHPStan\Reflection\ExtendedParameterReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Enum\ObjectReference;
 use Rector\PHPStan\ScopeFetcher;
@@ -116,7 +117,15 @@ CODE_SAMPLE
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
         return $phpDocInfo->hasByNames(
-            ['@param', '@phpstan-param', '@psalm-param', '@return', '@phpstan-return', '@psalm-return']
+            [
+                '@param',
+                '@phpstan-param',
+                '@psalm-param',
+                '@return',
+                '@phpstan-return',
+                '@psalm-return',
+                '@deprecated',
+            ]
         );
     }
 
@@ -143,7 +152,14 @@ CODE_SAMPLE
             return null;
         }
 
-        return $parentClassReflection->getNativeMethod($methodName);
+        $extendedMethodReflection = $parentClassReflection->getNativeMethod($methodName);
+
+        // a private parent method is not visible in the child scope
+        if ($extendedMethodReflection->isPrivate()) {
+            return null;
+        }
+
+        return $extendedMethodReflection;
     }
 
     /**
@@ -233,7 +249,7 @@ CODE_SAMPLE
 
         foreach ($classMethod->getParams() as $position => $param) {
             $parameterReflection = $parameterReflections[$position] ?? null;
-            if ($parameterReflection === null) {
+            if (! $parameterReflection instanceof ExtendedParameterReflection) {
                 return false;
             }
 
@@ -242,8 +258,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            // compare native types only, as the child method may add a native type
+            // the parent only has in a docblock - removing it would drop a runtime check
             $parentParameterType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                $parameterReflection->getType(),
+                $parameterReflection->getNativeType(),
                 TypeKind::PARAM
             );
 
@@ -258,7 +276,7 @@ CODE_SAMPLE
         }
 
         $parentReturnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-            $extendedParametersAcceptor->getReturnType(),
+            $extendedParametersAcceptor->getNativeReturnType(),
             TypeKind::RETURN
         );
 
