@@ -54,13 +54,13 @@ final readonly class ParameterTypeFromDataProviderResolver
             return $this->resolveReturnStaticArrayTypeByParameterPosition($returns, $parameterPosition);
         }
 
-        $yieldFroms = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
+        $yieldFromNodes = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
             $dataProviderClassMethod,
             YieldFrom::class
         );
 
         // "yield from" data sets are not resolved here → the resolved type would be incomplete
-        if ($yieldFroms !== []) {
+        if ($yieldFromNodes !== []) {
             return new MixedType();
         }
 
