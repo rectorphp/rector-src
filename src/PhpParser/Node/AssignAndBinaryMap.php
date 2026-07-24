@@ -81,7 +81,7 @@ final class AssignAndBinaryMap
     /**
      * @var array<class-string<BinaryOp>, class-string<AssignOp>>
      */
-    private array $binaryOpToAssignClasses = [];
+    private array $binaryOpToAssignClasses;
 
     public function __construct(
         private readonly NodeTypeResolver $nodeTypeResolver

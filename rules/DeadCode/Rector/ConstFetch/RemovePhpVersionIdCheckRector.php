@@ -28,7 +28,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector
     /**
      * @var PhpVersion::*|null
      */
-    private int|null $phpVersion = null;
+    private int|null $phpVersion;
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
