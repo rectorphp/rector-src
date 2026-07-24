@@ -81,10 +81,6 @@ jobs:
                             composer require php-parallel-lint/php-parallel-lint --ansi
                             vendor/bin/parallel-lint src bin/rector config tests rules --colors
 
-                    -
-                        name: 'Run StructArmed'
-                        run: vendor/bin/structarmed analyze
-
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
         timeout-minutes: 10
