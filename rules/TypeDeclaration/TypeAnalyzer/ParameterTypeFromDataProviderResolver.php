@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Yield_;
+use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -51,6 +54,16 @@ final readonly class ParameterTypeFromDataProviderResolver
             return $this->resolveReturnStaticArrayTypeByParameterPosition($returns, $parameterPosition);
         }
 
+        $yieldFromNodes = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
+            $dataProviderClassMethod,
+            YieldFrom::class
+        );
+
+        // "yield from" data sets are not resolved here → the resolved type would be incomplete
+        if ($yieldFromNodes !== []) {
+            return new MixedType();
+        }
+
         /** @var Yield_[] $yields */
         $yields = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($dataProviderClassMethod, Yield_::class);
         return $this->resolveYieldStaticArrayTypeByParameterPosition($yields, $parameterPosition);
@@ -83,22 +96,25 @@ final readonly class ParameterTypeFromDataProviderResolver
         $paramOnPositionTypes = [];
 
         foreach ($yields as $yield) {
-            if (! $yield->value instanceof Array_) {
-                continue;
+            if (! $yield->value instanceof Expr) {
+                return new MixedType();
             }
 
-            $type = $this->getTypeFromClassMethodYield($yield->value);
+            $constantArrayTypes = $this->resolveYieldedConstantArrayTypes($yield->value);
 
-            if (! $type instanceof ConstantArrayType) {
-                return $type;
+            // one of the yielded data sets cannot be resolved → the resolved type would be incomplete
+            if ($constantArrayTypes === []) {
+                return new MixedType();
             }
 
-            foreach ($type->getValueTypes() as $position => $valueType) {
-                if ($position !== $parameterPosition) {
-                    continue;
+            foreach ($constantArrayTypes as $constantArrayType) {
+                foreach ($constantArrayType->getValueTypes() as $position => $valueType) {
+                    if ($position !== $parameterPosition) {
+                        continue;
+                    }
+
+                    $paramOnPositionTypes[] = $valueType;
                 }
-
-                $paramOnPositionTypes[] = $valueType;
             }
         }
 
@@ -109,16 +125,32 @@ final readonly class ParameterTypeFromDataProviderResolver
         return $this->typeFactory->createMixedPassedOrUnionType($paramOnPositionTypes);
     }
 
-    private function getTypeFromClassMethodYield(Array_ $classMethodYieldArray): MixedType|ConstantArrayType
+    /**
+     * @return ConstantArrayType[]
+     */
+    private function resolveYieldedConstantArrayTypes(Expr $expr): array
     {
-        $arrayType = $this->nodeTypeResolver->getType($classMethodYieldArray);
+        $yieldedType = $this->nodeTypeResolver->getType($expr);
 
-        // impossible to resolve
-        if (! $arrayType instanceof ConstantArrayType) {
-            return new MixedType();
+        if ($yieldedType instanceof ConstantArrayType) {
+            return [$yieldedType];
         }
 
-        return $arrayType;
+        if (! $yieldedType instanceof UnionType) {
+            return [];
+        }
+
+        $constantArrayTypes = [];
+        foreach ($yieldedType->getTypes() as $unionedType) {
+            // impossible to resolve
+            if (! $unionedType instanceof ConstantArrayType) {
+                return [];
+            }
+
+            $constantArrayTypes[] = $unionedType;
+        }
+
+        return $constantArrayTypes;
     }
 
     /**
