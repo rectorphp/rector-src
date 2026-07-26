@@ -36,7 +36,7 @@ final class PathInfoReturn
      *
      * @psalm-assert-if-true =non-empty-string $filename
      */
-    public static function extension($filename): array|string
+    public static function extension($filename): string|array
     {
         return pathinfo($filename, PATHINFO_EXTENSION);
     }

@@ -48,7 +48,7 @@ class Fixture
      */
     public function runTwo(array $array)
     {
-        return array_reduce($array, function (int|string $carry, int|string $value) {
+        return array_reduce($array, function (int|string $carry, string|int $value) {
             return $carry . $value;
         }, 100);
     }

@@ -89,7 +89,7 @@ class Fixture
      */
     public function runThree(array $array, array $arrayTwo)
     {
-        return array_map(function (string $value, \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar|\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo $second) {
+        return array_map(function (string $value, \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo|\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar $second) {
             return get_class($second) . $value;
         }, $array, $arrayTwo);
     }

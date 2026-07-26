@@ -28,7 +28,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 final class CoverImplicitKey
 {
     /**
-     * @return array<int, array<string, int|string>>
+     * @return array<int, array<string, string|int>>
      */
     private static function getExpectedAllOwners(): array
     {
