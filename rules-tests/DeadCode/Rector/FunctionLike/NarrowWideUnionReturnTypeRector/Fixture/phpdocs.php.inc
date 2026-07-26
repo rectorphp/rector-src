@@ -71,7 +71,7 @@ use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\So
 
 final class PhpDocs
 {
-    /** @return int|string */
+    /** @return string|int */
     public function foo(): string|int
     {
         if (rand(0, 1)) {
