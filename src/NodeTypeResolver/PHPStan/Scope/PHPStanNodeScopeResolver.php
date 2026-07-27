@@ -87,7 +87,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Fiber\FiberScope;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
-use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Analyser\UndefinedVariableException;
 use PHPStan\Node\FunctionCallableNode;
@@ -642,38 +641,8 @@ final readonly class PHPStanNodeScopeResolver
             return;
         }
 
-        $executionEndScope = null;
-
-        foreach ($methodReturnStatementsNode->getExecutionEnds() as $executionEndNode) {
-            $executionEndScope = $this->mergeScopes(
-                $executionEndScope,
-                $executionEndNode->getStatementResult()
-                    ->getScope()
-            );
-        }
-
-        foreach ($methodReturnStatementsNode->getReturnStatements() as $returnStatement) {
-            $executionEndScope = $this->mergeScopes($executionEndScope, $returnStatement->getScope());
-        }
-
-        if (! $executionEndScope instanceof MutatingScope) {
-            return;
-        }
-
-        $classMethod->setAttribute(AttributeKey::EXECUTION_END_SCOPE, $executionEndScope);
-    }
-
-    private function mergeScopes(?MutatingScope $mutatingScope, Scope $scope): ?MutatingScope
-    {
-        if (! $scope instanceof MutatingScope) {
-            return $mutatingScope;
-        }
-
-        if (! $mutatingScope instanceof MutatingScope) {
-            return $scope;
-        }
-
-        return $mutatingScope->mergeWith($scope);
+        // kept raw on purpose, merging the exit point scopes is only worth it once a rule asks for it
+        $classMethod->setAttribute(AttributeKey::METHOD_RETURN_STATEMENTS_NODE, $methodReturnStatementsNode);
     }
 
     /**

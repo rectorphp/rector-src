@@ -10,10 +10,8 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Analyser\Scope;
-use PHPStan\Node\Expr\PropertyInitializationExpr;
+use Rector\NodeAnalyzer\AlwaysInitializedPropertyAnalyzer;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
@@ -29,7 +27,8 @@ final class RemoveDefaultValueFromAssignedPropertyRector extends AbstractRector
     public function __construct(
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly AlwaysInitializedPropertyAnalyzer $alwaysInitializedPropertyAnalyzer
     ) {
     }
 
@@ -85,12 +84,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // the scope of every constructor exit point, as resolved by PHPStan flow analysis
-        $executionEndScope = $constructClassMethod->getAttribute(AttributeKey::EXECUTION_END_SCOPE);
-        if (! $executionEndScope instanceof Scope) {
-            return null;
-        }
-
         $hasChanged = false;
 
         foreach ($node->getProperties() as $property) {
@@ -117,7 +110,10 @@ CODE_SAMPLE
 
                 // the property must be initialized on every path out of the constructor,
                 // otherwise removing the default value leaves it uninitialized
-                if (! $executionEndScope->hasExpressionType(new PropertyInitializationExpr($propertyName))->yes()) {
+                if (! $this->alwaysInitializedPropertyAnalyzer->isAlwaysInitialized(
+                    $constructClassMethod,
+                    $propertyName
+                )) {
                     continue;
                 }
 

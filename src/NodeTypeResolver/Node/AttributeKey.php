@@ -178,8 +178,8 @@ final class AttributeKey
     public const string NEWLINE_ON_FLUENT_CALL = 'newline_on_fluent_call';
 
     /**
-     * Scope merged from every execution end and return statement of a class method,
-     * so it describes what is certain once the method has finished
+     * PHPStan virtual node that holds every exit point of a class method,
+     * @see \Rector\NodeAnalyzer\AlwaysInitializedPropertyAnalyzer to read it
      */
-    public const string EXECUTION_END_SCOPE = 'execution_end_scope';
+    public const string METHOD_RETURN_STATEMENTS_NODE = 'method_return_statements_node';
 }
