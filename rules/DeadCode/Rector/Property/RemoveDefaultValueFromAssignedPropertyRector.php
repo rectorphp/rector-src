@@ -6,9 +6,12 @@ namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
+use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
@@ -23,7 +26,8 @@ final class RemoveDefaultValueFromAssignedPropertyRector extends AbstractRector
 {
     public function __construct(
         private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -106,6 +110,11 @@ CODE_SAMPLE
                     continue;
                 }
 
+                // partial assign, e.g. $this->items['key'] = ...; keeps the default value required
+                if ($this->isAssignedViaArrayDimFetch($node, $propertyName)) {
+                    continue;
+                }
+
                 $propertyProperty->default = null;
                 $hasChanged = true;
             }
@@ -116,5 +125,26 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isAssignedViaArrayDimFetch(Class_ $class, string $propertyName): bool
+    {
+        return $this->betterNodeFinder->findFirst($class, function (Node $subNode) use ($propertyName): bool {
+            if (! $subNode instanceof Assign) {
+                return false;
+            }
+
+            $assignedExpr = $subNode->var;
+            if (! $assignedExpr instanceof ArrayDimFetch) {
+                return false;
+            }
+
+            // unwrap nested dims, e.g. $this->items['first']['second'] = ...
+            while ($assignedExpr instanceof ArrayDimFetch) {
+                $assignedExpr = $assignedExpr->var;
+            }
+
+            return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($assignedExpr, $propertyName);
+        }) instanceof Assign;
     }
 }
