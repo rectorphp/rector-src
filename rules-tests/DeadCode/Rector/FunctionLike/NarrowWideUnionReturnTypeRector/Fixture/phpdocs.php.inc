@@ -6,7 +6,7 @@ use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\So
 
 final class PhpDocs
 {
-    /** @return string|int|float */
+    /** @return string|int */
     public function foo(): string|int|float
     {
         if (rand(0, 1)) {
@@ -71,7 +71,7 @@ use Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\So
 
 final class PhpDocs
 {
-    /** @return int|string */
+    /** @return string|int */
     public function foo(): string|int
     {
         if (rand(0, 1)) {

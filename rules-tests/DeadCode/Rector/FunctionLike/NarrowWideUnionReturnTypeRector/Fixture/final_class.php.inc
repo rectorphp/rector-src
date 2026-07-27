@@ -48,7 +48,7 @@ namespace Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRec
 
 final class FinalClass
 {
-    public function getData(): int|string
+    public function getData(): string|int
     {
         if (rand(0, 1)) {
             return 'text';
