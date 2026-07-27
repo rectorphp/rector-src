@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Return_;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\ValueObject\MethodName;
@@ -20,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveDefaultValueFromAssignedPropertyRector extends AbstractRector
 {
     public function __construct(
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -71,7 +74,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
+        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        // early return can skip the assign, so the default value is still needed
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($constructClassMethod, Return_::class)) {
             return null;
         }
 
