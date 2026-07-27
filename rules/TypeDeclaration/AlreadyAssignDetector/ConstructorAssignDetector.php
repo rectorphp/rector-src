@@ -62,7 +62,7 @@ final readonly class ConstructorAssignDetector
                 Node $node
             ) use ($propertyName, &$isAssignedInConstructor, $allowConditional): ?int {
                 if ($this->isIfElseAssign($node, $propertyName)) {
-                    $isAssignedInConstructor = true;
+                    $isAssignedInConstructor = ! (bool) $node->getAttribute(AttributeKey::IS_IN_LOOP_OR_SWITCH);
                     return NodeVisitor::STOP_TRAVERSAL;
                 }
 
