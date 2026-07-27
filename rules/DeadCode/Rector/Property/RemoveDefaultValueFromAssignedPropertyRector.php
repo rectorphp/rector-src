@@ -6,9 +6,14 @@ namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\Scope;
+use PHPStan\Node\Expr\PropertyInitializationExpr;
+use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
@@ -23,7 +28,8 @@ final class RemoveDefaultValueFromAssignedPropertyRector extends AbstractRector
 {
     public function __construct(
         private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -79,8 +85,9 @@ CODE_SAMPLE
             return null;
         }
 
-        // early return can skip the assign, so the default value is still needed
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($constructClassMethod, Return_::class)) {
+        // the scope of every constructor exit point, as resolved by PHPStan flow analysis
+        $executionEndScope = $constructClassMethod->getAttribute(AttributeKey::EXECUTION_END_SCOPE);
+        if (! $executionEndScope instanceof Scope) {
             return null;
         }
 
@@ -102,7 +109,20 @@ CODE_SAMPLE
                 }
 
                 $propertyName = $this->getName($propertyProperty);
-                if (! $this->constructorAssignDetector->isPropertyAssigned($node, $propertyName)) {
+
+                // guards against an assign that reads the default value first, e.g. $this->value = $this->value + 1
+                if (! $this->constructorAssignDetector->isPropertyAssignedConditionally($node, $propertyName)) {
+                    continue;
+                }
+
+                // the property must be initialized on every path out of the constructor,
+                // otherwise removing the default value leaves it uninitialized
+                if (! $executionEndScope->hasExpressionType(new PropertyInitializationExpr($propertyName))->yes()) {
+                    continue;
+                }
+
+                // $this->value['key'] = ... writes to the default value, it does not replace it
+                if ($this->isAssignedViaOffsetAccess($constructClassMethod, $propertyName)) {
                     continue;
                 }
 
@@ -116,5 +136,30 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isAssignedViaOffsetAccess(ClassMethod $constructClassMethod, string $propertyName): bool
+    {
+        $assign = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $constructClassMethod,
+            function (Node $node) use ($propertyName): bool {
+                if (! $node instanceof Assign) {
+                    return false;
+                }
+
+                $assignVar = $node->var;
+                if (! $assignVar instanceof ArrayDimFetch) {
+                    return false;
+                }
+
+                while ($assignVar instanceof ArrayDimFetch) {
+                    $assignVar = $assignVar->var;
+                }
+
+                return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($assignVar, $propertyName);
+            }
+        );
+
+        return $assign instanceof Assign;
     }
 }

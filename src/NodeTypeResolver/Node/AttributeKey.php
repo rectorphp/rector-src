@@ -176,4 +176,10 @@ final class AttributeKey
     public const string IS_IN_TRY_BLOCK = 'is_in_try_block';
 
     public const string NEWLINE_ON_FLUENT_CALL = 'newline_on_fluent_call';
+
+    /**
+     * Scope merged from every execution end and return statement of a class method,
+     * so it describes what is certain once the method has finished
+     */
+    public const string EXECUTION_END_SCOPE = 'execution_end_scope';
 }

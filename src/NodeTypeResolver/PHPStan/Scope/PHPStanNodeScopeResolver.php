@@ -87,11 +87,13 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Fiber\FiberScope;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
+use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Analyser\UndefinedVariableException;
 use PHPStan\Node\FunctionCallableNode;
 use PHPStan\Node\InstantiationCallableNode;
 use PHPStan\Node\MethodCallableNode;
+use PHPStan\Node\MethodReturnStatementsNode;
 use PHPStan\Node\Printer\Printer;
 use PHPStan\Node\StaticMethodCallableNode;
 use PHPStan\Node\UnreachableStatementNode;
@@ -153,8 +155,17 @@ final readonly class PHPStanNodeScopeResolver
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
+        /**
+         * PHPStan emits the MethodReturnStatementsNode without the ClassMethod it belongs to,
+         * but with its attributes copied over, so the start file position pairs them back together
+         *
+         * @var array<int, ClassMethod>
+         */
+        $classMethodsByStartFilePos = [];
+
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
+            &$classMethodsByStartFilePos,
             $filePath,
         ): void {
             if ($mutatingScope instanceof FiberScope) {
@@ -194,11 +205,21 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
+            // emitted once the whole class method body is resolved, so the class method is already known
+            if ($node instanceof MethodReturnStatementsNode) {
+                $this->processMethodReturnStatementsNode($node, $classMethodsByStartFilePos);
+                return;
+            }
+
             // init current Node set Attribute
             // not a VirtualNode, then set scope attribute
             // do not return early, as its properties will be checked next
             if (! $node instanceof VirtualNode) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+                if ($node instanceof ClassMethod && $node->getStartFilePos() >= 0) {
+                    $classMethodsByStartFilePos[$node->getStartFilePos()] = $node;
+                }
             }
 
             // handle unwrapped stmts
@@ -607,6 +628,52 @@ final readonly class PHPStanNodeScopeResolver
             $mutatingScope,
             $nodeCallback
         );
+    }
+
+    /**
+     * @param array<int, ClassMethod> $classMethodsByStartFilePos
+     */
+    private function processMethodReturnStatementsNode(
+        MethodReturnStatementsNode $methodReturnStatementsNode,
+        array $classMethodsByStartFilePos
+    ): void {
+        $classMethod = $classMethodsByStartFilePos[$methodReturnStatementsNode->getStartFilePos()] ?? null;
+        if (! $classMethod instanceof ClassMethod) {
+            return;
+        }
+
+        $executionEndScope = null;
+
+        foreach ($methodReturnStatementsNode->getExecutionEnds() as $executionEndNode) {
+            $executionEndScope = $this->mergeScopes(
+                $executionEndScope,
+                $executionEndNode->getStatementResult()
+                    ->getScope()
+            );
+        }
+
+        foreach ($methodReturnStatementsNode->getReturnStatements() as $returnStatement) {
+            $executionEndScope = $this->mergeScopes($executionEndScope, $returnStatement->getScope());
+        }
+
+        if (! $executionEndScope instanceof MutatingScope) {
+            return;
+        }
+
+        $classMethod->setAttribute(AttributeKey::EXECUTION_END_SCOPE, $executionEndScope);
+    }
+
+    private function mergeScopes(?MutatingScope $mutatingScope, Scope $scope): ?MutatingScope
+    {
+        if (! $scope instanceof MutatingScope) {
+            return $mutatingScope;
+        }
+
+        if (! $mutatingScope instanceof MutatingScope) {
+            return $scope;
+        }
+
+        return $mutatingScope->mergeWith($scope);
     }
 
     /**
