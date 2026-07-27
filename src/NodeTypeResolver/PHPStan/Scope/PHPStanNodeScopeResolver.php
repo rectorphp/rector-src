@@ -83,6 +83,7 @@ use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\Node\UnionType;
+use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Fiber\FiberScope;
 use PHPStan\Analyser\MutatingScope;
@@ -641,8 +642,33 @@ final readonly class PHPStanNodeScopeResolver
             return;
         }
 
+        // the node keeps every exit point scope alive, so only pay for it where a property can be initialized
+        if (! $this->hasPropertyAssign($classMethod)) {
+            return;
+        }
+
         // kept raw on purpose, merging the exit point scopes is only worth it once a rule asks for it
         $classMethod->setAttribute(AttributeKey::METHOD_RETURN_STATEMENTS_NODE, $methodReturnStatementsNode);
+    }
+
+    private function hasPropertyAssign(ClassMethod $classMethod): bool
+    {
+        $nodeFinder = new NodeFinder();
+
+        $assign = $nodeFinder->findFirst((array) $classMethod->stmts, static function (Node $node): bool {
+            if (! $node instanceof Assign) {
+                return false;
+            }
+
+            $assignVar = $node->var;
+            while ($assignVar instanceof ArrayDimFetch) {
+                $assignVar = $assignVar->var;
+            }
+
+            return $assignVar instanceof PropertyFetch;
+        });
+
+        return $assign instanceof Assign;
     }
 
     /**
