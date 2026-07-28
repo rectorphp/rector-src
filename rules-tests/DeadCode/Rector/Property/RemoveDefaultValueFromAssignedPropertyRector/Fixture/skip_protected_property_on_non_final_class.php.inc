@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\Property\RemoveDefaultValueFromAssignedPr
 
 class SkipProtectedPropertyOnNonFinalClass
 {
-    private int $value = 5;
+    protected int $value = 5;
 
     public function __construct(int $value)
     {
