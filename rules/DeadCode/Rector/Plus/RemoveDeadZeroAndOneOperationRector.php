@@ -100,6 +100,11 @@ CODE_SAMPLE
                 return null;
             }
 
+            // on float, += 0 normalizes negative zero (-0.0) to 0.0, so it is not dead
+            if ($assignOp instanceof AssignPlus && ! $this->isIntegerType($assignOp->var)) {
+                return null;
+            }
+
             if ($this->nodeTypeResolver->isNumberType($assignOp->var)) {
                 return $assignOp->var;
             }
@@ -152,7 +157,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isLiteralZero($binaryOp->left) && $this->nodeTypeResolver->isNumberType($binaryOp->right)) {
+        if ($this->isLiteralZero($binaryOp->left)) {
+            // on float, 0 + $x normalizes negative zero (-0.0) to 0.0 and 0 - $x flips its sign,
+            // so the operation is not dead
+            if (! $this->isIntegerType($binaryOp->right)) {
+                return null;
+            }
+
             if ($binaryOp instanceof Minus) {
                 return new UnaryMinus($binaryOp->right);
             }
@@ -161,6 +172,11 @@ CODE_SAMPLE
         }
 
         if (! $this->isLiteralZero($binaryOp->right)) {
+            return null;
+        }
+
+        // on float, $x + 0 normalizes negative zero (-0.0) to 0.0, so it is not dead
+        if ($binaryOp instanceof Plus && ! $this->isIntegerType($binaryOp->left)) {
             return null;
         }
 
@@ -236,5 +252,12 @@ CODE_SAMPLE
     private function isLiteralZero(Expr $expr): bool
     {
         return $expr instanceof Int_ && $expr->value === 0;
+    }
+
+    private function isIntegerType(Expr $expr): bool
+    {
+        return $this->nodeTypeResolver->getNativeType($expr)
+            ->isInteger()
+            ->yes();
     }
 }
