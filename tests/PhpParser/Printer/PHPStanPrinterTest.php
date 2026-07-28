@@ -7,7 +7,6 @@ namespace Rector\Tests\PhpParser\Printer;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Parser\Parser;
 use PHPStan\Parser\RichParser;
-use Rector\DependencyInjection\PHPStan\PHPStanContainerMemento;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use ReflectionProperty;
 
@@ -23,8 +22,6 @@ final class PHPStanPrinterTest extends AbstractLazyTestCase
     {
         /** @var RichParser $phpstanParser */
         $phpstanParser = $this->make(Parser::class);
-
-        PHPStanContainerMemento::removeRichVisitors($phpstanParser);
 
         $stmts = $phpstanParser->parseFile(__DIR__ . '/Fixture/some_array_map.php');
 
