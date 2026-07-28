@@ -11,5 +11,3 @@ class SkipProtectedPropertyOnNonFinalClass
         $this->value = $value;
     }
 }
-
-?>
