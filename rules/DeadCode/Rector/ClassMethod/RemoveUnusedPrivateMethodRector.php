@@ -143,7 +143,6 @@ CODE_SAMPLE
         }
 
         return null;
-
     }
 
     private function shouldSkip(ClassMethod $classMethod, ClassReflection $classReflection): bool

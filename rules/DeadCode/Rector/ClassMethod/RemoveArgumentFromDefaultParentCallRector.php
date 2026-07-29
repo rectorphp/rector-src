@@ -104,7 +104,7 @@ CODE_SAMPLE
 
         $ancestors = array_filter(
             $classReflection->getAncestors(),
-            fn (ClassReflection $ancestorClassReflection): bool => $classReflection->isClass() && $ancestorClassReflection->getName() !== $classReflection->getName()
+            fn (ClassReflection $ancestorClassReflection): bool => $ancestorClassReflection->getName() !== $classReflection->getName()
         );
 
         $hasChanged = false;
