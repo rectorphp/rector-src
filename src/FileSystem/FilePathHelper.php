@@ -56,7 +56,7 @@ final readonly class FilePathHelper
             $path = $originalPath;
         }
 
-        $normalizedPath = PathNormalizer::normalize((string) $path);
+        $normalizedPath = PathNormalizer::normalize($path);
         $path = Strings::replace($normalizedPath, self::TWO_AND_MORE_SLASHES_REGEX, '/');
 
         $pathRoot = str_starts_with($path, '/') ? $directorySeparator : '';
