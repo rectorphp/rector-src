@@ -78,12 +78,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof ClassReflection) {
+        if ($node->isAnonymous()) {
             return null;
         }
 
-        if ($classReflection->isAnonymous()) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 

@@ -85,6 +85,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // unreliable to detect on anonymous class: doesn't make sense
+        if ($node->isAnonymous()) {
+            return null;
+        }
+
         $hasChanged = false;
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
@@ -143,16 +148,12 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod $classMethod, ClassReflection $classReflection): bool
     {
-        // unreliable to detect trait, interface, anonymous class: doesn't make sense
+        // unreliable to detect trait, interface: doesn't make sense
         if ($classReflection->isTrait()) {
             return true;
         }
 
         if ($classReflection->isInterface()) {
-            return true;
-        }
-
-        if ($classReflection->isAnonymous()) {
             return true;
         }
 
