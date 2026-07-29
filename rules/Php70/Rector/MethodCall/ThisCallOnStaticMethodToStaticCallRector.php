@@ -158,7 +158,7 @@ CODE_SAMPLE
 
             $this->hasChanged = true;
 
-            $objectReference = $this->resolveClassSelf($classReflection, $subNode);
+            $objectReference = $this->resolveClassSelf($class, $subNode);
             return $this->nodeFactory->createStaticCall($objectReference, $methodName, $subNode->args);
         });
     }
@@ -166,9 +166,9 @@ CODE_SAMPLE
     /**
      * @return ObjectReference::STATIC|ObjectReference::SELF
      */
-    private function resolveClassSelf(ClassReflection $classReflection, MethodCall $methodCall): string
+    private function resolveClassSelf(Class_ $class, MethodCall $methodCall): string
     {
-        if ($classReflection->isFinalByKeyword()) {
+        if ($class->isFinal()) {
             return ObjectReference::SELF;
         }
 
