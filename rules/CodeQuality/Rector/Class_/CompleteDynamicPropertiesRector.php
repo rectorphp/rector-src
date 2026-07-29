@@ -8,13 +8,13 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodeQuality\NodeAnalyzer\LocalPropertyAnalyzer;
 use Rector\CodeQuality\NodeAnalyzer\MissingPropertiesResolver;
 use Rector\CodeQuality\NodeFactory\MissingPropertiesFactory;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,7 +26,7 @@ final class CompleteDynamicPropertiesRector extends AbstractRector
     public function __construct(
         private readonly MissingPropertiesFactory $missingPropertiesFactory,
         private readonly LocalPropertyAnalyzer $localPropertyAnalyzer,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly MissingPropertiesResolver $missingPropertiesResolver,
@@ -120,7 +120,7 @@ CODE_SAMPLE
         }
 
         $className = (string) $this->getName($class);
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return true;
         }
 
@@ -129,7 +129,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
 
         // properties are accessed via magic, nothing we can do
         if ($classReflection->hasMethod('__set')) {
@@ -140,7 +140,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+        return $class->extends instanceof FullyQualified && ! $this->classReflectionProvider->hasClass(
             $class->extends->toString()
         );
     }
@@ -152,10 +152,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return null;
         }
 
-        return $this->reflectionProvider->getClass($className);
+        return $this->classReflectionProvider->getClass($className);
     }
 }

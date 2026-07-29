@@ -21,7 +21,6 @@ use PHPStan\Analyser\Fiber\FiberScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\ExtendedNativeParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -32,6 +31,7 @@ use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Reflection\ClassReflectionProvider;
 
 final readonly class NullToStrictStringIntConverter
 {
@@ -39,7 +39,7 @@ final readonly class NullToStrictStringIntConverter
         private ValueResolver $valueResolver,
         private NodeTypeResolver $nodeTypeResolver,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
     ) {
     }
 
@@ -178,11 +178,11 @@ final readonly class NullToStrictStringIntConverter
             return false;
         }
 
-        if (! $this->reflectionProvider->hasClass($varType->getClassName())) {
+        if (! $this->classReflectionProvider->hasClass($varType->getClassName())) {
             return false;
         }
 
-        return $this->reflectionProvider->getClass($varType->getClassName())
+        return $this->classReflectionProvider->getClass($varType->getClassName())
             ->hasMethod('__get');
     }
 

@@ -8,13 +8,13 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Reflection\ClassReflectionProvider;
 
 final readonly class FamilyRelationsAnalyzer
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
         private NodeNameResolver $nodeNameResolver,
     ) {
     }
@@ -29,11 +29,11 @@ final readonly class FamilyRelationsAnalyzer
 
         if ($classOrName instanceof Name) {
             $fullName = $this->nodeNameResolver->getName($classOrName);
-            if (! $this->reflectionProvider->hasClass($fullName)) {
+            if (! $this->classReflectionProvider->hasClass($fullName)) {
                 return [];
             }
 
-            $classReflection = $this->reflectionProvider->getClass($fullName);
+            $classReflection = $this->classReflectionProvider->getClass($fullName);
             $ancestors = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
 
             return array_map(

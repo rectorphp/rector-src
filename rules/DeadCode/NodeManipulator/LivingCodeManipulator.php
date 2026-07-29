@@ -30,16 +30,16 @@ use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\ValueObject\MethodName;
 
 final readonly class LivingCodeManipulator
 {
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -122,11 +122,11 @@ final readonly class LivingCodeManipulator
         $cloneObjectType = $this->nodeTypeResolver->getType($clone->expr);
 
         foreach ($cloneObjectType->getObjectClassNames() as $className) {
-            if (! $this->reflectionProvider->hasClass($className)) {
+            if (! $this->classReflectionProvider->hasClass($className)) {
                 continue;
             }
 
-            if ($this->reflectionProvider->getClass($className)->hasNativeMethod(MethodName::CLONE)) {
+            if ($this->classReflectionProvider->getClass($className)->hasNativeMethod(MethodName::CLONE)) {
                 return true;
             }
         }

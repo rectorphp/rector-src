@@ -10,7 +10,6 @@ use PHPStan\Analyser\NameScope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
@@ -23,6 +22,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Enum\ObjectReference;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
@@ -39,7 +39,7 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
     public function __construct(
         private ObjectTypeSpecifier $objectTypeSpecifier,
         private ScalarStringToTypeMapper $scalarStringToTypeMapper,
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
         private ReflectionResolver $reflectionResolver
     ) {
     }
@@ -129,11 +129,11 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
             return new MixedType();
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return new MixedType();
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         $parentClassReflection = $classReflection->getParentClass();
 
         if (! $parentClassReflection instanceof ClassReflection) {
@@ -151,11 +151,11 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
             return new MixedType();
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return new MixedType();
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         return new StaticType($classReflection);
     }
 

@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StaticType;
@@ -27,6 +26,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
@@ -47,7 +47,7 @@ final class ReturnTypeFromReturnNewRector extends AbstractRector implements MinP
 {
     public function __construct(
         private readonly TypeFactory $typeFactory,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
@@ -168,11 +168,11 @@ CODE_SAMPLE
             return new StaticType($classReflection);
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return null;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         return new ObjectType($className, null, $classReflection);
     }
 

@@ -13,12 +13,12 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Enum\ObjectReference;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeManipulator\ClassMethodManipulator;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ClassReflectionAnalyzer;
+use Rector\Reflection\ClassReflectionProvider;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,7 +30,7 @@ final class RemoveParentCallWithoutParentRector extends AbstractRector
     public function __construct(
         private readonly ClassMethodManipulator $classMethodManipulator,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
@@ -142,7 +142,7 @@ CODE_SAMPLE
     private function shouldSkipClass(Class_ $class): bool
     {
         // skip cases when parent class reflection is not found
-        if ($class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+        if ($class->extends instanceof FullyQualified && ! $this->classReflectionProvider->hasClass(
             $class->extends->toString()
         )) {
             return true;
@@ -180,11 +180,11 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $this->reflectionProvider->hasClass($parentClassName)) {
+        if (! $this->classReflectionProvider->hasClass($parentClassName)) {
             return true;
         }
 
-        $parentClassReflection = $this->reflectionProvider->getClass($parentClassName);
+        $parentClassReflection = $this->classReflectionProvider->getClass($parentClassName);
 
         return $this->hasUnresolvableParentClass($parentClassReflection);
     }

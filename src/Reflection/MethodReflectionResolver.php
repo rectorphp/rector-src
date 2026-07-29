@@ -6,12 +6,11 @@ namespace Rector\Reflection;
 
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ReflectionProvider;
 
 final readonly class MethodReflectionResolver
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -20,11 +19,11 @@ final readonly class MethodReflectionResolver
      */
     public function resolveMethodReflection(string $className, string $methodName, ?Scope $scope): ?MethodReflection
     {
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return null;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
 
         // better, with support for "@method" annotation methods
         if ($scope instanceof Scope) {

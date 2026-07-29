@@ -17,11 +17,11 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeManipulator\ClassManipulator;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\Renaming\Contract\MethodCallRenameInterface;
 use Rector\Renaming\ValueObject\MethodCallRename;
@@ -43,7 +43,7 @@ final class RenameMethodRector extends AbstractRector implements ConfigurableRec
     public function __construct(
         private readonly ClassManipulator $classManipulator,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -114,11 +114,11 @@ CODE_SAMPLE
         }
 
         $targetClass = $methodCallRename->getClass();
-        if (! $this->reflectionProvider->hasClass($targetClass)) {
+        if (! $this->classReflectionProvider->hasClass($targetClass)) {
             return false;
         }
 
-        $targetClassReflection = $this->reflectionProvider->getClass($targetClass);
+        $targetClassReflection = $this->classReflectionProvider->getClass($targetClass);
         if ($classReflection->getName() === $targetClassReflection->getName()) {
             return false;
         }

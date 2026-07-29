@@ -9,9 +9,9 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class VariableConstFetchToClassConstFetchRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -98,11 +98,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($classObjectType->getClassName())) {
+        if (! $this->classReflectionProvider->hasClass($classObjectType->getClassName())) {
             return null;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($classObjectType->getClassName());
+        $classReflection = $this->classReflectionProvider->getClass($classObjectType->getClassName());
         if (! $classReflection->isFinalByKeyword()) {
             if (! $classReflection->hasConstant($constantName)) {
                 return null;

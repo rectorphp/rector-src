@@ -6,9 +6,9 @@ namespace Rector\Privatization\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FinalizeTestCaseClassRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly VisibilityManipulator $visibilityManipulator
     ) {
     }
@@ -79,11 +79,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return null;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         if (! $classReflection->is('PHPUnit\Framework\TestCase')) {
             return null;
         }

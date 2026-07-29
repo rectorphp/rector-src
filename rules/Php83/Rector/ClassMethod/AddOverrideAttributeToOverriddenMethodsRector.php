@@ -19,7 +19,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\NodeAnalyzer\ParentClassAnalyzer;
 use Rector\NodeAnalyzer\ClassAnalyzer;
@@ -27,6 +26,7 @@ use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\ValueObject\PolyfillPackage;
@@ -61,7 +61,7 @@ final class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector
     private bool $hasChanged = false;
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly AstResolver $astResolver,
@@ -190,11 +190,11 @@ CODE_SAMPLE
         }
 
         $className = (string) $this->getName($node);
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return null;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         $parentClassReflections = $classReflection->getParents();
 
         // interfaces are added for Stringable

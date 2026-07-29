@@ -13,9 +13,9 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -32,7 +32,7 @@ final class MyCLabsMethodCallToEnumConstRector extends AbstractRector implements
     private const array ENUM_METHODS = ['from', 'values', 'keys', 'isValid', 'search', 'toArray', 'assertValidValue'];
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
     ) {
     }
 
@@ -105,11 +105,11 @@ CODE_SAMPLE
 
     private function isEnumConstant(string $className, string $constant): bool
     {
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
 
         return $classReflection->hasConstant($constant);
     }
@@ -225,7 +225,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $classReflection = $this->reflectionProvider->getClass($className);
+            $classReflection = $this->classReflectionProvider->getClass($className);
             // method self::getValidEnumExpr process enum static methods from constants
             if ($classReflection->hasConstant($methodName)) {
                 return null;

@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
@@ -17,6 +16,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -27,7 +27,7 @@ final readonly class JMSTypePropertyTypeFactory
         private StaticTypeMapper $staticTypeMapper,
         private PhpDocInfoFactory $phpDocInfoFactory,
         private VarTagRemover $varTagRemover,
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
     ) {
     }
 
@@ -46,7 +46,7 @@ final readonly class JMSTypePropertyTypeFactory
 
         $node = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
 
-        if ($node instanceof FullyQualified && ! $this->reflectionProvider->hasClass($node->toString())) {
+        if ($node instanceof FullyQualified && ! $this->classReflectionProvider->hasClass($node->toString())) {
             return null;
         }
 

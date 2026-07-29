@@ -14,12 +14,12 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\PhpVersion;
@@ -35,7 +35,7 @@ class ArrayToFirstClassCallableRector extends AbstractRector implements MinPhpVe
 {
     public function __construct(
         private readonly ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
@@ -165,7 +165,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $arrayClassReflection = $this->reflectionProvider->getClass($arrayCallable->getClass());
+        $arrayClassReflection = $this->classReflectionProvider->getClass($arrayCallable->getClass());
 
         // we're unable to find it
         if (! $arrayClassReflection->hasMethod($arrayCallable->getMethod())) {

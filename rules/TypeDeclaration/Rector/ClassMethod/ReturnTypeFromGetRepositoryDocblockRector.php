@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -20,6 +19,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,7 +37,7 @@ final class ReturnTypeFromGetRepositoryDocblockRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
@@ -126,7 +126,7 @@ CODE_SAMPLE
         }
 
         // must be an existing repository class
-        if (! $this->reflectionProvider->hasClass($returnTypeNode->toString())) {
+        if (! $this->classReflectionProvider->hasClass($returnTypeNode->toString())) {
             return null;
         }
 

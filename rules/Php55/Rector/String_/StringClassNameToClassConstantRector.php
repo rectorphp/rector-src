@@ -9,10 +9,10 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -33,7 +33,7 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
     private array $classesToSkip = [];
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
     ) {
     }
 
@@ -134,7 +134,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->reflectionProvider->hasClass($classLikeName)) {
+        if (! $this->classReflectionProvider->hasClass($classLikeName)) {
             return true;
         }
 

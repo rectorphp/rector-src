@@ -20,7 +20,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -38,6 +37,7 @@ use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Util\StringUtils;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -71,7 +71,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly AttributeValueResolver $attributeValueResolver
     ) {
     }
@@ -235,7 +235,7 @@ CODE_SAMPLE
                 }
 
                 // make sure the attribute class really exists to avoid error on early upgrade
-                if (! $this->reflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
+                if (! $this->classReflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
                     continue;
                 }
 
@@ -414,12 +414,12 @@ CODE_SAMPLE
     private function isExistingAttributeClass(AnnotationToAttribute $annotationToAttribute): bool
     {
         // make sure the attribute class really exists to avoid error on early upgrade
-        if (! $this->reflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
+        if (! $this->classReflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
             return false;
         }
 
         // make sure the class is marked as attribute
-        $classReflection = $this->reflectionProvider->getClass($annotationToAttribute->getAttributeClass());
+        $classReflection = $this->classReflectionProvider->getClass($annotationToAttribute->getAttributeClass());
         return $classReflection->isAttributeClass();
     }
 }

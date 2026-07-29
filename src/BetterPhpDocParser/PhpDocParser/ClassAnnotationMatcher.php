@@ -9,10 +9,10 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Reflection\ClassReflectionProvider;
 
 /**
  * Matches "@ORM\Entity" to FQN names based on use imports in the file
@@ -27,7 +27,7 @@ final class ClassAnnotationMatcher
     public function __construct(
         private readonly UseImportNameMatcher $useImportNameMatcher,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -67,7 +67,7 @@ final class ClassAnnotationMatcher
             $namespace = $scope->getNamespace();
             if ($namespace !== null) {
                 $namespacedTag = $namespace . '\\' . $tag;
-                if ($this->reflectionProvider->hasClass($namespacedTag)) {
+                if ($this->classReflectionProvider->hasClass($namespacedTag)) {
                     return $namespacedTag;
                 }
 
@@ -114,6 +114,6 @@ final class ClassAnnotationMatcher
             return false;
         }
 
-        return $this->reflectionProvider->hasClass($tag);
+        return $this->classReflectionProvider->hasClass($tag);
     }
 }

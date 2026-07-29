@@ -12,11 +12,11 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,7 +30,7 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ClassRenamer $classRenamer,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -129,7 +129,7 @@ CODE_SAMPLE
         FullyQualified $fullyQualified,
         array $oldToNewClasses
     ): bool {
-        if (! $this->reflectionProvider->hasClass($fullyQualified->toString())) {
+        if (! $this->classReflectionProvider->hasClass($fullyQualified->toString())) {
             return false;
         }
 
@@ -144,12 +144,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->reflectionProvider->hasClass($newClass)) {
+            if (! $this->classReflectionProvider->hasClass($newClass)) {
                 continue;
             }
 
-            $classReflection = $this->reflectionProvider->getClass($newClass);
-            $oldClassReflection = $this->reflectionProvider->getClass($oldClass);
+            $classReflection = $this->classReflectionProvider->getClass($newClass);
+            $oldClassReflection = $this->classReflectionProvider->getClass($oldClass);
 
             if ($oldClassReflection->hasConstant($constFetchName) && ! $classReflection->hasConstant($constFetchName)) {
                 // should be skipped as new class does not have access to the constant

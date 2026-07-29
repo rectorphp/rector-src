@@ -5,25 +5,25 @@ declare(strict_types=1);
 namespace Rector\NodeManipulator;
 
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Reflection\ClassReflectionProvider;
 
 final readonly class ClassManipulator
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
     ) {
     }
 
     public function hasParentMethodOrInterface(ObjectType $objectType, string $oldMethod): bool
     {
-        if (! $this->reflectionProvider->hasClass($objectType->getClassName())) {
+        if (! $this->classReflectionProvider->hasClass($objectType->getClassName())) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($objectType->getClassName());
+        $classReflection = $this->classReflectionProvider->getClass($objectType->getClassName());
         $ancestorClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             if (! $ancestorClassReflection->hasMethod($oldMethod)) {

@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -22,6 +21,7 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\Util\FileHasher;
@@ -37,7 +37,7 @@ final class ClassRenamer
         private readonly PhpDocClassRenamer $phpDocClassRenamer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockClassRenamer $docBlockClassRenamer,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly FileHasher $fileHasher,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly RenamedNameCollector $renamedNameCollector
@@ -122,8 +122,8 @@ final class ClassRenamer
     private function shouldSkip(string $newName, FullyQualified $fullyQualified): bool
     {
         if ($fullyQualified->getAttribute(AttributeKey::IS_STATICCALL_CLASS_NAME) === true
-            && $this->reflectionProvider->hasClass($newName)) {
-            $classReflection = $this->reflectionProvider->getClass($newName);
+            && $this->classReflectionProvider->hasClass($newName)) {
+            $classReflection = $this->classReflectionProvider->getClass($newName);
             return $classReflection->isInterface();
         }
 
@@ -210,11 +210,11 @@ final class ClassRenamer
         string $newClassName,
         ?Scope $scope
     ): bool {
-        if (! $this->reflectionProvider->hasClass($newClassName)) {
+        if (! $this->classReflectionProvider->hasClass($newClassName)) {
             return true;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($newClassName);
+        $classReflection = $this->classReflectionProvider->getClass($newClassName);
         // ensure new is not with interface
         if ($fullyQualified->getAttribute(AttributeKey::IS_NEW_INSTANCE_NAME) !== true) {
             if ($fullyQualified->getAttribute(AttributeKey::IS_CLASS_EXTENDS) === true && $scope instanceof Scope) {

@@ -11,13 +11,13 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,7 +29,7 @@ final class FixClassCaseSensitivityVarDocblockRector extends AbstractRector
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $realClassName = $this->reflectionProvider->getClass($existingClassName)
+        $realClassName = $this->classReflectionProvider->getClass($existingClassName)
             ->getName();
 
         $hasLeadingSlash = str_starts_with($writtenName, '\\');
@@ -131,7 +131,7 @@ CODE_SAMPLE
 
         // already fully qualified
         if (str_starts_with($writtenName, '\\')) {
-            return $this->reflectionProvider->hasClass($bareName) ? $bareName : null;
+            return $this->classReflectionProvider->hasClass($bareName) ? $bareName : null;
         }
 
         $parts = explode('\\', $bareName);
@@ -155,7 +155,7 @@ CODE_SAMPLE
                     $candidate .= '\\' . implode('\\', array_slice($parts, 1));
                 }
 
-                if ($this->reflectionProvider->hasClass($candidate)) {
+                if ($this->classReflectionProvider->hasClass($candidate)) {
                     return $candidate;
                 }
             }
@@ -165,13 +165,13 @@ CODE_SAMPLE
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if ($scope instanceof Scope) {
             $namespace = $scope->getNamespace();
-            if ($namespace !== null && $this->reflectionProvider->hasClass($namespace . '\\' . $bareName)) {
+            if ($namespace !== null && $this->classReflectionProvider->hasClass($namespace . '\\' . $bareName)) {
                 return $namespace . '\\' . $bareName;
             }
         }
 
         // global namespace
-        if ($this->reflectionProvider->hasClass($bareName)) {
+        if ($this->classReflectionProvider->hasClass($bareName)) {
             return $bareName;
         }
 

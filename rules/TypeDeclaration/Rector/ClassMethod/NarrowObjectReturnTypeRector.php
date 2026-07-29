@@ -12,7 +12,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -22,6 +21,7 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -41,7 +41,7 @@ final class NarrowObjectReturnTypeRector extends AbstractRector
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -137,11 +137,11 @@ CODE_SAMPLE
 
         // non-existing class
         if ($declaredType !== 'object') {
-            if (! $this->reflectionProvider->hasClass($declaredType)) {
+            if (! $this->classReflectionProvider->hasClass($declaredType)) {
                 return null;
             }
 
-            $declaredTypeClassReflection = $this->reflectionProvider->getClass($declaredType);
+            $declaredTypeClassReflection = $this->classReflectionProvider->getClass($declaredType);
 
             // already last final object
             if ($declaredTypeClassReflection->isFinalByKeyword()) {
@@ -305,8 +305,8 @@ CODE_SAMPLE
             $className = $classNames[0];
 
             // skip anonymous classes, they have no usable name
-            if ($this->reflectionProvider->hasClass($className)) {
-                $returnedClassReflection = $this->reflectionProvider->getClass($className);
+            if ($this->classReflectionProvider->hasClass($className)) {
+                $returnedClassReflection = $this->classReflectionProvider->getClass($className);
                 if ($returnedClassReflection->isAnonymous()) {
                     return null;
                 }

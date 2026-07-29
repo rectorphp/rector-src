@@ -13,20 +13,20 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\ValueObject\MethodName;
 
 final readonly class TypeProvidingExprFromClassResolver
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
         private NodeNameResolver $nodeNameResolver,
         private PropertyNaming $propertyNaming,
     ) {
@@ -43,7 +43,7 @@ final readonly class TypeProvidingExprFromClassResolver
         $className = (string) $this->nodeNameResolver->getName($class);
 
         // A. match a method
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         $methodCallProvidingType = $this->resolveMethodCallProvidingType($classReflection, $objectType);
         if ($methodCallProvidingType instanceof MethodCall) {
             return $methodCallProvidingType;

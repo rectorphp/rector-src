@@ -13,9 +13,9 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Reflection\ClassReflectionProvider;
 
 final readonly class CallAnalyzer
 {
@@ -25,7 +25,7 @@ final readonly class CallAnalyzer
     private const array OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 
     public function __construct(
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -69,11 +69,11 @@ final readonly class CallAnalyzer
         }
 
         $className = $type->getClassName();
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         return $classReflection->getNativeReflection()
             ->isInstantiable();
     }

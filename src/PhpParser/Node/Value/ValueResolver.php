@@ -19,7 +19,6 @@ use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ConstantScalarType;
@@ -32,6 +31,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Reflection\ClassReflectionAnalyzer;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use TypeError;
@@ -48,7 +48,7 @@ final class ValueResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ConstFetchAnalyzer $constFetchAnalyzer,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassReflectionAnalyzer $classReflectionAnalyzer,
         private readonly CurrentFileProvider $currentFileProvider,
@@ -297,12 +297,12 @@ final class ValueResolver
             return constant($classConstantReference);
         }
 
-        if (! $this->reflectionProvider->hasClass($class)) {
+        if (! $this->classReflectionProvider->hasClass($class)) {
             // fallback to constant reference itself, to avoid fatal error
             return $classConstantReference;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($class);
+        $classReflection = $this->classReflectionProvider->getClass($class);
 
         if (! $classReflection->hasConstant($constant)) {
             // fallback to constant reference itself, to avoid fatal error

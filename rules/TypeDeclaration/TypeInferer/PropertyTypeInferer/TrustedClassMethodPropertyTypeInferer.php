@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitor;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -30,6 +29,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -42,7 +42,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
 {
     public function __construct(
         private ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator,
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
         private NodeNameResolver $nodeNameResolver,
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private TypeFactory $typeFactory,
@@ -217,7 +217,7 @@ final readonly class TrustedClassMethodPropertyTypeInferer
         if (! \str_ends_with($fullyQualifiedName, '\\' . $originalName->toString())) {
             $className = $originalName->toString();
 
-            if ($this->reflectionProvider->hasClass($className)) {
+            if ($this->classReflectionProvider->hasClass($className)) {
                 return new FullyQualifiedObjectType($className);
             }
 

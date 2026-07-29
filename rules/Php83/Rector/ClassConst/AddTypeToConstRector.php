@@ -20,13 +20,13 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Configuration\Parameter\FeatureFlags;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -39,7 +39,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly VarTagRemover $varTagRemover,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -216,11 +216,11 @@ CODE_SAMPLE
      */
     private function getParentReflections(string $className): array
     {
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return [];
         }
 
-        $currentClassReflection = $this->reflectionProvider->getClass($className);
+        $currentClassReflection = $this->classReflectionProvider->getClass($className);
 
         return array_filter($currentClassReflection->getAncestors(), static fn (ClassReflection $classReflection): bool =>
             // skip base class

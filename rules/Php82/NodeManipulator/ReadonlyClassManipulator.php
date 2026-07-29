@@ -13,11 +13,11 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\Visibility;
 
@@ -26,7 +26,7 @@ final readonly class ReadonlyClassManipulator
     public function __construct(
         private VisibilityManipulator $visibilityManipulator,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -134,11 +134,11 @@ final readonly class ReadonlyClassManipulator
                 $traitName = $trait->toString();
 
                 // trait not autoloaded
-                if (! $this->reflectionProvider->hasClass($traitName)) {
+                if (! $this->classReflectionProvider->hasClass($traitName)) {
                     return true;
                 }
 
-                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
+                $traitClassReflection = $this->classReflectionProvider->getClass($traitName);
                 $nativeReflection = $traitClassReflection->getNativeReflection();
 
                 if ($this->hasReadonlyProperty($nativeReflection->getProperties())) {
@@ -188,7 +188,7 @@ final readonly class ReadonlyClassManipulator
             return true;
         }
 
-        return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+        return $class->extends instanceof FullyQualified && ! $this->classReflectionProvider->hasClass(
             $class->extends->toString()
         );
     }

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeCorrector;
 
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
+use Rector\Reflection\ClassReflectionProvider;
 
 final readonly class GenericClassStringTypeCorrector
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -27,11 +27,11 @@ final readonly class GenericClassStringTypeCorrector
             }
 
             $value = $traversedType->getValue();
-            if (! $this->reflectionProvider->hasClass($value)) {
+            if (! $this->classReflectionProvider->hasClass($value)) {
                 return $traverseCallback($traversedType);
             }
 
-            $classReflection = $this->reflectionProvider->getClass($value);
+            $classReflection = $this->classReflectionProvider->getClass($value);
             if ($classReflection->getName() !== $value) {
                 return $traverseCallback($traversedType);
             }

@@ -12,16 +12,16 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
+use Rector\Reflection\ClassReflectionProvider;
 use Webmozart\Assert\Assert;
 
 final readonly class AnnotationToAttributeIntegerValueCaster
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
     ) {
     }
 
@@ -32,11 +32,11 @@ final readonly class AnnotationToAttributeIntegerValueCaster
     {
         Assert::allIsInstanceOf($args, Arg::class);
 
-        if (! $this->reflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
+        if (! $this->classReflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
             return;
         }
 
-        $attributeClassReflection = $this->reflectionProvider->getClass($annotationToAttribute->getAttributeClass());
+        $attributeClassReflection = $this->classReflectionProvider->getClass($annotationToAttribute->getAttributeClass());
         if (! $attributeClassReflection->hasConstructor()) {
             return;
         }

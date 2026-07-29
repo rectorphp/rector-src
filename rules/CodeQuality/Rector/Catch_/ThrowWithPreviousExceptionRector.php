@@ -16,11 +16,11 @@ use PhpParser\Node\Stmt\Catch_;
 use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ExtendedParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -34,7 +34,7 @@ final class ThrowWithPreviousExceptionRector extends AbstractRector
     private const int DEFAULT_EXCEPTION_ARGUMENT_POSITION = 2;
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -219,11 +219,11 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         $construct = $classReflection->hasMethod(MethodName::CONSTRUCT);
 
         if (! $construct) {
@@ -251,11 +251,11 @@ CODE_SAMPLE
     private function resolveExceptionArgumentPosition(Name $exceptionName): ?int
     {
         $className = $this->getName($exceptionName);
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return self::DEFAULT_EXCEPTION_ARGUMENT_POSITION;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         $construct = $classReflection->hasMethod(MethodName::CONSTRUCT);
         if (! $construct) {
             return self::DEFAULT_EXCEPTION_ARGUMENT_POSITION;

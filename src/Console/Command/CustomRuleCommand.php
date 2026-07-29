@@ -6,10 +6,10 @@ namespace Rector\Console\Command;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Enum\ClassName;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\JsonFileSystem;
+use Rector\Reflection\ClassReflectionProvider;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,7 +21,7 @@ final class CustomRuleCommand extends Command
 {
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
         parent::__construct();
     }
@@ -141,6 +141,6 @@ final class CustomRuleCommand extends Command
 
     private function isPHPUnitAttributeSupported(): bool
     {
-        return $this->reflectionProvider->hasClass(ClassName::DATA_PROVIDER);
+        return $this->classReflectionProvider->hasClass(ClassName::DATA_PROVIDER);
     }
 }

@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -16,6 +15,7 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverAwareInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\Reflection\ClassReflectionProvider;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyFetchTypeResolver\PropertyFetchTypeResolverTest
@@ -28,7 +28,7 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface, Node
 
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -77,11 +77,11 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface, Node
             return new MixedType();
         }
 
-        if (! $this->reflectionProvider->hasClass($varType->getClassName())) {
+        if (! $this->classReflectionProvider->hasClass($varType->getClassName())) {
             return new MixedType();
         }
 
-        $classReflection = $this->reflectionProvider->getClass($varType->getClassName());
+        $classReflection = $this->classReflectionProvider->getClass($varType->getClassName());
         if (! $classReflection->hasInstanceProperty($propertyName)) {
             return new MixedType();
         }

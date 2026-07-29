@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\Generic\TemplateTypeFactory;
@@ -22,6 +21,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -32,7 +32,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 final readonly class ObjectTypeSpecifier
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
         private UseImportsResolver $useImportsResolver,
         private NameScopeFactory $nameScopeFactory
     ) {
@@ -63,7 +63,7 @@ final readonly class ObjectTypeSpecifier
             }
         }
 
-        if ($this->reflectionProvider->hasClass($className)) {
+        if ($this->classReflectionProvider->hasClass($className)) {
             return new FullyQualifiedObjectType($className);
         }
 
@@ -73,7 +73,7 @@ final readonly class ObjectTypeSpecifier
             $namespaceName = $scope->getNamespace();
             if ($namespaceName !== null) {
                 $newClassName = $namespaceName . '\\' . $className;
-                if ($this->reflectionProvider->hasClass($newClassName)) {
+                if ($this->classReflectionProvider->hasClass($newClassName)) {
                     return new FullyQualifiedObjectType($newClassName);
                 }
             }
@@ -274,7 +274,7 @@ final readonly class ObjectTypeSpecifier
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($prefix . $useItem->name->toString())) {
+        if (! $this->classReflectionProvider->hasClass($prefix . $useItem->name->toString())) {
             return null;
         }
 

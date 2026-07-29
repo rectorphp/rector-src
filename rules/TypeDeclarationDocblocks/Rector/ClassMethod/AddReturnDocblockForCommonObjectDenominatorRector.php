@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\IntegerType;
@@ -19,6 +18,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ReturnNodeFinder;
@@ -34,7 +34,7 @@ final class AddReturnDocblockForCommonObjectDenominatorRector extends AbstractRe
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReturnNodeFinder $returnNodeFinder,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
         private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
@@ -223,7 +223,7 @@ CODE_SAMPLE
      */
     private function resolveParentClassesAndInterfaces(string $className): array
     {
-        $referenceClassReflection = $this->reflectionProvider->getClass($className);
+        $referenceClassReflection = $this->classReflectionProvider->getClass($className);
 
         $currentParentClassesAndInterfaces = $referenceClassReflection->getParentClassesNames();
 

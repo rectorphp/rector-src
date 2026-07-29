@@ -7,7 +7,7 @@ namespace Rector\Privatization\Guard;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ReflectionProvider;
+use Rector\Reflection\ClassReflectionProvider;
 
 /**
  * Verify whether Class_'s method or property allowed to be overridden by verify class parent or implements exists
@@ -15,13 +15,13 @@ use PHPStan\Reflection\ReflectionProvider;
 final readonly class OverrideByParentClassGuard
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
     public function isLegal(Class_ $class): bool
     {
-        if ($class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+        if ($class->extends instanceof FullyQualified && ! $this->classReflectionProvider->hasClass(
             $class->extends->toString()
         )) {
             return false;
@@ -29,7 +29,7 @@ final readonly class OverrideByParentClassGuard
 
         return array_all(
             $class->implements,
-            fn (Name $name): bool => $this->reflectionProvider->hasClass($name->toString())
+            fn (Name $name): bool => $this->classReflectionProvider->hasClass($name->toString())
         );
     }
 }

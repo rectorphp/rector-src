@@ -13,7 +13,6 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
@@ -25,6 +24,7 @@ use Rector\NodeCollector\ValueObject\ArrayCallableDynamicMethod;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 
@@ -33,7 +33,7 @@ final readonly class ArrayCallableMethodMatcher
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
         private ValueResolver $valueResolver,
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
         private ReflectionResolver $reflectionResolver
     ) {
     }
@@ -158,11 +158,11 @@ final readonly class ArrayCallableMethodMatcher
             $classConstantReference = $classReflection->getName();
         }
 
-        if (! $this->reflectionProvider->hasClass($classConstantReference)) {
+        if (! $this->classReflectionProvider->hasClass($classConstantReference)) {
             return new MixedType();
         }
 
-        $classReflection = $this->reflectionProvider->getClass($classConstantReference);
+        $classReflection = $this->classReflectionProvider->getClass($classConstantReference);
         $hasConstruct = $classReflection->hasMethod(MethodName::CONSTRUCT);
 
         if (! $hasConstruct) {

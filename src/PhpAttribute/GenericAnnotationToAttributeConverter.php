@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -17,6 +16,7 @@ use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
+use Rector\Reflection\ClassReflectionProvider;
 
 /**
  * @api used in Rector packages
@@ -25,7 +25,7 @@ final readonly class GenericAnnotationToAttributeConverter
 {
     public function __construct(
         private AttrGroupsFactory $attrGroupsFactory,
-        private ReflectionProvider $reflectionProvider,
+        private ClassReflectionProvider $classReflectionProvider,
         private UseImportsResolver $useImportsResolver,
         private PhpDocInfoFactory $phpDocInfoFactory,
         private PhpDocTagRemover $phpDocTagRemover,
@@ -97,12 +97,12 @@ final readonly class GenericAnnotationToAttributeConverter
     private function isExistingAttributeClass(AnnotationToAttribute $annotationToAttribute): bool
     {
         // make sure the attribute class really exists to avoid error on early upgrade
-        if (! $this->reflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
+        if (! $this->classReflectionProvider->hasClass($annotationToAttribute->getAttributeClass())) {
             return false;
         }
 
         // make sure the class is marked as attribute
-        $classReflection = $this->reflectionProvider->getClass($annotationToAttribute->getAttributeClass());
+        $classReflection = $this->classReflectionProvider->getClass($annotationToAttribute->getAttributeClass());
         return $classReflection->isAttributeClass();
     }
 }

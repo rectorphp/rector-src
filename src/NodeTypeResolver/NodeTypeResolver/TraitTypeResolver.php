@@ -6,12 +6,12 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Trait_;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
+use Rector\Reflection\ClassReflectionProvider;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver\TraitTypeResolverTest
@@ -21,7 +21,7 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 final readonly class TraitTypeResolver implements NodeTypeResolverInterface
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -39,11 +39,11 @@ final readonly class TraitTypeResolver implements NodeTypeResolverInterface
     public function resolve(Node $node): Type
     {
         $traitName = (string) $node->namespacedName;
-        if (! $this->reflectionProvider->hasClass($traitName)) {
+        if (! $this->classReflectionProvider->hasClass($traitName)) {
             return new MixedType();
         }
 
-        $classReflection = $this->reflectionProvider->getClass($traitName);
+        $classReflection = $this->classReflectionProvider->getClass($traitName);
 
         $types = [];
         $types[] = new ObjectType($traitName);

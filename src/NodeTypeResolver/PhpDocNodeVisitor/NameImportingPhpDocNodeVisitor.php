@@ -9,7 +9,6 @@ use PhpParser\Node as PhpParserNode;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -19,6 +18,7 @@ use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PhpParser\Node\FileNode;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierPhpDocTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -34,7 +34,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     public function __construct(
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper
     ) {
     }
@@ -181,7 +181,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $className = $fullyQualifiedObjectType->getClassName();
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return false;
         }
 

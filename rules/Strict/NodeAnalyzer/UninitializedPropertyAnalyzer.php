@@ -9,11 +9,11 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ThisType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 
@@ -24,7 +24,7 @@ final readonly class UninitializedPropertyAnalyzer
         private NodeTypeResolver $nodeTypeResolver,
         private ConstructorAssignDetector $constructorAssignDetector,
         private NodeNameResolver $nodeNameResolver,
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -80,11 +80,11 @@ final readonly class UninitializedPropertyAnalyzer
 
     private function hasTypedDefaultProperty(string $className, string $propertyName): bool
     {
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->classReflectionProvider->getClass($className);
         if (! $classReflection->hasNativeProperty($propertyName)) {
             return false;
         }

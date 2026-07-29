@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\VariadicPlaceholder;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
@@ -22,6 +21,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class CallTypesResolver
@@ -29,7 +29,7 @@ final readonly class CallTypesResolver
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
         private TypeFactory $typeFactory,
-        private ReflectionProvider $reflectionProvider
+        private ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -191,7 +191,7 @@ final readonly class CallTypesResolver
         }
 
         // fix false positive generic type on string
-        if (! $this->reflectionProvider->hasClass($argValueType->getClassName())) {
+        if (! $this->classReflectionProvider->hasClass($argValueType->getClassName())) {
             return new MixedType();
         }
 

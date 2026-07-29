@@ -8,11 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Enum\ObjectReference;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -29,7 +29,7 @@ final class MyCLabsConstructorCallToEnumFromRector extends AbstractRector implem
     private const string DEFAULT_ENUM_CONSTRUCTOR = 'from';
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
     ) {
     }
 
@@ -95,7 +95,7 @@ CODE_SAMPLE
 
     private function isMyCLabsConstructor(New_ $new, string $classname): bool
     {
-        $classReflection = $this->reflectionProvider->getClass($classname);
+        $classReflection = $this->classReflectionProvider->getClass($classname);
         if (! $classReflection->hasMethod(MethodName::CONSTRUCT)) {
             return true;
         }

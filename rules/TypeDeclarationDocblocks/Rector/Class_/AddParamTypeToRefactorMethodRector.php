@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -19,6 +18,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,7 +30,7 @@ final class AddParamTypeToRefactorMethodRector extends AbstractRector
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ValueResolver $valueResolver,
     ) {
     }
@@ -155,11 +155,11 @@ CODE_SAMPLE
             }
 
             // skip interface node types, they expand to an unwieldy union of all implementers
-            if (! $this->reflectionProvider->hasClass($nodeType)) {
+            if (! $this->classReflectionProvider->hasClass($nodeType)) {
                 return null;
             }
 
-            if ($this->reflectionProvider->getClass($nodeType)->isInterface()) {
+            if ($this->classReflectionProvider->getClass($nodeType)->isInterface()) {
                 return null;
             }
 

@@ -19,11 +19,11 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\ValueObject\MethodName;
@@ -36,7 +36,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class IssetOnPropertyObjectToPropertyExistsRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ClassReflectionProvider $classReflectionProvider,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ValueResolver $valueResolver
     ) {
@@ -217,10 +217,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $this->classReflectionProvider->hasClass($className)) {
             return null;
         }
 
-        return $this->reflectionProvider->getClass($className);
+        return $this->classReflectionProvider->getClass($className);
     }
 }

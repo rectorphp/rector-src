@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -25,6 +24,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ClassReflectionProvider;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
@@ -43,7 +43,7 @@ final class TypedPropertyFromContainerGetSetUpRector extends AbstractRector impl
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ClassReflectionProvider $classReflectionProvider
     ) {
     }
 
@@ -152,7 +152,7 @@ CODE_SAMPLE
             }
 
             // must be an existing object type
-            if (! $this->reflectionProvider->hasClass($propertyTypeNode->toString())) {
+            if (! $this->classReflectionProvider->hasClass($propertyTypeNode->toString())) {
                 continue;
             }
 
