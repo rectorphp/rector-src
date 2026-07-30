@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\DeprecatedTagValueNode;
@@ -139,6 +140,15 @@ CODE_SAMPLE
         }
 
         if ($this->classMethodManipulator->isNamedConstructor($classMethod)) {
+            return true;
+        }
+
+        // anonymous class extending a parent uses empty constructor on purpose,
+        // to avoid parent constructor being invoked
+        if ($class->isAnonymous() && $class->extends instanceof Name && $this->isName(
+            $classMethod,
+            MethodName::CONSTRUCT
+        )) {
             return true;
         }
 
