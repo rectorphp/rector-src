@@ -15,6 +15,11 @@ services:
         tags:
             - phpstan.rules.rule
 
+    -
+        class: Rector\Utils\PHPStan\Rule\SingleServiceRegistrationRule
+        tags:
+            - phpstan.rules.rule
+
 parameters:
     level: 8
 
