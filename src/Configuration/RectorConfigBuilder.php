@@ -53,6 +53,20 @@ final class RectorConfigBuilder
     private const int MAX_LEVEL_GAP = 10;
 
     /**
+     * A level method and the set that contains the very same rules,
+     * so they are never enabled both at once
+     *
+     * @var array<string, array{string, string}> level method name => [set file path, set title]
+     */
+    private const array LEVEL_METHOD_TO_SET = [
+        'withTypeCoverageLevel' => [SetList::TYPE_DECLARATION, 'type declarations'],
+        'withTypeCoverageDocblockLevel' => [SetList::TYPE_DECLARATION_DOCBLOCKS, 'type declaration docblocks'],
+        'withDeadCodeLevel' => [SetList::DEAD_CODE, 'dead code'],
+        'withCodeQualityLevel' => [SetList::CODE_QUALITY, 'code quality'],
+        'withCodingStyleLevel' => [SetList::CODING_STYLE, 'coding style'],
+    ];
+
+    /**
      * @var string[]
      */
     private array $paths = [];
@@ -145,18 +159,12 @@ final class RectorConfigBuilder
     private ?string $symfonyContainerPhpFile = null;
 
     /**
-     * To make sure type declarations set and level are not duplicated,
+     * To make sure a set and its level method are not duplicated,
      * as both contain same rules
+     *
+     * @var array<string, true> level method name => true
      */
-    private ?bool $isTypeCoverageLevelUsed = null;
-
-    private ?bool $isTypeCoverageDocblockLevelUsed = null;
-
-    private ?bool $isDeadCodeLevelUsed = null;
-
-    private ?bool $isCodeQualityLevelUsed = null;
-
-    private ?bool $isCodingStyleLevelUsed = null;
+    private array $usedLevelMethods = [];
 
     private ?bool $isFluentNewLine = null;
 
@@ -234,42 +242,21 @@ final class RectorConfigBuilder
             ));
         }
 
-        if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed === true) {
-            throw new InvalidConfigurationException(sprintf(
-                'Your config already enables type declarations set.%sRemove "->withTypeCoverageLevel()" as it only duplicates it, or remove type declaration set.',
-                PHP_EOL
-            ));
-        }
+        foreach (self::LEVEL_METHOD_TO_SET as $levelMethod => [$setFilePath, $setTitle]) {
+            if (! isset($this->usedLevelMethods[$levelMethod])) {
+                continue;
+            }
 
-        if (in_array(
-            SetList::TYPE_DECLARATION_DOCBLOCKS,
-            $uniqueSets,
-            true
-        ) && $this->isTypeCoverageDocblockLevelUsed === true) {
-            throw new InvalidConfigurationException(sprintf(
-                'Your config already enables type declarations set.%sRemove "->withTypeCoverageDocblockLevel()" as it only duplicates it, or remove type declaration set.',
-                PHP_EOL
-            ));
-        }
+            if (! in_array($setFilePath, $uniqueSets, true)) {
+                continue;
+            }
 
-        if (in_array(SetList::DEAD_CODE, $uniqueSets, true) && $this->isDeadCodeLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
-                'Your config already enables dead code set.%sRemove "->withDeadCodeLevel()" as it only duplicates it, or remove dead code set.',
-                PHP_EOL
-            ));
-        }
-
-        if (in_array(SetList::CODE_QUALITY, $uniqueSets, true) && $this->isCodeQualityLevelUsed === true) {
-            throw new InvalidConfigurationException(sprintf(
-                'Your config already enables code quality set.%sRemove "->withCodeQualityLevel()" as it only duplicates it, or remove code quality set.',
-                PHP_EOL
-            ));
-        }
-
-        if (in_array(SetList::CODING_STYLE, $uniqueSets, true) && $this->isCodingStyleLevelUsed === true) {
-            throw new InvalidConfigurationException(sprintf(
-                'Your config already enables coding style set.%sRemove "->withCodingStyleLevel()" as it only duplicates it, or remove coding style set.',
-                PHP_EOL
+                'Your config already enables %s set.%sRemove "->%s()" as it only duplicates it, or remove %s set.',
+                $setTitle,
+                PHP_EOL,
+                $levelMethod,
+                $setTitle
             ));
         }
 
@@ -1069,27 +1056,13 @@ final class RectorConfigBuilder
      */
     public function withTypeCoverageLevel(int $level): self
     {
-        Assert::natural($level);
-
-        $this->isTypeCoverageLevelUsed = true;
-
-        $levelRules = LevelRulesResolver::resolve($level, TypeDeclarationLevel::RULES, __METHOD__);
-
-        // too high
-        $levelRulesCount = count($levelRules);
-        if ($levelRulesCount + self::MAX_LEVEL_GAP < $level) {
-            $this->levelOverflows[] = new LevelOverflow(
-                'withTypeCoverageLevel',
-                $level,
-                $levelRulesCount,
-                'typeDeclarations',
-                'TYPE_DECLARATION'
-            );
-        }
-
-        $this->rules = array_merge($this->rules, $levelRules);
-
-        return $this;
+        return $this->addLevelRules(
+            'withTypeCoverageLevel',
+            $level,
+            TypeDeclarationLevel::RULES,
+            'typeDeclarations',
+            'TYPE_DECLARATION'
+        );
     }
 
     /**
@@ -1098,27 +1071,13 @@ final class RectorConfigBuilder
      */
     public function withTypeCoverageDocblockLevel(int $level): self
     {
-        Assert::natural($level);
-
-        $this->isTypeCoverageDocblockLevelUsed = true;
-
-        $levelRules = LevelRulesResolver::resolve($level, TypeDeclarationDocblocksLevel::RULES, __METHOD__);
-
-        // too high
-        $levelRulesCount = count($levelRules);
-        if ($levelRulesCount + self::MAX_LEVEL_GAP < $level) {
-            $this->levelOverflows[] = new LevelOverflow(
-                __METHOD__,
-                $level,
-                $levelRulesCount,
-                'typeDeclarationDocblocks',
-                'TYPE_DECLARATION_DOCBLOCKS'
-            );
-        }
-
-        $this->rules = array_merge($this->rules, $levelRules);
-
-        return $this;
+        return $this->addLevelRules(
+            'withTypeCoverageDocblockLevel',
+            $level,
+            TypeDeclarationDocblocksLevel::RULES,
+            'typeDeclarationDocblocks',
+            'TYPE_DECLARATION_DOCBLOCKS'
+        );
     }
 
     /**
@@ -1127,27 +1086,7 @@ final class RectorConfigBuilder
      */
     public function withDeadCodeLevel(int $level): self
     {
-        Assert::natural($level);
-
-        $this->isDeadCodeLevelUsed = true;
-
-        $levelRules = LevelRulesResolver::resolve($level, DeadCodeLevel::RULES, __METHOD__);
-
-        // too high
-        $levelRulesCount = count($levelRules);
-        if ($levelRulesCount + self::MAX_LEVEL_GAP < $level) {
-            $this->levelOverflows[] = new LevelOverflow(
-                'withDeadCodeLevel',
-                $level,
-                $levelRulesCount,
-                'deadCode',
-                'DEAD_CODE'
-            );
-        }
-
-        $this->rules = array_merge($this->rules, $levelRules);
-
-        return $this;
+        return $this->addLevelRules('withDeadCodeLevel', $level, DeadCodeLevel::RULES, 'deadCode', 'DEAD_CODE');
     }
 
     /**
@@ -1191,25 +1130,7 @@ final class RectorConfigBuilder
      */
     public function withCodeQualityLevel(int $level): self
     {
-        Assert::natural($level);
-
-        $this->isCodeQualityLevelUsed = true;
-
-        $levelRules = LevelRulesResolver::resolve($level, CodeQualityLevel::RULES, __METHOD__);
-
-        // too high
-        $levelRulesCount = count($levelRules);
-        if ($levelRulesCount + self::MAX_LEVEL_GAP < $level) {
-            $this->levelOverflows[] = new LevelOverflow(
-                'withCodeQualityLevel',
-                $level,
-                $levelRulesCount,
-                'codeQuality',
-                'CODE_QUALITY'
-            );
-        }
-
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->addLevelRules('withCodeQualityLevel', $level, CodeQualityLevel::RULES, 'codeQuality', 'CODE_QUALITY');
 
         foreach (CodeQualityLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
             $this->rulesWithConfigurations[$rectorClass][] = $configuration;
@@ -1224,25 +1145,7 @@ final class RectorConfigBuilder
      */
     public function withCodingStyleLevel(int $level): self
     {
-        Assert::natural($level);
-
-        $this->isCodingStyleLevelUsed = true;
-
-        $levelRules = LevelRulesResolver::resolve($level, CodingStyleLevel::RULES, __METHOD__);
-
-        // too high
-        $levelRulesCount = count($levelRules);
-        if ($levelRulesCount + self::MAX_LEVEL_GAP < $level) {
-            $this->levelOverflows[] = new LevelOverflow(
-                'withCodingStyleLevel',
-                $level,
-                $levelRulesCount,
-                'codingStyle',
-                'CODING_STYLE'
-            );
-        }
-
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->addLevelRules('withCodingStyleLevel', $level, CodingStyleLevel::RULES, 'codingStyle', 'CODING_STYLE');
 
         foreach (CodingStyleLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
             $this->rulesWithConfigurations[$rectorClass][] = $configuration;
@@ -1386,6 +1289,39 @@ final class RectorConfigBuilder
 
             $this->setProviders[$setProvider] = true;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param array<class-string<RectorInterface>> $availableRules
+     */
+    private function addLevelRules(
+        string $levelMethod,
+        int $level,
+        array $availableRules,
+        string $suggestedRuleset,
+        string $suggestedSetListConstant
+    ): self {
+        Assert::natural($level);
+
+        $this->usedLevelMethods[$levelMethod] = true;
+
+        $levelRules = LevelRulesResolver::resolve($level, $availableRules, $levelMethod);
+
+        // too high
+        $levelRulesCount = count($levelRules);
+        if ($levelRulesCount + self::MAX_LEVEL_GAP < $level) {
+            $this->levelOverflows[] = new LevelOverflow(
+                $levelMethod,
+                $level,
+                $levelRulesCount,
+                $suggestedRuleset,
+                $suggestedSetListConstant
+            );
+        }
+
+        $this->rules = array_merge($this->rules, $levelRules);
 
         return $this;
     }
