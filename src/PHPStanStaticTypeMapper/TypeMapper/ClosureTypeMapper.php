@@ -28,9 +28,12 @@ final readonly class ClosureTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return ClosureType::class;
+        return [ClosureType::class];
     }
 
     /**

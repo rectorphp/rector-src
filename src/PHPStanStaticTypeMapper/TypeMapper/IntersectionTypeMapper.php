@@ -37,9 +37,12 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return IntersectionType::class;
+        return [IntersectionType::class];
     }
 
     /**

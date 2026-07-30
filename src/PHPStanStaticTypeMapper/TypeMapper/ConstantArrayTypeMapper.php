@@ -23,9 +23,12 @@ final readonly class ConstantArrayTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return ConstantArrayType::class;
+        return [ConstantArrayType::class];
     }
 
     /**

@@ -27,9 +27,12 @@ final readonly class ObjectWithoutClassTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return ObjectWithoutClassType::class;
+        return [ObjectWithoutClassType::class];
     }
 
     /**

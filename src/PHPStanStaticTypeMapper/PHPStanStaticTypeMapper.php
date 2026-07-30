@@ -28,7 +28,7 @@ final readonly class PHPStanStaticTypeMapper
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         foreach ($this->typeMappers as $typeMapper) {
-            if (! is_a($type, $typeMapper->getNodeClass(), true)) {
+            if (! $this->doesTypeMatch($type, $typeMapper)) {
                 continue;
             }
 
@@ -44,7 +44,7 @@ final readonly class PHPStanStaticTypeMapper
     public function mapToPhpParserNode(Type $type, string $typeKind): Name|ComplexType|Identifier|null
     {
         foreach ($this->typeMappers as $typeMapper) {
-            if (! is_a($type, $typeMapper->getNodeClass(), true)) {
+            if (! $this->doesTypeMatch($type, $typeMapper)) {
                 continue;
             }
 
@@ -52,5 +52,13 @@ final readonly class PHPStanStaticTypeMapper
         }
 
         throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
+    }
+
+    /**
+     * @param TypeMapperInterface<Type> $typeMapper
+     */
+    private function doesTypeMatch(Type $type, TypeMapperInterface $typeMapper): bool
+    {
+        return array_any($typeMapper->getNodeClasses(), fn (string $nodeClass): bool => $type instanceof $nodeClass);
     }
 }

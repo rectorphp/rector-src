@@ -23,9 +23,12 @@ final readonly class TypeWithClassNameTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return TypeWithClassName::class;
+        return [TypeWithClassName::class];
     }
 
     /**

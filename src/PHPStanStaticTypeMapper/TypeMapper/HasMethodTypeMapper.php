@@ -20,9 +20,12 @@ final readonly class HasMethodTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return HasMethodType::class;
+        return [HasMethodType::class];
     }
 
     /**
