@@ -64,7 +64,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
 
     public function testResolveMissingBackslash(): void
     {
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIsOrContains(
             'Rule "RectorDeadCodeRectorAssignRemoveDoubleAssignRector" was not found.' . PHP_EOL
                 . 'The rule has no namespace. Make sure to escape the backslashes, and add quotes around the rule name: --only="My\\Rector\\Rule"'
         );
@@ -75,7 +75,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
 
     public function testResolveNotFound(): void
     {
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIsOrContains(
             'Rule "This\Rule\Does\Not\Exist" was not found.' . PHP_EOL
                 . 'Make sure it is registered in your config or in one of the sets'
         );
@@ -102,7 +102,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
 
     public function testResolveShortAmbiguous(): void
     {
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIsOrContains(
             'Short rule name "RemoveDoubleAssignRector" is ambiguous. Specify the full rule name:' . PHP_EOL
                 . '- Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector' . PHP_EOL
                 . '- Rector\\Tests\\Configuration\\Source\\RemoveDoubleAssignRector'

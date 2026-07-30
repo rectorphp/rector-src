@@ -14,7 +14,7 @@ final class ReturnEmptyNodesTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        $this->expectExceptionMessage('Array of nodes cannot be empty');
+        $this->expectExceptionMessageIsOrContains('Array of nodes cannot be empty');
         $this->expectException(ShouldNotHappenException::class);
 
         $this->doTestFile($filePath);
