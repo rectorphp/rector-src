@@ -19,18 +19,20 @@ final class TypeMapperOrderTest extends AbstractLazyTestCase
         $typeMappers = $this->resolveTypeMappers();
 
         foreach ($typeMappers as $position => $typeMapper) {
-            $nodeClass = $typeMapper->getNodeClass();
+            foreach ($typeMapper->getNodeClasses() as $nodeClass) {
+                for ($earlierPosition = 0; $earlierPosition < $position; ++$earlierPosition) {
+                    $earlierTypeMapper = $typeMappers[$earlierPosition];
 
-            for ($earlierPosition = 0; $earlierPosition < $position; ++$earlierPosition) {
-                $earlierNodeClass = $typeMappers[$earlierPosition]->getNodeClass();
-
-                $this->assertFalse(is_a($nodeClass, $earlierNodeClass, true), sprintf(
-                    'The "%s" is registered after "%s", but "%s" is a "%s". It can never be reached, register it earlier.',
-                    $typeMapper::class,
-                    $typeMappers[$earlierPosition]::class,
-                    $nodeClass,
-                    $earlierNodeClass
-                ));
+                    foreach ($earlierTypeMapper->getNodeClasses() as $earlierNodeClass) {
+                        $this->assertFalse(is_a($nodeClass, $earlierNodeClass, true), sprintf(
+                            'The "%s" is registered after "%s", but "%s" is a "%s". It can never be reached, register it earlier.',
+                            $typeMapper::class,
+                            $earlierTypeMapper::class,
+                            $nodeClass,
+                            $earlierNodeClass
+                        ));
+                    }
+                }
             }
         }
     }

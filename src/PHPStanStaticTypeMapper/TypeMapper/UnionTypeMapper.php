@@ -46,9 +46,12 @@ final class UnionTypeMapper implements TypeMapperInterface
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return UnionType::class;
+        return [UnionType::class];
     }
 
     /**

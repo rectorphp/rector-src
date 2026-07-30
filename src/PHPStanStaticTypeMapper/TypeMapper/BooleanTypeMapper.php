@@ -24,9 +24,12 @@ final readonly class BooleanTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return BooleanType::class;
+        return [BooleanType::class];
     }
 
     /**

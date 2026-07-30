@@ -27,9 +27,12 @@ use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
  */
 final class ObjectTypeMapper implements TypeMapperInterface
 {
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return ObjectType::class;
+        return [ObjectType::class];
     }
 
     /**

@@ -23,9 +23,12 @@ final readonly class StringTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return StringType::class;
+        return [StringType::class];
     }
 
     /**

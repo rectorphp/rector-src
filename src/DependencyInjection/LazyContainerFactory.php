@@ -135,10 +135,8 @@ use Rector\PhpParser\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\PhpParser\NodeVisitor\SymfonyClosureNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryLiteralStringTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryNonEmptyStringTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryNonFalsyStringTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryNumericStringTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryArrayTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\BooleanTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\CallableTypeMapper;
@@ -149,19 +147,15 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConstantArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\FloatTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasMethodTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\HasOffsetTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\HasOffsetValueTypeTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasPropertyTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\IntegerTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\IntersectionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\IterableTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\MixedTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\NeverTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\NonEmptyArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\NullTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ObjectTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ObjectWithoutClassTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\OversizedArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ParentStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ResourceTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StaticTypeMapper;
@@ -287,10 +281,8 @@ final class LazyContainerFactory
      * @var array<class-string<TypeMapperInterface>>
      */
     private const array TYPE_MAPPER_CLASSES = [
-        AccessoryLiteralStringTypeMapper::class,
-        AccessoryNonEmptyStringTypeMapper::class,
-        AccessoryNonFalsyStringTypeMapper::class,
-        AccessoryNumericStringTypeMapper::class,
+        AccessoryArrayTypeMapper::class,
+        AccessoryStringTypeMapper::class,
         ConstantArrayTypeMapper::class,
         ArrayTypeMapper::class,
         BooleanTypeMapper::class,
@@ -301,19 +293,15 @@ final class LazyContainerFactory
         ConditionalTypeMapper::class,
         FloatTypeMapper::class,
         HasMethodTypeMapper::class,
-        HasOffsetTypeMapper::class,
-        HasOffsetValueTypeTypeMapper::class,
         HasPropertyTypeMapper::class,
         IntegerTypeMapper::class,
         IntersectionTypeMapper::class,
         IterableTypeMapper::class,
         MixedTypeMapper::class,
         NeverTypeMapper::class,
-        NonEmptyArrayTypeMapper::class,
         NullTypeMapper::class,
         ObjectTypeMapper::class,
         ObjectWithoutClassTypeMapper::class,
-        OversizedArrayTypeMapper::class,
         ParentStaticTypeMapper::class,
         ResourceTypeMapper::class,
         StaticTypeMapper::class,

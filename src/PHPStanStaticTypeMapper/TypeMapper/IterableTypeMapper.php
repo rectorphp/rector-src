@@ -15,9 +15,12 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
  */
 final class IterableTypeMapper implements TypeMapperInterface
 {
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return IterableType::class;
+        return [IterableType::class];
     }
 
     /**

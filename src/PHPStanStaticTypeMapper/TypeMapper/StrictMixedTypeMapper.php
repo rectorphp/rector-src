@@ -26,9 +26,12 @@ final readonly class StrictMixedTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return StrictMixedType::class;
+        return [StrictMixedType::class];
     }
 
     /**

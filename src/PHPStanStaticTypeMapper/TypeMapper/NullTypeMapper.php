@@ -24,9 +24,12 @@ final readonly class NullTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return NullType::class;
+        return [NullType::class];
     }
 
     /**

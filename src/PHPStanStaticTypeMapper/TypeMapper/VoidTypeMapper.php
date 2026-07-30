@@ -26,9 +26,12 @@ final readonly class VoidTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return VoidType::class;
+        return [VoidType::class];
     }
 
     /**

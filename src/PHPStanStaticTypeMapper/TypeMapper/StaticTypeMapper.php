@@ -28,9 +28,12 @@ final readonly class StaticTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return StaticType::class;
+        return [StaticType::class];
     }
 
     /**

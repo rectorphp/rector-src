@@ -23,9 +23,12 @@ final readonly class IntegerTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    public function getNodeClass(): string
+    /**
+     * @return array<class-string<Type>>
+     */
+    public function getNodeClasses(): array
     {
-        return IntegerType::class;
+        return [IntegerType::class];
     }
 
     /**
