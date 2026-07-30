@@ -392,6 +392,21 @@ final class LazyContainerFactory
 
         $rectorConfig->import(__DIR__ . '/../../config/config.php');
 
+        $this->registerConsole($rectorConfig);
+        $this->registerFileProcessing($rectorConfig);
+        $this->registerCachingAndResettables($rectorConfig);
+        $this->registerTypeMappers($rectorConfig);
+        $this->registerNodeNameResolvers($rectorConfig);
+        $this->registerRectorAutowiring($rectorConfig);
+        $this->registerTaggedServices($rectorConfig);
+        $this->registerAnnotationToAttributeSetters($rectorConfig);
+        $this->registerNodeVisitorsAndPhpDoc($rectorConfig);
+
+        return $rectorConfig;
+    }
+
+    private function registerConsole(RectorConfig $rectorConfig): void
+    {
         $rectorConfig->singleton(Application::class, static function (Container $container): Application {
             $consoleApplication = $container->make(ConsoleApplication::class);
 
@@ -432,11 +447,14 @@ final class LazyContainerFactory
         $rectorConfig->when(DeprecatedRulesReporter::class)
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
+    }
 
+    private function registerFileProcessing(RectorConfig $rectorConfig): void
+    {
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
 
-        // shared state: collects used skips across skipper voters and the file processor
+        // shared state: collects used skips across the skipper, the path skipper and the file processor
         $rectorConfig->singleton(UsedSkipCollector::class);
 
         $rectorConfig->when(RectorNodeTraverser::class)
@@ -458,7 +476,10 @@ final class LazyContainerFactory
                 return $phpStanServicesFactory->createDynamicSourceLocatorProvider();
             }
         );
+    }
 
+    private function registerCachingAndResettables(RectorConfig $rectorConfig): void
+    {
         // resettable
         // DynamicSourceLocatorProvider is autotagged on its singleton() call above,
         // as RectorConfig autotags ResettableInterface
@@ -474,7 +495,10 @@ final class LazyContainerFactory
         $rectorConfig->when(FileHashComputer::class)
             ->needs('$cacheMetaExtensions')
             ->giveTagged(CacheMetaExtensionInterface::class);
+    }
 
+    private function registerTypeMappers(RectorConfig $rectorConfig): void
+    {
         // tagged services
         $rectorConfig->when(BetterPhpDocParser::class)
             ->needs('$phpDocNodeDecorators')
@@ -529,7 +553,10 @@ final class LazyContainerFactory
         $rectorConfig->when(NodeTypeResolver::class)
             ->needs('$nodeTypeResolvers')
             ->giveTagged(NodeTypeResolverInterface::class);
+    }
 
+    private function registerNodeNameResolvers(RectorConfig $rectorConfig): void
+    {
         // node name resolvers
         $rectorConfig->when(NodeNameResolver::class)
             ->needs('$nodeNameResolvers')
@@ -544,7 +571,10 @@ final class LazyContainerFactory
             self::CONVERTER_ATTRIBUTE_DECORATOR_CLASSES,
             ConverterAttributeDecoratorInterface::class
         );
+    }
 
+    private function registerRectorAutowiring(RectorConfig $rectorConfig): void
+    {
         $rectorConfig->afterResolving(
             AbstractRector::class,
             static function (AbstractRector $rector, Container $container): void {
@@ -580,7 +610,10 @@ final class LazyContainerFactory
             self::BASE_PHP_DOC_NODE_VISITORS,
             BasePhpDocNodeVisitorInterface::class
         );
+    }
 
+    private function registerTaggedServices(RectorConfig $rectorConfig): void
+    {
         // PHP 8.0 attributes
         $this->registerTagged(
             $rectorConfig,
@@ -616,7 +649,10 @@ final class LazyContainerFactory
         $rectorConfig->when(OutputFormatterCollector::class)
             ->needs('$outputFormatters')
             ->giveTagged(OutputFormatterInterface::class);
+    }
 
+    private function registerAnnotationToAttributeSetters(RectorConfig $rectorConfig): void
+    {
         // required-like setter
         $rectorConfig->afterResolving(
             ArrayAnnotationToAttributeMapper::class,
@@ -671,7 +707,10 @@ final class LazyContainerFactory
                 $doctrineAnnotationAnnotationToAttributeMapper->autowire($annotationToAttributeMapper);
             }
         );
+    }
 
+    private function registerNodeVisitorsAndPhpDoc(RectorConfig $rectorConfig): void
+    {
         $rectorConfig->when(PHPStanNodeScopeResolver::class)
             ->needs('$decoratingNodeVisitors')
             ->giveTagged(DecoratingNodeVisitorInterface::class);
@@ -697,8 +736,6 @@ final class LazyContainerFactory
                 'comments' => true,
             ])
         );
-
-        return $rectorConfig;
     }
 
     /**
