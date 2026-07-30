@@ -22,7 +22,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/commit/ed81c3ad0b9877e6122c79b4afda9d10f3994092
  */
-class FileNode extends Stmt
+final class FileNode extends Stmt
 {
     /**
      * Imports queued to be added on the next UseAddingPostRector run; scoped to this file
