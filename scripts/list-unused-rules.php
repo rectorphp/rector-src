@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Bridge\SetRectorsResolver;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Scripts\Finder\RectorClassFinder;
 use Rector\Scripts\Finder\RectorSetFilesFinder;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -45,11 +46,22 @@ $symfonyStyle->writeln(sprintf('<fg=yellow>Found %d used Rector rules in sets</>
 
 $unusedRectorRules = array_diff($rectorClasses, $usedRectorRules);
 
+// configurable rules require own configuration, without it they do nothing - they can never be part of a set
+$configurableRectorRules = array_filter(
+    $unusedRectorRules,
+    static fn (string $rectorClass): bool => is_a($rectorClass, ConfigurableRectorInterface::class, true)
+);
+
+$unusedRectorRules = array_diff($unusedRectorRules, $configurableRectorRules);
+
 $symfonyStyle->newLine();
 $symfonyStyle->listing($unusedRectorRules);
 
 $symfonyStyle->writeln(
     sprintf('<fg=yellow;options=bold>Found %d Rector rules not in any set</>', count($unusedRectorRules))
+);
+$symfonyStyle->writeln(
+    sprintf('<fg=green>Skipped %d configurable Rector rules</>', count($configurableRectorRules))
 );
 $symfonyStyle->newLine();
 
