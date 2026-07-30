@@ -148,7 +148,6 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeForParameterMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConstantArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\FloatTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\GenericClassStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasMethodTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasOffsetTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasOffsetValueTypeTypeMapper;
@@ -165,11 +164,9 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ObjectWithoutClassTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\OversizedArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ParentStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ResourceTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\SelfObjectTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StrictMixedTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StringTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\ThisTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\TypeWithClassNameTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
@@ -303,7 +300,6 @@ final class LazyContainerFactory
         ConditionalTypeForParameterMapper::class,
         ConditionalTypeMapper::class,
         FloatTypeMapper::class,
-        GenericClassStringTypeMapper::class,
         HasMethodTypeMapper::class,
         HasOffsetTypeMapper::class,
         HasOffsetValueTypeTypeMapper::class,
@@ -320,11 +316,9 @@ final class LazyContainerFactory
         OversizedArrayTypeMapper::class,
         ParentStaticTypeMapper::class,
         ResourceTypeMapper::class,
-        SelfObjectTypeMapper::class,
         StaticTypeMapper::class,
         StrictMixedTypeMapper::class,
         StringTypeMapper::class,
-        ThisTypeMapper::class,
         TypeWithClassNameTypeMapper::class,
         UnionTypeMapper::class,
         VoidTypeMapper::class,
