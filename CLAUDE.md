@@ -39,6 +39,7 @@ vendor/bin/phpunit
 
 PHPStan extras enabled in `phpstan.neon`:
 - `type-coverage` (ships the former `type-perfect` rules): `no_mixed`, `null_over_false`, `narrow_param`, `narrow_return` — return/param types must be narrow; prefer `null` over `false` for "no result".
+- `type_coverage`: at least 99 % of return types, param types, property types, constant types and `declare(strict_types=1)` must be in place.
 - `unused-public`: public methods/properties/constants must be used somewhere. If you add a new public API, expect to use it or mark it accordingly.
 - `symplify/phpstan-rules` + `rector-rules`: forbids `var_dump`, `dd`, `property_exists`, `class_exists`, `@` error suppression, dynamic names, etc., outside the narrowly listed exceptions in `phpstan.neon`. Do not add new exceptions casually — fix the code.
 

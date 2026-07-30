@@ -60,6 +60,14 @@ parameters:
         narrow_param: true
         narrow_return: true
 
+    # see https://github.com/TomasVotruba/type-coverage
+    type_coverage:
+        declare: 99
+        return_type: 99
+        param_type: 99
+        property_type: 99
+        constant_type: 99
+
     # see https://github.com/TomasVotruba/unused-public
     unused_public:
         methods: true
