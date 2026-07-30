@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Rector\Skipper\Skipper;
 
 use PhpParser\Node;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ProcessAnalyzer\RectifiedAnalyzer;
-use Rector\Skipper\SkipVoter\ClassSkipVoter;
+use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\ValueObject\SkipMatch;
 
 /**
@@ -19,7 +20,9 @@ final readonly class Skipper
     public function __construct(
         private RectifiedAnalyzer $rectifiedAnalyzer,
         private PathSkipper $pathSkipper,
-        private ClassSkipVoter $classSkipVoter,
+        private SkipSkipper $skipSkipper,
+        private SkippedClassResolver $skippedClassResolver,
+        private ReflectionProvider $reflectionProvider,
         private UsedSkipCollector $usedSkipCollector,
     ) {
     }
@@ -51,11 +54,11 @@ final readonly class Skipper
      */
     public function matchSkip(string|object $element, string $filePath): ?SkipMatch
     {
-        if (! $this->classSkipVoter->match($element)) {
+        if (! is_object($element) && ! $this->reflectionProvider->hasClass($element)) {
             return null;
         }
 
-        return $this->classSkipVoter->matchSkip($element, $filePath);
+        return $this->skipSkipper->match($element, $filePath, $this->skippedClassResolver->resolve());
     }
 
     public function markSkipUsed(SkipMatch $skipMatch): void
