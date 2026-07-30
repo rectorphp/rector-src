@@ -6,31 +6,17 @@ namespace Rector\TypeDeclarationDocblocks\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\TypeDeclaration\TypeAnalyzer\ParameterTypeFromDataProviderResolver;
-use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
-use Rector\TypeDeclarationDocblocks\NodeFinder\DataProviderMethodsFinder;
-use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromDataProviderRector\AddParamArrayDocblockFromDataProviderRectorTest
+ * @deprecated This rule is deprecated, as data provider docblock typing is not relevant to code quality. It increases maintenance cost and decreases readability.
  */
-final class AddParamArrayDocblockFromDataProviderRector extends AbstractRector
+final class AddParamArrayDocblockFromDataProviderRector extends AbstractRector implements DeprecatedInterface
 {
-    public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
-        private readonly DataProviderMethodsFinder $dataProviderMethodsFinder,
-        private readonly ParameterTypeFromDataProviderResolver $parameterTypeFromDataProviderResolver,
-        private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -94,72 +80,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
-            return null;
-        }
-
-        $hasChanged = false;
-
-        foreach ($node->getMethods() as $classMethod) {
-            if ($classMethod->getParams() === []) {
-                continue;
-            }
-
-            if (! $this->testsNodeAnalyzer->isTestClassMethod($classMethod)) {
-                continue;
-            }
-
-            $dataProviderNodes = $this->dataProviderMethodsFinder->findDataProviderNodes($node, $classMethod);
-            if ($dataProviderNodes->getClassMethods() === []) {
-                continue;
-            }
-
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-
-            foreach ($classMethod->getParams() as $paramPosition => $param) {
-                // we are interested only in array params
-                if (! $param->type instanceof Node) {
-                    continue;
-                }
-
-                if (! $this->isNames($param->type, ['array', 'iterable'])) {
-                    continue;
-                }
-
-                $paramName = $this->getName($param);
-                $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
-
-                // already defined, lets skip it
-                if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($paramTagValueNode)) {
-                    continue;
-                }
-
-                $parameterType = $this->parameterTypeFromDataProviderResolver->resolve(
-                    $paramPosition,
-                    $dataProviderNodes->getClassMethods()
-                );
-
-                $hasParamTypeChanged = $this->nodeDocblockTypeDecorator->decorateGenericIterableParamType(
-                    $parameterType,
-                    $phpDocInfo,
-                    $classMethod,
-                    $param,
-                    $paramName
-                );
-
-                if (! $hasParamTypeChanged) {
-                    continue;
-                }
-
-                $hasChanged = true;
-            }
-
-        }
-
-        if (! $hasChanged) {
-            return null;
-        }
-
-        return $node;
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" is deprecated, as data provider docblock typing is not relevant to code quality',
+            self::class
+        ));
     }
 }
