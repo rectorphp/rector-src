@@ -117,6 +117,12 @@ parameters:
                 - src/Console/Notifier.php
                 - src/Util/FileHasher.php
 
+        # deliberately kept out of the php81 set, as it fires too often to be applied by default;
+        # it stays available to register directly with withRules()
+        -
+            identifier: rector.upgradeDowngradeRegisteredInSet
+            path: rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
