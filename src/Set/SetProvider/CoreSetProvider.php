@@ -27,7 +27,6 @@ final class CoreSetProvider implements SetProviderInterface
             new Set(SetGroup::CORE, 'Gmagick to Imagick', __DIR__ . '/../../../config/set/gmagick-to-imagick.php'),
             new Set(SetGroup::CORE, 'Naming', __DIR__ . '/../../../config/set/naming.php'),
             new Set(SetGroup::CORE, 'Privatization', __DIR__ . '/../../../config/set/privatization.php'),
-            new Set(SetGroup::CORE, 'Strict Booleans', __DIR__ . '/../../../config/set/strict-booleans.php'),
             new Set(SetGroup::CORE, 'Type Declarations', __DIR__ . '/../../../config/set/type-declaration.php'),
 
             new ComposerTriggeredSet(
