@@ -739,7 +739,6 @@ final class RectorConfigBuilder
         $setMap = [
             SetGroup::TWIG => $twig,
             SetGroup::DOCTRINE => $doctrine,
-            SetGroup::PHPUNIT => $phpunit,
             SetGroup::SYMFONY => $symfony,
             SetGroup::NETTE_UTILS => $netteUtils,
             SetGroup::LARAVEL => $laravel,
@@ -750,6 +749,11 @@ final class RectorConfigBuilder
             if ($isEnabled) {
                 $this->setGroups[] = $setPath;
             }
+        }
+
+        if ($phpunit) {
+            // single set, as every rule inside is bound to the installed PHPUnit version on its own
+            $this->sets[] = PHPUnitSetList::COMPOSER_BASED;
         }
 
         return $this;
