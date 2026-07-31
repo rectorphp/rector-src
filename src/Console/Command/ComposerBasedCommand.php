@@ -176,7 +176,7 @@ final class ComposerBasedCommand extends Command
 
         if (is_array($value)) {
             $printedItems = array_map(
-                fn (mixed $item): string => $this->printConfigurationValue($item),
+                $this->printConfigurationValue(...),
                 $value
             );
 
