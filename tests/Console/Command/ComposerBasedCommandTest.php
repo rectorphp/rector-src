@@ -6,7 +6,11 @@ namespace Rector\Tests\Console\Command;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Composer\InstalledPackageResolver;
+use Rector\Config\RectorConfig;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Command\ComposerBasedCommand;
+use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Console\Command\Source\ComposerBoundRector;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -19,6 +23,9 @@ final class ComposerBasedCommandTest extends TestCase
     protected function setUp(): void
     {
         $this->bufferedOutput = new BufferedOutput();
+
+        // the parameter provider is static, reset it between tests
+        SimpleParameterProvider::setParameter(Option::COMPOSER_BOUND_RULE_CONFIGURATIONS, []);
     }
 
     public function testName(): void
@@ -48,7 +55,7 @@ final class ComposerBasedCommandTest extends TestCase
 
         $this->assertStringContainsString('phpunit/phpunit', $output);
         $this->assertStringContainsString('>=9.0', $output);
-        $this->assertStringContainsString('1 of 1 composer package bound rules are active', $output);
+        $this->assertStringContainsString('1 of 1 composer package bound items are active', $output);
     }
 
     public function testNotInstalledPackage(): void
@@ -61,7 +68,53 @@ final class ComposerBasedCommandTest extends TestCase
         $output = $this->bufferedOutput->fetch();
 
         $this->assertStringContainsString('not-installed/package', $output);
-        $this->assertStringContainsString('0 of 1 composer package bound rules are active', $output);
+        $this->assertStringContainsString('0 of 1 composer package bound items are active', $output);
+    }
+
+    public function testRuleConfiguration(): void
+    {
+        $rectorConfig = new RectorConfig();
+
+        // this project requires PHPUnit
+        $rectorConfig->ruleWithConfigurationComposerVersionBound(
+            RenameClassRector::class,
+            [
+                'SomeOldClass' => 'SomeNewClass',
+            ],
+            'phpunit/phpunit',
+            '>=9.0'
+        );
+
+        $composerBasedCommand = $this->createComposerBasedCommand([]);
+        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+
+        $output = $this->bufferedOutput->fetch();
+
+        $this->assertStringContainsString('Composer package bound rule configuration', $output);
+        $this->assertStringContainsString('SomeOldClass: SomeNewClass', $output);
+        $this->assertStringContainsString('>=9.0', $output);
+    }
+
+    public function testInactiveRuleConfigurationIsReported(): void
+    {
+        $rectorConfig = new RectorConfig();
+
+        $rectorConfig->ruleWithConfigurationComposerVersionBound(
+            RenameClassRector::class,
+            [
+                'SomeOldClass' => 'SomeNewClass',
+            ],
+            'not-installed/package',
+            '>=1.0'
+        );
+
+        $composerBasedCommand = $this->createComposerBasedCommand([]);
+        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+
+        $output = $this->bufferedOutput->fetch();
+
+        $this->assertStringContainsString('not-installed/package', $output);
+        $this->assertStringContainsString('0 of 1 composer package bound items are active', $output);
     }
 
     /**
