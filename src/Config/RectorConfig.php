@@ -25,6 +25,7 @@ use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PolyfillPackage;
+use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
 use Symfony\Component\Console\Command\Command;
 use Webmozart\Assert\Assert;
 
@@ -214,11 +215,20 @@ final class RectorConfig extends Container
         string $versionConstraint
     ): void {
         $packageVersion = $this->resolveInstalledPackageVersion($packageName);
-        if ($packageVersion === null) {
-            return;
-        }
+        $isActive = $packageVersion !== null && Semver::satisfies($packageVersion, $versionConstraint);
 
-        if (! Semver::satisfies($packageVersion, $versionConstraint)) {
+        // reported by the "composer-based" command, the inactive ones as well
+        SimpleParameterProvider::addParameter(Option::COMPOSER_BOUND_RULE_CONFIGURATIONS, [
+            new ComposerBoundRuleConfiguration(
+                $rectorClass,
+                $packageName,
+                $versionConstraint,
+                $configuration,
+                $isActive
+            ),
+        ]);
+
+        if (! $isActive) {
             return;
         }
 
