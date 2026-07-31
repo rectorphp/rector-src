@@ -61,8 +61,5 @@ final class TypeDeclarationDocblocksLevel
 
         // run latter after other rules, as more generic
         AddReturnDocblockForDimFetchArrayFromAssignsRector::class,
-
-        // @todo test first, 2026-01
-        // AddReturnDocblockFromMethodCallDocblockRector::class,
     ];
 }
