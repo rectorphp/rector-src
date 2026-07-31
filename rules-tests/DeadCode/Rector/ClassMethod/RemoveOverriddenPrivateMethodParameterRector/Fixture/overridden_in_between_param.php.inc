@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class OverriddenInBetweenParam
+use PHPUnit\Framework\TestCase;
+
+final class OverriddenInBetweenParam extends TestCase
 {
     public function run()
     {
@@ -23,7 +25,9 @@ final class OverriddenInBetweenParam
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class OverriddenInBetweenParam
+use PHPUnit\Framework\TestCase;
+
+final class OverriddenInBetweenParam extends TestCase
 {
     public function run()
     {

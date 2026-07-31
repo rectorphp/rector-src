@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class SkipFirstClassCallableCaller
+use PHPUnit\Framework\TestCase;
+
+final class SkipFirstClassCallableCaller extends TestCase
 {
     public function run()
     {

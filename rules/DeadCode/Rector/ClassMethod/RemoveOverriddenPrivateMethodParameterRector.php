@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\DeadCode\NodeCollector\OverriddenParameterResolver;
 use Rector\DeadCode\NodeManipulator\PrivateMethodParamRemover;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -21,45 +22,50 @@ final class RemoveOverriddenPrivateMethodParameterRector extends AbstractRector
     public function __construct(
         private readonly OverriddenParameterResolver $overriddenParameterResolver,
         private readonly PrivateMethodParamRemover $privateMethodParamRemover,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove parameter of private method, that is overridden by direct assign before its first use',
+            'Remove parameter of private test class method, that is overridden by direct assign before its first use',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class SomeClass
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
 {
-    public function run()
+    public function test()
     {
-        return $this->create(new Value());
+        $this->createUser(new User());
     }
 
-    private function create($value)
+    private function createUser($user)
     {
-        $value = new AnotherValue();
+        $user = $this->createMock(User::class);
 
-        return $value;
+        return $user;
     }
 }
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class SomeClass
+use PHPUnit\Framework\TestCase;
+
+final class SomeTest extends TestCase
 {
-    public function run()
+    public function test()
     {
-        return $this->create();
+        $this->createUser();
     }
 
-    private function create()
+    private function createUser()
     {
-        $value = new AnotherValue();
+        $user = $this->createMock(User::class);
 
-        return $value;
+        return $user;
     }
 }
 CODE_SAMPLE
@@ -81,6 +87,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // narrow scope to test classes for now, as mock overrides are the most common case there
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {

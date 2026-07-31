@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class SkipSelfReferenceOverride
+use PHPUnit\Framework\TestCase;
+
+final class SkipSelfReferenceOverride extends TestCase
 {
     public function run()
     {

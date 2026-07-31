@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class OverriddenParam
+use PHPUnit\Framework\TestCase;
+
+final class OverriddenParam extends TestCase
 {
     public function run()
     {
@@ -23,7 +25,9 @@ final class OverriddenParam
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class OverriddenParam
+use PHPUnit\Framework\TestCase;
+
+final class OverriddenParam extends TestCase
 {
     public function run()
     {

@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class OverriddenParamWithPhpDoc
+use PHPUnit\Framework\TestCase;
+
+final class OverriddenParamWithPhpDoc extends TestCase
 {
     public function run()
     {
@@ -26,7 +28,9 @@ final class OverriddenParamWithPhpDoc
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class OverriddenParamWithPhpDoc
+use PHPUnit\Framework\TestCase;
+
+final class OverriddenParamWithPhpDoc extends TestCase
 {
     public function run()
     {

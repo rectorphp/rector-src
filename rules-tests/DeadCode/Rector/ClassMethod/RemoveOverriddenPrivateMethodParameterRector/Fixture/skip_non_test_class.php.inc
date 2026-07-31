@@ -2,9 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-use PHPUnit\Framework\TestCase;
-
-final class SkipUsedBeforeOverride extends TestCase
+final class SkipNonTestClass
 {
     public function run()
     {
@@ -13,8 +11,6 @@ final class SkipUsedBeforeOverride extends TestCase
 
     private function create($value)
     {
-        echo $value;
-
         $value = 500;
 
         return $value;

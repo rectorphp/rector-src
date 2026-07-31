@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class SkipConditionalOverride
+use PHPUnit\Framework\TestCase;
+
+final class SkipConditionalOverride extends TestCase
 {
     public function run()
     {

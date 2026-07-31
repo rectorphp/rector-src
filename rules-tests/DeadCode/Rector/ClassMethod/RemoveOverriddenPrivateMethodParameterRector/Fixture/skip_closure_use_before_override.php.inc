@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\Fixture;
 
-final class SkipClosureUseBeforeOverride
+use PHPUnit\Framework\TestCase;
+
+final class SkipClosureUseBeforeOverride extends TestCase
 {
     public function run()
     {
