@@ -2,6 +2,7 @@
 
 * `FileWithoutNamespace` is deprecated, and replaced by `FileNode` that represents both namespaced and non-namespaced files and allow changes inside
 * `beforeTraverse()` is now marked as `@final`, use `getNodeTypes()` with `FileNode::class` instead
+* The `junit` output format was removed, as Rector is not a testing tool. Use `--output-format=gitlab` or `--output-format=github` instead, based on your CI
 
 **Before**
 
