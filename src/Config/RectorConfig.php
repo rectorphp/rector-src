@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Config;
 
+use Composer\Semver\Semver;
 use Illuminate\Container\Container;
 use Override;
 use Rector\Caching\Contract\CacheMetaExtensionInterface;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Composer\InstalledPackageResolver;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\RectorConfigBuilder;
@@ -41,6 +43,8 @@ final class RectorConfig extends Container
      * @var string[]
      */
     private array $autotagInterfaces = [Command::class, ResettableInterface::class];
+
+    private ?InstalledPackageResolver $installedPackageResolver = null;
 
     private static ?bool $recreated = null;
 
@@ -193,6 +197,32 @@ final class RectorConfig extends Container
 
         // for cache invalidation in case of sets change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
+    }
+
+    /**
+     * Register the rule configuration only if the package version installed in the analysed project satisfies
+     * the version constraint. Useful for configuration valid since a specific package version,
+     * e.g. an attribute added in PHPUnit 11.
+     *
+     * @param class-string<ConfigurableRectorInterface> $rectorClass
+     * @param mixed[] $configuration
+     */
+    public function ruleWithConfigurationComposerVersionBound(
+        string $rectorClass,
+        array $configuration,
+        string $packageName,
+        string $versionConstraint
+    ): void {
+        $packageVersion = $this->resolveInstalledPackageVersion($packageName);
+        if ($packageVersion === null) {
+            return;
+        }
+
+        if (! Semver::satisfies($packageVersion, $versionConstraint)) {
+            return;
+        }
+
+        $this->ruleWithConfiguration($rectorClass, $configuration);
     }
 
     /**
@@ -487,5 +517,12 @@ final class RectorConfig extends Container
     public function setOverflowLevels(array $levelOverflows): void
     {
         SimpleParameterProvider::addParameter(Option::LEVEL_OVERFLOWS, $levelOverflows);
+    }
+
+    private function resolveInstalledPackageVersion(string $packageName): ?string
+    {
+        $this->installedPackageResolver ??= new InstalledPackageResolver();
+
+        return $this->installedPackageResolver->resolvePackageVersion($packageName);
     }
 }
