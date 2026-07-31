@@ -58,6 +58,7 @@ use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Configuration\RenamedClassesDataCollector;
+use Rector\Console\Command\ComposerBasedCommand;
 use Rector\Console\Command\CustomRuleCommand;
 use Rector\Console\Command\ListRulesCommand;
 use Rector\Console\Command\ProcessCommand;
@@ -435,8 +436,13 @@ final class LazyContainerFactory
         $rectorConfig->singleton(SetupCICommand::class);
         $rectorConfig->singleton(ListRulesCommand::class);
         $rectorConfig->singleton(CustomRuleCommand::class);
+        $rectorConfig->singleton(ComposerBasedCommand::class);
 
         $rectorConfig->when(ListRulesCommand::class)
+            ->needs('$rectors')
+            ->giveTagged(RectorInterface::class);
+
+        $rectorConfig->when(ComposerBasedCommand::class)
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
 
