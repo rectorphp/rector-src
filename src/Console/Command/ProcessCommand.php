@@ -185,6 +185,7 @@ EOF
         $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
         $this->deprecatedRulesReporter->reportDeprecatedRectorUnsupportedMethods();
         $this->deprecatedRulesReporter->reportDeprecatedCacheMetaExtensions();
+        $this->deprecatedRulesReporter->reportDeprecatedPhpSetsMethods();
 
         $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
