@@ -7,7 +7,6 @@ namespace Rector\Configuration;
 use PhpParser\NodeVisitor;
 use Rector\Bridge\SetProviderCollector;
 use Rector\Bridge\SetRectorsResolver;
-use Rector\Caching\Contract\CacheMetaExtensionInterface;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
@@ -101,11 +100,6 @@ final class RectorConfigBuilder
     private ?string $cacheDirectory = null;
 
     private ?string $containerCacheDirectory = null;
-
-    /**
-     * @var array<class-string<CacheMetaExtensionInterface>>
-     */
-    private array $cacheMetaExtensions = [];
 
     private ?bool $parallel = null;
 
@@ -310,10 +304,6 @@ final class RectorConfigBuilder
 
         if ($this->containerCacheDirectory !== null) {
             $rectorConfig->containerCacheDirectory($this->containerCacheDirectory);
-        }
-
-        foreach ($this->cacheMetaExtensions as $cacheMetumExtension) {
-            $rectorConfig->cacheMetaExtension($cacheMetumExtension);
         }
 
         if ($this->importNames || $this->importDocBlockNames) {
@@ -806,11 +796,14 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @param class-string<CacheMetaExtensionInterface> $cacheMetaExtensionClass
+     * @param class-string $cacheMetaExtensionClass
+     *
+     * @deprecated Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
+     * invalidation is needed, handle it in CI in a more generic way, e.g. by clearing the cache directory.
      */
     public function withCacheMetaExtension(string $cacheMetaExtensionClass): self
     {
-        $this->cacheMetaExtensions[] = $cacheMetaExtensionClass;
+        SimpleParameterProvider::addParameter(Option::CACHE_META_EXTENSIONS, $cacheMetaExtensionClass);
 
         return $this;
     }
