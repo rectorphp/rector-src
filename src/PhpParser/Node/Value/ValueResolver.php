@@ -203,7 +203,7 @@ final class ValueResolver
 
             if ($expr instanceof File) {
                 // __FILE__
-                return $this->resolveFileConstant();
+                return $this->resolveFileConstant($expr);
             }
 
             // resolve "SomeClass::SOME_CONST"
@@ -230,7 +230,7 @@ final class ValueResolver
         return dirname($file->getFilePath());
     }
 
-    private function resolveFileConstant(): string
+    private function resolveFileConstant(File $file): string
     {
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof \Rector\ValueObject\Application\File) {
