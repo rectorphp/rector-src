@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Config;
 
+use Deprecated;
 use Composer\Semver\Semver;
 use Illuminate\Container\Container;
 use Override;
-use Rector\Caching\Contract\CacheMetaExtensionInterface;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Configuration\Option;
@@ -439,14 +439,15 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param class-string<CacheMetaExtensionInterface> $cacheMetaExtensionClass
+     * @param class-string $cacheMetaExtensionClass
      */
+    #[Deprecated(message: <<<'TXT'
+    Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
+     invalidation is needed, handle it in CI in a more generic way, e.g. by clearing the cache directory.
+    TXT)]
     public function cacheMetaExtension(string $cacheMetaExtensionClass): void
     {
-        Assert::isAOf($cacheMetaExtensionClass, CacheMetaExtensionInterface::class);
-
-        $this->singleton($cacheMetaExtensionClass);
-        $this->tag($cacheMetaExtensionClass, CacheMetaExtensionInterface::class);
+        SimpleParameterProvider::addParameter(Option::CACHE_META_EXTENSIONS, $cacheMetaExtensionClass);
     }
 
     /**
