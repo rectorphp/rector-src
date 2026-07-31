@@ -18,4 +18,13 @@ final class InstalledPackageResolverTest extends TestCase
         $this->assertContainsOnlyInstancesOf(InstalledPackage::class, $installedPackages);
         $this->assertGreaterThan(77, count($installedPackages));
     }
+
+    public function testFallbackToCurrentWorkingDirectory(): void
+    {
+        $installedPackageResolver = new InstalledPackageResolver();
+        $installedPackages = $installedPackageResolver->resolve();
+
+        $this->assertContainsOnlyInstancesOf(InstalledPackage::class, $installedPackages);
+        $this->assertGreaterThan(77, count($installedPackages));
+    }
 }

@@ -21,15 +21,14 @@ final class InstalledPackageResolver
      */
     private ?array $resolvedInstalledPackages = null;
 
-    public function __construct(
-        private readonly ?string $projectDirectory = null
-    ) {
-        // fallback to root project directory
-        if ($projectDirectory === null) {
-            $projectDirectory = getcwd();
-        }
+    private readonly string $projectDirectory;
 
-        Assert::directory($projectDirectory);
+    public function __construct(?string $projectDirectory = null)
+    {
+        // fallback to root project directory
+        $this->projectDirectory = $projectDirectory ?? (string) getcwd();
+
+        Assert::directory($this->projectDirectory);
     }
 
     /**
