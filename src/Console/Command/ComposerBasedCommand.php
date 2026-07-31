@@ -94,7 +94,7 @@ final class ComposerBasedCommand extends Command
             $isActive = $installedVersion !== null && Semver::satisfies($installedVersion, $constraint);
 
             $tableRows[] = [
-                $rector::class,
+                $this->printShortClassName($rector::class),
                 $packageName,
                 $constraint,
                 $installedVersion ?? '-',
@@ -131,7 +131,7 @@ final class ComposerBasedCommand extends Command
             $installedVersion = $this->installedPackageResolver->resolvePackageVersion($packageName);
 
             $tableRows[] = [
-                $composerBoundRuleConfiguration->getRectorClass(),
+                $this->printShortClassName($composerBoundRuleConfiguration->getRectorClass()),
                 $packageName,
                 $composerBoundRuleConfiguration->getVersionConstraint(),
                 $installedVersion ?? '-',
@@ -169,9 +169,7 @@ final class ComposerBasedCommand extends Command
                 $printedPropertyValues[] = $this->printConfigurationValue($reflectionProperty->getValue($value));
             }
 
-            $shortClassName = Strings::after($value::class, '\\', -1) ?? $value::class;
-
-            return $shortClassName . '(' . implode(', ', $printedPropertyValues) . ')';
+            return $this->printShortClassName($value::class) . '(' . implode(', ', $printedPropertyValues) . ')';
         }
 
         if (is_array($value)) {
@@ -188,5 +186,10 @@ final class ComposerBasedCommand extends Command
         }
 
         return (string) $value;
+    }
+
+    private function printShortClassName(string $className): string
+    {
+        return Strings::after($className, '\\', -1) ?? $className;
     }
 }
