@@ -12,6 +12,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @api used by extensions
+ * @see \Rector\Tests\Set\ValueObject\ComposerTriggeredSetTest
  */
 final readonly class ComposerTriggeredSet implements SetInterface
 {
