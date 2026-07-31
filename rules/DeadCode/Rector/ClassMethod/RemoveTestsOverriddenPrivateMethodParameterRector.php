@@ -15,9 +15,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\RemoveOverriddenPrivateMethodParameterRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveTestsOverriddenPrivateMethodParameterRector\RemoveTestsOverriddenPrivateMethodParameterRectorTest
  */
-final class RemoveOverriddenPrivateMethodParameterRector extends AbstractRector
+final class RemoveTestsOverriddenPrivateMethodParameterRector extends AbstractRector
 {
     public function __construct(
         private readonly OverriddenParameterResolver $overriddenParameterResolver,
