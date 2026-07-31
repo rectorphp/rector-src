@@ -123,6 +123,10 @@ final readonly class WorkerCommandLineFactory
             }
         }
 
+        if ((bool) $input->getOption(Option::COMPOSER_BASED)) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::COMPOSER_BASED;
+        }
+
         if ($input->getOption(Option::ONLY) !== null) {
             $workerCommandArray[] = self::OPTION_DASHES . Option::ONLY;
             $workerCommandArray[] = escapeshellarg((string) $input->getOption(Option::ONLY));

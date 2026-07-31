@@ -35,7 +35,13 @@ final readonly class Configuration
         private ?string $onlySuffix = null,
         private array $levelOverflows = [],
         private bool $showRulesSummary = false,
+        private bool $isComposerBased = false,
     ) {
+    }
+
+    public function isComposerBased(): bool
+    {
+        return $this->isComposerBased;
     }
 
     public function isDryRun(): bool

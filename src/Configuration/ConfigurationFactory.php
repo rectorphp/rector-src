@@ -95,6 +95,13 @@ final readonly class ConfigurationFactory
 
         $showRulesSummary = (bool) $input->getOption(Option::RULES_SUMMARY);
 
+        $isComposerBased = (bool) $input->getOption(Option::COMPOSER_BASED);
+
+        // "--composer-based" narrows the run the same way "--only" does
+        if ($isComposerBased) {
+            SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
+        }
+
         return new Configuration(
             $isDryRun,
             $showProgressBar,
@@ -113,6 +120,7 @@ final readonly class ConfigurationFactory
             $onlySuffix,
             $levelOverflows,
             $showRulesSummary,
+            $isComposerBased,
         );
     }
 
