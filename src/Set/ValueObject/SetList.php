@@ -20,6 +20,10 @@ final class SetList
 
     public const string DEAD_CODE = __DIR__ . '/../../../config/set/dead-code.php';
 
+    /**
+     * @deprecated Niche set for a rarely used extension, it is empty now and will be removed.
+     * Register RenameClassRector and RenameMethodRector with your own configuration instead.
+     */
     public const string GMAGICK_TO_IMAGICK = __DIR__ . '/../../../config/set/gmagick-to-imagick.php';
 
     public const string NAMING = __DIR__ . '/../../../config/set/naming.php';
