@@ -6,19 +6,20 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use Rector\DeadCode\NodeCollector\UnusedParameterResolver;
+use Rector\DeadCode\NodeCollector\OverriddenParameterResolver;
 use Rector\DeadCode\NodeManipulator\PrivateMethodParamRemover;
 use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector\RemoveUnusedPrivateMethodParameterRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveOverriddenPrivateMethodParameterRector\RemoveOverriddenPrivateMethodParameterRectorTest
  */
-final class RemoveUnusedPrivateMethodParameterRector extends AbstractRector
+final class RemoveOverriddenPrivateMethodParameterRector extends AbstractRector
 {
     public function __construct(
-        private readonly UnusedParameterResolver $unusedParameterResolver,
+        private readonly OverriddenParameterResolver $overriddenParameterResolver,
         private readonly PrivateMethodParamRemover $privateMethodParamRemover,
     ) {
     }
@@ -26,15 +27,22 @@ final class RemoveUnusedPrivateMethodParameterRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove unused parameter, if not required by interface or parent class',
+            'Remove parameter of private method, that is overridden by direct assign before its first use',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    private function run($value, $value2)
+    public function run()
     {
-         $this->value = $value;
+        return $this->create(new Value());
+    }
+
+    private function create($value)
+    {
+        $value = new AnotherValue();
+
+        return $value;
     }
 }
 CODE_SAMPLE
@@ -42,9 +50,16 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    private function run($value)
+    public function run()
     {
-         $this->value = $value;
+        return $this->create();
+    }
+
+    private function create()
+    {
+        $value = new AnotherValue();
+
+        return $value;
     }
 }
 CODE_SAMPLE
@@ -73,12 +88,17 @@ CODE_SAMPLE
                 continue;
             }
 
-            $unusedParameters = $this->unusedParameterResolver->resolve($classMethod);
-            if ($unusedParameters === []) {
+            // constructor is called via new, that is not covered by caller args cleanup
+            if ($this->isName($classMethod, MethodName::CONSTRUCT)) {
                 continue;
             }
 
-            if ($this->privateMethodParamRemover->removeParams($node, $classMethod, $unusedParameters)) {
+            $overriddenParameters = $this->overriddenParameterResolver->resolve($classMethod);
+            if ($overriddenParameters === []) {
+                continue;
+            }
+
+            if ($this->privateMethodParamRemover->removeParams($node, $classMethod, $overriddenParameters)) {
                 $hasChanged = true;
             }
         }
