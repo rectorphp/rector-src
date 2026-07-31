@@ -8,6 +8,9 @@ use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 
 # https://www.php.net/manual/en/book.gmagick.php → https://www.php.net/manual/en/book.imagick.php
+
+# @deprecated Niche set for a rarely used extension, it will be removed.
+# Register RenameClassRector and RenameMethodRector with your own configuration instead.
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(RenameClassRector::class, [
