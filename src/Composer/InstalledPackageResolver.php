@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Composer;
 
+use Composer\Semver\Semver;
+use Composer\Semver\VersionParser;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\Composer\ValueObject\InstalledPackage;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Skipper\FileSystem\PathNormalizer;
+use UnexpectedValueException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -16,10 +19,17 @@ use Webmozart\Assert\Assert;
  */
 final class InstalledPackageResolver
 {
+    private const string ANY_VERSION_LOWER_BOUND = '0.0.0.0-dev';
+
     /**
      * @var null|array<string, InstalledPackage>
      */
     private ?array $resolvedInstalledPackages = null;
+
+    /**
+     * @var null|array<string, mixed>
+     */
+    private ?array $projectComposerJson = null;
 
     private readonly string $projectDirectory;
 
@@ -75,36 +85,116 @@ final class InstalledPackageResolver
      */
     private function createInstalledPackages(array $packages): array
     {
+        $packageConstraints = $this->resolvePackageConstraints();
         $installedPackages = [];
 
         foreach ($packages as $package) {
             $name = $package['name'];
-            $installedPackages[$name] = new InstalledPackage($name, $package['version_normalized']);
+            $version = $package['version_normalized'];
+
+            $constraint = $packageConstraints[$name] ?? null;
+            if (is_string($constraint)) {
+                // the "installed.json" can be outdated, e.g. after a branch switch;
+                // in such case the "composer.json" constraint has a priority
+                $version = $this->matchConstraintVersion($version, $constraint) ?? $version;
+            }
+
+            $installedPackages[$name] = new InstalledPackage($name, $version);
         }
 
         return $installedPackages;
     }
 
-    private function resolveVendorDir(): string
+    /**
+     * @return null|string the lowest version allowed by the constraint, if the installed version is out of it
+     */
+    private function matchConstraintVersion(string $installedVersion, string $constraint): ?string
     {
-        $projectComposerJsonFilePath = $this->projectDirectory . '/composer.json';
-
-        if (\file_exists($projectComposerJsonFilePath)) {
-            $projectComposerContents = FileSystem::read($projectComposerJsonFilePath);
-            $projectComposerJson = Json::decode($projectComposerContents, true);
-
-            if (isset($projectComposerJson['config']['vendor-dir']) &&
-                is_string($projectComposerJson['config']['vendor-dir'])
-            ) {
-                $realPathVendorDir = realpath($projectComposerJson['config']['vendor-dir']) ?: '';
-                $normalizedRealPathVendorDir = PathNormalizer::normalize($realPathVendorDir);
-                $normalizedVendorDir = PathNormalizer::normalize($projectComposerJson['config']['vendor-dir']);
-
-                return $normalizedRealPathVendorDir === $normalizedVendorDir
-                    ? $projectComposerJson['config']['vendor-dir']
-                    : $this->projectDirectory . '/' . $projectComposerJson['config']['vendor-dir'];
+        try {
+            if (Semver::satisfies($installedVersion, $constraint)) {
+                return null;
             }
 
+            $lowestVersion = new VersionParser()->parseConstraints($constraint)
+                ->getLowerBound()
+                ->getVersion();
+        } catch (UnexpectedValueException) {
+            // non-comparable version or constraint, e.g. a dev one
+            return null;
+        }
+
+        // the constraint allows any version, nothing to fall back to
+        if ($lowestVersion === self::ANY_VERSION_LOWER_BOUND) {
+            return null;
+        }
+
+        // the lower bound is a dev one, e.g. "10.5.0.0-dev" for the "^10.5" constraint
+        if (str_ends_with($lowestVersion, '-dev')) {
+            return substr($lowestVersion, 0, -strlen('-dev'));
+        }
+
+        return $lowestVersion;
+    }
+
+    /**
+     * @return array<string, string> package name to the "composer.json" version constraint
+     */
+    private function resolvePackageConstraints(): array
+    {
+        $projectComposerJson = $this->loadProjectComposerJson();
+
+        $packageConstraints = [];
+
+        foreach (['require', 'require-dev'] as $section) {
+            $requiredPackages = $projectComposerJson[$section] ?? null;
+            if (! is_array($requiredPackages)) {
+                continue;
+            }
+
+            foreach ($requiredPackages as $packageName => $constraint) {
+                if (is_string($packageName) && is_string($constraint)) {
+                    $packageConstraints[$packageName] = $constraint;
+                }
+            }
+        }
+
+        return $packageConstraints;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function loadProjectComposerJson(): array
+    {
+        if ($this->projectComposerJson !== null) {
+            return $this->projectComposerJson;
+        }
+
+        $projectComposerJsonFilePath = $this->projectDirectory . '/composer.json';
+        if (! file_exists($projectComposerJsonFilePath)) {
+            return $this->projectComposerJson = [];
+        }
+
+        $projectComposerContents = FileSystem::read($projectComposerJsonFilePath);
+        $projectComposerJson = Json::decode($projectComposerContents, true);
+
+        return $this->projectComposerJson = is_array($projectComposerJson) ? $projectComposerJson : [];
+    }
+
+    private function resolveVendorDir(): string
+    {
+        $projectComposerJson = $this->loadProjectComposerJson();
+
+        if (isset($projectComposerJson['config']['vendor-dir']) &&
+            is_string($projectComposerJson['config']['vendor-dir'])
+        ) {
+            $realPathVendorDir = realpath($projectComposerJson['config']['vendor-dir']) ?: '';
+            $normalizedRealPathVendorDir = PathNormalizer::normalize($realPathVendorDir);
+            $normalizedVendorDir = PathNormalizer::normalize($projectComposerJson['config']['vendor-dir']);
+
+            return $normalizedRealPathVendorDir === $normalizedVendorDir
+                ? $projectComposerJson['config']['vendor-dir']
+                : $this->projectDirectory . '/' . $projectComposerJson['config']['vendor-dir'];
         }
 
         return $this->projectDirectory . '/vendor';

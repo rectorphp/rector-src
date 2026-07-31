@@ -1,0 +1,9 @@
+{
+    "require": {
+        "phpunit/phpunit": "^10.5",
+        "symfony/console": "^7.0"
+    },
+    "require-dev": {
+        "nette/utils": "^3.2"
+    }
+}
