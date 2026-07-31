@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Config;
 
+use Deprecated;
 use Composer\Semver\Semver;
 use Illuminate\Container\Container;
 use Override;
@@ -439,10 +440,11 @@ final class RectorConfig extends Container
 
     /**
      * @param class-string $cacheMetaExtensionClass
-     *
-     * @deprecated Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
-     * invalidation is needed, handle it in CI in a more generic way, e.g. by clearing the cache directory.
      */
+    #[Deprecated(message: <<<'TXT'
+    Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
+     invalidation is needed, handle it in CI in a more generic way, e.g. by clearing the cache directory.
+    TXT)]
     public function cacheMetaExtension(string $cacheMetaExtensionClass): void
     {
         SimpleParameterProvider::addParameter(Option::CACHE_META_EXTENSIONS, $cacheMetaExtensionClass);
