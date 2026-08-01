@@ -96,7 +96,7 @@ final readonly class SideEffectNodeDetector
             return false;
         }
 
-        return $this->nodeNameResolver->isName($node->name, 'createMock');
+        return $this->nodeNameResolver->isNames($node->name, ['createMock', 'createStub']);
     }
 
     private function isPhpParser(New_ $new): bool
