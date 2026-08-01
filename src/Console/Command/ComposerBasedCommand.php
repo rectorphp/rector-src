@@ -14,6 +14,8 @@ use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
 use ReflectionObject;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -58,10 +60,24 @@ final class ComposerBasedCommand extends Command
 
         if ($configurationTableRows !== []) {
             $this->symfonyStyle->title('Composer package bound rule configuration');
-            $this->symfonyStyle->table(
-                ['Rule', 'Package', 'Requires', 'Installed', 'Active', 'Configuration'],
-                $configurationTableRows
-            );
+
+            $headers = ['Rule', 'Package', 'Requires', 'Installed', 'Active'];
+
+            $table = $this->symfonyStyle->createTable();
+            $table->setHeaders($headers);
+            $table->setRows($this->createConfigurationDisplayRows($configurationTableRows));
+
+            // keep columns as narrow as their content, so the full-width configuration line does not stretch them
+            foreach ($headers as $columnPosition => $header) {
+                $columnWidth = max(array_map(
+                    static fn (array $configurationTableRow): int => strlen($configurationTableRow[$columnPosition]),
+                    $configurationTableRows
+                ));
+
+                $table->setColumnMaxWidth($columnPosition, max($columnWidth, strlen($header)));
+            }
+
+            $table->render();
         }
 
         $allTableRows = [...$tableRows, ...$configurationTableRows];
@@ -141,6 +157,30 @@ final class ComposerBasedCommand extends Command
         }
 
         return $tableRows;
+    }
+
+    /**
+     * The configuration is printed on a separated full-width line, to avoid breaking the table layout
+     *
+     * @param array<array{string, string, string, string, string, string}> $configurationTableRows
+     * @return array<array<TableCell|string>|TableSeparator>
+     */
+    private function createConfigurationDisplayRows(array $configurationTableRows): array
+    {
+        $displayRows = [];
+
+        foreach ($configurationTableRows as $configurationTableRow) {
+            if ($displayRows !== []) {
+                $displayRows[] = new TableSeparator();
+            }
+
+            $displayRows[] = array_slice($configurationTableRow, 0, 5);
+            $displayRows[] = [new TableCell($configurationTableRow[5], [
+                'colspan' => 5,
+            ])];
+        }
+
+        return $displayRows;
     }
 
     /**
