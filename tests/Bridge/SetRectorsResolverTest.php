@@ -45,7 +45,7 @@ final class SetRectorsResolverTest extends TestCase
         $rectorRulesWithConfiguration = $this->setRectorsResolver->resolveFromFilePathsIncludingConfiguration(
             $configFilePaths
         );
-        $this->assertCount(61, $rectorRulesWithConfiguration);
+        $this->assertCount(62, $rectorRulesWithConfiguration);
     }
 
     public function testResolveWithConfiguration(): void
