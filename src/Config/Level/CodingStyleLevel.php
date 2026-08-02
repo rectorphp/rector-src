@@ -27,7 +27,6 @@ use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRecto
 use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php86\Rector\FuncCall\MinMaxToClampRector;
 use Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector;
 
 /**
@@ -72,7 +71,6 @@ final class CodingStyleLevel
         SplitGroupedPropertiesRector::class,
         SplitGroupedClassConstantsRector::class,
         RemoveUselessAliasInUseStatementRector::class,
-        MinMaxToClampRector::class,
     ];
 
     /**
