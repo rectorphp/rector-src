@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Config;
 
-use Deprecated;
 use Composer\Semver\Semver;
+use Deprecated;
 use Illuminate\Container\Container;
 use Override;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
