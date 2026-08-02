@@ -13,7 +13,6 @@ use Rector\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRecto
 use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
-use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector;
@@ -67,7 +66,6 @@ final class CodingStyleLevel
         StringClassNameToClassConstantRector::class,
         CatchExceptionNameMatchingTypeRector::class,
         SplitDoubleAssignRector::class,
-        EncapsedStringsToSprintfRector::class,
         WrapEncapsedVariableInCurlyBracesRector::class,
         NewlineBeforeNewAssignSetRector::class,
         MakeInheritedMethodVisibilitySameAsParentRector::class,
