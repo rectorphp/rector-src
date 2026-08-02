@@ -1,0 +1,10 @@
+{
+    "require": {
+        "symfony/framework-bundle": "^2.6",
+        "nette/utils": ">=3.2",
+        "webmozart/assert": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    }
+}

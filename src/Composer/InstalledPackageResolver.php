@@ -33,12 +33,30 @@ final class InstalledPackageResolver
 
     private readonly string $projectDirectory;
 
-    public function __construct(?string $projectDirectory = null)
-    {
+    /**
+     * @param null|string $composerJsonFilePath a standalone "composer.json" to read the versions from, instead of the
+     *                                          installed packages; used to test rules bonded to a composer package
+     */
+    public function __construct(
+        ?string $projectDirectory = null,
+        private ?string $composerJsonFilePath = null
+    ) {
         // fallback to root project directory
         $this->projectDirectory = $projectDirectory ?? (string) getcwd();
 
         Assert::directory($this->projectDirectory);
+    }
+
+    /**
+     * @api used in tests to resolve the versions from a standalone "composer.json"
+     */
+    public function changeComposerJsonFilePath(?string $composerJsonFilePath): void
+    {
+        $this->composerJsonFilePath = $composerJsonFilePath;
+
+        // the previous file is no longer the source, drop what was read from it
+        $this->resolvedInstalledPackages = null;
+        $this->projectComposerJson = null;
     }
 
     /**
@@ -49,6 +67,10 @@ final class InstalledPackageResolver
         // already cached, even only empty array
         if ($this->resolvedInstalledPackages !== null) {
             return $this->resolvedInstalledPackages;
+        }
+
+        if ($this->composerJsonFilePath !== null) {
+            return $this->resolvedInstalledPackages = $this->createPackagesFromConstraints();
         }
 
         $installedPackagesFilePath = $this->resolveVendorDir() . '/composer/installed.json';
@@ -106,6 +128,27 @@ final class InstalledPackageResolver
     }
 
     /**
+     * There is no vendor to read the installed versions from, so the constraints themselves are the only source
+     *
+     * @return array<string, InstalledPackage>
+     */
+    private function createPackagesFromConstraints(): array
+    {
+        $installedPackages = [];
+
+        foreach ($this->resolvePackageConstraints() as $packageName => $constraint) {
+            $version = $this->resolveConstraintLowestVersion($constraint);
+            if ($version === null) {
+                continue;
+            }
+
+            $installedPackages[$packageName] = new InstalledPackage($packageName, $version);
+        }
+
+        return $installedPackages;
+    }
+
+    /**
      * @return null|string the lowest version allowed by the constraint, if the installed version is out of it
      */
     private function matchConstraintVersion(string $installedVersion, string $constraint): ?string
@@ -114,7 +157,20 @@ final class InstalledPackageResolver
             if (Semver::satisfies($installedVersion, $constraint)) {
                 return null;
             }
+        } catch (UnexpectedValueException) {
+            // non-comparable version or constraint, e.g. a dev one
+            return null;
+        }
 
+        return $this->resolveConstraintLowestVersion($constraint);
+    }
+
+    /**
+     * @return null|string the lowest version the constraint allows, null if there is no comparable one
+     */
+    private function resolveConstraintLowestVersion(string $constraint): ?string
+    {
+        try {
             $lowestVersion = new VersionParser()
                 ->parseConstraints($constraint)
                 ->getLowerBound()
@@ -171,7 +227,7 @@ final class InstalledPackageResolver
             return $this->projectComposerJson;
         }
 
-        $projectComposerJsonFilePath = $this->projectDirectory . '/composer.json';
+        $projectComposerJsonFilePath = $this->composerJsonFilePath ?? $this->projectDirectory . '/composer.json';
         if (! file_exists($projectComposerJsonFilePath)) {
             return $this->projectComposerJson = [];
         }
