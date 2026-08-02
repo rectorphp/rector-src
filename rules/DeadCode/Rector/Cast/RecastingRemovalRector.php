@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\Cast;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Cast\Bool_;
@@ -143,6 +144,11 @@ CODE_SAMPLE
 
     private function shouldSkip(Expr $expr): bool
     {
+        // array dim fetch value can be anything, the type is often inaccurate
+        if ($expr instanceof ArrayDimFetch) {
+            return true;
+        }
+
         $type = $this->getType($expr);
 
         if ($type instanceof UnionType) {
