@@ -43,7 +43,6 @@ use Rector\CodeQuality\Rector\FuncCall\RemoveSoleValueSprintfRector;
 use Rector\CodeQuality\Rector\FuncCall\SetTypeToCastRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyFuncGetArgsCountRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
-use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector;
@@ -132,7 +131,6 @@ final class CodeQualityLevel
         ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
         SimplifyBoolIdenticalTrueRector::class,
-        SimplifyRegexPatternRector::class,
         BooleanNotIdenticalToNotIdenticalRector::class,
         AndAssignsToSeparateLinesRector::class,
         CompactToVariablesRector::class,
