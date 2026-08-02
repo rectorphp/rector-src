@@ -64,13 +64,22 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
 
     public function testResolveMissingBackslash(): void
     {
+        $this->assertSame(
+            RemoveDoubleAssignRector::class,
+            $this->onlyRuleResolver->resolve('RectorDeadCodeRectorAssignRemoveDoubleAssignRector'),
+            'The shell eats unescaped backslashes, resolve the flattened rule name anyway'
+        );
+    }
+
+    public function testResolveMissingBackslashNotFound(): void
+    {
         $this->expectExceptionMessageIsOrContains(
-            'Rule "RectorDeadCodeRectorAssignRemoveDoubleAssignRector" was not found.' . PHP_EOL
+            'Rule "ThisRuleDoesNotExist" was not found.' . PHP_EOL
                 . 'The rule has no namespace. Make sure to escape the backslashes, and add quotes around the rule name: --only="My\\Rector\\Rule"'
         );
         $this->expectException(RectorRuleNotFoundException::class);
 
-        $this->onlyRuleResolver->resolve('RectorDeadCodeRectorAssignRemoveDoubleAssignRector');
+        $this->onlyRuleResolver->resolve('ThisRuleDoesNotExist');
     }
 
     public function testResolveNotFound(): void

@@ -63,6 +63,19 @@ final readonly class OnlyRuleResolver
         }
 
         if (! str_contains($rule, '\\')) {
+            // the shell has eaten unescaped backslashes, e.g. --only=\Rector\Some\Rule
+            $flattenMatching = [];
+            foreach ($this->rectors as $rector) {
+                if (str_replace('\\', '', $rector::class) === $rule) {
+                    $flattenMatching[] = $rector::class;
+                }
+            }
+
+            $flattenMatching = array_unique($flattenMatching);
+            if (count($flattenMatching) === 1) {
+                return $flattenMatching[0];
+            }
+
             $message = sprintf(
                 'Rule "%s" was not found.%sThe rule has no namespace. Make sure to escape the backslashes, and add quotes around the rule name: --only="My\\Rector\\Rule"',
                 $rule,
