@@ -6,7 +6,6 @@ namespace Rector\Config\Level;
 
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
-use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
 use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
 use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
 use Rector\CodingStyle\Rector\ClassMethod\BinaryOpStandaloneAssignsToDirectRector;
@@ -28,13 +27,11 @@ use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector;
 use Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
-use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
 use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php86\Rector\FuncCall\MinMaxToClampRector;
 use Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector;
-use Rector\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector;
 
 /**
  * Key 0 = level 0
@@ -59,10 +56,8 @@ final class CodingStyleLevel
         SeparateMultiUseImportsRector::class,
         NewlineBetweenClassLikeStmtsRector::class,
         NewlineAfterStatementRector::class,
-        RemoveFinalFromConstRector::class,
         NullableCompareToNullRector::class,
         ConsistentImplodeRector::class,
-        TernaryConditionVariableAssignmentRector::class,
         SimplifyQuoteEscapeRector::class,
         StringClassNameToClassConstantRector::class,
         CatchExceptionNameMatchingTypeRector::class,
@@ -81,7 +76,6 @@ final class CodingStyleLevel
         UseClassKeywordForClassNameResolutionRector::class,
         SplitGroupedPropertiesRector::class,
         SplitGroupedClassConstantsRector::class,
-        ExplicitPublicClassMethodRector::class,
         RemoveUselessAliasInUseStatementRector::class,
         BinaryOpStandaloneAssignsToDirectRector::class,
         MinMaxToClampRector::class,
