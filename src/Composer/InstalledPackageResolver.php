@@ -115,7 +115,8 @@ final class InstalledPackageResolver
                 return null;
             }
 
-            $lowestVersion = new VersionParser()->parseConstraints($constraint)
+            $lowestVersion = new VersionParser()
+                ->parseConstraints($constraint)
                 ->getLowerBound()
                 ->getVersion();
         } catch (UnexpectedValueException) {
