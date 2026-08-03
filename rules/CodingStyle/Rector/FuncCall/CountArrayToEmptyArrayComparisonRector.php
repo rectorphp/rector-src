@@ -47,6 +47,9 @@ CODE_SAMPLE
         return [Identical::class];
     }
 
+    /**
+     * @param Identical $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
