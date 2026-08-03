@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Scripts\Finder;
 
+use Deprecated;
 use Nette\Loaders\RobotLoader;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use ReflectionClass;
@@ -39,9 +40,30 @@ final class RectorClassFinder
                 continue;
             }
 
+            if ($this->isDeprecated($rectorClassReflection)) {
+                continue;
+            }
+
             $usableRectorClasses[] = $rectorClass;
         }
 
         return $usableRectorClasses;
+    }
+
+    /**
+     * @param ReflectionClass<object> $reflectionClass
+     */
+    private function isDeprecated(ReflectionClass $reflectionClass): bool
+    {
+        if ($reflectionClass->getAttributes(Deprecated::class) !== []) {
+            return true;
+        }
+
+        $docComment = $reflectionClass->getDocComment();
+        if (! is_string($docComment)) {
+            return false;
+        }
+
+        return str_contains($docComment, '@deprecated');
     }
 }
