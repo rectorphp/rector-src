@@ -755,11 +755,11 @@ final class RectorConfigBuilder
         }
 
         if ($doctrine) {
-            $this->sets[] = DoctrineSetList::COMPOSER_BASED;
+            // $this->sets[] = DoctrineSetList::COMPOSER_BASED;
         }
 
         if ($twig) {
-            $this->sets[] = \Rector\Symfony\Set\TwigSetList::COMPOSER_BASED;
+            // $this->sets[] = TwigSetList::COMPOSER_BASED;
         }
 
         if ($symfony) {

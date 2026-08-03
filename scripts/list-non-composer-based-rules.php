@@ -47,19 +47,21 @@ $symfonyStyle->writeln(
     sprintf('<fg=yellow>Found %d Rector rules used in composer-based sets</>', count($usedRectorRules))
 );
 
-// code-quality rules are not bound to any package version, so they never belong to a composer-based set
-$codeQualitySetFiles = array_filter(
-    $rectorSetFiles,
-    static fn (string $rectorSetFile): bool => str_ends_with(basename($rectorSetFile), 'code-quality.php')
-);
+// these rules are not bound to any package version, so they never belong to a composer-based set
+$versionAgnosticSetFileNames = ['code-quality.php', 'typed-collections.php', 'typed-collections-docblocks.php'];
 
-$codeQualityRectorRules = $usedRectorClassResolver->resolve($codeQualitySetFiles);
+$versionAgnosticSetFiles = array_filter($rectorSetFiles, static fn (string $rectorSetFile): bool => array_any($versionAgnosticSetFileNames, fn (string $versionAgnosticSetFileName): bool => str_ends_with(basename($rectorSetFile), $versionAgnosticSetFileName)));
+
+$versionAgnosticRectorRules = $usedRectorClassResolver->resolve($versionAgnosticSetFiles);
 
 $symfonyStyle->writeln(
-    sprintf('<fg=yellow>Found %d Rector rules used in code-quality sets</>', count($codeQualityRectorRules))
+    sprintf(
+        '<fg=yellow>Found %d Rector rules used in version-agnostic sets</>',
+        count($versionAgnosticRectorRules)
+    )
 );
 
-$nonComposerBasedRectorRules = array_diff($rectorClasses, $usedRectorRules, $codeQualityRectorRules);
+$nonComposerBasedRectorRules = array_diff($rectorClasses, $usedRectorRules, $versionAgnosticRectorRules);
 
 $symfonyStyle->newLine();
 $symfonyStyle->listing($nonComposerBasedRectorRules);
