@@ -8,6 +8,8 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
+use Rector\Symfony\Symfony44\Rector\ClassMethod\ConsoleExecuteReturnIntRector;
+use Rector\Symfony\Symfony61\Rector\Class_\CommandConfigureToAttributeRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -24,7 +26,7 @@ return RectorConfig::configure()
         phpunitCodeQuality: true
     )
     ->withAttributesSets()
-    ->withComposerBased(phpunit: true)
+    ->withComposerBased(phpunit: true, symfony: true)
     ->withPhpSets()
     ->withPaths([
         __DIR__ . '/bin',
@@ -41,6 +43,12 @@ return RectorConfig::configure()
     ->withImportNames()
     ->withSkip([
         StringClassNameToClassConstantRector::class,
+
+        // adds (int) cast to methods that already return int, ping-pongs with RecastingRemovalRector
+        ConsoleExecuteReturnIntRector::class,
+
+        // keep console command metadata in configure(), as more readable than a single long attribute
+        CommandConfigureToAttributeRector::class,
         // tests
         '*/Fixture*',
         '*/Source*',
