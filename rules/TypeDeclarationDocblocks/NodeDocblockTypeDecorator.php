@@ -7,6 +7,7 @@ namespace Rector\TypeDeclarationDocblocks;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -45,6 +46,11 @@ final readonly class NodeDocblockTypeDecorator
 
         // no value iterable type
         if ($typeNode instanceof IdentifierTypeNode) {
+            return false;
+        }
+
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($parameterName);
+        if ($paramTagValueNode instanceof ParamTagValueNode && (string) $paramTagValueNode->type === (string) $typeNode) {
             return false;
         }
 
