@@ -20,7 +20,7 @@ final class SetManagerTest extends AbstractLazyTestCase
         $setManager = $this->createSetManagerWithProjectDirectory(getcwd());
 
         $twigComposerTriggeredSet = $setManager->matchComposerTriggered(SetGroup::TWIG);
-        $this->assertCount(7, $twigComposerTriggeredSet);
+        $this->assertCount(8, $twigComposerTriggeredSet);
     }
 
     /**
@@ -43,13 +43,20 @@ final class SetManagerTest extends AbstractLazyTestCase
     public static function provideInstalledTwigData(): Iterator
     {
         // here we cannot used features coming up in 2.4, as we only have 2.0
-        yield [__DIR__ . '/Fixture/project-twig-20', [realpath(TwigSetList::TWIG_20)]];
+        yield [
+            __DIR__ . '/Fixture/project-twig-20',
+            [realpath(TwigSetList::COMPOSER_BASED), realpath(TwigSetList::TWIG_20)],
+        ];
 
-        yield [__DIR__ . '/Fixture/project-twig-24', [realpath(TwigSetList::TWIG_20), realpath(TwigSetList::TWIG_24)]];
+        yield [
+            __DIR__ . '/Fixture/project-twig-24',
+            [realpath(TwigSetList::COMPOSER_BASED), realpath(TwigSetList::TWIG_20), realpath(TwigSetList::TWIG_24)],
+        ];
 
         yield [
             __DIR__ . '/Fixture/project-twig-127',
-            [realpath(TwigSetList::TWIG_112), realpath(TwigSetList::TWIG_127)]];
+            [realpath(TwigSetList::COMPOSER_BASED), realpath(TwigSetList::TWIG_112), realpath(TwigSetList::TWIG_127)],
+        ];
     }
 
     private function createSetManagerWithProjectDirectory(string $projectDirectory): SetManager
