@@ -29,11 +29,13 @@ final class CoreSetProvider implements SetProviderInterface
             new Set(SetGroup::CORE, 'Privatization', __DIR__ . '/../../../config/set/privatization.php'),
             new Set(SetGroup::CORE, 'Type Declarations', __DIR__ . '/../../../config/set/type-declaration.php'),
 
+            // applies to any installed nette/utils version, the rules inside are bound
+            // to the exact version they are available from
             new ComposerTriggeredSet(
                 SetGroup::NETTE_UTILS,
                 'nette/utils',
-                '4.0',
-                __DIR__ . '/../../../config/set/nette-utils/nette-utils4.php',
+                '>=2.0',
+                __DIR__ . '/../../../config/set/nette-utils/composer-based.php',
             ),
         ];
     }
