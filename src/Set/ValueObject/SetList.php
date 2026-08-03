@@ -31,6 +31,12 @@ final class SetList
     public const string NAMED_ARGS = __DIR__ . '/../../../config/set/named-args.php';
 
     /**
+     * Applies to any installed nette/utils version, the rules inside are bound
+     * to the exact version they are available from
+     */
+    public const string NETTE_UTILS_COMPOSER_BASED = __DIR__ . '/../../../config/set/nette-utils/composer-based.php';
+
+    /**
      * Opinionated rules that match rector coding standard
      */
     public const string RECTOR_PRESET = __DIR__ . '/../../../config/set/rector-preset.php';

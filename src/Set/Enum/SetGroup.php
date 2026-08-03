@@ -36,11 +36,6 @@ final class SetGroup
     /**
      * Version-based set provider
      */
-    public const string NETTE_UTILS = 'nette-utils';
-
-    /**
-     * Version-based set provider
-     */
     public const string LARAVEL = 'laravel';
 
     /**

@@ -739,7 +739,6 @@ final class RectorConfigBuilder
         $setMap = [
             SetGroup::TWIG => $twig,
             SetGroup::DOCTRINE => $doctrine,
-            SetGroup::NETTE_UTILS => $netteUtils,
             SetGroup::LARAVEL => $laravel,
             SetGroup::DRUPAL => $drupal,
         ];
@@ -758,6 +757,11 @@ final class RectorConfigBuilder
         if ($symfony) {
             // single set, as every rule inside is bound to the installed Symfony package version on its own
             $this->sets[] = SymfonySetList::COMPOSER_BASED;
+        }
+
+        if ($netteUtils) {
+            // single set, as every rule inside is bound to the installed nette/utils version on its own
+            $this->sets[] = SetList::NETTE_UTILS_COMPOSER_BASED;
         }
 
         return $this;
