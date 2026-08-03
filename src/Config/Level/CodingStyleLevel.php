@@ -13,7 +13,6 @@ use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsPar
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector;
-use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
 use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictInArrayRector;
@@ -51,7 +50,6 @@ final class CodingStyleLevel
         SeparateMultiUseImportsRector::class,
         NewlineBetweenClassLikeStmtsRector::class,
         NewlineAfterStatementRector::class,
-        ConsistentImplodeRector::class,
         SimplifyQuoteEscapeRector::class,
         StringClassNameToClassConstantRector::class,
         CatchExceptionNameMatchingTypeRector::class,
