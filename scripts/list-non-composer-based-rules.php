@@ -11,11 +11,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// 1. find all rector rules in core and in doctrine, phpunit and symfony packages
+// 1. find all rector rules in doctrine, phpunit and symfony packages; core rules are not package-version bound
 $rectorClassFinder = new RectorClassFinder();
 
 $rectorClasses = $rectorClassFinder->find([
-    __DIR__ . '/../rules',
     __DIR__ . '/../vendor/rector/rector-doctrine',
     __DIR__ . '/../vendor/rector/rector-phpunit',
     __DIR__ . '/../vendor/rector/rector-symfony',
@@ -28,7 +27,6 @@ $symfonyStyle->writeln(sprintf('<fg=green>Found Rector %d rules</>', count($rect
 $rectorSetFilesFinder = new RectorSetFilesFinder();
 
 $rectorSetFiles = $rectorSetFilesFinder->find([
-    __DIR__ . '/../config/set',
     __DIR__ . '/../vendor/rector/rector-symfony/config/sets',
     __DIR__ . '/../vendor/rector/rector-doctrine/config/sets',
     __DIR__ . '/../vendor/rector/rector-phpunit/config/sets',
