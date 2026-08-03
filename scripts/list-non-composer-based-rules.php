@@ -47,7 +47,19 @@ $symfonyStyle->writeln(
     sprintf('<fg=yellow>Found %d Rector rules used in composer-based sets</>', count($usedRectorRules))
 );
 
-$nonComposerBasedRectorRules = array_diff($rectorClasses, $usedRectorRules);
+// code-quality rules are not bound to any package version, so they never belong to a composer-based set
+$codeQualitySetFiles = array_filter(
+    $rectorSetFiles,
+    static fn (string $rectorSetFile): bool => str_ends_with(basename($rectorSetFile), 'code-quality.php')
+);
+
+$codeQualityRectorRules = $usedRectorClassResolver->resolve($codeQualitySetFiles);
+
+$symfonyStyle->writeln(
+    sprintf('<fg=yellow>Found %d Rector rules used in code-quality sets</>', count($codeQualityRectorRules))
+);
+
+$nonComposerBasedRectorRules = array_diff($rectorClasses, $usedRectorRules, $codeQualityRectorRules);
 
 $symfonyStyle->newLine();
 $symfonyStyle->listing($nonComposerBasedRectorRules);
