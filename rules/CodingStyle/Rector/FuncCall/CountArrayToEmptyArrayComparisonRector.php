@@ -5,25 +5,17 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\NotIdentical;
-use PhpParser\Node\Expr\BinaryOp\Smaller;
-use PhpParser\Node\Expr\BooleanNot;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\Stmt\ElseIf_;
-use PhpParser\Node\Stmt\If_;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector\CountArrayToEmptyArrayComparisonRectorTest
+ * @deprecated This rule is deprecated, as it is a coding standard preference with no real value. Use a coding standard tool instead.
  */
-final class CountArrayToEmptyArrayComparisonRector extends AbstractRector
+final class CountArrayToEmptyArrayComparisonRector extends AbstractRector implements DeprecatedInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -52,165 +44,17 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [
-            Identical::class,
-            NotIdentical::class,
-            BooleanNot::class,
-            Greater::class,
-            Smaller::class,
-            If_::class,
-            ElseIf_::class,
-        ];
+        return [Identical::class];
     }
 
     /**
-     * @param Identical|NotIdentical|BooleanNot|Greater|Smaller|If_|ElseIf_ $node
+     * @param Identical $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node instanceof BooleanNot) {
-            return $this->refactorBooleanNot($node);
-        }
-
-        if ($node instanceof Identical || $node instanceof NotIdentical) {
-            if ($node->left instanceof FuncCall) {
-                $expr = $this->matchCountFuncCallArgExpr($node->left);
-            } elseif ($node->right instanceof FuncCall) {
-                $expr = $this->matchCountFuncCallArgExpr($node->right);
-            } else {
-                return null;
-            }
-
-            if (! $expr instanceof Expr) {
-                return null;
-            }
-
-            // not pass array type, skip
-            if (! $this->isArray($expr)) {
-                return null;
-            }
-
-            return $this->refactorIdenticalOrNotIdentical($node, $expr);
-        }
-
-        if ($node instanceof Smaller || $node instanceof Greater) {
-            return $this->refactorGreaterOrSmaller($node);
-        }
-
-        return $this->refactorIfElseIf($node);
-    }
-
-    private function refactorBooleanNot(BooleanNot $booleanNot): ?Identical
-    {
-        $expr = $this->matchCountFuncCallArgExpr($booleanNot->expr);
-        if (! $expr instanceof Expr) {
-            return null;
-        }
-
-        // not pass array type, skip
-        if (! $this->isArray($expr)) {
-            return null;
-        }
-
-        return new Identical($expr, new Array_([]));
-    }
-
-    private function isArray(Expr $expr): bool
-    {
-        return $this->nodeTypeResolver->getNativeType($expr)
-            ->isArray()
-            ->yes();
-    }
-
-    private function refactorIdenticalOrNotIdentical(
-        Identical|NotIdentical $binaryOp,
-        Expr $expr
-    ): Identical|NotIdentical|null {
-        if ($this->isZeroLNumber($binaryOp->right)) {
-            $binaryOp->left = $expr;
-            $binaryOp->right = new Array_([]);
-
-            return $binaryOp;
-        }
-
-        if ($this->isZeroLNumber($binaryOp->left)) {
-            $binaryOp->left = new Array_([]);
-            $binaryOp->right = $expr;
-
-            return $binaryOp;
-        }
-
-        return null;
-    }
-
-    private function refactorGreaterOrSmaller(Greater|Smaller $binaryOp): NotIdentical|null
-    {
-        if ($binaryOp instanceof Greater) {
-            $leftExpr = $this->matchCountFuncCallArgExpr($binaryOp->left);
-            if (! $leftExpr instanceof Expr) {
-                return null;
-            }
-
-            if (! $this->isZeroLNumber($binaryOp->right)) {
-                return null;
-            }
-
-            return new NotIdentical($leftExpr, new Array_([]));
-        }
-
-        $rightExpr = $this->matchCountFuncCallArgExpr($binaryOp->right);
-        if (! $rightExpr instanceof Expr) {
-            return null;
-        }
-
-        if (! $this->isZeroLNumber($binaryOp->left)) {
-            return null;
-        }
-
-        return new NotIdentical(new Array_([]), $rightExpr);
-    }
-
-    private function refactorIfElseIf(If_|ElseIf_ $ifElseIf): If_|ElseIf_|null
-    {
-        $expr = $this->matchCountFuncCallArgExpr($ifElseIf->cond);
-        if (! $expr instanceof Expr) {
-            return null;
-        }
-
-        $ifElseIf->cond = new NotIdentical($expr, new Array_([]));
-
-        return $ifElseIf;
-    }
-
-    private function matchCountFuncCallArgExpr(Expr $expr): ?Expr
-    {
-        if (! $expr instanceof FuncCall) {
-            return null;
-        }
-
-        if (! $this->isName($expr, 'count')) {
-            return null;
-        }
-
-        if ($expr->isFirstClassCallable()) {
-            return null;
-        }
-
-        $firstArg = $expr->getArgs()[0];
-
-        if (! $this->isArray($firstArg->value)) {
-            return null;
-        }
-
-        return $firstArg->value;
-    }
-
-    private function isZeroLNumber(Expr $expr): bool
-    {
-        if (! $expr instanceof Int_) {
-            return false;
-        }
-
-        return $expr->value === 0;
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" rule is deprecated, as it is a coding standard preference with no real value',
+            self::class
+        ));
     }
 }
