@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Config\Level;
 
+use Rector\CodeQuality\Rector\Class_\RemoveReadonlyPropertyVisibilityOnReadonlyClassRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
@@ -114,6 +115,7 @@ final class DeadCodeLevel
         RemoveFinalFromConstRector::class,
         UnwrapSprintfOneArgumentRector::class,
         SimplifyBoolIdenticalTrueRector::class,
+        RemoveReadonlyPropertyVisibilityOnReadonlyClassRector::class,
 
         RemoveTypedPropertyDeadInstanceOfRector::class,
         RemoveDeadInstanceOfAssertRector::class,
