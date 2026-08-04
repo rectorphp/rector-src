@@ -4,34 +4,29 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Bin;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
 
 final class RectorTest extends TestCase
 {
-    public static function outputProvider()
+    /**
+     * @return Iterator<string, array{command: string, expectedOutput: string}>
+     */
+    public static function outputProvider(): Iterator
     {
-
-        yield "Version" => [
-            'command'        => 'bin/rector --version',
+        yield 'Version' => [
+            'command' => 'bin/rector --version',
             'expectedOutput' => "Rector @package_version@\n",
         ];
-
-        yield "Exception with previous console output" => [
-            'command'        => 'bin/rector -c tests/Bin/config/incorrect-phpstan-files.php',
-            'expectedOutput' => <<<TXT
-                
-                 [ERROR] Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory     
-                
-                 [ERROR] Unexpected item 'parameters › invalidParameters'.                      
-                
-                
-                TXT,
+        yield 'Exception with previous console output' => [
+            'command' => 'bin/rector -c tests/Bin/config/incorrect-phpstan-files.php',
+            'expectedOutput' => "\n [ERROR] Rector\\NodeTypeResolver\\DependencyInjection\\PHPStanServicesFactory     \n\n [ERROR] Unexpected item 'parameters › invalidParameters'.                      \n\n",
         ];
-        yield "Exception with previous console output in JSON format" => [
-            'command'        => 'bin/rector -c tests/Bin/config/incorrect-phpstan-files.php --output-format json',
-            'expectedOutput' => '{"fatal_errors":["Rector\\\\NodeTypeResolver\\\\DependencyInjection\\\\PHPStanServicesFactory","Unexpected item \'parameters › invalidParameters\'."]}'
+        yield 'Exception with previous console output in JSON format' => [
+            'command' => 'bin/rector -c tests/Bin/config/incorrect-phpstan-files.php --output-format json',
+            'expectedOutput' => '{"fatal_errors":["Rector\\\\NodeTypeResolver\\\\DependencyInjection\\\\PHPStanServicesFactory","Unexpected item \'parameters › invalidParameters\'."]}',
         ];
     }
 
