@@ -75,7 +75,6 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
-use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 
 /**
@@ -161,7 +160,6 @@ final class CodeQualityLevel
         OptionalParametersAfterRequiredRector::class,
         SimplifyEmptyCheckOnEmptyArrayRector::class,
         CleanupUnneededNullsafeOperatorRector::class,
-        DisallowedEmptyRuleFixerRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
         NumberCompareToMaxFuncCallRector::class,
         RemoveUselessIsObjectCheckRector::class,
