@@ -94,10 +94,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->getAttribute(AttributeKey::IS_INSIDE_SYMFONY_PHP_CLOSURE)) {
-            return null;
-        }
-
         if ($node->getAttribute(AttributeKey::IS_ARRAY_AS_STRING_CALLABLE)) {
             return null;
         }
