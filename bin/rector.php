@@ -143,14 +143,20 @@ try {
 
     // report fatal error in json format
     if ($outputFormat === JsonOutputFormatter::NAME) {
+        $errors = [];
+        do {
+            $errors[] = $throwable->getMessage();
+        } while ($throwable = $throwable->getPrevious());
         echo Json::encode([
-            'fatal_errors' => [$throwable->getMessage()],
+            'fatal_errors' => $errors,
         ]);
     } else {
         // report fatal errors in console format
         $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
         $symfonyStyle = $symfonyStyleFactory->create();
-        $symfonyStyle->error(str_replace("\r\n", "\n", $throwable->getMessage()));
+        do {
+            $symfonyStyle->error(str_replace("\r\n", "\n", $throwable->getMessage()));
+        } while ($throwable = $throwable->getPrevious());
     }
 
     exit(Command::FAILURE);
