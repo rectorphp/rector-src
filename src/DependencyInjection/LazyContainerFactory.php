@@ -131,7 +131,6 @@ use Rector\PhpParser\NodeVisitor\ParamDefaultNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PhpVersionConditionNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PropertyOrClassConstDefaultNodeVisitor;
 use Rector\PhpParser\NodeVisitor\StaticVariableNodeVisitor;
-use Rector\PhpParser\NodeVisitor\SymfonyClosureNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryArrayTypeMapper;
@@ -240,7 +239,6 @@ final class LazyContainerFactory
         ClosureWithVariadicParametersNodeVisitor::class,
         PhpVersionConditionNodeVisitor::class,
         AssignedToNodeVisitor::class,
-        SymfonyClosureNodeVisitor::class,
         ByRefReturnNodeVisitor::class,
         ByRefVariableNodeVisitor::class,
         ContextNodeVisitor::class,

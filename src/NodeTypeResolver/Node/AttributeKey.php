@@ -155,8 +155,6 @@ final class AttributeKey
 
     public const string IS_CLASS_CONST_VALUE = 'is_default_class_const_value';
 
-    public const string IS_INSIDE_SYMFONY_PHP_CLOSURE = 'is_inside_symfony_php_closure';
-
     /**
      * Array callable kept as data, not converted to first class callable,
      * e.g. 'callback'/'factory' keyed array item, or Definition::setFactory() argument
