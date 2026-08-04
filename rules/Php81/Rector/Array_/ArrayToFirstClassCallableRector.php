@@ -90,6 +90,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): StaticCall|MethodCall|null
     {
+        if ($node->getAttribute(AttributeKey::IS_ARG_NOT_ACCEPTING_CLOSURE)) {
+            return null;
+        }
+
         if ($node->getAttribute(AttributeKey::IS_INSIDE_SYMFONY_PHP_CLOSURE)) {
             return null;
         }
