@@ -17,15 +17,15 @@ final class RectorTest extends TestCase
     public static function outputProvider(): Iterator
     {
         yield 'Version' => [
-            'command' => 'bin/rector --version',
-            'expectedOutput' => "Rector @package_version@\n",
+            'command'        => PHP_BINARY . ' bin/rector --version',
+            'expectedOutput' => "Rector @package_version@" . PHP_EOL,
         ];
         yield 'Exception with previous console output' => [
-            'command' => 'bin/rector -c tests/Bin/config/incorrect-phpstan-files.php',
-            'expectedOutput' => "\n [ERROR] Rector\\NodeTypeResolver\\DependencyInjection\\PHPStanServicesFactory     \n\n [ERROR] Unexpected item 'parameters › invalidParameters'.                      \n\n",
+            'command'        => PHP_BINARY . ' bin/rector -c tests/Bin/config/incorrect-phpstan-files.php',
+            'expectedOutput' => PHP_EOL . " [ERROR] Rector\\NodeTypeResolver\\DependencyInjection\\PHPStanServicesFactory " . PHP_EOL . PHP_EOL . " [ERROR] Unexpected item 'parameters › invalidParameters'. " . PHP_EOL . PHP_EOL,
         ];
         yield 'Exception with previous console output in JSON format' => [
-            'command' => 'bin/rector -c tests/Bin/config/incorrect-phpstan-files.php --output-format json',
+            'command'        => PHP_BINARY . ' bin/rector -c tests/Bin/config/incorrect-phpstan-files.php --output-format json',
             'expectedOutput' => '{"fatal_errors":["Rector\\\\NodeTypeResolver\\\\DependencyInjection\\\\PHPStanServicesFactory","Unexpected item \'parameters › invalidParameters\'."]}',
         ];
     }
@@ -35,6 +35,6 @@ final class RectorTest extends TestCase
     {
         $process = Process::fromShellCommandline($command);
         $process->run();
-        $this->assertSame($expectedOutput, $process->getOutput());
+        $this->assertSame($expectedOutput, preg_replace("/ +/", " ", $process->getOutput()));
     }
 }
