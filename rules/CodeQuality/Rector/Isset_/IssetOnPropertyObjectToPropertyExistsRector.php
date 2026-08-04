@@ -221,6 +221,13 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->reflectionProvider->getClass($className);
+        $classReflection = $this->reflectionProvider->getClass($className);
+
+        // XML elements resolve properties from the XML document itself
+        if ($classReflection->is('SimpleXMLElement')) {
+            return null;
+        }
+
+        return $classReflection;
     }
 }
