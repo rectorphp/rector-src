@@ -70,7 +70,6 @@ use Rector\CodeQuality\Rector\Switch_\SwitchTrueToMatchRector;
 use Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector;
 use Rector\CodeQuality\Rector\Ternary\NumberCompareToMaxFuncCallRector;
 use Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector;
-use Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector;
 use Rector\CodeQuality\Rector\Ternary\TernaryImplodeToImplodeRector;
 use Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector;
@@ -155,7 +154,6 @@ final class CodeQualityLevel
         NewStaticToNewSelfRector::class,
         UnwrapSprintfOneArgumentRector::class,
         VariableConstFetchToClassConstFetchRector::class,
-        SwitchNegatedTernaryRector::class,
         SingularSwitchToIfRector::class,
         SwitchTrueToMatchRector::class,
         SimplifyIfNullableReturnRector::class,
