@@ -45,11 +45,9 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector;
-use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
-use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
 use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector;
@@ -130,7 +128,6 @@ final class CodeQualityLevel
         TernaryImplodeToImplodeRector::class,
         ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
-        SimplifyBoolIdenticalTrueRector::class,
         BooleanNotIdenticalToNotIdenticalRector::class,
         AndAssignsToSeparateLinesRector::class,
         CompactToVariablesRector::class,
@@ -152,7 +149,6 @@ final class CodeQualityLevel
         VarToPublicPropertyRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
         NewStaticToNewSelfRector::class,
-        UnwrapSprintfOneArgumentRector::class,
         VariableConstFetchToClassConstFetchRector::class,
         SingularSwitchToIfRector::class,
         SwitchTrueToMatchRector::class,
