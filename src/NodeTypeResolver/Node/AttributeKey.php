@@ -176,4 +176,10 @@ final class AttributeKey
     public const string IS_IN_TRY_BLOCK = 'is_in_try_block';
 
     public const string NEWLINE_ON_FLUENT_CALL = 'newline_on_fluent_call';
+
+    /**
+     * The arg value is passed to a parameter whose type does not accept a Closure,
+     * e.g. an array callable passed to a "string|array|null" parameter
+     */
+    public const string IS_ARG_NOT_ACCEPTING_CLOSURE = 'is_arg_not_accepting_closure';
 }
