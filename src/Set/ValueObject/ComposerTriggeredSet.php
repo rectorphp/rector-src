@@ -18,6 +18,7 @@ use Webmozart\Assert\Assert;
  * rule states the exact package version its target API is available from and applies from there upwards.
  *
  * @see \Rector\VersionBonding\Contract\ComposerPackageConstraintInterface
+ * @see https://github.com/rectorphp/rector-src/pull/8296
  *
  * @see \Rector\Tests\Set\ValueObject\ComposerTriggeredSetTest
  */
