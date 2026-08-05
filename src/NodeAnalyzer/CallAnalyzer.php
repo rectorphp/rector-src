@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
@@ -46,14 +45,6 @@ final readonly class CallAnalyzer
             self::OBJECT_CALL_TYPES,
             fn (string $objectCallType): bool => $expr instanceof $objectCallType
         );
-    }
-
-    /**
-     * @param If_[] $ifs
-     */
-    public function doesIfHasObjectCall(array $ifs): bool
-    {
-        return array_any($ifs, fn (If_ $if): bool => $this->isObjectCall($if->cond));
     }
 
     public function isNewInstance(Variable $variable): bool
