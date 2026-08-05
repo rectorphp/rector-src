@@ -6,23 +6,18 @@ namespace Rector\NodeManipulator;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
-use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
-use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\PhpParser\Comparing\NodeComparator;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
 final readonly class IfManipulator
 {
     public function __construct(
-        private BetterNodeFinder $betterNodeFinder,
         private StmtsManipulator $stmtsManipulator,
         private ValueResolver $valueResolver,
         private NodeComparator $nodeComparator
@@ -112,50 +107,6 @@ final readonly class IfManipulator
         }
 
         return $this->nodeComparator->areNodesEqual($desiredExpr, $lastElseNode->var);
-    }
-
-    /**
-     * @return If_[]
-     */
-    public function collectNestedIfsWithNonBreaking(Foreach_ $foreach): array
-    {
-        if (count($foreach->stmts) !== 1) {
-            return [];
-        }
-
-        $onlyForeachStmt = $foreach->stmts[0];
-        if (! $onlyForeachStmt instanceof If_) {
-            return [];
-        }
-
-        if ($onlyForeachStmt->cond instanceof BooleanOr) {
-            return [];
-        }
-
-        $ifs = [];
-
-        $currentIf = $onlyForeachStmt;
-        while ($this->isIfWithOnlyStmtIf($currentIf)) {
-            $ifs[] = $currentIf;
-
-            /** @var If_ $currentIf */
-            $currentIf = $currentIf->stmts[0];
-        }
-
-        // IfManipulator is not build to handle elseif and else
-        if (! $this->isIfWithoutElseAndElseIfs($currentIf)) {
-            return [];
-        }
-
-        if ($this->betterNodeFinder->hasInstancesOf($currentIf->stmts, [Return_::class, Exit_::class])) {
-            return [];
-        }
-
-        // last if is with the expression
-
-        $ifs[] = $currentIf;
-
-        return $ifs;
     }
 
     /**
