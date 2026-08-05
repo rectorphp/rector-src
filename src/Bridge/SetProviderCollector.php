@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Bridge;
 
-use Rector\Doctrine\Set\SetProvider\DoctrineSetProvider;
 use Rector\Set\Contract\SetInterface;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\SetProvider\CoreSetProvider;
@@ -33,7 +32,6 @@ final readonly class SetProviderCollector
             // register all known set providers here
             new PHPSetProvider(),
             new CoreSetProvider(),
-            new DoctrineSetProvider(),
             new TwigSetProvider(),
         ];
 
