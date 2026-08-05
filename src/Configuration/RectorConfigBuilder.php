@@ -737,7 +737,6 @@ final class RectorConfigBuilder
         bool $drupal = false,
     ): self {
         $setMap = [
-            SetGroup::TWIG => $twig,
             SetGroup::DOCTRINE => $doctrine,
             SetGroup::LARAVEL => $laravel,
             SetGroup::DRUPAL => $drupal,
