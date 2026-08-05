@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Configuration;
 
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
@@ -11,6 +12,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\Exception\Configuration\RectorRuleNameAmbiguousException;
 use Rector\Exception\Configuration\RectorRuleNotFoundException;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 
 final class OnlyRuleResolverTest extends AbstractLazyTestCase
 {
@@ -23,9 +25,10 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         $this->bootFromConfigFiles([__DIR__ . '/config/only_rule_resolver_config.php']);
         $rectorConfig = self::getContainer();
 
-        $this->onlyRuleResolver = new OnlyRuleResolver(iterator_to_array(
-            $rectorConfig->tagged(RectorInterface::class)
-        ));
+        $this->onlyRuleResolver = new OnlyRuleResolver(
+            iterator_to_array($rectorConfig->tagged(RectorInterface::class)),
+            $this->make(ReflectionProvider::class)
+        );
     }
 
     public function testResolveOk(): void
@@ -107,6 +110,28 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
             RemoveDoubleAssignRector::class,
             $this->onlyRuleResolver->resolve('Assign\\RemoveDoubleAssignRector'),
         );
+    }
+
+    public function testResolveExistingButNotRegistered(): void
+    {
+        $this->expectExceptionMessageIsOrContains(
+            'Rule "Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector" exists, but is not registered in your Rector config.'
+                . PHP_EOL . 'Register it in your rector.php:' . PHP_EOL . PHP_EOL
+                . '    ->withRules([SafeDeclareStrictTypesRector::class])'
+        );
+        $this->expectException(RectorRuleNotFoundException::class);
+
+        $this->onlyRuleResolver->resolve(SafeDeclareStrictTypesRector::class);
+    }
+
+    public function testResolveShortExistingButNotRegistered(): void
+    {
+        $this->expectExceptionMessageIsOrContains(
+            'Rule "Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector" exists, but is not registered in your Rector config.'
+        );
+        $this->expectException(RectorRuleNotFoundException::class);
+
+        $this->onlyRuleResolver->resolve('SafeDeclareStrictTypesRector');
     }
 
     public function testResolveShortAmbiguous(): void
