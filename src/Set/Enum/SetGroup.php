@@ -16,22 +16,7 @@ final class SetGroup
     /**
      * Version-based set provider
      */
-    public const string TWIG = 'twig';
-
-    /**
-     * Version-based set provider
-     */
-    public const string PHPUNIT = 'phpunit';
-
-    /**
-     * Version-based set provider
-     */
     public const string DOCTRINE = 'doctrine';
-
-    /**
-     * Version-based set provider
-     */
-    public const string SYMFONY = 'symfony';
 
     /**
      * Version-based set provider
