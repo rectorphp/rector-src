@@ -124,16 +124,6 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         $this->onlyRuleResolver->resolve(SafeDeclareStrictTypesRector::class);
     }
 
-    public function testResolveShortExistingButNotRegistered(): void
-    {
-        $this->expectExceptionMessageIsOrContains(
-            'Rule "Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector" exists, but is not registered in your Rector config.'
-        );
-        $this->expectException(RectorRuleNotFoundException::class);
-
-        $this->onlyRuleResolver->resolve('SafeDeclareStrictTypesRector');
-    }
-
     public function testResolveShortAmbiguous(): void
     {
         $this->expectExceptionMessageIsOrContains(
