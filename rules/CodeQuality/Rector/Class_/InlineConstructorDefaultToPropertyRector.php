@@ -171,14 +171,7 @@ CODE_SAMPLE
             // unknown parent, keep it safe
             return true;
         }
-
-        foreach ($classReflection->getParents() as $parentClassReflection) {
-            if ($parentClassReflection->getNativeReflection()->hasProperty($propertyName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($classReflection->getParents(), fn(ClassReflection $parentClassReflection) => $parentClassReflection->getNativeReflection()->hasProperty($propertyName));
     }
 
     private function matchAssignedLocalPropertyName(Assign $assign): ?string
