@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\EarlyReturn\Rector\If_\ChangeNestedIfsToEarlyReturnRector;
 
+// note: all early return rules were moved to code quality set or deprecated
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([ChangeNestedIfsToEarlyReturnRector::class]);
+    $rectorConfig->rules([]);
 };
