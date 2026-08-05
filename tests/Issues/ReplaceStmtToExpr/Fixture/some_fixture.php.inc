@@ -52,10 +52,8 @@ final class SomeFixture
         if (!$user instanceof \Rector\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser) {
             return false;
         }
-        if ($user->isFoo()) {
-            return true;
-        }
-        return (bool) $user->isBar();
+
+        return $user->isFoo() || $user->isBar();
     }
 
 }
