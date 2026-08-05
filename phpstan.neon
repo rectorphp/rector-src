@@ -317,6 +317,15 @@ parameters:
             message: '#Fetching (deprecated )?class constant (.*?) of (deprecated )?class (Rector\\Set\\ValueObject\\DowngradeLevelSetList|Rector\\Symfony\\Set\\(.*?))#'
             path: src/Configuration/RectorConfigBuilder.php
 
+        # the deprecated ComposerTriggeredSet is still resolved internally, until every extension bonds its rules
+        -
+            message: '#deprecated class Rector\\Set\\ValueObject\\ComposerTriggeredSet#'
+            paths:
+                - src/Set/SetManager.php
+                - src/Bridge/SetProviderCollector.php
+                - tests/Set/ValueObject/ComposerTriggeredSetTest.php
+                - tests/Set/SetManager/SetManagerTest.php
+
         # runtime comparison
         - '#Comparison operation ".*" between int<\d+, \d+> and \d+ is always true#'
 

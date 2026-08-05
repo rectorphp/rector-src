@@ -12,6 +12,13 @@ use Webmozart\Assert\Assert;
 
 /**
  * @api used by extensions
+ *
+ * @deprecated Bond the rules themselves instead, by implementing the ComposerPackageConstraintInterface. A set
+ * triggered on a single major version has to be repeated for every version an upgrade passes through, while a bonded
+ * rule states the exact package version its target API is available from and applies from there upwards.
+ *
+ * @see \Rector\VersionBonding\Contract\ComposerPackageConstraintInterface
+ *
  * @see \Rector\Tests\Set\ValueObject\ComposerTriggeredSetTest
  */
 final readonly class ComposerTriggeredSet implements SetInterface
