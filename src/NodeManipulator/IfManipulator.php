@@ -49,35 +49,6 @@ final readonly class IfManipulator
         return $this->matchComparedAndReturnedNode($if->cond, $insideIfNode);
     }
 
-    /**
-     * @return If_[]
-     */
-    public function collectNestedIfsWithOnlyReturn(If_ $if): array
-    {
-        $ifs = [];
-
-        $currentIf = $if;
-        while ($this->isIfWithOnlyStmtIf($currentIf)) {
-            $ifs[] = $currentIf;
-
-            /** @var If_ $currentIf */
-            $currentIf = $currentIf->stmts[0];
-        }
-
-        if ($ifs === []) {
-            return [];
-        }
-
-        if (! $this->hasOnlyStmtOfType($currentIf, Return_::class)) {
-            return [];
-        }
-
-        // last if is with the return value
-        $ifs[] = $currentIf;
-
-        return $ifs;
-    }
-
     public function isIfAndElseWithSameVariableAssignAsLastStmts(If_ $if, Expr $desiredExpr): bool
     {
         if (! $if->else instanceof Else_) {
@@ -148,15 +119,6 @@ final readonly class IfManipulator
         }
 
         return null;
-    }
-
-    private function isIfWithOnlyStmtIf(If_ $if): bool
-    {
-        if (! $this->isIfWithoutElseAndElseIfs($if)) {
-            return false;
-        }
-
-        return $this->hasOnlyStmtOfType($if, If_::class);
     }
 
     /**
