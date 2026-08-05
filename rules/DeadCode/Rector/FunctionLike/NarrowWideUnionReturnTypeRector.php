@@ -20,6 +20,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\NeverType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -272,6 +273,13 @@ CODE_SAMPLE
     private function resolveNativeReturnTypes(Expr $expr): array
     {
         if (! $expr instanceof Ternary || ! $this->hasVendorClassConstFetch($expr->cond)) {
+            $type = $this->nodeTypeResolver->getType($expr);
+
+            // native type may be narrowed by assertions even when the resolved scope is unreachable
+            if ($type instanceof NeverType) {
+                return [$type];
+            }
+
             return [$this->nodeTypeResolver->getNativeType($expr)];
         }
 
