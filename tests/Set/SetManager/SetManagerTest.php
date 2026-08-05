@@ -10,6 +10,7 @@ use Rector\Bridge\SetProviderCollector;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
+use Rector\Symfony\Set\SetProvider\TwigSetProvider;
 use Rector\Symfony\Set\TwigSetList;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -53,7 +54,7 @@ final class SetManagerTest extends AbstractLazyTestCase
 
     private function createSetManagerWithProjectDirectory(string $projectDirectory): SetManager
     {
-        $setProviderCollector = new SetProviderCollector();
+        $setProviderCollector = new SetProviderCollector([new TwigSetProvider()]);
         $installedPackageResolver = new InstalledPackageResolver($projectDirectory);
 
         return new SetManager($setProviderCollector, $installedPackageResolver);

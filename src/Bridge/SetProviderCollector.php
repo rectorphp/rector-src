@@ -9,7 +9,6 @@ use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\SetProvider\CoreSetProvider;
 use Rector\Set\SetProvider\PHPSetProvider;
 use Rector\Set\ValueObject\ComposerTriggeredSet;
-use Rector\Symfony\Set\SetProvider\TwigSetProvider;
 
 /**
  * @api
@@ -32,7 +31,6 @@ final readonly class SetProviderCollector
             // register all known set providers here
             new PHPSetProvider(),
             new CoreSetProvider(),
-            new TwigSetProvider(),
         ];
 
         $this->setProviders = array_merge($setProviders, $extraSetProviders);
