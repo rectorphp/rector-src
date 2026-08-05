@@ -172,7 +172,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return array_any($classReflection->getParents(), fn(ClassReflection $parentClassReflection) => $parentClassReflection->getNativeReflection()->hasProperty($propertyName));
+        return array_any($classReflection->getParents(), fn (ClassReflection $parentClassReflection) => $parentClassReflection->getNativeReflection()->hasProperty($propertyName));
     }
 
     private function matchAssignedLocalPropertyName(Assign $assign): ?string

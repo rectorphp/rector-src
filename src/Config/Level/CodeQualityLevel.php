@@ -72,6 +72,10 @@ use Rector\CodeQuality\Rector\Ternary\TernaryImplodeToImplodeRector;
 use Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector;
 use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\EarlyReturn\Rector\If_\ChangeIfElseValueAssignToEarlyReturnRector;
+use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
+use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
+use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
@@ -154,6 +158,10 @@ final class CodeQualityLevel
         CallUserFuncWithArrowFunctionToInlineRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
         InlineArrayReturnAssignRector::class,
+        RemoveAlwaysElseRector::class,
+        ChangeIfElseValueAssignToEarlyReturnRector::class,
+        PreparedValueToEarlyReturnRector::class,
+        ReturnEarlyIfVariableRector::class,
         InlineIsAInstanceOfRector::class,
         InlineConstructorDefaultToPropertyRector::class,
         TernaryEmptyArrayArrayDimFetchToCoalesceRector::class,
