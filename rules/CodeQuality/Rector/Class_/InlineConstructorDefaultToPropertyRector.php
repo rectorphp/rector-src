@@ -171,6 +171,7 @@ CODE_SAMPLE
             // unknown parent, keep it safe
             return true;
         }
+
         return array_any($classReflection->getParents(), fn(ClassReflection $parentClassReflection) => $parentClassReflection->getNativeReflection()->hasProperty($propertyName));
     }
 
