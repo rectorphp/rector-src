@@ -16,11 +16,6 @@ final class SetGroup
     /**
      * Version-based set provider
      */
-    public const string DOCTRINE = 'doctrine';
-
-    /**
-     * Version-based set provider
-     */
     public const string LARAVEL = 'laravel';
 
     /**
