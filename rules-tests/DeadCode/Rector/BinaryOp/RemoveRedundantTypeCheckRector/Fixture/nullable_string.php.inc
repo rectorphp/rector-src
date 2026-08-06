@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\BooleanOr\RemoveRedundantNullableTypeCheckRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\BinaryOp\RemoveRedundantTypeCheckRector\Fixture;
 
 final class NullableString
 {
@@ -18,7 +18,7 @@ final class NullableString
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\BooleanOr\RemoveRedundantNullableTypeCheckRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\BinaryOp\RemoveRedundantTypeCheckRector\Fixture;
 
 final class NullableString
 {

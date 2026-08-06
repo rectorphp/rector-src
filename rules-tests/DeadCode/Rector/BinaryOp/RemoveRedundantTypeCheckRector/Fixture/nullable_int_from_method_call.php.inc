@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\BooleanOr\RemoveRedundantNullableTypeCheckRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\BinaryOp\RemoveRedundantTypeCheckRector\Fixture;
 
 final class NullableIntFromMethodCall
 {
@@ -24,7 +24,7 @@ final class NullableIntFromMethodCall
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\BooleanOr\RemoveRedundantNullableTypeCheckRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\BinaryOp\RemoveRedundantTypeCheckRector\Fixture;
 
 final class NullableIntFromMethodCall
 {

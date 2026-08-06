@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DeadCode\Rector\BooleanOr\RemoveRedundantNullableTypeCheckRector;
+namespace Rector\Tests\DeadCode\Rector\BinaryOp\RemoveRedundantTypeCheckRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RemoveRedundantNullableTypeCheckRectorTest extends AbstractRectorTestCase
+final class RemoveRedundantTypeCheckRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
