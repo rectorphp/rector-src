@@ -23,34 +23,20 @@ final readonly class CacheFactory
      */
     public function create(): Cache
     {
-        if ($this->resolveCacheClass() === FileCacheStorage::class) {
-            $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
-
-            // ensure cache directory exists
-            if (! $this->fileSystem->exists($cacheDirectory)) {
-                $this->fileSystem->mkdir($cacheDirectory);
-            }
-
-            $fileCacheStorage = new FileCacheStorage($cacheDirectory, $this->fileSystem);
-            return new Cache($fileCacheStorage);
-        }
-
-        return new Cache(new MemoryCacheStorage());
-    }
-
-    private function resolveCacheClass(): string
-    {
-        // explicit storage choice via the deprecated cacheClass() wins
-        if (SimpleParameterProvider::hasParameter(Option::CACHE_CLASS)) {
-            return SimpleParameterProvider::provideStringParameter(Option::CACHE_CLASS);
-        }
-
         // in CI the workspace is ephemeral and usually starts from scratch,
         // so a file cache that is never read again is only wasted IO → use faster in-memory cache
         if (new CiDetector()->isCiDetected()) {
-            return MemoryCacheStorage::class;
+            return new Cache(new MemoryCacheStorage());
         }
 
-        return FileCacheStorage::class;
+        $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
+
+        // ensure cache directory exists
+        if (! $this->fileSystem->exists($cacheDirectory)) {
+            $this->fileSystem->mkdir($cacheDirectory);
+        }
+
+        $fileCacheStorage = new FileCacheStorage($cacheDirectory, $this->fileSystem);
+        return new Cache($fileCacheStorage);
     }
 }

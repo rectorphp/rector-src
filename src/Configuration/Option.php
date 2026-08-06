@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
-use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
-use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-
 final class Option
 {
     public const string SOURCE = 'source';
@@ -144,15 +141,6 @@ final class Option
      * @internal Use RectorConfig::cacheDirectory() instead
      */
     public const string CACHE_DIR = 'cache_dir';
-
-    /**
-     * Cache backend override. Selected automatically by CacheFactory (file locally, in-memory in CI);
-     * only set when forcing a specific storage via the deprecated RectorConfig::cacheClass().
-     *
-     * @var class-string<CacheStorageInterface>
-     * @internal
-     */
-    public const string CACHE_CLASS = FileCacheStorage::class;
 
     public const string DEBUG = 'debug';
 
