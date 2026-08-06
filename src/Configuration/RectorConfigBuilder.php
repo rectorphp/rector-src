@@ -296,7 +296,8 @@ final class RectorConfigBuilder
         }
 
         if ($this->cacheClass !== null) {
-            $rectorConfig->cacheClass($this->cacheClass);
+            // set directly, as RectorConfig::cacheClass() is deprecated
+            SimpleParameterProvider::setParameter(Option::CACHE_CLASS, $this->cacheClass);
         }
 
         if ($this->cacheDirectory !== null) {
@@ -806,6 +807,9 @@ final class RectorConfigBuilder
     }
 
     /**
+     * The $cacheClass argument is deprecated. Cache storage is selected automatically:
+     * file cache locally, in-memory cache in CI. Pass it only to force a specific storage.
+     *
      * @param class-string<CacheStorageInterface>|null $cacheClass
      */
     public function withCache(

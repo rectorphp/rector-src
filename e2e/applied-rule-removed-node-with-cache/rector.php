@@ -8,6 +8,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 
 return static function (RectorConfig $rectorConfig): void {
+    // force file cache to verify the persisted cache across runs, even in CI
     $rectorConfig->cacheClass(FileCacheStorage::class);
 
     $rectorConfig->paths([
