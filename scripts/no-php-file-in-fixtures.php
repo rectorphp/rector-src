@@ -30,36 +30,41 @@ final readonly class NoPhpFileInFixturesDetector
     }
 
     /**
+     * @param string[] $ruleTestDirectories
      * @param string[] $testDirectories
      * @return Command::SUCCESS|Command::FAILURE
      */
-    public function run(array $testDirectories): int
+    public function run(array $ruleTestDirectories, array $testDirectories): int
     {
-        $phpFiles = $this->findPhpFiles($testDirectories);
+        $allFixtureFiles = $this->findFixtureFiles($ruleTestDirectories);
 
-        $allFixtureFiles = $this->findFixtureFiles($testDirectories);
+        $invalidFiles = [
+            ...$this->findPhpFiles($ruleTestDirectories),
+            // ".inc" alone is never picked up, only "*.php.inc" is
+            ...$this->findIncompleteIncFiles([...$ruleTestDirectories, ...$testDirectories]),
+        ];
 
-        $relativePhpFiles = [];
-        foreach ($phpFiles as $phpFile) {
-            $relativeFilePath = substr($phpFile->getRealPath(), strlen(getcwd()) + 1);
+        $relativeInvalidFilePaths = [];
+        foreach ($invalidFiles as $invalidFile) {
+            $relativeFilePath = substr($invalidFile->getRealPath(), strlen(getcwd()) + 1);
 
             // should skip?
             if (in_array($relativeFilePath, self::EXCLUDED_FILES, true)) {
                 continue;
             }
 
-            $relativePhpFiles[] = $relativeFilePath;
+            $relativeInvalidFilePaths[] = $relativeFilePath;
         }
 
-        if ($relativePhpFiles === []) {
+        if ($relativeInvalidFilePaths === []) {
             $this->symfonyStyle->success(sprintf('All %d fixtures are valid', count($allFixtureFiles)));
             return Command::SUCCESS;
         }
 
         $this->symfonyStyle->error(
-            'The following "*.php* files were found in /Fixtures directory, but only "*.php.inc" files are picked up and allowed. Rename their suffix or remove them'
+            'The following files were found in /Fixtures directory, but only "*.php.inc" files are picked up and allowed. Rename their suffix or remove them'
         );
-        $this->symfonyStyle->listing($relativePhpFiles);
+        $this->symfonyStyle->listing($relativeInvalidFilePaths);
 
         return Command::FAILURE;
     }
@@ -88,6 +93,27 @@ final readonly class NoPhpFileInFixturesDetector
      * @param string[] $directories
      * @return SplFileInfo[]
      */
+    private function findIncompleteIncFiles(array $directories): array
+    {
+        Assert::allDirectory($directories);
+
+        $finder = new Finder()
+            ->files()
+            ->in($directories)
+            ->path('/Fixture')
+            ->path('/Fixture*')
+            ->notPath('Source')
+            ->name('*.inc')
+            ->notName('*.php.inc')
+            ->sortByName();
+
+        return iterator_to_array($finder->getIterator());
+    }
+
+    /**
+     * @param string[] $directories
+     * @return SplFileInfo[]
+     */
     private function findFixtureFiles(array $directories): array
     {
         Assert::allDirectory($directories);
@@ -106,4 +132,4 @@ final readonly class NoPhpFileInFixturesDetector
 
 $noPhpFileInFixturesDetector = new NoPhpFileInFixturesDetector();
 
-exit($noPhpFileInFixturesDetector->run([__DIR__ . '/../rules-tests']));
+exit($noPhpFileInFixturesDetector->run([__DIR__ . '/../rules-tests'], [__DIR__ . '/../tests']));
