@@ -1,23 +1,16 @@
 <?php
 
-class ValidatedBase
+namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector\Fixture;
+
+use Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector\Source\ValidatedBase;
+
+class SkipsParentConstructor extends ValidatedBase
 {
     private bool $validated = false;
 
-    protected function __construct()
+    public function __construct()
     {
         $this->validate();
         $this->validated = true;
-    }
-
-    private function validate(): void
-    {
-    }
-}
-
-final class SkipsParentConstructor extends ValidatedBase
-{
-    public function __construct()
-    {
     }
 }
