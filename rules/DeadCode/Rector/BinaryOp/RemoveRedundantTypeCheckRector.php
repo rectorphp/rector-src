@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -25,7 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveRedundantTypeCheckRector extends AbstractRector
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -102,6 +104,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // the docblock type can be wider than the real value
+        if ($this->exprAnalyzer->isNonTypedFromParam($nullComparedExpr)) {
+            return null;
+        }
+
         if (! $booleanOr->right instanceof BooleanNot) {
             return null;
         }
@@ -116,7 +123,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $comparedType = $this->getType($nullComparedExpr);
+        $comparedType = $this->getNativeType($nullComparedExpr);
         if (! TypeCombinator::containsNull($comparedType)) {
             return null;
         }
@@ -137,6 +144,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // the docblock type can be wider than the real value
+        if ($this->exprAnalyzer->isNonTypedFromParam($booleanAnd->left)) {
+            return null;
+        }
+
         $funcCall = $this->matchTypeCheckFuncCall($booleanAnd->right, $booleanAnd->left);
         if (! $funcCall instanceof FuncCall) {
             return null;
@@ -148,7 +160,7 @@ CODE_SAMPLE
         }
 
         // the type is already narrowed by the truthy check on the left
-        $checkedType = $this->getType($funcCall->getArgs()[0]->value);
+        $checkedType = $this->getNativeType($funcCall->getArgs()[0]->value);
         if (! $this->isAlwaysMatchingType($funcCallName, $checkedType)) {
             return null;
         }
