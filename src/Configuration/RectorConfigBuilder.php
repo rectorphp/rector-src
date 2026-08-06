@@ -37,6 +37,7 @@ use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonyInternalSetList;
 use Rector\Symfony\Set\SymfonySetList;
+use Rector\Symfony\Set\TwigSetList;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
@@ -737,7 +738,6 @@ final class RectorConfigBuilder
         bool $drupal = false,
     ): self {
         $setMap = [
-            SetGroup::DOCTRINE => $doctrine,
             SetGroup::LARAVEL => $laravel,
             SetGroup::DRUPAL => $drupal,
         ];
@@ -754,11 +754,11 @@ final class RectorConfigBuilder
         }
 
         if ($doctrine) {
-            // $this->sets[] = DoctrineSetList::COMPOSER_BASED;
+            $this->sets[] = DoctrineSetList::COMPOSER_BASED;
         }
 
         if ($twig) {
-            // $this->sets[] = TwigSetList::COMPOSER_BASED;
+            $this->sets[] = TwigSetList::COMPOSER_BASED;
         }
 
         if ($symfony) {
