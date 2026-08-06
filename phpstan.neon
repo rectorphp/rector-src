@@ -317,6 +317,18 @@ parameters:
             message: '#Fetching (deprecated )?class constant (.*?) of (deprecated )?class (Rector\\Set\\ValueObject\\DowngradeLevelSetList|Rector\\Symfony\\Set\\(.*?))#'
             path: src/Configuration/RectorConfigBuilder.php
 
+        # the deprecated set objects are still resolved internally, until every extension bonds its rules
+        -
+            message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
+            paths:
+                - src/Set/SetManager.php
+                - src/Set/SetProvider/CoreSetProvider.php
+                - src/Set/SetProvider/PHPSetProvider.php
+                - src/Bridge/SetProviderCollector.php
+                - src/Configuration/RectorConfigBuilder.php
+                - tests/Set/ValueObject/ComposerTriggeredSetTest.php
+                - tests/Set/SetManager/SetManagerTest.php
+
         # runtime comparison
         - '#Comparison operation ".*" between int<\d+, \d+> and \d+ is always true#'
 
