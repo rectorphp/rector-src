@@ -146,8 +146,8 @@ final class Option
     public const string CACHE_DIR = 'cache_dir';
 
     /**
-     * Cache backend. Most of the time we cache in files, but in ephemeral environment (e.g. CI), a faster `MemoryCacheStorage` can be useful.
-     * @internal Use RectorConfig::cacheClass() instead
+     * Cache backend override. Selected automatically by CacheFactory (file locally, in-memory in CI);
+     * only set when forcing a specific storage via the deprecated RectorConfig::cacheClass().
      *
      * @var class-string<CacheStorageInterface>
      * @internal

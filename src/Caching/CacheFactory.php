@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Caching;
 
+use OndraM\CiDetector\CiDetector;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
 use Rector\Configuration\Option;
@@ -22,15 +23,9 @@ final readonly class CacheFactory
      */
     public function create(): Cache
     {
-        $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
+        if ($this->resolveCacheClass() === FileCacheStorage::class) {
+            $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
 
-        $cacheClass = FileCacheStorage::class;
-
-        if (SimpleParameterProvider::hasParameter(Option::CACHE_CLASS)) {
-            $cacheClass = SimpleParameterProvider::provideStringParameter(Option::CACHE_CLASS);
-        }
-
-        if ($cacheClass === FileCacheStorage::class) {
             // ensure cache directory exists
             if (! $this->fileSystem->exists($cacheDirectory)) {
                 $this->fileSystem->mkdir($cacheDirectory);
@@ -41,5 +36,21 @@ final readonly class CacheFactory
         }
 
         return new Cache(new MemoryCacheStorage());
+    }
+
+    private function resolveCacheClass(): string
+    {
+        // explicit storage choice via the deprecated cacheClass() wins
+        if (SimpleParameterProvider::hasParameter(Option::CACHE_CLASS)) {
+            return SimpleParameterProvider::provideStringParameter(Option::CACHE_CLASS);
+        }
+
+        // in CI the workspace is ephemeral and usually starts from scratch,
+        // so a file cache that is never read again is only wasted IO → use faster in-memory cache
+        if (new CiDetector()->isCiDetected()) {
+            return MemoryCacheStorage::class;
+        }
+
+        return FileCacheStorage::class;
     }
 }
