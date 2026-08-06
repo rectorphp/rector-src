@@ -16,6 +16,7 @@ use Rector\DeadCode\Rector\Assign\RemoveDoubleSelfAssignRector;
 use Rector\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector;
 use Rector\DeadCode\Rector\Block\ReplaceBlockToItsStmtsRector;
 use Rector\DeadCode\Rector\BooleanAnd\RemoveAndTrueRector;
+use Rector\DeadCode\Rector\BooleanOr\RemoveRedundantNullableTypeCheckRector;
 use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\DeadCode\Rector\ClassConst\RemoveUnusedPrivateClassConstantRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveArgumentFromDefaultParentCallRector;
@@ -148,6 +149,7 @@ final class DeadCodeLevel
 
         RemoveAlwaysTrueIfConditionRector::class,
         ReduceAlwaysFalseIfOrRector::class,
+        RemoveRedundantNullableTypeCheckRector::class,
         RemoveUnusedPrivateClassConstantRector::class,
         RemoveUnusedPrivatePropertyRector::class,
         RemoveUnusedClosureVariableUseRector::class,
