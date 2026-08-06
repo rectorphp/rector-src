@@ -17,7 +17,7 @@ class WithDescription extends TestCase
 use PHPUnit\Framework\TestCase;
 
 /**
- * @copyright Some Value. {@link https://example.com}.
+ * @copyright Some Value. Something.({@link https://example.com}).
  */
 #[\PHPUnit\Framework\Attributes\CoversClass(\Tests\BarController::class)]
 class WithDescription extends TestCase
