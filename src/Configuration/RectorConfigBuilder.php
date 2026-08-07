@@ -506,7 +506,7 @@ final class RectorConfigBuilder
                 );
             }
 
-            $this->sets[] = SymfonySetList::SYMFONY_52_VALIDATOR_ATTRIBUTES;
+            $this->sets[] = SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES;
         }
 
         if ($doctrine || $all) {
