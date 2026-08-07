@@ -46,6 +46,14 @@ final class Option
     public const string POLYFILL_PACKAGES = 'polyfill_packages';
 
     /**
+     * PHP version explicitly picked in withPhpSets(), e.g. withPhpSets(php82: true).
+     * Polyfilled rules above this version are skipped, as the version is an intended ceiling.
+     *
+     * @internal
+     */
+    public const string POLYFILL_CEILING_PHP_VERSION = 'polyfill_ceiling_php_version';
+
+    /**
      * @internal Use @see \Rector\Config\RectorConfig::importNames() instead
      * @var string
      */

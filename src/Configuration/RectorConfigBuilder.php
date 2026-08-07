@@ -191,6 +191,8 @@ final class RectorConfigBuilder
 
     private ?bool $isWithPhpLevelUsed = null;
 
+    private ?int $pickedPhpSetsVersion = null;
+
     /**
      * @var array<class-string<SetProviderInterface>,bool>
      */
@@ -219,6 +221,13 @@ final class RectorConfigBuilder
         // not to miss it by accident
         if ($this->isWithPhpSetsUsed === true) {
             $this->sets[] = SetList::PHP_POLYFILLS;
+        }
+
+        if ($this->pickedPhpSetsVersion !== null) {
+            SimpleParameterProvider::setParameter(
+                Option::POLYFILL_CEILING_PHP_VERSION,
+                $this->pickedPhpSetsVersion
+            );
         }
 
         // merge sets together
@@ -600,6 +609,9 @@ final class RectorConfigBuilder
         if ($pickedPhpVersions === []) {
             return $this->addPhpLevelSets(ComposerJsonPhpVersionResolver::resolveFromCwdOrFail());
         }
+
+        // explicitly picked version is a ceiling, even for polyfilled rules
+        $this->pickedPhpSetsVersion = $pickedPhpVersions[0];
 
         return $this->addPhpLevelSets($pickedPhpVersions[0]);
     }
