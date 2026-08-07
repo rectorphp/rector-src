@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Config;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
@@ -12,15 +11,10 @@ use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Renaming\Rector\PropertyFetch\RenamePropertyRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\RenameProperty;
-use Rector\Symfony\Set\TwigSetList;
+use Rector\Symfony\Set\SymfonySetList;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 
-/**
- * On macOS, this file order config cause this container read other tests' config.
- * so, this #[RunTestsInSeparateProcesses] is needed.
- */
-#[RunTestsInSeparateProcesses]
 final class RectorConfigTest extends AbstractLazyTestCase
 {
     public function test(): void
@@ -28,8 +22,8 @@ final class RectorConfigTest extends AbstractLazyTestCase
         $rectorConfig = $this->getContainer();
 
         $rectorConfig->configure()
-            ->withSets([TwigSetList::TWIG_134])
-            ->withRules([ReturnTypeFromReturnNewRector::class])($rectorConfig);
+            ->withSets([SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION])
+            ->withRules([ReturnTypeFromReturnNewRector::class]);
 
         // only collect root withRules()
         $this->assertCount(1, SimpleParameterProvider::provideArrayParameter(Option::ROOT_STANDALONE_REGISTERED_RULES));
