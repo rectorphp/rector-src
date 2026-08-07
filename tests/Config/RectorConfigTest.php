@@ -28,7 +28,7 @@ final class RectorConfigTest extends AbstractLazyTestCase
         $rectorConfig = $this->getContainer();
 
         $rectorConfig->configure()
-            ->withSets([TwigSetList::TWIG_134])
+            ->withSets([TwigSetList::COMPOSER_BASED])
             ->withRules([ReturnTypeFromReturnNewRector::class])($rectorConfig);
 
         // only collect root withRules()
