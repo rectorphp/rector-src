@@ -84,6 +84,21 @@ final readonly class DeprecatedRulesReporter
         }
     }
 
+    public function reportDeprecatedAttributesSetsArgs(): void
+    {
+        /** @var string[] $deprecatedAttributesSetsArgs */
+        $deprecatedAttributesSetsArgs = SimpleParameterProvider::provideArrayParameter(
+            Option::DEPRECATED_ATTRIBUTES_SETS_ARGS
+        );
+
+        foreach (array_unique($deprecatedAttributesSetsArgs) as $deprecatedAttributesSetsArg) {
+            $this->symfonyStyle->warning(sprintf(
+                'The "->withAttributesSets(%s: true)" argument is deprecated and no longer applied. It is already included in the "symfony: true" argument, use it instead.',
+                $deprecatedAttributesSetsArg
+            ));
+        }
+    }
+
     public function reportDeprecatedRectorUnsupportedMethods(): void
     {
         // to be added in related PR

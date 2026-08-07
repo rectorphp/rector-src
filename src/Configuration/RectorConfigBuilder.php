@@ -27,8 +27,6 @@ use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Enum\Config\Defaults;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
-use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
-use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\Enum\SetGroup;
@@ -462,6 +460,9 @@ final class RectorConfigBuilder
 
     /**
      * Upgrade your annotations to attributes
+     *
+     * @param bool $symfonyRoute Deprecated, included in $symfony
+     * @param bool $symfonyValidator Deprecated, included in $symfony
      */
     public function withAttributesSets(
         bool $symfony = false,
@@ -486,27 +487,13 @@ final class RectorConfigBuilder
             $this->sets[] = SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES;
         }
 
-        // dx for more granular upgrade
+        // both are part of $symfony set, no longer applied on their own
         if ($symfonyRoute) {
-            if ($symfony) {
-                throw new InvalidConfigurationException(
-                    '$symfonyRoute is already included in $symfony. Use $symfony only'
-                );
-            }
-
-            $this->withConfiguredRule(AnnotationToAttributeRector::class, [
-                new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
-            ]);
+            SimpleParameterProvider::addParameter(Option::DEPRECATED_ATTRIBUTES_SETS_ARGS, 'symfonyRoute');
         }
 
         if ($symfonyValidator) {
-            if ($symfony) {
-                throw new InvalidConfigurationException(
-                    '$symfonyValidator is already included in $symfony. Use $symfony only'
-                );
-            }
-
-            $this->sets[] = SymfonySetList::SYMFONY_52_VALIDATOR_ATTRIBUTES;
+            SimpleParameterProvider::addParameter(Option::DEPRECATED_ATTRIBUTES_SETS_ARGS, 'symfonyValidator');
         }
 
         if ($doctrine || $all) {
