@@ -6,10 +6,12 @@ namespace Rector\Tests\DependencyInjection;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
+#[RunTestsInSeparateProcesses]
 final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractLazyTestCase
 {
     /**
