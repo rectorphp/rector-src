@@ -7,7 +7,7 @@ use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->sets([SymfonySetList::SYMFONY_52]);
+    $rectorConfig->sets([SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES]);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_80);
     $rectorConfig->paths([__DIR__ . '/src']);
