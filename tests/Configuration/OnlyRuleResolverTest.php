@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Configuration;
 
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\OnlyRuleResolver;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector;
