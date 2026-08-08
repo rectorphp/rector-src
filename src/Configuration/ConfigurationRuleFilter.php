@@ -13,6 +13,7 @@ use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
 
 /**
  * Modify available rector rules based on the configuration options
+ * @see \Rector\Tests\Configuration\ConfigurationRuleFilterTest
  */
 final class ConfigurationRuleFilter
 {
