@@ -102,6 +102,13 @@ final readonly class ConfigurationFactory
             SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
         }
 
+        $isPhpOnly = (bool) $input->getOption(Option::PHP);
+
+        // "--php" narrows the run the same way "--only" does
+        if ($isPhpOnly) {
+            SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
+        }
+
         return new Configuration(
             $isDryRun,
             $showProgressBar,
@@ -121,6 +128,7 @@ final readonly class ConfigurationFactory
             $levelOverflows,
             $showRulesSummary,
             $isComposerBased,
+            $isPhpOnly,
         );
     }
 

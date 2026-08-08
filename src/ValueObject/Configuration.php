@@ -36,12 +36,18 @@ final readonly class Configuration
         private array $levelOverflows = [],
         private bool $showRulesSummary = false,
         private bool $isComposerBased = false,
+        private bool $isPhpOnly = false,
     ) {
     }
 
     public function isComposerBased(): bool
     {
         return $this->isComposerBased;
+    }
+
+    public function isPhpOnly(): bool
+    {
+        return $this->isPhpOnly;
     }
 
     public function isDryRun(): bool

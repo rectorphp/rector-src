@@ -8,10 +8,12 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ValueObject\Configuration;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
 
 /**
  * Modify available rector rules based on the configuration options
+ * @see \Rector\Tests\Configuration\ConfigurationRuleFilterTest
  */
 final class ConfigurationRuleFilter
 {
@@ -39,6 +41,10 @@ final class ConfigurationRuleFilter
 
         if ($this->configuration->isComposerBased()) {
             return $this->filterComposerBased($rectors);
+        }
+
+        if ($this->configuration->isPhpOnly()) {
+            return $this->filterPhpOnly($rectors);
         }
 
         return $rectors;
@@ -79,6 +85,24 @@ final class ConfigurationRuleFilter
             }
 
             if (in_array($rector::class, $composerBoundRectorClasses, true)) {
+                $activeRectors[] = $rector;
+            }
+        }
+
+        return $activeRectors;
+    }
+
+    /**
+     * Keeps rules bound to a minimal PHP version, e.g. PHP upgrade rules
+     *
+     * @param list<RectorInterface> $rectors
+     * @return list<RectorInterface>
+     */
+    private function filterPhpOnly(array $rectors): array
+    {
+        $activeRectors = [];
+        foreach ($rectors as $rector) {
+            if ($rector instanceof MinPhpVersionInterface) {
                 $activeRectors[] = $rector;
             }
         }

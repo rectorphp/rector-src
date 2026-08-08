@@ -185,6 +185,16 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             ],
             "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --memory-limit='-1' --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
+
+        yield [
+            [
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
+                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
+                '--' . Option::PHP => true,
+            ],
+            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --php --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        ];
     }
 
     private function cleanUpEmptyQuoteExpectedCommandOutput(string $result): string
