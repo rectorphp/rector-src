@@ -10,8 +10,6 @@ use Rector\Set\Enum\SetGroup;
 use Rector\Set\ValueObject\ComposerTriggeredSet;
 
 /**
- * @see \Rector\Tests\Set\SetManager\SetManagerTest
- *
  * @deprecated Bond the rules themselves instead, by implementing the ComposerPackageConstraintInterface. A set
  * described as an object only existed to be matched against the installed packages; a bonded rule states the exact
  * package version its target API is available from and applies from there upwards, so a plain set file is enough.
@@ -25,22 +23,6 @@ final readonly class SetManager
         private SetProviderCollector $setProviderCollector,
         private InstalledPackageResolver $installedPackageResolver,
     ) {
-    }
-
-    /**
-     * @return ComposerTriggeredSet[]
-     */
-    public function matchComposerTriggered(string $groupName): array
-    {
-        $matchedSets = [];
-
-        foreach ($this->setProviderCollector->provideComposerTriggeredSets() as $composerTriggeredSet) {
-            if ($composerTriggeredSet->getGroupName() === $groupName) {
-                $matchedSets[] = $composerTriggeredSet;
-            }
-        }
-
-        return $matchedSets;
     }
 
     /**
@@ -64,5 +46,21 @@ final readonly class SetManager
         }
 
         return $groupLoadedSets;
+    }
+
+    /**
+     * @return ComposerTriggeredSet[]
+     */
+    private function matchComposerTriggered(string $groupName): array
+    {
+        $matchedSets = [];
+
+        foreach ($this->setProviderCollector->provideComposerTriggeredSets() as $composerTriggeredSet) {
+            if ($composerTriggeredSet->getGroupName() === $groupName) {
+                $matchedSets[] = $composerTriggeredSet;
+            }
+        }
+
+        return $matchedSets;
     }
 }

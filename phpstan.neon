@@ -326,8 +326,6 @@ parameters:
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
             paths:
                 - src/Set/SetManager.php
-                - src/Set/SetProvider/CoreSetProvider.php
-                - src/Set/SetProvider/PHPSetProvider.php
                 - src/Bridge/SetProviderCollector.php
                 - src/Configuration/RectorConfigBuilder.php
                 - tests/Set/ValueObject/ComposerTriggeredSetTest.php
