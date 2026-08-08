@@ -23,16 +23,10 @@ use Rector\Set\ValueObject\ComposerTriggeredSet;
 final readonly class SetProviderCollector
 {
     /**
-     * @var SetProviderInterface[]
+     * @param SetProviderInterface[] $setProviders
      */
-    private array $setProviders;
-
-    /**
-     * @param SetProviderInterface[] $extraSetProviders
-     */
-    public function __construct(array $extraSetProviders = [])
+    public function __construct(private array $setProviders = [])
     {
-        $this->setProviders = $extraSetProviders;
     }
 
     /**
