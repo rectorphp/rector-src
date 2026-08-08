@@ -18,6 +18,13 @@
         </testsuite>
     </testsuites>
 
+    <!-- test impact analysis: only re-run tests hit by changed files, requires pcov/xdebug to record -->
+    <extensions>
+        <bootstrap class="JMac\Testing\PhpUnit\Tia\Extension">
+            <parameter name="storage" value="global"/>
+        </bootstrap>
+    </extensions>
+
     <php>
         <ini name="memory_limit" value="-1"/>
     </php>

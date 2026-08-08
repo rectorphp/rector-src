@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Testing\PHPUnit;
 
+use JMac\Testing\PhpUnit\Tia\Traits\RunWithTia;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\Version;
 use Rector\Config\RectorConfig;
@@ -11,10 +12,17 @@ use Rector\DependencyInjection\LazyContainerFactory;
 
 abstract class AbstractLazyTestCase extends TestCase
 {
+    // skips tests unaffected by the changed files, based on the recorded coverage graph
+    use RunWithTia {
+        RunWithTia::setUp as tiaSetUp;
+    }
+
     protected static ?RectorConfig $rectorConfig = null;
 
     protected function setUp(): void
     {
+        $this->tiaSetUp();
+
         // this is needed to have always the same preloaded nikic/php-parser classes
         // in both bare AbstractLazyTestCase lazy tests and AbstractRectorTestCase tests
         $this->includePreloadFilesAndScoperAutoload();
