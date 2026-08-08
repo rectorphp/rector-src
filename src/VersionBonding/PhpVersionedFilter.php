@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\VersionBonding;
 
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Php\PhpVersionProvider;
 use Rector\Php\PolyfillPackagesProvider;
@@ -28,10 +30,13 @@ final readonly class PhpVersionedFilter
     public function filter(array $rectors): array
     {
         $minProjectPhpVersion = $this->phpVersionProvider->provide();
+        $ceilingPhpVersion = $this->resolveCeilingPhpVersion();
 
         $activeRectors = [];
         foreach ($rectors as $rector) {
-            if ($rector instanceof RelatedPolyfillInterface) {
+            // polyfill package can raise the rule above the project PHP version,
+            // but never above an explicitly picked withPhpSets() version
+            if ($rector instanceof RelatedPolyfillInterface && $ceilingPhpVersion === null) {
                 $polyfillPackageNames = $this->polyfillPackagesProvider->provide();
 
                 if (in_array($rector->providePolyfillPackage(), $polyfillPackageNames, true)) {
@@ -45,12 +50,30 @@ final readonly class PhpVersionedFilter
                 continue;
             }
 
+            $maxPhpVersion = $rector instanceof RelatedPolyfillInterface && $ceilingPhpVersion !== null
+                ? $ceilingPhpVersion
+                : $minProjectPhpVersion;
+
             // does satisfy version? → include
-            if ($rector->provideMinPhpVersion() <= $minProjectPhpVersion) {
+            if ($rector->provideMinPhpVersion() <= $maxPhpVersion) {
                 $activeRectors[] = $rector;
             }
         }
 
         return $activeRectors;
+    }
+
+    private function resolveCeilingPhpVersion(): ?int
+    {
+        if (! SimpleParameterProvider::hasParameter(Option::POLYFILL_CEILING_PHP_VERSION)) {
+            return null;
+        }
+
+        $ceilingPhpVersion = SimpleParameterProvider::provideIntParameter(Option::POLYFILL_CEILING_PHP_VERSION);
+        if ($ceilingPhpVersion <= 0) {
+            return null;
+        }
+
+        return $ceilingPhpVersion;
     }
 }

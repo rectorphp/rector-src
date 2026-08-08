@@ -147,6 +147,7 @@ try {
         do {
             $errors[] = $throwable->getMessage();
         } while ($throwable = $throwable->getPrevious());
+
         echo Json::encode([
             'fatal_errors' => $errors,
         ]);
