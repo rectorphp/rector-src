@@ -67,6 +67,13 @@ final class ProcessConfigureDecorator
         );
 
         $command->addOption(
+            Option::PHP,
+            null,
+            InputOption::VALUE_NONE,
+            'Run only PHP rules, e.g. rules bound to a minimal PHP version'
+        );
+
+        $command->addOption(
             Option::ONLY_SUFFIX,
             null,
             InputOption::VALUE_REQUIRED,
