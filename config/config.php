@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use OndraM\CiDetector\CiDetector;
 use Rector\Bootstrap\ExtensionConfigResolver;
-use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -26,12 +24,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->cacheDirectory(sys_get_temp_dir() . '/rector_cached_files');
     $rectorConfig->containerCacheDirectory(sys_get_temp_dir());
-
-    // use faster in-memory cache in CI.
-    // CI always starts from scratch, therefore IO intensive caching is not worth it
-    if (new CiDetector()->isCiDetected()) {
-        $rectorConfig->cacheClass(MemoryCacheStorage::class);
-    }
 
     // load internal rector-* extension configs
     $extensionConfigResolver = new ExtensionConfigResolver();
