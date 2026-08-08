@@ -189,6 +189,7 @@ EOF
         $this->deprecatedRulesReporter->reportDeprecatedAttributesSetsArgs();
 
         $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
+        $this->missConfigurationReporter->reportSkippedNonRectorClasses();
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
         return $this->resolveReturnCode($processResult, $configuration);

@@ -241,6 +241,11 @@ final class Option
     public const string SKIPPED_RECTOR_RULES = 'skipped_rector_rules';
 
     /**
+     * @internal For reporting skipped classes that are not Rector rules
+     */
+    public const string SKIPPED_NON_RECTOR_CLASSES = 'skipped_non_rector_classes';
+
+    /**
      * @internal For reporting deprecated cache meta extensions
      */
     public const string CACHE_META_EXTENSIONS = 'cache_meta_extensions';
