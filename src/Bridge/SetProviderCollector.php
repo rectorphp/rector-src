@@ -25,8 +25,9 @@ final readonly class SetProviderCollector
     /**
      * @param SetProviderInterface[] $setProviders
      */
-    public function __construct(private array $setProviders = [])
-    {
+    public function __construct(
+        private array $setProviders = []
+    ) {
     }
 
     /**
