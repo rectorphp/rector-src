@@ -7,12 +7,15 @@ namespace Rector\Tests\Reporting;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
+use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
+use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Reporting\UnusedSkipResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\ThreeMan;
 use Rector\Tests\Skipper\Skipper\Source\AnotherClassToSkip;
+use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -59,6 +62,38 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::SKIP, []);
         SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, false);
+        SimpleParameterProvider::setParameter(Option::SKIPPED_NON_RECTOR_CLASSES, []);
+    }
+
+    public function testReportsSkippedNonRectorClass(): void
+    {
+        RectorConfigValidator::ensureRectorRulesExist([
+            // not a Rector rule, can never be skipped
+            AnotherClassToSkip::class => ['some/path'],
+            // Rector rule, must not be reported
+            OrdSingleByteRector::class => ['some/path'],
+            // post rector rule, must not be reported
+            NameImportingPostRector::class => ['some/path'],
+        ]);
+
+        $this->missConfigurationReporter->reportSkippedNonRectorClasses();
+
+        $output = $this->bufferedOutput->fetch();
+
+        $this->assertStringContainsString('AnotherClassToSkip', $output);
+        $this->assertStringNotContainsString('OrdSingleByteRector', $output);
+        $this->assertStringNotContainsString('NameImportingPostRector', $output);
+    }
+
+    public function testReportsNothingOnRectorClassesOnly(): void
+    {
+        RectorConfigValidator::ensureRectorRulesExist([
+            OrdSingleByteRector::class => ['some/path'],
+        ]);
+
+        $this->missConfigurationReporter->reportSkippedNonRectorClasses();
+
+        $this->assertSame('', $this->bufferedOutput->fetch());
     }
 
     public function testReportsOnlyTrackableUnusedSkips(): void
