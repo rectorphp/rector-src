@@ -507,3 +507,10 @@ parameters:
         -
             message: '#"@\\simplexml_load_string\(\$junitXml\)" is forbidden to use#'
             path: scripts/remove-unused-deps.php
+
+        # It is difficult to make automatic type inference
+        -
+            message: '#^Method Rector\\Rector\\AbstractRector\:\:cloneNode\(\) should return TClonedNode of PhpParser\\Node but returns PhpParser\\Node\.$#'
+            identifier: return.type
+            count: 1
+            path: src/Rector/AbstractRector.php

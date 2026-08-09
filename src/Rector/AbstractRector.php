@@ -40,6 +40,10 @@ use Rector\Skipper\Skipper\Skipper;
 use Rector\Skipper\ValueObject\SkipMatch;
 use Rector\ValueObject\Application\File;
 
+/**
+ * @template TNode of Node = Node
+ * @implements RectorInterface<TNode>
+ */
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
     private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
@@ -124,6 +128,7 @@ CODE_SAMPLE;
     }
 
     /**
+     * @param TNode $node
      * @return NodeVisitor::REMOVE_NODE|Node|null|Node[]
      */
     final public function enterNode(Node $node): int|Node|null|array
@@ -278,6 +283,9 @@ CODE_SAMPLE;
 
     /**
      * Deep clone, so a skipped rule can be probed on the clone without mutating the real node.
+     * @template TClonedNode of Node
+     * @param TClonedNode $node
+     * @return TClonedNode
      */
     private function cloneNode(Node $node): Node
     {
