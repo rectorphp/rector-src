@@ -765,9 +765,9 @@ final class RectorConfigBuilder
             $this->sets[] = SymfonySetList::COMPOSER_BASED;
         }
 
+        // deprecated, no longer applied - it only added named args to 2 methods of a single package
         if ($netteUtils) {
-            // single set, as every rule inside is bound to the installed nette/utils version on its own
-            $this->sets[] = SetList::NETTE_UTILS_COMPOSER_BASED;
+            SimpleParameterProvider::addParameter(Option::DEPRECATED_COMPOSER_BASED_ARGS, 'netteUtils');
         }
 
         return $this;
