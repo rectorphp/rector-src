@@ -9,6 +9,7 @@ use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Symfony\Symfony61\Rector\Class_\CommandConfigureToAttributeRector;
+use Rector\TypeDeclarationDocblocks\Rector\Class_\AddParamTypeToRefactorMethodRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -67,4 +68,7 @@ return RectorConfig::configure()
 
         // keep @deprecated annotation, as readable in IDE and tooling
         DeprecatedAnnotationToDeprecatedAttributeRector::class => [__DIR__ . '/src/Set/ValueObject/SetList.php'],
+
+        // This is no longer necessary, as generics have appeared in `AbstractRector`.
+        AddParamTypeToRefactorMethodRector::class,
     ]);
