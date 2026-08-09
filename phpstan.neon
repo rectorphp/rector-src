@@ -123,6 +123,12 @@ parameters:
             identifier: rector.upgradeDowngradeRegisteredInSet
             path: rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
 
+        # deliberately kept out of the php84 set, as it turns a doc annotation into a runtime deprecation;
+        # it stays available to register directly with withRules()
+        -
+            identifier: rector.upgradeDowngradeRegisteredInSet
+            path: rules/Php84/Rector/Class_/DeprecatedAnnotationToDeprecatedAttributeRector.php
+
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
