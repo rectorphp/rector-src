@@ -99,6 +99,21 @@ final readonly class DeprecatedRulesReporter
         }
     }
 
+    public function reportDeprecatedComposerBasedArgs(): void
+    {
+        /** @var string[] $deprecatedComposerBasedArgs */
+        $deprecatedComposerBasedArgs = SimpleParameterProvider::provideArrayParameter(
+            Option::DEPRECATED_COMPOSER_BASED_ARGS
+        );
+
+        foreach (array_unique($deprecatedComposerBasedArgs) as $deprecatedComposerBasedArg) {
+            $this->symfonyStyle->warning(sprintf(
+                'The "->withComposerBased(%s: true)" argument is deprecated and no longer applied. It only added named args to 2 methods of a single package, register the rule directly if needed.',
+                $deprecatedComposerBasedArg
+            ));
+        }
+    }
+
     public function reportDeprecatedRectorUnsupportedMethods(): void
     {
         // to be added in related PR
