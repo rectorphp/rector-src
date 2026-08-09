@@ -27,6 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure|FileNode|Namespace_>
  * @see \Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\CatchExceptionNameMatchingTypeRectorTest
  */
 final class CatchExceptionNameMatchingTypeRector extends AbstractRector
@@ -67,17 +68,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class, FileNode::class, Namespace_::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure|FileNode|Namespace_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {

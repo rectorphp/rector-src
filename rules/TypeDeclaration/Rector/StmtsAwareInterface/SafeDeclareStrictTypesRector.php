@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FileNode>
  * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector\SafeDeclareStrictTypesRectorTest
  */
 final class SafeDeclareStrictTypesRector extends AbstractRector implements HTMLAverseRectorInterface, MinPhpVersionInterface
@@ -55,9 +56,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @param FileNode $node
-     */
     public function refactor(Node $node): ?FileNode
     {
         if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($node)) {
@@ -74,9 +72,6 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FileNode::class];

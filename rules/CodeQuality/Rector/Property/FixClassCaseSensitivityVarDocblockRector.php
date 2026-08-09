@@ -22,6 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Property|Expression>
  * @see \Rector\Tests\CodeQuality\Rector\Property\FixClassCaseSensitivityVarDocblockRector\FixClassCaseSensitivityVarDocblockRectorTest
  */
 final class FixClassCaseSensitivityVarDocblockRector extends AbstractRector
@@ -59,9 +60,6 @@ CODE_SAMPLE
         return [Property::class, Expression::class];
     }
 
-    /**
-     * @param Property|Expression $node
-     */
     public function refactor(Node $node): ?Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);

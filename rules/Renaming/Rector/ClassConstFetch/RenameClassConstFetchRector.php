@@ -18,6 +18,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<ClassConstFetch>
+ * @implements ConfigurableRectorInterface<ClassConstFetch>
  * @see \Rector\Tests\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector\RenameClassConstFetchRectorTest
  */
 final class RenameClassConstFetchRector extends AbstractRector implements ConfigurableRectorInterface
@@ -57,17 +59,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassConstFetch::class];
     }
 
-    /**
-     * @param ClassConstFetch $node
-     */
     public function refactor(Node $node): ?ClassConstFetch
     {
         foreach ($this->renameClassConstFetches as $renameClassConstFetch) {

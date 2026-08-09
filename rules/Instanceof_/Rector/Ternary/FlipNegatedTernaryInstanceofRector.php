@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Ternary>
  * @see \Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\FlipNegatedTernaryInstanceofRectorTest
  */
 final class FlipNegatedTernaryInstanceofRector extends AbstractRector
@@ -28,17 +29,11 @@ final class FlipNegatedTernaryInstanceofRector extends AbstractRector
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Ternary::class];
     }
 
-    /**
-     * @param Ternary $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->if instanceof Expr) {

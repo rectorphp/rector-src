@@ -22,6 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see https://3v4l.org/TQIcH
  * @see https://3v4l.org/VbcrN
  * @see https://3v4l.org/8Y0ba
@@ -62,17 +63,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Class_
     {
         $hasChanged = false;

@@ -26,6 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_>
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblockBasedOnArrayMapRector\AddReturnArrayDocblockBasedOnArrayMapRectorTest
  */
 final class AddReturnArrayDocblockBasedOnArrayMapRector extends AbstractRector
@@ -81,9 +82,6 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class];
     }
 
-    /**
-     * @param ClassMethod|Function_ $node
-     */
     public function refactor(Node $node): null|Function_|ClassMethod
     {
         $returnsScoped = $this->betterNodeFinder->findReturnsScoped($node);

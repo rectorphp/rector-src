@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see https://wiki.php.net/rfc/override_properties
  *
  * @see \Rector\Tests\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector\AddOverrideAttributeToOverriddenPropertiesRectorTest
@@ -73,9 +74,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
@@ -86,9 +84,6 @@ CODE_SAMPLE
         return PhpVersionFeature::OVERRIDE_ATTRIBUTE_ON_PROPERTIES;
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->classAnalyzer->isAnonymousClass($node)) {

@@ -27,6 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<MethodCall>
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromIterableMethodCallRector\AddClosureParamTypeFromIterableMethodCallRectorTest
  */
 final class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRector
@@ -85,9 +86,6 @@ CODE_SAMPLE
         return [MethodCall::class];
     }
 
-    /**
-     * @param MethodCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isFirstClassCallable()) {

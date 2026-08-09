@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Array_>
  * @see \Rector\Tests\DeadCode\Rector\Array_\RemoveDuplicatedArrayKeyRector\RemoveDuplicatedArrayKeyRectorTest
  */
 final class RemoveDuplicatedArrayKeyRector extends AbstractRector
@@ -48,17 +49,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Array_::class];
     }
 
-    /**
-     * @param Array_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $duplicatedKeysArrayItems = $this->resolveDuplicateKeysArrayItems($node);

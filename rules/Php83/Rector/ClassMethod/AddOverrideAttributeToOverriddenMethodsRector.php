@@ -34,6 +34,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
+ * @implements ConfigurableRectorInterface<Class_>
  * @see https://wiki.php.net/rfc/marking_overriden_methods
  *
  * @see \Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\AddOverrideAttributeToOverriddenMethodsRectorTest
@@ -155,9 +157,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
@@ -172,9 +171,6 @@ CODE_SAMPLE
         $this->addToInterfaceMethods = $configuration[self::ADD_TO_INTERFACE_METHODS] ?? false;
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $this->hasChanged = false;

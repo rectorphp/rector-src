@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ArrowFunction>
  * @see \Rector\Tests\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector\ArrowFunctionDelegatingCallToFirstClassCallableRectorTest
  */
 final class ArrowFunctionDelegatingCallToFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
@@ -52,9 +53,6 @@ CODE_SAMPLE
         return [ArrowFunction::class];
     }
 
-    /**
-     * @param ArrowFunction $node
-     */
     public function refactor(Node $node): null|CallLike
     {
         if (! $node->expr instanceof FuncCall && ! $node->expr instanceof MethodCall && ! $node->expr instanceof StaticCall) {

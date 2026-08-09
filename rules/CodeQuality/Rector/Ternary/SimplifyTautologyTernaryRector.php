@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Ternary>
  * @see \Rector\Tests\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector\SimplifyTautologyTernaryRectorTest
  */
 final class SimplifyTautologyTernaryRector extends AbstractRector
@@ -34,17 +35,11 @@ final class SimplifyTautologyTernaryRector extends AbstractRector
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Ternary::class];
     }
 
-    /**
-     * @param Ternary $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->cond instanceof NotIdentical && ! $node->cond instanceof Identical) {

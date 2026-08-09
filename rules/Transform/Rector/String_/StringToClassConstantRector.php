@@ -15,6 +15,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<String_>
+ * @implements ConfigurableRectorInterface<String_>
  * @see \Rector\Tests\Transform\Rector\String_\StringToClassConstantRector\StringToClassConstantRectorTest
  */
 final class StringToClassConstantRector extends AbstractRector implements ConfigurableRectorInterface
@@ -58,17 +60,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [String_::class];
     }
 
-    /**
-     * @param String_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         foreach ($this->stringsToClassConstants as $stringToClassConstant) {

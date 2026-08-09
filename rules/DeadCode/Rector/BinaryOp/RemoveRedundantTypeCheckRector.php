@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanOr|BooleanAnd>
  * @see \Rector\Tests\DeadCode\Rector\BinaryOp\RemoveRedundantTypeCheckRector\RemoveRedundantTypeCheckRectorTest
  */
 final class RemoveRedundantTypeCheckRector extends AbstractRector
@@ -70,17 +71,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanOr::class, BooleanAnd::class];
     }
 
-    /**
-     * @param BooleanOr|BooleanAnd $node
-     */
     public function refactor(Node $node): ?Expr
     {
         if ($node instanceof BooleanOr) {

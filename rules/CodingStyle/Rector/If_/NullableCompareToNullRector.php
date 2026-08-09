@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_>
  * @deprecated This rule is deprecated, as comparing a nullable object to null is ambiguous and weak. Use an "instanceof" check instead, e.g. the instanceof rule set.
  */
 final class NullableCompareToNullRector extends AbstractRector implements DeprecatedInterface
@@ -45,17 +46,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class];
     }
 
-    /**
-     * @param If_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

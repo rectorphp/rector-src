@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Ternary>
  * @see \Rector\Tests\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector\UnnecessaryTernaryExpressionRectorTest
  */
 final class UnnecessaryTernaryExpressionRector extends AbstractRector
@@ -35,17 +36,11 @@ final class UnnecessaryTernaryExpressionRector extends AbstractRector
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Ternary::class];
     }
 
-    /**
-     * @param Ternary $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->if instanceof Expr) {

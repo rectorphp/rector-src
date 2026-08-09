@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<String_>
  * @see \Rector\Tests\Php73\Rector\String_\SensitiveHereNowDocRector\SensitiveHereNowDocRectorTest
  */
 final class SensitiveHereNowDocRector extends AbstractRector implements MinPhpVersionInterface
@@ -47,17 +48,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [String_::class];
     }
 
-    /**
-     * @param String_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $kind = $node->getAttribute(AttributeKey::KIND);

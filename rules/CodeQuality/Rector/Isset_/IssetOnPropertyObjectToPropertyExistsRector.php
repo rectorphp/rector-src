@@ -31,6 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Isset_|BooleanNot>
  * @see \Rector\Tests\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector\IssetOnPropertyObjectToPropertyExistsRectorTest
  */
 final class IssetOnPropertyObjectToPropertyExistsRector extends AbstractRector
@@ -73,17 +74,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Isset_::class, BooleanNot::class];
     }
 
-    /**
-     * @param Isset_|BooleanNot $node
-     */
     public function refactor(Node $node): ?Node
     {
         $isNegated = false;

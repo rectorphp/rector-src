@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Node\Attribute>
  * @see \Rector\Tests\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector\SortAttributeNamedArgsRectorTest
  */
 final class SortAttributeNamedArgsRector extends AbstractRector
@@ -70,9 +71,6 @@ CODE_SAMPLE
         return [Attribute::class];
     }
 
-    /**
-     * @param Node\Attribute $node
-     */
     public function refactor(Node $node): ?Node
     {
         $args = $node->args;

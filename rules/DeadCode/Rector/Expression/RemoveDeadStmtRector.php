@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression>
  * @see \Rector\Tests\DeadCode\Rector\Expression\RemoveDeadStmtRector\RemoveDeadStmtRectorTest
  */
 final class RemoveDeadStmtRector extends AbstractRector
@@ -48,16 +49,12 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class];
     }
 
     /**
-     * @param Expression $node
      * @return Node[]|Node|null|NodeVisitor::REMOVE_NODE
      */
     public function refactor(Node $node): array|Node|null|int

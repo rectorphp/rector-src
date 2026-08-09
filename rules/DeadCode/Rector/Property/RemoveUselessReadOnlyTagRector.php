@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_|Property|Param>
  * @see \Rector\Tests\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector\RemoveUselessReadOnlyTagRectorTest
  */
 final class RemoveUselessReadOnlyTagRector extends AbstractRector implements MinPhpVersionInterface
@@ -66,17 +67,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class, Property::class, Param::class];
     }
 
-    /**
-     * @param Class_|Property|Param $node
-     */
     public function refactor(Node $node): ?Node
     {
         // for param, only on property promotion

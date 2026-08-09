@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod>
  * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessAssignFromPropertyPromotionRector\RemoveUselessAssignFromPropertyPromotionRectorTest
  */
 final class RemoveUselessAssignFromPropertyPromotionRector extends AbstractRector
@@ -49,17 +50,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->isName($node, MethodName::CONSTRUCT)) {

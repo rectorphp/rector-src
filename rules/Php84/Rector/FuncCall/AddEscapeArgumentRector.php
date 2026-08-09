@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall|MethodCall>
  * @see \Rector\Tests\Php84\Rector\FuncCall\AddEscapeArgumentRector\AddEscapeArgumentRectorTest
  */
 final class AddEscapeArgumentRector extends AbstractRector implements MinPhpVersionInterface
@@ -43,9 +44,6 @@ CODE_SAMPLE
         return [FuncCall::class, MethodCall::class];
     }
 
-    /**
-     * @param FuncCall|MethodCall $node
-     */
     public function refactor(Node $node): null|FuncCall|MethodCall
     {
         if ($node->isFirstClassCallable()) {

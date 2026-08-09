@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Ternary>
  * @deprecated This rule is deprecated, as it is a personal preference. Swapping the branches keeps the condition positive, but moves the values out of their logical order, e.g. a fallback value ahead of the main one.
  */
 final class SwitchNegatedTernaryRector extends AbstractRector implements DeprecatedInterface
@@ -51,17 +52,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Ternary::class];
     }
 
-    /**
-     * @param Ternary $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

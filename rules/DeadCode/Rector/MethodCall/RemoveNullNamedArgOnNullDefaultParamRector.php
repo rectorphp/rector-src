@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<MethodCall|StaticCall|New_|FuncCall>
  * @see \Rector\Tests\DeadCode\Rector\MethodCall\RemoveNullNamedArgOnNullDefaultParamRector\RemoveNullNamedArgOnNullDefaultParamRectorTest
  */
 final class RemoveNullNamedArgOnNullDefaultParamRector extends AbstractRector
@@ -76,9 +77,6 @@ CODE_SAMPLE
         return [MethodCall::class, StaticCall::class, New_::class, FuncCall::class];
     }
 
-    /**
-     * @param MethodCall|StaticCall|New_|FuncCall $node
-     */
     public function refactor(Node $node): StaticCall|MethodCall|New_|FuncCall|null
     {
         if ($node->isFirstClassCallable()) {

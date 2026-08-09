@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<InterpolatedString>
  * @deprecated This rule is deprecated, as it is a coding standard preference with no real value. Use a coding standard tool instead.
  */
 final class WrapEncapsedVariableInCurlyBracesRector extends AbstractRector implements DeprecatedInterface
@@ -38,17 +39,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [InterpolatedString::class];
     }
 
-    /**
-     * @param InterpolatedString $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

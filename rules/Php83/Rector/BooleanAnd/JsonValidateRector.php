@@ -25,6 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanAnd>
  * @see \Rector\Tests\Php83\Rector\BooleanAnd\JsonValidateRector\JsonValidateRectorTest
  */
 final class JsonValidateRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
@@ -63,17 +64,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanAnd::class];
     }
 
-    /**
-     * @param BooleanAnd $node
-     */
     public function refactor(Node $node): ?Node
     {
         $funcCall = $this->matchJsonValidateArg($node);

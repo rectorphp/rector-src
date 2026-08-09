@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Identical|NotIdentical>
  * @see \Rector\Tests\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector\SimplifyBoolIdenticalTrueRectorTest
  */
 final class SimplifyBoolIdenticalTrueRector extends AbstractRector
@@ -58,17 +59,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Identical::class, NotIdentical::class];
     }
 
-    /**
-     * @param Identical|NotIdentical $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->isBooleanButNotTrueAndFalse($node->left)) {

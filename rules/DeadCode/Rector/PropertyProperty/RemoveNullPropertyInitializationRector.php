@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function strtolower;
 
 /**
+ * @extends AbstractRector<Property>
  * @see \Rector\Tests\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector\RemoveNullPropertyInitializationRectorTest
  */
 final class RemoveNullPropertyInitializationRector extends AbstractRector
@@ -42,17 +43,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Property::class];
     }
 
-    /**
-     * @param Property $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->type instanceof Node) {

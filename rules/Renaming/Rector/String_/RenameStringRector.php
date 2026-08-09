@@ -14,6 +14,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<String_>
+ * @implements ConfigurableRectorInterface<String_>
  * @see \Rector\Tests\Renaming\Rector\String_\RenameStringRector\RenameStringRectorTest
  */
 final class RenameStringRector extends AbstractRector implements ConfigurableRectorInterface
@@ -59,17 +61,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [String_::class];
     }
 
-    /**
-     * @param String_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         foreach ($this->stringChanges as $oldValue => $newValue) {

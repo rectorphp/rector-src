@@ -14,6 +14,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Class_|Interface_>
+ * @implements ConfigurableRectorInterface<Class_|Interface_>
  * @see \Rector\Tests\Removing\Rector\Class_\RemoveInterfacesRector\RemoveInterfacesRectorTest
  */
 final class RemoveInterfacesRector extends AbstractRector implements ConfigurableRectorInterface
@@ -44,17 +46,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class, Interface_::class];
     }
 
-    /**
-     * @param Class_|Interface_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Class_) {

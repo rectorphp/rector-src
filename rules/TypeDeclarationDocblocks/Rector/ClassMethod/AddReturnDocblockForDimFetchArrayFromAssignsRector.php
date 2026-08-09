@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod>
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForDimFetchArrayFromAssignsRector\AddReturnDocblockForDimFetchArrayFromAssignsRectorTest
  */
 final class AddReturnDocblockForDimFetchArrayFromAssignsRector extends AbstractRector
@@ -96,9 +97,6 @@ CODE_SAMPLE
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?ClassMethod
     {
         if ($node->stmts === null) {

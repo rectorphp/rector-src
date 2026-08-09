@@ -23,6 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_using_values_null_as_an_array_offset_and_when_calling_array_key_exists
  * @see \Rector\Tests\Php85\Rector\FuncCall\ArrayKeyExistsNullToEmptyStringRector\ArrayKeyExistsNullToEmptyStringRectorTest
  */
@@ -58,9 +59,6 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isFirstClassCallable()) {

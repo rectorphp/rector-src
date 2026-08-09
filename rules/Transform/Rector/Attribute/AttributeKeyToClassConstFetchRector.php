@@ -26,6 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction|Interface_>
+ * @implements ConfigurableRectorInterface<Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction|Interface_>
  * @api used in rector-doctrine
  * @see \Rector\Tests\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector\AttributeKeyToClassConstFetchRectorTest
  */
@@ -75,9 +77,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [
@@ -92,9 +91,6 @@ CODE_SAMPLE
         ];
     }
 
-    /**
-     * @param Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction|Interface_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->attrGroups === []) {

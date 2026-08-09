@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Concat>
  * @see \Rector\Tests\CodeQuality\Rector\AssignOp\NewArrayItemConcatAssignToAssignRector\NewArrayItemConcatAssignToAssignRectorTest
  */
 final class NewArrayItemConcatAssignToAssignRector extends AbstractRector
@@ -40,9 +41,6 @@ CODE_SAMPLE
         return [Concat::class];
     }
 
-    /**
-     * @param Concat $node
-     */
     public function refactor(Node $node): ?Assign
     {
         if (! $node->var instanceof ArrayDimFetch) {

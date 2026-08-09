@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Do_|For_|Foreach_|While_>
  * @see \Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\RemoveDeadLoopRectorTest
  */
 final class RemoveDeadLoopRector extends AbstractRector
@@ -56,17 +57,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Do_::class, For_::class, Foreach_::class, While_::class];
     }
 
-    /**
-     * @param Do_|For_|Foreach_|While_ $node
-     */
     public function refactor(Node $node): ?int
     {
         if ($node->stmts !== []) {

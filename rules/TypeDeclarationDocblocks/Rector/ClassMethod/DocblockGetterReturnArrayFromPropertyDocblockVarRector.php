@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockGetterReturnArrayFromPropertyDocblockVarRector\DocblockGetterReturnArrayFromPropertyDocblockVarRectorTest
  */
 final class DocblockGetterReturnArrayFromPropertyDocblockVarRector extends AbstractRector
@@ -30,9 +31,6 @@ final class DocblockGetterReturnArrayFromPropertyDocblockVarRector extends Abstr
     ) {
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
@@ -78,9 +76,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isAnonymous()) {

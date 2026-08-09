@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<TryCatch>
  * @see \Rector\Tests\DeadCode\Rector\TryCatch\RemoveDeadTryCatchRector\RemoveDeadTryCatchRectorTest
  */
 final class RemoveDeadTryCatchRector extends AbstractRector
@@ -52,16 +53,12 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [TryCatch::class];
     }
 
     /**
-     * @param TryCatch $node
      * @return Stmt[]|null|int
      */
     public function refactor(Node $node): array|null|int

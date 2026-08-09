@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<MethodCall>
  * @see \Rector\Tests\Carbon\Rector\MethodCall\DateTimeMethodCallToCarbonRector\DateTimeMethodCallToCarbonRectorTest
  */
 final class DateTimeMethodCallToCarbonRector extends AbstractRector
@@ -53,17 +54,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class];
     }
 
-    /**
-     * @param MethodCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->var instanceof New_) {

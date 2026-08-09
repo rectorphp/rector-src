@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Switch_>
  * @see \Rector\Tests\Php85\Rector\Switch_\ColonAfterSwitchCaseRector\ColonAfterSwitchCaseRectorTest
  */
 final class ColonAfterSwitchCaseRector extends AbstractRector implements MinPhpVersionInterface
@@ -44,9 +45,6 @@ CODE_SAMPLE
         return [Switch_::class];
     }
 
-    /**
-     * @param Switch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;

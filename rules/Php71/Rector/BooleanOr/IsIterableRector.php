@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanOr>
  * @see \Rector\Tests\Php71\Rector\BooleanOr\IsIterableRector\IsIterableRectorTest
  */
 final class IsIterableRector extends AbstractRector implements MinPhpVersionInterface
@@ -41,17 +42,11 @@ final class IsIterableRector extends AbstractRector implements MinPhpVersionInte
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanOr::class];
     }
 
-    /**
-     * @param BooleanOr $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkip()) {

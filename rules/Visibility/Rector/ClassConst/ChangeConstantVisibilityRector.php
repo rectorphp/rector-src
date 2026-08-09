@@ -17,6 +17,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Class_|Interface_>
+ * @implements ConfigurableRectorInterface<Class_|Interface_>
  * @see \Rector\Tests\Visibility\Rector\ClassConst\ChangeConstantVisibilityRector\ChangeConstantVisibilityRectorTest
  */
 final class ChangeConstantVisibilityRector extends AbstractRector implements ConfigurableRectorInterface
@@ -67,17 +69,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class, Interface_::class];
     }
 
-    /**
-     * @param Class_|Interface_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;

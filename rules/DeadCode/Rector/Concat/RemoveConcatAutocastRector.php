@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Concat>
  * @see \Rector\Tests\DeadCode\Rector\Concat\RemoveConcatAutocastRector\RemoveConcatAutocastRectorTest
  */
 final class RemoveConcatAutocastRector extends AbstractRector
@@ -49,17 +50,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Concat::class];
     }
 
-    /**
-     * @param Concat $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->left instanceof String_ && ! $node->right instanceof String_) {

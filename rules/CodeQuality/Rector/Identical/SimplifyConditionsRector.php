@@ -22,6 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanNot|Identical>
  * @see \Rector\Tests\CodeQuality\Rector\Identical\SimplifyConditionsRector\SimplifyConditionsRectorTest
  */
 final class SimplifyConditionsRector extends AbstractRector
@@ -41,17 +42,11 @@ final class SimplifyConditionsRector extends AbstractRector
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanNot::class, Identical::class];
     }
 
-    /**
-     * @param BooleanNot|Identical $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof BooleanNot) {

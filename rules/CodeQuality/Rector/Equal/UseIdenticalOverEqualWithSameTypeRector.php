@@ -25,6 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Equal|NotEqual>
  * @see \Rector\Tests\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector\UseIdenticalOverEqualWithSameTypeRectorTest
  */
 final class UseIdenticalOverEqualWithSameTypeRector extends AbstractRector
@@ -61,17 +62,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Equal::class, NotEqual::class];
     }
 
-    /**
-     * @param Equal|NotEqual $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->left instanceof ArrayDimFetch || $node->right instanceof ArrayDimFetch) {

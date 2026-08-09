@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<NullsafeMethodCall>
  * @see https://wiki.php.net/rfc/nullsafe_operator
  *
  * @see \Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\CleanupUnneededNullsafeOperatorRectorTest
@@ -72,17 +73,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [NullsafeMethodCall::class];
     }
 
-    /**
-     * @param NullsafeMethodCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->name instanceof Identifier) {

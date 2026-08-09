@@ -11,6 +11,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
  */
 final class RuleUsingClassRector extends AbstractRector
@@ -20,17 +21,11 @@ final class RuleUsingClassRector extends AbstractRector
         return new RuleDefinition('This rule applies to classes', [new CodeSample('', '')]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): Node
     {
         return $node;

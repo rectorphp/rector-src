@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<For_>
  * @see \Rector\Tests\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector\ForRepeatedCountToOwnVariableRectorTest
  */
 final class ForRepeatedCountToOwnVariableRector extends AbstractRector implements HTMLAverseRectorInterface
@@ -62,16 +63,12 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [For_::class];
     }
 
     /**
-     * @param For_ $node
      * @return Stmt[]|null
      */
     public function refactor(Node $node): ?array

@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_>
  * @see \Rector\Tests\CodeQuality\Rector\If_\CombineIfRector\CombineIfRectorTest
  */
 final class CombineIfRector extends AbstractRector
@@ -63,17 +64,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class];
     }
 
-    /**
-     * @param If_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkip($node)) {

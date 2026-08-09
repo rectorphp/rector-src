@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_>
  * @deprecated This rule is deprecated, as splitting a single condition into multiple ifs makes the code longer and harder to read in most cases.
  */
 final class ChangeOrIfContinueToMultiContinueRector extends AbstractRector implements DeprecatedInterface
@@ -62,17 +63,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class];
     }
 
-    /**
-     * @param If_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

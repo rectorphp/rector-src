@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod>
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_debuginfo_returning_null
  * @see \Rector\Tests\Php85\Rector\MethodCall\NullDebugInfoReturnRector\NullDebugInfoReturnRectorTest
  */
@@ -57,17 +58,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->isName($node, '__debugInfo')) {

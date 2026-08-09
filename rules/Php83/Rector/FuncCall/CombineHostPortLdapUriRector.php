@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.ldap
  * @see \Rector\Tests\Php83\Rector\FuncCall\CombineHostPortLdapUriRector\CombineHostPortLdapUriRectorTest
  */
@@ -47,17 +48,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->isName($node, 'ldap_connect')) {

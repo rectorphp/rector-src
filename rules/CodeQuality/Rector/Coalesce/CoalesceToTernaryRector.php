@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Coalesce>
  * @deprecated This rule is deprecated, as risky. The "??" and "?:" operators are not interchangeable: "?:" also falls back on empty string, "0" and empty array. A regression must be fixed manually, so the rule is removed instead.
  *
  * @see https://github.com/rectorphp/rector/issues/9730
@@ -43,17 +44,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Coalesce::class];
     }
 
-    /**
-     * @param Coalesce $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

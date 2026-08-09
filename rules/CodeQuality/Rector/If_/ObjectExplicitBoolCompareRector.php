@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_|ElseIf_|Ternary>
  * @see \Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\ObjectExplicitBoolCompareRectorTest
  */
 final class ObjectExplicitBoolCompareRector extends AbstractRector
@@ -55,17 +56,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class, ElseIf_::class, Ternary::class];
     }
 
-    /**
-     * @param If_|ElseIf_|Ternary $node
-     */
     public function refactor(Node $node): ?Node
     {
         // skip short ternary

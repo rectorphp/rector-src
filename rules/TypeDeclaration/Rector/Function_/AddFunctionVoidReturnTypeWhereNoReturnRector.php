@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Function_>
  * @see \Rector\Tests\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector\AddFunctionVoidReturnTypeWhereNoReturnRectorTest
  */
 final class AddFunctionVoidReturnTypeWhereNoReturnRector extends AbstractRector implements MinPhpVersionInterface
@@ -42,17 +43,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Function_::class];
     }
 
-    /**
-     * @param Function_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         // already has return type → skip

@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression>
  * @see \Rector\Tests\CodingStyle\Rector\Assign\SplitDoubleAssignRector\SplitDoubleAssignRectorTest
  */
 final class SplitDoubleAssignRector extends AbstractRector
@@ -50,16 +51,12 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class];
     }
 
     /**
-     * @param Expression $node
      * @return Expression[]|null
      */
     public function refactor(Node $node): ?array

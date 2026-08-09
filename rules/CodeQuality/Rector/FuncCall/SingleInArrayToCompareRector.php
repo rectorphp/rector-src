@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanNot|FuncCall>
  * @see \Rector\Tests\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector\SingleInArrayToCompareRectorTest
  */
 final class SingleInArrayToCompareRector extends AbstractRector
@@ -57,17 +58,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanNot::class, FuncCall::class];
     }
 
-    /**
-     * @param BooleanNot|FuncCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof BooleanNot) {

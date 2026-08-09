@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanNot>
  * Replace negated boolean literals with their simplified equivalents
  *
  * @see \Rector\Tests\CodeQuality\Rector\BooleanNot\ReplaceConstantBooleanNotRector\ReplaceConstantBooleanNotRectorTest
@@ -56,17 +57,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanNot::class];
     }
 
-    /**
-     * @param BooleanNot $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->valueResolver->isFalse($node->expr)) {

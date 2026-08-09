@@ -25,6 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see \Rector\Tests\TypeDeclaration\Rector\FuncCall\AddArrayFunctionClosureParamTypeRector\AddArrayFunctionClosureParamTypeRectorTest
  */
 final class AddArrayFunctionClosureParamTypeRector extends AbstractRector implements MinPhpVersionInterface
@@ -56,17 +57,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isFirstClassCallable()) {

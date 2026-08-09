@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Property>
  * @see \Rector\Tests\Php52\Rector\Property\VarToPublicPropertyRector\VarToPublicPropertyRectorTest
  */
 final class VarToPublicPropertyRector extends AbstractRector implements MinPhpVersionInterface
@@ -49,17 +50,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Property::class];
     }
 
-    /**
-     * @param Property $node
-     */
     public function refactor(Node $node): ?Node
     {
         // explicitly public

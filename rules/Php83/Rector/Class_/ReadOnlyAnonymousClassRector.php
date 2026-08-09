@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\Php83\Rector\Class_\ReadOnlyAnonymousClassRector\ReadOnlyAnonymousClassRectorTest
  */
 final class ReadOnlyAnonymousClassRector extends AbstractRector implements MinPhpVersionInterface
@@ -51,17 +52,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->isAnonymous()) {

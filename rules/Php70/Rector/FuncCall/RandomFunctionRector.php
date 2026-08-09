@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see \Rector\Tests\Php70\Rector\FuncCall\RandomFunctionRector\RandomFunctionRectorTest
  */
 final class RandomFunctionRector extends AbstractRector implements MinPhpVersionInterface
@@ -43,17 +44,11 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): FuncCall|null
     {
         if ($node->isFirstClassCallable()) {

@@ -23,6 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\AddParamTypeToRefactorMethodRector\AddParamTypeToRefactorMethodRectorTest
  */
 final class AddParamTypeToRefactorMethodRector extends AbstractRector
@@ -75,9 +76,6 @@ CODE_SAMPLE
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->extends instanceof Name) {

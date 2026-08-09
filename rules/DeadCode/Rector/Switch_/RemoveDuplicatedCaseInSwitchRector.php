@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Switch_>
  * @see \Rector\Tests\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector\RemoveDuplicatedCaseInSwitchRectorTest
  */
 final class RemoveDuplicatedCaseInSwitchRector extends AbstractRector
@@ -74,17 +75,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Switch_::class];
     }
 
-    /**
-     * @param Switch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (count($node->cases) < 2) {

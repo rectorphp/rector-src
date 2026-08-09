@@ -22,6 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure>
  * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector\FuncGetArgsToVariadicParamRectorTest
  */
 final class FuncGetArgsToVariadicParamRector extends AbstractRector implements MinPhpVersionInterface
@@ -52,17 +53,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->params !== [] || $node->stmts === null) {

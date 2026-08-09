@@ -15,6 +15,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<FuncCall>
+ * @implements ConfigurableRectorInterface<FuncCall>
  * @see \Rector\Tests\Renaming\Rector\FuncCall\RenameFunctionRector\RenameFunctionRectorTest
  */
 final class RenameFunctionRector extends AbstractRector implements ConfigurableRectorInterface
@@ -37,17 +39,11 @@ final class RenameFunctionRector extends AbstractRector implements ConfigurableR
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         $nodeName = $this->getName($node);

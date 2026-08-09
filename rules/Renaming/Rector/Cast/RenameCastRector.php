@@ -16,6 +16,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Cast>
+ * @implements ConfigurableRectorInterface<Cast>
  * @see \Rector\Tests\Renaming\Rector\Cast\RenameCastRector\RenameCastRectorTest
  */
 final class RenameCastRector extends AbstractRector implements ConfigurableRectorInterface
@@ -36,17 +38,11 @@ final class RenameCastRector extends AbstractRector implements ConfigurableRecto
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Cast::class];
     }
 
-    /**
-     * @param Cast $node
-     */
     public function refactor(Node $node): ?Node
     {
         foreach ($this->renameCasts as $renameCast) {

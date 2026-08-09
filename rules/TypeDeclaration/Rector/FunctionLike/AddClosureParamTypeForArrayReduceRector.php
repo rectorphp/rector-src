@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayReduceRector\AddClosureParamTypeForArrayReduceRectorTest
  */
 final class AddClosureParamTypeForArrayReduceRector extends AbstractRector
@@ -63,9 +64,6 @@ CODE_SAMPLE
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isFirstClassCallable()) {

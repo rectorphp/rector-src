@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_>
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\ReturnUnionTypeRectorTest
  */
 final class ReturnUnionTypeRector extends AbstractRector implements MinPhpVersionInterface
@@ -68,9 +69,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class];
@@ -81,9 +79,6 @@ CODE_SAMPLE
         return PhpVersionFeature::UNION_TYPES;
     }
 
-    /**
-     * @param ClassMethod|Function_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $scope = ScopeFetcher::fetch($node);

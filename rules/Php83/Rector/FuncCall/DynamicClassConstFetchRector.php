@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see \Rector\Tests\Php83\Rector\FuncCall\DynamicClassConstFetchRector\DynamicClassConstFetchRectorTest
  */
 final class DynamicClassConstFetchRector extends AbstractRector implements MinPhpVersionInterface
@@ -46,9 +47,6 @@ CODE_SAMPLE
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): ?ClassConstFetch
     {
         if (! $this->isName($node, 'constant')) {

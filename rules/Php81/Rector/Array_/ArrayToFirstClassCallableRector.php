@@ -28,6 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Array_>
  * @see RFC https://wiki.php.net/rfc/first_class_callable_syntax
  * @see \Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\ArrayToFirstClassCallableRectorTest
  */
@@ -77,17 +78,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Array_::class];
     }
 
-    /**
-     * @param Array_ $node
-     */
     public function refactor(Node $node): StaticCall|MethodCall|null
     {
         if ($node->getAttribute(AttributeKey::IS_ARG_NOT_ACCEPTING_CLOSURE)) {

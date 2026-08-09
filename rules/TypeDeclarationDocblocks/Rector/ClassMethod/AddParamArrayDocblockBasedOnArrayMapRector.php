@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_>
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockBasedOnArrayMapRector\AddParamArrayDocblockBasedOnArrayMapRectorTest
  */
 final class AddParamArrayDocblockBasedOnArrayMapRector extends AbstractRector
@@ -65,17 +66,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class];
     }
 
-    /**
-     * @param ClassMethod|Function_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->getParams() === []) {

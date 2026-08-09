@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_>
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\NarrowArrayCollectionUnionReturnDocblockRector\NarrowArrayCollectionUnionReturnDocblockRectorTest
  */
 final class NarrowArrayCollectionUnionReturnDocblockRector extends AbstractRector
@@ -80,9 +81,6 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class];
     }
 
-    /**
-     * @param ClassMethod|Function_ $node
-     */
     public function refactor(Node $node): null|ClassMethod|Function_
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);

@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ArrayDimFetch>
  * @see https://php.watch/versions/8.5/array_first-array_last
  * @see \Rector\Tests\Php85\Rector\ArrayDimFetch\ArrayFirstLastRector\ArrayFirstLastRectorTest
  */
@@ -51,17 +52,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ArrayDimFetch::class];
     }
 
-    /**
-     * @param ArrayDimFetch $node
-     */
     public function refactor(Node $node): ?FuncCall
     {
         if ($node->dim instanceof FuncCall) {

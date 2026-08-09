@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Function_|ClassMethod>
  * @see \Rector\Tests\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector\ExceptionHandlerTypehintRectorTest
  */
 final class ExceptionHandlerTypehintRector extends AbstractRector implements MinPhpVersionInterface
@@ -46,17 +47,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Function_::class, ClassMethod::class];
     }
 
-    /**
-     * @param Function_|ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         // exception handle has 1 param exactly

@@ -25,6 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<FuncCall|Assign>
  * @see \Rector\Tests\Php70\Rector\FuncCall\EregToPregMatchRector\EregToPregMatchRectorTest
  */
 final class EregToPregMatchRector extends AbstractRector implements MinPhpVersionInterface
@@ -59,17 +60,11 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class, Assign::class];
     }
 
-    /**
-     * @param FuncCall|Assign $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof FuncCall) {

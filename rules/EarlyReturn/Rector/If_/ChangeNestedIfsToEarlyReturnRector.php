@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @deprecated This rule is deprecated, as inverting nested ifs to early return makes the code harder to read and understand, and depends on the context.
  */
 final class ChangeNestedIfsToEarlyReturnRector extends AbstractRector implements DeprecatedInterface
@@ -58,9 +59,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return NodeGroup::STMTS_AWARE;

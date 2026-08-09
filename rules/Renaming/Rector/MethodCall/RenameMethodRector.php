@@ -31,6 +31,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<MethodCall|NullsafeMethodCall|StaticCall|Class_|Interface_|Trait_>
+ * @implements ConfigurableRectorInterface<MethodCall|NullsafeMethodCall|StaticCall|Class_|Interface_|Trait_>
  * @see \Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\RenameMethodRectorTest
  */
 final class RenameMethodRector extends AbstractRector implements ConfigurableRectorInterface
@@ -66,9 +68,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [
@@ -81,9 +80,6 @@ CODE_SAMPLE
         ];
     }
 
-    /**
-     * @param MethodCall|NullsafeMethodCall|StaticCall|Class_|Interface_|Trait_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Class_ || $node instanceof Trait_ || $node instanceof Interface_) {

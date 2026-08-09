@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod>
  * @deprecated This rule is deprecated, as it copies docblock from another method call. The docblock can be incorrect or outdated, and spreads the error further.
  */
 final class AddReturnDocblockFromMethodCallDocblockRector extends AbstractRector implements DeprecatedInterface
@@ -73,17 +74,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

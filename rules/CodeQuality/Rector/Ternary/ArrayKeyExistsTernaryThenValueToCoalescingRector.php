@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Ternary>
  * @see \Rector\Tests\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector\ArrayKeyExistsTernaryThenValueToCoalescingRectorTest
  */
 final class ArrayKeyExistsTernaryThenValueToCoalescingRector extends AbstractRector
@@ -55,17 +56,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Ternary::class];
     }
 
-    /**
-     * @param Ternary $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->cond instanceof FuncCall) {

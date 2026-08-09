@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_>
  * @see \Rector\Tests\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector\UnwrapFutureCompatibleIfPhpVersionRectorTest
  */
 final class UnwrapFutureCompatibleIfPhpVersionRector extends AbstractRector
@@ -52,16 +53,12 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class];
     }
 
     /**
-     * @param If_ $node
      * @return Stmt[]|null|NodeVisitor::REMOVE_NODE
      */
     public function refactor(Node $node): array|int|null

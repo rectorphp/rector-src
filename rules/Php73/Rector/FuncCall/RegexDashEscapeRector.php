@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<String_>
  * @see \Rector\Tests\Php73\Rector\FuncCall\RegexDashEscapeRector\RegexDashEscapeRectorTest
  */
 final class RegexDashEscapeRector extends AbstractRector implements MinPhpVersionInterface
@@ -57,17 +58,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [String_::class];
     }
 
-    /**
-     * @param String_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $stringKind = $node->getAttribute(AttributeKey::KIND);

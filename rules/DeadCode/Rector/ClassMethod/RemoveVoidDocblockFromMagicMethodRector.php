@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod>
  * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodRector\RemoveVoidDocblockFromMagicMethodRectorTest
  */
 final class RemoveVoidDocblockFromMagicMethodRector extends AbstractRector
@@ -72,9 +73,6 @@ CODE_SAMPLE
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->returnType instanceof Node) {

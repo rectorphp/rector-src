@@ -17,6 +17,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<MethodCall>
+ * @implements ConfigurableRectorInterface<MethodCall>
  * @note used extensively https://github.com/search?q=MethodCallToFuncCallRector%3A%3Aclass&type=code
  * @see \Rector\Tests\Transform\Rector\MethodCall\MethodCallToFuncCallRector\MethodCallToFuncCallRectorTest
  */
@@ -57,17 +59,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class];
     }
 
-    /**
-     * @param MethodCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isFirstClassCallable()) {

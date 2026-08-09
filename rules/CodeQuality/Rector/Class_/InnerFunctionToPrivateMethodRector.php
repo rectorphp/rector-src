@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\CodeQuality\Rector\Class_\InnerFunctionToPrivateMethodRector\InnerFunctionToPrivateMethodRectorTest
  */
 final class InnerFunctionToPrivateMethodRector extends AbstractRector
@@ -64,17 +65,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $existingMethodNames = array_map(

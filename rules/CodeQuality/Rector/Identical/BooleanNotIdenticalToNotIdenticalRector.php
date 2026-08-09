@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Identical|BooleanNot>
  * @see \Rector\Tests\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector\BooleanNotIdenticalToNotIdenticalRectorTest
  */
 final class BooleanNotIdenticalToNotIdenticalRector extends AbstractRector
@@ -57,17 +58,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Identical::class, BooleanNot::class];
     }
 
-    /**
-     * @param Identical|BooleanNot $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Identical) {

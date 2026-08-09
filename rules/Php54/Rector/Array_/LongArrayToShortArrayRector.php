@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Array_>
  * @see \Rector\Tests\Php54\Rector\Array_\LongArrayToShortArrayRector\LongArrayToShortArrayRectorTest
  */
 final class LongArrayToShortArrayRector extends AbstractRector implements MinPhpVersionInterface
@@ -53,17 +54,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Array_::class];
     }
 
-    /**
-     * @param Array_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         // no kind attribute yet, it means just created

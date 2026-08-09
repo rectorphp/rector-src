@@ -31,6 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @see \Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\ChangeSwitchToMatchRectorTest
  */
 final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVersionInterface
@@ -72,17 +73,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return NodeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param StmtsAware $node
-     */
     public function refactor(Node $node): null|Node
     {
         if (! is_array($node->stmts)) {

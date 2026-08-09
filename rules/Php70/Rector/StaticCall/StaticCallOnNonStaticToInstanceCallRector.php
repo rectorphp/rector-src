@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StaticCall>
  * @deprecated as risky change with little value. Use manually or custom rule where needed instead.
  */
 final class StaticCallOnNonStaticToInstanceCallRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedInterface
@@ -68,17 +69,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [StaticCall::class];
     }
 
-    /**
-     * @param StaticCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

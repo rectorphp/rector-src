@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Expression|Property>
  * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector\RemoveNullTagValueNodeRectorTest
  */
 final class RemoveNullTagValueNodeRector extends AbstractRector
@@ -67,17 +68,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Expression::class, Property::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Expression|Property $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Expression || $node instanceof Property) {

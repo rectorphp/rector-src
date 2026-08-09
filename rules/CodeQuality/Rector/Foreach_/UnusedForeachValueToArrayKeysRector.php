@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @deprecated This rule is deprecated, as it is a personal preference. The array_keys() wrap makes the foreach harder to read and harder to extend, once the value is needed again.
  */
 final class UnusedForeachValueToArrayKeysRector extends AbstractRector implements DeprecatedInterface
@@ -53,17 +54,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return NodeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param StmtsAware $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

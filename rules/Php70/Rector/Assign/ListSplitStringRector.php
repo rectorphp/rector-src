@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Assign>
  * @see \Rector\Tests\Php70\Rector\Assign\ListSplitStringRector\ListSplitStringRectorTest
  */
 final class ListSplitStringRector extends AbstractRector implements MinPhpVersionInterface
@@ -31,17 +32,11 @@ final class ListSplitStringRector extends AbstractRector implements MinPhpVersio
         return PhpVersionFeature::NO_LIST_SPLIT_STRING;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Assign::class];
     }
 
-    /**
-     * @param Assign $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->var instanceof List_) {

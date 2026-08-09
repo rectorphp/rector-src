@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Assign>
  * @see \Rector\Tests\CodeQuality\Rector\Assign\CombinedAssignRector\CombinedAssignRectorTest
  */
 final class CombinedAssignRector extends AbstractRector
@@ -32,17 +33,11 @@ final class CombinedAssignRector extends AbstractRector
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Assign::class];
     }
 
-    /**
-     * @param Assign $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->expr instanceof BinaryOp) {

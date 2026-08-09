@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_|ElseIf_|Else_>
  * @see \Rector\Tests\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector\CompleteMissingIfElseBracketRectorTest
  */
 final class CompleteMissingIfElseBracketRector extends AbstractRector implements HTMLAverseRectorInterface
@@ -52,17 +53,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class, ElseIf_::class, Else_::class];
     }
 
-    /**
-     * @param If_|ElseIf_|Else_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->isBareNewNode($node)) {

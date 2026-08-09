@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression>
  * As of PHP 8.1.0, calling `Reflection*::setAccessible()` has no effect.
  *
  * @see https://www.php.net/manual/en/reflectionmethod.setaccessible.php
@@ -24,17 +25,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveReflectionSetAccessibleCallsRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class];
     }
 
-    /**
-     * @param Expression $node
-     */
     public function refactor(Node $node): ?int
     {
         if ($node->expr instanceof MethodCall === false) {

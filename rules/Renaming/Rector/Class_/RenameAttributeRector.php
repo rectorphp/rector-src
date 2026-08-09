@@ -21,6 +21,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Class_|ClassMethod|Property|Param>
+ * @implements ConfigurableRectorInterface<Class_|ClassMethod|Property|Param>
  * @see \Rector\Tests\Renaming\Rector\Class_\RenameAttributeRector\RenameAttributeRectorTest
  */
 final class RenameAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
@@ -56,17 +58,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class, ClassMethod::class, Property::class, Param::class];
     }
 
-    /**
-     * @param Class_|ClassMethod|Property|Param $node
-     */
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;

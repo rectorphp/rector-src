@@ -14,13 +14,11 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<MethodCall>
  * @see \Rector\Tests\Php84\Rector\MethodCall\NewMethodCallWithoutParenthesesRector\NewMethodCallWithoutParenthesesRectorTest
  */
 final class NewMethodCallWithoutParenthesesRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class];
@@ -44,9 +42,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @param MethodCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->var instanceof New_) {

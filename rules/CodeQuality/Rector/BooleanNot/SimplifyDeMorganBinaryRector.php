@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanNot>
  * @see \Rector\Tests\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector\SimplifyDeMorganBinaryRectorTest
  */
 final class SimplifyDeMorganBinaryRector extends AbstractRector
@@ -45,17 +46,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanNot::class];
     }
 
-    /**
-     * @param BooleanNot $node
-     */
     public function refactor(Node $node): ?BinaryOp
     {
         if (! $node->expr instanceof BooleanOr) {

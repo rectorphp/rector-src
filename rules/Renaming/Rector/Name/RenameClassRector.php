@@ -23,6 +23,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<FunctionLike|FullyQualified|Name|ClassLike|Expression|Property|If_>
+ * @implements ConfigurableRectorInterface<FunctionLike|FullyQualified|Name|ClassLike|Expression|Property|If_>
  * @see \Rector\Tests\Renaming\Rector\Name\RenameClassRector\RenameClassRectorTest
  */
 final class RenameClassRector extends AbstractRector implements ConfigurableRectorInterface
@@ -71,9 +73,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [
@@ -89,9 +88,6 @@ CODE_SAMPLE
         ];
     }
 
-    /**
-     * @param FunctionLike|FullyQualified|Name|ClassLike|Expression|Property|If_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();

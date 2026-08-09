@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FileNode|Namespace_|Class_>
  * @see \Rector\Tests\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector\SeparateMultiUseImportsRectorTest
  */
 final class SeparateMultiUseImportsRector extends AbstractRector
@@ -51,17 +52,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FileNode::class, Namespace_::class, Class_::class];
     }
 
-    /**
-     * @param FileNode|Namespace_|Class_ $node
-     */
     public function refactor(Node $node): FileNode|Namespace_|Class_|null
     {
         if ($node instanceof FileNode && $node->isNamespaced()) {

@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Unset_|Assign|Expression>
  * @see \Rector\Tests\Php72\Rector\Unset_\UnsetCastRector\UnsetCastRectorTest
  */
 final class UnsetCastRector extends AbstractRector implements MinPhpVersionInterface
@@ -45,16 +46,12 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Unset_::class, Assign::class, Expression::class];
     }
 
     /**
-     * @param Unset_|Assign|Expression $node
      * @return NodeVisitor::REMOVE_NODE|Node|null
      */
     public function refactor(Node $node): int|null|Node

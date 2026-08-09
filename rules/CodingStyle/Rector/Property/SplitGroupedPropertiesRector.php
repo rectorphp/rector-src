@@ -12,6 +12,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Property>
  * @see \Rector\Tests\CodingStyle\Rector\Property\SplitGroupedPropertiesRector\SplitGroupedPropertiesRectorTest
  */
 final class SplitGroupedPropertiesRector extends AbstractRector
@@ -51,16 +52,12 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Property::class];
     }
 
     /**
-     * @param Property $node
      * @return Property[]|null
      */
     public function refactor(Node $node): ?array

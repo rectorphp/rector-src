@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<String_>
  * @deprecated This rule is deprecated, as shortening ranges like "[a-zA-Z0-9_]" to "\w" is a matter of personal preference. It can worsen regex readability and is rather a coding standard change.
  */
 final class SimplifyRegexPatternRector extends AbstractRector implements DeprecatedInterface
@@ -44,17 +45,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [String_::class];
     }
 
-    /**
-     * @param String_ $node
-     */
     public function refactor(Node $node): ?String_
     {
         throw new ShouldNotHappenException(sprintf(

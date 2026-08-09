@@ -25,6 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StaticCall>
  * @see \Rector\Tests\CodingStyle\Rector\FuncCall\ClosureFromCallableToFirstClassCallableRector\ClosureFromCallableToFirstClassCallableRectorTest
  */
 final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
@@ -45,17 +46,11 @@ final class ClosureFromCallableToFirstClassCallableRector extends AbstractRector
 
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [StaticCall::class];
     }
 
-    /**
-     * @param StaticCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkip($node)) {

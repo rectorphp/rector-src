@@ -10,6 +10,9 @@ use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
+/**
+ * @extends AbstractRector<Class_>
+ */
 final class RuleCheckingClassRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
@@ -23,7 +26,6 @@ final class RuleCheckingClassRector extends AbstractRector
     }
 
     /**
-     * @param Class_ $node
      * @return Class_
      */
     public function refactor(Node $node): Node

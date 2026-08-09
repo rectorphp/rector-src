@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression>
  * @see \Rector\Tests\CodeQuality\Rector\FuncCall\SetTypeToCastRector\SetTypeToCastRectorTest
  */
 final class SetTypeToCastRector extends AbstractRector
@@ -76,17 +77,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class];
     }
 
-    /**
-     * @param Expression $node
-     */
     public function refactor(Node $node): null|Expression
     {
         // skip expr that are not standalone line, as settype() returns success bool value

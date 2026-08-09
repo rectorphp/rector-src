@@ -25,6 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Ternary>
  * @see \Rector\Tests\Php70\Rector\Ternary\TernaryToNullCoalescingRector\TernaryToNullCoalescingRectorTest
  */
 final class TernaryToNullCoalescingRector extends AbstractRector implements MinPhpVersionInterface
@@ -46,17 +47,11 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Ternary::class];
     }
 
-    /**
-     * @param Ternary $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->cond instanceof Isset_) {

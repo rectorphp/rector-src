@@ -11,6 +11,9 @@ use PhpParser\Node\Stmt\Trait_;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @extends AbstractRector<Class_>
+ */
 final class RuleChangingClassToTraitRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
@@ -23,9 +26,6 @@ final class RuleChangingClassToTraitRector extends AbstractRector
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): Trait_
     {
         $trait = new Trait_('SomeTrait');

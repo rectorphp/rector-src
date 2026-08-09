@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StaticCall>
  * @see \Rector\Tests\Php74\Rector\StaticCall\ExportToReflectionFunctionRector\ExportToReflectionFunctionRectorTest
  */
 final class ExportToReflectionFunctionRector extends AbstractRector implements MinPhpVersionInterface
@@ -53,17 +54,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [StaticCall::class];
     }
 
-    /**
-     * @param StaticCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->class instanceof Name) {

@@ -28,6 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see \Rector\Tests\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector\CreateFunctionToAnonymousFunctionRectorTest
  */
 final class CreateFunctionToAnonymousFunctionRector extends AbstractRector implements MinPhpVersionInterface
@@ -76,16 +77,12 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];
     }
 
     /**
-     * @param FuncCall $node
      * @return Closure|null
      */
     public function refactor(Node $node): ?Node

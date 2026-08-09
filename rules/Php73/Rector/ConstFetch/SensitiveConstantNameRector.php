@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ConstFetch>
  * @see \Rector\Tests\Php73\Rector\ConstFetch\SensitiveConstantNameRector\SensitiveConstantNameRectorTest
  */
 final class SensitiveConstantNameRector extends AbstractRector implements MinPhpVersionInterface
@@ -115,17 +116,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ConstFetch::class];
     }
 
-    /**
-     * @param ConstFetch $node
-     */
     public function refactor(Node $node): ?Node
     {
         $constantName = $this->getName($node);

@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<String_>
  * @see \Rector\Tests\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector\SimplifyQuoteEscapeRectorTest
  */
 final class SimplifyQuoteEscapeRector extends AbstractRector
@@ -62,17 +63,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [String_::class];
     }
 
-    /**
-     * @param String_ $node
-     */
     public function refactor(Node $node): ?String_
     {
         $this->hasChanged = false;

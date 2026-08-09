@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ArrayDimFetch>
  * @see \Rector\Tests\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector\CurlyToSquareBracketArrayStringRectorTest
  */
 final class CurlyToSquareBracketArrayStringRector extends AbstractRector implements MinPhpVersionInterface
@@ -50,17 +51,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ArrayDimFetch::class];
     }
 
-    /**
-     * @param ArrayDimFetch $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->isFollowedByCurlyBracket($this->getFile(), $node)) {

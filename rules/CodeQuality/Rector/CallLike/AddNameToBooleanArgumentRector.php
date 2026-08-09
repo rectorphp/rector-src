@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<CallLike>
  * @see \Rector\Tests\CodeQuality\Rector\CallLike\AddNameToBooleanArgumentRector\AddNameToBooleanArgumentRectorTest
  */
 final class AddNameToBooleanArgumentRector extends AbstractRector implements MinPhpVersionInterface
@@ -44,17 +45,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [CallLike::class];
     }
 
-    /**
-     * @param CallLike $node
-     */
     public function refactor(Node $node): ?Node
     {
         return $this->callLikeArgumentNameAdder->addNamesToArgs(

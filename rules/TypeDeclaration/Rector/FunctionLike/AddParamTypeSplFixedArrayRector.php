@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FunctionLike>
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector\AddParamTypeSplFixedArrayRectorTest
  */
 final class AddParamTypeSplFixedArrayRector extends AbstractRector
@@ -37,9 +38,6 @@ final class AddParamTypeSplFixedArrayRector extends AbstractRector
     ) {
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Function_::class, ClassMethod::class];
@@ -81,9 +79,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @param FunctionLike $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->getParams() === []) {

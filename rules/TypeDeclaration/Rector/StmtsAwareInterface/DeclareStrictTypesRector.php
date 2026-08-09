@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FileNode>
  * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\DeclareStrictTypesRectorTest
  */
 final class DeclareStrictTypesRector extends AbstractRector implements HTMLAverseRectorInterface, MinPhpVersionInterface
@@ -57,9 +58,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @param FileNode $node
-     */
     public function refactor(Node $node): ?FileNode
     {
         // shebang files cannot have declare strict types
@@ -84,9 +82,6 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FileNode::class];

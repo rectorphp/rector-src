@@ -21,6 +21,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<ClassLike|FunctionLike|Property|ClassConst>
+ * @implements ConfigurableRectorInterface<ClassLike|FunctionLike|Property|ClassConst>
  * @see \Rector\Tests\DeadCode\Rector\ClassLike\RemoveAnnotationRector\RemoveAnnotationRectorTest
  */
 final class RemoveAnnotationRector extends AbstractRector implements ConfigurableRectorInterface
@@ -61,17 +63,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassLike::class, FunctionLike::class, Property::class, ClassConst::class];
     }
 
-    /**
-     * @param ClassLike|FunctionLike|Property|ClassConst $node
-     */
     public function refactor(Node $node): ?Node
     {
         Assert::notEmpty($this->annotationsToRemove);

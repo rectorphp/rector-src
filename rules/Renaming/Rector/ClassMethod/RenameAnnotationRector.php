@@ -22,6 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Class_|Expression>
+ * @implements ConfigurableRectorInterface<Class_|Expression>
  * @see \Rector\Tests\Renaming\Rector\ClassMethod\RenameAnnotationRector\RenameAnnotationRectorTest
  */
 final class RenameAnnotationRector extends AbstractRector implements ConfigurableRectorInterface
@@ -78,17 +80,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class, Expression::class];
     }
 
-    /**
-     * @param Class_|Expression $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Expression) {

@@ -35,6 +35,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<MethodCall|StaticCall|Class_>
+ * @implements ConfigurableRectorInterface<MethodCall|StaticCall|Class_>
  * @see \Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\ArgumentAdderRectorTest
  */
 final class ArgumentAdderRector extends AbstractRector implements ConfigurableRectorInterface
@@ -100,17 +102,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class, StaticCall::class, Class_::class];
     }
 
-    /**
-     * @param MethodCall|StaticCall|Class_ $node
-     */
     public function refactor(Node $node): MethodCall|StaticCall|Class_|null
     {
         $this->hasChanged = false;

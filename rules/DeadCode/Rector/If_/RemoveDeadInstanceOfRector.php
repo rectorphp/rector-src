@@ -29,6 +29,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_>
  * @see \Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\RemoveDeadInstanceOfRectorTest
  */
 final class RemoveDeadInstanceOfRector extends AbstractRector
@@ -64,16 +65,12 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class];
     }
 
     /**
-     * @param If_ $node
      * @return Stmt[]|null|NodeVisitor::REMOVE_NODE|If_
      */
     public function refactor(Node $node): array|null|int|If_

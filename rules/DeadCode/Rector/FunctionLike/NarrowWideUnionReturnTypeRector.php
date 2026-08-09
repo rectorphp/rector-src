@@ -43,6 +43,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure|ArrowFunction>
  * @see \Rector\Tests\DeadCode\Rector\FunctionLike\NarrowWideUnionReturnTypeRector\NarrowWideUnionReturnTypeRectorTest
  */
 final class NarrowWideUnionReturnTypeRector extends AbstractRector implements MinPhpVersionInterface
@@ -102,17 +103,11 @@ CODE_SAMPLE
         return PhpVersionFeature::NULLABLE_TYPE;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure|ArrowFunction $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkipNode($node)) {

@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall|MethodCall|StaticCall>
  * @see \Rector\Tests\Php54\Rector\FuncCall\RemoveReferenceFromCallRector\RemoveReferenceFromCallRectorTest
  */
 final class RemoveReferenceFromCallRector extends AbstractRector implements MinPhpVersionInterface
@@ -52,17 +53,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class, MethodCall::class, StaticCall::class];
     }
 
-    /**
-     * @param FuncCall|MethodCall|StaticCall $node
-     */
     public function refactor(Node $node): FuncCall|MethodCall|StaticCall|null
     {
         $hasChanged = false;

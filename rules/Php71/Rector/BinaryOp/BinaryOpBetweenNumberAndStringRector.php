@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BinaryOp>
  * @see \Rector\Tests\Php71\Rector\BinaryOp\BinaryOpBetweenNumberAndStringRector\BinaryOpBetweenNumberAndStringRectorTest
  */
 final class BinaryOpBetweenNumberAndStringRector extends AbstractRector implements MinPhpVersionInterface
@@ -70,17 +71,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BinaryOp::class];
     }
 
-    /**
-     * @param BinaryOp $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Concat) {

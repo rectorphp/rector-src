@@ -46,6 +46,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction|Interface_>
+ * @implements ConfigurableRectorInterface<Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction|Interface_>
  * @see \Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\AnnotationToAttributeRectorTest
  * @see \Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Php81NestedAttributesRectorTest
  * @see \Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\MultipleCallAnnotationToAttributeRectorTest
@@ -111,9 +113,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [
@@ -128,9 +127,6 @@ CODE_SAMPLE
         ];
     }
 
-    /**
-     * @param Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction|Interface_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->annotationsToAttributes === []) {

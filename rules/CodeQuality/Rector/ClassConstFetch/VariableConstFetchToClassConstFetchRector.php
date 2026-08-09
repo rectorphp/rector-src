@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassConstFetch>
  * @see \Rector\Tests\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToClassConstFetchRector\VariableConstFetchToClassConstFetchRectorTest
  */
 final class VariableConstFetchToClassConstFetchRector extends AbstractRector
@@ -63,17 +64,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassConstFetch::class];
     }
 
-    /**
-     * @param ClassConstFetch $node
-     */
     public function refactor(Node $node): ?ClassConstFetch
     {
         if (! $node->class instanceof Variable) {

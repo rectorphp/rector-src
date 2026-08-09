@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Empty_|BooleanNot>
  * @see \Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector\EmptyOnNullableObjectToInstanceOfRectorTest
  */
 final class EmptyOnNullableObjectToInstanceOfRector extends AbstractRector
@@ -66,17 +67,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Empty_::class, BooleanNot::class];
     }
 
-    /**
-     * @param Empty_|BooleanNot $node
-     */
     public function refactor(Node $node): null|Instanceof_|BooleanNot
     {
         if ($node instanceof BooleanNot) {

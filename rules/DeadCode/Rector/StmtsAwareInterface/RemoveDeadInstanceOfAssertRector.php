@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @see \Rector\Tests\DeadCode\Rector\StmtsAwareInterface\RemoveDeadInstanceOfAssertRector\RemoveDeadInstanceOfAssertRectorTest
  */
 final class RemoveDeadInstanceOfAssertRector extends AbstractRector
@@ -68,9 +69,6 @@ CODE_SAMPLE
         return NodeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param StmtsAware $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {

@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Concat>
  * @deprecated as depends on context and personal preference, hard to generalize. Handle it manually or via a custom rule instead.
  */
 final class JoinStringConcatRector extends AbstractRector implements DeprecatedInterface
@@ -47,17 +48,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Concat::class];
     }
 
-    /**
-     * @param Concat $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<MethodCall|StaticCall|New_|FuncCall>
  * @see \Rector\Tests\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector\SortCallLikeNamedArgsRectorTest
  */
 final class SortCallLikeNamedArgsRector extends AbstractRector
@@ -52,17 +53,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class, StaticCall::class, New_::class, FuncCall::class];
     }
 
-    /**
-     * @param MethodCall|StaticCall|New_|FuncCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isFirstClassCallable()) {

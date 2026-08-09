@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Switch_>
  * @see \Rector\Tests\Php70\Rector\Switch_\ReduceMultipleDefaultSwitchRector\ReduceMultipleDefaultSwitchRectorTest
  */
 final class ReduceMultipleDefaultSwitchRector extends AbstractRector implements MinPhpVersionInterface
@@ -52,17 +53,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Switch_::class];
     }
 
-    /**
-     * @param Switch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $defaultCases = [];

@@ -34,6 +34,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\AddTypeToConstRectorTest
  */
 final class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterface
@@ -73,9 +74,6 @@ CODE_SAMPLE
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Class_
     {
         $className = $this->getName($node);

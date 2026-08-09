@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ShellExec>
  * @see https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_backticks_as_an_alias_for_shell_exec
  * @see \Rector\Tests\Php85\Rector\ShellExec\ShellExecFunctionCallOverBackticksRector\ShellExecFunctionCallOverBackticksRectorTest
  */
@@ -47,9 +48,6 @@ CODE_SAMPLE
         return [ShellExec::class];
     }
 
-    /**
-     * @param ShellExec $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->parts === []) {

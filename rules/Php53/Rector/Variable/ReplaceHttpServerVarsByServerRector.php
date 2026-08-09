@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Variable>
  * @see \Rector\Tests\Php53\Rector\Variable\ReplaceHttpServerVarsByServerRector\ReplaceHttpServerVarsByServerRectorTest
  */
 final class ReplaceHttpServerVarsByServerRector extends AbstractRector implements MinPhpVersionInterface
@@ -43,17 +44,11 @@ final class ReplaceHttpServerVarsByServerRector extends AbstractRector implement
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Variable::class];
     }
 
-    /**
-     * @param Variable $node
-     */
     public function refactor(Node $node): ?Node
     {
         foreach (self::VARIABLE_RENAME_MAP as $oldName => $newName) {

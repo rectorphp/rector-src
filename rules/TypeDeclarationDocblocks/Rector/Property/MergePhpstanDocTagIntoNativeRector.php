@@ -23,6 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Property|Param|ClassConst|ClassMethod|Function_>
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\Property\MergePhpstanDocTagIntoNativeRector\MergePhpstanDocTagIntoNativeRectorTest
  */
 final class MergePhpstanDocTagIntoNativeRector extends AbstractRector
@@ -74,17 +75,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Property::class, Param::class, ClassConst::class, ClassMethod::class, Function_::class];
     }
 
-    /**
-     * @param Property|Param|ClassConst|ClassMethod|Function_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);

@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFromGetterReturnRector\DocblockVarArrayFromGetterReturnRectorTest
  */
 final class DocblockVarArrayFromGetterReturnRector extends AbstractRector
@@ -75,9 +76,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;

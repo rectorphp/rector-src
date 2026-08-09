@@ -18,6 +18,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<ClassMethod>
+ * @implements ConfigurableRectorInterface<ClassMethod>
  * @see \Rector\Tests\Visibility\Rector\ClassMethod\ChangeMethodVisibilityRector\ChangeMethodVisibilityRectorTest
  */
 final class ChangeMethodVisibilityRector extends AbstractRector implements ConfigurableRectorInterface
@@ -77,17 +79,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->methodVisibilities === []) {

@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @deprecated This rule is deprecated, as data provider docblock typing is not relevant to code quality. It increases maintenance cost and decreases readability.
  */
 final class AddReturnArrayDocblockFromDataProviderParamRector extends AbstractRector implements DeprecatedInterface
@@ -70,9 +71,6 @@ CODE_SAMPLE
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

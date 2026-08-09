@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<MethodCall|StaticCall>
  * @see \Rector\Tests\Renaming\Rector\MethodCall\RenameDeprecatedMethodCallRector\RenameDeprecatedMethodCallRectorTest
  */
 final class RenameDeprecatedMethodCallRector extends AbstractRector
@@ -44,17 +45,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class, StaticCall::class];
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isFirstClassCallable()) {

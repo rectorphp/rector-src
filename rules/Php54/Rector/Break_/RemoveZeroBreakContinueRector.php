@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Break_|Continue_>
  * @see \Rector\Tests\Php54\Rector\Break_\RemoveZeroBreakContinueRector\RemoveZeroBreakContinueRectorTest
  */
 final class RemoveZeroBreakContinueRector extends AbstractRector implements MinPhpVersionInterface
@@ -72,17 +73,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Break_::class, Continue_::class];
     }
 
-    /**
-     * @param Break_|Continue_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->num instanceof Expr) {

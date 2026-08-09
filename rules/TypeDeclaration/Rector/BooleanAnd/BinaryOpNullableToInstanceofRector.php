@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanAnd|BooleanOr>
  * @see \Rector\Tests\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector\BinaryOpNullableToInstanceofRectorTest
  */
 final class BinaryOpNullableToInstanceofRector extends AbstractRector
@@ -58,17 +59,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanAnd::class, BooleanOr::class];
     }
 
-    /**
-     * @param BooleanAnd|BooleanOr $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->left instanceof Assign || $node->right instanceof Assign) {

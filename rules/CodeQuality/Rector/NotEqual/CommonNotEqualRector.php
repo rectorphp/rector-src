@@ -11,6 +11,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<NotEqual>
  * @see \Rector\Tests\CodeQuality\Rector\NotEqual\CommonNotEqualRector\CommonNotEqualRectorTest
  */
 final class CommonNotEqualRector extends AbstractRector
@@ -45,17 +46,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [NotEqual::class];
     }
 
-    /**
-     * @param NotEqual $node
-     */
     public function refactor(Node $node): ?NotEqual
     {
         $tokenStartPos = $node->getStartTokenPos();

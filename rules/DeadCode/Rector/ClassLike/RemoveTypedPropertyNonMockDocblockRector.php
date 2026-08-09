@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @deprecated This rule is deprecated as it has no real value, removing a single narrow @var docblock combination on a typed property.
  */
 final class RemoveTypedPropertyNonMockDocblockRector extends AbstractRector implements DeprecatedInterface
@@ -55,9 +56,6 @@ CODE_SAMPLE
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf('"%s" is deprecated as it has no real value', self::class));

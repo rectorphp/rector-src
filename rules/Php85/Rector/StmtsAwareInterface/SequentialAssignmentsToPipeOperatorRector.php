@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @see https://wiki.php.net/rfc/pipe-operator-v3
  *
  * @deprecated This rule is deprecated, as merging sequential assignments into a single |> pipe removes intermediate variables that carry naming and can be re-used later. It also depends on the context of surrounding code and can create extremely long chains that break readability.
@@ -58,9 +59,6 @@ CODE_SAMPLE
         return PhpVersionFeature::PIPE_OPERATOER;
     }
 
-    /**
-     * @param StmtsAware $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

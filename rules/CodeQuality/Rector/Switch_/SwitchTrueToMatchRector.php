@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Switch_>
  * @see \Rector\Tests\CodeQuality\Rector\Switch_\SwitchTrueToMatchRector\SwitchTrueToMatchRectorTest
  */
 final class SwitchTrueToMatchRector extends AbstractRector implements MinPhpVersionInterface
@@ -66,17 +67,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Switch_::class];
     }
 
-    /**
-     * @param Switch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->valueResolver->isTrue($node->cond)) {

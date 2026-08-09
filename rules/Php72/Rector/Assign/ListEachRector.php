@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression>
  * @see \Rector\Tests\Php72\Rector\Assign\ListEachRector\ListEachRectorTest
  */
 final class ListEachRector extends AbstractRector implements MinPhpVersionInterface
@@ -53,16 +54,12 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class];
     }
 
     /**
-     * @param Expression $node
      * @return null|Expression|Stmt[]
      */
     public function refactor(Node $node): null|Expression|array

@@ -26,6 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<ArrayDimFetch|Assign|Isset_|Unset_>
+ * @implements ConfigurableRectorInterface<ArrayDimFetch|Assign|Isset_|Unset_>
  * @see \Rector\Tests\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallRector\ArrayDimFetchToMethodCallRectorTest
  */
 final class ArrayDimFetchToMethodCallRector extends AbstractRector implements ConfigurableRectorInterface
@@ -64,7 +66,6 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ArrayDimFetch|Assign|Isset_|Unset_ $node
      * @return ($node is Unset_ ? Stmt[] : ($node is Isset_ ? Expr : MethodCall|null))
      */
     public function refactor(Node $node): array|Expr|null

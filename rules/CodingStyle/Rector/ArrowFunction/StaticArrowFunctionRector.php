@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ArrowFunction>
  * @deprecated as noisy change with little value. Use manually or custom rule where needed instead.
  */
 final class StaticArrowFunctionRector extends AbstractRector implements DeprecatedInterface
@@ -35,17 +36,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ArrowFunction::class];
     }
 
-    /**
-     * @param ArrowFunction $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Namespace_|FileNode>
  * @see \Rector\Tests\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector\RemoveUselessAliasInUseStatementRectorTest
  */
 final class RemoveUselessAliasInUseStatementRector extends AbstractRector
@@ -37,17 +38,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FileNode::class, Namespace_::class];
     }
 
-    /**
-     * @param Namespace_|FileNode $node
-     */
     public function refactor(Node $node): null|FileNode|Namespace_
     {
         if ($node instanceof FileNode && $node->isNamespaced()) {

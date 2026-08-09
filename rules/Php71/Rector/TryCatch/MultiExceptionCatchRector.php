@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<TryCatch>
  * @see \Rector\Tests\Php71\Rector\TryCatch\MultiExceptionCatchRector\MultiExceptionCatchRectorTest
  */
 final class MultiExceptionCatchRector extends AbstractRector implements MinPhpVersionInterface
@@ -51,17 +52,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [TryCatch::class];
     }
 
-    /**
-     * @param TryCatch $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (count($node->catches) < 2) {

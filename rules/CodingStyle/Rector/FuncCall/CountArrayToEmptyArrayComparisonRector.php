@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Identical>
  * @deprecated This rule is deprecated, as it is a coding standard preference with no real value. Use a coding standard tool instead.
  */
 final class CountArrayToEmptyArrayComparisonRector extends AbstractRector implements DeprecatedInterface
@@ -39,17 +40,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Identical::class];
     }
 
-    /**
-     * @param Identical $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

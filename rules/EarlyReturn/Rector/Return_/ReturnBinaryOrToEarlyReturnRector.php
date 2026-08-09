@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @deprecated This rule is deprecated, as splitting a single return into multiple early returns makes the code longer and harder to read.
  */
 final class ReturnBinaryOrToEarlyReturnRector extends AbstractRector implements DeprecatedInterface
@@ -48,9 +49,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return NodeGroup::STMTS_AWARE;

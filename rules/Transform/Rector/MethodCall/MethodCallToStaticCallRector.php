@@ -14,6 +14,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<MethodCall>
+ * @implements ConfigurableRectorInterface<MethodCall>
  * @see \Rector\Tests\Transform\Rector\MethodCall\MethodCallToStaticCallRector\MethodCallToStaticCallRectorTest
  */
 final class MethodCallToStaticCallRector extends AbstractRector implements ConfigurableRectorInterface
@@ -66,17 +68,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class];
     }
 
-    /**
-     * @param MethodCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         foreach ($this->methodCallsToStaticCalls as $methodCallToStaticCall) {

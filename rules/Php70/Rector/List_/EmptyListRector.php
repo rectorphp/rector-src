@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<List_>
  * @see \Rector\Tests\Php70\Rector\List_\EmptyListRector\EmptyListRectorTest
  */
 final class EmptyListRector extends AbstractRector implements MinPhpVersionInterface
@@ -40,17 +41,11 @@ CODE_SAMPLE
         return PhpVersionFeature::NO_EMPTY_LIST;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [List_::class];
     }
 
-    /**
-     * @param List_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         foreach ($node->items as $item) {

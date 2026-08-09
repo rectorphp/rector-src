@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall|MethodCall|StaticCall>
  * @see \Rector\Tests\Php71\Rector\FuncCall\RemoveExtraParametersRector\RemoveExtraParametersRectorTest
  */
 final class RemoveExtraParametersRector extends AbstractRector implements MinPhpVersionInterface
@@ -46,17 +47,11 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class, MethodCall::class, StaticCall::class];
     }
 
-    /**
-     * @param FuncCall|MethodCall|StaticCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkip($node)) {

@@ -17,6 +17,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression|Return_>
+ * @implements ConfigurableRectorInterface<Expression|Return_>
  * @deprecated This rule is deprecated, as unwrapping nested calls to |> pipes depends on the context of surrounding code. It can create extremely long chains that break readability, and where to draw the line is a personal preference.
  */
 final class NestedFuncCallsToPipeOperatorRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface, DeprecatedInterface
@@ -74,9 +76,6 @@ CODE_SAMPLE
         return [Expression::class, Return_::class];
     }
 
-    /**
-     * @param Expression|Return_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

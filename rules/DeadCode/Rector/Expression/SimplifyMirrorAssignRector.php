@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression>
  * @see \Rector\Tests\DeadCode\Rector\Expression\SimplifyMirrorAssignRector\SimplifyMirrorAssignRectorTest
  */
 final class SimplifyMirrorAssignRector extends AbstractRector
@@ -33,17 +34,11 @@ CODE_SAMPLE
         )]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class];
     }
 
-    /**
-     * @param Expression $node
-     */
     public function refactor(Node $node): ?int
     {
         if (! $node->expr instanceof Assign) {

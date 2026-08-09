@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @see \Rector\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector\SimplifyForeachToCoalescingRectorTest
  */
 final class SimplifyForeachToCoalescingRector extends AbstractRector implements MinPhpVersionInterface
@@ -60,9 +61,6 @@ CODE_SAMPLE
         return NodeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param StmtsAware $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {

@@ -23,6 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Identical|NotIdentical|Equal|NotEqual>
  * @see \Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\StrStartsWithRectorTest
  */
 final class StrStartsWithRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
@@ -83,17 +84,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Identical::class, NotIdentical::class, Equal::class, NotEqual::class];
     }
 
-    /**
-     * @param Identical|NotIdentical|Equal|NotEqual $node
-     */
     public function refactor(Node $node): ?Node
     {
         foreach ($this->strStartWithMatchAndRefactors as $strStartWithMatchAndRefactor) {

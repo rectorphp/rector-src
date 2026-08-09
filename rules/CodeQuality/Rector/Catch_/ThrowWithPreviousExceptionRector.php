@@ -27,6 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Catch_>
  * @see \Rector\Tests\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector\ThrowWithPreviousExceptionRectorTest
  */
 final class ThrowWithPreviousExceptionRector extends AbstractRector
@@ -76,17 +77,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Catch_::class];
     }
 
-    /**
-     * @param Catch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $caughtThrowableVariable = $node->var;

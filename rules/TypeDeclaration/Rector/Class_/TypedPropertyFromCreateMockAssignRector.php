@@ -23,6 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\TypedPropertyFromCreateMockAssignRectorTest
  */
 final class TypedPropertyFromCreateMockAssignRector extends AbstractRector implements MinPhpVersionInterface
@@ -79,9 +80,6 @@ CODE_SAMPLE
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->isObjectType($node, new ObjectType(ClassName::TEST_CASE_CLASS))) {

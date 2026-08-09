@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<While_|Do_>
  * @see \Rector\Tests\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector\WhileNullableToInstanceofRectorTest
  */
 final class WhileNullableToInstanceofRector extends AbstractRector
@@ -62,17 +63,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [While_::class, Do_::class];
     }
 
-    /**
-     * @param While_|Do_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->cond instanceof Assign) {

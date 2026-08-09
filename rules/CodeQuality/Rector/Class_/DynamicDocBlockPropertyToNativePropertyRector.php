@@ -27,6 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\CodeQuality\Rector\Class_\DynamicDocBlockPropertyToNativePropertyRector\DynamicDocBlockPropertyToNativePropertyRectorTest
  */
 final class DynamicDocBlockPropertyToNativePropertyRector extends AbstractRector implements MinPhpVersionInterface
@@ -75,17 +76,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->phpAttributeAnalyzer->hasPhpAttribute($node, 'AllowDynamicProperties')) {

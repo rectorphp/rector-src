@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Identical|NotIdentical>
  * @see \Rector\Tests\CodeQuality\Rector\Identical\SimplifyArraySearchRector\SimplifyArraySearchRectorTest
  */
 final class SimplifyArraySearchRector extends AbstractRector
@@ -42,17 +43,11 @@ final class SimplifyArraySearchRector extends AbstractRector
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Identical::class, NotIdentical::class];
     }
 
-    /**
-     * @param Identical|NotIdentical $node
-     */
     public function refactor(Node $node): ?Node
     {
         $twoNodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(

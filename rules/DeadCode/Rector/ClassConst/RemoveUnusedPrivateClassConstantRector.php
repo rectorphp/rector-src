@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassConst>
  * @see \Rector\Tests\DeadCode\Rector\ClassConst\RemoveUnusedPrivateClassConstantRector\RemoveUnusedPrivateClassConstantRectorTest
  */
 final class RemoveUnusedPrivateClassConstantRector extends AbstractRector
@@ -53,17 +54,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassConst::class];
     }
 
-    /**
-     * @param ClassConst $node
-     */
     public function refactor(Node $node): ?int
     {
         if ($this->shouldSkipClassConst($node)) {

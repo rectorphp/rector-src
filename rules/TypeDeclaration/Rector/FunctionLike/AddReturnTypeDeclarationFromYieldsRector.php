@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Function_|ClassMethod>
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector\AddReturnTypeDeclarationFromYieldsRectorTest
  */
 final class AddReturnTypeDeclarationFromYieldsRector extends AbstractRector implements MinPhpVersionInterface
@@ -62,17 +63,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Function_::class, ClassMethod::class];
     }
 
-    /**
-     * @param Function_|ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         $scope = ScopeFetcher::fetch($node);

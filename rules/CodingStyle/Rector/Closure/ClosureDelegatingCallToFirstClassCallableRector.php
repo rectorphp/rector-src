@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Closure>
  * @see \Rector\Tests\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector\ClosureDelegatingCallToFirstClassCallableRectorTest
  */
 final class ClosureDelegatingCallToFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
@@ -54,9 +55,6 @@ CODE_SAMPLE
         return [Closure::class];
     }
 
-    /**
-     * @param Closure $node
-     */
     public function refactor(Node $node): null|FuncCall|MethodCall|StaticCall
     {
         // must have exactly 1 stmt with Return_

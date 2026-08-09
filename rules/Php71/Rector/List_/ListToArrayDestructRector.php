@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Assign|Foreach_>
  * @see \Rector\Tests\Php71\Rector\List_\ListToArrayDestructRector\ListToArrayDestructRectorTest
  */
 final class ListToArrayDestructRector extends AbstractRector implements MinPhpVersionInterface
@@ -55,17 +56,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Assign::class, Foreach_::class];
     }
 
-    /**
-     * @param Assign|Foreach_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Assign) {

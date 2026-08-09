@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Class_>
  * @see \Rector\Tests\DeadCode\Rector\Class_\RemoveRefactorDuplicatedNodeInstanceCheckRector\RemoveRefactorDuplicatedNodeInstanceCheckRectorTest
  */
 final class RemoveRefactorDuplicatedNodeInstanceCheckRector extends AbstractRector
@@ -86,9 +87,6 @@ CODE_SAMPLE
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         $scope = ScopeFetcher::fetch($node);

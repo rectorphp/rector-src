@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Closure>
  * @see \Rector\Tests\DeadCode\Rector\Closure\RemoveUnusedClosureVariableUseRector\RemoveUnusedClosureVariableUseRectorTest
  */
 final class RemoveUnusedClosureVariableUseRector extends AbstractRector
@@ -49,17 +50,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Closure::class];
     }
 
-    /**
-     * @param Closure $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->uses === []) {

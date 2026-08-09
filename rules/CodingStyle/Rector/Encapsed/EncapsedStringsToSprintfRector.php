@@ -14,6 +14,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<InterpolatedString>
+ * @implements ConfigurableRectorInterface<InterpolatedString>
  * @deprecated This rule is deprecated, as turning "{$string}" interpolation into sprintf() or concat is a matter of personal preference. It can worsen readability and is rather a coding standard change.
  */
 final class EncapsedStringsToSprintfRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
@@ -56,17 +58,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [InterpolatedString::class];
     }
 
-    /**
-     * @param InterpolatedString $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

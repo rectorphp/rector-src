@@ -26,6 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
+ * @implements ConfigurableRectorInterface<StmtsAware>
  * @see \Rector\Tests\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector\SimplifyUselessVariableRectorTest
  */
 final class SimplifyUselessVariableRector extends AbstractRector implements ConfigurableRectorInterface
@@ -100,17 +102,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return NodeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param StmtsAware $node
-     */
     public function refactor(Node $node): ?Node
     {
         $stmts = $node->stmts;

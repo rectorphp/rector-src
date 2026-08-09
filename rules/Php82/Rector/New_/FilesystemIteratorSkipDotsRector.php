@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<New_>
  * @see \Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDotsRector\FilesystemIteratorSkipDotsRectorTest
  */
 final class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
@@ -49,8 +50,6 @@ final class FilesystemIteratorSkipDotsRector extends AbstractRector implements M
 
     /**
      * Add {@see \FilesystemIterator::SKIP_DOTS} to $node when required.
-     *
-     * @param New_ $node
      */
     public function refactor(Node $node): ?New_
     {

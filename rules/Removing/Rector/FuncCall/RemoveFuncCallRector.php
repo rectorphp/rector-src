@@ -15,6 +15,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Expression>
+ * @implements ConfigurableRectorInterface<Expression>
  * @see \Rector\Tests\Removing\Rector\FuncCall\RemoveFuncCallRector\RemoveFuncCallRectorTest
  */
 final class RemoveFuncCallRector extends AbstractRector implements ConfigurableRectorInterface
@@ -42,17 +44,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class];
     }
 
-    /**
-     * @param Expression $node
-     */
     public function refactor(Node $node): ?int
     {
         $expr = $node->expr;

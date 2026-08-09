@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Contract\Rector;
 
-use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use PhpParser\Node;
+use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 
 /**
  * @template TNode of Node = Node

@@ -15,6 +15,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Empty_|BooleanNot>
+ * @implements ConfigurableRectorInterface<Empty_|BooleanNot>
  * @deprecated This rule is deprecated, as it creates unreadable code with messy isset()/comparison checks. Refactor the value to a single sole type instead, then the empty() check can be replaced by a clear comparison.
  */
 final class DisallowedEmptyRuleFixerRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
@@ -62,17 +64,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Empty_::class, BooleanNot::class];
     }
 
-    /**
-     * @param Empty_|BooleanNot $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

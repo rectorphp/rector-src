@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Switch_>
  * @see \Rector\Tests\CodeQuality\Rector\Switch_\SingularSwitchToIfRector\SingularSwitchToIfRectorTest
  */
 final class SingularSwitchToIfRector extends AbstractRector
@@ -65,16 +66,12 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Switch_::class];
     }
 
     /**
-     * @param Switch_ $node
      * @return Node\Stmt[]|If_|null
      */
     public function refactor(Node $node): array|If_|null

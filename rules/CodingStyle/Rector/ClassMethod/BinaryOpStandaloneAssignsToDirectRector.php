@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure>
  * @deprecated This rule is deprecated, as it targets a very specific shape of 3 statements only and its purpose is unclear.
  */
 final class BinaryOpStandaloneAssignsToDirectRector extends AbstractRector implements DeprecatedInterface
@@ -44,17 +45,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

@@ -20,6 +20,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Property>
+ * @implements ConfigurableRectorInterface<Property>
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\AddPropertyTypeDeclarationRector\AddPropertyTypeDeclarationRectorTest
  */
 final class AddPropertyTypeDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
@@ -58,17 +60,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Property::class];
     }
 
-    /**
-     * @param Property $node
-     */
     public function refactor(Node $node): ?Node
     {
         // type is already known

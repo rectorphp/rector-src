@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StmtsAware>
  * @deprecated This rule is deprecated, as it can cause BC breaks. Adding JSON_THROW_ON_ERROR turns silent false/null results into a thrown JsonException, so every call site has to be reviewed manually. Use a wrapper tool like nette/utils Json instead, to get clear error reporting on any PHP version.
  */
 final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedInterface
@@ -39,9 +40,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return NodeGroup::STMTS_AWARE;

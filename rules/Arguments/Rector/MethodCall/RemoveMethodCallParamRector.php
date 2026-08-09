@@ -20,6 +20,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<MethodCall|StaticCall>
+ * @implements ConfigurableRectorInterface<MethodCall|StaticCall>
  * @note used extensively https://github.com/search?q=RemoveMethodCallParamRector%3A%3Aclass+language%3APHP&type=code&l=PHP
  * @see \Rector\Tests\Arguments\Rector\MethodCall\RemoveMethodCallParamRector\RemoveMethodCallParamRectorTest
  */
@@ -65,17 +67,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class, StaticCall::class];
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;

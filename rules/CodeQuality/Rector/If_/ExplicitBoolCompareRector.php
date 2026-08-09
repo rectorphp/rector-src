@@ -34,6 +34,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<If_|ElseIf_|Ternary>
  * @see \Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\ExplicitBoolCompareRectorTest
  */
 final class ExplicitBoolCompareRector extends AbstractRector
@@ -76,16 +77,12 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [If_::class, ElseIf_::class, Ternary::class];
     }
 
     /**
-     * @param If_|ElseIf_|Ternary $node
      * @return null|Stmt[]|Node
      */
     public function refactor(Node $node): null|array|Node

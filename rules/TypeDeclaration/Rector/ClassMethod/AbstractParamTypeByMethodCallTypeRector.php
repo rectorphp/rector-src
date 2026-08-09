@@ -27,6 +27,7 @@ use Rector\TypeDeclaration\NodeAnalyzer\CallerParamMatcher;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure|ArrowFunction>
  * Shared engine for adding a param type based on the type of the caller argument.
  * Concrete rules narrow the change to a single type group via isMatchingParamType().
  */
@@ -43,17 +44,11 @@ abstract class AbstractParamTypeByMethodCallTypeRector extends AbstractRector
     ) {
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure|ArrowFunction $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->params === []) {

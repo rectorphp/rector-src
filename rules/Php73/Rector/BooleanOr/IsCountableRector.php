@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanOr>
  * @see \Rector\Tests\Php73\Rector\BinaryOr\IsCountableRector\IsCountableRectorTest
  */
 final class IsCountableRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
@@ -46,17 +47,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanOr::class];
     }
 
-    /**
-     * @param BooleanOr $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkip()) {

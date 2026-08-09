@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Class_>
  * @experimental since 2025-11
  *
  * @see \Rector\Tests\Unambiguous\Rector\Class_\RemoveReturnThisFromSetterClassMethodRector\RemoveReturnThisFromSetterClassMethodRectorTest
@@ -60,17 +61,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Class_>>
-     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Class_
     {
         $hasChanged = false;

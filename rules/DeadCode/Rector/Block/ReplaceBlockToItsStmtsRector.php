@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Block>
  * @see \Rector\Tests\DeadCode\Rector\Block\ReplaceBlockToItsStmtsRector\ReplaceBlockToItsStmtsRectorTest
  * @see https://3v4l.org/ZUfEV
  */
@@ -42,16 +43,12 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Block::class];
     }
 
     /**
-     * @param Block $node
      * @return int|Stmt[]
      */
     public function refactor(Node $node): int|array

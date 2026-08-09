@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Greater|Smaller|Identical>
  * @see \Rector\Tests\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector\StrlenZeroToIdenticalEmptyStringRectorTest
  */
 final class StrlenZeroToIdenticalEmptyStringRector extends AbstractRector
@@ -57,17 +58,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Greater::class, Smaller::class, Identical::class];
     }
 
-    /**
-     * @param Greater|Smaller|Identical $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->left instanceof FuncCall) {

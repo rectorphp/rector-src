@@ -20,6 +20,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<PropertyFetch|StaticPropertyFetch|ClassLike>
+ * @implements ConfigurableRectorInterface<PropertyFetch|StaticPropertyFetch|ClassLike>
  * @see \Rector\Tests\Renaming\Rector\PropertyFetch\RenamePropertyRector\RenamePropertyRectorTest
  */
 final class RenamePropertyRector extends AbstractRector implements ConfigurableRectorInterface
@@ -42,17 +44,11 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [PropertyFetch::class, StaticPropertyFetch::class, ClassLike::class];
     }
 
-    /**
-     * @param PropertyFetch|StaticPropertyFetch|ClassLike $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof ClassLike) {

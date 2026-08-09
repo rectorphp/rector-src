@@ -34,6 +34,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<ClassMethod>
+ * @implements ConfigurableRectorInterface<ClassMethod>
  * @experimental Check generic array key/value types in runtime with assert. Generics for impatient people.
  *
  * @see \Rector\Tests\Assert\Rector\ClassMethod\AddAssertArrayFromClassMethodDocblockRector\AddAssertArrayFromClassMethodDocblockRectorTest
@@ -98,9 +100,6 @@ CODE_SAMPLE
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?ClassMethod
     {
         $scope = ScopeFetcher::fetch($node);

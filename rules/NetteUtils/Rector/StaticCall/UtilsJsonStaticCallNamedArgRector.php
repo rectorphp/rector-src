@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<StaticCall>
  * @see \Rector\Tests\NetteUtils\Rector\StaticCall\UtilsJsonStaticCallNamedArgRector\UtilsJsonStaticCallNamedArgRectorTest
  */
 final class UtilsJsonStaticCallNamedArgRector extends AbstractRector implements ComposerPackageConstraintInterface
@@ -56,9 +57,6 @@ CODE_SAMPLE
         return [StaticCall::class];
     }
 
-    /**
-     * @param StaticCall $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $this->isName($node->class, NetteClassName::JSON)) {

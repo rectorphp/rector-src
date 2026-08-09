@@ -19,6 +19,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<MethodCall|StaticCall|ClassMethod|New_>
+ * @implements ConfigurableRectorInterface<MethodCall|StaticCall|ClassMethod|New_>
  * @api used in rector-symfony
  * @see \Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\ReplaceArgumentDefaultValueRectorTest
  */
@@ -64,17 +66,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class, StaticCall::class, ClassMethod::class, New_::class];
     }
 
-    /**
-     * @param MethodCall|StaticCall|ClassMethod|New_ $node
-     */
     public function refactor(Node $node): MethodCall|StaticCall|ClassMethod|New_|null
     {
         if ($node instanceof New_) {

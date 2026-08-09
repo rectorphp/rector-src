@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure>
  * @deprecated This rule is deprecated as it produces too many false positives.
  */
 final class StrictStringParamConcatRector extends AbstractRector implements MinPhpVersionInterface, DeprecatedInterface
@@ -48,9 +49,6 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class];
@@ -61,9 +59,6 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

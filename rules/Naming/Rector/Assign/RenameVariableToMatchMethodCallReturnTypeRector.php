@@ -26,6 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Closure|Function_>
  * @see \Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector\RenameVariableToMatchMethodCallReturnTypeRectorTest
  */
 final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRector
@@ -89,17 +90,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Closure::class, Function_::class];
     }
 
-    /**
-     * @param ClassMethod|Closure|Function_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {

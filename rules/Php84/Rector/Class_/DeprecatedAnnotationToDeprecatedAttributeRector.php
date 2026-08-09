@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassConst|Function_|ClassMethod>
  * @see \Rector\Tests\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector\DeprecatedAnnotationToDeprecatedAttributeRectorTest
  */
 final class DeprecatedAnnotationToDeprecatedAttributeRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
@@ -55,9 +56,6 @@ CODE_SAMPLE
         return [Function_::class, ClassMethod::class, ClassConst::class];
     }
 
-    /**
-     * @param ClassConst|Function_|ClassMethod $node
-     */
     public function refactor(Node $node): ?Node
     {
         return $this->deprecatedAnnotationToDeprecatedAttributeConverter->convert($node);

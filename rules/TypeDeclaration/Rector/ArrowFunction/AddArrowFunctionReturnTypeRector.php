@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ArrowFunction>
  * @see \Rector\Tests\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector\AddArrowFunctionReturnTypeRectorTest
  */
 final class AddArrowFunctionReturnTypeRector extends AbstractRector implements MinPhpVersionInterface
@@ -42,17 +43,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ArrowFunction::class];
     }
 
-    /**
-     * @param ArrowFunction $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->returnType instanceof Node) {

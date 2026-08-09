@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Closure>
  * @see \Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\ClosureToArrowFunctionRectorTest
  */
 final class ClosureToArrowFunctionRector extends AbstractRector implements MinPhpVersionInterface
@@ -55,17 +56,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Closure::class];
     }
 
-    /**
-     * @param Closure $node
-     */
     public function refactor(Node $node): ?Node
     {
         $returnExpr = $this->closureArrowFunctionAnalyzer->matchArrowFunctionExpr($node);

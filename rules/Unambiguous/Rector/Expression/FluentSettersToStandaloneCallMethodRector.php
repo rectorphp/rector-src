@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Expression|Return_>
  * @experimental since 2025-11
  *
  * @see \Rector\Tests\Unambiguous\Rector\Expression\FluentSettersToStandaloneCallMethodRector\FluentSettersToStandaloneCallMethodRectorTest
@@ -72,17 +73,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Expression::class, Return_::class];
     }
 
-    /**
-     * @param Expression|Return_ $node
-     */
     public function refactor(Node $node): ?array
     {
         if (! $node->expr instanceof MethodCall) {

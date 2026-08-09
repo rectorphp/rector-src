@@ -25,6 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Identical|NotIdentical|Equal|NotEqual>
  * @see \Rector\Tests\Php80\Rector\NotIdentical\StrContainsRector\StrContainsRectorTest
  */
 final class StrContainsRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
@@ -74,17 +75,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Identical::class, NotIdentical::class, Equal::class, NotEqual::class];
     }
 
-    /**
-     * @param Identical|NotIdentical|Equal|NotEqual $node
-     */
     public function refactor(Node $node): ?Node
     {
         $funcCall = $this->strFalseComparisonResolver->resolve($node, self::OLD_STR_NAMES);

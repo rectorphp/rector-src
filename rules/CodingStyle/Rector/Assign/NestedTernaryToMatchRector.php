@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Assign>
  * @deprecated This rule is deprecated, as match(true) with nested conditions is often less readable and more confusing than the original ternary. Refactor to an explicit intent instead, e.g. early returns or a named method.
  */
 final class NestedTernaryToMatchRector extends AbstractRector implements DeprecatedInterface
@@ -49,17 +50,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Assign::class];
     }
 
-    /**
-     * @param Assign $node
-     */
     public function refactor(Node $node): ?Assign
     {
         throw new ShouldNotHappenException(sprintf(

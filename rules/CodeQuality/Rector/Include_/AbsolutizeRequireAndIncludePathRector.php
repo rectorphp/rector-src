@@ -17,6 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Include_>
  * @see \Rector\Tests\CodeQuality\Rector\Include_\AbsolutizeRequireAndIncludePathRector\AbsolutizeRequireAndIncludePathRectorTest
  */
 final class AbsolutizeRequireAndIncludePathRector extends AbstractRector
@@ -65,17 +66,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Include_::class];
     }
 
-    /**
-     * @param Include_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->expr instanceof Concat && $node->expr->left instanceof String_ && $this->isRefactorableStringPath(

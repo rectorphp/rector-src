@@ -21,6 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanAnd>
  * @see \Rector\Tests\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector\RepeatedAndNotEqualToNotInArrayRectorTest
  */
 final class RepeatedAndNotEqualToNotInArrayRector extends AbstractRector
@@ -53,17 +54,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanAnd::class];
     }
 
-    /**
-     * @param BooleanAnd $node
-     */
     public function refactor(Node $node): ?BooleanNot
     {
         if (! $this->isNotEqualOrNotIdentical($node->right)) {

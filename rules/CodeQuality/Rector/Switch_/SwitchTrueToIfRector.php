@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Switch_>
  * @deprecated as it worsens readability by expanding a compact `switch (true)` into many separate `if` statements. Use `match (true)` for the same logic instead.
  */
 final class SwitchTrueToIfRector extends AbstractRector implements DeprecatedInterface
@@ -62,17 +63,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Switch_::class];
     }
 
-    /**
-     * @param Switch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

@@ -12,6 +12,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Assign>
  * @see \Rector\Tests\DeadCode\Rector\Assign\RemoveDoubleSelfAssignRector\RemoveDoubleSelfAssignRectorTest
  */
 final class RemoveDoubleSelfAssignRector extends AbstractRector
@@ -26,17 +27,11 @@ final class RemoveDoubleSelfAssignRector extends AbstractRector
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Assign::class];
     }
 
-    /**
-     * @param Assign $node
-     */
     public function refactor(Node $node): ?Node
     {
         if (! $node->var instanceof Variable) {

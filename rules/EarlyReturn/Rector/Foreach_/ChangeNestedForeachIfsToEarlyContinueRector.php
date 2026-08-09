@@ -13,6 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Foreach_>
  * @deprecated This rule is deprecated, as inverting nested ifs to continue makes the code harder to read and understand, and depends on the context.
  */
 final class ChangeNestedForeachIfsToEarlyContinueRector extends AbstractRector implements DeprecatedInterface
@@ -63,17 +64,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Foreach_::class];
     }
 
-    /**
-     * @param Foreach_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(

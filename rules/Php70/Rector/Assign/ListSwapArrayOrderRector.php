@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Assign>
  * @see \Rector\Tests\Php70\Rector\Assign\ListSwapArrayOrderRector\ListSwapArrayOrderRectorTest
  */
 final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVersionInterface
@@ -36,17 +37,11 @@ final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVer
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Assign::class];
     }
 
-    /**
-     * @param Assign $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkipAssign($node)) {

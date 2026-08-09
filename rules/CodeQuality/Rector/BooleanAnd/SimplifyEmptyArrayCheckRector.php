@@ -18,6 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<BooleanAnd>
  * @see \Rector\Tests\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector\SimplifyEmptyArrayCheckRectorTest
  */
 final class SimplifyEmptyArrayCheckRector extends AbstractRector
@@ -35,17 +36,11 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [BooleanAnd::class];
     }
 
-    /**
-     * @param BooleanAnd $node
-     */
     public function refactor(Node $node): ?Node
     {
         $twoNodeMatch = $this->resolveTwoNodeMatch($node);

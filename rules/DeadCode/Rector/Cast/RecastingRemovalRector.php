@@ -35,6 +35,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Cast>
  * @see \Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\RecastingRemovalRectorTest
  */
 final class RecastingRemovalRector extends AbstractRector
@@ -81,17 +82,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Cast::class];
     }
 
-    /**
-     * @param Cast $node
-     */
     public function refactor(Node $node): ?Node
     {
         $nodeClass = $node::class;

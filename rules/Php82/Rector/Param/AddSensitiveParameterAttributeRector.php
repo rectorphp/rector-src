@@ -19,6 +19,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<Node\Param>
+ * @implements ConfigurableRectorInterface<Node\Param>
  * @see \Rector\Tests\Php82\Rector\Param\AddSensitiveParameterAttributeRector\AddSensitiveParameterAttributeRectorTest
  */
 final class AddSensitiveParameterAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
@@ -49,9 +51,6 @@ final class AddSensitiveParameterAttributeRector extends AbstractRector implemen
         return [Param::class];
     }
 
-    /**
-     * @param Node\Param $node
-     */
     public function refactor(Node $node): ?Param
     {
         if (! $this->isNames($node, $this->sensitiveParameters)) {

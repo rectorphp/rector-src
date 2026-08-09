@@ -19,6 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Attribute>
  * @see \Rector\Tests\CodeQuality\Rector\Attribute\ExplicitAttributeNamedArgsRector\ExplicitAttributeNamedArgsRectorTest
  */
 final class ExplicitAttributeNamedArgsRector extends AbstractRector implements MinPhpVersionInterface
@@ -52,17 +53,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [Attribute::class];
     }
 
-    /**
-     * @param Attribute $node
-     */
     public function refactor(Node $node): ?Node
     {
         $methodReflection = $this->reflectionResolver->resolveConstructorReflectionFromAttribute($node);

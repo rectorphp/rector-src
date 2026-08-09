@@ -26,6 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<LogicalOr|LogicalAnd>
  * @see \Rector\Tests\CodeQuality\Rector\LogicalAnd\LogicalToBooleanRector\LogicalToBooleanRectorTest
  */
 final class LogicalToBooleanRector extends AbstractRector
@@ -52,17 +53,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [LogicalOr::class, LogicalAnd::class];
     }
 
-    /**
-     * @param LogicalOr|LogicalAnd $node
-     */
     public function refactor(Node $node): BooleanAnd|BooleanOr|null
     {
         if ($node->left instanceof Assign) {

@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure|ArrowFunction>
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamStringTypeFromSprintfUseRector\AddParamStringTypeFromSprintfUseRectorTest
  */
 final class AddParamStringTypeFromSprintfUseRector extends AbstractRector
@@ -60,17 +61,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure|ArrowFunction $node
-     */
     public function refactor(Node $node): ClassMethod|Function_|Closure|ArrowFunction|null
     {
         if ($node instanceof ClassMethod && $node->stmts === null) {

@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<InterpolatedString>
  * @see \Rector\Tests\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector\VariableInStringInterpolationFixerRectorTest
  */
 final class VariableInStringInterpolationFixerRector extends AbstractRector implements MinPhpVersionInterface
@@ -38,17 +39,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [InterpolatedString::class];
     }
 
-    /**
-     * @param InterpolatedString $node
-     */
     public function refactor(Node $node): ?Node
     {
         $oldTokens = $this->getFile()

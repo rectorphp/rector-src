@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<FuncCall>
  * @see https://3v4l.org/Kcs98
  * @see \Rector\Tests\Php74\Rector\FuncCall\RestoreIncludePathToIniRestoreRector\RestoreIncludePathToIniRestoreRectorTest
  */
@@ -44,17 +45,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [FuncCall::class];
     }
 
-    /**
-     * @param FuncCall $node
-     */
     public function refactor(Node $node): ?FuncCall
     {
         if (! $this->isName($node, 'restore_include_path')) {

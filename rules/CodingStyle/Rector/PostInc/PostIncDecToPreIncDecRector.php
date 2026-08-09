@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<For_|Expression>
  * @see \Rector\Tests\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector\PostIncDecToPreIncDecRectorTest
  */
 final class PostIncDecToPreIncDecRector extends AbstractRector
@@ -52,17 +53,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [For_::class, Expression::class];
     }
 
-    /**
-     * @param For_|Expression $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Expression) {

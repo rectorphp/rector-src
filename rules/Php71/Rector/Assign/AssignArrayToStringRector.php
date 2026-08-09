@@ -28,6 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Namespace_|FileNode|Class_|ClassMethod|Function_|Closure>
  * @see \Rector\Tests\Php71\Rector\Assign\AssignArrayToStringRector\AssignArrayToStringRectorTest
  */
 final class AssignArrayToStringRector extends AbstractRector implements MinPhpVersionInterface
@@ -60,9 +61,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [
@@ -75,9 +73,6 @@ CODE_SAMPLE
         ];
     }
 
-    /**
-     * @param Namespace_|FileNode|Class_|ClassMethod|Function_|Closure $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Class_) {

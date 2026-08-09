@@ -24,6 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Param>
  * @see \Rector\Tests\Php84\Rector\Param\ExplicitNullableParamTypeRector\ExplicitNullableParamTypeRectorTest
  */
 final class ExplicitNullableParamTypeRector extends AbstractRector implements MinPhpVersionInterface
@@ -55,9 +56,6 @@ CODE_SAMPLE
         return [Param::class];
     }
 
-    /**
-     * @param Param $node
-     */
     public function refactor(Node $node): ?Param
     {
         if (! $node->type instanceof Node) {

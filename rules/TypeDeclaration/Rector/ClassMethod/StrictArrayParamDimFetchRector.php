@@ -41,6 +41,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod|Function_|Closure>
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector\StrictArrayParamDimFetchRectorTest
  */
 final class StrictArrayParamDimFetchRector extends AbstractRector
@@ -80,17 +81,11 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class, Function_::class, Closure::class];
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;

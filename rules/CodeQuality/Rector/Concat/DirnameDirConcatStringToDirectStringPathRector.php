@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Concat>
  * @see \Rector\Tests\CodeQuality\Rector\Concat\DirnameDirConcatStringToDirectStringPathRector\DirnameDirConcatStringToDirectStringPathRectorTest
  */
 final class DirnameDirConcatStringToDirectStringPathRector extends AbstractRector
@@ -51,9 +52,6 @@ CODE_SAMPLE
         return [Concat::class];
     }
 
-    /**
-     * @param Concat $node
-     */
     public function refactor(Node $node): ?Concat
     {
         if (! $node->left instanceof FuncCall || ! $this->isName($node->left, 'dirname')) {

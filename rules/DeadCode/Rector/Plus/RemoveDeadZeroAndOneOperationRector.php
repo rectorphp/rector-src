@@ -26,6 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Plus|Minus|Mul|Div|AssignPlus|AssignMinus|AssignMul|AssignDiv>
  * @see \Rector\Tests\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector\RemoveDeadZeroAndOneOperationRectorTest
  */
 final class RemoveDeadZeroAndOneOperationRector extends AbstractRector
@@ -62,9 +63,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [
@@ -79,9 +77,6 @@ CODE_SAMPLE
         ];
     }
 
-    /**
-     * @param Plus|Minus|Mul|Div|AssignPlus|AssignMinus|AssignMul|AssignDiv $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof AssignOp) {

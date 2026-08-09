@@ -19,6 +19,9 @@ use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @extends AbstractRector<Class_>
+ */
 final class MoveAbstractRectorToChildrenRector extends AbstractRector
 {
     /**
@@ -46,9 +49,6 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
         return [Class_::class];
     }
 
-    /**
-     * @param Class_ $node
-     */
     public function refactor(Node $node): ?Node
     {
         if ($node->isAbstract()) {

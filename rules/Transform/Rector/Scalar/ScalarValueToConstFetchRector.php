@@ -20,6 +20,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @extends AbstractRector<String_|Float_|Int_>
+ * @implements ConfigurableRectorInterface<String_|Float_|Int_>
  * @see \Rector\Tests\Transform\Rector\Scalar\ScalarValueToConstFetchRector\ScalarValueToConstFetchRectorTest
  */
 final class ScalarValueToConstFetchRector extends AbstractRector implements ConfigurableRectorInterface
@@ -53,9 +55,6 @@ SAMPLE
         return [String_::class, Float_::class, Int_::class];
     }
 
-    /**
-     * @param String_|Float_|Int_ $node
-     */
     public function refactor(Node $node): ConstFetch|ClassConstFetch|null
     {
         foreach ($this->scalarValueToConstFetches as $scalarValueToConstFetch) {

@@ -26,6 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<ClassMethod>
  * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingClassMethodRector\RemoveParentDelegatingClassMethodRectorTest
  */
 final class RemoveParentDelegatingClassMethodRector extends AbstractRector
@@ -62,17 +63,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
     }
 
-    /**
-     * @param ClassMethod $node
-     */
     public function refactor(Node $node): ?int
     {
         // constructors are handled by RemoveParentDelegatingConstructorRector

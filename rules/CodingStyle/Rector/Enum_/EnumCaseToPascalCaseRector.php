@@ -14,6 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @extends AbstractRector<Enum_|ClassConstFetch>
  * @deprecated as risky change that does not handle enum usage across the whole context. Handle it via IDE with full context, manually, or a custom rule instead.
  */
 final class EnumCaseToPascalCaseRector extends AbstractRector implements DeprecatedInterface
@@ -53,9 +54,6 @@ final class EnumCaseToPascalCaseRector extends AbstractRector implements Depreca
         return [Enum_::class, ClassConstFetch::class];
     }
 
-    /**
-     * @param Enum_|ClassConstFetch $node
-     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
