@@ -10,6 +10,9 @@ use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 
+/**
+ * @api used in deprecated ScalarValueToConstFetchRector configs
+ */
 final readonly class ScalarValueToConstFetch
 {
     public function __construct(
