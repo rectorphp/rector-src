@@ -84,9 +84,4 @@ final class SetList
     public const string CARBON = __DIR__ . '/../../../config/set/datetime-to-carbon.php';
 
     public const string BEHAT_ANNOTATIONS_TO_ATTRIBUTES = __DIR__ . '/../../../config/set/behat-annotations-to-attributes.php';
-
-    /**
-     * @experimental Check generic types in runtime with assert. Generics for impatient people.
-     */
-    public const string ASSERT = __DIR__ . '/../../../config/set/assert.php';
 }
