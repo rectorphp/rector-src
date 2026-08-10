@@ -19,11 +19,11 @@ final class ExtensionComposerBasedSetTest extends TestCase
     {
         $extensionSetLists = $this->provideExtensionComposerBasedSetLists();
 
-        self::assertArrayHasKey(SetGroup::LARAVEL, $extensionSetLists);
-        self::assertArrayHasKey(SetGroup::DRUPAL, $extensionSetLists);
+        $this->assertArrayHasKey(SetGroup::LARAVEL, $extensionSetLists);
+        $this->assertArrayHasKey(SetGroup::DRUPAL, $extensionSetLists);
 
-        foreach ($extensionSetLists as $setListConstant) {
-            self::assertMatchesRegularExpression('#^\w+(\\\\\w+)+::\w+$#', $setListConstant);
+        foreach ($extensionSetLists as $extensionSetList) {
+            $this->assertMatchesRegularExpression('#^\w+(\\\\\w+)+::\w+$#', $extensionSetList);
         }
     }
 
@@ -34,14 +34,14 @@ final class ExtensionComposerBasedSetTest extends TestCase
     public function testFallsBackToTheSetGroupWhenTheExtensionIsNotInstalled(): void
     {
         foreach ($this->provideExtensionComposerBasedSetLists() as $setListConstant) {
-            self::assertFalse(defined($setListConstant), $setListConstant);
+            $this->assertFalse(defined($setListConstant), $setListConstant);
         }
 
         $rectorConfigBuilder = new RectorConfigBuilder()
             ->withComposerBased(laravel: true, drupal: true);
 
-        self::assertSame([SetGroup::LARAVEL, SetGroup::DRUPAL], $this->readPrivateArray($rectorConfigBuilder, 'setGroups'));
-        self::assertSame([], $this->readPrivateArray($rectorConfigBuilder, 'sets'));
+        $this->assertSame([SetGroup::LARAVEL, SetGroup::DRUPAL], $this->readPrivateArray($rectorConfigBuilder, 'setGroups'));
+        $this->assertSame([], $this->readPrivateArray($rectorConfigBuilder, 'sets'));
     }
 
     /**
@@ -52,7 +52,7 @@ final class ExtensionComposerBasedSetTest extends TestCase
         $extensionSetLists = new ReflectionClass(RectorConfigBuilder::class)
             ->getConstant('EXTENSION_COMPOSER_BASED_SET_LISTS');
 
-        self::assertIsArray($extensionSetLists);
+        $this->assertIsArray($extensionSetLists);
 
         return $extensionSetLists;
     }
@@ -66,7 +66,7 @@ final class ExtensionComposerBasedSetTest extends TestCase
             ->getProperty($propertyName)
             ->getValue($rectorConfigBuilder);
 
-        self::assertIsArray($value);
+        $this->assertIsArray($value);
 
         return $value;
     }
