@@ -431,11 +431,14 @@ final class RectorConfig extends Container
     /**
      * @param class-string<CacheStorageInterface> $cacheClass
      */
+    #[Deprecated(message: <<<'TXT'
+    Cache storage is selected automatically: file cache locally, in-memory cache in CI,
+     where the ephemeral workspace makes writing a cache that is never re-read wasted IO.
+     The passed value is ignored.
+    TXT)]
     public function cacheClass(string $cacheClass): void
     {
         Assert::isAOf($cacheClass, CacheStorageInterface::class);
-
-        SimpleParameterProvider::setParameter(Option::CACHE_CLASS, $cacheClass);
     }
 
     /**
