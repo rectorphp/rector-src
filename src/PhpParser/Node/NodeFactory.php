@@ -208,6 +208,7 @@ final readonly class NodeFactory
     }
 
     /**
+     * @api symfony, doctrine, phpunit
      * @param mixed[] $arguments
      */
     public function createMethodCall(Expr|string $exprOrVariableName, string $method, array $arguments = []): MethodCall
