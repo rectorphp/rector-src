@@ -26,18 +26,15 @@ jobs:
                 directory:
                     - 'e2e/applied-auto-import'
                     - 'e2e/applied-polyfill-php80'
-                    - 'e2e/applied-rule-change-docblock'
-                    - 'e2e/applied-rule-return-array-nodes'
                     - 'e2e/config-dist-fallback'
                     - 'e2e/config-file-priority'
-                    - 'e2e/different-path-over-skip-config'
-                    - 'e2e/no-parallel-reflection-resolver'
                     - 'e2e/only-option'
                     - 'e2e/parallel-custom-config'
                     - 'e2e/parallel-unused-skips'
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/parallel with space'
                     - 'e2e/phpstan-container-bootstrap'
+                    - 'e2e/rules-summary-option'
 
         name: End to end test - ${{ matrix.directory }}
 
