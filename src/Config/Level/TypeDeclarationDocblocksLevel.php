@@ -13,7 +13,6 @@ use Rector\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamF
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFromGetterReturnRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFromPropertyDefaultsRector;
 use Rector\TypeDeclarationDocblocks\Rector\Class_\DocblockVarFromParamDocblockInConstructorRector;
-use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockBasedOnArrayMapRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromAssignsParamToParamReferenceRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromDimFetchAccessRector;
 use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\AddReturnDocblockForArrayDimAssignedObjectRector;
@@ -36,7 +35,6 @@ final class TypeDeclarationDocblocksLevel
         // param
         AddParamArrayDocblockFromDimFetchAccessRector::class,
         ClassMethodArrayDocblockParamFromLocalCallsRector::class,
-        AddParamArrayDocblockBasedOnArrayMapRector::class,
         AddParamArrayDocblockFromAssignsParamToParamReferenceRector::class,
         AddParamArrayDocblockBasedOnCallableNativeFuncCallRector::class,
 
