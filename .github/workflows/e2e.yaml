@@ -26,25 +26,15 @@ jobs:
                 directory:
                     - 'e2e/applied-auto-import'
                     - 'e2e/applied-polyfill-php80'
-                    - 'e2e/applied-rule-change-docblock'
-                    - 'e2e/applied-rule-removed-node'
-                    - 'e2e/applied-rule-return-array-nodes'
                     - 'e2e/config-dist-fallback'
                     - 'e2e/config-file-priority'
-                    - 'e2e/different-path-over-skip-config'
-                    - 'e2e/invalid-paths'
-                    - 'e2e/no-parallel-reflection-resolver'
                     - 'e2e/only-option'
-                    - 'e2e/only-option-quote-double-equalnone'
-                    - 'e2e/only-option-quote-single'
-                    - 'e2e/only-option-quote-single-bsdouble'
-                    - 'e2e/only-option-quote-single-equalnone'
                     - 'e2e/parallel-custom-config'
                     - 'e2e/parallel-unused-skips'
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/parallel with space'
-                    - 'e2e/print-new-node'
                     - 'e2e/phpstan-container-bootstrap'
+                    - 'e2e/rules-summary-option'
 
         name: End to end test - ${{ matrix.directory }}
 
@@ -82,3 +72,13 @@ jobs:
             -   run: php ../e2eTestRunner.php
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory != 'e2e/parallel-custom-config' && matrix.directory != 'e2e/parallel-unused-skips' }}
+
+            # the "--only" option must handle any shell quoting of the very same rule class
+            -
+                working-directory: ${{ matrix.directory }}
+                if: ${{ matrix.directory == 'e2e/only-option' }}
+                run: |
+                    php ../e2eTestRunner.php --cli-options cli-options-quote-single.txt
+                    php ../e2eTestRunner.php --cli-options cli-options-quote-single-bsdouble.txt
+                    php ../e2eTestRunner.php --cli-options cli-options-quote-single-equalnone.txt
+                    php ../e2eTestRunner.php --cli-options cli-options-quote-double-equalnone.txt

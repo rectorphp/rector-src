@@ -40,7 +40,10 @@ if (isset($argv[2]) && $argv[2] === '--output-format=json') {
     $e2eCommand .= ' --output-format=json';
 }
 
-$cliOptions = 'cli-options.txt';
+// allow running the same fixture with another set of CLI options, e.g. various quoting of the same option
+$cliOptionsIndex = array_search('--cli-options', $argv, true);
+$cliOptions = $cliOptionsIndex === false ? 'cli-options.txt' : $argv[$cliOptionsIndex + 1];
+
 if (file_exists($cliOptions)) {
     $e2eCommand .= ' ' . trim((string) file_get_contents($cliOptions));
 }
