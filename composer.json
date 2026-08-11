@@ -48,7 +48,7 @@
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-webmozart-assert": "^2.0",
-        "phpunit/phpunit": "^13.2",
+        "phpunit/phpunit": "^13.3",
         "rector/jack": "^1.1",
         "rector/swiss-knife": "^2.4.1",
         "shipmonk/composer-dependency-analyser": "^1.8",
