@@ -66,9 +66,4 @@ CODE_SAMPLE
     {
         return PhpVersionFeature::DEPRECATED_ATTRIBUTE;
     }
-
-    public function providePolyfillPackage(): string
-    {
-        return PolyfillPackage::PHP_84;
-    }
 }
