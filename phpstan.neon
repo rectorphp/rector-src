@@ -122,11 +122,14 @@ parameters:
             identifier: rector.upgradeDowngradeRegisteredInSet
             path: rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
 
-        # deliberately kept out of the php84 set, as it turns a doc annotation into a runtime deprecation;
-        # it stays available to register directly with withRules()
+        # deprecated rules, kept out of the php sets, as they turn a doc annotation into a runtime deprecation
         -
             identifier: rector.upgradeDowngradeRegisteredInSet
             path: rules/Php84/Rector/Class_/DeprecatedAnnotationToDeprecatedAttributeRector.php
+
+        -
+            identifier: rector.upgradeDowngradeRegisteredInSet
+            path: rules/Php85/Rector/Const_/ConstAndTraitDeprecatedAttributeRector.php
 
         # is nested expr
         -
@@ -472,6 +475,8 @@ parameters:
         - '#Class "Rector\\Transform\\Rector\\Scalar\\ScalarValueToConstFetchRector" is missing @see annotation with test case class reference#'
         - '#Class "Rector\\DeadCode\\Rector\\ClassLike\\RemoveAnnotationRector" is missing @see annotation with test case class reference#'
         - '#Class "Rector\\Transform\\Rector\\Class_\\AddInterfaceByTraitRector" is missing @see annotation with test case class reference#'
+        - '#Class "Rector\\Php84\\Rector\\Class_\\DeprecatedAnnotationToDeprecatedAttributeRector" is missing @see annotation with test case class reference#'
+        - '#Class "Rector\\Php85\\Rector\\Const_\\ConstAndTraitDeprecatedAttributeRector" is missing @see annotation with test case class reference#'
 
         # @todo fix in phpstan-rules
         -

@@ -7,7 +7,6 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector;
 use Rector\Symfony\Symfony61\Rector\Class_\CommandConfigureToAttributeRector;
 
 return RectorConfig::configure()
@@ -64,7 +63,4 @@ return RectorConfig::configure()
             __DIR__ . '/src/Configuration/RectorConfigBuilder.php',
             __DIR__ . '/src/Console/Notifier.php',
         ],
-
-        // keep @deprecated annotation, as readable in IDE and tooling
-        DeprecatedAnnotationToDeprecatedAttributeRector::class => [__DIR__ . '/src/Set/ValueObject/SetList.php'],
     ]);
