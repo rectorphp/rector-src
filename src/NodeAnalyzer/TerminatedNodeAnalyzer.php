@@ -6,16 +6,20 @@ namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Continue_;
+use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
+use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\If_;
@@ -26,6 +30,7 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeVisitor;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\FileNode;
@@ -65,6 +70,11 @@ final readonly class TerminatedNodeAnalyzer
             return false;
         }
 
+        // an infinite loop with no break never falls through to the next stmt
+        if ($node instanceof While_ || $node instanceof Do_ || $node instanceof For_) {
+            return $this->isTerminatedInfiniteLoop($node);
+        }
+
         if (! in_array($node::class, self::TERMINABLE_NODES_BY_ITS_STMTS, true)) {
             return $this->isTerminatedNode($node, $currentStmt);
         }
@@ -79,6 +89,68 @@ final readonly class TerminatedNodeAnalyzer
 
         /** @var Switch_ $node */
         return $this->isTerminatedInLastStmtsSwitch($node);
+    }
+
+    private function isTerminatedInfiniteLoop(While_|Do_|For_ $loop): bool
+    {
+        if (! $this->isInfiniteLoopCondition($loop)) {
+            return false;
+        }
+
+        // a break/goto escaping the loop makes the following stmt reachable again;
+        // stay conservative and treat any break/goto in the body as escaping
+        return ! $this->hasBreakOrGoto($loop->stmts);
+    }
+
+    private function isInfiniteLoopCondition(While_|Do_|For_ $loop): bool
+    {
+        if ($loop instanceof For_) {
+            // "for (;;)" has no condition and loops forever
+            if ($loop->cond === []) {
+                return true;
+            }
+
+            $lastCond = end($loop->cond);
+            return $lastCond instanceof Expr && $this->isAlwaysTrue($lastCond);
+        }
+
+        return $this->isAlwaysTrue($loop->cond);
+    }
+
+    private function isAlwaysTrue(Expr $expr): bool
+    {
+        if ($expr instanceof ConstFetch) {
+            return $expr->name->toLowerString() === 'true';
+        }
+
+        return $expr instanceof Int_ && $expr->value !== 0;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function hasBreakOrGoto(array $stmts): bool
+    {
+        $hasBreakOrGoto = false;
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $stmts,
+            static function (Node $node) use (&$hasBreakOrGoto): ?int {
+                // nested scopes bring their own jump targets
+                if ($node instanceof FunctionLike || $node instanceof ClassLike) {
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if (! $node instanceof Break_ && ! $node instanceof Goto_) {
+                    return null;
+                }
+
+                $hasBreakOrGoto = true;
+                return NodeVisitor::STOP_TRAVERSAL;
+            }
+        );
+
+        return $hasBreakOrGoto;
     }
 
     private function isTerminatedNode(Stmt $previousNode, Stmt $currentStmt): bool
