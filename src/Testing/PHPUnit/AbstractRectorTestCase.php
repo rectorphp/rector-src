@@ -30,6 +30,7 @@ use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\PHPUnit\ValueObject\RectorTestResult;
 use Rector\Util\Reflection\PrivatesAccessor;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * @api used by public
@@ -63,6 +64,10 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::NEW_LINE_ON_FLUENT_CALL, false);
 
         SimpleParameterProvider::setParameter(Option::TREAT_CLASSES_AS_FINAL, false);
+
+        // reset PHP version to the test default, so a version-bound test class
+        // does not leak its phpVersion() into the next class in the same process
+        SimpleParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_10);
     }
 
     protected function setUp(): void

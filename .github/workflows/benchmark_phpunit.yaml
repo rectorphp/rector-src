@@ -1,0 +1,56 @@
+name: Benchmark PHPUnit
+
+# A/B wall-time benchmark: serial phpunit vs the Go parallel runner.
+# Scheduled only (not on pull requests); runs every 2 hours on ubuntu + windows.
+# Reminder: cron fires only from the default branch, so this starts running
+# once the file is on `main`.
+on:
+    schedule:
+        - cron: '0 */2 * * *'
+    workflow_dispatch: null
+
+env:
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    benchmark:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+                php-versions: ['8.4', '8.5']
+
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 15
+
+        name: benchmark (${{ matrix.os }})
+        steps:
+            -   uses: actions/checkout@v5
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    coverage: none
+                    ini-values: zend.assertions=1
+
+            -   uses: "ramsey/composer-install@v4"
+
+            -   uses: actions/setup-go@v5
+                with:
+                    go-version: 'stable'
+
+            -   name: Serial phpunit
+                shell: bash
+                run: |
+                    printf '| platform | php | mode | wall time |\n| --- | --- | --- | --- |\n' >> "$GITHUB_STEP_SUMMARY"
+                    start=$SECONDS
+                    vendor/bin/phpunit
+                    echo "| ${{ matrix.os }} | ${{ matrix.php-versions }} | serial | $((SECONDS - start))s |" >> "$GITHUB_STEP_SUMMARY"
+
+            -   name: Go parallel runner
+                shell: bash
+                run: |
+                    start=$SECONDS
+                    go run ./utils-tests-runner/main.go
+                    echo "| ${{ matrix.os }} | ${{ matrix.php-versions }} | go-runner | $((SECONDS - start))s |" >> "$GITHUB_STEP_SUMMARY"
