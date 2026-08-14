@@ -68,9 +68,9 @@ jobs:
                 with:
                     go-version: 'stable'
 
-            -   run: go build -o fast-phpunit .
+            # `-o` writes the exact name, so add .exe on Windows ourselves
+            -   run: go build -o fast-phpunit${{ runner.os == 'Windows' && '.exe' || '' }} .
                 working-directory: utils-tests-runner
 
-            # run from repo root so test-dir discovery and phpunit.xml resolve;
-            # Go appends .exe to the output name on Windows
+            # run from repo root so test-dir discovery and phpunit.xml resolve
             -   run: ./utils-tests-runner/fast-phpunit${{ runner.os == 'Windows' && '.exe' || '' }}
