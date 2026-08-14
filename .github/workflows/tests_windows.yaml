@@ -1,10 +1,10 @@
-name: Tests
+name: Tests (Windows)
 
 on:
-    pull_request: null
-    push:
-     branches:
-        - main
+    schedule:
+        # every 3 hours
+        - cron: '0 */3 * * *'
+    workflow_dispatch: null
 
 
 
@@ -17,13 +17,12 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest]
                 php-versions: ['8.4', '8.5']
 
-        runs-on: ${{ matrix.os }}
+        runs-on: windows-latest
         timeout-minutes: 4
 
-        name: PHP ${{ matrix.php-versions }} tests (${{ matrix.os }})
+        name: PHP ${{ matrix.php-versions }} tests (windows-latest)
         steps:
             -   uses: actions/checkout@v5
 
