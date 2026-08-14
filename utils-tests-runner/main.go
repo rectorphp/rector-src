@@ -30,7 +30,10 @@ var fixtureCountRe = regexp.MustCompile(`\.php\.inc$`)
 
 func main() {
 	workers := flag.Int("p", runtime.NumCPU(), "number of parallel workers")
-	phpunit := flag.String("bin", "vendor/bin/phpunit", "phpunit binary")
+	php := flag.String("php", "php", "php interpreter")
+	// the real PHP entry script (runs cross-platform via `php`); vendor/bin/phpunit
+	// is a shell/batch proxy on Windows and cannot be passed to php directly.
+	phpunit := flag.String("bin", "vendor/phpunit/phpunit/phpunit", "phpunit entry script")
 	flag.Parse()
 
 	dirs := flag.Args()
@@ -47,7 +50,7 @@ func main() {
 	chunks := balance(classes, *workers)
 
 	start := time.Now()
-	failed := run(chunks, *phpunit, *workers)
+	failed := run(chunks, *php, *phpunit, *workers)
 	elapsed := time.Since(start)
 
 	totalFixtures := 0
@@ -126,7 +129,7 @@ func balance(classes []testClass, n int) [][]testClass {
 	return out
 }
 
-func run(chunks [][]testClass, bin string, workers int) int {
+func run(chunks [][]testClass, php, phpunit string, workers int) int {
 	sem := make(chan struct{}, workers)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
@@ -139,24 +142,28 @@ func run(chunks [][]testClass, bin string, workers int) int {
 			sem <- struct{}{}
 			defer func() { <-sem }()
 
-			// Each worker gets its own TMPDIR so Rector's file cache
+			// Each worker gets its own temp dir so Rector's file cache
 			// (sys_get_temp_dir()/rector_cached_files) and the fixture temp
-			// dumper never race across processes.
+			// dumper never race across processes. sys_get_temp_dir() reads
+			// TMPDIR on Linux/macOS and TMP/TEMP on Windows, so set all three.
 			tmp := filepath.Join(os.TempDir(), fmt.Sprintf("fast-phpunit-%d", idx))
 			_ = os.MkdirAll(tmp, 0o755)
 			defer os.RemoveAll(tmp)
 
-			args := make([]string, 0, len(chunk))
+			// invoke via `php <phpunit>` so it works uniformly on Windows,
+			// where vendor/bin/phpunit is not directly executable.
+			args := make([]string, 0, len(chunk)+1)
+			args = append(args, phpunit)
 			for _, c := range chunk {
 				args = append(args, c.path)
 			}
-			cmd := exec.Command(bin, args...)
-			cmd.Env = append(os.Environ(), "TMPDIR="+tmp)
+			cmd := exec.Command(php, args...)
+			cmd.Env = append(os.Environ(), "TMPDIR="+tmp, "TMP="+tmp, "TEMP="+tmp)
 			out, err := cmd.CombinedOutput()
 			if err != nil {
 				mu.Lock()
 				failed++
-				fmt.Printf("chunk FAILED (%d classes):\n%s\n", len(chunk), tail(string(out), 15))
+				fmt.Printf("chunk FAILED (%d classes): %v\n%s\n", len(chunk), err, tail(string(out), 15))
 				mu.Unlock()
 			}
 		}(idx, chunk)
