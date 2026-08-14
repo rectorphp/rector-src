@@ -3,9 +3,21 @@
 Run the PHPUnit suite **~4x faster** by splitting test classes across parallel
 workers that each boot PHP **once** and run many classes in a single process.
 
-## Speed — measured on this suite
+## Speed — CI, per platform (GitHub runners, 4 vCPU, full suite)
 
-Full suite: **685 test classes / 5833 fixtures**, 24-core host.
+Serial `vendor/bin/phpunit` vs this runner, measured on the CI run step:
+
+| Platform | Serial | Go runner | Speedup |
+| --- | --- | --- | --- |
+| ubuntu-latest | 31s | **16s** | ~1.9x |
+| windows-latest | **116s** | **67s** | **~1.7x** |
+
+Windows is the slow platform (~3.7x slower than Ubuntu serial); the runner cuts
+~49s off it. Both run the full suite and pass.
+
+## Speed — local (24-core host, full suite)
+
+Full suite: **685 test classes / 5833 fixtures**.
 
 | Mode | Wall time | vs serial |
 | --- | --- | --- |
