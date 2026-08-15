@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Config;
 
+use Rector\Config\RectorConfig;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
@@ -17,6 +18,19 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 
 final class RectorConfigTest extends AbstractLazyTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // these tests assert on root rule registration, which is decided by a
+        // static "first configure() in the process is root" flag; reset it and
+        // the registered-rule lists so the assertions hold whether this class
+        // runs alone or batched into one warm process by a parallel runner
+        RectorConfig::resetRecreated();
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, []);
+        SimpleParameterProvider::setParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, []);
+    }
+
     public function test(): void
     {
         $rectorConfig = $this->getContainer();

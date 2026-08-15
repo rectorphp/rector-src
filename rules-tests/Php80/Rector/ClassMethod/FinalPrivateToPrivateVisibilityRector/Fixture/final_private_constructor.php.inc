@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector\Fixture;
 
-abstract class FinalPrivate
+abstract class FinalPrivateConstructor
 {
     final private function __construct()
     {

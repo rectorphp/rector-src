@@ -59,6 +59,16 @@ final class RectorConfig extends Container
 
     private static ?bool $recreated = null;
 
+    /**
+     * @internal Resets the root-config detection, so tests that assert on root
+     * rule registration behave the same whether run alone or batched into one
+     * warm process by a parallel runner.
+     */
+    public static function resetRecreated(): void
+    {
+        self::$recreated = null;
+    }
+
     public static function configure(): RectorConfigBuilder
     {
         if (self::$recreated === null) {

@@ -11,7 +11,7 @@ final class FixtureFileFinder
 {
     /**
      * @api used in tests
-     * @return Iterator<array<int, string>>
+     * @return Iterator<string, array<int, string>>
      */
     public static function yieldDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
@@ -22,7 +22,9 @@ final class FixtureFileFinder
             ->sortByName();
 
         foreach ($finder as $fileInfo) {
-            yield [$fileInfo->getRealPath()];
+            // key the data set by fixture path, so a failure prints the exact
+            // clickable ".php.inc" file instead of an anonymous "data set #N"
+            yield $fileInfo->getRealPath() => [$fileInfo->getRealPath()];
         }
     }
 }

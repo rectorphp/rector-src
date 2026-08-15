@@ -57,6 +57,7 @@
         "symplify/phpstan-rules": "^14.12",
         "symplify/vendor-patches": "^11.5",
         "tomasvotruba/class-leak": "^2.1",
+        "tomasvotruba/fast-unit": "^0.1",
         "tomasvotruba/type-coverage": "^2.3",
         "tomasvotruba/unused-public": "^2.2",
         "tracy/tracy": "^2.12"
@@ -103,8 +104,10 @@
         "complete-check": [
             "@check-cs",
             "@phpstan",
-            "phpunit"
+            "@test"
         ],
+        "test": "vendor/bin/fastunit tests rules-tests utils/phpstan/tests",
+        "test-tia": "vendor/bin/fastunit -tia tests rules-tests utils/phpstan/tests",
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi --memory-limit=512M",
