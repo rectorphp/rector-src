@@ -1,12 +1,7 @@
 name: Benchmark PHPUnit
 
-<<<<<<< HEAD
-# A/B wall-time benchmark: serial phpunit vs the Go parallel runner.
-# Scheduled only (not on pull requests); runs every 2 hours on ubuntu.
-=======
 # A/B wall-time benchmark: serial phpunit vs the fast-unit parallel runner.
-# Scheduled only (not on pull requests); runs every 2 hours on ubuntu + windows.
->>>>>>> 52991250dc ([CI] Use extracted tomasvotruba/fast-unit package instead of inline Go runner)
+# Scheduled only (not on pull requests); runs every 2 hours on ubuntu.
 # Reminder: cron fires only from the default branch, so this starts running
 # once the file is on `main`.
 on:

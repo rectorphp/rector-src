@@ -12,9 +12,6 @@ composer.lock
 .phpunit.cache
 .fastunit-cache
 
-# fast-unit test impact analysis cache
-/.fastunit-cache
-
 # scoped & downgraded version
 php-scoper.phar
 box.phar
