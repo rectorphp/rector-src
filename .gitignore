@@ -7,9 +7,10 @@ composer.lock
 # VS Code files
 .vscode
 
+# PHPUnit
 .phpunit.result.cache
-# since PHPUnit 10
 .phpunit.cache
+.fastunit-cache
 
 # scoped & downgraded version
 php-scoper.phar
