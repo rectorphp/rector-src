@@ -1,7 +1,12 @@
 name: Benchmark PHPUnit
 
+<<<<<<< HEAD
 # A/B wall-time benchmark: serial phpunit vs the Go parallel runner.
 # Scheduled only (not on pull requests); runs every 2 hours on ubuntu.
+=======
+# A/B wall-time benchmark: serial phpunit vs the fast-unit parallel runner.
+# Scheduled only (not on pull requests); runs every 2 hours on ubuntu + windows.
+>>>>>>> 52991250dc ([CI] Use extracted tomasvotruba/fast-unit package instead of inline Go runner)
 # Reminder: cron fires only from the default branch, so this starts running
 # once the file is on `main`.
 on:
@@ -36,10 +41,6 @@ jobs:
 
             -   uses: "ramsey/composer-install@v4"
 
-            -   uses: actions/setup-go@v5
-                with:
-                    go-version: 'stable'
-
             -   name: Serial phpunit
                 shell: bash
                 run: |
@@ -48,9 +49,9 @@ jobs:
                     vendor/bin/phpunit
                     echo "| ${{ matrix.os }} | ${{ matrix.php-versions }} | serial | $((SECONDS - start))s |" >> "$GITHUB_STEP_SUMMARY"
 
-            -   name: Go parallel runner
+            -   name: fast-unit runner
                 shell: bash
                 run: |
                     start=$SECONDS
-                    go run ./utils-tests-runner/main.go
-                    echo "| ${{ matrix.os }} | ${{ matrix.php-versions }} | go-runner | $((SECONDS - start))s |" >> "$GITHUB_STEP_SUMMARY"
+                    vendor/bin/fastunit
+                    echo "| ${{ matrix.os }} | ${{ matrix.php-versions }} | fast-unit | $((SECONDS - start))s |" >> "$GITHUB_STEP_SUMMARY"

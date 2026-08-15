@@ -57,6 +57,7 @@
         "symplify/phpstan-rules": "^14.12",
         "symplify/vendor-patches": "^11.5",
         "tomasvotruba/class-leak": "^2.1",
+        "tomasvotruba/fast-unit": "^0.1",
         "tomasvotruba/type-coverage": "^2.3",
         "tomasvotruba/unused-public": "^2.2",
         "tracy/tracy": "^2.12"
@@ -64,6 +65,12 @@
     "replace": {
         "rector/rector": "self.version"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/tomasvotruba/fast-unit.git"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Rector\\": [
