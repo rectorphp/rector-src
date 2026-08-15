@@ -1,7 +1,7 @@
 name: Benchmark PHPUnit
 
 # A/B wall-time benchmark: serial phpunit vs the Go parallel runner.
-# Scheduled only (not on pull requests); runs every 2 hours on ubuntu + windows.
+# Scheduled only (not on pull requests); runs every 2 hours on ubuntu.
 # Reminder: cron fires only from the default branch, so this starts running
 # once the file is on `main`.
 on:
@@ -17,7 +17,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest, windows-latest]
+                os: [ubuntu-latest]
                 php-versions: ['8.4', '8.5']
 
         runs-on: ${{ matrix.os }}
