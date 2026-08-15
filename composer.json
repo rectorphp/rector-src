@@ -65,12 +65,6 @@
     "replace": {
         "rector/rector": "self.version"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/tomasvotruba/fast-unit.git"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Rector\\": [
