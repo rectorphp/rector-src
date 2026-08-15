@@ -104,8 +104,9 @@
         "complete-check": [
             "@check-cs",
             "@phpstan",
-            "phpunit"
+            "@test"
         ],
+        "test": "vendor/bin/fastunit tests rules-tests utils/phpstan/tests",
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi --memory-limit=512M",
