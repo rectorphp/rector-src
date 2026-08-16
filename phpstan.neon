@@ -23,6 +23,10 @@ services:
 parameters:
     level: 8
 
+    # getcwd()/dirname()/realpath() always return string, as previously provided by abandoned symplify/phpstan-extensions
+    symplify:
+        pathStrings: true
+
     reportUnmatchedIgnoredErrors: false
 
     errorFormat: symplify
