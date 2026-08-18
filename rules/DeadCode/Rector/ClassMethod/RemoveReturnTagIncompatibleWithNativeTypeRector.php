@@ -192,6 +192,7 @@ CODE_SAMPLE
         ): ?int {
             if ($astNode instanceof IdentifierTypeNode && isset($typeAliases[$astNode->name])) {
                 $hasTypeAliasName = true;
+                return PhpDocNodeTraverser::STOP_TRAVERSAL;
             }
 
             return null;
