@@ -21,7 +21,7 @@ final class RectorClassFinder
         $robotLoader->acceptFiles = ['*Rector.php'];
         $robotLoader->addDirectory(...$dirs);
 
-        $robotLoader->setTempDirectory(sys_get_temp_dir() . '/rector-rules');
+        $robotLoader->setCacheDirectory(sys_get_temp_dir() . '/rector-rules');
         $robotLoader->refresh();
 
         /** @var array<class-string> $rectorClasses */
