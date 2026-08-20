@@ -7,8 +7,10 @@ namespace Rector\Tests\VersionBonding;
 use PHPUnit\Framework\TestCase;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Tests\VersionBonding\Fixture\ComposerPackageConstraintRector;
+use Rector\Tests\VersionBonding\Fixture\ComposerPackageConstraintsRector;
 use Rector\Tests\VersionBonding\Fixture\NoInterfaceRector;
 use Rector\VersionBonding\ComposerPackageConstraintFilter;
+use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
 
 final class ComposerPackageConstraintFilterTest extends TestCase
 {
@@ -68,6 +70,40 @@ final class ComposerPackageConstraintFilterTest extends TestCase
     {
         $composerPackageConstraintRector = new ComposerPackageConstraintRector('nikic/php-parser', '<1.0.0');
         $filtered = $this->composerPackageConstraintFilter->filter([$composerPackageConstraintRector]);
+
+        $this->assertCount(0, $filtered);
+    }
+
+    public function testRectorWithAllConstraintsSatisfiedIsIncluded(): void
+    {
+        $composerPackageConstraintsRector = new ComposerPackageConstraintsRector(
+            new ComposerPackageConstraint('nikic/php-parser', '>=4.0.0'),
+            new ComposerPackageConstraint('phpstan/phpstan', '>=1.0.0'),
+        );
+        $filtered = $this->composerPackageConstraintFilter->filter([$composerPackageConstraintsRector]);
+
+        $this->assertCount(1, $filtered);
+        $this->assertSame($composerPackageConstraintsRector, $filtered[0]);
+    }
+
+    public function testRectorWithOneUnsatisfiedConstraintIsExcluded(): void
+    {
+        $composerPackageConstraintsRector = new ComposerPackageConstraintsRector(
+            new ComposerPackageConstraint('nikic/php-parser', '>=4.0.0'),
+            new ComposerPackageConstraint('nikic/php-parser', '>=999.0.0'),
+        );
+        $filtered = $this->composerPackageConstraintFilter->filter([$composerPackageConstraintsRector]);
+
+        $this->assertCount(0, $filtered);
+    }
+
+    public function testRectorWithOneMissingPackageIsExcluded(): void
+    {
+        $composerPackageConstraintsRector = new ComposerPackageConstraintsRector(
+            new ComposerPackageConstraint('nikic/php-parser', '>=4.0.0'),
+            new ComposerPackageConstraint('non-existent/package', '>=1.0.0'),
+        );
+        $filtered = $this->composerPackageConstraintFilter->filter([$composerPackageConstraintsRector]);
 
         $this->assertCount(0, $filtered);
     }

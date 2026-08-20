@@ -103,19 +103,25 @@ final class ComposerBasedCommand extends Command
             }
 
             $composerPackageConstraint = $rector->provideComposerPackageConstraint();
-            $packageName = $composerPackageConstraint->getPackageName();
-            $constraint = $composerPackageConstraint->getConstraint();
+            $composerPackageConstraints = is_array($composerPackageConstraint)
+                ? $composerPackageConstraint
+                : [$composerPackageConstraint];
 
-            $installedVersion = $this->installedPackageResolver->resolvePackageVersion($packageName);
-            $isActive = $installedVersion !== null && Semver::satisfies($installedVersion, $constraint);
+            foreach ($composerPackageConstraints as $composerPackageConstraint) {
+                $packageName = $composerPackageConstraint->getPackageName();
+                $constraint = $composerPackageConstraint->getConstraint();
 
-            $tableRows[] = [
-                $this->printShortClassName($rector::class),
-                $packageName,
-                $constraint,
-                $installedVersion ?? '-',
-                $isActive ? 'yes' : 'no',
-            ];
+                $installedVersion = $this->installedPackageResolver->resolvePackageVersion($packageName);
+                $isActive = $installedVersion !== null && Semver::satisfies($installedVersion, $constraint);
+
+                $tableRows[] = [
+                    $this->printShortClassName($rector::class),
+                    $packageName,
+                    $constraint,
+                    $installedVersion ?? '-',
+                    $isActive ? 'yes' : 'no',
+                ];
+            }
         }
 
         // sort by package name first, then by rule class
