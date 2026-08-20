@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\NodeManipulator\ClassMethodManipulator;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\CallTypesResolver;
@@ -29,7 +30,8 @@ final class ClassMethodArrayDocblockParamFromLocalCallsRector extends AbstractRe
         private readonly CallTypesResolver $callTypesResolver,
         private readonly LocalMethodCallFinder $localMethodCallFinder,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
+        private readonly ClassMethodManipulator $classMethodManipulator
     ) {
     }
 
@@ -86,6 +88,11 @@ CODE_SAMPLE
 
         foreach ($node->getMethods() as $classMethod) {
             if ($classMethod->getParams() === []) {
+                continue;
+            }
+
+            // parent/interface method may declare a wider @param contract; local calls are narrower, so skip to keep LSP
+            if ($this->classMethodManipulator->hasParentMethodOrInterfaceMethod($node, $this->getName($classMethod))) {
                 continue;
             }
 
