@@ -84,12 +84,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|array|int
     {
-        /**
-         * $this->phpVersionProvider->provide() fallback is here as $currentFileProvider must be accessed after initialization
-         */
-        if ($this->phpVersion === null) {
-            $this->phpVersion = $this->phpVersionProvider->provide();
-        }
+        $this->phpVersion ??= $this->phpVersionProvider->provide();
 
         if (! $node->cond instanceof BinaryOp) {
             return null;

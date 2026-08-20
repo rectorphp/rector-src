@@ -100,9 +100,7 @@ final class ProcessResult
 
         foreach ($this->fileDiffs as $fileDiff) {
             foreach ($fileDiff->getRectorClasses() as $rectorClass) {
-                if (! isset($ruleCounts[$rectorClass])) {
-                    $ruleCounts[$rectorClass] = 0;
-                }
+                $ruleCounts[$rectorClass] ??= 0;
 
                 ++$ruleCounts[$rectorClass];
             }

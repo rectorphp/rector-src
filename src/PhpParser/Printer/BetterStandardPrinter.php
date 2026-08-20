@@ -90,9 +90,7 @@ final class BetterStandardPrinter extends Standard
     public function print(Node|array|null $node): string
     {
 
-        if ($node === null) {
-            $node = [];
-        }
+        $node ??= [];
 
         if (! is_array($node)) {
             $node = [$node];

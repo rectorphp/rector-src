@@ -256,9 +256,7 @@ final class PhpDocInfoPrinter
             ->getPhpDocNode()
             ->getAttribute(PhpDocAttributeKey::LAST_PHP_DOC_TOKEN_POSITION);
 
-        if ($lastTokenPosition === null) {
-            $lastTokenPosition = $this->currentTokenPosition;
-        }
+        $lastTokenPosition ??= $this->currentTokenPosition;
 
         if ($lastTokenPosition === 0) {
             return $output . "\n */";
