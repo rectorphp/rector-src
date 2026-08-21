@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\Php73\Rector\BooleanOr\IsCountableRector;
 use Rector\Php73\Rector\ConstFetch\SensitiveConstantNameRector;
 use Rector\Php73\Rector\FuncCall\ArrayKeyFirstLastRector;
+use Rector\Php73\Rector\FuncCall\ArrayKeysToArrayKeyFirstLastRector;
 use Rector\Php73\Rector\FuncCall\RegexDashEscapeRector;
 use Rector\Php73\Rector\FuncCall\SensitiveDefineRector;
 use Rector\Php73\Rector\FuncCall\SetCookieRector;
@@ -40,6 +41,7 @@ return static function (RectorConfig $rectorConfig): void {
         IsCountableRector::class,
 
         ArrayKeyFirstLastRector::class,
+        ArrayKeysToArrayKeyFirstLastRector::class,
 
         SensitiveDefineRector::class,
 
