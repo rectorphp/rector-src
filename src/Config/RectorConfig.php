@@ -55,6 +55,9 @@ final class RectorConfig extends Container
      */
     private array $autotagInterfaces = [Command::class, ResettableInterface::class];
 
+    /**
+     * Optional override, e.g. injected by a test to read the versions from a standalone "composer.json"
+     */
     private ?InstalledPackageResolver $installedPackageResolver = null;
 
     private static ?bool $recreated = null;
@@ -570,7 +573,14 @@ final class RectorConfig extends Container
 
     private function resolveInstalledPackageVersion(string $packageName): ?string
     {
-        $this->installedPackageResolver ??= new InstalledPackageResolver();
+        // an explicitly injected resolver wins, e.g. a test pointing at a standalone "composer.json"
+        if (! $this->installedPackageResolver instanceof InstalledPackageResolver) {
+            // otherwise reuse the container-bound resolver, so a test-provided "composer.json" (via
+            // AbstractRectorTestCase::provideComposerJsonFilePath()) drives the version, not the project root
+            $this->installedPackageResolver = $this->bound(InstalledPackageResolver::class)
+                ? $this->make(InstalledPackageResolver::class)
+                : new InstalledPackageResolver();
+        }
 
         return $this->installedPackageResolver->resolvePackageVersion($packageName);
     }
