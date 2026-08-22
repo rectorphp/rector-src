@@ -20,6 +20,11 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
     {
         parent::setUp();
 
+        // reset the container to boot an isolated cache dir, so parallel test processes cannot
+        // wipe the shared default cache mid-run and flip the caching assertions below
+        self::$rectorConfig = null;
+        $this->bootFromConfigFiles([__DIR__ . '/config.php']);
+
         $this->applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
         $this->changedFilesDetector = $this->make(ChangedFilesDetector::class);
     }
