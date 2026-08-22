@@ -8,7 +8,7 @@ use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Rector\Transform\Rector\Class_\AddInterfaceByTraitRector;
+use Rector\Tests\Configuration\Source\DeprecatedRectorStub;
 use Rector\ValueObject\Configuration;
 
 final class ConfigurationRuleFilterTest extends AbstractLazyTestCase
@@ -53,12 +53,12 @@ final class ConfigurationRuleFilterTest extends AbstractLazyTestCase
     public function testFiltersOutDeprecatedRules(): void
     {
         $removeDeadInstanceOfRector = $this->make(RemoveDeadInstanceOfRector::class);
-        $addInterfaceByTraitRector = $this->make(AddInterfaceByTraitRector::class);
+        $deprecatedRectorStub = $this->make(DeprecatedRectorStub::class);
 
         $this->configurationRuleFilter->setConfiguration($this->createConfiguration(false));
 
         $filteredRectors = $this->configurationRuleFilter->filter(
-            [$removeDeadInstanceOfRector, $addInterfaceByTraitRector]
+            [$removeDeadInstanceOfRector, $deprecatedRectorStub]
         );
 
         $this->assertSame([$removeDeadInstanceOfRector], $filteredRectors);
