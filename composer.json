@@ -18,7 +18,7 @@
         "composer/semver": "^3.4",
         "composer/xdebug-handler": "^3.0.5",
         "doctrine/inflector": "^2.1",
-        "illuminate/container": "12.39.*",
+        "entropy/entropy": "^0.4.6",
         "nette/utils": "^4.1.4",
         "nikic/php-parser": "^5.8",
         "ondram/ci-detector": "^4.2",
@@ -116,11 +116,7 @@
         "release": "vendor/bin/rng --from-commit X --to-commit Y --remote-repository rectorphp/rector-symfony --remote-repository rectorphp/rector-doctrine --remote-repository rectorphp/rector-phpunit"
     },
     "extra": {
-        "patches": {
-            "illuminate/container": [
-                "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/illuminate-container-container-php.patch"
-            ]
-        },
+        "patches": {},
         "composer-exit-on-patch-failure": true,
         "enable-patching": true
     },

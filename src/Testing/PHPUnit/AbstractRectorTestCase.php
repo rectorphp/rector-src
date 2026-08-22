@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Testing\PHPUnit;
 
-use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
@@ -94,7 +93,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
                 ->changeComposerJsonFilePath($this->provideComposerJsonFilePath());
 
             // reset
-            /** @var RewindableGenerator<int, ResettableInterface> $resettables */
             $resettables = $rectorConfig->tagged(ResettableInterface::class);
 
             foreach ($resettables as $resettable) {
@@ -110,11 +108,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
             $this->bootFromConfigFiles([$configFile]);
 
-            $rectorsGenerator = $rectorConfig->tagged(RectorInterface::class);
-            $rectors = $rectorsGenerator instanceof RewindableGenerator
-                ? iterator_to_array($rectorsGenerator->getIterator())
-                // no rules at all, e.g. in case of only post rector run
-                : [];
+            // no rules at all, e.g. in case of only post rector run, yields an empty array
+            $rectors = $rectorConfig->tagged(RectorInterface::class);
 
             /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);

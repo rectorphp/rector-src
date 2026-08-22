@@ -13,7 +13,7 @@ use Rector\ValueObject\PhpVersionFeature;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->autotagInterface(AttributeDecoratorInterface::class);
     $rectorConfig->singleton(ValidateAttributeDecorator::class);
-    $rectorConfig->when(AttributeDecorator::class)->needs('$decorators')->giveTagged(
+    $rectorConfig->when(AttributeDecorator::class)->needs()->giveTagged(
         AttributeDecoratorInterface::class
     );
 

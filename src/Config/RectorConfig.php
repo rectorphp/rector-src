@@ -6,7 +6,7 @@ namespace Rector\Config;
 
 use Composer\Semver\Semver;
 use Deprecated;
-use Illuminate\Container\Container;
+use Entropy\Container\Container;
 use Override;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Composer\InstalledPackageResolver;
@@ -17,8 +17,10 @@ use Rector\Contract\DependencyInjection\RelatedConfigInterface;
 use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\DependencyInjection\Contextual\ContextualBindingBuilder;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Enum\Config\Defaults;
+use Rector\Exception\DependencyInjection\ServiceCreationFailedException;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
@@ -27,6 +29,8 @@ use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PolyfillPackage;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
 use Symfony\Component\Console\Command\Command;
+use Throwable;
+use WeakMap;
 use Webmozart\Assert\Assert;
 
 /**
@@ -60,7 +64,61 @@ final class RectorConfig extends Container
      */
     private ?InstalledPackageResolver $installedPackageResolver = null;
 
+    /**
+     * Explicitly registered service ids, used for bound() and to warm findByContract() lazily.
+     *
+     * @var array<class-string, true>
+     */
+    private array $boundAbstracts = [];
+
+    /**
+     * Service ids that got a factory closure registered on the entropy container.
+     *
+     * @var array<class-string, true>
+     */
+    private array $factoryBound = [];
+
+    /**
+     * @var array<class-string, class-string> alias id => concrete service id
+     */
+    private array $aliases = [];
+
+    /**
+     * Post-resolution setter-injection callbacks, keyed by the type they apply to.
+     *
+     * @var array<class-string, list<callable(object, self): void>>
+     */
+    private array $afterResolvingCallbacks = [];
+
+    /**
+     * Objects resolved during the current top-level make() that still wait for their
+     * afterResolving callbacks. Draining is deferred to the outermost make() so that
+     * aggregate cycles (a service and the collection it belongs to) resolve without a loop.
+     *
+     * @var list<object>
+     */
+    private array $pendingAfterResolving = [];
+
+    /**
+     * Objects whose afterResolving callbacks already ran. Keyed by the object itself via WeakMap,
+     * so a re-created service is treated as fresh and spl_object_id reuse cannot skip its callbacks.
+     *
+     * @var WeakMap<object, true>
+     */
+    private WeakMap $weakMap;
+
+    private int $resolutionDepth = 0;
+
+    private bool $isDraining = false;
+
     private static ?bool $recreated = null;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->weakMap = new WeakMap();
+    }
 
     /**
      * @internal Resets the root-config detection, so tests that assert on root
@@ -513,12 +571,26 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param string $abstract
+     * Register a shared service. Without a $concrete factory the entropy container autowires the
+     * class on demand via reflection; findByContract() warms it lazily thanks to boundAbstracts.
+     *
+     * @param class-string $abstract
+     * @param (callable(self): object)|null $concrete
      */
-    #[Override]
-    public function singleton($abstract, mixed $concrete = null): void
+    public function singleton(string $abstract, ?callable $concrete = null): void
     {
-        parent::singleton($abstract, $concrete);
+        $isNew = ! isset($this->boundAbstracts[$abstract]);
+        $this->boundAbstracts[$abstract] = true;
+
+        if ($concrete !== null && ! isset($this->factoryBound[$abstract])) {
+            $this->factoryBound[$abstract] = true;
+            // entropy calls the factory with the container instance, which is always this RectorConfig
+            parent::service($abstract, fn (): object => $concrete($this));
+        }
+
+        if (! $isNew) {
+            return;
+        }
 
         foreach ($this->autotagInterfaces as $autotagInterface) {
             if (! is_a($abstract, $autotagInterface, true)) {
@@ -526,6 +598,206 @@ final class RectorConfig extends Container
             }
 
             $this->tag($abstract, $autotagInterface);
+        }
+    }
+
+    /**
+     * Mark a class as discoverable through findByContract()/tagged(). Entropy resolves collections by
+     * interface at query time, so the tag itself is implicit - we only have to keep the class known.
+     *
+     * @param class-string $abstract
+     * @param class-string $tag
+     */
+    public function tag(string $abstract, string $tag): void
+    {
+        $this->boundAbstracts[$abstract] = true;
+    }
+
+    /**
+     * @template TObject of object
+     * @param class-string<TObject> $class
+     * @return TObject
+     */
+    #[Override]
+    public function make(string $class): object
+    {
+        $class = $this->resolveAlias($class);
+
+        ++$this->resolutionDepth;
+
+        try {
+            try {
+                $object = parent::make($class);
+            } catch (ServiceCreationFailedException $serviceCreationFailedException) {
+                // a deeper make() already named the failing service, keep it as-is
+                throw $serviceCreationFailedException;
+            } catch (Throwable $throwable) {
+                // name the service that failed to build, keep the root cause as previous
+                throw new ServiceCreationFailedException($class, 0, $throwable);
+            }
+
+            if (! isset($this->weakMap[$object]) && $this->hasAfterResolvingFor($object)) {
+                $this->weakMap[$object] = true;
+                $this->pendingAfterResolving[] = $object;
+            }
+
+            /** @var TObject $object */
+            return $object;
+        } finally {
+            --$this->resolutionDepth;
+
+            if ($this->resolutionDepth === 0 && ! $this->isDraining) {
+                $this->drainAfterResolving();
+            }
+        }
+    }
+
+    /**
+     * PSR-11 style accessor, kept for call sites that read services eagerly.
+     *
+     * @template TObject of object
+     * @param class-string<TObject> $id
+     * @return TObject
+     */
+    public function get(string $id): object
+    {
+        return $this->make($id);
+    }
+
+    /**
+     * @template TObject of object
+     * @param class-string<TObject> $contractClass
+     * @return list<TObject>
+     */
+    #[Override]
+    public function findByContract(string $contractClass): array
+    {
+        // warm explicitly registered services so entropy can filter them by contract
+        foreach (array_keys($this->boundAbstracts) as $abstract) {
+            if (! is_a($abstract, $contractClass, true)) {
+                continue;
+            }
+
+            $this->make($abstract);
+        }
+
+        // entropy keys results by class-string; consumers (and variadic spreads such as
+        // new NodeTraverser(...$visitors)) expect a plain 0-indexed list, like the former giveTagged()
+        return array_values(parent::findByContract($contractClass));
+    }
+
+    /**
+     * Illuminate-compatible tagged() accessor, now backed by entropy findByContract().
+     *
+     * @template TObject of object
+     * @param class-string<TObject> $tag
+     * @return list<TObject>
+     */
+    public function tagged(string $tag): array
+    {
+        return $this->findByContract($tag);
+    }
+
+    /**
+     * @template TObject of object
+     * @param class-string<TObject> $abstract
+     * @param callable(TObject, self): void $callback
+     */
+    public function afterResolving(string $abstract, callable $callback): void
+    {
+        // wrap in a widening closure so the heterogeneous store stays type-safe; the guard
+        // narrows the resolved object back to TObject before handing it to the typed callback
+        $this->afterResolvingCallbacks[$abstract][] = function (object $object, self $container) use (
+            $callback,
+            $abstract
+        ): void {
+            if ($object instanceof $abstract) {
+                $callback($object, $container);
+            }
+        };
+    }
+
+    /**
+     * @param class-string $abstract
+     * @param class-string $alias
+     */
+    public function alias(string $abstract, string $alias): void
+    {
+        $this->aliases[$alias] = $abstract;
+    }
+
+    /**
+     * @param class-string $abstract
+     */
+    public function bound(string $abstract): bool
+    {
+        return isset($this->boundAbstracts[$abstract]);
+    }
+
+    /**
+     * Backwards-compatible contextual-binding entrypoint. Collections are now injected automatically
+     * from the constructor "@param Interface[] $name" docblock, so the returned builder is a no-op.
+     *
+     * @param class-string $concrete
+     */
+    public function when(string $concrete): ContextualBindingBuilder
+    {
+        return new ContextualBindingBuilder();
+    }
+
+    /**
+     * @internal Remove a service from the container and from the local bookkeeping.
+     * @param class-string $abstract
+     */
+    public function forgetAbstract(string $abstract): void
+    {
+        unset(
+            $this->boundAbstracts[$abstract],
+            $this->factoryBound[$abstract],
+            $this->registeredRectorClasses[$abstract],
+        );
+    }
+
+    /**
+     * @param class-string $class
+     * @return class-string
+     */
+    private function resolveAlias(string $class): string
+    {
+        $seen = [];
+        while (isset($this->aliases[$class]) && ! isset($seen[$class])) {
+            $seen[$class] = true;
+            $class = $this->aliases[$class];
+        }
+
+        return $class;
+    }
+
+    private function hasAfterResolvingFor(object $object): bool
+    {
+        return array_any(array_keys($this->afterResolvingCallbacks), fn (string $registeredClass): bool => $object instanceof $registeredClass);
+    }
+
+    private function drainAfterResolving(): void
+    {
+        $this->isDraining = true;
+
+        try {
+            while ($this->pendingAfterResolving !== []) {
+                $object = array_shift($this->pendingAfterResolving);
+
+                foreach ($this->afterResolvingCallbacks as $registeredClass => $callbacks) {
+                    if (! $object instanceof $registeredClass) {
+                        continue;
+                    }
+
+                    foreach ($callbacks as $callback) {
+                        $callback($object, $this);
+                    }
+                }
+            }
+        } finally {
+            $this->isDraining = false;
         }
     }
 
@@ -559,7 +831,7 @@ final class RectorConfig extends Container
      */
     public function getMainRectorClasses(): array
     {
-        return $this->tags[RectorInterface::class] ?? [];
+        return array_keys($this->registeredRectorClasses);
     }
 
     /**
