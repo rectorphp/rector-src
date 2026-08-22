@@ -58,7 +58,7 @@ final class RectorConfig extends Container
     private ?InstalledPackageResolver $installedPackageResolver = null;
 
     /**
-     * Explicitly registered service ids, used for bound() and to warm findByContract() lazily.
+     * Explicitly registered service ids, used for bound() and to drive forgetting on skip()/reset.
      *
      * @var array<class-string, true>
      */
@@ -554,8 +554,8 @@ final class RectorConfig extends Container
 
     /**
      * Register a shared service. Without a $concrete factory the entropy container autowires the
-     * class on demand via reflection; findByContract() discovers it by the interfaces it implements,
-     * so no explicit tagging is needed.
+     * class on demand via reflection; register() makes it discoverable by the interfaces it
+     * implements, so findByContract() can find it without any explicit tagging.
      *
      * @param class-string $abstract
      * @param (callable(self): object)|null $concrete
@@ -564,7 +564,13 @@ final class RectorConfig extends Container
     {
         $this->boundAbstracts[$abstract] = true;
 
-        if ($concrete !== null && ! isset($this->factoryBound[$abstract])) {
+        if ($concrete === null) {
+            // no factory: let the entropy container discover it by contract
+            $this->register($abstract);
+            return;
+        }
+
+        if (! isset($this->factoryBound[$abstract])) {
             $this->factoryBound[$abstract] = true;
             // entropy calls the factory with the container instance, which is always this RectorConfig
             parent::service($abstract, fn (): object => $concrete($this));
@@ -620,28 +626,6 @@ final class RectorConfig extends Container
     public function get(string $id): object
     {
         return $this->make($id);
-    }
-
-    /**
-     * @template TObject of object
-     * @param class-string<TObject> $contractClass
-     * @return list<TObject>
-     */
-    #[Override]
-    public function findByContract(string $contractClass): array
-    {
-        // warm explicitly registered services so entropy can filter them by contract
-        foreach (array_keys($this->boundAbstracts) as $abstract) {
-            if (! is_a($abstract, $contractClass, true)) {
-                continue;
-            }
-
-            $this->make($abstract);
-        }
-
-        // entropy keys results by class-string; consumers (and variadic spreads such as
-        // new NodeTraverser(...$visitors)) expect a plain 0-indexed list
-        return array_values(parent::findByContract($contractClass));
     }
 
     /**

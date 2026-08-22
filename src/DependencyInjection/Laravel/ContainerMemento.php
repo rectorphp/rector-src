@@ -27,10 +27,10 @@ final class ContainerMemento
     }
 
     /**
-     * Removes every registered factory and cached instance whose class is-a $contract, both from the
-     * entropy container private storage and from the RectorConfig bookkeeping, so findByContract()
-     * cannot resurrect them via reflection autowiring. "boundAbstracts" is included because
-     * findByContract() warms it too, so a class left only there would come back on the next lookup.
+     * Removes every registered factory, discovery registration and cached instance whose class is-a
+     * $contract, both from the entropy container private storage and from the RectorConfig bookkeeping,
+     * so findByContract() cannot resurrect them via reflection autowiring. entropy warms
+     * "registeredClasses" during discovery, so a class left only there would come back on the next lookup.
      */
     private static function forgetByContract(RectorConfig $rectorConfig, string $contract): void
     {
@@ -38,7 +38,7 @@ final class ContainerMemento
 
         $forgottenClasses = [];
 
-        foreach (['serviceFactories', 'instances', 'boundAbstracts'] as $propertyName) {
+        foreach (['serviceFactories', 'instances', 'registeredClasses', 'boundAbstracts'] as $propertyName) {
             $privatesAccessor->propertyClosure(
                 $rectorConfig,
                 $propertyName,
