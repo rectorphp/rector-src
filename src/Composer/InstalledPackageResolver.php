@@ -137,12 +137,16 @@ final class InstalledPackageResolver
     /**
      * A library declares a compatibility range in its "composer.json"; the version-specific rules must target the
      * lowest declared version, not the one that happens to be installed locally.
+     *
+     * Anything but an application counts as a library: a missing "type" or an explicit "project" is an application,
+     * every other declared type ("library", "symfony-bundle", ...) is a distributed package.
      */
     private function isLibrary(): bool
     {
         $projectComposerJson = $this->loadProjectComposerJson();
+        $type = $projectComposerJson['type'] ?? null;
 
-        return ($projectComposerJson['type'] ?? null) === 'library';
+        return is_string($type) && $type !== 'project';
     }
 
     /**

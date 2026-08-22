@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Composer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Composer\ValueObject\InstalledPackage;
@@ -47,11 +48,10 @@ final class InstalledPackageResolverTest extends TestCase
         $this->assertSame('1.11.0.0', $installedPackageResolver->resolvePackageVersion('webmozart/assert'));
     }
 
-    public function testLibraryTargetsLowestDeclaredVersionEvenWhenInstalledSatisfies(): void
+    #[DataProvider('provideLibraryTypeFixtureDirectory')]
+    public function testLibraryTargetsLowestDeclaredVersionEvenWhenInstalledSatisfies(string $fixtureDirectory): void
     {
-        $installedPackageResolver = new InstalledPackageResolver(
-            __DIR__ . '/Fixture/InstalledPackageResolver/library_composer_json'
-        );
+        $installedPackageResolver = new InstalledPackageResolver($fixtureDirectory);
 
         // installed 12.1.0 satisfies "^10.5 || ^11.0 || ^12.0", yet a library targets the lowest declared version
         $this->assertSame('10.5.0.0', $installedPackageResolver->resolvePackageVersion('phpunit/phpunit'));
@@ -64,6 +64,31 @@ final class InstalledPackageResolverTest extends TestCase
 
         // not required in the "composer.json", the installed version stands
         $this->assertSame('1.11.0.0', $installedPackageResolver->resolvePackageVersion('webmozart/assert'));
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function provideLibraryTypeFixtureDirectory(): iterable
+    {
+        // "library" is the default distributed type
+        yield 'library' => [__DIR__ . '/Fixture/InstalledPackageResolver/library_composer_json'];
+
+        // any other non-"project" distributed type behaves the same way
+        yield 'symfony-bundle' => [__DIR__ . '/Fixture/InstalledPackageResolver/symfony_bundle_composer_json'];
+    }
+
+    public function testProjectTypeKeepsInstalledVersionOverDeclaredRange(): void
+    {
+        $installedPackageResolver = new InstalledPackageResolver(
+            __DIR__ . '/Fixture/InstalledPackageResolver/project_composer_json'
+        );
+
+        // an explicit "project" is an application, so the installed version stands even within a wider range
+        $this->assertSame('12.1.0.0', $installedPackageResolver->resolvePackageVersion('phpunit/phpunit'));
+
+        // installed 7.2.0 satisfies "^7.0", kept as installed
+        $this->assertSame('7.2.0.0', $installedPackageResolver->resolvePackageVersion('symfony/console'));
     }
 
     public function testStandaloneComposerJsonResolvesVersionsWithoutVendor(): void

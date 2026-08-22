@@ -1,0 +1,24 @@
+{
+    "packages": [
+        {
+            "name": "phpunit/phpunit",
+            "version": "12.1.0",
+            "version_normalized": "12.1.0.0"
+        },
+        {
+            "name": "symfony/console",
+            "version": "v7.2.0",
+            "version_normalized": "7.2.0.0"
+        },
+        {
+            "name": "nette/utils",
+            "version": "v3.2.0",
+            "version_normalized": "3.2.0.0"
+        },
+        {
+            "name": "webmozart/assert",
+            "version": "1.11.0",
+            "version_normalized": "1.11.0.0"
+        }
+    ]
+}
