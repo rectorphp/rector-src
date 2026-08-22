@@ -19,11 +19,4 @@ final class ContextualBindingBuilder
     {
         return $this;
     }
-
-    /**
-     * @param class-string $tag
-     */
-    public function giveTagged(string $tag): void
-    {
-    }
 }
