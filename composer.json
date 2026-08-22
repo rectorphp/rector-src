@@ -18,7 +18,7 @@
         "composer/semver": "^3.4",
         "composer/xdebug-handler": "^3.0.5",
         "doctrine/inflector": "^2.1",
-        "illuminate/container": "12.39.*",
+        "entropy/entropy": "^0.4.8",
         "nette/utils": "^4.1.4",
         "nikic/php-parser": "^5.8",
         "ondram/ci-detector": "^4.2",
@@ -55,7 +55,6 @@
         "symplify/easy-coding-standard": "^13.2.13",
         "symplify/phpstan-extensions": "^12.0.2",
         "symplify/phpstan-rules": "^14.12",
-        "symplify/vendor-patches": "^11.5",
         "tomasvotruba/class-leak": "^2.1",
         "tomasvotruba/fast-unit": "^0.1",
         "tomasvotruba/type-coverage": "^2.3",
@@ -115,22 +114,12 @@
         "preload": "php build/build-preload.php .",
         "release": "vendor/bin/rng --from-commit X --to-commit Y --remote-repository rectorphp/rector-symfony --remote-repository rectorphp/rector-doctrine --remote-repository rectorphp/rector-phpunit"
     },
-    "extra": {
-        "patches": {
-            "illuminate/container": [
-                "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/illuminate-container-container-php.patch"
-            ]
-        },
-        "composer-exit-on-patch-failure": true,
-        "enable-patching": true
-    },
     "config": {
         "sort-packages": true,
         "platform-check": false,
         "allow-plugins": {
             "phpstan/extension-installer": true,
-            "rector/extension-installer": true,
-            "cweagans/composer-patches": true
+            "rector/extension-installer": true
         }
     },
     "minimum-stability": "dev",

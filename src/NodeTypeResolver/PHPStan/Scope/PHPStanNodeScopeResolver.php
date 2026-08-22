@@ -126,7 +126,7 @@ final readonly class PHPStanNodeScopeResolver
     public function __construct(
         private NodeScopeResolver $nodeScopeResolver,
         private ReflectionProvider $reflectionProvider,
-        iterable $decoratingNodeVisitors,
+        array $decoratingNodeVisitors,
         private ScopeFactory $scopeFactory,
         private PrivatesAccessor $privatesAccessor,
         private NodeNameResolver $nodeNameResolver,
