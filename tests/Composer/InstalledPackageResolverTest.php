@@ -47,6 +47,25 @@ final class InstalledPackageResolverTest extends TestCase
         $this->assertSame('1.11.0.0', $installedPackageResolver->resolvePackageVersion('webmozart/assert'));
     }
 
+    public function testLibraryTargetsLowestDeclaredVersionEvenWhenInstalledSatisfies(): void
+    {
+        $installedPackageResolver = new InstalledPackageResolver(
+            __DIR__ . '/Fixture/InstalledPackageResolver/library_composer_json'
+        );
+
+        // installed 12.1.0 satisfies "^10.5 || ^11.0 || ^12.0", yet a library targets the lowest declared version
+        $this->assertSame('10.5.0.0', $installedPackageResolver->resolvePackageVersion('phpunit/phpunit'));
+
+        // installed 7.2.0 satisfies "^7.0", still lowered to the declared floor
+        $this->assertSame('7.0.0.0', $installedPackageResolver->resolvePackageVersion('symfony/console'));
+
+        // require-dev is respected as well
+        $this->assertSame('3.2.0.0', $installedPackageResolver->resolvePackageVersion('nette/utils'));
+
+        // not required in the "composer.json", the installed version stands
+        $this->assertSame('1.11.0.0', $installedPackageResolver->resolvePackageVersion('webmozart/assert'));
+    }
+
     public function testStandaloneComposerJsonResolvesVersionsWithoutVendor(): void
     {
         $installedPackageResolver = new InstalledPackageResolver(
