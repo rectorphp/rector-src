@@ -6,7 +6,6 @@ namespace Rector\Caching\ValueObject\Storage;
 
 use FilesystemIterator;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Random;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Caching\ValueObject\CacheFilePaths;
 use Rector\Caching\ValueObject\CacheItem;
@@ -55,7 +54,6 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
         $filePath = $cacheFilePaths->getFilePath();
 
-        $tmpPath = \sprintf('%s/%s.tmp', $this->directory, Random::generate());
         $errorBefore = \error_get_last();
         $exported = @\var_export(new CacheItem($variableKey, $data), true);
         $errorAfter = \error_get_last();
@@ -68,18 +66,12 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             ));
         }
 
-        // for performance reasons we don't use SmartFileSystem
-        FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported), null);
-        $copySuccess = @\copy($tmpPath, $filePath);
-        @\unlink($tmpPath);
-
-        if ($copySuccess) {
-            return;
-        }
-
-        if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($filePath)) {
-            throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
-        }
+        // Filesystem::dumpFile() writes atomically via a temporary file + rename,
+        // so no manual temp-file handling is needed on the Rector side
+        $this->filesystem->dumpFile(
+            $filePath,
+            \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported)
+        );
     }
 
     public function clean(string $key): void
