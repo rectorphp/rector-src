@@ -16,10 +16,10 @@ use Rector\Configuration\RectorConfigBuilder;
 use Rector\Contract\DependencyInjection\RelatedConfigInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Enum\Config\Defaults;
 use Rector\Exception\DependencyInjection\ServiceCreationFailedException;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Rector\AbstractRector;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\Configuration\LevelOverflow;
@@ -70,11 +70,6 @@ final class RectorConfig extends Container
      * @var array<class-string, true>
      */
     private array $factoryBound = [];
-
-    /**
-     * @var array<class-string, class-string> alias id => concrete service id
-     */
-    private array $aliases = [];
 
     /**
      * Post-resolution setter-injection callbacks, keyed by the type they apply to.
@@ -548,7 +543,7 @@ final class RectorConfig extends Container
             }
 
             // completely forget the Rector rule only when no path specified
-            ContainerMemento::forgetService($this, $skippedClass);
+            $this->forgetByContract($skippedClass);
         }
     }
 
@@ -585,8 +580,6 @@ final class RectorConfig extends Container
     #[Override]
     public function make(string $class): object
     {
-        $class = $this->resolveAlias($class);
-
         ++$this->resolutionDepth;
 
         try {
@@ -649,15 +642,6 @@ final class RectorConfig extends Container
 
     /**
      * @param class-string $abstract
-     * @param class-string $alias
-     */
-    public function alias(string $abstract, string $alias): void
-    {
-        $this->aliases[$alias] = $abstract;
-    }
-
-    /**
-     * @param class-string $abstract
      */
     public function bound(string $abstract): bool
     {
@@ -665,31 +649,40 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @internal Remove a service from the container and from the local bookkeeping.
-     * @param class-string $abstract
+     * Forget every service of the contract, both from the entropy container and from the local
+     * bookkeeping, so a skipped or reset service is not seen as bound and cannot be resurrected
+     * through discovery.
+     *
+     * @param class-string $contract
      */
-    public function forgetAbstract(string $abstract): void
+    #[Override]
+    public function forgetByContract(string $contract): void
     {
-        unset(
-            $this->boundAbstracts[$abstract],
-            $this->factoryBound[$abstract],
-            $this->registeredRectorClasses[$abstract],
-        );
-    }
+        parent::forgetByContract($contract);
 
-    /**
-     * @param class-string $class
-     * @return class-string
-     */
-    private function resolveAlias(string $class): string
-    {
-        $seen = [];
-        while (isset($this->aliases[$class]) && ! isset($seen[$class])) {
-            $seen[$class] = true;
-            $class = $this->aliases[$class];
+        foreach (array_keys($this->boundAbstracts) as $abstract) {
+            if (! is_a($abstract, $contract, true)) {
+                continue;
+            }
+
+            unset(
+                $this->boundAbstracts[$abstract],
+                $this->factoryBound[$abstract],
+                $this->registeredRectorClasses[$abstract],
+            );
         }
 
-        return $class;
+        // drop per-type setter-injection callbacks for the forgotten classes, but keep the shared
+        // AbstractRector autowiring that every remaining rule still relies on
+        foreach (array_keys($this->afterResolvingCallbacks) as $callbackClass) {
+            if ($callbackClass === AbstractRector::class) {
+                continue;
+            }
+
+            if (is_a($callbackClass, $contract, true)) {
+                unset($this->afterResolvingCallbacks[$callbackClass]);
+            }
+        }
     }
 
     private function hasAfterResolvingFor(object $object): bool

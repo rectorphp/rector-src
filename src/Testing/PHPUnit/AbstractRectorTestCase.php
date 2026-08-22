@@ -17,18 +17,15 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Rector\AbstractRector;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\PHPUnit\ValueObject\RectorTestResult;
-use Rector\Util\Reflection\PrivatesAccessor;
 use Rector\ValueObject\PhpVersion;
 
 /**
@@ -212,30 +209,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
     private function forgetRectorsRules(): void
     {
-        $rectorConfig = self::getContainer();
-
-        // 1. forget tagged services
-        ContainerMemento::forgetTag($rectorConfig, RectorInterface::class);
-
-        // 2. remove after binding too, to avoid setting configuration over and over again
-        $privatesAccessor = new PrivatesAccessor();
-        $privatesAccessor->propertyClosure(
-            $rectorConfig,
-            'afterResolvingCallbacks',
-            static function (array $afterResolvingCallbacks): array {
-                foreach (array_keys($afterResolvingCallbacks) as $key) {
-                    if ($key === AbstractRector::class) {
-                        continue;
-                    }
-
-                    if (is_a($key, RectorInterface::class, true)) {
-                        unset($afterResolvingCallbacks[$key]);
-                    }
-                }
-
-                return $afterResolvingCallbacks;
-            }
-        );
+        // forget the rules and their per-rule configuration callbacks, so a re-boot starts clean
+        self::getContainer()->forgetByContract(RectorInterface::class);
     }
 
     private function doTestFileMatchesExpectedContent(

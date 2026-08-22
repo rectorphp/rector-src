@@ -56,7 +56,6 @@ use Rector\Console\Command\ProcessCommand;
 use Rector\Console\Command\SetupCICommand;
 use Rector\Console\Command\WorkerCommand;
 use Rector\Console\ConsoleApplication;
-use Rector\Console\Style\RectorStyle;
 use Rector\Console\Style\SymfonyStyleFactory;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
@@ -553,8 +552,6 @@ final class LazyContainerFactory
             self::CLASS_NAME_IMPORT_SKIPPER_CLASSES,
             ClassNameImportSkipVoterInterface::class
         );
-
-        $rectorConfig->alias(SymfonyStyle::class, RectorStyle::class);
 
         $rectorConfig->singleton(
             SymfonyStyle::class,

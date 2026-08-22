@@ -16,7 +16,6 @@ use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationDocblocksLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
-use Rector\Config\RegisteredService;
 use Rector\Configuration\Levels\LevelRulesResolver;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Notifier;
@@ -172,7 +171,7 @@ final class RectorConfigBuilder
     private array $typeGuardedClasses = [];
 
     /**
-     * @var RegisteredService[]
+     * @var array<class-string>
      */
     private array $registerServices = [];
 
@@ -279,11 +278,7 @@ final class RectorConfigBuilder
 
         // must be in upper part, as these services might be used by rule registered bellow
         foreach ($this->registerServices as $registerService) {
-            $rectorConfig->singleton($registerService->getClassName());
-
-            if ($registerService->getAlias()) {
-                $rectorConfig->alias($registerService->getClassName(), $registerService->getAlias());
-            }
+            $rectorConfig->singleton($registerService);
         }
 
         if ($this->skip !== []) {
@@ -1109,9 +1104,12 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    public function registerService(string $className, ?string $alias = null): self
+    /**
+     * @param class-string $className
+     */
+    public function registerService(string $className): self
     {
-        $this->registerServices[] = new RegisteredService($className, $alias);
+        $this->registerServices[] = $className;
 
         return $this;
     }
@@ -1125,7 +1123,7 @@ final class RectorConfigBuilder
     {
         Assert::isAOf($decoratingNodeVisitorClass, NodeVisitor::class);
 
-        $this->registerServices[] = new RegisteredService($decoratingNodeVisitorClass);
+        $this->registerServices[] = $decoratingNodeVisitorClass;
 
         return $this;
     }
