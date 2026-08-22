@@ -36,7 +36,7 @@ $resolve = static function (RectorConfig $rectorConfig): int {
     $count += 4;
 
     // every registered rule
-    $rectors = $rectorConfig->tagged(RectorInterface::class);
+    $rectors = $rectorConfig->findByContract(RectorInterface::class);
     foreach ($rectors as $rector) {
         ++$count;
     }

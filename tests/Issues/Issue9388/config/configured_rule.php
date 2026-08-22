@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\Name\RenameClassRector;
-use Rector\Tests\Issues\Issue9388\Source\AnnotationToAttribute\AttributeDecorator;
-use Rector\Tests\Issues\Issue9388\Source\AnnotationToAttribute\AttributeDecoratorInterface;
 use Rector\Tests\Issues\Issue9388\Source\AnnotationToAttribute\ValidateAttributeDecorator;
 use Rector\Tests\Issues\Issue9388\Source\Rule\ExtbaseAnnotationToAttributeRector;
 use Rector\ValueObject\PhpVersionFeature;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->autotagInterface(AttributeDecoratorInterface::class);
+    // AttributeDecorator receives every AttributeDecoratorInterface implementation through its
+    // "@param AttributeDecoratorInterface[] $decorators" docblock; registering the implementation
+    // is enough for the container to discover and inject it by contract
     $rectorConfig->singleton(ValidateAttributeDecorator::class);
-    $rectorConfig->when(AttributeDecorator::class)->needs()->giveTagged(
-        AttributeDecoratorInterface::class
-    );
 
     $rectorConfig->importNames(false, false);
     $rectorConfig->phpVersion(PhpVersionFeature::ATTRIBUTES);

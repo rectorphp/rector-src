@@ -21,7 +21,7 @@ final class TaggedServicesTest extends AbstractLazyTestCase
     #[DataProvider('provideTagInterfaces')]
     public function testServiceIsTaggedOnce(string $tagInterface): void
     {
-        $taggedServices = array_values(self::getContainer()->tagged($tagInterface));
+        $taggedServices = self::getContainer()->findByContract($tagInterface);
 
         $classNames = array_map(static fn (object $service): string => $service::class, $taggedServices);
 

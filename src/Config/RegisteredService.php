@@ -8,8 +8,7 @@ final readonly class RegisteredService
 {
     public function __construct(
         private string $className,
-        private ?string $alias,
-        private ?string $tag
+        private ?string $alias = null
     ) {
     }
 
@@ -21,10 +20,5 @@ final readonly class RegisteredService
     public function getAlias(): ?string
     {
         return $this->alias;
-    }
-
-    public function getTag(): ?string
-    {
-        return $this->tag;
     }
 }

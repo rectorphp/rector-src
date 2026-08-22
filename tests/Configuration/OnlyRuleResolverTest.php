@@ -25,7 +25,7 @@ final class OnlyRuleResolverTest extends AbstractLazyTestCase
         $rectorConfig = self::getContainer();
 
         $this->onlyRuleResolver = new OnlyRuleResolver(
-            array_values($rectorConfig->tagged(RectorInterface::class)),
+            $rectorConfig->findByContract(RectorInterface::class),
         );
     }
 

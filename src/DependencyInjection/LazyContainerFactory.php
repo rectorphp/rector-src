@@ -58,7 +58,6 @@ use Rector\Console\Command\WorkerCommand;
 use Rector\Console\ConsoleApplication;
 use Rector\Console\Style\RectorStyle;
 use Rector\Console\Style\SymfonyStyleFactory;
-use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
@@ -436,10 +435,8 @@ final class LazyContainerFactory
 
     private function registerCachingAndResettables(RectorConfig $rectorConfig): void
     {
-        // resettable
-        // DynamicSourceLocatorProvider is autotagged on its singleton() call above,
-        // as RectorConfig autotags ResettableInterface
-        $rectorConfig->tag(RenamedClassesDataCollector::class, ResettableInterface::class);
+        // resettable: registering the class makes it discoverable via findByContract(ResettableInterface)
+        $rectorConfig->singleton(RenamedClassesDataCollector::class);
 
         // caching
         $rectorConfig->singleton(Cache::class, static function (RectorConfig $rectorConfig): Cache {
@@ -658,7 +655,6 @@ final class LazyContainerFactory
             Assert::isAOf($class, $tagInterface);
 
             $rectorConfig->singleton($class);
-            $rectorConfig->tag($class, $tagInterface);
         }
     }
 

@@ -20,7 +20,6 @@ use Rector\Config\RegisteredService;
 use Rector\Configuration\Levels\LevelRulesResolver;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Notifier;
-use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
@@ -284,10 +283,6 @@ final class RectorConfigBuilder
 
             if ($registerService->getAlias()) {
                 $rectorConfig->alias($registerService->getClassName(), $registerService->getAlias());
-            }
-
-            if ($registerService->getTag()) {
-                $rectorConfig->tag($registerService->getClassName(), $registerService->getTag());
             }
         }
 
@@ -1114,9 +1109,9 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    public function registerService(string $className, ?string $alias = null, ?string $tag = null): self
+    public function registerService(string $className, ?string $alias = null): self
     {
-        $this->registerServices[] = new RegisteredService($className, $alias, $tag);
+        $this->registerServices[] = new RegisteredService($className, $alias);
 
         return $this;
     }
@@ -1130,11 +1125,7 @@ final class RectorConfigBuilder
     {
         Assert::isAOf($decoratingNodeVisitorClass, NodeVisitor::class);
 
-        $this->registerServices[] = new RegisteredService(
-            $decoratingNodeVisitorClass,
-            null,
-            DecoratingNodeVisitorInterface::class
-        );
+        $this->registerServices[] = new RegisteredService($decoratingNodeVisitorClass);
 
         return $this;
     }

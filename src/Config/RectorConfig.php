@@ -14,10 +14,8 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\RectorConfigBuilder;
 use Rector\Contract\DependencyInjection\RelatedConfigInterface;
-use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\DependencyInjection\Contextual\ContextualBindingBuilder;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Enum\Config\Defaults;
 use Rector\Exception\DependencyInjection\ServiceCreationFailedException;
@@ -53,11 +51,6 @@ final class RectorConfig extends Container
      * @var array<string, true>
      */
     private array $registeredComposerBoundRuleConfigurations = [];
-
-    /**
-     * @var string[]
-     */
-    private array $autotagInterfaces = [Command::class, ResettableInterface::class];
 
     /**
      * Optional override, e.g. injected by a test to read the versions from a standalone "composer.json"
@@ -332,12 +325,10 @@ final class RectorConfig extends Container
 
         $this->singleton($rectorClass);
 
-        // the same rule can be registered by multiple sets, tag it only once,
+        // the same rule can be registered by multiple sets, record it only once,
         // otherwise it is run twice on every node and listed twice in the reports
         if (! isset($this->registeredRectorClasses[$rectorClass])) {
             $this->registeredRectorClasses[$rectorClass] = true;
-
-            $this->tag($rectorClass, RectorInterface::class);
 
             // for cache invalidation in case of change
             SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
@@ -362,7 +353,6 @@ final class RectorConfig extends Container
     public function command(string $commandClass): void
     {
         $this->singleton($commandClass);
-        $this->tag($commandClass, Command::class);
     }
 
     public function import(string $filePath): void
@@ -563,23 +553,15 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @internal Use to add tag on service registrations
-     */
-    public function autotagInterface(string $interface): void
-    {
-        $this->autotagInterfaces[] = $interface;
-    }
-
-    /**
      * Register a shared service. Without a $concrete factory the entropy container autowires the
-     * class on demand via reflection; findByContract() warms it lazily thanks to boundAbstracts.
+     * class on demand via reflection; findByContract() discovers it by the interfaces it implements,
+     * so no explicit tagging is needed.
      *
      * @param class-string $abstract
      * @param (callable(self): object)|null $concrete
      */
     public function singleton(string $abstract, ?callable $concrete = null): void
     {
-        $isNew = ! isset($this->boundAbstracts[$abstract]);
         $this->boundAbstracts[$abstract] = true;
 
         if ($concrete !== null && ! isset($this->factoryBound[$abstract])) {
@@ -587,30 +569,6 @@ final class RectorConfig extends Container
             // entropy calls the factory with the container instance, which is always this RectorConfig
             parent::service($abstract, fn (): object => $concrete($this));
         }
-
-        if (! $isNew) {
-            return;
-        }
-
-        foreach ($this->autotagInterfaces as $autotagInterface) {
-            if (! is_a($abstract, $autotagInterface, true)) {
-                continue;
-            }
-
-            $this->tag($abstract, $autotagInterface);
-        }
-    }
-
-    /**
-     * Mark a class as discoverable through findByContract()/tagged(). Entropy resolves collections by
-     * interface at query time, so the tag itself is implicit - we only have to keep the class known.
-     *
-     * @param class-string $abstract
-     * @param class-string $tag
-     */
-    public function tag(string $abstract, string $tag): void
-    {
-        $this->boundAbstracts[$abstract] = true;
     }
 
     /**
@@ -682,20 +640,8 @@ final class RectorConfig extends Container
         }
 
         // entropy keys results by class-string; consumers (and variadic spreads such as
-        // new NodeTraverser(...$visitors)) expect a plain 0-indexed list, like the former giveTagged()
+        // new NodeTraverser(...$visitors)) expect a plain 0-indexed list
         return array_values(parent::findByContract($contractClass));
-    }
-
-    /**
-     * Illuminate-compatible tagged() accessor, now backed by entropy findByContract().
-     *
-     * @template TObject of object
-     * @param class-string<TObject> $tag
-     * @return list<TObject>
-     */
-    public function tagged(string $tag): array
-    {
-        return $this->findByContract($tag);
     }
 
     /**
@@ -732,17 +678,6 @@ final class RectorConfig extends Container
     public function bound(string $abstract): bool
     {
         return isset($this->boundAbstracts[$abstract]);
-    }
-
-    /**
-     * Backwards-compatible contextual-binding entrypoint. Collections are now injected automatically
-     * from the constructor "@param Interface[] $name" docblock, so the returned builder is a no-op.
-     *
-     * @param class-string $concrete
-     */
-    public function when(string $concrete): ContextualBindingBuilder
-    {
-        return new ContextualBindingBuilder();
     }
 
     /**

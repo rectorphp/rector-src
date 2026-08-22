@@ -93,7 +93,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
                 ->changeComposerJsonFilePath($this->provideComposerJsonFilePath());
 
             // reset
-            $resettables = $rectorConfig->tagged(ResettableInterface::class);
+            $resettables = $rectorConfig->findByContract(ResettableInterface::class);
 
             foreach ($resettables as $resettable) {
                 /** @var ResettableInterface $resettable */
@@ -104,12 +104,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $rectorConfig->resetRuleConfigurations();
 
             // this has to be always empty, so we can add new rules with their configuration
-            $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));
+            $this->assertEmpty($rectorConfig->findByContract(RectorInterface::class));
 
             $this->bootFromConfigFiles([$configFile]);
 
             // no rules at all, e.g. in case of only post rector run, yields an empty array
-            $rectors = $rectorConfig->tagged(RectorInterface::class);
+            $rectors = $rectorConfig->findByContract(RectorInterface::class);
 
             /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);

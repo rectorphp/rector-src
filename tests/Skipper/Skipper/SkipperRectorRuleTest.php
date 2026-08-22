@@ -38,7 +38,7 @@ final class SkipperRectorRuleTest extends AbstractLazyTestCase
         $rectorConfig->make(FileNodesFetcher::class);
 
         // here 1 rule should be removed and 1 should remain
-        $rectors = array_values($rectorConfig->tagged(RectorInterface::class));
+        $rectors = $rectorConfig->findByContract(RectorInterface::class);
         $this->assertCount(1, $rectors);
 
         $this->assertInstanceOf(RemoveUnusedPromotedPropertyRector::class, $rectors[0]);

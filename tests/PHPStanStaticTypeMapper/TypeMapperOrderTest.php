@@ -42,7 +42,7 @@ final class TypeMapperOrderTest extends AbstractLazyTestCase
      */
     private function resolveTypeMappers(): array
     {
-        $typeMappers = array_values(self::getContainer()->tagged(TypeMapperInterface::class));
+        $typeMappers = self::getContainer()->findByContract(TypeMapperInterface::class);
 
         $this->assertNotEmpty($typeMappers);
 
