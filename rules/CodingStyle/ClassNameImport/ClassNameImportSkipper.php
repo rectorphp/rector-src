@@ -22,23 +22,14 @@ final readonly class ClassNameImportSkipper
      * @param ClassNameImportSkipVoterInterface[] $classNameImportSkipVoters
      */
     public function __construct(
-        private iterable $classNameImportSkipVoters,
+        private array $classNameImportSkipVoters,
         private UseImportsResolver $useImportsResolver,
     ) {
     }
 
-    public function shouldSkipNameForFullyQualifiedObjectType(
-        File $file,
-        Node $node,
-        FullyQualifiedObjectType $fullyQualifiedObjectType
-    ): bool {
-        foreach ($this->classNameImportSkipVoters as $classNameImportSkipVoter) {
-            if ($classNameImportSkipVoter->shouldSkip($file, $fullyQualifiedObjectType, $node)) {
-                return true;
-            }
-        }
-
-        return false;
+    public function shouldSkipNameForFullyQualifiedObjectType(File $file, Node $node, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
+    {
+        return array_any($this->classNameImportSkipVoters, fn (ClassNameImportSkipVoterInterface $classNameImportSkipVoter): bool => $classNameImportSkipVoter->shouldSkip($file, $fullyQualifiedObjectType, $node));
     }
 
     /**

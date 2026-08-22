@@ -47,7 +47,7 @@ final class NodeNameResolver
     public function __construct(
         private readonly ClassNaming $classNaming,
         private readonly CallAnalyzer $callAnalyzer,
-        private readonly iterable $nodeNameResolvers = []
+        private readonly array $nodeNameResolvers
     ) {
     }
 
