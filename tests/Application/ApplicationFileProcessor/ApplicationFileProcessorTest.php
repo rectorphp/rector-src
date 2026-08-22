@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Application\ApplicationFileProcessor;
 
+use Illuminate\Container\Container;
 use Rector\Application\ApplicationFileProcessor;
+use Rector\Caching\Cache;
+use Rector\Caching\CacheFactory;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\ValueObject\Configuration;
@@ -19,6 +24,19 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // isolate the cache directory to this test - the default directory is shared across all
+        // parallel test chunks, and FileCacheStorage::clear() deletes the whole directory, so a
+        // sibling chunk can wipe this test's cache between save and load and flip the assertions
+        $rectorConfig = self::getContainer();
+        SimpleParameterProvider::setParameter(
+            Option::CACHE_DIR,
+            sys_get_temp_dir() . '/rector_test_application_file_processor'
+        );
+        $rectorConfig->singleton(
+            Cache::class,
+            static fn (Container $container): Cache => $container->make(CacheFactory::class)->create()
+        );
 
         $this->applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
         $this->changedFilesDetector = $this->make(ChangedFilesDetector::class);
