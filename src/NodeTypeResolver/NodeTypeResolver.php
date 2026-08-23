@@ -79,7 +79,7 @@ final class NodeTypeResolver
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpVersionProvider $phpVersionProvider,
-        iterable $nodeTypeResolvers
+        array $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
             if ($nodeTypeResolver instanceof NodeTypeResolverAwareInterface) {

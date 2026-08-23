@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Container\Container;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
 use Rector\Console\Style\SymfonyStyleFactory;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\NodePrinter;
+use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Output\OutputInterface;
 
 if (! function_exists('print_node')) {
@@ -36,9 +36,8 @@ if (! function_exists('dump_node')) {
      */
     function dump_node(Node|array $node): void
     {
-        $rectorStyle = Container::getInstance()
-            ->make(SymfonyStyleFactory::class)
-            ->create();
+        $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
+        $rectorStyle = $symfonyStyleFactory->create();
 
         // we turn up the verbosity so it's visible in tests overriding the
         // default which is to be quite during tests
