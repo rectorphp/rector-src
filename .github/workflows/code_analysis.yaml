@@ -64,16 +64,11 @@ jobs:
                         run: vendor/bin/swiss-knife finalize-classes src tests rules --dry-run --skip-file="src/PhpParser/Node/FileNode.php"
 
                     -
-                        name: 'Check before/after test fixture on no-changes'
-                        run: php scripts/check-before-after-same-fixtures.php
-
-                    -
-                        name: 'Check fixture classes are different to nodes'
-                        run: php scripts/avoid-short-node-names-in-fixtures.php
-
-                    -
-                        name: 'Check no "*.php" files in rules Fixture directory'
-                        run: php scripts/no-php-file-in-fixtures.php
+                        name: 'Fixture Checks'
+                        run: |
+                            php scripts/check-before-after-same-fixtures.php
+                            php scripts/avoid-short-node-names-in-fixtures.php
+                            php scripts/no-php-file-in-fixtures.php
 
                     -
                         name: "PHP Linter"
