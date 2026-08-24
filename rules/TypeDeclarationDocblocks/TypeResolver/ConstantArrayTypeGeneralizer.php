@@ -17,8 +17,6 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 final class ConstantArrayTypeGeneralizer
 {
     /**
-     * @var int
-     *
      * Using 10-level array @return docblocks makes code very hard to read,
      * lets limit it to reasonable level
      */
@@ -45,7 +43,6 @@ final class ConstantArrayTypeGeneralizer
         $genericKeyType = $this->typeNormalizer->generalizeConstantTypes($constantArrayType->getKeyType());
 
         $itemType = $constantArrayType->getItemType();
-
         if ($itemType instanceof NeverType) {
             return ArrayShapeNode::createSealed([]);
         }

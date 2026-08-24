@@ -3,6 +3,7 @@ includes:
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 services:
+    # todo improve to skip deprecated classes her
     -
         class: Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
         arguments:
@@ -10,21 +11,14 @@ services:
         tags:
             - phpstan.rules.rule
 
-    -
-        class: Rector\Utils\PHPStan\Rule\CheaperGuardFirstRule
-        tags:
-            - phpstan.rules.rule
-
-    -
-        class: Rector\Utils\PHPStan\Rule\SingleServiceRegistrationRule
-        tags:
-            - phpstan.rules.rule
+rules:
+    - Rector\Utils\PHPStan\Rule\CheaperGuardFirstRule
+    - Rector\Utils\PHPStan\Rule\SingleServiceRegistrationRule
 
 parameters:
     level: 8
 
-    reportUnmatchedIgnoredErrors: false
-
+    # reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
@@ -57,12 +51,9 @@ parameters:
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
 
-    # see https://github.com/TomasVotruba/type-coverage
-    type_perfect:
-        no_mixed: true
-        null_over_false: true
-        narrow_param: true
-        narrow_return: true
+    # see https://github.com/symplify/phpstan-rules
+    symplify:
+        pathStrings: true
 
     # see https://github.com/TomasVotruba/type-coverage
     type_coverage:
@@ -71,6 +62,11 @@ parameters:
         param_type: 99
         property_type: 99
         constant_type: 99
+    type_perfect:
+        no_mixed: true
+        null_over_false: true
+        narrow_param: true
+        narrow_return: true
 
     # see https://github.com/TomasVotruba/unused-public
     unused_public:
@@ -87,29 +83,22 @@ parameters:
             message: '#(.*?) with generic interface (.*?)Interface does not specify its types#'
             identifier: missingType.generics
 
-        # phpstan class instance
+        # phpstan internalls
         - identifier: phpstanApi.class
-
-        # phpstan class constant value
         - identifier: phpstanApi.classConstant
-
-        # phpstan class construction
         - identifier: phpstanApi.constructor
-
-        # phpstan instanceof
         - identifier: phpstanApi.instanceofAssumption
+        - identifier: phpstanApi.method
 
         # assert phpunit
-        -
-            identifier: method.alreadyNarrowedType
-            path: tests
+#        -
+#            identifier: method.alreadyNarrowedType
+#            path: tests
 
         # runtime php id
         -
             identifier: greaterOrEqual.alwaysTrue
             path: src/Util/FileHasher.php
-
-        # on runtime check
         -
             identifier: deadCode.unreachable
             paths:
@@ -120,16 +109,10 @@ parameters:
         # it stays available to register directly with withRules()
         -
             identifier: rector.upgradeDowngradeRegisteredInSet
-            path: rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
-
-        # deprecated rules, kept out of the php sets, as they turn a doc annotation into a runtime deprecation
-        -
-            identifier: rector.upgradeDowngradeRegisteredInSet
-            path: rules/Php84/Rector/Class_/DeprecatedAnnotationToDeprecatedAttributeRector.php
-
-        -
-            identifier: rector.upgradeDowngradeRegisteredInSet
-            path: rules/Php85/Rector/Const_/ConstAndTraitDeprecatedAttributeRector.php
+            paths:
+                - rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
+                - rules/Php84/Rector/Class_/DeprecatedAnnotationToDeprecatedAttributeRector.php
+                - rules/Php85/Rector/Const_/ConstAndTraitDeprecatedAttributeRector.php
 
         # is nested expr
         -
@@ -184,7 +167,7 @@ parameters:
                 - src/Caching/ValueObject/Storage/FileCacheStorage.php
 
         # many internal cases
-        - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
+        #- '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
 
         # known value object, nullable due to typed property
         -
@@ -192,7 +175,7 @@ parameters:
             path: src/Parallel/Application/ParallelFileProcessor.php
 
         # internal reflection
-        - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
+        #- '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
         # known value
@@ -216,9 +199,9 @@ parameters:
             path: bin/rector.php
 
         # known existing class
-        -
-            message: '#Instead of "instanceof/is_a\(\)" use ReflectionProvider service or "\(new ObjectType\(<desired_type>\)\)\->isSuperTypeOf\(<element_type>\)" for static reflection to work#'
-            path: src/Skipper/Skipper/SkipSkipper.php
+#        -
+#            message: '#Instead of "instanceof/is_a\(\)" use ReflectionProvider service or "\(new ObjectType\(<desired_type>\)\)\->isSuperTypeOf\(<element_type>\)" for static reflection to work#'
+#            path: src/Skipper/Skipper/SkipSkipper.php
 
         # the local instanceof for known types
         - '#Instead of "instanceof/is_a\(\)" use ReflectionProvider service or "\(new ObjectType\(<desired_type>\)\)\->isSuperTypeOf\(<element_type>\)" for static reflection to work#'
@@ -272,15 +255,12 @@ parameters:
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
 
+        # @todo skip deprecated rules, update in symplify/phpstan-rules
         # optional as changes behavior, should be used explicitly outside PHP upgrade
         - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'
         - '#Register "Rector\\Php80\\Rector\\NotIdentical\\MbStrContainsRector" service to "php80\.php" config set#'
         - '#Register "Rector\\Php85\\Rector\\StmtsAwareInterface\\SequentialAssignmentsToPipeOperatorRector" service to "php85\.php" config set#'
-        - '#Register "Rector\\Php85\\Rector\\Expression\\NestedFuncCallsToPipeOperatorRector" service to "php85\.php" config set#'
         - '#Register "Rector\\Php84\\Rector\\Class_\\PropertyHookRector" service to "php84\.php" config set#'
-
-        # closure detailed
-        - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
 
         # dynamic printer
         -
@@ -297,11 +277,20 @@ parameters:
         -
             message: '#Avoid static access of constants, as they can change value\. Use interface and contract method instead#'
             paths:
-                # caching and message of specific child Rector rules
-                - src/Rector/AbstractRector.php
                 - src/PostRector/Rector/AbstractPostRector.php
                 # for cache
                 - src/Testing/PHPUnit/AbstractRectorTestCase.php
+
+        -
+            identifier: rector.noClassReflectionStaticReflection
+            paths:
+                - scripts
+                - src/Configuration/OnlyRuleResolver.php
+                - src/Util/Reflection/PrivatesAccessor.php
+
+        -
+            identifier: symplify.forbiddenStaticClassConstFetch
+            path: src/Rector/AbstractRector.php
 
         # generated class in /vendor
         -
@@ -334,11 +323,7 @@ parameters:
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
             paths:
-                - src/Set/SetManager.php
-                - src/Bridge/SetProviderCollector.php
                 - src/Configuration/RectorConfigBuilder.php
-                - tests/Set/ValueObject/ComposerTriggeredSetTest.php
-                - tests/Set/SetManager/SetManagerTest.php
 
         # runtime comparison
         - '#Comparison operation ".*" between int<\d+, \d+> and \d+ is always true#'
@@ -394,9 +379,9 @@ parameters:
         - identifier: symplify.noConstructorOverride
           path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
 
-        -
-            identifier: arrayValues.list
-            path: rules/CodingStyle/Application/UseImportsAdder.php
+#        -
+#            identifier: arrayValues.list
+#            path: rules/CodingStyle/Application/UseImportsAdder.php
 
         -
             message: '#Offset float\|int\|string might not exist on string#'
@@ -421,19 +406,13 @@ parameters:
             identifier: offsetAccess.nonArray
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
 
-        # variable is expected in included/required file
-        -
-            identifier: closure.unusedUse
-            message: '#Anonymous function has an unused use \$container#'
-            paths:
-                - src/Autoloading/BootstrapFilesIncluder.php
-
         # false positive
         -
             message: '#Method (.*?)refactor\(\) (never returns|should return) (.*?)#'
             paths:
                 - rules/Php70/Rector/If_/IfToSpaceshipRector.php
 
+        # @todo fix in symplify/phpstan-rules instead
         -
             identifier: rector.noIntegerRefactorReturn
             paths:
@@ -462,26 +441,11 @@ parameters:
 
         # deprecated rule
         - '#Register "Rector\\Php70\\Rector\\StaticCall\\StaticCallOnNonStaticToInstanceCallRector" service to "php70\.php" config set#'
-        - '#Class "Rector\\Php70\\Rector\\StaticCall\\StaticCallOnNonStaticToInstanceCallRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\TypeDeclaration\\Rector\\ClassMethod\\StrictStringParamConcatRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\CodingStyle\\Rector\\Enum_\\EnumCaseToPascalCaseRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\CodeQuality\\Rector\\Concat\\JoinStringConcatRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\CodeQuality\\Rector\\Switch_\\SwitchTrueToIfRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\TypeDeclarationDocblocks\\Rector\\ClassMethod\\AddReturnDocblockForDimFetchArrayFromAssignsRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\Assert\\Rector\\ClassMethod\\AddAssertArrayFromClassMethodDocblockRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\TypeDeclarationDocblocks\\Rector\\ClassMethod\\AddParamArrayDocblockBasedOnArrayMapRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\TypeDeclaration\\Rector\\ClassMethod\\AddReturnArrayDocblockBasedOnArrayMapRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\Transform\\Rector\\FuncCall\\FuncCallToMethodCallRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\Transform\\Rector\\Scalar\\ScalarValueToConstFetchRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\DeadCode\\Rector\\ClassLike\\RemoveAnnotationRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\Transform\\Rector\\Class_\\AddInterfaceByTraitRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\Php84\\Rector\\Class_\\DeprecatedAnnotationToDeprecatedAttributeRector" is missing @see annotation with test case class reference#'
-        - '#Class "Rector\\Php85\\Rector\\Const_\\ConstAndTraitDeprecatedAttributeRector" is missing @see annotation with test case class reference#'
 
         # @todo fix in phpstan-rules
-        -
-            identifier: symplify.noMissnamedDocTag
-            path: rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php
+#        -
+#            identifier: symplify.noMissnamedDocTag
+#            path: rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php
 
         -
             identifier: varTag.nativeType
@@ -491,7 +455,6 @@ parameters:
             identifier: argument.type
             paths:
                 - rules/Privatization/TypeManipulator/TypeNormalizer.php
-                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
                 - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
                 - rules/TypeDeclarationDocblocks/Rector/Class_/AddVarArrayDocblockFromDimFetchAssignRector.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
@@ -499,15 +462,9 @@ parameters:
         -
             identifier: argument.templateType
             paths:
-                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayMapRector.php
                 - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
 
         - '#Provide more specific return type "Iterator|PhpParser\\Node" over abstract one#'
-
-        # BC layer
-        -
-            message: '#Access to deprecated property \$file of class Rector\\Rector\\AbstractRector#'
-            path: src/Rector/AbstractRector.php
 
         # allowed
         -

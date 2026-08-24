@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpAttribute\Printer;
 
 use PhpParser\Node\Arg;
-use PhpParser\Node\AttributeGroup;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
@@ -32,7 +31,7 @@ final class PhpAttributeGroupFactoryTest extends AbstractLazyTestCase
             ]
         );
 
-        $this->assertInstanceOf(AttributeGroup::class, $attributeGroup);
+        $this->assertNotEmpty($attributeGroup->attrs);
     }
 
     public function testCreateArgsFromItems(): void
