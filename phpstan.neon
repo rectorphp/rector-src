@@ -105,15 +105,6 @@ parameters:
                 - src/Console/Notifier.php
                 - src/Util/FileHasher.php
 
-        # deliberately kept out of the php81 set, as it fires too often to be applied by default;
-        # it stays available to register directly with withRules()
-        -
-            identifier: rector.upgradeDowngradeRegisteredInSet
-            paths:
-                - rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
-                - rules/Php84/Rector/Class_/DeprecatedAnnotationToDeprecatedAttributeRector.php
-                - rules/Php85/Rector/Const_/ConstAndTraitDeprecatedAttributeRector.php
-
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
@@ -255,12 +246,12 @@ parameters:
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
 
-        # @todo skip deprecated rules, update in symplify/phpstan-rules
-        # optional as changes behavior, should be used explicitly outside PHP upgrade
-        - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'
-        - '#Register "Rector\\Php80\\Rector\\NotIdentical\\MbStrContainsRector" service to "php80\.php" config set#'
-        - '#Register "Rector\\Php85\\Rector\\StmtsAwareInterface\\SequentialAssignmentsToPipeOperatorRector" service to "php85\.php" config set#'
-        - '#Register "Rector\\Php84\\Rector\\Class_\\PropertyHookRector" service to "php84\.php" config set#'
+        # outside sets on purpose, as risky
+        -
+            identifier: rector.upgradeDowngradeRegisteredInSet
+            paths:
+                - rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
+                - rules/Php80/Rector/NotIdentical/MbStrContainsRector.php
 
         # dynamic printer
         -
@@ -438,14 +429,6 @@ parameters:
             identifier: symplify.seeAnnotationToTest
             paths:
                 - tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
-
-        # deprecated rule
-        - '#Register "Rector\\Php70\\Rector\\StaticCall\\StaticCallOnNonStaticToInstanceCallRector" service to "php70\.php" config set#'
-
-        # @todo fix in phpstan-rules
-#        -
-#            identifier: symplify.noMissnamedDocTag
-#            path: rules/TypeDeclarationDocblocks/TypeResolver/ConstantArrayTypeGeneralizer.php
 
         -
             identifier: varTag.nativeType
