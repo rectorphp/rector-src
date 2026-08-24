@@ -23,9 +23,11 @@ final readonly class RegisterRelatedPolyfillRectorRule implements Rule
 {
     private const string ERROR_MESSAGE = 'Class "%s" implements RelatedPolyfillInterface, but is not registered in config/set/php-polyfills.php. Register it there.';
 
-    public function __construct(
-        private string $polyfillConfigFilePath
-    ) {
+    private string $polyfillConfigFilePath;
+
+    public function __construct(?string $polyfillConfigFilePath = null)
+    {
+        $this->polyfillConfigFilePath = $polyfillConfigFilePath ?? __DIR__ . '/../../../../config/set/php-polyfills.php';
     }
 
     public function getNodeType(): string

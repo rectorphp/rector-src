@@ -2,18 +2,10 @@ includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
-services:
-    # todo improve to skip deprecated classes her
-    -
-        class: Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
-        arguments:
-            polyfillConfigFilePath: %currentWorkingDirectory%/config/set/php-polyfills.php
-        tags:
-            - phpstan.rules.rule
-
 rules:
     - Rector\Utils\PHPStan\Rule\CheaperGuardFirstRule
     - Rector\Utils\PHPStan\Rule\SingleServiceRegistrationRule
+    - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
 
 parameters:
     level: 8
@@ -30,7 +22,6 @@ parameters:
     treatPhpDocTypesAsCertain: false
 
     paths:
-        - rector.php
         - bin
         - config
         - src
@@ -40,6 +31,7 @@ parameters:
         - rules-tests
         - utils
         - scripts
+        - rector.php
         - e2e/e2eTestRunner.php
 
     scanDirectories:
@@ -215,49 +207,23 @@ parameters:
 
         # phpstan internalls
         - identifier: phpstanApi.class
-
         - identifier: phpstanApi.classConstant
-
         - identifier: phpstanApi.constructor
-
         - identifier: phpstanApi.instanceofAssumption
+        - identifier: phpstanApi.method
 
-        # more advanced usage, but not always working
-        # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110
+        # buggy, # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110
         -
             identifier: phpstanApi.instanceofType
             message: '#Doing instanceof PHPStan\\Type\\.+ is error\-prone and deprecated#'
 
-        - identifier: phpstanApi.method
-
         # is nested expr
         -
             identifier: property.notFound
-            message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
-            path: rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
-
-        # know type
-        -
-            identifier: property.notFound
-            message: '#Access to an undefined property PhpParser\\Node\:\:\$expr#'
-            path: src/PhpParser/Printer/BetterStandardPrinter.php
-
-        # known node variables
-        -
-            identifier: property.notFound
-            message: '#Access to an undefined property PhpParser\\Node\\Scalar\:\:\$value#'
-            path: src/CustomRules/SimpleNodeDumper.php
-
-        -
-            identifier: public.classConstant.unused
             paths:
-                - rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php
-                - rules/Php81/Enum/AttributeName.php
-
-        # deprecated
-        -
-            identifier: public.method.unused
-            path: rules/CodeQuality/ValueObject/KeyAndExpr.php
+                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
+                - src/PhpParser/Printer/BetterStandardPrinter.php
+                - src/CustomRules/SimpleNodeDumper.php
 
         -
             identifier: rector.noClassReflectionStaticReflection
@@ -286,12 +252,9 @@ parameters:
         # generics nullable bugs
         -
             identifier: return.type
-            message: '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
-            path: src/PhpParser/Node/BetterNodeFinder.php
-
-        -
-            identifier: return.type
-            message: '#Method Rector\\Arguments\\ArgumentDefaultValueReplacer\:\:processReplaces\(\) should return \(TCall of PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\MethodCall\|PhpParser\\Node\\Expr\\New_\|PhpParser\\Node\\Expr\\StaticCall\|PhpParser\\Node\\Stmt\\ClassMethod\)\|null but returns PhpParser\\Node\\Stmt\\ClassMethod\|null#'
+            paths:
+                - src/PhpParser/Node/BetterNodeFinder.php
+                - rules/DeadCode/Rector/Class_/RemoveRefactorDuplicatedNodeInstanceCheckRector.php
 
         # known value
         -
@@ -305,16 +268,13 @@ parameters:
 
         -
             identifier: return.type
-            message: '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type> but returns list<PHPStan\\Type\\Type>#'
-            path: src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
+            paths:
+                - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
+                - rules/Arguments/ArgumentDefaultValueReplacer.php
 
         -
             identifier: return.type
             message: '#should return non\-empty\-string but returns string#'
-
-        -
-            identifier: return.type
-            message: '#Method Rector\\DeadCode\\Rector\\Class_\\RemoveRefactorDuplicatedNodeInstanceCheckRector\:\:getInstanceofNodeClass\(\) should return class\-string<PhpParser\\Node>\|null but returns class\-string#'
 
         # from mapper interface
         -
