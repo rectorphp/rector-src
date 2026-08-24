@@ -24,7 +24,7 @@ final class PhpVersionFactoryAutowireTest extends AbstractLazyTestCase
 
     public function testResolvedAsConstructorDependency(): void
     {
-        $service = $this->make(HasPhpVersionFactoryDependency::class);
-        $this->assertInstanceOf(PhpVersionFactory::class, $service->getPhpVersionFactory());
+        $hasPhpVersionFactoryDependency = $this->make(HasPhpVersionFactoryDependency::class);
+        $this->assertInstanceOf(PhpVersionFactory::class, $hasPhpVersionFactoryDependency->getPhpVersionFactory());
     }
 }
