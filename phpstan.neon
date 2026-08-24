@@ -355,12 +355,6 @@ parameters:
             message: '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
 
-        # allowed
-        -
-            identifier: symplify.forbiddenNode
-            message: '#"@\\simplexml_load_string\(\$junitXml\)" is forbidden to use#'
-            path: scripts/remove-unused-deps.php
-
         -
             identifier: symplify.forbiddenStaticClassConstFetch
             message: '#Avoid static access of constants, as they can change value\. Use interface and contract method instead#'

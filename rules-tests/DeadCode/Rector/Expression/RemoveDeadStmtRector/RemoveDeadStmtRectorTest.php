@@ -22,7 +22,7 @@ final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
-    #[RequiresPhp('>= 8.5')]
+    #[RequiresPhp('>= 8.5.0')]
     #[DataProvider('provideDataPhp85')]
     public function testPhp85(string $filePath): void
     {
