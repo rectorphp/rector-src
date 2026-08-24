@@ -6,6 +6,7 @@ namespace Rector\Tests\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
@@ -13,22 +14,24 @@ final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        if (
-            (
-                str_ends_with($filePath, 'skip_pipe_operator.php.inc')
-                ||
-                str_ends_with($filePath, 'skip_void_cast.php.inc')
-            )
-            && PHP_VERSION_ID < 80500) {
-            $this->markTestSkipped('test contains php 8.5 syntax early before transformation');
-        }
-
         $this->doTestFile($filePath);
     }
 
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
+    }
+
+    #[RequiresPhp('>= 8.5')]
+    #[DataProvider('provideDataPhp85')]
+    public function testPhp85(string $filePath): void
+    {
+        $this->doTestFile($filePath);
+    }
+
+    public static function provideDataPhp85(): Iterator
+    {
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePhp85');
     }
 
     #[DataProvider('provideDataForTestKeepComments')]
