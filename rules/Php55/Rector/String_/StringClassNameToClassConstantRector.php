@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php55\Rector\String_;
 
-use Deprecated;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
@@ -24,9 +23,6 @@ use Webmozart\Assert\Assert;
  */
 final class StringClassNameToClassConstantRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
-    #[Deprecated(message: 'since 2.2.12. Default behavior now.')]
-    public const string SHOULD_KEEP_PRE_SLASH = 'should_keep_pre_slash';
-
     /**
      * @var string[]
      */

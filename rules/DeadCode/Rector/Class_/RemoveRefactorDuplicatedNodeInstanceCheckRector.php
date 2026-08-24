@@ -179,7 +179,6 @@ CODE_SAMPLE
 
         /** @var ClassReflection $classReflection */
         $classReflection = $checkedClassType->getClassReflection();
-
         if (! $classReflection->is(Node::class)) {
             return null;
         }

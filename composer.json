@@ -53,8 +53,7 @@
         "rector/swiss-knife": "^2.4.1",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symplify/easy-coding-standard": "^13.2.13",
-        "symplify/phpstan-extensions": "^12.0.2",
-        "symplify/phpstan-rules": "^14.12",
+        "symplify/phpstan-rules": "^14.12.3",
         "tomasvotruba/class-leak": "^2.1",
         "tomasvotruba/fast-unit": "^0.1",
         "tomasvotruba/type-coverage": "^2.3",
@@ -106,7 +105,6 @@
             "@test"
         ],
         "test": "vendor/bin/fastunit tests rules-tests utils/phpstan/tests",
-        "test-tia": "vendor/bin/fastunit -tia tests rules-tests utils/phpstan/tests",
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi --memory-limit=512M",
