@@ -26,13 +26,13 @@ final class TypeMapperOrderTest extends AbstractLazyTestCase
      */
     public function testMostSpecificMapperWinsOverParent(): void
     {
-        $classStringDocNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(new ClassStringType());
-        $this->assertSame('class-string', (string) $classStringDocNode);
+        $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(new ClassStringType());
+        $this->assertSame('class-string', (string) $typeNode);
     }
 
     public function testParentMapperStillMatchesParentType(): void
     {
-        $stringDocNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(new StringType());
-        $this->assertSame('string', (string) $stringDocNode);
+        $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(new StringType());
+        $this->assertSame('string', (string) $typeNode);
     }
 }
