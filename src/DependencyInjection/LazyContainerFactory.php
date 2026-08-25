@@ -64,7 +64,6 @@ use Rector\PhpParser\NodeVisitor\ArgNotAcceptingClosureNodeVisitor;
 use Rector\PhpParser\NodeVisitor\AssignedToNodeVisitor;
 use Rector\PhpParser\NodeVisitor\ByRefReturnNodeVisitor;
 use Rector\PhpParser\NodeVisitor\ByRefVariableNodeVisitor;
-use Rector\PhpParser\NodeVisitor\CallLikeThisBoundClosureArgsNodeVisitor;
 use Rector\PhpParser\NodeVisitor\ClassConstFetchNodeVisitor;
 use Rector\PhpParser\NodeVisitor\ClosureWithVariadicParametersNodeVisitor;
 use Rector\PhpParser\NodeVisitor\ContextNodeVisitor;
@@ -152,7 +151,6 @@ final class LazyContainerFactory
         PropertyOrClassConstDefaultNodeVisitor::class,
         ParamDefaultNodeVisitor::class,
         ClassConstFetchNodeVisitor::class,
-        CallLikeThisBoundClosureArgsNodeVisitor::class,
         ArgNotAcceptingClosureNodeVisitor::class,
     ];
 
