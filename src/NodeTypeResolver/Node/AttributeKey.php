@@ -167,8 +167,6 @@ final class AttributeKey
 
     public const string PHP_VERSION_CONDITIONED = 'php_version_conditioned';
 
-    public const string IS_CLOSURE_USES_THIS = 'has_this_closure';
-
     public const string HAS_CLOSURE_WITH_VARIADIC_ARGS = 'has_closure_with_variadic_args';
 
     public const string IS_IN_TRY_BLOCK = 'is_in_try_block';
