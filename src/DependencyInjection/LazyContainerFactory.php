@@ -47,18 +47,7 @@ use Rector\Console\ConsoleApplication;
 use Rector\Console\Style\SymfonyStyleFactory;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
-use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\ClassConstFetchNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\ClassConstNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\ClassNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\FuncCallNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\FunctionNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\NameNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\ParamNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\PropertyNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\UseNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\VariableNameResolver;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
@@ -125,12 +114,7 @@ use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Skipper\Skipper\UsedSkipCollector;
-use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
-use Rector\StaticTypeMapper\PhpDocParser\IdentifierPhpDocTypeMapper;
-use Rector\StaticTypeMapper\PhpDocParser\IntersectionPhpDocTypeMapper;
-use Rector\StaticTypeMapper\PhpDocParser\NullablePhpDocTypeMapper;
-use Rector\StaticTypeMapper\PhpDocParser\UnionPhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpParser\ExprNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\FullyQualifiedNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\IdentifierNodeMapper;
@@ -145,22 +129,6 @@ use Webmozart\Assert\Assert;
 
 final class LazyContainerFactory
 {
-    /**
-     * @var array<class-string<NodeNameResolverInterface>>
-     */
-    private const array NODE_NAME_RESOLVER_CLASSES = [
-        ClassConstFetchNameResolver::class,
-        ClassConstNameResolver::class,
-        ClassNameResolver::class,
-        FuncCallNameResolver::class,
-        FunctionNameResolver::class,
-        NameNameResolver::class,
-        ParamNameResolver::class,
-        PropertyNameResolver::class,
-        UseNameResolver::class,
-        VariableNameResolver::class,
-    ];
-
     /**
      * @var array<class-string<BasePhpDocNodeVisitorInterface>>
      */
@@ -205,16 +173,6 @@ final class LazyContainerFactory
         ClassConstFetchNodeVisitor::class,
         CallLikeThisBoundClosureArgsNodeVisitor::class,
         ArgNotAcceptingClosureNodeVisitor::class,
-    ];
-
-    /**
-     * @var array<class-string<PhpDocTypeMapperInterface>>
-     */
-    private const array PHPDOC_TYPE_MAPPER_CLASSES = [
-        IdentifierPhpDocTypeMapper::class,
-        IntersectionPhpDocTypeMapper::class,
-        NullablePhpDocTypeMapper::class,
-        UnionPhpDocTypeMapper::class,
     ];
 
     /**
@@ -462,8 +420,8 @@ final class LazyContainerFactory
         );
 
         $this->registerTagged($rectorConfig, self::TYPE_MAPPER_CLASSES, TypeMapperInterface::class);
-        $this->registerTagged($rectorConfig, self::PHPDOC_TYPE_MAPPER_CLASSES, PhpDocTypeMapperInterface::class);
-        $this->registerTagged($rectorConfig, self::NODE_NAME_RESOLVER_CLASSES, NodeNameResolverInterface::class);
+        $rectorConfig->autodiscover(__DIR__ . '/../StaticTypeMapper/PhpDocParser');
+        $rectorConfig->autodiscover(__DIR__ . '/../NodeNameResolver/NodeNameResolver');
         $rectorConfig->autodiscover(__DIR__ . '/../NodeTypeResolver/NodeTypeResolver');
         $rectorConfig->autodiscover(__DIR__ . '/../ChangesReporting/Output');
         $rectorConfig->autodiscover(__DIR__ . '/../../rules/CodingStyle/ClassNameImport/ClassNameImportSkipVoter');
