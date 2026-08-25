@@ -21,14 +21,27 @@ final readonly class PhpParserNodeMapper
 
     public function mapToPHPStanType(Node $node): Type
     {
+        $matchedNodeMapper = null;
+        $matchedNodeType = null;
+
         foreach ($this->phpParserNodeMappers as $phpParserNodeMapper) {
-            if (! is_a($node, $phpParserNodeMapper->getNodeType())) {
+            $nodeType = $phpParserNodeMapper->getNodeType();
+            if (! is_a($node, $nodeType)) {
                 continue;
             }
 
-            return $phpParserNodeMapper->mapToPHPStan($node);
+            // pick the most specific mapper: a mapper for a child node wins over one for its
+            // parent node, regardless of registration order
+            if ($matchedNodeType === null || is_a($nodeType, $matchedNodeType, true)) {
+                $matchedNodeType = $nodeType;
+                $matchedNodeMapper = $phpParserNodeMapper;
+            }
         }
 
-        throw new NotImplementedYetException($node::class);
+        if (! $matchedNodeMapper instanceof PhpParserNodeMapperInterface) {
+            throw new NotImplementedYetException($node::class);
+        }
+
+        return $matchedNodeMapper->mapToPHPStan($node);
     }
 }
