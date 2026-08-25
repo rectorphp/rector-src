@@ -27,4 +27,7 @@ jobs:
 
             -   run: git clone https://github.com/driftingly/rector-laravel.git
             -   run: composer require rector/rector:dev-main --working-dir rector-laravel
+
+                # downstream 3rd-party repo tested against dev-main; allowed to fail without blocking
             -   run: cd rector-laravel && vendor/bin/phpunit
+                continue-on-error: true
