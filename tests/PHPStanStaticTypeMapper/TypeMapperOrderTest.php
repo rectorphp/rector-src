@@ -4,48 +4,35 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PHPStanStaticTypeMapper;
 
-use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use PHPStan\Type\ClassStringType;
+use PHPStan\Type\StringType;
+use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class TypeMapperOrderTest extends AbstractLazyTestCase
 {
-    /**
-     * The mappers are matched with is_a() in registration order, so a mapper for a child type
-     * must come before the mapper for its parent type. Otherwise the parent one always wins
-     * and the child one is never reached.
-     */
-    public function testChildTypeMapperIsRegisteredBeforeItsParent(): void
+    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
+
+    protected function setUp(): void
     {
-        $typeMappers = $this->resolveTypeMappers();
+        parent::setUp();
 
-        foreach ($typeMappers as $position => $typeMapper) {
-            foreach ($typeMapper->getNodeClasses() as $nodeClass) {
-                for ($earlierPosition = 0; $earlierPosition < $position; ++$earlierPosition) {
-                    $earlierTypeMapper = $typeMappers[$earlierPosition];
-
-                    foreach ($earlierTypeMapper->getNodeClasses() as $earlierNodeClass) {
-                        $this->assertFalse(is_a($nodeClass, $earlierNodeClass, true), sprintf(
-                            'The "%s" is registered after "%s", but "%s" is a "%s". It can never be reached, register it earlier.',
-                            $typeMapper::class,
-                            $earlierTypeMapper::class,
-                            $nodeClass,
-                            $earlierNodeClass
-                        ));
-                    }
-                }
-            }
-        }
+        $this->phpStanStaticTypeMapper = $this->make(PHPStanStaticTypeMapper::class);
     }
 
     /**
-     * @return TypeMapperInterface[]
+     * The most specific mapper wins regardless of registration order: ClassStringType extends
+     * StringType, so the ClassStringType mapper must match it over the StringType one.
      */
-    private function resolveTypeMappers(): array
+    public function testMostSpecificMapperWinsOverParent(): void
     {
-        $typeMappers = self::getContainer()->findByContract(TypeMapperInterface::class);
+        $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(new ClassStringType());
+        $this->assertSame('class-string', (string) $typeNode);
+    }
 
-        $this->assertNotEmpty($typeMappers);
-
-        return $typeMappers;
+    public function testParentMapperStillMatchesParentType(): void
+    {
+        $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(new StringType());
+        $this->assertSame('string', (string) $typeNode);
     }
 }

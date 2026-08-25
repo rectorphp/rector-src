@@ -27,15 +27,12 @@ final readonly class PHPStanStaticTypeMapper
 
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        foreach ($this->typeMappers as $typeMapper) {
-            if (! $this->doesTypeMatch($type, $typeMapper)) {
-                continue;
-            }
-
-            return $typeMapper->mapToPHPStanPhpDocTypeNode($type);
+        $typeMapper = $this->matchTypeMapper($type);
+        if (! $typeMapper instanceof TypeMapperInterface) {
+            throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
         }
 
-        throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
+        return $typeMapper->mapToPHPStanPhpDocTypeNode($type);
     }
 
     /**
@@ -43,22 +40,38 @@ final readonly class PHPStanStaticTypeMapper
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): Name|ComplexType|Identifier|null
     {
-        foreach ($this->typeMappers as $typeMapper) {
-            if (! $this->doesTypeMatch($type, $typeMapper)) {
-                continue;
-            }
-
-            return $typeMapper->mapToPhpParserNode($type, $typeKind);
+        $typeMapper = $this->matchTypeMapper($type);
+        if (! $typeMapper instanceof TypeMapperInterface) {
+            throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
         }
 
-        throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
+        return $typeMapper->mapToPhpParserNode($type, $typeKind);
     }
 
     /**
-     * @param TypeMapperInterface<Type> $typeMapper
+     * Match the most specific mapper: when a type is handled by both a mapper for a parent
+     * class and one for its subclass, the subclass mapper wins, regardless of registration order.
+     *
+     * @return TypeMapperInterface<Type>|null
      */
-    private function doesTypeMatch(Type $type, TypeMapperInterface $typeMapper): bool
+    private function matchTypeMapper(Type $type): ?TypeMapperInterface
     {
-        return array_any($typeMapper->getNodeClasses(), fn (string $nodeClass): bool => $type instanceof $nodeClass);
+        $matchedTypeMapper = null;
+        $matchedNodeClass = null;
+
+        foreach ($this->typeMappers as $typeMapper) {
+            foreach ($typeMapper->getNodeClasses() as $nodeClass) {
+                if (! $type instanceof $nodeClass) {
+                    continue;
+                }
+
+                if ($matchedNodeClass === null || is_a($nodeClass, $matchedNodeClass, true)) {
+                    $matchedNodeClass = $nodeClass;
+                    $matchedTypeMapper = $typeMapper;
+                }
+            }
+        }
+
+        return $matchedTypeMapper;
     }
 }
