@@ -82,15 +82,6 @@ use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Skipper\Skipper\UsedSkipCollector;
-use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
-use Rector\StaticTypeMapper\PhpParser\ExprNodeMapper;
-use Rector\StaticTypeMapper\PhpParser\FullyQualifiedNodeMapper;
-use Rector\StaticTypeMapper\PhpParser\IdentifierNodeMapper;
-use Rector\StaticTypeMapper\PhpParser\IntersectionTypeNodeMapper;
-use Rector\StaticTypeMapper\PhpParser\NameNodeMapper;
-use Rector\StaticTypeMapper\PhpParser\NullableTypeNodeMapper;
-use Rector\StaticTypeMapper\PhpParser\StringNodeMapper;
-use Rector\StaticTypeMapper\PhpParser\UnionTypeNodeMapper;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
@@ -147,20 +138,6 @@ final class LazyContainerFactory
         NodeScopeResolver::class,
         ReflectionProvider::class,
         PhpVersionFactory::class,
-    ];
-
-    /**
-     * @var array<class-string<PhpParserNodeMapperInterface>>
-     */
-    private const array PHP_PARSER_NODE_MAPPER_CLASSES = [
-        FullyQualifiedNodeMapper::class,
-        IdentifierNodeMapper::class,
-        IntersectionTypeNodeMapper::class,
-        NameNodeMapper::class,
-        NullableTypeNodeMapper::class,
-        StringNodeMapper::class,
-        UnionTypeNodeMapper::class,
-        ExprNodeMapper::class,
     ];
 
     /**
@@ -309,11 +286,7 @@ final class LazyContainerFactory
             }
         );
 
-        $this->registerTagged(
-            $rectorConfig,
-            self::PHP_PARSER_NODE_MAPPER_CLASSES,
-            PhpParserNodeMapperInterface::class
-        );
+        $rectorConfig->autodiscover(__DIR__ . '/../StaticTypeMapper/PhpParser');
 
         $this->registerTagged(
             $rectorConfig,
