@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\BetterPhpDocParser\PhpDocParser;
+namespace Rector\BetterPhpDocParser\NodeDecorator;
 
 use PhpParser\Node as PhpNode;
 use PHPStan\PhpDocParser\Ast\Node;

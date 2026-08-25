@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\BetterPhpDocParser\PhpDocParser;
+namespace Rector\BetterPhpDocParser\NodeDecorator;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
@@ -21,6 +21,8 @@ use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
+use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
+use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\ValueObject\DoctrineAnnotation\SilentKeyMap;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
