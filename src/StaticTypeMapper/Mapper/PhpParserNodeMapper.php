@@ -26,7 +26,7 @@ final readonly class PhpParserNodeMapper
 
         foreach ($this->phpParserNodeMappers as $phpParserNodeMapper) {
             $nodeType = $phpParserNodeMapper->getNodeType();
-            if (! is_a($node, $nodeType)) {
+            if (! $node instanceof $nodeType) {
                 continue;
             }
 
