@@ -303,7 +303,7 @@ parameters:
             paths:
                 - src/NodeNameResolver/NodeNameResolver.php
                 - src/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
-                - src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
+                - src/BetterPhpDocParser/NodeDecorator/DoctrineAnnotationDecorator.php
 
         -
             identifier: symplify.forbiddenFuncCall

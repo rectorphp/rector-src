@@ -19,16 +19,11 @@ use Rector\Application\FileProcessor;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
-use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ArrayTypePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\CallableTypePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\IntersectionTypeNodePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\TemplatePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\UnionTypeNodePhpDocNodeVisitor;
-use Rector\BetterPhpDocParser\PhpDocParser\ArrayItemClassNameDecorator;
-use Rector\BetterPhpDocParser\PhpDocParser\ConstExprClassNameDecorator;
-use Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator;
-use Rector\BetterPhpDocParser\PhpDocParser\PhpDocTagGenericUsesDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\PlainValueParser;
@@ -105,16 +100,6 @@ final class LazyContainerFactory
         LocalVariableScopeNodeVisitor::class,
         NameAndArgNodeVisitor::class,
         DefaultValueNodeVisitor::class,
-    ];
-
-    /**
-     * @var array<class-string<PhpDocNodeDecoratorInterface>>
-     */
-    private const array PHP_DOC_NODE_DECORATOR_CLASSES = [
-        ConstExprClassNameDecorator::class,
-        DoctrineAnnotationDecorator::class,
-        ArrayItemClassNameDecorator::class,
-        PhpDocTagGenericUsesDecorator::class,
     ];
 
     /**
@@ -275,12 +260,6 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->autodiscover(__DIR__ . '/../StaticTypeMapper/PhpParser');
-
-        $this->registerTagged(
-            $rectorConfig,
-            self::PHP_DOC_NODE_DECORATOR_CLASSES,
-            PhpDocNodeDecoratorInterface::class
-        );
 
         $this->registerTagged(
             $rectorConfig,

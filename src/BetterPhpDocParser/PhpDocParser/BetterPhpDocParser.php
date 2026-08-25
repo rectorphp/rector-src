@@ -21,6 +21,10 @@ use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
+use Rector\BetterPhpDocParser\NodeDecorator\ArrayItemClassNameDecorator;
+use Rector\BetterPhpDocParser\NodeDecorator\ConstExprClassNameDecorator;
+use Rector\BetterPhpDocParser\NodeDecorator\DoctrineAnnotationDecorator;
+use Rector\BetterPhpDocParser\NodeDecorator\PhpDocTagGenericUsesDecorator;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -44,16 +48,32 @@ final class BetterPhpDocParser extends PhpDocParser
     private const string MULTI_NEW_LINES_REGEX = '#(?<new_line>\r\n|\n){2,}#';
 
     /**
-     * @param PhpDocNodeDecoratorInterface[] $phpDocNodeDecorators
+     * @var PhpDocNodeDecoratorInterface[]
      */
+    private readonly array $phpDocNodeDecorators;
+
     public function __construct(
         ParserConfig $parserConfig,
         TypeParser $typeParser,
         ConstExprParser $constExprParser,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
-        private readonly array $phpDocNodeDecorators,
+        ConstExprClassNameDecorator $constExprClassNameDecorator,
+        DoctrineAnnotationDecorator $doctrineAnnotationDecorator,
+        ArrayItemClassNameDecorator $arrayItemClassNameDecorator,
+        PhpDocTagGenericUsesDecorator $phpDocTagGenericUsesDecorator,
         private readonly PrivatesAccessor $privatesAccessor,
     ) {
+        // The decorator order below is significant; keep it as is. DoctrineAnnotationDecorator must
+        // run before ArrayItemClassNameDecorator, which resolves class names inside the array items the
+        // former produces. A wrong order silently drops annotation class usages and strips their imports.
+        // They are injected explicitly, not autodiscovered, so the order stays under our control.
+        $this->phpDocNodeDecorators = [
+            $constExprClassNameDecorator,
+            $doctrineAnnotationDecorator,
+            $arrayItemClassNameDecorator,
+            $phpDocTagGenericUsesDecorator,
+        ];
+
         parent::__construct(
             // ParserConfig
             $parserConfig,
