@@ -10,12 +10,20 @@ use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\NodeTraverser\SimpleNodeTraverser;
 
-final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
+/**
+ * Marks by-ref returns (IS_BYREF_RETURN / IS_INSIDE_BYREF_FUNCTION_LIKE) and by-ref variables
+ * (IS_BYREF_VAR) from a single FunctionLike entry, sharing the one node subscription.
+ */
+final class ByRefNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
@@ -33,13 +41,53 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Deco
             return null;
         }
 
-        $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($node, []);
-        $byRefVariableNames = $this->resolveParamIsByRefAttribute($node, $byRefVariableNames);
-
         $stmts = $node->getStmts();
         if ($stmts === null) {
             return null;
         }
+
+        $this->decorateByRefReturn($node, $stmts);
+        $this->decorateByRefVariables($node, $stmts);
+
+        return null;
+    }
+
+    /**
+     * @param Node\Stmt[] $stmts
+     */
+    private function decorateByRefReturn(FunctionLike $functionLike, array $stmts): void
+    {
+        if (! $functionLike->returnsByRef()) {
+            return;
+        }
+
+        SimpleNodeTraverser::decorateWithAttributeValue($stmts, AttributeKey::IS_INSIDE_BYREF_FUNCTION_LIKE, true);
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $stmts,
+            static function (Node $node): int|null|Node {
+                // avoid nested functions or classes
+                if ($node instanceof Class_ || $node instanceof FunctionLike) {
+                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if (! $node instanceof Return_) {
+                    return null;
+                }
+
+                $node->setAttribute(AttributeKey::IS_BYREF_RETURN, true);
+                return $node;
+            }
+        );
+    }
+
+    /**
+     * @param Node\Stmt[] $stmts
+     */
+    private function decorateByRefVariables(FunctionLike $functionLike, array $stmts): void
+    {
+        $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($functionLike, []);
+        $byRefVariableNames = $this->resolveParamIsByRefAttribute($functionLike, $byRefVariableNames);
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
@@ -61,8 +109,6 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Deco
                 return $subNode;
             }
         );
-
-        return null;
     }
 
     /**
