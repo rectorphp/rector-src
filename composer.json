@@ -18,7 +18,7 @@
         "composer/semver": "^3.4",
         "composer/xdebug-handler": "^3.0.5",
         "doctrine/inflector": "^2.1",
-        "entropy/entropy": "^0.4.9",
+        "entropy/entropy": "^0.4.12",
         "nette/utils": "^4.1.4",
         "nikic/php-parser": "^5.8",
         "ondram/ci-detector": "^4.2",
