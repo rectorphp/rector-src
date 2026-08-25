@@ -209,7 +209,10 @@ CODE_SAMPLE
 
     private function isParameterAndArgCountAndOrderIdentical(ClassMethod $classMethod): bool
     {
-        $soleStmt = $classMethod->stmts[0];
+        $soleStmt = $classMethod->stmts[0] ?? null;
+        if (! $soleStmt instanceof Stmt) {
+            return false;
+        }
 
         $parentCallArgs = $this->matchParentConstructorCallArgs($soleStmt);
         if ($parentCallArgs === null) {

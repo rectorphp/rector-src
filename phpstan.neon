@@ -194,12 +194,6 @@ parameters:
             identifier: offsetAccess.nonArray
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
 
-        # known non-empty class method
-        -
-            identifier: offsetAccess.notFound
-            message: '#Offset 0 might not exist on array<PhpParser\\Node\\Stmt>\|null#'
-            path: rules/DeadCode/Rector/ClassMethod/RemoveParentDelegatingConstructorRector.php
-
         -
             identifier: offsetAccess.notFound
             message: '#Offset float\|int\|string might not exist on string#'
