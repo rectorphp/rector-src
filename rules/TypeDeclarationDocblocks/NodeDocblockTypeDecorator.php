@@ -149,6 +149,7 @@ final readonly class NodeDocblockTypeDecorator
             return false;
         }
 
-        return $type->getKeyType() instanceof IntegerType;
+        // both plain "mixed[]" (integer key) and a fully mixed-keyed array carry no useful value
+        return $type->getKeyType() instanceof IntegerType || $type->getKeyType() instanceof MixedType;
     }
 }
