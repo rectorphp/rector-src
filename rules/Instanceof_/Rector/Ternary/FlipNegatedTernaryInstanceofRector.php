@@ -22,8 +22,8 @@ final class FlipNegatedTernaryInstanceofRector extends AbstractRector
     {
         return new RuleDefinition('Flip negated ternary of `instanceof` to direct use of object', [
             new CodeSample(
-                'echo ! $object instanceof Product ? null : $object->getPrice();',
-                'echo $object instanceof Product ? $object->getPrice() : null;'
+                '$price = ! $object instanceof Product ? null : $object->getPrice();',
+                '$price = $object instanceof Product ? $object->getPrice() : null;'
             ),
         ]);
     }
