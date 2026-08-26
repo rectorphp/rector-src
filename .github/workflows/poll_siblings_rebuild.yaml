@@ -1,0 +1,65 @@
+# Safety net for the event-driven dispatch_build_scoped_rector.yaml in each rector-* sibling.
+# If a sibling's merged-PR dispatch is ever dropped, this cron notices the newer sibling main
+# and re-runs build_scoped_rector.yaml. It is a backstop, not the primary trigger.
+name: Poll Siblings And Rebuild
+
+on:
+    schedule:
+        # every 15 min; GitHub floors scheduled runs at ~5 min and delays high-frequency crons
+        - cron: '*/15 * * * *'
+    workflow_dispatch: null
+
+permissions:
+    actions: write
+
+jobs:
+    poll_siblings_rebuild:
+        # only on the canonical repo, never forks
+        if: github.repository == 'rectorphp/rector-src'
+
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            -
+                name: "Rebuild if any sibling main is newer than the last scoped build"
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                run: |
+                    set -euo pipefail
+
+                    SIBLINGS="rector-phpunit rector-doctrine rector-symfony rector-downgrade-php"
+
+                    # skip while rector-src main sits on a tagged release commit; the tag/empty-commit
+                    # path is handled by the sibling dispatcher, not by this backstop
+                    MAIN_SHA=$(gh api repos/rectorphp/rector-src/commits/main --jq '.sha')
+                    if gh api repos/rectorphp/rector-src/tags --jq '.[].commit.sha' | grep -qx "$MAIN_SHA"; then
+                        echo "rector-src main $MAIN_SHA is a tagged commit, skipping"
+                        exit 0
+                    fi
+
+                    # start of the most recent build_scoped_rector run (any conclusion)
+                    LAST_BUILD=$(gh api \
+                        repos/rectorphp/rector-src/actions/workflows/build_scoped_rector.yaml/runs \
+                        --jq '.workflow_runs[0].created_at // "1970-01-01T00:00:00Z"')
+                    LAST_BUILD_TS=$(date -d "$LAST_BUILD" +%s)
+                    echo "last scoped build: $LAST_BUILD"
+
+                    NEWER=0
+                    for SIB in $SIBLINGS; do
+                        COMMIT_DATE=$(gh api "repos/rectorphp/$SIB/commits/main" --jq '.commit.committer.date')
+                        COMMIT_TS=$(date -d "$COMMIT_DATE" +%s)
+                        if [ "$COMMIT_TS" -gt "$LAST_BUILD_TS" ]; then
+                            echo "$SIB main ($COMMIT_DATE) is newer than the last build"
+                            NEWER=1
+                        else
+                            echo "$SIB main ($COMMIT_DATE) already built"
+                        fi
+                    done
+
+                    if [ "$NEWER" -eq 1 ]; then
+                        echo "Dispatching build_scoped_rector.yaml"
+                        gh workflow run build_scoped_rector.yaml --repo rectorphp/rector-src --ref main
+                    else
+                        echo "All siblings already built, nothing to do"
+                    fi
