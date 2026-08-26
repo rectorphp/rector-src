@@ -42,5 +42,10 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['staticCallsToNews', 'staticCallToNew'];
         yield ['newsToMethodCalls', 'newToMethodCall'];
         yield ['hasFilters', 'hasFilter'];
+
+        // "ous" adjectives must be kept as is
+        yield ['anonymousClassNodes', 'anonymousClassNode'];
+        yield ['previousItems', 'previousItem'];
+        yield ['anonymous', 'anonymous'];
     }
 }
