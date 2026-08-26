@@ -90,10 +90,16 @@ final readonly class InflectorSingularResolver
 
         $resolvedName = '';
         foreach ($camelCases as $camelCase) {
-            if (in_array($camelCase[self::CAMELCASE], ['is', 'has', 'cms', 'this'], true)) {
-                $value = $camelCase[self::CAMELCASE];
+            $camelCaseValue = (string) $camelCase[self::CAMELCASE];
+
+            // words ending in "ous" are adjectives, not plurals, e.g. "anonymous", "previous"
+            if (in_array($camelCaseValue, ['is', 'has', 'cms', 'this'], true) || str_ends_with(
+                $camelCaseValue,
+                'ous'
+            )) {
+                $value = $camelCaseValue;
             } else {
-                $value = $this->inflector->singularize((string) $camelCase[self::CAMELCASE]);
+                $value = $this->inflector->singularize($camelCaseValue);
             }
 
             $resolvedName .= $value;
