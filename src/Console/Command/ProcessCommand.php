@@ -111,9 +111,9 @@ EOF
         // 0. warn about skipped rules that are deprecated
         if ($this->skippedClassResolver->resolveDeprecatedSkippedClasses() !== []) {
             $this->symfonyStyle->warning(sprintf(
-                'These rules are skipped, but are deprecated. Most likely you do not need to skip them anymore as not part of any set and remove them: %s* %s',
+                'These rules are skipped, but are deprecated. Most likely you do not need to skip them anymore as not part of any set and remove them: %s%s',
                 "\n\n",
-                implode(' * ', $this->skippedClassResolver->resolveDeprecatedSkippedClasses()) . "\n"
+                '* ' . implode("\n* ", $this->skippedClassResolver->resolveDeprecatedSkippedClasses()) . "\n"
             ));
         }
 
