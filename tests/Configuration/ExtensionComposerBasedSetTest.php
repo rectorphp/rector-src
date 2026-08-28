@@ -28,10 +28,10 @@ final class ExtensionComposerBasedSetTest extends TestCase
     }
 
     /**
-     * The extension packages are not required by rector-src, so their constant is undefined here and the
-     * deprecated set group has to keep working.
+     * The extension packages are not required by rector-src, so their constant is undefined here and
+     * nothing is loaded for the toggle.
      */
-    public function testFallsBackToTheSetGroupWhenTheExtensionIsNotInstalled(): void
+    public function testLoadsNothingWhenTheExtensionIsNotInstalled(): void
     {
         foreach ($this->provideExtensionComposerBasedSetLists() as $setListConstant) {
             $this->assertFalse(defined($setListConstant), $setListConstant);
@@ -40,7 +40,6 @@ final class ExtensionComposerBasedSetTest extends TestCase
         $rectorConfigBuilder = new RectorConfigBuilder()
             ->withComposerBased(laravel: true, drupal: true);
 
-        $this->assertSame([SetGroup::LARAVEL, SetGroup::DRUPAL], $this->readPrivateArray($rectorConfigBuilder, 'setGroups'));
         $this->assertSame([], $this->readPrivateArray($rectorConfigBuilder, 'sets'));
     }
 
