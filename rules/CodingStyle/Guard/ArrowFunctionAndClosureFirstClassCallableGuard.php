@@ -117,7 +117,7 @@ final readonly class ArrowFunctionAndClosureFirstClassCallableGuard
             return false;
         }
 
-        return count($parameters) > 1;
+        return count($parameters) !== count($args);
     }
 
     private function isBuiltinReflection(FunctionReflection|MethodReflection $reflection): bool
