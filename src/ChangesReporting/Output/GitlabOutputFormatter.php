@@ -15,6 +15,9 @@ use Rector\Util\FileHasher;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\ProcessResult;
 
+/**
+ * @deprecated Will be removed in next minor version, as Rector is not a static analysis tool.
+ */
 final readonly class GitlabOutputFormatter implements OutputFormatterInterface
 {
     private const string NAME = 'gitlab';
