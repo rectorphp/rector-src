@@ -198,6 +198,7 @@ final class ChangedFilesDetector
         if (! is_array($baseEntries) || ! is_array($comparedEntries)) {
             return true;
         }
+
         return array_any($comparedEntries, fn ($comparedEntry): bool => ! in_array($comparedEntry, $baseEntries, true));
     }
 
