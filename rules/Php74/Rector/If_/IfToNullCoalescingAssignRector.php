@@ -17,11 +17,13 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -34,7 +36,8 @@ final class IfToNullCoalescingAssignRector extends AbstractRector implements Min
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -130,7 +133,12 @@ CODE_SAMPLE
             return false;
         }
 
-        $propertyType = $this->nodeTypeResolver->getType($expr);
+        $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($expr);
+        if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
+            return false;
+        }
+
+        $propertyType = $phpPropertyReflection->getReadableType();
         if ($propertyType instanceof MixedType) {
             return false;
         }
