@@ -6,10 +6,8 @@ namespace Rector\Configuration;
 
 use Deprecated;
 use PhpParser\NodeVisitor;
-use Rector\Bridge\SetProviderCollector;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
-use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\CodingStyleLevel;
 use Rector\Config\Level\DeadCodeLevel;
@@ -26,9 +24,7 @@ use Rector\Enum\Config\Defaults;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\Enum\SetGroup;
-use Rector\Set\SetManager;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonyInternalSetList;
@@ -175,19 +171,9 @@ final class RectorConfigBuilder
      */
     private array $registerServices = [];
 
-    /**
-     * @var array<SetGroup::*>
-     */
-    private array $setGroups = [];
-
     private ?bool $reportingRealPath = null;
 
     private ?bool $reportUnusedSkips = null;
-
-    /**
-     * @var string[]
-     */
-    private array $groupLoadedSets = [];
 
     private ?string $editorUrl = null;
 
@@ -198,30 +184,12 @@ final class RectorConfigBuilder
     private ?int $pickedPhpSetsVersion = null;
 
     /**
-     * @var array<class-string<SetProviderInterface>,bool>
-     */
-    private array $setProviders = [];
-
-    /**
      * @var LevelOverflow[]
      */
     private array $levelOverflows = [];
 
     public function __invoke(RectorConfig $rectorConfig): void
     {
-        if ($this->setGroups !== [] || $this->setProviders !== []) {
-            $setProviderCollector = new SetProviderCollector(array_map(
-                $rectorConfig->make(...),
-                \array_keys($this->setProviders)
-            ));
-
-            $setManager = new SetManager($setProviderCollector, new InstalledPackageResolver(getcwd()));
-
-            $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
-
-            SimpleParameterProvider::addParameter(Option::COMPOSER_BASED_SETS, $this->groupLoadedSets);
-        }
-
         // not to miss it by accident
         if ($this->isWithPhpSetsUsed === true) {
             $this->sets[] = SetList::PHP_POLYFILLS;
@@ -233,9 +201,6 @@ final class RectorConfigBuilder
                 $this->pickedPhpSetsVersion
             );
         }
-
-        // merge sets together
-        $this->sets = array_merge($this->sets, $this->groupLoadedSets);
 
         $uniqueSets = array_unique($this->sets);
 
@@ -745,12 +710,7 @@ final class RectorConfigBuilder
 
                 // single set, as every rule inside is bound to the installed package version on its own
                 $this->sets[] = $setFilePath;
-                continue;
             }
-
-            // @deprecated fallback for extensions that still describe their sets as objects,
-            // instead of bonding the rules themselves
-            $this->setGroups[] = $setGroup;
         }
 
         if ($phpunit) {
@@ -1188,26 +1148,14 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @param class-string<SetProviderInterface> ...$setProviders
+     * @deprecated Set providers are now loaded internally. Use withComposerBased() instead.
      */
-    public function withSetProviders(string ...$setProviders): self
+    public function withSetProviders(): self
     {
-        foreach ($setProviders as $setProvider) {
-            if (\array_key_exists($setProvider, $this->setProviders)) {
-                continue;
-            }
-
-            if (! is_a($setProvider, SetProviderInterface::class, true)) {
-                throw new InvalidConfigurationException(sprintf(
-                    'Set provider "%s" must implement "%s"',
-                    $setProvider,
-                    SetProviderInterface::class
-                ));
-            }
-
-            $this->setProviders[$setProvider] = true;
-        }
-
+        trigger_error(
+            'The withSetProviders() method is deprecated and no longer applied. Set providers are now loaded internally - use "withComposerBased()" instead.',
+            E_USER_DEPRECATED
+        );
         return $this;
     }
 
