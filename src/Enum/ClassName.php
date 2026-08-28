@@ -15,6 +15,4 @@ final class ClassName
     public const string JMS_TYPE = 'JMS\Serializer\Annotation\Type';
 
     public const string DOCTRINE_ENTITY = 'Doctrine\ORM\Mapping\Entity';
-
-    public const string DATA_PROVIDER = 'PHPUnit\Framework\Attributes\DataProvider';
 }

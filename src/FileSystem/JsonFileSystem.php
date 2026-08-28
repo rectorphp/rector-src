@@ -18,13 +18,4 @@ final class JsonFileSystem
 
         return Json::decode($fileContents, forceArrays: true);
     }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public static function writeFile(string $filePath, array $data): void
-    {
-        $json = Json::encode($data, pretty: true);
-        FileSystem::write($filePath, $json, null);
-    }
 }
