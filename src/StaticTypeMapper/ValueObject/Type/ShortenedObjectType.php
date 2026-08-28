@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
-use Override;
 use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -24,7 +23,6 @@ final class ShortenedObjectType extends ObjectType
         parent::__construct($shortName);
     }
 
-    #[Override]
     public function isSuperTypeOf(Type $type): IsSuperTypeOfResult
     {
         $fullyQualifiedObjectType = new ObjectType($this->fullyQualifiedName);
@@ -44,7 +42,6 @@ final class ShortenedObjectType extends ObjectType
         return $this->fullyQualifiedName;
     }
 
-    #[Override]
     public function equals(Type $type): bool
     {
         $isEqual = parent::equals($type);

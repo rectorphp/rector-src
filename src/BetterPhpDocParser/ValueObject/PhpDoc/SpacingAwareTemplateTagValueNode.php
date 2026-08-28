@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\ValueObject\PhpDoc;
 
-use Override;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Stringable;
@@ -20,7 +19,6 @@ final class SpacingAwareTemplateTagValueNode extends TemplateTagValueNode implem
         parent::__construct($name, $typeNode, $description);
     }
 
-    #[Override]
     public function __toString(): string
     {
         // @see https://github.com/rectorphp/rector/issues/3438
