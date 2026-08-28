@@ -13,19 +13,38 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 {
     private ChangedFilesDetector $changedFilesDetector;
 
+    /**
+     * @var mixed[]
+     */
+    private array $originalRules = [];
+
+    /**
+     * @var mixed[]
+     */
+    private array $originalSkip = [];
+
+    /**
+     * @var mixed[]
+     */
+    private array $originalFileExtensions = [];
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->changedFilesDetector = $this->make(ChangedFilesDetector::class);
+
+        // the parameter bag is a global static shared across the whole test process, restore it after
+        $this->originalRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
+        $this->originalSkip = SimpleParameterProvider::provideArrayParameter(Option::SKIP);
+        $this->originalFileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
     }
 
     protected function tearDown(): void
     {
-        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
-        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_SETS, null);
-        SimpleParameterProvider::setParameter(Option::SKIP, null);
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, null);
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, $this->originalRules);
+        SimpleParameterProvider::setParameter(Option::SKIP, $this->originalSkip);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, $this->originalFileExtensions);
 
         $this->changedFilesDetector->clear();
     }
@@ -90,10 +109,10 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 
     public function testCacheClearedWhenOutputAffectingParameterChanged(): void
     {
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, null);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, ['php']);
         $filePath = $this->cacheFileUnderRules(['Rector\\RuleA']);
 
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, true);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, ['php', 'phtml']);
         $this->snapshotConfiguration();
 
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));

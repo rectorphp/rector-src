@@ -13,27 +13,41 @@ final class FileHashComputerTest extends AbstractLazyTestCase
 {
     private FileHashComputer $fileHashComputer;
 
+    /**
+     * @var mixed[]
+     */
+    private array $originalRules = [];
+
+    /**
+     * @var mixed[]
+     */
+    private array $originalFileExtensions = [];
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->fileHashComputer = $this->make(FileHashComputer::class);
+
+        // the parameter bag is a global static shared across the whole test process, restore it after
+        $this->originalRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
+        $this->originalFileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
     }
 
     protected function tearDown(): void
     {
-        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, null);
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, $this->originalRules);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, $this->originalFileExtensions);
     }
 
     public function testOutputAffectingParameterChangesHash(): void
     {
         $configFilePath = __DIR__ . '/Fixture/rector.php';
 
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, null);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, ['php']);
         $hashBefore = $this->fileHashComputer->compute($configFilePath);
 
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, true);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, ['php', 'phtml']);
         $hashAfter = $this->fileHashComputer->compute($configFilePath);
 
         $this->assertNotSame($hashBefore, $hashAfter);
