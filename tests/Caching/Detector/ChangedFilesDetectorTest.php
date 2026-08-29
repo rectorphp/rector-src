@@ -63,6 +63,36 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
 
+    public function testScopedRunReusesFullRunCache(): void
+    {
+        $filePath = __DIR__ . '/Source/file.php';
+
+        // full run caches the file as clean
+        $this->changedFilesDetector->setActiveScope(null, null);
+        $this->changedFilesDetector->addCacheableFile($filePath);
+        $this->changedFilesDetector->cacheFile($filePath);
+        $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
+
+        // an --only run reuses the full-run cache instead of re-analysing the file
+        $this->changedFilesDetector->setActiveScope('Rector\\SomeRule', null);
+        $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
+    }
+
+    public function testScopedCacheDoesNotLeakToFullRun(): void
+    {
+        $filePath = __DIR__ . '/Source/file.php';
+
+        // a scoped run only caches under its own key
+        $this->changedFilesDetector->setActiveScope('Rector\\SomeRule', null);
+        $this->changedFilesDetector->addCacheableFile($filePath);
+        $this->changedFilesDetector->cacheFile($filePath);
+        $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
+
+        // a full run must not treat the file as cached, as only one rule ran
+        $this->changedFilesDetector->setActiveScope(null, null);
+        $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
+    }
+
     public function testCacheKeptWhenRuleRemoved(): void
     {
         $filePath = $this->cacheFileUnderRules(['Rector\\RuleA', 'Rector\\RuleB']);

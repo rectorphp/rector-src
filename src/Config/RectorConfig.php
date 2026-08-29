@@ -215,6 +215,9 @@ final class RectorConfig extends Container
             $configuration
         );
 
+        // feed values into the cache hash, so a changed configuration invalidates the cache
+        SimpleParameterProvider::setParameter(Option::RULE_CONFIGURATIONS, $this->ruleConfigurations);
+
         $this->rule($rectorClass);
 
         $this->afterResolving($rectorClass, function (ConfigurableRectorInterface $configurableRector) use (
