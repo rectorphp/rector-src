@@ -640,6 +640,11 @@ final class RectorConfigBuilder
     // there is no withPhp80Sets() and above,
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
+    /**
+     * @param bool $instanceOf @deprecated Use $codeQuality instead, as most instanceof rules were moved there
+     * @param bool $if @deprecated Use $codeQuality and $codingStyle instead, as the if rules were moved there or deprecated
+     * @param bool $earlyReturn @deprecated Use $codeQuality instead, as all early return rules were moved there
+     */
     public function withPreparedSets(
         bool $deadCode = false,
         bool $codeQuality = false,
@@ -788,6 +793,7 @@ final class RectorConfigBuilder
 
     /**
      * @param class-string $cacheMetaExtensionClass
+     * @deprecated Niche mechanism, no longer applied. Let Rector handle cache on its own.
      */
     #[Deprecated(message: <<<'TXT'
     Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
