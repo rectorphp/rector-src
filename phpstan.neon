@@ -65,6 +65,11 @@ parameters:
         constants: true
 
     ignoreErrors:
+        # keepComments() is a generic helper; do not narrow it after the deprecated CombineIfRector stopped calling it
+        -
+            identifier: typePerfect.narrowPublicClassMethodParamType
+            path: src/BetterPhpDocParser/Comment/CommentsMerger.php
+
         # the deprecated set objects are still resolved internally, until every extension bonds its rules
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
