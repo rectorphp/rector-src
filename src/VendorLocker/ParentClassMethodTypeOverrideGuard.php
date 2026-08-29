@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker;
 
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
@@ -38,7 +40,7 @@ final readonly class ParentClassMethodTypeOverrideGuard
      * classes, so type-declaration rules must leave it untouched. Final classes are never guarded,
      * as they cannot be extended.
      */
-    public function isTypeGuardedClass(Node\Stmt\Class_|Node\Stmt\Interface_|ClassMethod $node): bool
+    public function isTypeGuardedClass(Class_|Interface_|ClassMethod $node): bool
     {
         $guardedClasses = SimpleParameterProvider::provideArrayParameter(Option::TYPE_GUARDED_CLASSES);
         if ($guardedClasses === []) {
