@@ -10,7 +10,7 @@ rules:
 parameters:
     level: 8
 
-    # reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
@@ -281,10 +281,6 @@ parameters:
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
                 - rules/Arguments/ArgumentDefaultValueReplacer.php
 
-        -
-            identifier: return.type
-            message: '#should return non\-empty\-string but returns string#'
-
         # from mapper interface
         -
             identifier: return.unusedType
@@ -426,13 +422,8 @@ parameters:
             path: src/Reflection/ClassModifierChecker.php
 
 #        -
-#            identifier: typePerfect.narrowPublicClassMethodParamType
-#            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
-#            path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
-
-        -
-            identifier: typePerfect.narrowReturnObjectType
-            message: '#Provide more specific return type "Iterator|PhpParser\\Node" over abstract one#'
+#            identifier: typePerfect.narrowReturnObjectType
+#            message: '#Provide more specific return type "Iterator|PhpParser\\Node" over abstract one#'
 
         -
             identifier: typePerfect.noMixedMethodCaller
