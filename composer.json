@@ -27,7 +27,6 @@
         "phpstan/phpstan": "^2.2.6",
         "react/child-process": "^0.6.5",
         "react/event-loop": "^1.6",
-        "react/promise": "^3.3",
         "react/socket": "^1.17",
         "rector/extension-installer": "^0.11.2",
         "rector/rector-doctrine": "dev-main",
