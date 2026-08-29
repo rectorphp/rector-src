@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
-use Override;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
@@ -54,7 +53,6 @@ final class AliasedObjectType extends ObjectType
         return $this->getShortName() === $comparedObjectType->getShortName();
     }
 
-    #[Override]
     public function equals(Type $type): bool
     {
         $className = ClassNameFromObjectTypeResolver::resolve($type);

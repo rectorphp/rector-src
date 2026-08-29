@@ -10,7 +10,7 @@ rules:
 parameters:
     level: 8
 
-    # reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
@@ -281,10 +281,6 @@ parameters:
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
                 - rules/Arguments/ArgumentDefaultValueReplacer.php
 
-        -
-            identifier: return.type
-            message: '#should return non\-empty\-string but returns string#'
-
         # from mapper interface
         -
             identifier: return.unusedType
@@ -295,16 +291,6 @@ parameters:
             identifier: return.unusedType
             message: '#Method (.*?)refactor\(\) (never returns|should return) (.*?)#'
             path: rules/Php70/Rector/If_/IfToSpaceshipRector.php
-
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "var_dump\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
-
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "class_exists\(\)" cannot be used/left in the code#'
-            path: src/Configuration/OnlyRuleResolver.php
 
         -
             identifier: symplify.forbiddenFuncCall
@@ -323,35 +309,22 @@ parameters:
                 - src/Validation/RectorConfigValidator.php
                 - src/Testing/PHPUnit/AbstractLazyTestCase.php
                 - src/Reporting/DeprecatedRulesReporter.php
+                - src/Configuration/OnlyRuleResolver.php
 
-        # required for reflection
+        # debug and internal functions
         -
             identifier: symplify.forbiddenFuncCall
-            message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
-            path: src/Util/Reflection/PrivatesAccessor.php
-
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "(function_exists|dump_node)\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
-
-        # chicken/egg
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "(d|dd)\(\)" cannot be used/left in the code#'
-            path: tests/debug_functions.php
-
-        # debug functions
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: tests/debug_functions.php
+            paths:
+                - src/functions/node_helper.php
+                - tests/debug_functions.php
+                - src/Util/Reflection/PrivatesAccessor.php
 
         # checks for rector always autoloaded rules only
         -
             identifier: symplify.forbiddenFuncCall
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
+            paths:
+                - src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
         # native filesystem calls, required for performance reasons
         -
@@ -408,36 +381,9 @@ parameters:
         # fixture Rector rules
         -
             identifier: symplify.seeAnnotationToTest
-            path: tests/Issues/
-
-        # dev rule
-        -
-            identifier: symplify.seeAnnotationToTest
-            message: '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
-
-        -
-            identifier: symplify.seeAnnotationToTest
-            path: tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
-
-        # wider types for external use
-        -
-            identifier: typePerfect.narrowPublicClassMethodParamType
-            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
-            path: src/Reflection/ClassModifierChecker.php
-
-        # false positive - should be fixed
-        -
-            identifier: typePerfect.narrowPublicClassMethodParamType
-            message: '#Parameters should have "PhpParser\\Node\\Expr\\Closure" types as the only types passed to this method#'
-
-        -
-            identifier: typePerfect.narrowPublicClassMethodParamType
-            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
-            path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
-
-        -
-            identifier: typePerfect.narrowReturnObjectType
-            message: '#Provide more specific return type "Iterator|PhpParser\\Node" over abstract one#'
+            paths:
+                - tests/Issues/
+                - tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
 
         -
             identifier: typePerfect.noMixedMethodCaller

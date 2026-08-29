@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\ValueObject\Type;
 
-use Override;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use Stringable;
@@ -24,7 +23,6 @@ final class BracketsAwareUnionTypeNode extends UnionTypeNode implements Stringab
     /**
      * Preserve common format
      */
-    #[Override]
     public function __toString(): string
     {
         $types = [];
