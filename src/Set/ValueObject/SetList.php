@@ -35,38 +35,89 @@ final class SetList
      */
     public const string RECTOR_PRESET = __DIR__ . '/../../../config/set/rector-preset.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_52 = __DIR__ . '/../../../config/set/php52.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_53 = __DIR__ . '/../../../config/set/php53.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_54 = __DIR__ . '/../../../config/set/php54.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_55 = __DIR__ . '/../../../config/set/php55.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_56 = __DIR__ . '/../../../config/set/php56.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_70 = __DIR__ . '/../../../config/set/php70.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_71 = __DIR__ . '/../../../config/set/php71.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_72 = __DIR__ . '/../../../config/set/php72.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_73 = __DIR__ . '/../../../config/set/php73.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_74 = __DIR__ . '/../../../config/set/php74.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_80 = __DIR__ . '/../../../config/set/php80.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_81 = __DIR__ . '/../../../config/set/php81.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_82 = __DIR__ . '/../../../config/set/php82.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_83 = __DIR__ . '/../../../config/set/php83.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_84 = __DIR__ . '/../../../config/set/php84.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_85 = __DIR__ . '/../../../config/set/php85.php';
 
+    /**
+     * @deprecated Use withPhpSets() or withPhpLevel() instead
+     */
     public const string PHP_86 = __DIR__ . '/../../../config/set/php86.php';
 
     public const string PRIVATIZATION = __DIR__ . '/../../../config/set/privatization.php';
