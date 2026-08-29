@@ -6,6 +6,7 @@ namespace Rector\Configuration;
 
 use Deprecated;
 use DrupalRector\Set\DrupalSetList;
+use Nette\Utils\Strings;
 use PhpParser\NodeVisitor;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
@@ -23,6 +24,7 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Enum\Config\Defaults;
 use Rector\Exception\Configuration\InvalidConfigurationException;
+use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -37,10 +39,16 @@ use Webmozart\Assert\Assert;
 
 /**
  * @api
+ * @see \Rector\Tests\Configuration\RectorConfigBuilderTest
  */
 final class RectorConfigBuilder
 {
     private const int MAX_LEVEL_GAP = 10;
+
+    /**
+     * Matches the deprecated per-version PHP set files, e.g. .../config/set/php82.php
+     */
+    private const string DEPRECATED_PHP_SET_REGEX = '#/config/set/php\d+\.php$#';
 
     /**
      * A level method and the set that contains the very same rules,
@@ -173,6 +181,12 @@ final class RectorConfigBuilder
     private ?int $pickedPhpSetsVersion = null;
 
     /**
+     * Only an explicitly picked withPhpSets(phpXX) version acts as a ceiling; the composer.json
+     * fallback must not, so polyfilled rules can still be raised above the project PHP version
+     */
+    private bool $isPhpSetsVersionPicked = false;
+
+    /**
      * @var LevelOverflow[]
      */
     private array $levelOverflows = [];
@@ -184,7 +198,7 @@ final class RectorConfigBuilder
             $this->sets[] = SetList::PHP_POLYFILLS;
         }
 
-        if ($this->pickedPhpSetsVersion !== null) {
+        if ($this->isPhpSetsVersionPicked && $this->pickedPhpSetsVersion !== null) {
             SimpleParameterProvider::setParameter(
                 Option::POLYFILL_CEILING_PHP_VERSION,
                 $this->pickedPhpSetsVersion
@@ -408,6 +422,18 @@ final class RectorConfigBuilder
      */
     public function withSets(array $sets): self
     {
+        foreach ($sets as $set) {
+            if (Strings::match($set, self::DEPRECATED_PHP_SET_REGEX) === null) {
+                continue;
+            }
+
+            trigger_error(sprintf(
+                'The per-version PHP set "%s" is deprecated. Use "withPhpSets()" or "withPhpLevel()" instead, '
+                . 'they pick the rules by your PHP version automatically.',
+                $set
+            ), E_USER_DEPRECATED);
+        }
+
         $this->sets = array_merge($this->sets, $sets);
 
         return $this;
@@ -553,13 +579,13 @@ final class RectorConfigBuilder
 
         // no version picked, target the project composer.json PHP version
         if ($pickedPhpVersions === []) {
-            return $this->addPhpLevelSets();
+            return $this->addPhpLevelSets(ComposerJsonPhpVersionResolver::resolveFromCwdOrFail());
         }
 
         // explicitly picked version is a ceiling, even for polyfilled rules
-        $this->pickedPhpSetsVersion = $pickedPhpVersions[0];
+        $this->isPhpSetsVersionPicked = true;
 
-        return $this->addPhpLevelSets();
+        return $this->addPhpLevelSets($pickedPhpVersions[0]);
     }
 
     #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
@@ -1135,10 +1161,16 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    private function addPhpLevelSets(): self
+    /**
+     * @param PhpVersion::* $phpVersion
+     */
+    private function addPhpLevelSets(int $phpVersion): self
     {
         $this->isWithPhpSetsUsed = true;
+        $this->pickedPhpSetsVersion = $phpVersion;
+
         $this->sets[] = SetList::PHP_VERSION_BASED_SET;
+
         return $this;
     }
 
