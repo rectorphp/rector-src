@@ -294,16 +294,6 @@ parameters:
 
         -
             identifier: symplify.forbiddenFuncCall
-            message: '#Function "var_dump\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
-
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "class_exists\(\)" cannot be used/left in the code#'
-            path: src/Configuration/OnlyRuleResolver.php
-
-        -
-            identifier: symplify.forbiddenFuncCall
             message: '#Function "property_exists\(\)" cannot be used/left in the code#'
             paths:
                 - src/NodeNameResolver/NodeNameResolver.php
@@ -319,6 +309,7 @@ parameters:
                 - src/Validation/RectorConfigValidator.php
                 - src/Testing/PHPUnit/AbstractLazyTestCase.php
                 - src/Reporting/DeprecatedRulesReporter.php
+                - src/Configuration/OnlyRuleResolver.php
 
         # required for reflection
         -
@@ -326,28 +317,19 @@ parameters:
             message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
             path: src/Util/Reflection/PrivatesAccessor.php
 
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "(function_exists|dump_node)\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
-
-        # chicken/egg
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "(d|dd)\(\)" cannot be used/left in the code#'
-            path: tests/debug_functions.php
-
         # debug functions
         -
             identifier: symplify.forbiddenFuncCall
-            message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: tests/debug_functions.php
+            paths:
+                - src/functions/node_helper.php
+                - tests/debug_functions.php
 
         # checks for rector always autoloaded rules only
         -
             identifier: symplify.forbiddenFuncCall
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
+            paths:
+                - src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
         # native filesystem calls, required for performance reasons
         -
