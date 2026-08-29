@@ -425,15 +425,10 @@ parameters:
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/Reflection/ClassModifierChecker.php
 
-        # false positive - should be fixed
-        -
-            identifier: typePerfect.narrowPublicClassMethodParamType
-            message: '#Parameters should have "PhpParser\\Node\\Expr\\Closure" types as the only types passed to this method#'
-
-        -
-            identifier: typePerfect.narrowPublicClassMethodParamType
-            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
-            path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
+#        -
+#            identifier: typePerfect.narrowPublicClassMethodParamType
+#            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
+#            path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
         -
             identifier: typePerfect.narrowReturnObjectType
