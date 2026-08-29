@@ -12,6 +12,9 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\FileSystem\FilesFinder;
 use Rector\Parallel\Application\ParallelFileProcessor;
+use Rector\Parallel\CpuCoreCountProvider;
+use Rector\Parallel\Exception\ParallelShouldNotHappenException;
+use Rector\Parallel\ScheduleFactory;
 use Rector\PhpParser\Parser\ParserErrors;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Skipper\Skipper\UsedSkipCollector;
@@ -25,9 +28,6 @@ use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symplify\EasyParallel\CpuCoreCountProvider;
-use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
-use Symplify\EasyParallel\ScheduleFactory;
 use Throwable;
 
 final class ApplicationFileProcessor

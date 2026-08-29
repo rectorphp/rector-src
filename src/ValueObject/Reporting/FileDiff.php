@@ -7,9 +7,9 @@ namespace Rector\ValueObject\Reporting;
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\Parallel\Contract\SerializableInterface;
 use Rector\Parallel\ValueObject\BridgeItem;
 use Rector\Util\RectorClassesSorter;
-use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
 
 /**

@@ -14,19 +14,19 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Command\ProcessCommand;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
+use Rector\Parallel\Enum\Action;
+use Rector\Parallel\Enum\Content;
+use Rector\Parallel\Enum\ReactCommand;
+use Rector\Parallel\Enum\ReactEvent;
 use Rector\Parallel\ValueObject\Bridge;
+use Rector\Parallel\ValueObject\ParallelProcess;
+use Rector\Parallel\ValueObject\ProcessPool;
+use Rector\Parallel\ValueObject\Schedule;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symplify\EasyParallel\Enum\Action;
-use Symplify\EasyParallel\Enum\Content;
-use Symplify\EasyParallel\Enum\ReactCommand;
-use Symplify\EasyParallel\Enum\ReactEvent;
-use Symplify\EasyParallel\ValueObject\ParallelProcess;
-use Symplify\EasyParallel\ValueObject\ProcessPool;
-use Symplify\EasyParallel\ValueObject\Schedule;
 use Throwable;
 
 /**

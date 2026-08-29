@@ -15,6 +15,9 @@ use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Configuration\Option;
 use Rector\Console\ProcessConfigureDecorator;
+use Rector\Parallel\Enum\Action;
+use Rector\Parallel\Enum\ReactCommand;
+use Rector\Parallel\Enum\ReactEvent;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
@@ -23,9 +26,6 @@ use Rector\ValueObject\Error\SystemError;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symplify\EasyParallel\Enum\Action;
-use Symplify\EasyParallel\Enum\ReactCommand;
-use Symplify\EasyParallel\Enum\ReactEvent;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -154,7 +154,7 @@ final class WorkerCommand extends Command
             );
 
             /**
-             * this invokes all listeners listening $decoder->on(...) @see \Symplify\EasyParallel\Enum\ReactEvent::DATA
+             * this invokes all listeners listening $decoder->on(...) @see \Rector\Parallel\Enum\ReactEvent::DATA
              */
             $encoder->write([
                 ReactCommand::ACTION => Action::RESULT,
