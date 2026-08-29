@@ -39,7 +39,6 @@ use Webmozart\Assert\Assert;
 
 /**
  * @api
- * @see \Rector\Tests\Configuration\RectorConfigBuilderTest
  */
 final class RectorConfigBuilder
 {
@@ -427,11 +426,7 @@ final class RectorConfigBuilder
                 continue;
             }
 
-            trigger_error(sprintf(
-                'The per-version PHP set "%s" is deprecated. Use "withPhpSets()" or "withPhpLevel()" instead, '
-                . 'they pick the rules by your PHP version automatically.',
-                $set
-            ), E_USER_DEPRECATED);
+            Notifier::notifyDeprecatedPhpSet($set);
         }
 
         $this->sets = array_merge($this->sets, $sets);

@@ -82,7 +82,6 @@ parameters:
             paths:
                 - config/set/level
                 - tests/Bridge/SetRectorsResolverTest.php
-                - tests/Configuration/RectorConfigBuilderTest.php
 
         # the deprecated github/gitlab output formatters are still tested until removed in next minor version
         -
