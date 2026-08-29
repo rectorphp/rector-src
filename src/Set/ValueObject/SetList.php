@@ -142,5 +142,5 @@ final class SetList
     /**
      * All PHP version rules in one set; each rule gates itself by PHP version at runtime
      */
-    public const string PHP_VERSION_BASED_SET = __DIR__ . '/../../config/set/php-version-based.php';
+    public const string PHP_VERSION_BASED_SET = __DIR__ . '/../../../config/set/php-version-based.php';
 }

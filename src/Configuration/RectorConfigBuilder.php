@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
+use DrupalRector\Set\DrupalSetList;
 use Deprecated;
 use PhpParser\NodeVisitor;
 use Rector\Bridge\SetRectorsResolver;
@@ -554,13 +555,11 @@ final class RectorConfigBuilder
         // no version picked, target the project composer.json PHP version; validated here, gated at runtime
         if ($pickedPhpVersions === []) {
             ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
-            return $this->addPhpLevelSets();
+            return $this->addPhpLevelSets(null);
         }
 
         // explicitly picked version is a ceiling, even for polyfilled rules
-        $this->pickedPhpSetsVersion = $pickedPhpVersions[0];
-
-        return $this->addPhpLevelSets();
+        return $this->addPhpLevelSets($pickedPhpVersions[0]);
     }
 
     #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
@@ -689,7 +688,7 @@ final class RectorConfigBuilder
 
         if ($drupal && class_exists('DrupalRector\Set\DrupalSetList') && constant('DrupalRector\Set\DrupalSetList::COMPOSER_BASED')) {
             // waits on https://github.com/palantirnet/drupal-rector/pull/419/files#diff-c6bd4ee854830efc1363a7d99c1b6a2e7e64f2499a51e503174ab777de7e64e5
-            $this->sets[] = \DrupalRector\Set\DrupalSetList::COMPOSER_BASED;
+            $this->sets[] = DrupalSetList::COMPOSER_BASED;
         }
 
         if ($phpunit) {
@@ -1136,9 +1135,14 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    private function addPhpLevelSets(): self
+    /**
+     * @param PhpVersion::*|null $phpVersion an explicitly picked version acts as a ceiling;
+     *      null keeps the composer.json PHP version gating and polyfill package support
+     */
+    private function addPhpLevelSets(?int $phpVersion): self
     {
         $this->isWithPhpSetsUsed = true;
+        $this->pickedPhpSetsVersion = $phpVersion;
 
         $this->sets[] = SetList::PHP_VERSION_BASED_SET;
 
