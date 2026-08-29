@@ -14,7 +14,7 @@ final class CpuCoreCountProvider
     public function provide(): int
     {
         try {
-            return (new CpuCoreCounter())->getCount();
+            return new CpuCoreCounter()->getCount();
         } catch (NumberOfCpuCoreNotFound) {
             return self::DEFAULT_CORE_COUNT;
         }
