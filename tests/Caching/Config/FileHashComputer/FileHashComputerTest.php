@@ -23,6 +23,11 @@ final class FileHashComputerTest extends AbstractLazyTestCase
      */
     private array $originalFileExtensions = [];
 
+    /**
+     * @var mixed[]
+     */
+    private array $originalRuleConfigurations = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,12 +37,14 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         // the parameter bag is a global static shared across the whole test process, restore it after
         $this->originalRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
         $this->originalFileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
+        $this->originalRuleConfigurations = SimpleParameterProvider::provideArrayParameter(Option::RULE_CONFIGURATIONS);
     }
 
     protected function tearDown(): void
     {
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, $this->originalRules);
         SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, $this->originalFileExtensions);
+        SimpleParameterProvider::setParameter(Option::RULE_CONFIGURATIONS, $this->originalRuleConfigurations);
     }
 
     public function testOutputAffectingParameterChangesHash(): void
@@ -65,5 +72,23 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         $hashAfter = $this->fileHashComputer->compute($configFilePath);
 
         $this->assertSame($hashBefore, $hashAfter);
+    }
+
+    public function testConfiguredRuleValueChangeChangesHash(): void
+    {
+        $configFilePath = __DIR__ . '/Fixture/rector.php';
+
+        SimpleParameterProvider::setParameter(Option::RULE_CONFIGURATIONS, [
+            'Rector\\SomeRule' => ['old value'],
+        ]);
+        $hashBefore = $this->fileHashComputer->compute($configFilePath);
+
+        // same rule, changed configuration value must invalidate the cache
+        SimpleParameterProvider::setParameter(Option::RULE_CONFIGURATIONS, [
+            'Rector\\SomeRule' => ['new value'],
+        ]);
+        $hashAfter = $this->fileHashComputer->compute($configFilePath);
+
+        $this->assertNotSame($hashBefore, $hashAfter);
     }
 }

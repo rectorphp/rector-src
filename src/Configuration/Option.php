@@ -219,6 +219,11 @@ final class Option
     public const string REGISTERED_RECTOR_SETS = 'registered_rector_sets';
 
     /**
+     * @internal For cache invalidation when a configurable rule value changes
+     */
+    public const string RULE_CONFIGURATIONS = 'rule_configurations';
+
+    /**
      * @internal For verify RectorConfigBuilder instance recreated
      */
     public const string IS_RECTORCONFIG_BUILDER_RECREATED = 'is_rectorconfig_builder_recreated';
