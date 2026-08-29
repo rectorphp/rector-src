@@ -11,12 +11,10 @@ use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
-use Rector\CodingStyle\Rector\If_\AlternativeIfToBracketRector;
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-        AlternativeIfToBracketRector::class,
         CompleteMissingIfElseBracketRector::class,
         InlineIfToExplicitIfRector::class,
         TernaryFalseExpressionToIfRector::class,
