@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Deprecated;
+use DrupalRector\Set\DrupalSetList;
+use Nette\Utils\Strings;
 use PhpParser\NodeVisitor;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
@@ -41,6 +43,11 @@ use Webmozart\Assert\Assert;
 final class RectorConfigBuilder
 {
     private const int MAX_LEVEL_GAP = 10;
+
+    /**
+     * Matches the deprecated per-version PHP set files, e.g. .../config/set/php82.php
+     */
+    private const string DEPRECATED_PHP_SET_REGEX = '#/config/set/php\d+\.php$#';
 
     /**
      * A level method and the set that contains the very same rules,
@@ -173,6 +180,12 @@ final class RectorConfigBuilder
     private ?int $pickedPhpSetsVersion = null;
 
     /**
+     * Only an explicitly picked withPhpSets(phpXX) version acts as a ceiling; the composer.json
+     * fallback must not, so polyfilled rules can still be raised above the project PHP version
+     */
+    private bool $isPhpSetsVersionPicked = false;
+
+    /**
      * @var LevelOverflow[]
      */
     private array $levelOverflows = [];
@@ -184,7 +197,7 @@ final class RectorConfigBuilder
             $this->sets[] = SetList::PHP_POLYFILLS;
         }
 
-        if ($this->pickedPhpSetsVersion !== null) {
+        if ($this->isPhpSetsVersionPicked && $this->pickedPhpSetsVersion !== null) {
             SimpleParameterProvider::setParameter(
                 Option::POLYFILL_CEILING_PHP_VERSION,
                 $this->pickedPhpSetsVersion
@@ -408,6 +421,14 @@ final class RectorConfigBuilder
      */
     public function withSets(array $sets): self
     {
+        foreach ($sets as $set) {
+            if (Strings::match($set, self::DEPRECATED_PHP_SET_REGEX) === null) {
+                continue;
+            }
+
+            Notifier::notifyDeprecatedPhpSet($set);
+        }
+
         $this->sets = array_merge($this->sets, $sets);
 
         return $this;
@@ -551,13 +572,13 @@ final class RectorConfigBuilder
             );
         }
 
-        // no version picked, resolve it from the project composer.json
+        // no version picked, target the project composer.json PHP version
         if ($pickedPhpVersions === []) {
             return $this->addPhpLevelSets(ComposerJsonPhpVersionResolver::resolveFromCwdOrFail());
         }
 
         // explicitly picked version is a ceiling, even for polyfilled rules
-        $this->pickedPhpSetsVersion = $pickedPhpVersions[0];
+        $this->isPhpSetsVersionPicked = true;
 
         return $this->addPhpLevelSets($pickedPhpVersions[0]);
     }
@@ -688,7 +709,7 @@ final class RectorConfigBuilder
 
         if ($drupal && class_exists('DrupalRector\Set\DrupalSetList') && constant('DrupalRector\Set\DrupalSetList::COMPOSER_BASED')) {
             // waits on https://github.com/palantirnet/drupal-rector/pull/419/files#diff-c6bd4ee854830efc1363a7d99c1b6a2e7e64f2499a51e503174ab777de7e64e5
-            $this->sets[] = \DrupalRector\Set\DrupalSetList::COMPOSER_BASED;
+            $this->sets[] = DrupalSetList::COMPOSER_BASED;
         }
 
         if ($phpunit) {
@@ -962,12 +983,10 @@ final class RectorConfigBuilder
 
         $this->isWithPhpLevelUsed = true;
 
-        $phpVersion = ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
-
         $setRectorsResolver = new SetRectorsResolver();
-        $setFilePaths = PhpLevelSetResolver::resolveFromPhpVersion($phpVersion);
-
-        $rectorRulesWithConfiguration = $setRectorsResolver->resolveFromFilePathsIncludingConfiguration($setFilePaths);
+        $rectorRulesWithConfiguration = $setRectorsResolver->resolveFromFilePathIncludingConfiguration(
+            SetList::PHP_VERSION_BASED_SET
+        );
 
         foreach ($rectorRulesWithConfiguration as $position => $rectorRuleWithConfiguration) {
             // add rules until level is reached
@@ -1143,8 +1162,9 @@ final class RectorConfigBuilder
     private function addPhpLevelSets(int $phpVersion): self
     {
         $this->isWithPhpSetsUsed = true;
+        $this->pickedPhpSetsVersion = $phpVersion;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion($phpVersion));
+        $this->sets[] = SetList::PHP_VERSION_BASED_SET;
 
         return $this;
     }

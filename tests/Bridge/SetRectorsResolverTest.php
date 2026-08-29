@@ -6,11 +6,8 @@ namespace Rector\Tests\Bridge;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Bridge\SetRectorsResolver;
-use Rector\Configuration\PhpLevelSetResolver;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\Set\ValueObject\SetList;
-use Rector\ValueObject\PhpVersion;
 
 final class SetRectorsResolverTest extends TestCase
 {
@@ -21,31 +18,16 @@ final class SetRectorsResolverTest extends TestCase
         $this->setRectorsResolver = new SetRectorsResolver();
     }
 
-    public function testResolveFromFilePathForPhpVersion(): void
+    public function testResolvePhpVersionBasedSet(): void
     {
-        $configFilePaths = PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_70);
-        $this->assertCount(6, $configFilePaths);
-        $this->assertContainsOnlyString($configFilePaths);
-
-        foreach ($configFilePaths as $configFilePath) {
-            $this->assertFileExists($configFilePath);
-        }
-    }
-
-    public function testResolveFromFilePathForPhpLevel(): void
-    {
-        $projectPhpVersion = ComposerJsonPhpVersionResolver::resolve(__DIR__ . '/Fixture/some-composer.json');
-
-        $this->assertIsInt($projectPhpVersion);
-        $this->assertSame(PhpVersion::PHP_73, $projectPhpVersion);
-
-        $configFilePaths = PhpLevelSetResolver::resolveFromPhpVersion($projectPhpVersion);
-        $this->assertCount(9, $configFilePaths);
+        $phpVersionBasedSetFilePath = dirname(__DIR__, 2) . '/config/set/php-version-based.php';
 
         $rectorRulesWithConfiguration = $this->setRectorsResolver->resolveFromFilePathsIncludingConfiguration(
-            $configFilePaths
+            [$phpVersionBasedSetFilePath]
         );
-        $this->assertCount(63, $rectorRulesWithConfiguration);
+
+        $this->assertNotEmpty($rectorRulesWithConfiguration);
+        $this->assertContainsOnlyRules($rectorRulesWithConfiguration);
     }
 
     public function testResolveWithConfiguration(): void
@@ -58,6 +40,14 @@ final class SetRectorsResolverTest extends TestCase
         $this->assertArrayHasKey(0, $rectorRulesWithConfiguration);
         $this->assertArrayHasKey(8, $rectorRulesWithConfiguration);
 
+        $this->assertContainsOnlyRules($rectorRulesWithConfiguration);
+    }
+
+    /**
+     * @param array<int, class-string<RectorInterface>|array<class-string<RectorInterface>, mixed[]>> $rectorRulesWithConfiguration
+     */
+    private function assertContainsOnlyRules(array $rectorRulesWithConfiguration): void
+    {
         foreach ($rectorRulesWithConfiguration as $rectorRuleWithConfiguration) {
             if (is_string($rectorRuleWithConfiguration)) {
                 $this->assertTrue(is_a($rectorRuleWithConfiguration, RectorInterface::class, true));

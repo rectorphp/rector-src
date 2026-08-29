@@ -28,6 +28,18 @@ final class Notifier
         sleep(3);
     }
 
+    public static function notifyDeprecatedPhpSet(string $set): void
+    {
+        $message = sprintf(
+            'The per-version PHP set "%s" is deprecated. Use "withPhpSets()" or "withPhpLevel()" instead, '
+                . 'they pick the rules by your PHP version automatically.',
+            $set
+        );
+
+        $symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+        $symfonyStyle->warning($message);
+    }
+
     public static function errorWithPhpSetsNotSuitableForPHP74AndLower(): void
     {
         if (PHP_VERSION_ID >= 80000) {

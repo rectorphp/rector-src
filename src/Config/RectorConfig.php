@@ -16,6 +16,7 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Enum\Config\Defaults;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\Configuration\LevelOverflow;
@@ -271,6 +272,26 @@ final class RectorConfig extends Container
         }
 
         if (! $isActive) {
+            return;
+        }
+
+        $this->ruleWithConfiguration($rectorClass, $configuration);
+    }
+
+    /**
+     * Register the rule configuration only if the target PHP version is at least $phpVersion.
+     * Useful for a configuration valid from a specific PHP version, e.g. a function renamed in PHP 8.0.
+     *
+     * @param class-string<ConfigurableRectorInterface> $rectorClass
+     * @param mixed[] $configuration
+     * @param PhpVersion::* $phpVersion
+     */
+    public function ruleWithConfigurationPhpVersionBound(
+        string $rectorClass,
+        array $configuration,
+        int $phpVersion
+    ): void {
+        if ($this->resolveTargetPhpVersion() < $phpVersion) {
             return;
         }
 
@@ -625,5 +646,23 @@ final class RectorConfig extends Container
         }
 
         return $this->installedPackageResolver->resolvePackageVersion($packageName);
+    }
+
+    private function resolveTargetPhpVersion(): int
+    {
+        // an explicitly picked withPhpSets(phpXX: true) version is the target for its sets,
+        // even when it is above the project composer.json PHP version
+        if (SimpleParameterProvider::hasParameter(Option::POLYFILL_CEILING_PHP_VERSION)) {
+            $ceilingPhpVersion = SimpleParameterProvider::provideIntParameter(Option::POLYFILL_CEILING_PHP_VERSION);
+            if ($ceilingPhpVersion > 0) {
+                return $ceilingPhpVersion;
+            }
+        }
+
+        if (SimpleParameterProvider::hasParameter(Option::PHP_VERSION_FEATURES)) {
+            return SimpleParameterProvider::provideIntParameter(Option::PHP_VERSION_FEATURES);
+        }
+
+        return ComposerJsonPhpVersionResolver::resolve(getcwd() . '/composer.json') ?? PHP_VERSION_ID;
     }
 }
