@@ -398,10 +398,10 @@ parameters:
             path: tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
 
         # wider types for external use
-        -
-            identifier: typePerfect.narrowPublicClassMethodParamType
-            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
-            path: src/Reflection/ClassModifierChecker.php
+#        -
+#            identifier: typePerfect.narrowPublicClassMethodParamType
+#            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
+#            path: src/Reflection/ClassModifierChecker.php
 
 #        -
 #            identifier: typePerfect.narrowReturnObjectType
