@@ -1,6 +1,7 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
+    - vendor/tomasvotruba/class-leak/config/unused-public-extension.neon
 
 rules:
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
@@ -58,7 +59,7 @@ parameters:
         narrow_param: true
         narrow_return: true
 
-    # see https://github.com/TomasVotruba/unused-public
+    # bundled in tomasvotruba/class-leak, see https://github.com/TomasVotruba/class-leak
     unused_public:
         methods: true
         properties: true
