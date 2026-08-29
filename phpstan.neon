@@ -73,8 +73,8 @@ parameters:
         # EARLY_RETURN set is deprecated (empty, merged into code-quality), still mapped internally until removed
         -
             identifier: classConstant.deprecated
-            message: '#EARLY_RETURN of class Rector\\Set\\ValueObject\\SetList#'
-            path: src/Configuration/RectorConfigBuilder.php
+            paths:
+                - src/Configuration/RectorConfigBuilder.php
 
         # the deprecated github/gitlab output formatters are still tested until removed in next minor version
         -
@@ -310,6 +310,7 @@ parameters:
             paths:
                 - bin/rector.php
                 - src/Bootstrap/ExtensionConfigResolver.php
+                - src/Configuration/RectorConfigBuilder.php
                 - src/Validation/RectorConfigValidator.php
                 - src/Testing/PHPUnit/AbstractLazyTestCase.php
                 - src/Reporting/DeprecatedRulesReporter.php
@@ -340,6 +341,10 @@ parameters:
             identifier: symplify.forbiddenNode
             message: '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
+
+        -
+            message: '#PHPDoc tag @var with type array<string> is not subtype of native type array#'
+            path: src/Bootstrap/ExtensionConfigResolver.php
 
         -
             identifier: symplify.forbiddenStaticClassConstFetch

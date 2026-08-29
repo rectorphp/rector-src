@@ -24,7 +24,6 @@ use Rector\Enum\Config\Defaults;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Set\Enum\SetGroup;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonyInternalSetList;
@@ -32,6 +31,7 @@ use Rector\Symfony\Set\SymfonySetList;
 use Rector\Symfony\Set\TwigSetList;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\PhpVersion;
+use RectorLaravel\Set\LaravelSetList;
 use Symfony\Component\Finder\Finder;
 use Webmozart\Assert\Assert;
 
@@ -54,17 +54,6 @@ final class RectorConfigBuilder
         'withDeadCodeLevel' => [SetList::DEAD_CODE, 'dead code'],
         'withCodeQualityLevel' => [SetList::CODE_QUALITY, 'code quality'],
         'withCodingStyleLevel' => [SetList::CODING_STYLE, 'coding style'],
-    ];
-
-    /**
-     * The composer-based set of the extensions that rector-src does not require, so their set list class cannot be
-     * imported here. Resolved at run-time; an extension that ships no such set falls back to its set group.
-     *
-     * @var array<SetGroup::*, string>
-     */
-    private const array EXTENSION_COMPOSER_BASED_SET_LISTS = [
-        SetGroup::LARAVEL => 'RectorLaravel\\Set\\LaravelSetList::COMPOSER_BASED',
-        SetGroup::DRUPAL => 'DrupalRector\\Set\\DrupalSetList::COMPOSER_BASED',
     ];
 
     /**
@@ -693,24 +682,13 @@ final class RectorConfigBuilder
         bool $laravel = false,
         bool $drupal = false,
     ): self {
-        $setMap = [
-            SetGroup::LARAVEL => $laravel,
-            SetGroup::DRUPAL => $drupal,
-        ];
+        if ($laravel && class_exists('RectorLaravel\Set\LaravelSetList') && constant('RectorLaravel\Set\LaravelSetList::COMPOSER_BASED')) {
+            $this->sets[] = LaravelSetList::COMPOSER_BASED;
+        }
 
-        foreach ($setMap as $setGroup => $isEnabled) {
-            if (! $isEnabled) {
-                continue;
-            }
-
-            $setListConstant = self::EXTENSION_COMPOSER_BASED_SET_LISTS[$setGroup];
-            if (defined($setListConstant)) {
-                $setFilePath = constant($setListConstant);
-                Assert::string($setFilePath);
-
-                // single set, as every rule inside is bound to the installed package version on its own
-                $this->sets[] = $setFilePath;
-            }
+        if ($drupal && class_exists('DrupalRector\Set\DrupalSetList') && constant('DrupalRector\Set\DrupalSetList::COMPOSER_BASED')) {
+            // waits on https://github.com/palantirnet/drupal-rector/pull/419/files#diff-c6bd4ee854830efc1363a7d99c1b6a2e7e64f2499a51e503174ab777de7e64e5
+            $this->sets[] = \DrupalRector\Set\DrupalSetList::COMPOSER_BASED;
         }
 
         if ($phpunit) {
