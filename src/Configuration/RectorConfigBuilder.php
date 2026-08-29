@@ -552,13 +552,14 @@ final class RectorConfigBuilder
             );
         }
 
-        // no version picked, target the project composer.json PHP version; validated here, gated at runtime
+        // no version picked, target the project composer.json PHP version
         if ($pickedPhpVersions === []) {
-            ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
-            return $this->addPhpLevelSets(null);
+            return $this->addPhpLevelSets(ComposerJsonPhpVersionResolver::resolveFromCwdOrFail());
         }
 
         // explicitly picked version is a ceiling, even for polyfilled rules
+        $this->pickedPhpSetsVersion = $pickedPhpVersions[0];
+
         return $this->addPhpLevelSets($pickedPhpVersions[0]);
     }
 
@@ -1136,13 +1137,11 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @param PhpVersion::*|null $phpVersion an explicitly picked version acts as a ceiling;
-     *      null keeps the composer.json PHP version gating and polyfill package support
+     * @param PhpVersion::* $phpVersion
      */
-    private function addPhpLevelSets(?int $phpVersion): self
+    private function addPhpLevelSets(int $phpVersion): self
     {
         $this->isWithPhpSetsUsed = true;
-        $this->pickedPhpSetsVersion = $phpVersion;
 
         $this->sets[] = SetList::PHP_VERSION_BASED_SET;
 
