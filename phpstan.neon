@@ -4,7 +4,6 @@ includes:
 
 rules:
     - Rector\Utils\PHPStan\Rule\CheaperGuardFirstRule
-    - Rector\Utils\PHPStan\Rule\SingleServiceRegistrationRule
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
 
 parameters:

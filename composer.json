@@ -27,7 +27,6 @@
         "phpstan/phpstan": "^2.2.6",
         "react/child-process": "^0.6.5",
         "react/event-loop": "^1.6",
-        "react/promise": "^3.3",
         "react/socket": "^1.17",
         "rector/extension-installer": "^0.11.2",
         "rector/rector-doctrine": "dev-main",
@@ -38,12 +37,12 @@
         "symfony/console": "^6.4.24",
         "symfony/filesystem": "^8.1",
         "symfony/finder": "^8.1",
-        "symfony/process": "^8.1",
         "symplify/rule-doc-generator-contracts": "^11.2",
         "webmozart/assert": "^2.4"
     },
     "require-dev": {
         "nette/robot-loader": "^4.1",
+        "symfony/process": "^8.1",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",

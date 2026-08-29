@@ -12,8 +12,6 @@ return $config
     ->addPathToScan('bin', false)
     // prepared test tooling
     ->ignoreErrorsOnPackage('phpunit/phpunit', [ErrorType::DEV_DEPENDENCY_IN_PROD])
-    // pinned v3.x version
-    ->ignoreErrorsOnPackage('react/promise', [ErrorType::UNUSED_DEPENDENCY])
     // ensure use version ^3.2.0
     ->ignoreErrorsOnPackage('composer/pcre', [ErrorType::UNUSED_DEPENDENCY])
 
