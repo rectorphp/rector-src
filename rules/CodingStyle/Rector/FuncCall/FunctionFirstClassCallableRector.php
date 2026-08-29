@@ -101,11 +101,14 @@ CODE_SAMPLE
                 continue;
             }
 
+            $isFullyQualified = str_starts_with($arg->value->value, '\\');
+            $callableName = ltrim($arg->value->value, '\\');
+
             $node->args[$key] = new Arg(
                 new FuncCall(
-                    str_contains($arg->value->value, '\\')
-                        ? new FullyQualified($arg->value->value)
-                        : new Name($arg->value->value),
+                    $isFullyQualified || str_contains($callableName, '\\')
+                        ? new FullyQualified($callableName)
+                        : new Name($callableName),
                     [new VariadicPlaceholder()]
                 ),
                 name: $arg->name
