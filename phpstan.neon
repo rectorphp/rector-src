@@ -311,18 +311,13 @@ parameters:
                 - src/Reporting/DeprecatedRulesReporter.php
                 - src/Configuration/OnlyRuleResolver.php
 
-        # required for reflection
-        -
-            identifier: symplify.forbiddenFuncCall
-            message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
-            path: src/Util/Reflection/PrivatesAccessor.php
-
-        # debug functions
+        # debug and internal functions
         -
             identifier: symplify.forbiddenFuncCall
             paths:
                 - src/functions/node_helper.php
                 - tests/debug_functions.php
+                - src/Util/Reflection/PrivatesAccessor.php
 
         # checks for rector always autoloaded rules only
         -
@@ -386,11 +381,9 @@ parameters:
         # fixture Rector rules
         -
             identifier: symplify.seeAnnotationToTest
-            path: tests/Issues/
-
-        -
-            identifier: symplify.seeAnnotationToTest
-            path: tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
+            paths:
+                - tests/Issues/
+                - tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
 
         -
             identifier: typePerfect.noMixedMethodCaller
