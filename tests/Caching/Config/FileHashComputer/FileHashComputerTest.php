@@ -13,52 +13,57 @@ final class FileHashComputerTest extends AbstractLazyTestCase
 {
     private FileHashComputer $fileHashComputer;
 
+    /**
+     * @var mixed[]
+     */
+    private array $originalRules = [];
+
+    /**
+     * @var mixed[]
+     */
+    private array $originalFileExtensions = [];
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->fileHashComputer = $this->make(FileHashComputer::class);
+
+        // the parameter bag is a global static shared across the whole test process, restore it after
+        $this->originalRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
+        $this->originalFileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
     }
 
-    public function testRectorPhpChanged(): void
+    protected function tearDown(): void
     {
-        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
-
-        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
-
-        $hashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
-
-        copy(__DIR__ . '/Fixture/rector.php', __DIR__ . '/Fixture/rector_temp.php');
-        copy(__DIR__ . '/Fixture/updated_rector_rule.php', __DIR__ . '/Fixture/rector.php');
-
-        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
-
-        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
-
-        $newHashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
-        rename(__DIR__ . '/Fixture/rector_temp.php', __DIR__ . '/Fixture/rector.php');
-
-        $this->assertNotSame($newHashedFile, $hashedFile);
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, $this->originalRules);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, $this->originalFileExtensions);
     }
 
-    public function testRectorPhpNotChanged(): void
+    public function testOutputAffectingParameterChangesHash(): void
     {
-        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
+        $configFilePath = __DIR__ . '/Fixture/rector.php';
 
-        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, ['php']);
+        $hashBefore = $this->fileHashComputer->compute($configFilePath);
 
-        $hashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
+        SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, ['php', 'phtml']);
+        $hashAfter = $this->fileHashComputer->compute($configFilePath);
 
-        copy(__DIR__ . '/Fixture/rector.php', __DIR__ . '/Fixture/rector_temp_equal.php');
-        copy(__DIR__ . '/Fixture/rector_rule_equals.php', __DIR__ . '/Fixture/rector.php');
+        $this->assertNotSame($hashBefore, $hashAfter);
+    }
 
-        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
+    public function testRuleChangeIsExcludedFromHash(): void
+    {
+        $configFilePath = __DIR__ . '/Fixture/rector.php';
 
-        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, ['Rector\\SomeRule']);
+        $hashBefore = $this->fileHashComputer->compute($configFilePath);
 
-        $newHashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
-        rename(__DIR__ . '/Fixture/rector_temp_equal.php', __DIR__ . '/Fixture/rector.php');
+        // registered rules are compared directionally, not by the strict hash
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, ['Rector\\SomeRule', 'Rector\\OtherRule']);
+        $hashAfter = $this->fileHashComputer->compute($configFilePath);
 
-        $this->assertSame($newHashedFile, $hashedFile);
+        $this->assertSame($hashBefore, $hashAfter);
     }
 }

@@ -7,6 +7,7 @@ namespace Rector\Caching\Detector;
 use Rector\Caching\Cache;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Enum\CacheKey;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Util\FileHasher;
 
 /**
@@ -90,8 +91,8 @@ final class ChangedFilesDetector
     public function setFirstResolvedConfigFileInfo(string $filePath): void
     {
         // the first config is core to all → if it was changed, just invalidate it
-        $configHash = $this->fileHashComputer->compute($filePath);
-        $this->storeConfigurationDataHash($filePath, $configHash);
+        $configurationSnapshot = $this->createConfigurationSnapshot($filePath);
+        $this->storeConfigurationDataHash($filePath, $configurationSnapshot);
     }
 
     private function resolvePath(string $filePath): string
@@ -114,26 +115,99 @@ final class ChangedFilesDetector
         return $this->fileHasher->hashFiles([$this->resolvePath($filePath)]);
     }
 
-    private function storeConfigurationDataHash(string $filePath, string $configurationHash): void
+    /**
+     * @return array{hash: string, rules: string[], sets: string[], skip: string[]}
+     */
+    private function createConfigurationSnapshot(string $filePath): array
     {
-        $key = CacheKey::CONFIGURATION_HASH_KEY . '_' . $this->getFilePathCacheKey($filePath);
-        $this->invalidateCacheIfConfigurationChanged($key, $configurationHash);
+        $directionalParameters = SimpleParameterProvider::provideCacheDirectionalParameters();
 
-        $this->cache->save($key, CacheKey::CONFIGURATION_HASH_KEY, $configurationHash);
+        return [
+            'hash' => $this->fileHashComputer->compute($filePath),
+            'rules' => $this->hashEach($directionalParameters['rules']),
+            'sets' => $this->hashEach($directionalParameters['sets']),
+            'skip' => $this->hashEach($directionalParameters['skip']),
+        ];
     }
 
-    private function invalidateCacheIfConfigurationChanged(string $key, string $configurationHash): void
+    /**
+     * @param array{hash: string, rules: string[], sets: string[], skip: string[]} $configurationSnapshot
+     */
+    private function storeConfigurationDataHash(string $filePath, array $configurationSnapshot): void
+    {
+        $key = CacheKey::CONFIGURATION_HASH_KEY . '_' . $this->getFilePathCacheKey($filePath);
+        $this->invalidateCacheIfConfigurationChanged($key, $configurationSnapshot);
+
+        $this->cache->save($key, CacheKey::CONFIGURATION_HASH_KEY, $configurationSnapshot);
+    }
+
+    /**
+     * @param array{hash: string, rules: string[], sets: string[], skip: string[]} $configurationSnapshot
+     */
+    private function invalidateCacheIfConfigurationChanged(string $key, array $configurationSnapshot): void
     {
         $oldCachedValue = $this->cache->load($key, CacheKey::CONFIGURATION_HASH_KEY);
+
+        // first run, nothing to compare against
         if ($oldCachedValue === null) {
             return;
         }
 
-        if ($oldCachedValue === $configurationHash) {
+        // legacy string format from an older Rector version → be safe and reset once
+        if (! is_array($oldCachedValue)) {
+            $this->clear();
             return;
         }
 
-        // should be unique per getcwd()
-        $this->clear();
+        if ($this->shouldInvalidateCache($oldCachedValue, $configurationSnapshot)) {
+            // should be unique per getcwd()
+            $this->clear();
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $oldSnapshot
+     * @param array{hash: string, rules: string[], sets: string[], skip: string[]} $newSnapshot
+     */
+    private function shouldInvalidateCache(array $oldSnapshot, array $newSnapshot): bool
+    {
+        // an output-affecting parameter changed (php version, import names, indent, configured rule value, ...)
+        if (($oldSnapshot['hash'] ?? null) !== $newSnapshot['hash']) {
+            return true;
+        }
+
+        // a rule or set was added → files clean so far may now be refactored
+        if ($this->hasAddedEntry($oldSnapshot['rules'] ?? [], $newSnapshot['rules'])) {
+            return true;
+        }
+
+        if ($this->hasAddedEntry($oldSnapshot['sets'] ?? [], $newSnapshot['sets'])) {
+            return true;
+        }
+
+        // a skip was removed → previously skipped transformations may now apply
+        return $this->hasAddedEntry($newSnapshot['skip'], $oldSnapshot['skip'] ?? []);
+    }
+
+    /**
+     * Is there any entry present in $comparedEntries but missing from $baseEntries?
+     * A non-array on either side means an unexpected shape, treated as changed to stay safe.
+     */
+    private function hasAddedEntry(mixed $baseEntries, mixed $comparedEntries): bool
+    {
+        if (! is_array($baseEntries) || ! is_array($comparedEntries)) {
+            return true;
+        }
+
+        return array_any($comparedEntries, fn ($comparedEntry): bool => ! in_array($comparedEntry, $baseEntries, true));
+    }
+
+    /**
+     * @param mixed[] $values
+     * @return string[]
+     */
+    private function hashEach(array $values): array
+    {
+        return array_map(static fn (mixed $value): string => sha1(serialize($value)), array_values($values));
     }
 }

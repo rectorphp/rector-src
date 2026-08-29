@@ -17,7 +17,7 @@ final readonly class FileHashComputer
     {
         $this->ensureIsPhp($filePath);
 
-        $parametersHash = SimpleParameterProvider::hash();
+        $parametersHash = SimpleParameterProvider::hashForCacheInvalidation();
         return sha1($filePath . $parametersHash . VersionResolver::PACKAGE_VERSION);
     }
 
