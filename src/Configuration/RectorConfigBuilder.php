@@ -166,11 +166,6 @@ final class RectorConfigBuilder
 
     private ?string $editorUrl = null;
 
-    /**
-     * All PHP version rules in one set; each rule gates itself by PHP version at runtime
-     */
-    private const string PHP_VERSION_BASED_SET = __DIR__ . '/../../config/set/php-version-based.php';
-
     private ?bool $isWithPhpSetsUsed = null;
 
     private ?bool $isWithPhpLevelUsed = null;
@@ -970,7 +965,7 @@ final class RectorConfigBuilder
 
         $setRectorsResolver = new SetRectorsResolver();
         $rectorRulesWithConfiguration = $setRectorsResolver->resolveFromFilePathIncludingConfiguration(
-            self::PHP_VERSION_BASED_SET
+            SetList::PHP_VERSION_BASED_SET
         );
 
         foreach ($rectorRulesWithConfiguration as $position => $rectorRuleWithConfiguration) {
@@ -1145,7 +1140,7 @@ final class RectorConfigBuilder
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets[] = self::PHP_VERSION_BASED_SET;
+        $this->sets[] = SetList::PHP_VERSION_BASED_SET;
 
         return $this;
     }

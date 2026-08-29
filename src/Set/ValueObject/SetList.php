@@ -138,4 +138,9 @@ final class SetList
     public const string CARBON = __DIR__ . '/../../../config/set/datetime-to-carbon.php';
 
     public const string BEHAT_ANNOTATIONS_TO_ATTRIBUTES = __DIR__ . '/../../../config/set/behat-annotations-to-attributes.php';
+
+    /**
+     * All PHP version rules in one set; each rule gates itself by PHP version at runtime
+     */
+    public const string PHP_VERSION_BASED_SET = __DIR__ . '/../../config/set/php-version-based.php';
 }
