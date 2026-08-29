@@ -136,6 +136,9 @@ final class SetList
      */
     public const string INSTANCEOF = __DIR__ . '/../../../config/set/instanceof.php';
 
+    /**
+     * @deprecated Use code-quality and coding-style sets instead, as the if rules were moved there or deprecated
+     */
     public const string IF = __DIR__ . '/../../../config/set/if.php';
 
     public const string CARBON = __DIR__ . '/../../../config/set/datetime-to-carbon.php';
