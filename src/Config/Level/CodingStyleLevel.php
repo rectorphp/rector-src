@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Config\Level;
 
+use Rector\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
@@ -51,6 +52,7 @@ final class CodingStyleLevel
         NewlineBetweenClassLikeStmtsRector::class,
         NewlineAfterStatementRector::class,
         AlternativeIfToBracketRector::class,
+        CompleteMissingIfElseBracketRector::class,
         SimplifyQuoteEscapeRector::class,
         StringClassNameToClassConstantRector::class,
         CatchExceptionNameMatchingTypeRector::class,
