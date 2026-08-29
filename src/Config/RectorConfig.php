@@ -7,7 +7,6 @@ namespace Rector\Config;
 use Composer\Semver\Semver;
 use Deprecated;
 use Entropy\Container\Container;
-use Override;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Configuration\Option;
