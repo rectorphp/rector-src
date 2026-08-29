@@ -27,6 +27,8 @@ use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRe
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
+use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
+use Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
@@ -49,7 +51,10 @@ use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
+use Rector\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector;
+use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
+use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
@@ -137,6 +142,9 @@ final class CodeQualityLevel
         CompleteDynamicPropertiesRector::class,
         IsAWithStringWithThirdArgumentRector::class,
         StrlenZeroToIdenticalEmptyStringRector::class,
+        ArrayExplicitBoolCompareRector::class,
+        ObjectExplicitBoolCompareRector::class,
+        ShortenElseIfRector::class,
         ThrowWithPreviousExceptionRector::class,
         RemoveSoleValueSprintfRector::class,
         ExplicitReturnNullRector::class,
@@ -154,6 +162,8 @@ final class CodeQualityLevel
         NewStaticToNewSelfRector::class,
         VariableConstFetchToClassConstFetchRector::class,
         SingularSwitchToIfRector::class,
+        InlineIfToExplicitIfRector::class,
+        TernaryFalseExpressionToIfRector::class,
         SwitchTrueToMatchRector::class,
         SimplifyIfNullableReturnRector::class,
         CallUserFuncWithArrowFunctionToInlineRector::class,
