@@ -26,6 +26,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\NodeTypeResolver\TypeAnalyzer\StringTypeAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -34,9 +35,11 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @deprecated This rule is deprecated. Array and object bool compares have dedicated rules; the rest is an opinionated approach that depends on context.
+ *
  * @see \Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\ExplicitBoolCompareRectorTest
  */
-final class ExplicitBoolCompareRector extends AbstractRector
+final class ExplicitBoolCompareRector extends AbstractRector implements DeprecatedInterface
 {
     public function __construct(
         private readonly StringTypeAnalyzer $stringTypeAnalyzer,
