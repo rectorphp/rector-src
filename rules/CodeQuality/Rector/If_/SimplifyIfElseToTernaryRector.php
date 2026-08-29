@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
@@ -21,9 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @deprecated This rule is deprecated, as the result depends on context and can worsen readability. Extract a method instead if needed.
+ *
  * @see \Rector\Tests\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector\SimplifyIfElseToTernaryRectorTest
  */
-final class SimplifyIfElseToTernaryRector extends AbstractRector
+final class SimplifyIfElseToTernaryRector extends AbstractRector implements DeprecatedInterface
 {
     private const int LINE_LENGTH_LIMIT = 120;
 
