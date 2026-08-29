@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Config\Level;
 
+use Rector\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
@@ -16,6 +17,7 @@ use Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictInArrayRector;
 use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
+use Rector\CodingStyle\Rector\If_\AlternativeIfToBracketRector;
 use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector;
@@ -49,6 +51,8 @@ final class CodingStyleLevel
         SeparateMultiUseImportsRector::class,
         NewlineBetweenClassLikeStmtsRector::class,
         NewlineAfterStatementRector::class,
+        AlternativeIfToBracketRector::class,
+        CompleteMissingIfElseBracketRector::class,
         SimplifyQuoteEscapeRector::class,
         StringClassNameToClassConstantRector::class,
         CatchExceptionNameMatchingTypeRector::class,
