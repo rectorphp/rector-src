@@ -3,7 +3,6 @@ includes:
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 rules:
-    - Rector\Utils\PHPStan\Rule\CheaperGuardFirstRule
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
 
 parameters:
@@ -69,6 +68,12 @@ parameters:
         # the deprecated set objects are still resolved internally, until every extension bonds its rules
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
+            path: src/Configuration/RectorConfigBuilder.php
+
+        # EARLY_RETURN set is deprecated (empty, merged into code-quality), still mapped internally until removed
+        -
+            identifier: classConstant.deprecated
+            message: '#EARLY_RETURN of class Rector\\Set\\ValueObject\\SetList#'
             path: src/Configuration/RectorConfigBuilder.php
 
         # the deprecated github/gitlab output formatters are still tested until removed in next minor version
