@@ -682,13 +682,13 @@ final class RectorConfigBuilder
         bool $laravel = false,
         bool $drupal = false,
     ): self {
-        if ($laravel) {
+        if ($laravel && class_exists('RectorLaravel\Set\LaravelSetList') && constant('RectorLaravel\Set\LaravelSetList::COMPOSER_BASED')) {
             $this->sets[] = LaravelSetList::COMPOSER_BASED;
         }
 
-        if ($drupal && class_exists('DrupalRector\Set\DrupalSetList')) {
+        if ($drupal && class_exists('DrupalRector\Set\DrupalSetList') && constant('DrupalRector\Set\DrupalSetList::COMPOSER_BASED')) {
             // waits on https://github.com/palantirnet/drupal-rector/pull/419/files#diff-c6bd4ee854830efc1363a7d99c1b6a2e7e64f2499a51e503174ab777de7e64e5
-            $this->sets[] = DrupalSetList::COMPOSER_BASED;
+            $this->sets[] = \DrupalRector\Set\DrupalSetList::COMPOSER_BASED;
         }
 
         if ($phpunit) {
