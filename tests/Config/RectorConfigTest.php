@@ -7,6 +7,7 @@ namespace Rector\Tests\Config;
 use Rector\Config\RectorConfig;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Renaming\Rector\PropertyFetch\RenamePropertyRector;
@@ -14,6 +15,8 @@ use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\RenameProperty;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Tests\Config\Source\DependencyOnlyRector;
+use Rector\Tests\Config\Source\RegisteringRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 
 final class RectorConfigTest extends AbstractLazyTestCase
@@ -88,5 +91,22 @@ final class RectorConfigTest extends AbstractLazyTestCase
 
         $registeredRectorRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
         $this->assertNotContains(RenamePropertyRector::class, $registeredRectorRules);
+    }
+
+    public function testRuleTakenOnlyAsDependencyIsNotActive(): void
+    {
+        $rectorConfig = $this->getContainer();
+
+        $rectorConfig->rule(RegisteringRector::class);
+
+        // building the registered rule also builds and caches its constructor dependency,
+        // which is a rule too - but one no config asked for
+        $activeRectorClasses = array_map(
+            static fn (object $rector): string => $rector::class,
+            $rectorConfig->findByContract(RectorInterface::class)
+        );
+
+        $this->assertContains(RegisteringRector::class, $activeRectorClasses);
+        $this->assertNotContains(DependencyOnlyRector::class, $activeRectorClasses);
     }
 }

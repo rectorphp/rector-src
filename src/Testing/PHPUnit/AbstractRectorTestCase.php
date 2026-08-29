@@ -7,6 +7,7 @@ namespace Rector\Testing\PHPUnit;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use PhpParser\NodeVisitor;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Autoloading\AdditionalAutoloader;
@@ -100,8 +101,15 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $this->forgetRectorsRules();
             $rectorConfig->resetRuleConfigurations();
 
-            // this has to be always empty, so we can add new rules with their configuration
-            $this->assertEmpty($rectorConfig->findByContract(RectorInterface::class));
+            // this has to be always empty, so we can add new rules with their configuration.
+            // asked through the wider contract on purpose: the rule contract now reports only
+            // registered rules, and the registered list was just cleared, so it would answer
+            // "empty" without looking at what the forget above actually left behind
+            $leftOverRectors = array_filter(
+                $rectorConfig->findByContract(NodeVisitor::class),
+                static fn (NodeVisitor $nodeVisitor): bool => $nodeVisitor instanceof RectorInterface
+            );
+            $this->assertSame([], $leftOverRectors);
 
             $this->bootFromConfigFiles([$configFile]);
 

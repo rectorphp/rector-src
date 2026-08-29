@@ -568,6 +568,38 @@ final class RectorConfig extends Container
         }
     }
 
+    /**
+     * The container caches every instance it builds, so a rule that another service takes as a
+     * constructor dependency is cached like any other object. Returned unfiltered it would count
+     * as an active rule although no config ever registered it — and this is where the active set
+     * comes from on both paths: the node traverser is autowired from an "@param RectorInterface[]"
+     * parameter, and AbstractRectorTestCase reads the same list.
+     *
+     * The narrowing keys off the requested contract, so a wider one still sees every instance -
+     * findByContract(NodeVisitor::class) includes unregistered rules, since RectorInterface
+     * extends NodeVisitor.
+     *
+     * @template TType as object
+     *
+     * @param class-string<TType> $contractClass
+     * @return list<TType>
+     */
+    public function findByContract(string $contractClass): array
+    {
+        $instances = parent::findByContract($contractClass);
+
+        if (! is_a($contractClass, RectorInterface::class, true)) {
+            return $instances;
+        }
+
+        return array_values(
+            array_filter(
+                $instances,
+                fn (object $instance): bool => isset($this->registeredRectorClasses[$instance::class])
+            )
+        );
+    }
+
     public function reportingRealPath(bool $absolute = true): void
     {
         SimpleParameterProvider::setParameter(Option::ABSOLUTE_FILE_PATH, $absolute);
