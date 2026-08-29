@@ -14,11 +14,13 @@ final class SetGroup
     public const string PHP = 'php';
 
     /**
+     * @deprecated Use composer-based.php set instead
      * Version-based set provider
      */
     public const string LARAVEL = 'laravel';
 
     /**
+     * @deprecated Use composer-based.php set instead
      * Version-based set provider
      */
     public const string DRUPAL = 'drupal';
