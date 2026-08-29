@@ -3,7 +3,6 @@ includes:
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 rules:
-    - Rector\Utils\PHPStan\Rule\CheaperGuardFirstRule
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
 
 parameters:
