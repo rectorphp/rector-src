@@ -166,6 +166,11 @@ final class RectorConfigBuilder
 
     private ?string $editorUrl = null;
 
+    /**
+     * All PHP version rules in one set; each rule gates itself by PHP version at runtime
+     */
+    private const string PHP_VERSION_BASED_SET = __DIR__ . '/../../config/set/php-version-based.php';
+
     private ?bool $isWithPhpSetsUsed = null;
 
     private ?bool $isWithPhpLevelUsed = null;
@@ -551,15 +556,16 @@ final class RectorConfigBuilder
             );
         }
 
-        // no version picked, resolve it from the project composer.json
+        // no version picked, target the project composer.json PHP version; validated here, gated at runtime
         if ($pickedPhpVersions === []) {
-            return $this->addPhpLevelSets(ComposerJsonPhpVersionResolver::resolveFromCwdOrFail());
+            ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
+            return $this->addPhpLevelSets();
         }
 
         // explicitly picked version is a ceiling, even for polyfilled rules
         $this->pickedPhpSetsVersion = $pickedPhpVersions[0];
 
-        return $this->addPhpLevelSets($pickedPhpVersions[0]);
+        return $this->addPhpLevelSets();
     }
 
     #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
@@ -962,12 +968,10 @@ final class RectorConfigBuilder
 
         $this->isWithPhpLevelUsed = true;
 
-        $phpVersion = ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
-
         $setRectorsResolver = new SetRectorsResolver();
-        $setFilePaths = PhpLevelSetResolver::resolveFromPhpVersion($phpVersion);
-
-        $rectorRulesWithConfiguration = $setRectorsResolver->resolveFromFilePathsIncludingConfiguration($setFilePaths);
+        $rectorRulesWithConfiguration = $setRectorsResolver->resolveFromFilePathIncludingConfiguration(
+            self::PHP_VERSION_BASED_SET
+        );
 
         foreach ($rectorRulesWithConfiguration as $position => $rectorRuleWithConfiguration) {
             // add rules until level is reached
@@ -1137,14 +1141,11 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    /**
-     * @param PhpVersion::* $phpVersion
-     */
-    private function addPhpLevelSets(int $phpVersion): self
+    private function addPhpLevelSets(): self
     {
         $this->isWithPhpSetsUsed = true;
 
-        $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion($phpVersion));
+        $this->sets[] = self::PHP_VERSION_BASED_SET;
 
         return $this;
     }
