@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PHPStan\Reflection\ClassReflection;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ClassModifierChecker;
