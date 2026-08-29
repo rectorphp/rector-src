@@ -127,10 +127,6 @@ CODE_SAMPLE
         }
 
         $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
         return $classReflection->isAbstract();
     }
 
