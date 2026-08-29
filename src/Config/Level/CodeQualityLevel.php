@@ -51,7 +51,10 @@ use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
+use Rector\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector;
+use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
+use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
@@ -139,6 +142,9 @@ final class CodeQualityLevel
         CompleteDynamicPropertiesRector::class,
         IsAWithStringWithThirdArgumentRector::class,
         StrlenZeroToIdenticalEmptyStringRector::class,
+        ArrayExplicitBoolCompareRector::class,
+        ObjectExplicitBoolCompareRector::class,
+        ShortenElseIfRector::class,
         ThrowWithPreviousExceptionRector::class,
         RemoveSoleValueSprintfRector::class,
         ExplicitReturnNullRector::class,
