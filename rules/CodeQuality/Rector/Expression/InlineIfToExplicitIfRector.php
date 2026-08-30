@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isSameLocalMethodCall($booleanExpr->left, $booleanExpr->right)) {
+        if ($this->isSameLocalMethodCallChain($booleanExpr)) {
             return null;
         }
 
@@ -119,24 +119,45 @@ CODE_SAMPLE
         return $if;
     }
 
-    private function isSameLocalMethodCall(Expr $left, Expr $right): bool
+    private function isSameLocalMethodCallChain(BooleanAnd|BooleanOr $booleanExpr): bool
     {
-        if (! $left instanceof MethodCall) {
-            return false;
+        $leaves = [];
+        $this->collectOperands($booleanExpr, $leaves);
+
+        $firstMethodCall = null;
+        foreach ($leaves as $leaf) {
+            if (! $leaf instanceof MethodCall) {
+                return false;
+            }
+
+            if (! $leaf->var instanceof Variable || ! $this->isName($leaf->var, 'this')) {
+                return false;
+            }
+
+            if (! $firstMethodCall instanceof MethodCall) {
+                $firstMethodCall = $leaf;
+                continue;
+            }
+
+            if (! $this->nodeNameResolver->areNamesEqual($firstMethodCall->name, $leaf->name)) {
+                return false;
+            }
         }
 
-        if (! $right instanceof MethodCall) {
-            return false;
+        return $firstMethodCall instanceof MethodCall;
+    }
+
+    /**
+     * @param Expr[] $leaves
+     */
+    private function collectOperands(Expr $expr, array &$leaves): void
+    {
+        if ($expr instanceof BooleanAnd || $expr instanceof BooleanOr) {
+            $this->collectOperands($expr->left, $leaves);
+            $this->collectOperands($expr->right, $leaves);
+            return;
         }
 
-        if (! $left->var instanceof Variable || ! $this->isName($left->var, 'this')) {
-            return false;
-        }
-
-        if (! $right->var instanceof Variable || ! $this->isName($right->var, 'this')) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->areNamesEqual($left->name, $right->name);
+        $leaves[] = $expr;
     }
 }
