@@ -25,12 +25,14 @@ final readonly class FilesFinder
         private PathSkipper $pathSkipper,
         private FilePathHelper $filePathHelper,
         private ChangedFilesDetector $changedFilesDetector,
+        private FilePathFilter $filePathFilter,
     ) {
     }
 
     /**
      * @param string[] $source
      * @param string[] $suffixes
+     * @param string[] $filters
      * @return string[]
      */
     public function findInDirectoriesAndFiles(
@@ -38,6 +40,7 @@ final readonly class FilesFinder
         array $suffixes = [],
         bool $sortByName = true,
         ?string $onlySuffix = null,
+        array $filters = [],
     ): array {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
@@ -102,6 +105,10 @@ final readonly class FilesFinder
         );
 
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
+
+        // keep only files matching all --filter patterns
+        $filePaths = $this->filePathFilter->filter($filePaths, $filters);
+
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
@@ -120,6 +127,7 @@ final readonly class FilesFinder
             $configuration->getFileExtensions(),
             true,
             $configuration->getOnlySuffix(),
+            $configuration->getFilters(),
         );
     }
 

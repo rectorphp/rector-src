@@ -16,6 +16,7 @@ final readonly class Configuration
      * @param string[] $fileExtensions
      * @param string[] $paths
      * @param LevelOverflow[] $levelOverflows
+     * @param string[] $filters
      */
     public function __construct(
         private bool $isDryRun = false,
@@ -37,6 +38,7 @@ final readonly class Configuration
         private bool $showRulesSummary = false,
         private bool $isComposerBased = false,
         private bool $isPhpOnly = false,
+        private array $filters = [],
     ) {
     }
 
@@ -130,6 +132,14 @@ final readonly class Configuration
     public function getOnlySuffix(): ?string
     {
         return $this->onlySuffix;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
     }
 
     /**
