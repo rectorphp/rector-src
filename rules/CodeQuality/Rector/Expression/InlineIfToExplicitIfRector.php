@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use Rector\NodeManipulator\BinaryOpManipulator;
@@ -97,6 +99,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isSameLocalMethodCall($booleanExpr->left, $booleanExpr->right)) {
+            return null;
+        }
+
         $leftStaticType = $this->getType($booleanExpr->left);
         if (! $leftStaticType->isBoolean()->yes()) {
             return null;
@@ -111,5 +117,26 @@ CODE_SAMPLE
 
         $this->mirrorComments($if, $expression);
         return $if;
+    }
+
+    private function isSameLocalMethodCall(Expr $left, Expr $right): bool
+    {
+        if (! $left instanceof MethodCall) {
+            return false;
+        }
+
+        if (! $right instanceof MethodCall) {
+            return false;
+        }
+
+        if (! $left->var instanceof Variable || ! $this->isName($left->var, 'this')) {
+            return false;
+        }
+
+        if (! $right->var instanceof Variable || ! $this->isName($right->var, 'this')) {
+            return false;
+        }
+
+        return $this->nodeNameResolver->areNamesEqual($left->name, $right->name);
     }
 }
