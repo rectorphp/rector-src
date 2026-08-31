@@ -50,64 +50,40 @@ final class ConfigurationFactoryTest extends AbstractLazyTestCase
 
     public function testPublishesCommandLinePathsAsSourceParameter(): void
     {
-        $originalPaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
-        $originalSource = SimpleParameterProvider::provideArrayParameter(Option::SOURCE);
-        $originalIsRunNarrowed = SimpleParameterProvider::provideBoolParameter(Option::IS_RUN_NARROWED, false);
+        SimpleParameterProvider::setParameter(Option::PATHS, [__DIR__ . '/config']);
 
-        try {
-            SimpleParameterProvider::setParameter(Option::PATHS, [__DIR__ . '/config']);
+        $this->make(ConfigurationFactory::class)
+            ->createFromInput($this->createInput([__DIR__ . '/Source']));
 
-            $this->make(ConfigurationFactory::class)
-                ->createFromInput($this->createInput([__DIR__ . '/Source']));
-
-            $this->assertSame(
-                [__DIR__ . '/Source'],
-                SimpleParameterProvider::provideArrayParameter(Option::SOURCE)
-            );
-        } finally {
-            SimpleParameterProvider::setParameter(Option::PATHS, $originalPaths);
-            SimpleParameterProvider::setParameter(Option::SOURCE, $originalSource);
-            SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, $originalIsRunNarrowed);
-        }
+        $this->assertSame(
+            [__DIR__ . '/Source'],
+            SimpleParameterProvider::provideArrayParameter(Option::SOURCE)
+        );
     }
 
     public function testPublishesConfiguredPathsAsSourceParameterWhenNoneGivenOnTheCommandLine(): void
     {
-        $originalPaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
-        $originalSource = SimpleParameterProvider::provideArrayParameter(Option::SOURCE);
+        SimpleParameterProvider::setParameter(Option::PATHS, [__DIR__ . '/config']);
 
-        try {
-            SimpleParameterProvider::setParameter(Option::PATHS, [__DIR__ . '/config']);
+        $this->make(ConfigurationFactory::class)
+            ->createFromInput($this->createInput([]));
 
-            $this->make(ConfigurationFactory::class)
-                ->createFromInput($this->createInput([]));
-
-            $this->assertSame(
-                [__DIR__ . '/config'],
-                SimpleParameterProvider::provideArrayParameter(Option::SOURCE)
-            );
-        } finally {
-            SimpleParameterProvider::setParameter(Option::PATHS, $originalPaths);
-            SimpleParameterProvider::setParameter(Option::SOURCE, $originalSource);
-        }
+        $this->assertSame(
+            [__DIR__ . '/config'],
+            SimpleParameterProvider::provideArrayParameter(Option::SOURCE)
+        );
     }
 
     public function testSourceParameterIsOutsideTheCacheInvalidationHash(): void
     {
         // The processed paths change per invocation. Were they hashed, running Rector on a
         // single file and then on the whole project would drop the cache each time.
-        $originalSource = SimpleParameterProvider::provideArrayParameter(Option::SOURCE);
+        SimpleParameterProvider::setParameter(Option::SOURCE, ['src']);
+        $hashForOnePath = SimpleParameterProvider::hashForCacheInvalidation();
 
-        try {
-            SimpleParameterProvider::setParameter(Option::SOURCE, ['src']);
-            $hashForOnePath = SimpleParameterProvider::hashForCacheInvalidation();
+        SimpleParameterProvider::setParameter(Option::SOURCE, ['tests', 'src/Some/Other.php']);
 
-            SimpleParameterProvider::setParameter(Option::SOURCE, ['tests', 'src/Some/Other.php']);
-
-            $this->assertSame($hashForOnePath, SimpleParameterProvider::hashForCacheInvalidation());
-        } finally {
-            SimpleParameterProvider::setParameter(Option::SOURCE, $originalSource);
-        }
+        $this->assertSame($hashForOnePath, SimpleParameterProvider::hashForCacheInvalidation());
     }
 
     /**
