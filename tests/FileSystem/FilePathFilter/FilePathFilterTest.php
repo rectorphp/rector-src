@@ -46,6 +46,8 @@ final class FilePathFilterTest extends TestCase
 
         yield 'path substring' => [['/Controller/'], ['/project/src/Controller/HomeController.php']];
 
+        yield 'path glob matches same as substring' => [['*/Controller/*'], ['/project/src/Controller/HomeController.php']];
+
         yield 'basename glob' => [['*Repository.php'], ['/project/src/Repository/UserRepository.php']];
 
         yield 'tests keyword' => [['tests'], [

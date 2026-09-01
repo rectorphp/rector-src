@@ -61,19 +61,19 @@ final class FilePathFilter
     /**
      * Three kinds of pattern are recognised:
      *  - "tests"           the basename ends in Test.php or TestCase.php
-     *  - contains "*"      glob matched against the basename, e.g. *Repository.php
+     *  - contains "*"      glob matched against the full path when it has a "/", else against the basename
      *  - anything else     substring matched anywhere in the full path, e.g. /Controller/
      */
     private function matchesPattern(string $filePath, string $pattern): bool
     {
-        $basename = basename($filePath);
-
         if ($pattern === self::TESTS_KEYWORD) {
+            $basename = basename($filePath);
             return str_ends_with($basename, 'Test.php') || str_ends_with($basename, 'TestCase.php');
         }
 
         if (str_contains($pattern, '*')) {
-            return fnmatch($pattern, $basename);
+            $subject = str_contains($pattern, '/') ? $filePath : basename($filePath);
+            return fnmatch($pattern, $subject);
         }
 
         return str_contains($filePath, $pattern);
