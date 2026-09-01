@@ -6,6 +6,8 @@ namespace Rector\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\AssignRef;
@@ -22,7 +24,7 @@ final class AssignedToNodeVisitor extends NodeVisitorAbstract implements Decorat
     public function enterNode(Node $node): ?Node
     {
         if ($node instanceof AssignOp) {
-            $node->var->setAttribute(AttributeKey::IS_ASSIGN_OP_VAR, true);
+            $this->markAssignOpVar($node->var);
             return null;
         }
 
@@ -53,5 +55,20 @@ final class AssignedToNodeVisitor extends NodeVisitorAbstract implements Decorat
         }
 
         return null;
+    }
+
+    /**
+     * Marks the whole dim fetch chain, not just the outermost node: $array[$key][0] += 1 writes
+     * to $array[$key] as well, so a rule that rewrites the inner fetch would change a write
+     * into a read of a temporary value.
+     */
+    private function markAssignOpVar(Expr $expr): void
+    {
+        $expr->setAttribute(AttributeKey::IS_ASSIGN_OP_VAR, true);
+
+        while ($expr instanceof ArrayDimFetch) {
+            $expr = $expr->var;
+            $expr->setAttribute(AttributeKey::IS_ASSIGN_OP_VAR, true);
+        }
     }
 }
