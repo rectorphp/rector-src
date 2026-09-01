@@ -6,6 +6,7 @@ namespace Rector\Configuration;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilePathFilter;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -18,6 +19,7 @@ final readonly class ConfigurationFactory
     public function __construct(
         private SymfonyStyle $symfonyStyle,
         private OnlyRuleResolver $onlyRuleResolver,
+        private FilePathFilter $filePathFilter,
     ) {
     }
 
@@ -70,10 +72,18 @@ final readonly class ConfigurationFactory
         }
 
         $onlySuffix = $input->getOption(Option::ONLY_SUFFIX);
+        if ($onlySuffix !== null) {
+            $this->symfonyStyle->warning(
+                'The "--only-suffix" option is deprecated and will be removed. Use "--filter" instead, e.g. --filter="*Controller.php"'
+            );
+        }
 
-        // "--only"/"--only-suffix" narrow the run, so skips outside the scope look falsely unused;
+        $rawFilter = $input->getOption(Option::FILTER);
+        $filters = $rawFilter !== null ? $this->filePathFilter->parsePatterns((string) $rawFilter) : [];
+
+        // "--only"/"--only-suffix"/"--filter" narrow the run, so skips outside the scope look falsely unused;
         // mark the run as narrowed to disable unused skip reporting and avoid false positives
-        if ($onlyRule !== null || $onlySuffix !== null) {
+        if ($onlyRule !== null || $onlySuffix !== null || $filters !== []) {
             SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
         }
 
@@ -129,6 +139,7 @@ final readonly class ConfigurationFactory
             $showRulesSummary,
             $isComposerBased,
             $isPhpOnly,
+            $filters,
         );
     }
 

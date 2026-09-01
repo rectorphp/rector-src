@@ -77,7 +77,14 @@ final class ProcessConfigureDecorator
             Option::ONLY_SUFFIX,
             null,
             InputOption::VALUE_REQUIRED,
-            'Filter only files with specific suffix in name, e.g. "Controller"'
+            'Deprecated, use "--filter" instead. Filter only files with specific suffix in name, e.g. "Controller"'
+        );
+
+        $command->addOption(
+            Option::FILTER,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Keep only files matching all comma-separated patterns: "/Controller/" (path substring), "*Repository.php" (basename glob), "tests" (Test.php and TestCase.php files)'
         );
 
         $command->addOption(Option::DEBUG, null, InputOption::VALUE_NONE, 'Display debug output.');

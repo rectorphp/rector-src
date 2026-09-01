@@ -22,7 +22,7 @@ final class ChangedFilesDetector
      */
     private array $cacheableFiles = [];
 
-    // scopes the per-file cache key to the active --only / --only-suffix selection (empty = full run)
+    // scopes the per-file cache key to the active --only / --only-suffix / --filter selection (empty = full run)
     private string $scopeSuffix = '';
 
     public function __construct(
@@ -32,12 +32,15 @@ final class ChangedFilesDetector
     ) {
     }
 
-    public function setActiveScope(?string $onlyRule, ?string $onlySuffix): void
+    /**
+     * @param string[] $filters
+     */
+    public function setActiveScope(?string $onlyRule, ?string $onlySuffix, array $filters = []): void
     {
         // each selection gets its own cache key, so --only and full runs coexist without clearing or poisoning
-        $this->scopeSuffix = ($onlyRule === null && $onlySuffix === null)
+        $this->scopeSuffix = ($onlyRule === null && $onlySuffix === null && $filters === [])
             ? ''
-            : '|only:' . ($onlyRule ?? '') . '|suffix:' . ($onlySuffix ?? '');
+            : '|only:' . ($onlyRule ?? '') . '|suffix:' . ($onlySuffix ?? '') . '|filter:' . implode(',', $filters);
     }
 
     public function cacheFile(string $filePath): void

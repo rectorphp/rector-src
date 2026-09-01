@@ -303,6 +303,11 @@ final class Option
     public const string ONLY_SUFFIX = 'only-suffix';
 
     /**
+     * @internal To keep only files matching all given patterns
+     */
+    public const string FILTER = 'filter';
+
+    /**
      * @internal To report overflow levels in ->with*Level() methods
      */
     public const string LEVEL_OVERFLOWS = 'level_overflows';
