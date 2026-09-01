@@ -70,10 +70,21 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
         // for performance reasons we don't use SmartFileSystem
         FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported), null);
-        $copySuccess = @\copy($tmpPath, $filePath);
+
+        /**
+         * @see https://github.com/rectorphp/rector/issues/9876
+         * @see https://github.com/rectorphp/rector/issues/8432
+         *
+         * Cover compatibility for Windows and Unix systems
+         */
+        $writeSuccess = \DIRECTORY_SEPARATOR === '/'
+            ? @\rename($tmpPath, $filePath)
+            : @\copy($tmpPath, $filePath);
+
+        // already moved by rename() on success, then unlink() is no-op on it
         @\unlink($tmpPath);
 
-        if ($copySuccess) {
+        if ($writeSuccess) {
             return;
         }
 
