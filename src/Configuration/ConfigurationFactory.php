@@ -72,6 +72,11 @@ final readonly class ConfigurationFactory
         }
 
         $onlySuffix = $input->getOption(Option::ONLY_SUFFIX);
+        if ($onlySuffix !== null) {
+            $this->symfonyStyle->warning(
+                'The "--only-suffix" option is deprecated and will be removed. Use "--filter" instead, e.g. --filter="*Controller.php"'
+            );
+        }
 
         $rawFilter = $input->getOption(Option::FILTER);
         $filters = $rawFilter !== null ? $this->filePathFilter->parsePatterns((string) $rawFilter) : [];

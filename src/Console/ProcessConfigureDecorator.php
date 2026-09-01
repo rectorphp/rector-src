@@ -77,7 +77,7 @@ final class ProcessConfigureDecorator
             Option::ONLY_SUFFIX,
             null,
             InputOption::VALUE_REQUIRED,
-            'Filter only files with specific suffix in name, e.g. "Controller"'
+            'Deprecated, use "--filter" instead. Filter only files with specific suffix in name, e.g. "Controller"'
         );
 
         $command->addOption(
