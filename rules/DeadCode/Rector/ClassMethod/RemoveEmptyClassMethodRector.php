@@ -156,6 +156,11 @@ CODE_SAMPLE
             return true;
         }
 
+        // parent class or interface is out of analyzed scope, keep method as it may implement an abstract requirement
+        if ($this->hasUnresolvableParentOrInterface($class, $classMethod, $scope->getClassReflection())) {
+            return true;
+        }
+
         if ($this->paramAnalyzer->hasPropertyPromotion($classMethod->params)) {
             return true;
         }
@@ -182,6 +187,28 @@ CODE_SAMPLE
         }
 
         return $this->isAttributeMarkerConstructor($classMethod, $classReflection);
+    }
+
+    private function hasUnresolvableParentOrInterface(
+        Class_ $class,
+        ClassMethod $classMethod,
+        ?ClassReflection $classReflection
+    ): bool {
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        // a protected empty method only exists to override/implement a parent's method;
+        // if the parent is out of scope, keep it to avoid breaking an abstract requirement
+        if ($classMethod->isProtected() && $class->extends instanceof Name && ! $classReflection->getParentClass() instanceof ClassReflection) {
+            return true;
+        }
+
+        $interfaceNames = array_map(
+            static fn (ClassReflection $classReflection): string => $classReflection->getName(),
+            $classReflection->getInterfaces()
+        );
+        return array_any($class->implements, fn (Name $name): bool => ! in_array($this->getName($name), $interfaceNames, true));
     }
 
     private function hasDeprecatedAnnotation(ClassMethod $classMethod): bool
