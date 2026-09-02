@@ -81,7 +81,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        if (\DIRECTORY_SEPARATOR === '/') {
+        if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($filePath)) {
             throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
         }
 
