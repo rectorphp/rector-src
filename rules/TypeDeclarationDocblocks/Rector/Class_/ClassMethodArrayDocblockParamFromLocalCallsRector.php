@@ -167,13 +167,7 @@ CODE_SAMPLE
     private function hasNestedArray(Type $type): bool
     {
         if ($type instanceof UnionType) {
-            foreach ($type->getTypes() as $unionedType) {
-                if ($this->hasNestedArray($unionedType)) {
-                    return true;
-                }
-            }
-
-            return false;
+            return array_any($type->getTypes(), fn(Type $unionedType): bool => $this->hasNestedArray($unionedType));
         }
 
         if (! $type instanceof ArrayType) {
@@ -182,13 +176,7 @@ CODE_SAMPLE
 
         $itemType = $type->getItemType();
         if ($itemType instanceof UnionType) {
-            foreach ($itemType->getTypes() as $unionedItemType) {
-                if ($unionedItemType instanceof ArrayType) {
-                    return true;
-                }
-            }
-
-            return false;
+            return array_any($itemType->getTypes(), fn(Type $unionedItemType): bool => $unionedItemType instanceof ArrayType);
         }
 
         return $itemType instanceof ArrayType;
