@@ -8,11 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\NodeManipulator\ClassMethodManipulator;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\CallTypesResolver;
@@ -31,8 +29,7 @@ final class ClassMethodArrayDocblockParamFromLocalCallsRector extends AbstractRe
         private readonly CallTypesResolver $callTypesResolver,
         private readonly LocalMethodCallFinder $localMethodCallFinder,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
-        private readonly ClassMethodManipulator $classMethodManipulator
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -92,8 +89,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            // parent/interface method may declare a wider @param contract; local calls are narrower, so skip to keep LSP
-            if ($this->classMethodManipulator->hasParentMethodOrInterfaceMethod($node, $this->getName($classMethod))) {
+            // only private methods have a closed set of local callers; public/protected can be called from outside
+            if (! $classMethod->isPrivate()) {
                 continue;
             }
 
@@ -112,13 +109,6 @@ CODE_SAMPLE
 
                 // already known, skip
                 if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($parameterTagValueNode)) {
-                    continue;
-                }
-
-                if ($parameterTagValueNode instanceof ParamTagValueNode
-                    && $classMethod->isPublic() &&
-                    $this->usefulArrayTagNodeAnalyzer->isMixedArray($parameterTagValueNode->type)) {
-                    // on public method, skip if there is mixed[], as caller can be anything
                     continue;
                 }
 
