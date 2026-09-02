@@ -12,7 +12,6 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
-use ReflectionObject;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -208,17 +207,14 @@ final class ComposerBasedCommand extends Command
     private function printConfigurationValue(mixed $value): string
     {
         if (is_object($value)) {
-            $printedPropertyValues = [];
+            // include private and protected property values as well; lazy-initialized properties,
+            // e.g. PHPStan UnionType::$normalized, are not part of the cast
+            $propertyValues = array_values((array) $value);
 
-            $reflectionObject = new ReflectionObject($value);
-            foreach ($reflectionObject->getProperties() as $reflectionProperty) {
-                // lazy-initialized property, e.g. PHPStan UnionType::$normalized
-                if (! $reflectionProperty->isInitialized($value)) {
-                    continue;
-                }
-
-                $printedPropertyValues[] = $this->printConfigurationValue($reflectionProperty->getValue($value));
-            }
+            $printedPropertyValues = array_map(
+                $this->printConfigurationValue(...),
+                $propertyValues
+            );
 
             return $this->printShortClassName($value::class) . '(' . implode(', ', $printedPropertyValues) . ')';
         }

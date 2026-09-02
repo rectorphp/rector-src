@@ -12,6 +12,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Command\ComposerBasedCommand;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Console\Command\Source\ComposerBoundRector;
+use Rector\Tests\Console\Command\Source\SomeConfigurationValueObject;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -93,6 +94,29 @@ final class ComposerBasedCommandTest extends TestCase
         $this->assertStringContainsString('Composer package bound rule configuration', $output);
         $this->assertStringContainsString('SomeOldClass: SomeNewClass', $output);
         $this->assertStringContainsString('>=9.0', $output);
+    }
+
+    public function testObjectRuleConfigurationWithNonPublicProperties(): void
+    {
+        $rectorConfig = new RectorConfig();
+
+        // this project requires PHPUnit
+        $rectorConfig->ruleWithConfigurationComposerVersionBound(
+            RenameClassRector::class,
+            [new SomeConfigurationValueObject('some-annotation', 'SomeAttribute')],
+            'phpunit/phpunit',
+            '>=9.0'
+        );
+
+        $composerBasedCommand = $this->createComposerBasedCommand([]);
+        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+
+        $output = $this->bufferedOutput->fetch();
+
+        $this->assertStringContainsString(
+            'SomeConfigurationValueObject(some-annotation, SomeAttribute)',
+            $output
+        );
     }
 
     public function testInactiveRuleConfigurationIsReported(): void
