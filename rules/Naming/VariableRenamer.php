@@ -116,6 +116,12 @@ final readonly class VariableRenamer
             return false;
         }
 
+        // the tracked function-like is only reset on enter, so it can linger past its own body;
+        // a variable located after it is no longer inside it and its params must be ignored
+        if ($variable->getStartTokenPos() > $functionLike->getEndTokenPos()) {
+            return false;
+        }
+
         $scope = $variable->getAttribute(AttributeKey::SCOPE);
         $functionLikeScope = $functionLike->getAttribute(AttributeKey::SCOPE);
 
