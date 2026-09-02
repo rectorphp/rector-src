@@ -74,14 +74,13 @@ final readonly class FileCacheStorage implements CacheStorageInterface
         /**
          * @see https://github.com/rectorphp/rector/issues/9876
          * @see https://github.com/rectorphp/rector/issues/8432
+         * @see https://github.com/php/php-src/issues/7910
          *
          * Cover compatibility for Windows and Unix systems
          */
         $writeSuccess = \DIRECTORY_SEPARATOR === '/'
             ? @\rename($tmpPath, $filePath)
             : @\copy($tmpPath, $filePath);
-
-        // already moved by rename() on success, then unlink() is no-op on it
         @\unlink($tmpPath);
 
         if ($writeSuccess) {
