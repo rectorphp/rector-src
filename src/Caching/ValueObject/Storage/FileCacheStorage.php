@@ -73,23 +73,32 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
         /**
          * @see https://github.com/rectorphp/rector/issues/9876
-         * @see https://github.com/rectorphp/rector/issues/8432
-         * @see https://github.com/php/php-src/issues/7910
          *
-         * Cover compatibility for Windows and Unix systems
+         * Try the atomic write first, as rename() also works on unaffected Windows PHP versions
          */
-        $writeSuccess = \DIRECTORY_SEPARATOR === '/'
-            ? @\rename($tmpPath, $filePath)
-            : @\copy($tmpPath, $filePath);
-        @\unlink($tmpPath);
-
-        if ($writeSuccess) {
+        $renameSuccess = @\rename($tmpPath, $filePath);
+        if ($renameSuccess) {
             return;
         }
 
-        if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($filePath)) {
+        if (\DIRECTORY_SEPARATOR === '/') {
             throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
         }
+
+        /**
+         * @see https://github.com/rectorphp/rector/issues/8432
+         * @see https://github.com/php/php-src/issues/7910
+         *
+         * Fall back only on affected Windows PHP versions where rename() failed
+         */
+        $copySuccess = @\copy($tmpPath, $filePath);
+        @\unlink($tmpPath);
+
+        if ($copySuccess) {
+            return;
+        }
+
+        throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
     }
 
     public function clean(string $key): void
