@@ -196,10 +196,14 @@ final readonly class TypeNormalizer
             return null;
         }
 
-        $arrayUniqueKeyType = $this->arrayTypeLeastCommonDenominatorResolver->sharedArrayStructure(
+        $sharedArrayStructure = $this->arrayTypeLeastCommonDenominatorResolver->sharedArrayStructure(
             ...$unionType->getTypes()
         );
-        return new ArrayType($arrayUniqueKeyType, new MixedType());
+        if (! $sharedArrayStructure instanceof ArrayType) {
+            return null;
+        }
+
+        return $sharedArrayStructure;
     }
 
     /**
