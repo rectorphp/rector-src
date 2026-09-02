@@ -15,6 +15,11 @@ final class PhpDocAttributeKey
      */
     public const string RESOLVED_CLASS = 'resolved_class';
 
+    /**
+     * Fully qualified name of class referenced in an array item key, e.g. SomeEnum::TOTP
+     */
+    public const string RESOLVED_KEY_CLASS = 'resolved_key_class';
+
     public const string PARENT = NativePhpDocAttributeKey::PARENT;
 
     public const string LAST_PHP_DOC_TOKEN_POSITION = 'last_token_position';

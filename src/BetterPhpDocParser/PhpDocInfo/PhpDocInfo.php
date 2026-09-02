@@ -558,11 +558,15 @@ final class PhpDocInfo
             }
 
             $resolvedClass = $node->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS);
-            if ($resolvedClass === null) {
-                return null;
+            if ($resolvedClass !== null) {
+                $classNames[] = $resolvedClass;
             }
 
-            $classNames[] = $resolvedClass;
+            $resolvedKeyClass = $node->getAttribute(PhpDocAttributeKey::RESOLVED_KEY_CLASS);
+            if ($resolvedKeyClass !== null) {
+                $classNames[] = $resolvedKeyClass;
+            }
+
             return $node;
         });
 
