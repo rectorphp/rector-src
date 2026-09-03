@@ -76,4 +76,25 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
         $this->changedFilesDetector->setActiveScope(null, null);
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
+
+    public function testMaxChangesStopsAfterLimit(): void
+    {
+        self::$rectorConfig = null;
+        $this->bootFromConfigFiles([__DIR__ . '/config-max-changes.php']);
+        $applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
+
+        $filePaths = [
+            __DIR__ . '/Source/WithTwoClosuresFirst.php',
+            __DIR__ . '/Source/WithTwoClosuresSecond.php',
+        ];
+
+        // each file holds 2 closures = 2 changes; the first file alone reaches the limit of 2,
+        // so the run stops before touching the second file - proving changes are counted, not files
+        $processResult = $applicationFileProcessor->processFiles($filePaths, new Configuration(
+            isDryRun: true,
+            maxChanges: 2,
+        ));
+
+        $this->assertCount(1, $processResult->getFileDiffs());
+    }
 }

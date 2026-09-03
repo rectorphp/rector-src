@@ -10,6 +10,7 @@ use Rector\FileSystem\FilePathFilter;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Configuration\ConfigurationFactoryTest
@@ -97,6 +98,13 @@ final readonly class ConfigurationFactory
             $isParallel = false;
         }
 
+        $maxChanges = $this->resolveMaxChanges($input);
+
+        // a global change counter cannot be shared across parallel workers, so enforce the limit in a single process
+        if ($maxChanges !== null) {
+            $isParallel = false;
+        }
+
         $memoryLimit = $this->resolveMemoryLimit($input);
 
         $isReportingWithRealPath = SimpleParameterProvider::provideBoolParameter(Option::ABSOLUTE_FILE_PATH);
@@ -140,7 +148,21 @@ final readonly class ConfigurationFactory
             $isComposerBased,
             $isPhpOnly,
             $filters,
+            $maxChanges,
         );
+    }
+
+    private function resolveMaxChanges(InputInterface $input): ?int
+    {
+        $maxChanges = $input->getOption(Option::MAX_CHANGES);
+        if ($maxChanges === null) {
+            return null;
+        }
+
+        $maxChanges = (int) $maxChanges;
+        Assert::positiveInteger($maxChanges);
+
+        return $maxChanges;
     }
 
     private function shouldShowProgressBar(InputInterface $input, string $outputFormat): bool

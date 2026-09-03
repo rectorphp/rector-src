@@ -39,7 +39,13 @@ final readonly class Configuration
         private bool $isComposerBased = false,
         private bool $isPhpOnly = false,
         private array $filters = [],
+        private ?int $maxChanges = null,
     ) {
+    }
+
+    public function getMaxChanges(): ?int
+    {
+        return $this->maxChanges;
     }
 
     public function isComposerBased(): bool
