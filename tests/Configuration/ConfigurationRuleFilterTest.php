@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Configuration;
 
 use Rector\Configuration\ConfigurationRuleFilter;
+use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -20,6 +21,13 @@ final class ConfigurationRuleFilterTest extends AbstractLazyTestCase
         parent::setUp();
 
         $this->configurationRuleFilter = $this->make(ConfigurationRuleFilter::class);
+    }
+
+    protected function tearDown(): void
+    {
+        // the filter is a shared container service; reset it so a configured onlyRules/isPhpOnly
+        // does not leak into other tests in the same process
+        $this->configurationRuleFilter->setConfiguration(new Configuration());
     }
 
     public function testPhpOnlyKeepsMinPhpVersionRules(): void
@@ -62,6 +70,24 @@ final class ConfigurationRuleFilterTest extends AbstractLazyTestCase
         );
 
         $this->assertSame([$removeDeadInstanceOfRector], $filteredRectors);
+    }
+
+    public function testOnlyRulesKeepsEveryListedRule(): void
+    {
+        $stringableForToStringRector = $this->make(StringableForToStringRector::class);
+        $removeDeadInstanceOfRector = $this->make(RemoveDeadInstanceOfRector::class);
+        $removeEmptyClassMethodRector = $this->make(RemoveEmptyClassMethodRector::class);
+
+        $this->configurationRuleFilter->setConfiguration(new Configuration(onlyRules: [
+            StringableForToStringRector::class,
+            RemoveEmptyClassMethodRector::class,
+        ]));
+
+        $filteredRectors = $this->configurationRuleFilter->filter(
+            [$stringableForToStringRector, $removeDeadInstanceOfRector, $removeEmptyClassMethodRector]
+        );
+
+        $this->assertSame([$stringableForToStringRector, $removeEmptyClassMethodRector], $filteredRectors);
     }
 
     private function createConfiguration(bool $isPhpOnly): Configuration
