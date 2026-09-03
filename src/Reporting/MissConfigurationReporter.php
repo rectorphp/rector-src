@@ -47,7 +47,7 @@ final readonly class MissConfigurationReporter
         $this->symfonyStyle->listing($spacedUnusedSkips);
     }
 
-    public function reportSkippedNeverRegisteredRules(): void
+    public function reportSkippedNeverRegisteredRules(): int
     {
         $registeredRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
         $skippedRules = SimpleParameterProvider::provideArrayParameter(Option::SKIPPED_RECTOR_RULES);
@@ -61,7 +61,7 @@ final readonly class MissConfigurationReporter
         );
 
         if ($neverRegisteredSkippedRules === []) {
-            return;
+            return 0;
         }
 
         $this->symfonyStyle->warning(sprintf(
@@ -71,16 +71,18 @@ final readonly class MissConfigurationReporter
         ));
 
         $this->symfonyStyle->listing($neverRegisteredSkippedRules);
+
+        return count($neverRegisteredSkippedRules);
     }
 
-    public function reportSkippedNonRectorClasses(): void
+    public function reportSkippedNonRectorClasses(): int
     {
         $skippedNonRectorClasses = SimpleParameterProvider::provideArrayParameter(
             Option::SKIPPED_NON_RECTOR_CLASSES
         );
 
         if ($skippedNonRectorClasses === []) {
-            return;
+            return 0;
         }
 
         $this->symfonyStyle->warning(sprintf(
@@ -91,6 +93,8 @@ final readonly class MissConfigurationReporter
             count($skippedNonRectorClasses) > 1 ? 'they can' : 'it can',
             RectorInterface::class
         ));
+
+        return count($skippedNonRectorClasses);
     }
 
     /**
