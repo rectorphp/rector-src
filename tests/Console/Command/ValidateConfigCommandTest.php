@@ -31,10 +31,20 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
         parent::setUp();
 
         // clean baseline, so params leaked by other tests in the shared process do not count as issues
-        SimpleParameterProvider::setParameter(Option::SKIP, []);
-        SimpleParameterProvider::setParameter(Option::SKIPPED_NON_RECTOR_CLASSES, []);
-        SimpleParameterProvider::setParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, []);
-        SimpleParameterProvider::setParameter(Option::SET_REGISTERED_RULES, []);
+        foreach ([
+            Option::SKIP,
+            Option::SKIPPED_NON_RECTOR_CLASSES,
+            Option::SKIPPED_RECTOR_RULES,
+            Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES,
+            Option::CACHE_META_EXTENSIONS,
+            Option::DEPRECATED_PHP_SETS_METHODS,
+            Option::DEPRECATED_ATTRIBUTES_SETS_ARGS,
+            Option::DEPRECATED_COMPOSER_BASED_ARGS,
+            Option::ROOT_STANDALONE_REGISTERED_RULES,
+            Option::SET_REGISTERED_RULES,
+        ] as $optionName) {
+            SimpleParameterProvider::setParameter($optionName, []);
+        }
 
         $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new BufferedOutput());
 
