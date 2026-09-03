@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
+use Nette\Utils\Json;
+use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
+use Rector\ChangesReporting\Output\JsonOutputFormatter;
+use Rector\Configuration\Option;
 use Rector\Console\ExitCode;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
@@ -11,6 +15,7 @@ use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -32,10 +37,24 @@ final class ValidateConfigCommand extends Command
     {
         $this->setName('validate-config');
         $this->setDescription('Report config hygiene issues without processing any files');
+        $this->addOption(
+            Option::OUTPUT_FORMAT,
+            null,
+            InputOption::VALUE_REQUIRED,
+            sprintf('Output format: "%s" or "%s"', ConsoleOutputFormatter::NAME, JsonOutputFormatter::NAME),
+            ConsoleOutputFormatter::NAME
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $isJsonOutput = $input->getOption(Option::OUTPUT_FORMAT) === JsonOutputFormatter::NAME;
+
+        // silence the human-readable warnings, so only the JSON payload lands on stdout
+        if ($isJsonOutput) {
+            $this->symfonyStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        }
+
         $issueCount = 0;
 
         $issueCount += $this->deprecatedRulesReporter->reportDeprecatedRules();
@@ -51,6 +70,14 @@ final class ValidateConfigCommand extends Command
 
         $issueCount += $this->reportDeprecatedSkippedClasses();
         $issueCount += $this->reportSetAndRulesDuplicatedRegistrations();
+
+        if ($isJsonOutput) {
+            echo Json::encode([
+                'valid' => $issueCount === 0,
+                'issue_count' => $issueCount,
+            ], pretty: true) . PHP_EOL;
+            return $issueCount === 0 ? ExitCode::SUCCESS : ExitCode::FAILURE;
+        }
 
         if ($issueCount === 0) {
             $this->symfonyStyle->success('Config is valid, no issues found');

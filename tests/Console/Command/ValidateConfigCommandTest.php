@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Console\Command;
 
+use Nette\Utils\Json;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
@@ -62,5 +63,39 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [OrdSingleByteRector::class]);
 
         $this->assertSame(ExitCode::SUCCESS, $this->commandTester->execute([]));
+    }
+
+    public function testJsonOutputOnCleanConfig(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [OrdSingleByteRector::class]);
+
+        ob_start();
+        $exitCode = $this->commandTester->execute([
+            '--output-format' => 'json',
+        ]);
+        $json = (string) ob_get_clean();
+
+        $this->assertSame(ExitCode::SUCCESS, $exitCode);
+        $this->assertSame([
+            'valid' => true,
+            'issue_count' => 0,
+        ], Json::decode($json, forceArrays: true));
+    }
+
+    public function testJsonOutputOnDeprecatedRegisteredRule(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [DeprecatedFixtureRule::class]);
+
+        ob_start();
+        $exitCode = $this->commandTester->execute([
+            '--output-format' => 'json',
+        ]);
+        $json = (string) ob_get_clean();
+
+        $this->assertSame(ExitCode::FAILURE, $exitCode);
+        $this->assertSame([
+            'valid' => false,
+            'issue_count' => 1,
+        ], Json::decode($json, forceArrays: true));
     }
 }
