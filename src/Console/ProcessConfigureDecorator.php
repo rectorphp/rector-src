@@ -102,5 +102,12 @@ final class ProcessConfigureDecorator
             InputOption::VALUE_NONE,
             'Show summary of rules applied during the run.'
         );
+
+        $command->addOption(
+            Option::MAX_CHANGES,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Stop after this many changes are made, leaving the rest untouched. Forces non-parallel run.'
+        );
     }
 }
