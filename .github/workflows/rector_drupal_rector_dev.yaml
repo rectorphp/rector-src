@@ -4,7 +4,6 @@ on:
     push:
         branches:
             - main
-    pull_request: null
 
 env:
     # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
