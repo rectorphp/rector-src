@@ -7,6 +7,7 @@ namespace Rector\Tests\ChangesReporting\Output\Factory;
 use PHPUnit\Framework\TestCase;
 use Rector\ChangesReporting\Output\Factory\JsonOutputFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
@@ -42,6 +43,35 @@ final class JsonOutputFactoryTest extends TestCase
         );
 
         $expectedOutput = (string) file_get_contents(__DIR__ . '/../Fixtures/without_diffs.json');
+        $this->assertSame($expectedOutput, $actualOutput);
+    }
+
+    public function testReportShouldAttributeEachRectorToItsLine(): void
+    {
+        $diff = '--- Original' . PHP_EOL . '+++ New' . PHP_EOL .
+            '@@ -38,5 +39,6 @@' . PHP_EOL .
+            'return true;' . PHP_EOL . '}' . PHP_EOL;
+
+        $actualOutput = JsonOutputFactory::create(
+            new ProcessResult(
+                [],
+                [
+                    new FileDiff(
+                        'some/file.php',
+                        $diff,
+                        'diff console formatted',
+                        [
+                            new RectorWithLineChange(StrStartsWithRector::class, 38),
+                            new RectorWithLineChange(StrEndsWithRector::class, 42),
+                        ]
+                    ),
+                ],
+                1
+            ),
+            new Configuration(showDiffs: true)
+        );
+
+        $expectedOutput = (string) file_get_contents(__DIR__ . '/../Fixtures/with_diffs.json');
         $this->assertSame($expectedOutput, $actualOutput);
     }
 }
