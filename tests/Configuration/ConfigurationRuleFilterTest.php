@@ -23,6 +23,13 @@ final class ConfigurationRuleFilterTest extends AbstractLazyTestCase
         $this->configurationRuleFilter = $this->make(ConfigurationRuleFilter::class);
     }
 
+    protected function tearDown(): void
+    {
+        // the filter is a shared container service; reset it so a configured onlyRules/isPhpOnly
+        // does not leak into other tests in the same process
+        $this->configurationRuleFilter->setConfiguration(new Configuration());
+    }
+
     public function testPhpOnlyKeepsMinPhpVersionRules(): void
     {
         $stringableForToStringRector = $this->make(StringableForToStringRector::class);
