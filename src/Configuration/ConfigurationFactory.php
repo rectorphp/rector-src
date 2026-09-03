@@ -67,10 +67,12 @@ final readonly class ConfigurationFactory
         $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
         // filter rule and path
-        $onlyRule = $input->getOption(Option::ONLY);
-        if ($onlyRule !== null) {
-            $onlyRule = $this->onlyRuleResolver->resolve($onlyRule);
-        }
+        /** @var string[] $onlyRuleInputs */
+        $onlyRuleInputs = (array) $input->getOption(Option::ONLY);
+        $onlyRules = array_map(
+            $this->onlyRuleResolver->resolve(...),
+            $onlyRuleInputs
+        );
 
         $onlySuffix = $input->getOption(Option::ONLY_SUFFIX);
         if ($onlySuffix !== null) {
@@ -84,7 +86,7 @@ final readonly class ConfigurationFactory
 
         // "--only"/"--only-suffix"/"--filter" narrow the run, so skips outside the scope look falsely unused;
         // mark the run as narrowed to disable unused skip reporting and avoid false positives
-        if ($onlyRule !== null || $onlySuffix !== null || $filters !== []) {
+        if ($onlyRules !== [] || $onlySuffix !== null || $filters !== []) {
             SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
         }
 
@@ -141,7 +143,7 @@ final readonly class ConfigurationFactory
             $memoryLimit,
             $isDebug,
             $isReportingWithRealPath,
-            $onlyRule,
+            $onlyRules,
             $onlySuffix,
             $levelOverflows,
             $showRulesSummary,

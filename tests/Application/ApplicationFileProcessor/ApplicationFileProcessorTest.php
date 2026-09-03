@@ -49,15 +49,15 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
 
         $this->applicationFileProcessor->processFiles([$filePath], new Configuration(
             isDryRun: true,
-            onlyRule: RemoveEmptyClassMethodRector::class
+            onlyRules: [RemoveEmptyClassMethodRector::class]
         ));
 
         // a repeated --only run hits its own scoped cache entry
-        $this->changedFilesDetector->setActiveScope(RemoveEmptyClassMethodRector::class, null);
+        $this->changedFilesDetector->setActiveScope([RemoveEmptyClassMethodRector::class], null);
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
 
         // a full run uses a different scope key, so it is not poisoned
-        $this->changedFilesDetector->setActiveScope(null, null);
+        $this->changedFilesDetector->setActiveScope([], null);
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
 
@@ -70,10 +70,10 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
             onlySuffix: 'Controller.php'
         ));
 
-        $this->changedFilesDetector->setActiveScope(null, 'Controller.php');
+        $this->changedFilesDetector->setActiveScope([], 'Controller.php');
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
 
-        $this->changedFilesDetector->setActiveScope(null, null);
+        $this->changedFilesDetector->setActiveScope([], null);
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
 

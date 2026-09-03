@@ -57,7 +57,12 @@ final class ProcessConfigureDecorator
         );
 
         // filter by rule and path
-        $command->addOption(Option::ONLY, null, InputOption::VALUE_REQUIRED, 'Fully qualified rule class name');
+        $command->addOption(
+            Option::ONLY,
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'Fully qualified rule class name; repeat to run several rules, e.g. --only=A --only=B'
+        );
 
         $command->addOption(
             Option::COMPOSER_BASED,
