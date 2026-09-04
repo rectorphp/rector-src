@@ -41,7 +41,7 @@ final readonly class SymfonyStyleFactory
         }
 
         // no interactive terminal, e.g. piped output, CI or an agent - never emit ANSI, even if forced via --ansi
-        if (!defined('STDOUT') || !stream_isatty(STDOUT)) {
+        if (! defined('STDOUT') || ! stream_isatty(STDOUT)) {
             $consoleOutput->setDecorated(false);
         }
 
