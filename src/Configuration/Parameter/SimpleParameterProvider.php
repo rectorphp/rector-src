@@ -21,6 +21,7 @@ final class SimpleParameterProvider
      * @var array<Option::*>
      */
     private const array CACHE_IGNORED_PARAMETER_NAMES = [
+        Option::SOURCE,
         Option::PARALLEL,
         Option::PARALLEL_JOB_SIZE,
         Option::PARALLEL_MAX_NUMBER_OF_PROCESSES,

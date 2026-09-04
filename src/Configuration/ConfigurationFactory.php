@@ -209,15 +209,19 @@ final readonly class ConfigurationFactory
         if ($commandLinePaths !== []) {
             // mark the run as narrowed, so unused skip reporting can be disabled to avoid false positives
             SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
-            $this->setFilesWithoutExtensionParameter($commandLinePaths);
-            return $commandLinePaths;
+            $paths = $commandLinePaths;
+        } else {
+            // fallback to parameter
+            $paths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
         }
 
-        // fallback to parameter
-        $configPaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
-        $this->setFilesWithoutExtensionParameter($configPaths);
+        $this->setFilesWithoutExtensionParameter($paths);
 
-        return $configPaths;
+        // extensions read the processed paths from here; without this only the test harness
+        // sets it, so the parameter is empty in a real run
+        SimpleParameterProvider::setParameter(Option::SOURCE, $paths);
+
+        return $paths;
     }
 
     /**
