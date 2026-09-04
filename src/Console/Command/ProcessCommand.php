@@ -82,6 +82,15 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // "-n" is the "--dry-run" shortcut here, but means "--no-interaction" in most CLI tools;
+        // warn and steer to the explicit flag, to be removed in the next major version
+        if ($input->hasParameterOption('-n', true)) {
+            $this->symfonyStyle->getErrorStyle()
+                ->warning(
+                    'The "-n" shortcut for "--dry-run" is deprecated and will be removed, as it means "--no-interaction" in most CLI tools. Use "--dry-run" instead.'
+                );
+        }
+
         // missing config? add it :)
         if (! $this->configInitializer->areSomeRectorsLoaded()) {
             $this->configInitializer->createConfig(getcwd());
