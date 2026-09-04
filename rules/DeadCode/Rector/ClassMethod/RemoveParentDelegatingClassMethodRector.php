@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Reflection\ExtendedParameterReflection;
@@ -116,17 +117,14 @@ CODE_SAMPLE
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
-        return $phpDocInfo->hasByNames(
-            [
-                '@param',
-                '@phpstan-param',
-                '@psalm-param',
-                '@return',
-                '@phpstan-return',
-                '@psalm-return',
-                '@deprecated',
-            ]
-        );
+        // any tag or annotation (e.g. @Route, @OA\Get, @param) may carry intent the parent lacks
+        foreach ($phpDocInfo->getPhpDocNode()->children as $childNode) {
+            if ($childNode instanceof PhpDocTagNode) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function matchParentMethodReflection(ClassMethod $classMethod): ?ExtendedMethodReflection
