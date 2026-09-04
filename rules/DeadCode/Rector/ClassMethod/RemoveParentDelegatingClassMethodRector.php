@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
@@ -116,15 +117,7 @@ CODE_SAMPLE
     private function hasRefiningDocblock(ClassMethod $classMethod): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-
-        // any tag or annotation (e.g. @Route, @OA\Get, @param) may carry intent the parent lacks
-        foreach ($phpDocInfo->getPhpDocNode()->children as $childNode) {
-            if ($childNode instanceof PhpDocTagNode) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($phpDocInfo->getPhpDocNode()->children, fn(PhpDocChildNode $phpDocChildNode): bool => $phpDocChildNode instanceof PhpDocTagNode);
     }
 
     private function matchParentMethodReflection(ClassMethod $classMethod): ?ExtendedMethodReflection
