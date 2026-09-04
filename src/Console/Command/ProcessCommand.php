@@ -98,6 +98,14 @@ EOF
             $this->symfonyStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
+        // "--rules-summary" is a human-only table; the JSON format carries richer per-rule data
+        if ($configuration->shouldShowRulesSummary()) {
+            $this->symfonyStyle->getErrorStyle()
+                ->warning(
+                    'The "--rules-summary" option is deprecated and will be removed. Use "--output-format=json" instead, which reports every applied rule with its file and line.'
+                );
+        }
+
         $this->additionalAutoloader->autoloadInput($input);
 
         $paths = $configuration->getPaths();
