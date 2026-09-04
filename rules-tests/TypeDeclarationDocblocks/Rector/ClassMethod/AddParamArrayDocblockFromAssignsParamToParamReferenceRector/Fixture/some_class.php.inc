@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArray
 
 final class SomeClass
 {
-    public function run(array &$items)
+    private function run(array &$items)
     {
         $items[] = 'John';
     }
@@ -21,7 +21,7 @@ final class SomeClass
     /**
      * @param string[] $items
      */
-    public function run(array &$items)
+    private function run(array &$items)
     {
         $items[] = 'John';
     }

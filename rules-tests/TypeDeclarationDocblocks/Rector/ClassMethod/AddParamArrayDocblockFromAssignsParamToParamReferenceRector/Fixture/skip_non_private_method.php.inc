@@ -2,11 +2,10 @@
 
 namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArrayDocblockFromAssignsParamToParamReferenceRector\Fixture;
 
-final class SkipMultipleAssigns
+final class SkipNonPrivateMethod
 {
-    private function run(array &$items)
+    protected function addMobileData(array &$data): void
     {
-        $items[] = 'John';
-        $items[] = 1000;
+        $data[] = 'value';
     }
 }
