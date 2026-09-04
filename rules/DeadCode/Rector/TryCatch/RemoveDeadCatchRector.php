@@ -154,7 +154,15 @@ CODE_SAMPLE
                 return true;
             }
 
-            if (! $this->isObjectType($fullyQualified, new ObjectType($nextCatchType->toString()))) {
+            // Throwable/Exception catch anything, so the current catch is never dead against them,
+            // even when the current type cannot be resolved to prove the parent relation
+            $catchesAnything = in_array(
+                ltrim($nextCatchType->toString(), '\\'),
+                ['Throwable', 'Exception'],
+                true
+            );
+
+            if (! $catchesAnything && ! $this->isObjectType($fullyQualified, new ObjectType($nextCatchType->toString()))) {
                 continue;
             }
 
