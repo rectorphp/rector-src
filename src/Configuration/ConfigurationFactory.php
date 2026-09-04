@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
+use Rector\Agentic\TerminalDetector;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\FileSystem\FilePathFilter;
@@ -175,7 +176,7 @@ final readonly class ConfigurationFactory
         }
 
         // no interactive terminal, e.g. piped output, CI or an agent - the redraws are just noise
-        if (! $this->isTtyOutput()) {
+        if (! TerminalDetector::isOutputTty()) {
             return false;
         }
 
@@ -184,11 +185,6 @@ final readonly class ConfigurationFactory
         }
 
         return $outputFormat === ConsoleOutputFormatter::NAME;
-    }
-
-    private function isTtyOutput(): bool
-    {
-        return defined('STDOUT') && stream_isatty(STDOUT);
     }
 
     private function shouldShowDiffs(InputInterface $input): bool
