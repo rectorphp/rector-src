@@ -52,6 +52,16 @@ final readonly class ConfigInitializer
             return;
         }
 
+        // non-interactive terminal, e.g. piped output, CI or an agent: never prompt or silently write a
+        // config, just say what to do - Symfony still treats a closed STDIN as interactive here
+        if (! (defined('STDIN') && stream_isatty(STDIN))) {
+            $this->symfonyStyle->warning(sprintf(
+                'No "%s" config found. Create one, or pass "--config <path>".',
+                RectorConfigsResolver::DEFAULT_CONFIG_FILE
+            ));
+            return;
+        }
+
         $response = $this->symfonyStyle->ask(
             'No "' . RectorConfigsResolver::DEFAULT_CONFIG_FILE . '" config found. Should we generate it for you?',
             'yes'
