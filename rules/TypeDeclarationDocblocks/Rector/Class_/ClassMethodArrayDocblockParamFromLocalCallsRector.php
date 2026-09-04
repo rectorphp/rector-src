@@ -92,13 +92,8 @@ CODE_SAMPLE
             }
 
             // only private methods have a closed set of local callers; public/protected can be called from outside
+            // with a wider type we cannot see here
             if (! $classMethod->isPrivate()) {
-                continue;
-            }
-
-            // local calls are the complete caller set only for a private method, or for any method of a final class
-            // that cannot be extended; otherwise a child class may call it with a wider type we cannot see here
-            if (! $classMethod->isPrivate() && ! $node->isFinal()) {
                 continue;
             }
 
@@ -167,7 +162,7 @@ CODE_SAMPLE
     private function hasNestedArray(Type $type): bool
     {
         if ($type instanceof UnionType) {
-            return array_any($type->getTypes(), fn(Type $unionedType): bool => $this->hasNestedArray($unionedType));
+            return array_any($type->getTypes(), fn (Type $unionedType): bool => $this->hasNestedArray($unionedType));
         }
 
         if (! $type instanceof ArrayType) {
@@ -176,7 +171,7 @@ CODE_SAMPLE
 
         $itemType = $type->getItemType();
         if ($itemType instanceof UnionType) {
-            return array_any($itemType->getTypes(), fn(Type $unionedItemType): bool => $unionedItemType instanceof ArrayType);
+            return array_any($itemType->getTypes(), fn (Type $unionedItemType): bool => $unionedItemType instanceof ArrayType);
         }
 
         return $itemType instanceof ArrayType;
