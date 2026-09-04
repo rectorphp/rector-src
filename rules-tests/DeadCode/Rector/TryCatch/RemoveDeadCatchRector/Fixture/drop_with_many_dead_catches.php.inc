@@ -8,12 +8,12 @@ class DropWithManyDeadCatches
     {
         try {
             // some code
-        } catch (SomeException $exception) {
-            throw new InvalidArgumentException($exception->getMessage());
-        } catch (DeadException $exception) {
+        } catch (\RangeException $exception) {
+            throw new \InvalidArgumentException($exception->getMessage());
+        } catch (\DomainException $exception) {
             throw $exception;
-        } catch (RuntimeException $exception) {
-            throw new InvalidArgumentException($exception->getMessage());
+        } catch (\RuntimeException $exception) {
+            throw new \InvalidArgumentException($exception->getMessage());
         } catch (\Throwable $throwable) {
             throw $throwable;
         }
@@ -32,10 +32,10 @@ class DropWithManyDeadCatches
     {
         try {
             // some code
-        } catch (SomeException $exception) {
-            throw new InvalidArgumentException($exception->getMessage());
-        } catch (RuntimeException $exception) {
-            throw new InvalidArgumentException($exception->getMessage());
+        } catch (\RangeException $exception) {
+            throw new \InvalidArgumentException($exception->getMessage());
+        } catch (\RuntimeException $exception) {
+            throw new \InvalidArgumentException($exception->getMessage());
         }
     }
 }
