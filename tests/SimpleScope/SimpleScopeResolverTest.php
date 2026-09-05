@@ -66,7 +66,7 @@ PHP);
 
     private function resolveCode(string $code): SimpleScope
     {
-        $parser = (new ParserFactory())->createForNewestSupportedVersion();
+        $parser = new ParserFactory()->createForNewestSupportedVersion();
         $stmts = $parser->parse($code);
 
         return $this->simpleScopeResolver->resolve($stmts ?? []);
