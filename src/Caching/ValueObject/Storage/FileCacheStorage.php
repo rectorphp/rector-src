@@ -70,6 +70,27 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
         // for performance reasons we don't use SmartFileSystem
         FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported), null);
+
+        /**
+         * @see https://github.com/rectorphp/rector/issues/9876
+         *
+         * Try the atomic write first, as rename() also works on unaffected Windows PHP versions
+         */
+        $renameSuccess = @\rename($tmpPath, $filePath);
+        if ($renameSuccess) {
+            return;
+        }
+
+        if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($filePath)) {
+            throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
+        }
+
+        /**
+         * @see https://github.com/rectorphp/rector/issues/8432
+         * @see https://github.com/php/php-src/issues/7910
+         *
+         * Fall back only on affected Windows PHP versions where rename() failed
+         */
         $copySuccess = @\copy($tmpPath, $filePath);
         @\unlink($tmpPath);
 
@@ -77,9 +98,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($filePath)) {
-            throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
-        }
+        throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
     }
 
     public function clean(string $key): void
