@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\SimpleType;
+namespace Rector\Analyzer\SimpleType;
 
-use Rector\SimpleType\Contract\SimpleTypeInterface;
+use Rector\Analyzer\SimpleType\Contract\SimpleTypeInterface;
 
 final class MixedType implements SimpleTypeInterface
 {

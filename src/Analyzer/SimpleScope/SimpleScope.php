@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\SimpleScope;
+namespace Rector\Analyzer\SimpleScope;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -12,14 +12,14 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
-use Rector\SimpleType\ArrayType;
-use Rector\SimpleType\BooleanType;
-use Rector\SimpleType\Contract\SimpleTypeInterface;
-use Rector\SimpleType\IntegerType;
-use Rector\SimpleType\MixedType;
-use Rector\SimpleType\NullType;
-use Rector\SimpleType\ObjectType;
-use Rector\SimpleType\StringType;
+use Rector\Analyzer\SimpleType\ArrayType;
+use Rector\Analyzer\SimpleType\BooleanType;
+use Rector\Analyzer\SimpleType\Contract\SimpleTypeInterface;
+use Rector\Analyzer\SimpleType\IntegerType;
+use Rector\Analyzer\SimpleType\MixedType;
+use Rector\Analyzer\SimpleType\NullType;
+use Rector\Analyzer\SimpleType\ObjectType;
+use Rector\Analyzer\SimpleType\StringType;
 
 // PHPStan-free scope; holds variable types resolved by SimpleScopeResolver
 final class SimpleScope

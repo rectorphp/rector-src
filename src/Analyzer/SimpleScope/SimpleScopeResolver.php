@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\SimpleScope;
+namespace Rector\Analyzer\SimpleScope;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
@@ -11,16 +11,17 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\NodeFinder;
-use Rector\SimpleType\ArrayType;
-use Rector\SimpleType\BooleanType;
-use Rector\SimpleType\Contract\SimpleTypeInterface;
-use Rector\SimpleType\IntegerType;
-use Rector\SimpleType\ObjectType;
-use Rector\SimpleType\StringType;
+use Rector\Analyzer\SimpleType\ArrayType;
+use Rector\Analyzer\SimpleType\BooleanType;
+use Rector\Analyzer\SimpleType\Contract\SimpleTypeInterface;
+use Rector\Analyzer\SimpleType\IntegerType;
+use Rector\Analyzer\SimpleType\ObjectType;
+use Rector\Analyzer\SimpleType\StringType;
 
 // builds a PHPStan-free SimpleScope from params and local assigns, in source order
 /**
  * @see \Rector\Tests\SimpleScope\SimpleScopeResolverTest
+ * @see \Rector\Tests\Analyzer\SimpleScope\SimpleScopeResolverTest
  */
 final readonly class SimpleScopeResolver
 {

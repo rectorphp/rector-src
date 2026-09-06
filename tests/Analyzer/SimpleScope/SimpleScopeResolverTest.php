@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\SimpleScope;
+namespace Rector\Tests\Analyzer\SimpleScope;
 
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
-use Rector\SimpleScope\SimpleScope;
-use Rector\SimpleScope\SimpleScopeResolver;
+use Rector\Analyzer\SimpleScope\SimpleScope;
+use Rector\Analyzer\SimpleScope\SimpleScopeResolver;
 
 final class SimpleScopeResolverTest extends TestCase
 {

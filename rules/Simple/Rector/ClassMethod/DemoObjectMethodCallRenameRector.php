@@ -8,10 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Analyzer\SimpleScope\SimpleScope;
+use Rector\Analyzer\SimpleScope\SimpleScopeResolver;
+use Rector\Analyzer\SimpleType\ObjectType;
 use Rector\Rector\AbstractRector;
-use Rector\SimpleScope\SimpleScope;
-use Rector\SimpleScope\SimpleScopeResolver;
-use Rector\SimpleType\ObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
