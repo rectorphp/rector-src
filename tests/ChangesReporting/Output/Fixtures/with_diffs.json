@@ -1,0 +1,29 @@
+{
+    "totals": {
+        "changed_files": 1,
+        "errors": 0
+    },
+    "file_diffs": [
+        {
+            "file": "some/file.php",
+            "diff": "--- Original\n+++ New\n@@ -38,5 +39,6 @@\nreturn true;\n}\n",
+            "applied_rectors": [
+                "Rector\\Php80\\Rector\\Identical\\StrEndsWithRector",
+                "Rector\\Php80\\Rector\\Identical\\StrStartsWithRector"
+            ],
+            "changes": [
+                {
+                    "rector": "Rector\\Php80\\Rector\\Identical\\StrStartsWithRector",
+                    "line": 38
+                },
+                {
+                    "rector": "Rector\\Php80\\Rector\\Identical\\StrEndsWithRector",
+                    "line": 42
+                }
+            ]
+        }
+    ],
+    "changed_files": [
+        "some/file.php"
+    ]
+}

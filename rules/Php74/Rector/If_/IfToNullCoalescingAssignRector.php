@@ -20,6 +20,7 @@ use PhpParser\Node\Stmt\If_;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -37,7 +38,8 @@ final class IfToNullCoalescingAssignRector extends AbstractRector implements Min
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ValueResolver $valueResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly CommentsMerger $commentsMerger
     ) {
     }
 
@@ -117,7 +119,8 @@ CODE_SAMPLE
         }
 
         $expression = new Expression(new AssignCoalesce($assign->var, $assign->expr));
-        $this->mirrorComments($expression, $node);
+        // keep comments from both the if and the single assign inside it
+        $this->commentsMerger->keepComments($expression, [$node, $onlyStmt]);
 
         return $expression;
     }

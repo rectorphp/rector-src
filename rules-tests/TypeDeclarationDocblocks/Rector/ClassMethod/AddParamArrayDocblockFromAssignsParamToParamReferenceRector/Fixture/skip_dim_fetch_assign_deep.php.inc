@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\AddParamArray
 
 final class SkipDimFetchAssignDeep
 {
-    public function run(array &$items)
+    private function run(array &$items)
     {
         $items[][] = 'John';
     }

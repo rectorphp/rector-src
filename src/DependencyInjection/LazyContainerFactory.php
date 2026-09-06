@@ -37,6 +37,7 @@ use Rector\Console\Command\CustomRuleCommand;
 use Rector\Console\Command\ListRulesCommand;
 use Rector\Console\Command\ProcessCommand;
 use Rector\Console\Command\SetupCICommand;
+use Rector\Console\Command\ValidateConfigCommand;
 use Rector\Console\Command\WorkerCommand;
 use Rector\Console\ConsoleApplication;
 use Rector\Console\Style\SymfonyStyleFactory;
@@ -158,6 +159,7 @@ final class LazyContainerFactory
 
         $rectorConfig->singleton(ProcessCommand::class);
         $rectorConfig->singleton(WorkerCommand::class);
+        $rectorConfig->singleton(ValidateConfigCommand::class);
         $rectorConfig->singleton(SetupCICommand::class);
         $rectorConfig->singleton(ListRulesCommand::class);
         $rectorConfig->singleton(CustomRuleCommand::class);

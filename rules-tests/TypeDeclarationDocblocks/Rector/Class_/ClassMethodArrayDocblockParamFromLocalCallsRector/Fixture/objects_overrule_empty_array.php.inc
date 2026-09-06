@@ -14,7 +14,7 @@ final class ObjectsOverruleEmptyArray
         $this->run($emptyArray);
     }
 
-    public function run(array $result)
+    private function run(array $result)
     {
     }
 
@@ -56,7 +56,7 @@ final class ObjectsOverruleEmptyArray
     /**
      * @param \Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamFromLocalCallsRector\Source\SomeReturnedObject[] $result
      */
-    public function run(array $result)
+    private function run(array $result)
     {
     }
 

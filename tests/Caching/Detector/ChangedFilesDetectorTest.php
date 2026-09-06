@@ -68,13 +68,13 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
         $filePath = __DIR__ . '/Source/file.php';
 
         // full run caches the file as clean
-        $this->changedFilesDetector->setActiveScope(null, null);
+        $this->changedFilesDetector->setActiveScope([], null);
         $this->changedFilesDetector->addCacheableFile($filePath);
         $this->changedFilesDetector->cacheFile($filePath);
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
 
         // an --only run reuses the full-run cache instead of re-analysing the file
-        $this->changedFilesDetector->setActiveScope('Rector\\SomeRule', null);
+        $this->changedFilesDetector->setActiveScope(['Rector\\SomeRule'], null);
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
     }
 
@@ -83,13 +83,13 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
         $filePath = __DIR__ . '/Source/file.php';
 
         // a scoped run only caches under its own key
-        $this->changedFilesDetector->setActiveScope('Rector\\SomeRule', null);
+        $this->changedFilesDetector->setActiveScope(['Rector\\SomeRule'], null);
         $this->changedFilesDetector->addCacheableFile($filePath);
         $this->changedFilesDetector->cacheFile($filePath);
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
 
         // a full run must not treat the file as cached, as only one rule ran
-        $this->changedFilesDetector->setActiveScope(null, null);
+        $this->changedFilesDetector->setActiveScope([], null);
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
 

@@ -39,10 +39,19 @@ final class JsonOutputFactory
             ;
 
             if ($configuration->shouldShowDiffs() && $fileDiff->getDiff() !== '') {
+                $changes = [];
+                foreach ($fileDiff->getRectorChanges() as $rectorWithLineChange) {
+                    $changes[] = [
+                        'rector' => $rectorWithLineChange->getRectorClass(),
+                        'line' => $rectorWithLineChange->getLine(),
+                    ];
+                }
+
                 $errorsJson[Bridge::FILE_DIFFS][] = [
                     'file' => $filePath,
                     'diff' => $fileDiff->getDiff(),
                     'applied_rectors' => $fileDiff->getRectorClasses(),
+                    'changes' => $changes,
                 ];
             }
 

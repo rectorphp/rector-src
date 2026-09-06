@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Console\Style;
 
+use Rector\Agentic\TerminalDetector;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -38,6 +39,11 @@ final readonly class SymfonyStyleFactory
         // disable output for tests
         if ($this->isPHPUnitRun()) {
             $consoleOutput->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        }
+
+        // no interactive terminal, e.g. piped output, CI or an agent - never emit ANSI, even if forced via --ansi
+        if (! TerminalDetector::isOutputTty()) {
+            $consoleOutput->setDecorated(false);
         }
 
         return new RectorStyle($argvInput, $consoleOutput);

@@ -148,6 +148,8 @@ final class Option
 
     public const string RULES_SUMMARY = 'rules-summary';
 
+    public const string MAX_CHANGES = 'max-changes';
+
     public const string CONFIG = 'config';
 
     /**

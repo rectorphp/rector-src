@@ -57,7 +57,12 @@ final class ProcessConfigureDecorator
         );
 
         // filter by rule and path
-        $command->addOption(Option::ONLY, null, InputOption::VALUE_REQUIRED, 'Fully qualified rule class name');
+        $command->addOption(
+            Option::ONLY,
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'Fully qualified rule class name; repeat to run several rules, e.g. --only=A --only=B'
+        );
 
         $command->addOption(
             Option::COMPOSER_BASED,
@@ -101,6 +106,13 @@ final class ProcessConfigureDecorator
             null,
             InputOption::VALUE_NONE,
             'Show summary of rules applied during the run.'
+        );
+
+        $command->addOption(
+            Option::MAX_CHANGES,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Stop after this many changes are made, leaving the rest untouched. Forces non-parallel run.'
         );
     }
 }

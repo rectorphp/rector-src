@@ -15,6 +15,7 @@ final readonly class Configuration
     /**
      * @param string[] $fileExtensions
      * @param string[] $paths
+     * @param string[] $onlyRules
      * @param LevelOverflow[] $levelOverflows
      * @param string[] $filters
      */
@@ -32,14 +33,20 @@ final readonly class Configuration
         private string|null $memoryLimit = null,
         private bool $isDebug = false,
         private bool $reportingWithRealPath = false,
-        private ?string $onlyRule = null,
+        private array $onlyRules = [],
         private ?string $onlySuffix = null,
         private array $levelOverflows = [],
         private bool $showRulesSummary = false,
         private bool $isComposerBased = false,
         private bool $isPhpOnly = false,
         private array $filters = [],
+        private ?int $maxChanges = null,
     ) {
+    }
+
+    public function getMaxChanges(): ?int
+    {
+        return $this->maxChanges;
     }
 
     public function isComposerBased(): bool
@@ -76,9 +83,12 @@ final readonly class Configuration
         return $this->fileExtensions;
     }
 
-    public function getOnlyRule(): ?string
+    /**
+     * @return string[]
+     */
+    public function getOnlyRules(): array
     {
-        return $this->onlyRule;
+        return $this->onlyRules;
     }
 
     /**

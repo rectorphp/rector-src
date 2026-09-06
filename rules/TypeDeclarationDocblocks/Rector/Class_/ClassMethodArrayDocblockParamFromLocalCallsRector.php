@@ -8,11 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\NodeManipulator\ClassMethodManipulator;
 use Rector\PhpParser\NodeFinder\LocalMethodCallFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\CallTypesResolver;
@@ -31,8 +31,7 @@ final class ClassMethodArrayDocblockParamFromLocalCallsRector extends AbstractRe
         private readonly CallTypesResolver $callTypesResolver,
         private readonly LocalMethodCallFinder $localMethodCallFinder,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer,
-        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
-        private readonly ClassMethodManipulator $classMethodManipulator
+        private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator
     ) {
     }
 
@@ -92,8 +91,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            // parent/interface method may declare a wider @param contract; local calls are narrower, so skip to keep LSP
-            if ($this->classMethodManipulator->hasParentMethodOrInterfaceMethod($node, $this->getName($classMethod))) {
+            // only private methods have a closed set of local callers; public/protected can be called from outside
+            // with a wider type we cannot see here
+            if (! $classMethod->isPrivate()) {
                 continue;
             }
 
@@ -115,13 +115,6 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($parameterTagValueNode instanceof ParamTagValueNode
-                    && $classMethod->isPublic() &&
-                    $this->usefulArrayTagNodeAnalyzer->isMixedArray($parameterTagValueNode->type)) {
-                    // on public method, skip if there is mixed[], as caller can be anything
-                    continue;
-                }
-
                 $resolvedParameterType = $classMethodParameterTypes[$parameterPosition] ?? $classMethodParameterTypes[$parameterName] ?? null;
 
                 if (! $resolvedParameterType instanceof Type) {
@@ -130,6 +123,12 @@ CODE_SAMPLE
 
                 // in case of array type declaration, null cannot be passed or is already casted
                 $resolvedParameterType = TypeCombinator::removeNull($resolvedParameterType);
+
+                // the generalization of a nested array (an array of arrays) is imprecise and can diverge from the type
+                // PHPStan itself infers at the call site, producing a @param that rejects the very call it was built from
+                if ($this->hasNestedArray($resolvedParameterType)) {
+                    continue;
+                }
 
                 // the param default value must always be accepted; a locally inferred, flow-narrowed type such as
                 // "non-empty-array" would otherwise contradict an "= []" default - unite with the default type so
@@ -158,6 +157,24 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function hasNestedArray(Type $type): bool
+    {
+        if ($type instanceof UnionType) {
+            return array_any($type->getTypes(), fn (Type $unionedType): bool => $this->hasNestedArray($unionedType));
+        }
+
+        if (! $type instanceof ArrayType) {
+            return false;
+        }
+
+        $itemType = $type->getItemType();
+        if ($itemType instanceof UnionType) {
+            return array_any($itemType->getTypes(), fn (Type $unionedItemType): bool => $unionedItemType instanceof ArrayType);
+        }
+
+        return $itemType instanceof ArrayType;
     }
 
     private function hasParamArrayType(Param $param): bool

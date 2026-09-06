@@ -7,7 +7,7 @@ final class OverrideDummyArrayParam
     /**
      * @param array $items
      */
-    public function run(array &$items)
+    private function run(array &$items)
     {
         $items[] = 'John';
     }
@@ -24,7 +24,7 @@ final class OverrideDummyArrayParam
     /**
      * @param string[] $items
      */
-    public function run(array &$items)
+    private function run(array &$items)
     {
         $items[] = 'John';
     }

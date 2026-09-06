@@ -35,6 +35,10 @@ final class RectorTest extends TestCase
     {
         $process = Process::fromShellCommandline($command);
         $process->run();
-        $this->assertSame($expectedOutput, preg_replace('/ +/', ' ', $process->getOutput()));
+        $this->assertSame($expectedOutput, preg_replace('/ +/', ' ', $process->getOutput()), sprintf(
+            'exit code %s, stderr: %s',
+            $process->getExitCode() ?? 'not started',
+            $process->getErrorOutput()
+        ));
     }
 }

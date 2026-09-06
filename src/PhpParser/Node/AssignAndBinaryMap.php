@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Node;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\AssignOp\BitwiseAnd as AssignBitwiseAnd;
 use PhpParser\Node\Expr\AssignOp\BitwiseOr as AssignBitwiseOr;
@@ -87,21 +86,11 @@ final class AssignAndBinaryMap
     }
 
     /**
-     * @return class-string<BinaryOp|AssignOp>|null
+     * @return class-string<AssignOp>|null
      */
-    public function getAlternative(Node $node): ?string
+    public function getAlternative(BinaryOp $binaryOp): ?string
     {
-        $nodeClass = $node::class;
-
-        if ($node instanceof AssignOp) {
-            return self::ASSIGN_OP_TO_BINARY_OP_CLASSES[$nodeClass] ?? null;
-        }
-
-        if ($node instanceof BinaryOp) {
-            return $this->binaryOpToAssignClasses[$nodeClass] ?? null;
-        }
-
-        return null;
+        return $this->binaryOpToAssignClasses[$binaryOp::class] ?? null;
     }
 
     /**
