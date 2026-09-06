@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
@@ -13,6 +12,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
@@ -117,7 +117,7 @@ CODE_SAMPLE
     private function hasRefiningDocblock(ClassMethod $classMethod): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        return array_any($phpDocInfo->getPhpDocNode()->children, fn(PhpDocChildNode $phpDocChildNode): bool => $phpDocChildNode instanceof PhpDocTagNode);
+        return array_any($phpDocInfo->getPhpDocNode()->children, fn (PhpDocChildNode $phpDocChildNode): bool => $phpDocChildNode instanceof PhpDocTagNode);
     }
 
     private function matchParentMethodReflection(ClassMethod $classMethod): ?ExtendedMethodReflection
