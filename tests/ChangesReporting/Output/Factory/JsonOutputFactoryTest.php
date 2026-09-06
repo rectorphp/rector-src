@@ -24,9 +24,7 @@ final class JsonOutputFactoryTest extends TestCase
                 [
                     new FileDiff(
                         'some/file.php',
-                        '--- Original' . PHP_EOL . '+++ New' . PHP_EOL .
-                            '@@ -38,5 +39,6 @@' . PHP_EOL .
-                            'return true;' . PHP_EOL . '}' . PHP_EOL,
+                        "--- Original\n+++ New\n@@ -38,5 +39,6 @@\nreturn true;\n}\n",
                         'diff console formatted',
                         [new RectorWithLineChange(StrStartsWithRector::class, 38)]
                     ),
@@ -48,9 +46,7 @@ final class JsonOutputFactoryTest extends TestCase
 
     public function testReportShouldAttributeEachRectorToItsLine(): void
     {
-        $diff = '--- Original' . PHP_EOL . '+++ New' . PHP_EOL .
-            '@@ -38,5 +39,6 @@' . PHP_EOL .
-            'return true;' . PHP_EOL . '}' . PHP_EOL;
+        $diff = "--- Original\n+++ New\n@@ -38,5 +39,6 @@\nreturn true;\n}\n";
 
         $actualOutput = JsonOutputFactory::create(
             new ProcessResult(
