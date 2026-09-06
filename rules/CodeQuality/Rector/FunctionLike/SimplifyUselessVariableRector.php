@@ -172,6 +172,7 @@ CODE_SAMPLE
         if (! is_string($variableName)) {
             return false;
         }
+
         return array_any($comments, fn ($comment): bool => str_contains($comment->getText(), '$' . $variableName));
     }
 
