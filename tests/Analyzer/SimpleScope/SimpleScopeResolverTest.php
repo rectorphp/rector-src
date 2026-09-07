@@ -38,6 +38,21 @@ PHP);
         $this->assertTrue($simpleType->isInstanceOf('DateTime'));
     }
 
+    public function testIsObjectType(): void
+    {
+        $simpleScope = $this->resolveCode(<<<'PHP'
+<?php
+function demo()
+{
+    $dateTime = new \DateTime();
+}
+PHP);
+
+        $this->assertTrue($simpleScope->isObjectType(new Variable('dateTime'), 'DateTime'));
+        $this->assertFalse($simpleScope->isObjectType(new Variable('dateTime'), 'stdClass'));
+        $this->assertFalse($simpleScope->isObjectType(new Variable('missing'), 'DateTime'));
+    }
+
     public function testResolvesTypedParam(): void
     {
         $simpleScope = $this->resolveCode(<<<'PHP'
