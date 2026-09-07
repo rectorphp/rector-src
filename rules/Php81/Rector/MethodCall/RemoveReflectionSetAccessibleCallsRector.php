@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\MethodCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor;
 use Rector\Analyzer\SimpleScope\SimpleScope;
-use Rector\Analyzer\SimpleScope\SimpleScopeResolver;
-use Rector\Analyzer\SimpleType\ObjectType;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -23,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * As of PHP 8.1.0, calling `Reflection*::setAccessible()` has no effect.
  *
- * Type resolution is done via the PHPStan-free SimpleScope.
+ * Caller type comes from the PHPStan-free SimpleScope attached by SimpleScopeNodeVisitor.
  *
  * @see https://www.php.net/manual/en/reflectionmethod.setaccessible.php
  * @see https://www.php.net/manual/en/reflectionproperty.setaccessible.php
@@ -31,46 +27,38 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveReflectionSetAccessibleCallsRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(
-        private readonly SimpleScopeResolver $simpleScopeResolver
-    ) {
-    }
-
     /**
      * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [Expression::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param Expression $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ?int
     {
-        $stmts = $node->stmts;
-        if ($stmts === null) {
+        if (! $node->expr instanceof MethodCall) {
             return null;
         }
 
-        $simpleScope = $this->simpleScopeResolver->resolve([$node]);
-
-        $hasChanged = false;
-        $this->traverseNodesWithCallable($node, function (Node $subNode) use ($simpleScope, &$hasChanged): ?int {
-            if (! $this->isReflectionSetAccessibleCall($subNode, $simpleScope)) {
-                return null;
-            }
-
-            $hasChanged = true;
-            return NodeVisitor::REMOVE_NODE;
-        });
-
-        if (! $hasChanged) {
+        $methodCall = $node->expr;
+        if (! $this->isName($methodCall->name, 'setAccessible')) {
             return null;
         }
 
-        return $node;
+        $simpleScope = $node->getAttribute(AttributeKey::SIMPLE_SCOPE);
+        if (! $simpleScope instanceof SimpleScope) {
+            return null;
+        }
+
+        if (! $simpleScope->isObjectType($methodCall->var, 'ReflectionProperty', 'ReflectionMethod')) {
+            return null;
+        }
+
+        return NodeVisitor::REMOVE_NODE;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -101,28 +89,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_81;
-    }
-
-    private function isReflectionSetAccessibleCall(Node $node, SimpleScope $simpleScope): bool
-    {
-        if (! $node instanceof Expression) {
-            return false;
-        }
-
-        if (! $node->expr instanceof MethodCall) {
-            return false;
-        }
-
-        $methodCall = $node->expr;
-        if (! $this->isName($methodCall->name, 'setAccessible')) {
-            return false;
-        }
-
-        $simpleType = $simpleScope->getType($methodCall->var);
-        if (! $simpleType instanceof ObjectType) {
-            return false;
-        }
-
-        return $simpleType->isInstanceOf('ReflectionProperty', 'ReflectionMethod');
     }
 }

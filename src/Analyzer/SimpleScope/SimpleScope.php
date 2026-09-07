@@ -34,6 +34,16 @@ final class SimpleScope
         $this->variableTypes[$name] = $simpleType;
     }
 
+    public function isObjectType(Expr $expr, string ...$classNames): bool
+    {
+        $simpleType = $this->getType($expr);
+        if (! $simpleType instanceof ObjectType) {
+            return false;
+        }
+
+        return $simpleType->isInstanceOf(...$classNames);
+    }
+
     public function getType(Expr $expr): SimpleTypeInterface
     {
         if ($expr instanceof String_) {

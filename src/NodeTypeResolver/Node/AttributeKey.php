@@ -22,6 +22,11 @@ final class AttributeKey
     public const string SCOPE = 'scope';
 
     /**
+     * PHPStan-free scope attached by SimpleScopeNodeVisitor
+     */
+    public const string SIMPLE_SCOPE = 'simpleScope';
+
+    /**
      * Internal php-parser name.
      * Do not change this even if you want!
      */

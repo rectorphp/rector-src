@@ -10,7 +10,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Analyzer\SimpleScope\SimpleScope;
 use Rector\Analyzer\SimpleScope\SimpleScopeResolver;
-use Rector\Analyzer\SimpleType\ObjectType;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -99,12 +98,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $simpleType = $simpleScope->getType($node->var);
-        if (! $simpleType instanceof ObjectType) {
-            return false;
-        }
-
-        if (! $simpleType->isInstanceOf(self::TARGET_CLASS)) {
+        if (! $simpleScope->isObjectType($node->var, self::TARGET_CLASS)) {
             return false;
         }
 
