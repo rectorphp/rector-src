@@ -104,7 +104,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($simpleType->getClassName() !== self::TARGET_CLASS) {
+        if (! $simpleType->isInstanceOf(self::TARGET_CLASS)) {
             return false;
         }
 

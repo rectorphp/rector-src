@@ -8,8 +8,4 @@ use Rector\Analyzer\SimpleType\Contract\SimpleTypeInterface;
 
 final class IntegerType implements SimpleTypeInterface
 {
-    public function describe(): string
-    {
-        return 'int';
-    }
 }

@@ -31,11 +31,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveReflectionSetAccessibleCallsRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string[]
-     */
-    private const array REFLECTION_CLASSES = ['ReflectionProperty', 'ReflectionMethod'];
-
     public function __construct(
         private readonly SimpleScopeResolver $simpleScopeResolver
     ) {
@@ -128,6 +123,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return in_array($simpleType->getClassName(), self::REFLECTION_CLASSES, true);
+        return $simpleType->isInstanceOf('ReflectionProperty', 'ReflectionMethod');
     }
 }

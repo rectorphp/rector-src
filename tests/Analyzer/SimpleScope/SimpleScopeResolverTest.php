@@ -10,6 +10,9 @@ use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 use Rector\Analyzer\SimpleScope\SimpleScope;
 use Rector\Analyzer\SimpleScope\SimpleScopeResolver;
+use Rector\Analyzer\SimpleType\MixedType;
+use Rector\Analyzer\SimpleType\ObjectType;
+use Rector\Analyzer\SimpleType\StringType;
 
 final class SimpleScopeResolverTest extends TestCase
 {
@@ -30,7 +33,9 @@ function demo()
 }
 PHP);
 
-        $this->assertSame('DateTime', $simpleScope->getType(new Variable('dateTime'))->describe());
+        $simpleType = $simpleScope->getType(new Variable('dateTime'));
+        $this->assertInstanceOf(ObjectType::class, $simpleType);
+        $this->assertTrue($simpleType->isInstanceOf('DateTime'));
     }
 
     public function testResolvesTypedParam(): void
@@ -42,7 +47,7 @@ function demo(string $name)
 }
 PHP);
 
-        $this->assertSame('string', $simpleScope->getType(new Variable('name'))->describe());
+        $this->assertInstanceOf(StringType::class, $simpleScope->getType(new Variable('name')));
     }
 
     public function testUnknownVariableIsMixed(): void
@@ -54,19 +59,20 @@ function demo()
 }
 PHP);
 
-        $this->assertSame('mixed', $simpleScope->getType(new Variable('missing'))->describe());
+        $this->assertInstanceOf(MixedType::class, $simpleScope->getType(new Variable('missing')));
     }
 
     public function testResolvesLiteralType(): void
     {
         $simpleScope = $this->resolveCode('<?php');
 
-        $this->assertSame('string', $simpleScope->getType(new String_('hello'))->describe());
+        $this->assertInstanceOf(StringType::class, $simpleScope->getType(new String_('hello')));
     }
 
     private function resolveCode(string $code): SimpleScope
     {
-        $parser = new ParserFactory()->createForNewestSupportedVersion();
+        $parser = new ParserFactory()
+            ->createForNewestSupportedVersion();
         $stmts = $parser->parse($code);
 
         return $this->simpleScopeResolver->resolve($stmts ?? []);

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Analyzer\SimpleType\Contract;
 
-// PHPStan-free type contract, resolved by SimpleScope
+// PHPStan-free type marker, resolved by SimpleScope
 interface SimpleTypeInterface
 {
-    public function describe(): string;
 }
