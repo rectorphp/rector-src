@@ -94,5 +94,13 @@ return static function (RectorConfig $rectorConfig): void {
                 'ASC',
                 'self::SORT_ORDER_DESC'
             ),
+
+            new ReplaceArgumentDefaultValue(
+                SomeSortableObject::class,
+                'sortBy',
+                0,
+                'DESC',
+                SomeSortableObject::class . '::SORT_ORDER_DESC'
+            ),
         ]);
 };
