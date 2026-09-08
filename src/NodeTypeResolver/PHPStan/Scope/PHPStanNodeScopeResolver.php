@@ -461,6 +461,8 @@ final readonly class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): void {
+        Assert::allIsInstanceOf($stmts, Stmt::class);
+
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
         } catch (ParserErrorsException|ParserException|ShouldNotHappenException|UndefinedVariableException) {
