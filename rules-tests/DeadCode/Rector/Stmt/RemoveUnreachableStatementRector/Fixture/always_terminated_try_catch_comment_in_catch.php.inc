@@ -4,14 +4,15 @@ namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\Fix
 
 use Exception;
 
-class AlwaysTerminatedTryCatch
+class AlwaysTerminatedTryCatchCommentInCatch
 {
     public function run()
     {
         try {
             return something();
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return null;
+            // some comment
         }
 
         echo 'never executed';
@@ -26,14 +27,15 @@ namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\Fix
 
 use Exception;
 
-class AlwaysTerminatedTryCatch
+class AlwaysTerminatedTryCatchCommentInCatch
 {
     public function run()
     {
         try {
             return something();
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return null;
+            // some comment
         }
     }
 }

@@ -241,7 +241,26 @@ final readonly class TerminatedNodeAnalyzer
             }
         }
 
+        // catching less than \Throwable lets an Error escape the try,
+        // so the try/catch is not guaranteed to end control flow here
+        if ($tryCatch->catches !== [] && ! $this->hasThrowableCatch($tryCatch)) {
+            return false;
+        }
+
         return $this->isTerminatedInLastStmts($tryCatch->stmts);
+    }
+
+    private function hasThrowableCatch(TryCatch $tryCatch): bool
+    {
+        foreach ($tryCatch->catches as $catch) {
+            foreach ($catch->types as $type) {
+                if ($type->toString() === 'Throwable') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function isTerminatedInLastStmtsIf(If_ $if): bool
@@ -273,17 +292,26 @@ final readonly class TerminatedNodeAnalyzer
      */
     private function isTerminatedInLastStmts(array $stmts): bool
     {
+        // trailing comments are parsed as Nop stmts, skip them to reach the real last stmt
+        while ($stmts !== [] && end($stmts) instanceof Nop) {
+            array_pop($stmts);
+        }
+
         if ($stmts === []) {
             return false;
         }
 
-        $lastKey = array_key_last($stmts);
-        $lastNode = $stmts[$lastKey];
+        $stmt = end($stmts);
 
-        if ($lastNode instanceof Expression) {
-            return $lastNode->expr instanceof Exit_ || $lastNode->expr instanceof Throw_;
+        if ($stmt instanceof Expression) {
+            return $stmt->expr instanceof Exit_ || $stmt->expr instanceof Throw_;
         }
 
-        return $lastNode instanceof Return_;
+        // an infinite loop with no break never falls through to the next stmt
+        if ($stmt instanceof While_ || $stmt instanceof Do_ || $stmt instanceof For_) {
+            return $this->isTerminatedInfiniteLoop($stmt);
+        }
+
+        return $stmt instanceof Return_;
     }
 }

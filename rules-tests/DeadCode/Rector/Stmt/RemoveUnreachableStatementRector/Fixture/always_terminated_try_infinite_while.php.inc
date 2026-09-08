@@ -4,15 +4,15 @@ namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\Fix
 
 use Exception;
 
-class AlwaysTerminatedTryCatchWithStmtsBeforeReturn
+class AlwaysTerminatedTryInfiniteWhile
 {
     public function run()
     {
         try {
-            echo 'try';
-            return something();
-        } catch (Exception $e) {
-            echo 'catch';
+            while (true) {
+                doThings();
+            }
+        } catch (\Throwable $e) {
             return null;
         }
 
@@ -28,15 +28,15 @@ namespace Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\Fix
 
 use Exception;
 
-class AlwaysTerminatedTryCatchWithStmtsBeforeReturn
+class AlwaysTerminatedTryInfiniteWhile
 {
     public function run()
     {
         try {
-            echo 'try';
-            return something();
-        } catch (Exception $e) {
-            echo 'catch';
+            while (true) {
+                doThings();
+            }
+        } catch (\Throwable $e) {
             return null;
         }
     }
