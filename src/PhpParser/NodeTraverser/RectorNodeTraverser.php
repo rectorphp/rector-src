@@ -203,6 +203,8 @@ final class RectorNodeTraverser implements NodeTraverserInterface
      */
     private function traverseArray(array $nodes): array
     {
+        Assert::allIsInstanceOf($nodes, Node::class);
+
         $doNodes = [];
         foreach ($nodes as $i => $node) {
             if (! $node instanceof Node) {

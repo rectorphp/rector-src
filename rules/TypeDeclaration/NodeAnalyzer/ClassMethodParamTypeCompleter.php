@@ -25,7 +25,7 @@ final readonly class ClassMethodParamTypeCompleter
     }
 
     /**
-     * @param array<int, Type> $classParameterTypes
+     * @param array<int|string, Type> $classParameterTypes
      */
     public function complete(ClassMethod $classMethod, array $classParameterTypes, int $maxUnionTypes): ?ClassMethod
     {
@@ -73,7 +73,7 @@ final readonly class ClassMethodParamTypeCompleter
     private function shouldSkipArgumentStaticType(
         ClassMethod $classMethod,
         Type $argumentStaticType,
-        int $position,
+        int|string $position,
         int $maxUnionTypes
     ): bool {
         if ($argumentStaticType instanceof MixedType) {

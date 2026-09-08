@@ -27,6 +27,11 @@ final class RectorConfigTest extends AbstractLazyTestCase
         // the registered-rule lists so the assertions hold whether this class
         // runs alone or batched into one warm process by a parallel runner
         RectorConfig::resetRecreated();
+
+        // the container is shared across tests, so its per-rule dedupe maps persist and would
+        // swallow a re-registration; reset them so REGISTERED_RECTOR_RULES fills regardless of order
+        self::getContainer()->resetRuleConfigurations();
+
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, []);
         SimpleParameterProvider::setParameter(Option::ROOT_STANDALONE_REGISTERED_RULES, []);
     }

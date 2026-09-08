@@ -35,7 +35,7 @@ final readonly class CallTypesResolver
 
     /**
      * @param MethodCall[]|StaticCall[] $calls
-     * @return array<int, Type>
+     * @return array<int|string, Type>
      */
     public function resolveStrictTypesFromCalls(array $calls): array
     {
