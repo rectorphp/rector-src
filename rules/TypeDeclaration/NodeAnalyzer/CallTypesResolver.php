@@ -47,6 +47,11 @@ final readonly class CallTypesResolver
                     return [];
                 }
 
+                // must be int
+                if (! is_int($position)) {
+                    continue;
+                }
+
                 /** @var Arg $arg */
                 $staticTypesByArgumentPosition[$position][] = $this->resolveStrictArgValueType($arg);
             }
@@ -110,8 +115,8 @@ final readonly class CallTypesResolver
     }
 
     /**
-     * @param array<int, Type[]> $staticTypesByArgumentPosition
-     * @return array<int, Type>
+     * @param array<int|string, Type[]> $staticTypesByArgumentPosition
+     * @return array<int|string, Type>
      */
     private function unionToSingleType(array $staticTypesByArgumentPosition, bool $removeMixedArray = false): array
     {
