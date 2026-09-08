@@ -53,6 +53,21 @@ PHP);
         $this->assertFalse($simpleScope->isObjectType(new Variable('missing'), 'DateTime'));
     }
 
+    public function testIsObjectTypeMatchesParentAndInterface(): void
+    {
+        $simpleScope = $this->resolveCode(<<<'PHP'
+<?php
+function demo()
+{
+    $dateTime = new \DateTime();
+}
+PHP);
+
+        // DateTime implements DateTimeInterface - resolved via native reflection
+        $this->assertTrue($simpleScope->isObjectType(new Variable('dateTime'), 'DateTimeInterface'));
+        $this->assertFalse($simpleScope->isObjectType(new Variable('dateTime'), 'Countable'));
+    }
+
     public function testResolvesTypedParam(): void
     {
         $simpleScope = $this->resolveCode(<<<'PHP'

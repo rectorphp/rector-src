@@ -13,9 +13,19 @@ final readonly class ObjectType implements SimpleTypeInterface
     ) {
     }
 
-    // exact class match; SimpleScope has no reflection, so no parent/interface check
+    // exact match, or native parent/interface check for autoloadable classes
     public function isInstanceOf(string ...$classNames): bool
     {
-        return in_array($this->className, $classNames, true);
+        foreach ($classNames as $className) {
+            if ($this->className === $className) {
+                return true;
+            }
+
+            if (is_a($this->className, $className, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
