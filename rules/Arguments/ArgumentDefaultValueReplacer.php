@@ -165,7 +165,6 @@ final readonly class ArgumentDefaultValueReplacer
             $normalizedValueAfter = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
             if ($particularArg->value instanceof ClassConstFetch
                 && $particularArg->value->class instanceof Name
-                && $particularArg->value->class->isSpecialClassName()
                 && $normalizedValueAfter instanceof ClassConstFetch
                 && is_string($replaceArgumentDefaultValue->getValueAfter())
                 && str_contains($replaceArgumentDefaultValue->getValueAfter(), '::')) {

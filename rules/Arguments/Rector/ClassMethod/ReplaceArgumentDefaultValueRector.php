@@ -105,7 +105,7 @@ CODE_SAMPLE
                 $currentNode,
                 $replaceArgumentDefaultValue
             );
-            if ($replacedNode !== null && $replacedNode !== $currentNode) {
+            if ($replacedNode !== null) {
                 $currentNode = $replacedNode;
                 $hasChanged = true;
             }
@@ -142,7 +142,7 @@ CODE_SAMPLE
                 $currentNode,
                 $replaceArgumentDefaultValue
             );
-            if ($replacedNode !== null && $replacedNode !== $currentNode) {
+            if ($replacedNode !== null) {
                 $currentNode = $replacedNode;
                 $hasChanged = true;
             }
