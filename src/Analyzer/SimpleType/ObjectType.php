@@ -13,19 +13,9 @@ final readonly class ObjectType implements SimpleTypeInterface
     ) {
     }
 
-    // exact match, or native parent/interface check for autoloadable classes
+    // exact match only; parent/interface resolution needs static reflection we do not have here
     public function isInstanceOf(string ...$classNames): bool
     {
-        foreach ($classNames as $className) {
-            if ($this->className === $className) {
-                return true;
-            }
-
-            if (is_a($this->className, $className, true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($this->className, $classNames, true);
     }
 }
