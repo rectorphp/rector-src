@@ -6,7 +6,6 @@ use Nette\Utils\Strings;
 use Rector\Scripts\Finder\FixtureFinder;
 
 require __DIR__ . '/../vendor/autoload.php';
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
