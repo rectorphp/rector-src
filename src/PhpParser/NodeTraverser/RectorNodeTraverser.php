@@ -198,13 +198,11 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     }
 
     /**
-     * @param Node[] $nodes
+     * @param array<Node|null> $nodes The null can be in case of empty list(, , )
      * @return Node[]
      */
     private function traverseArray(array $nodes): array
     {
-        Assert::allIsInstanceOf($nodes, Node::class);
-
         $doNodes = [];
         foreach ($nodes as $i => $node) {
             if (! $node instanceof Node) {

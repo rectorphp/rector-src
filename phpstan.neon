@@ -336,6 +336,9 @@ parameters:
                 - tests/debug_functions.php
                 - src/Util/Reflection/PrivatesAccessor.php
 
+        # it may return array<Node|null> in case of empty array( , , ), very rare and would nullify all other types
+        - '#Method Rector\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:traverseArray\(\) should return array<PhpParser\\Node> but returns array<PhpParser\\Node\|null>#'
+
         # checks for rector always autoloaded rules only
         -
             identifier: symplify.forbiddenFuncCall

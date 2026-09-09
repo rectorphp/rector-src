@@ -38,8 +38,7 @@ jobs:
             -
                 name: Instrument sources
                 run: |
-                    honestype instrument src
-                    honestype instrument rules
+                    honestype instrument src rules tests
 
             # Load the helper for every PHP process, including any parallel test
             # workers which do not inherit a -d auto_prepend_file flag.
