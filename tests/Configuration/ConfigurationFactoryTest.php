@@ -15,6 +15,13 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 final class ConfigurationFactoryTest extends AbstractLazyTestCase
 {
+    protected function tearDown(): void
+    {
+        SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, false);
+        SimpleParameterProvider::setParameter(Option::SOURCE, []);
+        SimpleParameterProvider::setParameter(Option::PATHS, []);
+    }
+
     public function test(): void
     {
         $configurationFactory = $this->make(ConfigurationFactory::class);

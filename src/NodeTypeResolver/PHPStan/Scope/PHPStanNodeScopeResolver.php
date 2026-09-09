@@ -461,6 +461,8 @@ final readonly class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): void {
+        Assert::allIsInstanceOf($stmts, Stmt::class);
+
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
         } catch (ParserErrorsException|ParserException|ShouldNotHappenException|UndefinedVariableException) {
@@ -629,7 +631,7 @@ final readonly class PHPStanNodeScopeResolver
             /** @var Stmt[] $stmts */
             $stmts = $hook->body instanceof Expr
                 ? [new Expression($hook->body)]
-                : [$hook->body];
+                : $hook->body;
             $this->nodeScopeResolverProcessNodes($stmts, $mutatingScope, $nodeCallback);
         }
     }

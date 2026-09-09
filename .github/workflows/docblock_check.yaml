@@ -1,0 +1,66 @@
+name: Docblock Check
+
+on:
+    pull_request: null
+
+env:
+    COMPOSER_ROOT_VERSION: "dev-main"
+    DOCBLOCK_CHECK_LOG: "/tmp/docblock-check.log"
+
+jobs:
+    docblock_check:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+
+        steps:
+            -   uses: actions/checkout@v5
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    coverage: none
+                    ini-values: zend.assertions=1
+
+            -   uses: "ramsey/composer-install@v4"
+
+            -
+                uses: actions/setup-go@v5
+                with:
+                    go-version: "1.26"
+
+            -
+                name: Install honestype docblock checker
+                run: |
+                    GOPROXY=direct GOSUMDB=off go install github.com/rectorphp/honestype@6546e5dc237fc5787bc77dcb40dcbd271f683a7b
+                    echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+            -
+                name: Instrument sources
+                run: |
+                    honestype instrument src rules tests
+
+            # Load the helper for every PHP process, including any parallel test
+            # workers which do not inherit a -d auto_prepend_file flag.
+            -
+                name: Enable runtime helper globally
+                run: |
+                    INI="$(php -i | grep '^Loaded Configuration File' | awk '{print $NF}')"
+                    echo "auto_prepend_file=$GITHUB_WORKSPACE/src/docblock_check.php" | sudo tee -a "$INI"
+
+            -
+                name: Run tests to collect docblock type mismatches
+                run: vendor/bin/phpunit tests rules-tests utils/phpstan/tests || true
+
+            -
+                name: Restore sources
+                if: always()
+                run: |
+                    git checkout -- src rules
+                    rm -f src/docblock_check.php rules/docblock_check.php
+
+            -
+                name: List docblock type mismatches
+                # RectorNodeTraverser::traverseArray() legitimately yields null
+                # elements at runtime; skip it as a known false positive.
+                run: honestype report -skip 'RectorNodeTraverser::traverseArray()' "$DOCBLOCK_CHECK_LOG"
