@@ -2,8 +2,8 @@ name: Tests (Windows)
 
 on:
     schedule:
-        # every 3 hours
-        - cron: '0 */3 * * *'
+        # daily
+        - cron: '0 0 * * *'
     workflow_dispatch: null
 
 
