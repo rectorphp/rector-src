@@ -8,7 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitor;
-use PHPStan\Type\ObjectType;
+use Rector\Analyzer\SimpleScope\SimpleScope;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -17,6 +18,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * As of PHP 8.1.0, calling `Reflection*::setAccessible()` has no effect.
+ *
+ * Caller type comes from the PHPStan-free SimpleScope attached by SimpleScopeNodeVisitor.
  *
  * @see https://www.php.net/manual/en/reflectionmethod.setaccessible.php
  * @see https://www.php.net/manual/en/reflectionproperty.setaccessible.php
@@ -37,23 +40,25 @@ final class RemoveReflectionSetAccessibleCallsRector extends AbstractRector impl
      */
     public function refactor(Node $node): ?int
     {
-        if ($node->expr instanceof MethodCall === false) {
+        if (! $node->expr instanceof MethodCall) {
             return null;
         }
 
         $methodCall = $node->expr;
-
-        if ($this->isName($methodCall->name, 'setAccessible') === false) {
+        if (! $this->isName($methodCall->name, 'setAccessible')) {
             return null;
         }
 
-        if ($this->isObjectType($methodCall->var, new ObjectType('ReflectionProperty'))
-            || $this->isObjectType($methodCall->var, new ObjectType('ReflectionMethod'))
-        ) {
-            return NodeVisitor::REMOVE_NODE;
+        $simpleScope = $node->getAttribute(AttributeKey::SIMPLE_SCOPE);
+        if (! $simpleScope instanceof SimpleScope) {
+            return null;
         }
 
-        return null;
+        if (! $simpleScope->isObjectType($methodCall->var, 'ReflectionProperty', 'ReflectionMethod')) {
+            return null;
+        }
+
+        return NodeVisitor::REMOVE_NODE;
     }
 
     public function getRuleDefinition(): RuleDefinition
