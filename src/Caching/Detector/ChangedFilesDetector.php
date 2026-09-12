@@ -8,6 +8,7 @@ use Rector\Caching\Cache;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Enum\CacheKey;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilePathHelper;
 use Rector\Util\FileHasher;
 
 /**
@@ -28,7 +29,8 @@ final class ChangedFilesDetector
     public function __construct(
         private readonly FileHashComputer $fileHashComputer,
         private readonly Cache $cache,
-        private readonly FileHasher $fileHasher
+        private readonly FileHasher $fileHasher,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -70,7 +72,7 @@ final class ChangedFilesDetector
         // a scoped (--only) run reuses the full-run cache: a file left clean by all rules stays
         // clean under a single rule too, and the content is still compared below
         if ($cachedValue === null && $this->scopeSuffix !== '') {
-            $unscopedCacheKey = $this->fileHasher->hash($this->resolvePath($filePath));
+            $unscopedCacheKey = $this->fileHasher->hash($this->cacheKeyPath($filePath));
             $cachedValue = $this->cache->load($unscopedCacheKey, CacheKey::FILE_HASH_KEY);
         }
 
@@ -117,7 +119,20 @@ final class ChangedFilesDetector
 
     private function getFilePathCacheKey(string $filePath): string
     {
-        return $this->fileHasher->hash($this->resolvePath($filePath) . $this->scopeSuffix);
+        return $this->fileHasher->hash($this->cacheKeyPath($filePath) . $this->scopeSuffix);
+    }
+
+    /**
+     * The path a cache key is built from: relative to the project, never absolute.
+     *
+     * An absolute path ties the whole cache to one location on disk, so the same project
+     * checked out twice - a git worktree, a CI checkout, a container mount - shares nothing.
+     * Relative keys let a cache travel with the project. Paths outside the project keep
+     * their `../` prefix and stay just as stable, because the anchor does not move either.
+     */
+    private function cacheKeyPath(string $filePath): string
+    {
+        return $this->filePathHelper->relativePath($this->resolvePath($filePath));
     }
 
     private function hashFile(string $filePath): string
