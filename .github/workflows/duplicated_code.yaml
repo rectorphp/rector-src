@@ -25,5 +25,5 @@ jobs:
 
             -   run: composer install --no-progress --ansi
 
-            # fails when a large copy-pasted block (>= 400 tokens) is added
+            # fails when a large copy-pasted block (>= 150 tokens) is added
             -   run: composer duplicated-code
