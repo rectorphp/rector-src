@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Parallel\Enum;
 
-
 final class StreamFormat
 {
     public const int DEPTH = 512;
