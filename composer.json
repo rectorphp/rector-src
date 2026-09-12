@@ -70,7 +70,8 @@
                 "src"
             ],
             "Rector\\Utils\\": "utils",
-            "Rector\\Utils\\PHPStan\\": "utils/phpstan/src"
+            "Rector\\Utils\\PHPStan\\": "utils/phpstan/src",
+            "Rector\\Utils\\Duplicates\\": "utils/duplicates/src"
         },
         "files": [
             "src/functions/node_helper.php"
@@ -83,6 +84,7 @@
                 "tests"
             ],
             "Rector\\Utils\\PHPStan\\Tests\\": "utils/phpstan/tests",
+            "Rector\\Utils\\Duplicates\\Tests\\": "utils/duplicates/tests",
             "E2e\\Parallel\\Reflection\\Resolver\\": "e2e/parallel-reflection-resolver/src/",
             "Rector\\Scripts\\": "scripts/src"
         },
@@ -104,11 +106,12 @@
             "@phpstan",
             "@test"
         ],
-        "test": "vendor/bin/fastunit tests rules-tests utils/phpstan/tests",
+        "test": "vendor/bin/fastunit tests rules-tests utils/phpstan/tests utils/duplicates/tests",
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi --memory-limit=512M",
         "rector": "bin/rector process --ansi",
+        "duplicated-code": "php utils/duplicates/bin/duplicates.php --min-lines 5 --min-tokens 400 src rules",
         "preload": "php build/build-preload.php .",
         "release": "vendor/bin/rng --from-commit X --to-commit Y --remote-repository rectorphp/rector-symfony --remote-repository rectorphp/rector-doctrine --remote-repository rectorphp/rector-phpunit"
     },
