@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\FuncCall;
@@ -34,7 +35,7 @@ final readonly class CompactFuncCallAnalyzer
     }
 
     /**
-     * @param array<int, Arg|VariadicPlaceholder|ArrayItem|null> $nodes
+     * @param array<int, Arg|ArgPlaceholder|VariadicPlaceholder|ArrayItem|null> $nodes
      */
     private function isInArgOrArrayItemNodes(array $nodes, string $variableName): bool
     {
@@ -64,12 +65,12 @@ final readonly class CompactFuncCallAnalyzer
         return false;
     }
 
-    private function shouldSkip(Arg|VariadicPlaceholder|ArrayItem|null $node): bool
+    private function shouldSkip(Arg|ArgPlaceholder|VariadicPlaceholder|ArrayItem|null $node): bool
     {
         if ($node === null) {
             return true;
         }
 
-        return $node instanceof VariadicPlaceholder;
+        return ! $node instanceof Arg && ! $node instanceof ArrayItem;
     }
 }

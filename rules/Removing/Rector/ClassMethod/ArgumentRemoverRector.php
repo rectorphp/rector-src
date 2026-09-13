@@ -6,6 +6,7 @@ namespace Rector\Removing\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -158,7 +159,7 @@ CODE_SAMPLE
     /**
      * @param mixed[] $values
      */
-    private function isArgumentValueMatch(Arg|VariadicPlaceholder $arg, array $values): bool
+    private function isArgumentValueMatch(Arg|ArgPlaceholder|VariadicPlaceholder $arg, array $values): bool
     {
         if (! $arg instanceof Arg) {
             return false;
