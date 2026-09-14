@@ -18,6 +18,7 @@ use Rector\Console\ProcessConfigureDecorator;
 use Rector\Parallel\Enum\Action;
 use Rector\Parallel\Enum\ReactCommand;
 use Rector\Parallel\Enum\ReactEvent;
+use Rector\Parallel\Enum\StreamFormat;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
@@ -79,7 +80,7 @@ final class WorkerCommand extends Command
             $input,
             $output
         ): void {
-            $inDecoder = new Decoder($connection, true, 512, JSON_INVALID_UTF8_IGNORE);
+            $inDecoder = new Decoder($connection, true, StreamFormat::DEPTH, JSON_INVALID_UTF8_IGNORE, StreamFormat::MAX_LENGTH);
             $outEncoder = new Encoder($connection, JSON_INVALID_UTF8_IGNORE);
 
             $outEncoder->write([
