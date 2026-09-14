@@ -100,7 +100,7 @@ final class ProcessConfigureDecorator
         $command->addOption(Option::PARALLEL_IDENTIFIER, null, InputOption::VALUE_REQUIRED);
 
         $command->addOption(
-            Option::EXPERIMENTAL_RUNNER,
+            Option::LPT,
             null,
             InputOption::VALUE_NONE,
             '[EXPERIMENTAL] Balance files across parallel workers by size up front and keep every worker alive for its whole share.'

@@ -53,7 +53,7 @@ final class ApplicationFileProcessor
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
         private readonly UsedSkipCollector $usedSkipCollector,
-        // @experimental, see --experimental-runner
+        // @experimental, see --lpt
         private readonly LptScheduleFactory $lptScheduleFactory,
         private readonly ExperimentalParallelFileProcessor $experimentalParallelFileProcessor,
     ) {
@@ -271,8 +271,8 @@ final class ApplicationFileProcessor
             Option::PARALLEL_MAX_NUMBER_OF_PROCESSES
         );
 
-        // @experimental opt-in, see --experimental-runner
-        if ($input->hasOption(Option::EXPERIMENTAL_RUNNER) && (bool) $input->getOption(Option::EXPERIMENTAL_RUNNER)) {
+        // @experimental opt-in, see --lpt
+        if ($input->hasOption(Option::LPT) && (bool) $input->getOption(Option::LPT)) {
             $bucketSchedule = $this->lptScheduleFactory->create(
                 $cpuCores,
                 $jobSize,
