@@ -6,7 +6,7 @@ namespace Rector\Parallel\Experimental\ValueObject;
 
 /**
  * @experimental Filled by @see \Rector\Parallel\Experimental\LptScheduleFactory, consumed only by the
- * "--experimental-runner" parallel run.
+ * "--lpt" parallel run.
  *
  * Unlike @see \Rector\Parallel\ValueObject\Schedule, jobs are not a shared pool: every worker owns its
  * own queue, decided up front.
