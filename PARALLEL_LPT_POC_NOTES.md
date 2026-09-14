@@ -2,7 +2,7 @@
 
 Branch: `poc/parallel-lpt-buckets` (local only, **not committed** — no tests yet)
 
-Opt-in flag: `--experimental-runner`. Without it nothing changes.
+Opt-in flag: `--lpt`. Without it nothing changes.
 
 Source: https://github.com/rectorphp/rector-src/issues/8494#issuecomment-5664864017 (@samsonasik)
 
@@ -23,8 +23,8 @@ Faithful to 1 + 3, with one deliberate deviation on 2.
 | | StructArmed | this PoC |
 | --- | --- | --- |
 | bucketing | LPT by filesize | LPT by filesize (same greedy) |
-| assignment | static, 1 bucket per worker | static, 1 bucket per worker |
-| dispatch | whole bucket in one shot | bucket sub-chunked into 16-file jobs, **only to its own worker** |
+| assignment | static, 1 bucket per worker | static, **plus stealing once a worker runs dry** |
+| dispatch | whole bucket in one shot | bucket sub-chunked into `jobSize` jobs |
 | worker lifetime | one process per bucket, never respawned | one process per bucket, never respawned |
 | transport | `proc_open` + stdout polling | unchanged (ReactPHP + NDJSON over TCP) |
 
@@ -44,8 +44,8 @@ Sub-chunking inside a statically-assigned bucket keeps the heartbeat while prese
 win: **the worker process is never recycled**, so its warm in-memory caches (PHPStan reflection,
 parsed AST, node scope resolver) survive across the whole bucket.
 
-Round-trip cost of sub-chunking: ~820 extra NDJSON round-trips on a 13 k file project spread over
-16 workers — sub-second, negligible next to a container boot.
+The round-trip cost of sub-chunking turned out to be far cheaper than expected — small chunks win
+outright, see the `jobSize` section below.
 
 ### The other half of the change: no forced respawn
 
@@ -67,8 +67,8 @@ New, all isolated under `src/Parallel/Experimental/`:
 
 Existing files, minimal edits only:
 
-- `src/Configuration/Option.php` — `EXPERIMENTAL_RUNNER` constant
-- `src/Console/ProcessConfigureDecorator.php` — registers `--experimental-runner`
+- `src/Configuration/Option.php` — `LPT` constant
+- `src/Console/ProcessConfigureDecorator.php` — registers `--lpt`
 - `src/Application/ApplicationFileProcessor.php` — two constructor deps + one branch in `runParallel()`
 
 Nothing on the default path changed, so a run without the flag is byte-identical to `main`.
@@ -94,8 +94,11 @@ same 2 errors. The scheduler does not change the outcome.
 
 "busy cores" = `(user + sys) / real`, i.e. how many of the 14 were actually kept busy.
 
-Headline: best legacy 152.2 s → best experimental 113.2 s, **-26 %**. At equal worker count (both on
-the default 14) it is 152.2 s → 122.1 s, **-20 %**.
+Every row above is at `jobSize: 16`, which was the hardcoded chunk at the time. `jobSize` turned out
+to matter more than anything in this table — see its own section below.
+
+Headline: best legacy **152.2 s** → best `--lpt` **90.7 s** (14 workers, `jobSize: 2`), i.e. **-40 %**.
+At the same worker count and the same `jobSize: 16`, it is 152.2 s → 113.4 s, **-25 %**.
 
 ### Work stealing is the load-bearing part, not LPT
 
@@ -113,16 +116,75 @@ This also sharpens item 1 in "what is left": a timing-based cost model would mak
 buckets right, but stealing is what makes the schedule robust when the model is wrong. Both, not
 either.
 
-### Worker count interacts with the scheduler — do not tune it standalone
+### Worker count: a red herring once the chunk size is right
 
-Dropping from 14 to 10 workers **helps** the bucket scheduler (122.1 → 113.2) and **hurts** legacy
-(152.2 → 164.3). There is no worker count that is right independent of how work is handed out, so
-`CpuCoreCountProvider` returning logical cores is not a standalone bug to fix — it only looks like
-one under the bucket scheduler.
+Measured at `jobSize: 16`, dropping from 14 to 10 workers looked like a win (122.1 → 113.2), and
+legacy got worse at 10 (152.2 → 164.3). That suggested tuning the worker count, and that
+`CpuCoreCountProvider` counting logical cores was a problem on big.LITTLE hardware.
 
-`user` time also drops as workers drop (1089 → 931 under stealing). Careful with that number: work
-done on an efficiency core accumulates more CPU-seconds for the same result, so part of the "extra
-CPU" at 14 workers is just E-cores being slow, not waste.
+**That was an artefact of the coarse chunk.** At `jobSize: 4` the ordering flips: 14 workers give
+99.2 s, 12 workers give 107.6 s. With fine-grained stealing an efficiency core simply takes fewer
+chunks and contributes instead of straggling, so there is nothing left to compensate for by starving
+the pool.
+
+Conclusion: fix the granularity and the worker-count question mostly disappears. `hw.ncpu` is a fine
+default. Do not tune the worker count before tuning `jobSize` — you will tune against a symptom.
+
+### jobSize: was inert, now it is the most important knob
+
+Originally this PoC hardcoded the chunk at 16 files and let `jobSize` feed only the worker-count
+formula `min(ceil(files / jobSize), cpuCores, maxProcesses)`. That makes it inert on any real
+project: once `ceil(files / jobSize) >= cpuCores` — from ~224 files at 14 cores and `jobSize: 16` —
+it stops changing anything. On a 13 k file project it did nothing below `jobSize` ~936.
+
+`jobSize` is now the chunk a worker is handed per request (it still implies at least one whole job
+per worker). It therefore controls three things at once: **the granularity at which an idle worker
+can steal work**, the heartbeat that advances the progress bar, and the window the per-job timeout
+measures.
+
+14 workers, LPT + stealing, `vendor/`. Run-to-run spread across batches is ~5 %, so the two figures
+for `jobSize: 4` are the same measurement taken twice.
+
+| jobSize | wall | diffs | |
+| --: | --: | --: | --- |
+| 1 | 98.8 s | 3 338 | round-trip overhead takes over |
+| 2 | **90.7 / 91.4 s** | 3 338 | optimum |
+| 4 | 96.7 / 99.2 s | 3 338 | |
+| 8 | 104.6 s | 3 338 | |
+| 16 | 113.4 s | 3 338 | today's default |
+| 50 | 118.1 s | 3 338 | |
+| 150 | 127.5 s | **3 237** | **timed out, results truncated** |
+
+The curve is U-shaped with a clear floor at **`jobSize: 2`** — reproduced twice at 90.7 s and 91.4 s,
+so the ~6 % gap to `jobSize: 4` is outside run-to-run noise. Below that, at `jobSize: 1`, the round
+trips finally cost more than the balance they buy (and `user` time peaks at 1 173 s, the highest of
+any run).
+
+This **inverts the recommendation in #8494**. There, raising `jobSize` was the only lever that
+reduced respawn churn, which is why 150 and 300 looked good. With respawns gone, a large `jobSize`
+buys nothing and only coarsens stealing — and stealing is what carries the win.
+
+Caveat before generalising: the optimum is a balance between round-trip cost and stealing
+granularity, and both scale with the corpus. A heavier rule set makes each file cost more, which
+shifts the floor upward. Treat "2" as the answer for this corpus on this machine, and re-measure
+the 2-8 range elsewhere rather than hardcoding it.
+
+### A large jobSize both fails the build and truncates the result
+
+`jobSize: 150` hit `Child process timed out after 120 seconds`. That calls `handleErrorCallable` →
+`quitAll()`, and the run finished **reporting 3 237 diffs instead of 3 338** — 101 missing.
+
+The build does go red: `ProcessCommand` returns `ExitCode::FAILURE` whenever there are system errors
+(`src/Console/Command/ProcessCommand.php:232`), which matches the `exit 1` reported in #8494. The
+extra hazard is that the *output* is silently short by 101 diffs on top of that, so anyone who
+tolerates or filters system errors in CI loses findings without a signal.
+
+Worth reporting upstream separately: the message printed in that case is
+`Reached system errors count limit of 50, exiting...` even though only 4 errors occurred, because
+`ParallelFileProcessor::$handleErrorCallable` sets `$reachedSystemErrorsCountLimit = true`
+unconditionally on *any* error (`src/Parallel/Application/ParallelFileProcessor.php:134`). This is a
+pre-existing bug on `main`, faithfully copied into the experimental processor. It hides the real
+cause behind a wrong one — exactly the kind of thing that makes a timeout hard to diagnose.
 
 ### Memory is the consistent cost
 
@@ -136,7 +198,7 @@ noise. At that size a worker never reaches the `MAX_CHUNKS_PER_WORKER × jobSize
 threshold, so both schedulers do exactly the same thing. **The gain appears precisely where the
 respawns do**, which supports reading #8494's table as respawn churn rather than round-trip overhead.
 
-sellero at ~13 k files sits far past that threshold.
+Any project past ~2 000 files sits beyond that threshold on a 14-core machine.
 
 ### Why work stealing matters here
 
@@ -147,8 +209,8 @@ bucketing throws that correction away. Stealing puts it back while keeping the n
 hence it beats both.
 
 Consequence for benchmarking: **the split between static and stealing depends on the hardware.** On a
-homogeneous CI runner static buckets should lose much less. Worth measuring on sellero's CI too, not
-only on a laptop. `RECTOR_EXPERIMENTAL_NO_STEAL=1` turns stealing off for that A/B (temporary knob).
+homogeneous CI runner static buckets should lose much less. Worth measuring on the target CI too, not
+only on a laptop. `RECTOR_LPT_NO_STEAL=1` turns stealing off for that A/B (temporary knob).
 
 ### What is left on the table
 
@@ -174,7 +236,7 @@ only on a laptop. `RECTOR_EXPERIMENTAL_NO_STEAL=1` turns stealing off for that A
    and full-JSON runs differ little, so the main loop is not saturated.
 6. **Worker boot.** 14 container boots, concurrent, ~1 s out of 113. Not worth chasing.
 
-## How to A/B benchmark on sellero
+## How to A/B benchmark on a real project
 
 The flag is opt-in, so baseline and experiment differ by one argument — no branch switching:
 
@@ -183,22 +245,28 @@ vendor/bin/rector process --dry-run --clear-cache --no-progress-bar
 ```
 
 ```bash
-vendor/bin/rector process --dry-run --clear-cache --no-progress-bar --experimental-runner
+vendor/bin/rector process --dry-run --clear-cache --no-progress-bar --lpt
 ```
 
 Run them sequentially, never in parallel, and keep `--clear-cache` on both (or off on both).
 
 Suggested matrix:
 
-| run | flag | `jobSize` |
-| --- | --- | --- |
-| baseline | — | current |
-| baseline tuned | — | 150 |
-| experimental | `--experimental-runner` | 16 |
-| experimental, fewer workers | `--experimental-runner` | 100 |
+| run | flag | `jobSize` | why |
+| --- | --- | --: | --- |
+| baseline | — | 16 | today's default |
+| baseline tuned | — | 150 | what #8494 recommends raising it to |
+| lpt | `--lpt` | 16 | same knob as the default, scheduler is the only variable |
+| lpt, fine chunks | `--lpt` | 4 | fastest here; expected best |
+| lpt, coarse chunks | `--lpt` | 150 | expected worst, and watch for the timeout |
 
-`jobSize` keeps its old meaning under the flag — it is the number of files that makes a worker worth
-starting, so it still controls the worker count; it no longer controls how work is split.
+**`jobSize` means something different under `--lpt`.** On the default path it is the chunk any worker
+may pull from a shared pool. Under `--lpt` it is the chunk handed to a worker from its own bucket,
+which makes it the granularity at which an idle worker can steal from a busy one — the setting that
+turned out to matter most. It still implies at least one whole job per worker, so it also caps the
+worker count on small file sets, exactly as before.
+
+Do not carry a tuned `jobSize` across the two paths: the optimum moves in opposite directions.
 
 Watch, besides wall time:
 
@@ -254,8 +322,23 @@ Nothing below is covered by a test yet — the user asked for a PoC first.
 
 ### Cleanup before this could become a PR
 
-- [ ] drop the `RECTOR_PARALLEL_SCHEDULER` env var, or promote it to a real `Option`
-- [ ] `MAX_CHUNKS_PER_WORKER` becomes dead in bucket mode — decide its fate
-- [ ] revisit the `jobSize` default (#8494 argues 16 is too low); with warm workers the optimum
-      likely moves again — re-measure before changing it
+- [ ] **Give the bucket path its own chunk-size default, separate from `PARALLEL_JOB_SIZE`.**
+      Right now `--lpt` reuses the shared `jobSize`, whose default is 16
+      (`src/Config/RectorConfig.php:137` and `src/Configuration/RectorConfigBuilder.php:106`),
+      untouched by this PoC. Two consequences:
+      - `--lpt` alone gives 113.4 s, not the 90.7 s headline. Reaching the best number needs an
+        explicit `withParallel(jobSize: 2)`.
+      - The optimum moves in **opposite directions** on the two paths — down to ~2 under `--lpt`,
+        up towards 100-300 on the default path per #8494 — so one shared default cannot serve both,
+        and lowering the shared one would hurt every run without the flag.
+
+      A dedicated default for the bucket path lets each side sit at its own optimum. Pick it by
+      measuring on more than one corpus first: "2" comes from a single repo on a single machine, and
+      a heavier rule set raises the per-file cost and shifts the floor upward.
+- [ ] drop the `--lpt` flag and `RECTOR_LPT_NO_STEAL` env var, or promote them to real options
+- [ ] `MAX_CHUNKS_PER_WORKER` is dead in bucket mode — decide its fate (see the memory-driven
+      recycle item above, which would give it a real job again)
+- [ ] fold `ExperimentalParallelFileProcessor` back into `ParallelFileProcessor` — it is a near-copy,
+      kept separate only so the default path stays provably untouched, and it will trip the
+      duplicate-code gate
 - [ ] `composer check-cs`, `composer phpstan`, `vendor/bin/phpunit`

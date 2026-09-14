@@ -189,7 +189,7 @@ final class Option
      * @see \Rector\Parallel\Experimental\LptScheduleFactory
      * @var string
      */
-    public const string EXPERIMENTAL_RUNNER = 'experimental-runner';
+    public const string LPT = 'lpt';
 
     public const string MEMORY_LIMIT = 'memory-limit';
 

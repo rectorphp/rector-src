@@ -8,7 +8,7 @@ use Rector\Parallel\Experimental\ValueObject\BucketSchedule;
 use Webmozart\Assert\Assert;
 
 /**
- * @experimental Alternative to @see \Rector\Parallel\ScheduleFactory, used by "--experimental-runner".
+ * @experimental Alternative to @see \Rector\Parallel\ScheduleFactory, used by "--lpt".
  *
  * The default scheduler cuts the file list into jobSize chunks and lets any worker pull any chunk. This
  * one splits the files into one fixed bucket per worker, balanced by total byte size, so a worker is

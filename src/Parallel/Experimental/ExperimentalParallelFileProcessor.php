@@ -31,7 +31,7 @@ use Throwable;
 
 /**
  * @experimental Alternative to @see \Rector\Parallel\Application\ParallelFileProcessor, used by
- * "--experimental-runner".
+ * "--lpt".
  *
  * Two differences, both on purpose:
  *
@@ -311,7 +311,7 @@ final class ExperimentalParallelFileProcessor
             return array_pop($jobsPerWorker[$bucketKey]);
         }
 
-        if (getenv('RECTOR_EXPERIMENTAL_NO_STEAL') !== false) {
+        if (getenv('RECTOR_LPT_NO_STEAL') !== false) {
             return null;
         }
 
