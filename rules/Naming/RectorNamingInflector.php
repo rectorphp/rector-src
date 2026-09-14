@@ -14,6 +14,11 @@ final readonly class RectorNamingInflector
      */
     private const string DATA_INFO_SUFFIX_REGEX = '#^(?<prefix>.+)(?<suffix>Data|Info)$#';
 
+    /**
+     * Mass nouns ending in lowercase "data"/"info", eg "metadata", must stay untouched
+     */
+    private const string MASS_NOUN_SUFFIX_REGEX = '#(?:data|info)$#';
+
     public function __construct(
         private Inflector $inflector
     ) {
@@ -22,13 +27,17 @@ final readonly class RectorNamingInflector
     public function singularize(string $name): string
     {
         $matches = Strings::match($name, self::DATA_INFO_SUFFIX_REGEX);
-        if ($matches === null) {
-            return $this->inflector->singularize($name);
+        if ($matches !== null) {
+            $singularized = $this->inflector->singularize((string) $matches['prefix']);
+            $uninflectable = $matches['suffix'];
+
+            return $singularized . $uninflectable;
         }
 
-        $singularized = $this->inflector->singularize((string) $matches['prefix']);
-        $uninflectable = $matches['suffix'];
+        if (Strings::match($name, self::MASS_NOUN_SUFFIX_REGEX) !== null) {
+            return $name;
+        }
 
-        return $singularized . $uninflectable;
+        return $this->inflector->singularize($name);
     }
 }
