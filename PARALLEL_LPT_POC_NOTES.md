@@ -338,7 +338,12 @@ Nothing below is covered by a test yet — the user asked for a PoC first.
 - [ ] drop the `--lpt` flag and `RECTOR_LPT_NO_STEAL` env var, or promote them to real options
 - [ ] `MAX_CHUNKS_PER_WORKER` is dead in bucket mode — decide its fate (see the memory-driven
       recycle item above, which would give it a real job again)
-- [ ] fold `ExperimentalParallelFileProcessor` back into `ParallelFileProcessor` — it is a near-copy,
-      kept separate only so the default path stays provably untouched, and it will trip the
-      duplicate-code gate
+- [x] the shared result accumulation is extracted into `ParallelResultCollector` — this is what the
+      `duplicated_code` CI gate caught (169 tokens against a 150 threshold). Default-path behaviour
+      verified unchanged: `vendor/` before and after gives 3 338 diffs, identical sha, same 2 errors.
+      The system-error counter stayed in the processors on purpose — three sites append an error but
+      only two increment it, and unifying that would move when the 50-error limit trips.
+- [ ] fold `ExperimentalParallelFileProcessor` back into `ParallelFileProcessor` — the TCP wiring and
+      the spawn loop are still parallel structures, kept apart only so the default path stays
+      provably untouched
 - [ ] `composer check-cs`, `composer phpstan`, `vendor/bin/phpunit`

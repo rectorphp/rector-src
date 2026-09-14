@@ -24,7 +24,6 @@ use Rector\Parallel\ValueObject\ProcessPool;
 use Rector\Parallel\ValueObject\Schedule;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
-use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
@@ -67,16 +66,7 @@ final class ParallelFileProcessor
         // basic properties setup
         $numberOfProcesses = $schedule->getNumberOfProcesses();
 
-        // initial counters
-
-        /** @var FileDiff[] $fileDiffs */
-        $fileDiffs = [];
-
-        /** @var SystemError[] $systemErrors */
-        $systemErrors = [];
-
-        /** @var array<string, array<string, true>> $usedSkips */
-        $usedSkips = [];
+        $parallelResultCollector = new ParallelResultCollector();
 
         $tcpServer = new TcpServer('127.0.0.1:0', $streamSelectLoop);
         $this->processPool = new ProcessPool($tcpServer);
@@ -117,18 +107,17 @@ final class ParallelFileProcessor
 
         $systemErrorsCount = 0;
         $reachedSystemErrorsCountLimit = false;
-        $totalChanged = 0;
 
         $handleErrorCallable = function (Throwable $throwable) use (
-            &$systemErrors,
+            $parallelResultCollector,
             &$systemErrorsCount,
             &$reachedSystemErrorsCountLimit
         ): void {
-            $systemErrors[] = new SystemError(
+            $parallelResultCollector->collectSystemError(new SystemError(
                 $throwable->getMessage(),
                 $throwable->getFile(),
                 $throwable->getLine(),
-            );
+            ));
 
             ++$systemErrorsCount;
             $reachedSystemErrorsCountLimit = true;
@@ -144,9 +133,7 @@ final class ParallelFileProcessor
         $fileChunksBudgetPerProcess = [];
 
         $processSpawner = function () use (
-            &$systemErrors,
-            &$fileDiffs,
-            &$usedSkips,
+            $parallelResultCollector,
             &$jobs,
             $postFileCallback,
             &$systemErrorsCount,
@@ -158,8 +145,7 @@ final class ParallelFileProcessor
             $timeoutInSeconds,
             $handleErrorCallable,
             &$fileChunksBudgetPerProcess,
-            &$processSpawner,
-            &$totalChanged
+            &$processSpawner
         ): void {
             $processIdentifier = Random::generate();
             $workerCommandLine = $this->workerCommandLineFactory->create(
@@ -178,17 +164,14 @@ final class ParallelFileProcessor
                 // 1. callable on data
                 function (array $json) use (
                     $parallelProcess,
-                    &$systemErrors,
-                    &$fileDiffs,
-                    &$usedSkips,
+                    $parallelResultCollector,
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier,
                     &$fileChunksBudgetPerProcess,
-                    &$processSpawner,
-                    &$totalChanged
+                    &$processSpawner
                 ): void {
                     /** @var array{
                      *      total_changed: int,
@@ -198,30 +181,7 @@ final class ParallelFileProcessor
                      *      system_errors_count: int,
                      *      used_skips: array<string, string[]>
                      * } $json */
-                    $totalChanged += $json[Bridge::TOTAL_CHANGED];
-
-                    foreach ($json[Bridge::USED_SKIPS] as $skip => $paths) {
-                        $usedSkips[$skip] ??= [];
-                        foreach ($paths as $path) {
-                            $usedSkips[$skip][$path] = true;
-                        }
-                    }
-
-                    // decode arrays to objects
-                    foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
-                        if (is_string($jsonError)) {
-                            $systemErrors[] = new SystemError('System error: ' . $jsonError);
-                            continue;
-                        }
-
-                        $systemErrors[] = SystemError::decode($jsonError);
-                    }
-
-                    foreach ($json[Bridge::FILE_DIFFS] as $jsonFileDiff) {
-                        $fileDiffs[] = FileDiff::decode($jsonFileDiff);
-                    }
-
-                    $postFileCallback($json[Bridge::FILES_COUNT]);
+                    $postFileCallback($parallelResultCollector->collectWorkerResult($json));
 
                     $systemErrorsCount += $json[Bridge::SYSTEM_ERRORS_COUNT];
                     if ($systemErrorsCount >= self::SYSTEM_ERROR_LIMIT) {
@@ -254,7 +214,7 @@ final class ParallelFileProcessor
                 $handleErrorCallable,
 
                 // 3. callable on exit
-                function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
+                function ($exitCode, string $stdErr) use ($parallelResultCollector, $processIdentifier): void {
                     $this->processPool->tryQuitProcess($processIdentifier);
                     if ($exitCode === Command::SUCCESS) {
                         return;
@@ -264,7 +224,9 @@ final class ParallelFileProcessor
                         return;
                     }
 
-                    $systemErrors[] = new SystemError('Child process error: ' . $stdErr);
+                    $parallelResultCollector->collectSystemError(new SystemError(
+                        'Child process error: ' . $stdErr
+                    ));
                 }
             );
 
@@ -283,17 +245,12 @@ final class ParallelFileProcessor
         $streamSelectLoop->run();
 
         if ($reachedSystemErrorsCountLimit) {
-            $systemErrors[] = new SystemError(sprintf(
+            $parallelResultCollector->collectSystemError(new SystemError(sprintf(
                 'Reached system errors count limit of %d, exiting...',
                 self::SYSTEM_ERROR_LIMIT
-            ));
+            )));
         }
 
-        $mergedUsedSkips = [];
-        foreach ($usedSkips as $skip => $paths) {
-            $mergedUsedSkips[$skip] = array_keys($paths);
-        }
-
-        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged, $mergedUsedSkips);
+        return $parallelResultCollector->createProcessResult();
     }
 }
