@@ -27,7 +27,17 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
      */
     private const string OUTSIDE_FILE_PATH = 'shared/outside.php';
 
+    /**
+     * Each checkout carries its own copy, so the two configs differ only by absolute path.
+     */
+    private const string CONFIG_FILE_PATH = 'rector.php';
+
     private ChangedFilesDetector $changedFilesDetector;
+
+    /**
+     * @var mixed[]
+     */
+    private array $originalPaths = [];
 
     private string $originalWorkingDirectory;
 
@@ -47,12 +57,19 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
         Assert::string($workingDirectory);
         $this->originalWorkingDirectory = $workingDirectory;
 
-        $this->rootDirectory = sys_get_temp_dir() . '/' . uniqid('rector_portable_cache_');
+        // canonical, so that paths built here match what getcwd() reports after chdir()
+        $temporaryDirectory = realpath(sys_get_temp_dir());
+        Assert::string($temporaryDirectory);
+
+        $this->rootDirectory = $temporaryDirectory . '/' . uniqid('rector_portable_cache_');
         $this->firstCheckoutDirectory = $this->rootDirectory . '/first/project';
         $this->secondCheckoutDirectory = $this->rootDirectory . '/second/project';
 
         $this->createCheckout($this->firstCheckoutDirectory);
         $this->createCheckout($this->secondCheckoutDirectory);
+
+        // the parameter bag is a global static shared across the whole test process
+        $this->originalPaths = SimpleParameterProvider::provideArrayParameter(Option::PATHS);
 
         // the scope is instance state, so pin it rather than inherit whatever ran before
         $this->changedFilesDetector->setActiveScope([], null);
@@ -66,6 +83,8 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
         chdir($this->originalWorkingDirectory);
 
         FileSystem::delete($this->rootDirectory);
+
+        SimpleParameterProvider::setParameter(Option::PATHS, $this->originalPaths);
 
         $this->changedFilesDetector->setActiveScope([], null);
         $this->changedFilesDetector->clear();
@@ -166,6 +185,50 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
         }
     }
 
+    public function testConfigurationSnapshotSurvivesChangeOfCheckout(): void
+    {
+        // a full run in the first checkout, recording its configuration alongside the entries
+        chdir($this->firstCheckoutDirectory);
+        $this->changedFilesDetector->setFirstResolvedConfigFileInfo(
+            $this->configFilePathFor($this->firstCheckoutDirectory)
+        );
+        $this->cacheProjectFilesIn($this->firstCheckoutDirectory);
+
+        // the second checkout holds the same configuration at a different absolute path, which
+        // must not read as a changed configuration - that clears every entry, not just one
+        chdir($this->secondCheckoutDirectory);
+        $this->changedFilesDetector->setFirstResolvedConfigFileInfo(
+            $this->configFilePathFor($this->secondCheckoutDirectory)
+        );
+
+        foreach (self::PROJECT_FILE_PATHS as $projectFilePath) {
+            $this->assertFalse(
+                $this->changedFilesDetector->hasFileChanged(
+                    $this->secondCheckoutDirectory . '/' . $projectFilePath
+                ),
+                sprintf('the cache was cleared in the second checkout, so "%s" is gone', $projectFilePath)
+            );
+        }
+    }
+
+    public function testConfiguredPathsDoNotTieTheCacheToOneDirectory(): void
+    {
+        // `withPaths()` records absolute paths, and they reach the cache-invalidation hash. Two
+        // checkouts declare the same paths under different roots, which must hash alike.
+        chdir($this->firstCheckoutDirectory);
+        SimpleParameterProvider::setParameter(Option::PATHS, [$this->firstCheckoutDirectory . '/src']);
+        $firstCheckoutHash = SimpleParameterProvider::hashForCacheInvalidation();
+
+        chdir($this->secondCheckoutDirectory);
+        SimpleParameterProvider::setParameter(Option::PATHS, [$this->secondCheckoutDirectory . '/src']);
+
+        $this->assertSame(
+            $firstCheckoutHash,
+            SimpleParameterProvider::hashForCacheInvalidation(),
+            'the configured paths made the same configuration hash differently in another checkout'
+        );
+    }
+
     private function createCheckout(string $directory): void
     {
         // identical contents in both checkouts, as two checkouts of one commit are
@@ -174,6 +237,12 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
         }
 
         FileSystem::write($this->outsideFilePathFor($directory), '<?php echo "outside";');
+        FileSystem::write($this->configFilePathFor($directory), '<?php return [];');
+    }
+
+    private function configFilePathFor(string $checkoutDirectory): string
+    {
+        return $checkoutDirectory . '/' . self::CONFIG_FILE_PATH;
     }
 
     private function outsideFilePathFor(string $checkoutDirectory): string
