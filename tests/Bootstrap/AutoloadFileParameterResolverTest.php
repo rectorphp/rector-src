@@ -10,6 +10,8 @@ use Rector\Bootstrap\AutoloadFileParameterResolver;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilePathHelper;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class AutoloadFileParameterResolverTest extends TestCase
 {
@@ -58,7 +60,7 @@ final class AutoloadFileParameterResolverTest extends TestCase
 
     public function testResolvedAutoloadFileChangesConfigurationHash(): void
     {
-        $fileHashComputer = new FileHashComputer();
+        $fileHashComputer = new FileHashComputer(new FilePathHelper(new Filesystem()));
         $configFilePath = __DIR__ . '/config/some_config.php';
 
         $hashWithout = $fileHashComputer->compute($configFilePath);
