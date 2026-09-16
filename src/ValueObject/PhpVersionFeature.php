@@ -507,6 +507,11 @@ final class PhpVersionFeature
     public const int CLAMP = PhpVersion::PHP_86;
 
     /**
+     * @see https://wiki.php.net/rfc/readonly_property_defaults
+     */
+    public const int READONLY_PROPERTY_DEFAULT_VALUE = PhpVersion::PHP_86;
+
+    /**
      * @see https://php.watch/versions/8.0/named-parameters
      */
     public const int NAMED_ARGUMENTS = PhpVersion::PHP_80;
