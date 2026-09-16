@@ -1,0 +1,41 @@
+name: Job Size Benchmark
+
+on:
+    workflow_dispatch:
+        inputs:
+            sizes:
+                description: "Comma-separated parallel job sizes to measure"
+                required: false
+                default: "10,20,40,60,80,100"
+
+env:
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    jobsize_benchmark:
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+
+        steps:
+            -   uses: actions/checkout@v5
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    coverage: none
+
+            -   run: composer install --no-progress --ansi
+
+            # measures Rector wall time across parallel job sizes, results land in the job summary
+            -   run: php scripts/rector-jobsize-benchmark.php --bin=bin/rector --sizes=${{ inputs.sizes }} | tee results.txt
+
+            -   run: cat results.txt >> "$GITHUB_STEP_SUMMARY"
+                if: always()
+
+            -
+                uses: actions/upload-artifact@v4
+                if: always()
+                with:
+                    name: jobsize-benchmark-results
+                    path: results.txt
