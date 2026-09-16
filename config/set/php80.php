@@ -23,6 +23,7 @@ use Rector\Php80\Rector\Identical\StrStartsWithRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php80\Rector\Ternary\GetDebugTypeRector;
+use Rector\Php80\Rector\Ternary\TernaryToNullsafeCoalesceRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 use Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector;
 use Rector\Transform\ValueObject\StaticCallToFuncCall;
@@ -35,6 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
         StringableForToStringRector::class,
         ClassOnObjectRector::class,
         GetDebugTypeRector::class,
+        TernaryToNullsafeCoalesceRector::class,
         RemoveUnusedVariableInCatchRector::class,
         ClassPropertyAssignToConstructorPromotionRector::class,
         ChangeSwitchToMatchRector::class,
