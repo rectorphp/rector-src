@@ -6,9 +6,12 @@ use Rector\Tests\Php80\Rector\Ternary\TernaryToNullsafeCoalesceRector\Source\Som
 
 final class IdenticalNullFallback
 {
-    public function run(?SomeObject $someObject): ?string
+    public function run(?SomeObject $someObject): array
     {
-        return null === $someObject ? null : $someObject->getName();
+        $name = null === $someObject ? null : $someObject->getName();
+        $property = $someObject === null ? null : $someObject->name;
+
+        return [$name, $property];
     }
 }
 
@@ -22,9 +25,12 @@ use Rector\Tests\Php80\Rector\Ternary\TernaryToNullsafeCoalesceRector\Source\Som
 
 final class IdenticalNullFallback
 {
-    public function run(?SomeObject $someObject): ?string
+    public function run(?SomeObject $someObject): array
     {
-        return $someObject?->getName();
+        $name = $someObject?->getName();
+        $property = $someObject?->name;
+
+        return [$name, $property];
     }
 }
 
