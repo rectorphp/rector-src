@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
@@ -116,6 +117,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            // compact()/get_defined_vars()/dynamic variables can read the value by name
+            if ($this->shouldSkipIf($nextStmt)) {
+                continue;
+            }
+
             if (! $this->isOverriddenFirstInBranch($nextStmt->stmts, $variableName)) {
                 continue;
             }
@@ -200,6 +206,18 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function shouldSkipIf(If_ $if): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst($if, function (Node $subNode): bool {
+            if ($subNode instanceof FuncCall) {
+                return $this->isNames($subNode, ['compact', 'get_defined_vars', 'extract']);
+            }
+
+            // dynamic variable access like $$name can read the value by name
+            return $subNode instanceof Variable && ! is_string($subNode->name);
+        });
     }
 
     private function isVariableUsedInNode(Node $node, string $variableName): bool
