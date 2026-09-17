@@ -49,7 +49,7 @@
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^13.3",
         "rector/jack": "^1.1",
-        "rector/swiss-knife": "^2.5",
+        "rector/swiss-knife": "^2.6",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/process": "^8.1",
         "symplify/easy-coding-standard": "^13.2.13",
