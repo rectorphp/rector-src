@@ -49,7 +49,7 @@
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^13.3",
         "rector/jack": "^1.1",
-        "rector/swiss-knife": "^2.4.1",
+        "rector/swiss-knife": "^2.6",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/process": "^8.1",
         "symplify/easy-coding-standard": "^13.2.13",
@@ -70,8 +70,7 @@
                 "src"
             ],
             "Rector\\Utils\\": "utils",
-            "Rector\\Utils\\PHPStan\\": "utils/phpstan/src",
-            "Rector\\Utils\\Duplicates\\": "utils/duplicates/src"
+            "Rector\\Utils\\PHPStan\\": "utils/phpstan/src"
         },
         "files": [
             "src/functions/node_helper.php"
@@ -84,7 +83,6 @@
                 "tests"
             ],
             "Rector\\Utils\\PHPStan\\Tests\\": "utils/phpstan/tests",
-            "Rector\\Utils\\Duplicates\\Tests\\": "utils/duplicates/tests",
             "E2e\\Parallel\\Reflection\\Resolver\\": "e2e/parallel-reflection-resolver/src/",
             "Rector\\Scripts\\": "scripts/src"
         },
@@ -106,12 +104,12 @@
             "@phpstan",
             "@test"
         ],
-        "test": "vendor/bin/fastunit tests rules-tests utils/phpstan/tests utils/duplicates/tests",
+        "test": "vendor/bin/fastunit tests rules-tests utils/phpstan/tests",
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi --memory-limit=512M",
         "rector": "bin/rector process --ansi",
-        "duplicated-code": "php utils/duplicates/bin/duplicates.php --min-lines 5 --min-tokens 150 src rules",
+        "duplicated-code": "vendor/bin/swiss-knife duplicated-code src rules --min-tokens 150 --min-lines 5",
         "preload": "php build/build-preload.php .",
         "release": "vendor/bin/rng --from-commit X --to-commit Y --remote-repository rectorphp/rector-symfony --remote-repository rectorphp/rector-doctrine --remote-repository rectorphp/rector-phpunit"
     },
