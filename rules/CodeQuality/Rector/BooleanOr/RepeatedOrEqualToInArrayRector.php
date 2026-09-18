@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
+use Rector\CodeQuality\NodeFactory\InArrayFromRepeatedCompareFactory;
 use Rector\CodeQuality\ValueObject\ComparedExprAndValueExpr;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
@@ -26,6 +27,7 @@ final class RepeatedOrEqualToInArrayRector extends AbstractRector
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly InArrayFromRepeatedCompareFactory $inArrayFromRepeatedCompareFactory,
     ) {
     }
 
@@ -79,29 +81,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($comparedExprAndValueExprs) < 3) {
+        $args = $this->inArrayFromRepeatedCompareFactory->createInArrayArgs($comparedExprAndValueExprs);
+        if ($args === null) {
             return null;
         }
-
-        // ensure all compared expr are the same
-        $valueExprs = $this->resolveValueExprs($comparedExprAndValueExprs);
-
-        /** @var ComparedExprAndValueExpr $firstComparedExprAndValue */
-        $firstComparedExprAndValue = array_pop($comparedExprAndValueExprs);
-
-        // all compared expr must be equal
-        foreach ($comparedExprAndValueExprs as $comparedExprAndValueExpr) {
-            if (! $this->nodeComparator->areNodesEqual(
-                $firstComparedExprAndValue->getComparedExpr(),
-                $comparedExprAndValueExpr->getComparedExpr()
-            )) {
-                return null;
-            }
-        }
-
-        $array = $this->nodeFactory->createArray($valueExprs);
-
-        $args = $this->nodeFactory->createArgs([$firstComparedExprAndValue->getComparedExpr(), $array]);
 
         $identicals = $this->betterNodeFinder->findInstanceOf($node, Identical::class);
         $equals = $this->betterNodeFinder->findInstanceOf($node, Equal::class);
@@ -131,21 +114,6 @@ CODE_SAMPLE
     private function matchComparedExprAndValueExpr(Identical|Equal $expr): ComparedExprAndValueExpr
     {
         return new ComparedExprAndValueExpr($expr->left, $expr->right);
-    }
-
-    /**
-     * @param ComparedExprAndValueExpr[] $comparedExprAndValueExprs
-     * @return Expr[]
-     */
-    private function resolveValueExprs(array $comparedExprAndValueExprs): array
-    {
-        $valueExprs = [];
-
-        foreach ($comparedExprAndValueExprs as $comparedExprAndValueExpr) {
-            $valueExprs[] = $comparedExprAndValueExpr->getValueExpr();
-        }
-
-        return $valueExprs;
     }
 
     /**
