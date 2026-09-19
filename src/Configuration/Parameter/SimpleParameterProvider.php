@@ -157,7 +157,7 @@ final class SimpleParameterProvider
 
         ksort($strictParameters);
 
-        return sha1(serialize($strictParameters));
+        return sha1(serialize(self::relativizeProjectPaths($strictParameters, self::projectPathPrefix())));
     }
 
     /**
@@ -166,11 +166,63 @@ final class SimpleParameterProvider
      */
     public static function provideCacheDirectionalParameters(): array
     {
+        $projectPathPrefix = self::projectPathPrefix();
+
         return [
-            'rules' => self::$parameters[Option::REGISTERED_RECTOR_RULES] ?? [],
-            'sets' => self::$parameters[Option::REGISTERED_RECTOR_SETS] ?? [],
-            'skip' => self::$parameters[Option::SKIP] ?? [],
+            'rules' => self::relativizeProjectPaths(
+                (array) (self::$parameters[Option::REGISTERED_RECTOR_RULES] ?? []),
+                $projectPathPrefix
+            ),
+            'sets' => self::relativizeProjectPaths(
+                (array) (self::$parameters[Option::REGISTERED_RECTOR_SETS] ?? []),
+                $projectPathPrefix
+            ),
+            'skip' => self::relativizeProjectPaths(
+                (array) (self::$parameters[Option::SKIP] ?? []),
+                $projectPathPrefix
+            ),
         ];
+    }
+
+    /**
+     * Paths declared in the configuration - analysed paths, autoload and bootstrap files, set
+     * files - are absolute, so they carry the location of the project into the cache identity.
+     * Hashed as they are, the cache is bound to one directory: a git worktree, a second
+     * checkout or a CI cache restored under a different workspace name looks like a changed
+     * configuration and drops every entry on its first run. Anchored to the project instead,
+     * they describe the same configuration wherever it is checked out.
+     *
+     * @param mixed[] $parameters
+     * @return mixed[]
+     */
+    private static function relativizeProjectPaths(array $parameters, string $projectPathPrefix): array
+    {
+        foreach ($parameters as $key => $value) {
+            if (is_array($value)) {
+                $parameters[$key] = self::relativizeProjectPaths($value, $projectPathPrefix);
+                continue;
+            }
+
+            if (is_string($value) && str_starts_with($value, $projectPathPrefix)) {
+                $parameters[$key] = substr($value, strlen($projectPathPrefix));
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Empty when the working directory cannot be resolved, which makes the relativizing above a
+     * no-op rather than a wrong answer.
+     */
+    private static function projectPathPrefix(): string
+    {
+        $currentDirectory = getcwd();
+        if ($currentDirectory === false) {
+            return '';
+        }
+
+        return rtrim($currentDirectory, '/') . '/';
     }
 
     /**
