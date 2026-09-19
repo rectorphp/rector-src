@@ -8,8 +8,8 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Identifier;
+use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PHPStan\ScopeFetcher;
@@ -36,7 +36,11 @@ final readonly class CallLikeArgumentNameAdder
         }
 
         $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($callLike);
-        if (! $reflection instanceof FunctionReflection && ! $reflection instanceof MethodReflection) {
+        if (! $reflection instanceof FunctionReflection && ! $reflection instanceof ExtendedMethodReflection) {
+            return null;
+        }
+
+        if (! $reflection->acceptsNamedArguments()->yes()) {
             return null;
         }
 
