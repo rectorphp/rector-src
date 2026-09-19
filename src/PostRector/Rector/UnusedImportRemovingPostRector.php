@@ -158,6 +158,9 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 $nodeToCheck = $totalDocs === 1 ? $node : clone $node;
                 if ($totalDocs > 1) {
                     $nodeToCheck->setDocComment($doc);
+                    // the clone carries the PhpDocInfo already resolved for the original node (its last doc comment),
+                    // so the factory would return it instead of parsing $doc
+                    $nodeToCheck->setAttribute(AttributeKey::PHP_DOC_INFO, null);
                 }
 
                 $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nodeToCheck);
