@@ -127,7 +127,7 @@ CODE_SAMPLE
         }
 
         $traitNames = array_map(
-            static fn (Name $trait): string => $trait->toString(),
+            static fn (Name $name): string => $name->toString(),
             $traitUse->traits
         );
 
