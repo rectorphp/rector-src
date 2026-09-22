@@ -49,6 +49,32 @@ final class FileCacheStorageTest extends AbstractLazyTestCase
         $this->assertDirectoryDoesNotExist(__DIR__ . '/Source/0e');
     }
 
+    public function testSaveLeavesAConcurrentReaderOnACompleteFile(): void
+    {
+        $filePath = __DIR__ . '/Source/0e/76/0e76658526655756207688271159624026011393.php';
+
+        $this->fileCacheStorage->save('aaK1STfY', 'TEST', 'first');
+        $contentsBeforeSave = (string) file_get_contents($filePath);
+
+        // every parallel worker require()s this path while booting its container; open it the
+        // way such a worker would, then have another worker save over it mid-read
+        $readerHandle = fopen($filePath, 'r');
+        $this->assertNotFalse($readerHandle);
+
+        $this->fileCacheStorage->save('aaK1STfY', 'TEST', 'second');
+
+        $contentsSeenByReader = stream_get_contents($readerHandle);
+        fclose($readerHandle);
+
+        // an atomic replace leaves the reader on the whole file it opened; writing through the
+        // published inode instead exposes the reader to however much of the new file has landed
+        $this->assertSame($contentsBeforeSave, $contentsSeenByReader);
+
+        $this->assertSame('second', $this->fileCacheStorage->load('aaK1STfY', 'TEST'));
+
+        $this->fileCacheStorage->clean('aaK1STfY');
+    }
+
     public function provideConfigFilePath(): string
     {
         return __DIR__ . '/config.php';
