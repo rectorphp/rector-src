@@ -86,6 +86,12 @@ final readonly class NameImporter
         // make use of existing use import
         $nameInUse = $this->resolveNameInUse($fullyQualified, $currentUses);
         if ($nameInUse instanceof Name) {
+            // already written with this name, nothing to change
+            $originalName = $fullyQualified->getAttribute(AttributeKey::ORIGINAL_NAME);
+            if ($originalName instanceof Name && $originalName->toString() === $nameInUse->toString()) {
+                return null;
+            }
+
             $nameInUse->setAttribute(AttributeKey::NAMESPACED_NAME, $fullyQualified->toString());
             return $nameInUse;
         }
