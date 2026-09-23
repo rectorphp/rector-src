@@ -22,6 +22,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeManipulator\ClassDependencyManipulator;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PhpVersionFeature;
 
 final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
@@ -40,6 +41,12 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 
         // use at least readonly property
         SimpleParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, PhpVersionFeature::READONLY_PROPERTY);
+    }
+
+    protected function tearDown(): void
+    {
+        // reset to the test default, so the next test class in the same process does not run on PHP 8.1
+        SimpleParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_10);
     }
 
     public function testEmptyClass(): void
