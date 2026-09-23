@@ -13,7 +13,7 @@ final class UseDependency
 
     public function go($value)
     {
-        $this->someTypedService->run($value);
+        $this->someTypedService->runInt($value);
     }
 }
 
@@ -32,9 +32,9 @@ final class UseDependency
     ) {
     }
 
-    public function go(string $value)
+    public function go(int $value)
     {
-        $this->someTypedService->run($value);
+        $this->someTypedService->runInt($value);
     }
 }
 

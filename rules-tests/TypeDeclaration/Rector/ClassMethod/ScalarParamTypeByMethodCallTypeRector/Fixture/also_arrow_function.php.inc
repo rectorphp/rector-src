@@ -13,7 +13,7 @@ final class AlsoArrowFunction
 
     public function go()
     {
-        $closure = fn ($value) => $this->someTypedService->run($value);
+        $closure = fn ($value) => $this->someTypedService->runInt($value);
     }
 }
 
@@ -34,7 +34,7 @@ final class AlsoArrowFunction
 
     public function go()
     {
-        $closure = fn (string $value) => $this->someTypedService->run($value);
+        $closure = fn (int $value) => $this->someTypedService->runInt($value);
     }
 }
 

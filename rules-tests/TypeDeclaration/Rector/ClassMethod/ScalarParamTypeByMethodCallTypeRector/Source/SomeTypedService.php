@@ -10,7 +10,15 @@ final class SomeTypedService
     {
     }
 
+    public function runInt(int $count)
+    {
+    }
+
     public static function fun($surname, string $name)
+    {
+    }
+
+    public static function funInt($surname, int $count)
     {
     }
 
