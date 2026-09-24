@@ -23,7 +23,7 @@ final class ScalarParamTypeByMethodCallTypeRector extends AbstractParamTypeByMet
                 <<<'CODE_SAMPLE'
 class SomeTypedService
 {
-    public function run(string $name)
+    public function run(int $value)
     {
     }
 }
@@ -45,7 +45,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeTypedService
 {
-    public function run(string $name)
+    public function run(int $value)
     {
     }
 }
@@ -57,7 +57,7 @@ final class UseDependency
     ) {
     }
 
-    public function go(string $value)
+    public function go(int $value)
     {
         $this->someTypedService->run($value);
     }
@@ -69,7 +69,14 @@ CODE_SAMPLE
 
     protected function isMatchingParamType(Type $type): bool
     {
-        return TypeCombinator::removeNull($type)->isScalar()
+        $type = TypeCombinator::removeNull($type);
+        if (! $type->isScalar()->yes()) {
+            return false;
+        }
+
+        // a string param accepts int/float/bool via scalar coercion, so a caller
+        // may pass another scalar - inferring string from it would be unsafe
+        return ! $type->isString()
             ->yes();
     }
 }

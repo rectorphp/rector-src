@@ -14,7 +14,7 @@ final class AlsoClosure
     public function go()
     {
         $closure = function ($value) {
-            $this->someTypedService->run($value);
+            $this->someTypedService->runInt($value);
         };
     }
 }
@@ -36,8 +36,8 @@ final class AlsoClosure
 
     public function go()
     {
-        $closure = function (string $value) {
-            $this->someTypedService->run($value);
+        $closure = function (int $value) {
+            $this->someTypedService->runInt($value);
         };
     }
 }

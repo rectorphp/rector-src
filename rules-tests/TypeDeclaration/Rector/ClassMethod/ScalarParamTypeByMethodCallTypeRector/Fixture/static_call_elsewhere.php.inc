@@ -8,7 +8,7 @@ final class StaticCallElsewhere
 {
     public function go($value, $first)
     {
-        SomeTypedService::fun($first, $value);
+        SomeTypedService::funInt($first, $value);
     }
 }
 
@@ -22,9 +22,9 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ScalarParamTypeByMethodCallT
 
 final class StaticCallElsewhere
 {
-    public function go(string $value, $first)
+    public function go(int $value, $first)
     {
-        SomeTypedService::fun($first, $value);
+        SomeTypedService::funInt($first, $value);
     }
 }
 
