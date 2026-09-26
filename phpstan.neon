@@ -1,5 +1,4 @@
 includes:
-    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 rules:
@@ -422,3 +421,19 @@ parameters:
         -
             identifier: varTag.nativeType
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
+
+
+        -
+            identifier: symplify.noNullableServiceInConstructor
+            paths:
+                - src/NodeTypeResolver/PHPStan/ObjectWithoutClassTypeWithParentTypes.php
+
+        - identifier: symplify.commandHasAsCommandAttribute
+          paths:
+                - src/Console/Command/ValidateConfigCommand.php
+                - src/Console/Command/WorkerCommand.php
+                - src/Console/Command/ProcessCommand.php
+                - src/Console/Command/ListRulesCommand.php
+                - src/Console/Command/CustomRuleCommand.php
+                - src/Console/Command/ComposerBasedCommand.php
+                - src/Console/Command/SetupCICommand.php
