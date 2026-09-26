@@ -26,7 +26,7 @@ final class FileAndDirectoryFilterTest extends TestCase
         $this->assertCount(1, $files);
         $this->assertCount(1, $directories);
 
-        $this->assertSame($files, [__DIR__ . '/FileAndDirectoryFilterTest.php']);
-        $this->assertSame($directories, [__DIR__]);
+        $this->assertSame([__DIR__ . '/FileAndDirectoryFilterTest.php'], $files);
+        $this->assertSame([__DIR__], $directories);
     }
 }
