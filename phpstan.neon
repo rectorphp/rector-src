@@ -39,6 +39,8 @@ parameters:
         - '*tests/*/Fixture*'
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
+        # standalone dev benchmark, shells out and parses getopt by hand
+        - 'scripts/rector-jobsize-benchmark.php'
 
     # see https://github.com/symplify/phpstan-rules
     symplify:
