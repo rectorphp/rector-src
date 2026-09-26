@@ -39,5 +39,10 @@ return static function (RectorConfig $rectorConfig): void {
                 '_config',
                 'config'
             ),
+            new RenameProperty(
+                'Rector\Tests\Renaming\Rector\PropertyFetch\RenamePropertyRector\Fixture\InstanceConfigTrait',
+                'defaultConfig',
+                'defaultConfigNew'
+            ),
         ]);
 };
