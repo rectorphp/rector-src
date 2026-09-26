@@ -63,6 +63,7 @@ use Rector\PhpParser\NodeVisitor\DefaultValueNodeVisitor;
 use Rector\PhpParser\NodeVisitor\LocalVariableScopeNodeVisitor;
 use Rector\PhpParser\NodeVisitor\NameAndArgNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PhpVersionConditionNodeVisitor;
+use Rector\PhpParser\NodeVisitor\SimpleScopeNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeForParameterMapper;
@@ -101,6 +102,7 @@ final class LazyContainerFactory
         LocalVariableScopeNodeVisitor::class,
         NameAndArgNodeVisitor::class,
         DefaultValueNodeVisitor::class,
+        SimpleScopeNodeVisitor::class,
     ];
 
     /**
