@@ -51,6 +51,12 @@ final class FileCacheStorageTest extends AbstractLazyTestCase
 
     public function testSaveLeavesConcurrentReaderOnCompleteFile(): void
     {
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            // Windows blocks rename() over a file open in another handle, so the atomic-replace-under-open-reader
+            // scenario this asserts is POSIX-only; on Windows writeAtomic() retries the transient lock instead
+            $this->markTestSkipped('Atomic replace under an open reader is POSIX-only');
+        }
+
         $filePath = __DIR__ . '/Source/0e/76/0e76658526655756207688271159624026011393.php';
 
         $this->fileCacheStorage->save('aaK1STfY', 'TEST', 'first');
