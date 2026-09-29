@@ -1,0 +1,39 @@
+name: File Cache Storage Test
+
+on:
+    pull_request: null
+    push:
+     branches:
+        - main
+
+
+
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    tests:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+                php-versions: ['8.4']
+
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 3
+
+        name: PHP ${{ matrix.php-versions }} tests (${{ matrix.os }})
+        steps:
+            -   uses: actions/checkout@v5
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    coverage: none
+                    ini-values: zend.assertions=1
+
+            -   uses: "ramsey/composer-install@v4"
+
+            -   run: vendor/bin/phpunit tests/Caching/ValueObject/Storage/FileCacheStorageTest.php --colors
