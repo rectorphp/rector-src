@@ -23,7 +23,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         timeout-minutes: 3
 
-        name: PHP ${{ matrix.php-versions }} tests (${{ matrix.os }})
+        name: File Cache Storage ${{ matrix.php-versions }} (${{ matrix.os }})
         steps:
             -   uses: actions/checkout@v5
 
