@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Scripts\Finder\RectorClassFinder;
 use Rector\Scripts\Finder\RectorSetFilesFinder;
@@ -54,6 +55,14 @@ $configurableRectorRules = array_filter(
 
 $unusedRectorRules = array_diff($unusedRectorRules, $configurableRectorRules);
 
+// deprecated rules are intentionally kept out of sets
+$deprecatedRectorRules = array_filter(
+    $unusedRectorRules,
+    static fn (string $rectorClass): bool => is_a($rectorClass, DeprecatedInterface::class, true)
+);
+
+$unusedRectorRules = array_diff($unusedRectorRules, $deprecatedRectorRules);
+
 $symfonyStyle->newLine();
 $symfonyStyle->listing($unusedRectorRules);
 
@@ -62,5 +71,8 @@ $symfonyStyle->writeln(
 );
 $symfonyStyle->writeln(
     sprintf('<fg=green>Skipped %d configurable Rector rules</>', count($configurableRectorRules))
+);
+$symfonyStyle->writeln(
+    sprintf('<fg=green>Skipped %d deprecated Rector rules</>', count($deprecatedRectorRules))
 );
 $symfonyStyle->newLine();
