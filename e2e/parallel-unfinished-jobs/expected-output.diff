@@ -1,0 +1,23 @@
+1 file with changes
+===================
+
+1) src/File1.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(1, 2);
++$items = [1, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+ [ERROR] Could not process "src/File2.php" file, due to:
+         "Syntax error, unexpected ';'". On line: 3
+
+ [ERROR] Could not process some files, due to:
+         "Some parallel jobs have not finished, results for 2 of 4 files are
+         missing".
