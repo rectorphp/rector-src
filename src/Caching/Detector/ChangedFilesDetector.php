@@ -107,37 +107,20 @@ final class ChangedFilesDetector
         $this->storeConfigurationDataHash($filePath, $configurationSnapshot);
     }
 
-    private function resolvePath(string $filePath): string
-    {
-        $realPath = realpath($filePath);
-        if ($realPath === false) {
-            return $filePath;
-        }
-
-        return $realPath;
-    }
-
     private function getFilePathCacheKey(string $filePath): string
     {
         return $this->fileHasher->hash($this->cacheKeyPath($filePath) . $this->scopeSuffix);
     }
 
-    /**
-     * The path a cache key is built from: relative to the project, never absolute.
-     *
-     * An absolute path ties the whole cache to one location on disk, so the same project
-     * checked out twice - a git worktree, a CI checkout, a container mount - shares nothing.
-     * Relative keys let a cache travel with the project. Paths outside the project keep
-     * their `../` prefix and stay just as stable, because the anchor does not move either.
-     */
+    // relative to the project, so a cache built in one checkout is reused in another (worktree, CI, container mount)
     private function cacheKeyPath(string $filePath): string
     {
-        return $this->filePathHelper->relativePath($this->resolvePath($filePath));
+        return $this->filePathHelper->relativePath($this->filePathHelper->resolveRealPath($filePath));
     }
 
     private function hashFile(string $filePath): string
     {
-        return $this->fileHasher->hashFiles([$this->resolvePath($filePath)]);
+        return $this->fileHasher->hashFiles([$this->filePathHelper->resolveRealPath($filePath)]);
     }
 
     /**

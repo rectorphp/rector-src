@@ -25,22 +25,10 @@ final readonly class FileHashComputer
 
         $parametersHash = SimpleParameterProvider::hashForCacheInvalidation();
 
-        // the config path is relative to the project: an absolute one ties the hash, and with it
-        // the whole cache, to a single directory on a single machine. Resolved first, because the
-        // path arrives straight from `--config` and two spellings of one file must hash alike.
-        $relativeFilePath = $this->filePathHelper->relativePath($this->resolvePath($filePath));
+        // relative config path, so the hash (and the whole cache) is not tied to one directory
+        $relativeFilePath = $this->filePathHelper->relativePath($this->filePathHelper->resolveRealPath($filePath));
 
         return sha1($relativeFilePath . $parametersHash . VersionResolver::PACKAGE_VERSION);
-    }
-
-    private function resolvePath(string $filePath): string
-    {
-        $realPath = realpath($filePath);
-        if ($realPath === false) {
-            return $filePath;
-        }
-
-        return $realPath;
     }
 
     private function ensureIsPhp(string $filePath): void
