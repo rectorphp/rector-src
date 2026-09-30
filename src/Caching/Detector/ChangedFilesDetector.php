@@ -8,6 +8,7 @@ use Rector\Caching\Cache;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Enum\CacheKey;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilePathHelper;
 use Rector\Util\FileHasher;
 
 /**
@@ -28,7 +29,8 @@ final class ChangedFilesDetector
     public function __construct(
         private readonly FileHashComputer $fileHashComputer,
         private readonly Cache $cache,
-        private readonly FileHasher $fileHasher
+        private readonly FileHasher $fileHasher,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -70,7 +72,7 @@ final class ChangedFilesDetector
         // a scoped (--only) run reuses the full-run cache: a file left clean by all rules stays
         // clean under a single rule too, and the content is still compared below
         if ($cachedValue === null && $this->scopeSuffix !== '') {
-            $unscopedCacheKey = $this->fileHasher->hash($this->resolvePath($filePath));
+            $unscopedCacheKey = $this->fileHasher->hash($this->cacheKeyPath($filePath));
             $cachedValue = $this->cache->load($unscopedCacheKey, CacheKey::FILE_HASH_KEY);
         }
 
@@ -105,24 +107,20 @@ final class ChangedFilesDetector
         $this->storeConfigurationDataHash($filePath, $configurationSnapshot);
     }
 
-    private function resolvePath(string $filePath): string
-    {
-        $realPath = realpath($filePath);
-        if ($realPath === false) {
-            return $filePath;
-        }
-
-        return $realPath;
-    }
-
     private function getFilePathCacheKey(string $filePath): string
     {
-        return $this->fileHasher->hash($this->resolvePath($filePath) . $this->scopeSuffix);
+        return $this->fileHasher->hash($this->cacheKeyPath($filePath) . $this->scopeSuffix);
+    }
+
+    // relative to the project, so a cache built in one checkout is reused in another (worktree, CI, container mount)
+    private function cacheKeyPath(string $filePath): string
+    {
+        return $this->filePathHelper->relativePath($this->filePathHelper->resolveRealPath($filePath));
     }
 
     private function hashFile(string $filePath): string
     {
-        return $this->fileHasher->hashFiles([$this->resolvePath($filePath)]);
+        return $this->fileHasher->hashFiles([$this->filePathHelper->resolveRealPath($filePath)]);
     }
 
     /**

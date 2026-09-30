@@ -63,6 +63,17 @@ final class SimpleParameterProvider
     ];
 
     /**
+     * Absolute-path options anchored to the project before hashing, so a checkout at a different
+     * path is not read as a changed configuration.
+     * @var array<Option::*>
+     */
+    private const array CACHE_PROJECT_PATH_PARAMETER_NAMES = [
+        Option::PATHS,
+        Option::AUTOLOAD_PATHS,
+        Option::BOOTSTRAP_FILES,
+    ];
+
+    /**
      * @var array<string, mixed>
      */
     private static array $parameters = [];
@@ -155,6 +166,18 @@ final class SimpleParameterProvider
             unset($strictParameters[$ignoredName]);
         }
 
+        $projectPathPrefix = self::projectPathPrefix();
+        foreach (self::CACHE_PROJECT_PATH_PARAMETER_NAMES as $pathParameterName) {
+            if (! isset($strictParameters[$pathParameterName]) || ! is_array($strictParameters[$pathParameterName])) {
+                continue;
+            }
+
+            $strictParameters[$pathParameterName] = self::relativizeProjectPaths(
+                $strictParameters[$pathParameterName],
+                $projectPathPrefix
+            );
+        }
+
         ksort($strictParameters);
 
         return sha1(serialize($strictParameters));
@@ -166,11 +189,59 @@ final class SimpleParameterProvider
      */
     public static function provideCacheDirectionalParameters(): array
     {
+        $projectPathPrefix = self::projectPathPrefix();
+
         return [
-            'rules' => self::$parameters[Option::REGISTERED_RECTOR_RULES] ?? [],
-            'sets' => self::$parameters[Option::REGISTERED_RECTOR_SETS] ?? [],
-            'skip' => self::$parameters[Option::SKIP] ?? [],
+            'rules' => self::relativizeProjectPaths(
+                (array) (self::$parameters[Option::REGISTERED_RECTOR_RULES] ?? []),
+                $projectPathPrefix
+            ),
+            'sets' => self::relativizeProjectPaths(
+                (array) (self::$parameters[Option::REGISTERED_RECTOR_SETS] ?? []),
+                $projectPathPrefix
+            ),
+            'skip' => self::relativizeProjectPaths(
+                (array) (self::$parameters[Option::SKIP] ?? []),
+                $projectPathPrefix
+            ),
         ];
+    }
+
+    /**
+     * Strips the project prefix off absolute config paths, so the same configuration hashes alike
+     * across checkouts instead of tying the cache to one directory.
+     *
+     * @param mixed[] $parameters
+     * @return mixed[]
+     */
+    private static function relativizeProjectPaths(array $parameters, string $projectPathPrefix): array
+    {
+        foreach ($parameters as $key => $value) {
+            if (is_array($value)) {
+                $parameters[$key] = self::relativizeProjectPaths($value, $projectPathPrefix);
+                continue;
+            }
+
+            if (is_string($value) && str_starts_with($value, $projectPathPrefix)) {
+                $parameters[$key] = substr($value, strlen($projectPathPrefix));
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Empty when the working directory cannot be resolved, which makes the relativizing above a
+     * no-op rather than a wrong answer.
+     */
+    private static function projectPathPrefix(): string
+    {
+        $currentDirectory = getcwd();
+        if ($currentDirectory === false) {
+            return '';
+        }
+
+        return rtrim($currentDirectory, '/') . '/';
     }
 
     /**

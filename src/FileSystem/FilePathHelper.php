@@ -31,6 +31,17 @@ final readonly class FilePathHelper
     ) {
     }
 
+    // real path when it resolves, the original path otherwise (vfs, phar, not-yet-created)
+    public function resolveRealPath(string $filePath): string
+    {
+        $realPath = realpath($filePath);
+        if ($realPath === false) {
+            return $filePath;
+        }
+
+        return $realPath;
+    }
+
     public function relativePath(string $fileRealPath): string
     {
         if (! $this->filesystem->isAbsolutePath($fileRealPath)) {
