@@ -1,0 +1,172 @@
+12 files with changes
+=====================
+
+1) src/File01.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(1, 2);
++$items = [1, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+2) src/File02.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(2, 2);
++$items = [2, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+3) src/File03.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(3, 2);
++$items = [3, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+4) src/File04.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(4, 2);
++$items = [4, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+5) src/File05.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(5, 2);
++$items = [5, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+6) src/File06.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(6, 2);
++$items = [6, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+7) src/File07.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(7, 2);
++$items = [7, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+8) src/File08.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(8, 2);
++$items = [8, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+9) src/File09.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(9, 2);
++$items = [9, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+10) src/File10.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(10, 2);
++$items = [10, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+11) src/File11.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(11, 2);
++$items = [11, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+12) src/File12.php:1
+
+    ---------- begin diff ----------
+@@ Line 1 @@
+ <?php
+
+-$items = array(12, 2);
++$items = [12, 2];
+    ----------- end diff -----------
+
+Applied rules:
+ * LongArrayToShortArrayRector
+
+
+ [OK] 12 files would have been changed (dry-run) by Rector

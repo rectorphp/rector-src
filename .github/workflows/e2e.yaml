@@ -33,6 +33,9 @@ jobs:
                     - 'e2e/parallel-unused-skips'
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/parallel with space'
+                    - 'e2e/parallel-worker-respawn'
+                    - 'e2e/parallel-unfinished-jobs'
+                    - 'e2e/parallel-system-errors-limit'
                     - 'e2e/phpstan-container-bootstrap'
                     - 'e2e/rules-summary-option'
 
