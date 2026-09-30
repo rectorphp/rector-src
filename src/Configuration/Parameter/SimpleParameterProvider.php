@@ -63,6 +63,17 @@ final class SimpleParameterProvider
     ];
 
     /**
+     * Absolute-path options anchored to the project before hashing, so a checkout at a different
+     * path is not read as a changed configuration.
+     * @var array<Option::*>
+     */
+    private const array CACHE_PROJECT_PATH_PARAMETER_NAMES = [
+        Option::PATHS,
+        Option::AUTOLOAD_PATHS,
+        Option::BOOTSTRAP_FILES,
+    ];
+
+    /**
      * @var array<string, mixed>
      */
     private static array $parameters = [];
@@ -155,9 +166,21 @@ final class SimpleParameterProvider
             unset($strictParameters[$ignoredName]);
         }
 
+        $projectPathPrefix = self::projectPathPrefix();
+        foreach (self::CACHE_PROJECT_PATH_PARAMETER_NAMES as $pathParameterName) {
+            if (! isset($strictParameters[$pathParameterName]) || ! is_array($strictParameters[$pathParameterName])) {
+                continue;
+            }
+
+            $strictParameters[$pathParameterName] = self::relativizeProjectPaths(
+                $strictParameters[$pathParameterName],
+                $projectPathPrefix
+            );
+        }
+
         ksort($strictParameters);
 
-        return sha1(serialize(self::relativizeProjectPaths($strictParameters, self::projectPathPrefix())));
+        return sha1(serialize($strictParameters));
     }
 
     /**
@@ -185,12 +208,8 @@ final class SimpleParameterProvider
     }
 
     /**
-     * Paths declared in the configuration - analysed paths, autoload and bootstrap files, set
-     * files - are absolute, so they carry the location of the project into the cache identity.
-     * Hashed as they are, the cache is bound to one directory: a git worktree, a second
-     * checkout or a CI cache restored under a different workspace name looks like a changed
-     * configuration and drops every entry on its first run. Anchored to the project instead,
-     * they describe the same configuration wherever it is checked out.
+     * Strips the project prefix off absolute config paths, so the same configuration hashes alike
+     * across checkouts instead of tying the cache to one directory.
      *
      * @param mixed[] $parameters
      * @return mixed[]
