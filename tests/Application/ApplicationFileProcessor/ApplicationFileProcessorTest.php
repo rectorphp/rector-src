@@ -43,6 +43,42 @@ final class ApplicationFileProcessorTest extends AbstractLazyTestCase
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
     }
 
+    public function testDryRunCachesFileWhoseReportedChangesLeaveContentUnchanged(): void
+    {
+        self::$rectorConfig = null;
+        $this->bootFromConfigFiles([__DIR__ . '/config-import-names.php']);
+        $applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
+        $changedFilesDetector = $this->make(ChangedFilesDetector::class);
+
+        $filePath = __DIR__ . '/Source/WithAliasedImportOfSameShortName.php';
+
+        // name importing reports line changes here, but the printed file is identical, so the diff is empty
+        $processResult = $applicationFileProcessor->processFiles([$filePath], new Configuration(isDryRun: true));
+
+        $fileDiffs = $processResult->getFileDiffs(onlyWithChanges: false);
+        $this->assertCount(1, $fileDiffs);
+        $this->assertSame('', $fileDiffs[0]->getDiff());
+        $this->assertFalse($changedFilesDetector->hasFileChanged($filePath));
+
+        $changedFilesDetector->clear();
+    }
+
+    public function testDryRunDoesNotCacheFileWithPendingChanges(): void
+    {
+        self::$rectorConfig = null;
+        $this->bootFromConfigFiles([__DIR__ . '/config-max-changes.php']);
+        $applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
+        $changedFilesDetector = $this->make(ChangedFilesDetector::class);
+
+        $filePath = __DIR__ . '/Source/WithTwoClosuresFirst.php';
+
+        $applicationFileProcessor->processFiles([$filePath], new Configuration(isDryRun: true));
+
+        $this->assertTrue($changedFilesDetector->hasFileChanged($filePath));
+
+        $changedFilesDetector->clear();
+    }
+
     public function testOnlyRuleRunCachesUnderOwnScopeWithoutPoisoningFullRun(): void
     {
         $filePath = __DIR__ . '/Source/CleanFile.php';
