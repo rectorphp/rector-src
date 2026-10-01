@@ -134,7 +134,7 @@ final class RectorConfig extends Container
     public function parallel(
         int $processTimeout = 120,
         int $maxNumberOfProcess = Defaults::PARALLEL_MAX_NUMBER_OF_PROCESS,
-        int $jobSize = 16
+        int $jobSize = 48
     ): void {
         SimpleParameterProvider::setParameter(Option::PARALLEL, true);
         SimpleParameterProvider::setParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $processTimeout);

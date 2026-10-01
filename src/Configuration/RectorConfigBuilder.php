@@ -103,7 +103,7 @@ final class RectorConfigBuilder
 
     private int $parallelMaxNumberOfProcess = Defaults::PARALLEL_MAX_NUMBER_OF_PROCESS;
 
-    private int $parallelJobSize = 16;
+    private int $parallelJobSize = 48;
 
     private bool $importNames = false;
 
