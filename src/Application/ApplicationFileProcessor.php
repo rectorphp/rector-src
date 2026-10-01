@@ -192,7 +192,9 @@ final class ApplicationFileProcessor
 
         if ($fileProcessResult->getSystemErrors() !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());
-        } elseif (! $configuration->isDryRun() || ! $fileProcessResult->getFileDiff() instanceof FileDiff) {
+        } elseif (! $configuration->isDryRun() || ! $fileProcessResult->hasChanged()) {
+            // gate on the actual content change, not on FileDiff: a FileDiff also carries reported line changes
+            // that print identically, and such files would otherwise be re-processed on every dry run
             // selective runs are safe to cache now — the key is scoped to the rule selection
             $this->changedFilesDetector->cacheFile($file->getFilePath());
         }
