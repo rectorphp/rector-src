@@ -39,6 +39,34 @@ final class ShortNameResolverTest extends AbstractLazyTestCase
         $this->assertSame($expectedShortNames, $shortNames);
     }
 
+    public function testResolveFromFileAgainAfterStmtsChange(): void
+    {
+        $file = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/various_imports.php.inc');
+        $this->assertNotSame([], $this->shortNameResolver->resolveFromFile($file));
+
+        $file->changeNewStmts([]);
+
+        $this->assertSame([], $this->shortNameResolver->resolveFromFile($file));
+    }
+
+    public function testResolveFromFilePerFile(): void
+    {
+        $firstFile = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/various_imports.php.inc');
+        $secondFile = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/partial_names.php.inc');
+
+        $firstExpected = [
+            'VariousImports' => 'Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\Fixture\VariousImports',
+            'SomeFile' => 'Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\Source\SomeFile',
+        ];
+        $secondExpected = [
+            'PartialNames' => 'Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\Fixture\PartialNames',
+        ];
+
+        $this->assertSame($firstExpected, $this->shortNameResolver->resolveFromFile($firstFile));
+        $this->assertSame($secondExpected, $this->shortNameResolver->resolveFromFile($secondFile));
+        $this->assertSame($firstExpected, $this->shortNameResolver->resolveFromFile($firstFile));
+    }
+
     public function testResolveShortClassLikeNamesAgainAfterStmtsChange(): void
     {
         $file = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/various_imports.php.inc');

@@ -26,10 +26,14 @@ use Rector\ValueObject\Application\File;
  */
 final class ShortNameResolver
 {
+    private ?File $shortNamesFile = null;
+
+    private int $shortNamesVersion = 0;
+
     /**
-     * @var array<string, string[]>
+     * @var array<string, string>
      */
-    private array $shortNamesByFilePath = [];
+    private array $shortNamesToFullyQualifiedNames = [];
 
     private ?File $shortClassLikeNamesFile = null;
 
@@ -54,16 +58,16 @@ final class ShortNameResolver
      */
     public function resolveFromFile(File $file): array
     {
-        $filePath = $file->getFilePath();
-
-        if (isset($this->shortNamesByFilePath[$filePath])) {
-            return $this->shortNamesByFilePath[$filePath];
+        // asked for every imported name, while the short names only change with a new version of the file stmts
+        if ($file === $this->shortNamesFile && $file->getNewStmtsVersion() === $this->shortNamesVersion) {
+            return $this->shortNamesToFullyQualifiedNames;
         }
 
-        $shortNamesToFullyQualifiedNames = $this->resolveForStmts($file->getNewStmts());
-        $this->shortNamesByFilePath[$filePath] = $shortNamesToFullyQualifiedNames;
+        $this->shortNamesFile = $file;
+        $this->shortNamesVersion = $file->getNewStmtsVersion();
+        $this->shortNamesToFullyQualifiedNames = $this->resolveForStmts($file->getNewStmts());
 
-        return $shortNamesToFullyQualifiedNames;
+        return $this->shortNamesToFullyQualifiedNames;
     }
 
     /**
