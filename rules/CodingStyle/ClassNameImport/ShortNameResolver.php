@@ -31,6 +31,15 @@ final class ShortNameResolver
      */
     private array $shortNamesByFilePath = [];
 
+    private ?File $shortClassLikeNamesFile = null;
+
+    private int $shortClassLikeNamesVersion = 0;
+
+    /**
+     * @var string[]
+     */
+    private array $shortClassLikeNames = [];
+
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -62,6 +71,23 @@ final class ShortNameResolver
      * @return string[]
      */
     public function resolveShortClassLikeNames(File $file): array
+    {
+        // asked for every imported name, while the class-likes only change with a new version of the file stmts
+        if ($file === $this->shortClassLikeNamesFile && $file->getNewStmtsVersion() === $this->shortClassLikeNamesVersion) {
+            return $this->shortClassLikeNames;
+        }
+
+        $this->shortClassLikeNamesFile = $file;
+        $this->shortClassLikeNamesVersion = $file->getNewStmtsVersion();
+        $this->shortClassLikeNames = $this->findShortClassLikeNames($file);
+
+        return $this->shortClassLikeNames;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function findShortClassLikeNames(File $file): array
     {
         $rootNode = $file->getUseImportsRootNode();
 

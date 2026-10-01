@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver;
 
 use Iterator;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\NodeFinder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -34,6 +37,31 @@ final class ShortNameResolverTest extends AbstractLazyTestCase
         $shortNames = $this->shortNameResolver->resolveFromFile($file);
 
         $this->assertSame($expectedShortNames, $shortNames);
+    }
+
+    public function testResolveShortClassLikeNamesAgainAfterStmtsChange(): void
+    {
+        $file = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/various_imports.php.inc');
+        $this->assertSame(['VariousImports'], $this->shortNameResolver->resolveShortClassLikeNames($file));
+
+        $class = new NodeFinder()
+            ->findFirstInstanceOf($file->getNewStmts(), Class_::class);
+        $this->assertInstanceOf(Class_::class, $class);
+
+        $class->name = new Identifier('RenamedClass');
+        $file->changeNewStmts($file->getNewStmts());
+
+        $this->assertSame(['RenamedClass'], $this->shortNameResolver->resolveShortClassLikeNames($file));
+    }
+
+    public function testResolveShortClassLikeNamesPerFile(): void
+    {
+        $firstFile = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/various_imports.php.inc');
+        $secondFile = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/partial_names.php.inc');
+
+        $this->assertSame(['VariousImports'], $this->shortNameResolver->resolveShortClassLikeNames($firstFile));
+        $this->assertSame(['PartialNames'], $this->shortNameResolver->resolveShortClassLikeNames($secondFile));
+        $this->assertSame(['VariousImports'], $this->shortNameResolver->resolveShortClassLikeNames($firstFile));
     }
 
     /**

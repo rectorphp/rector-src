@@ -33,6 +33,8 @@ final class File
      */
     private array $newStmts = [];
 
+    private int $newStmtsVersion = 0;
+
     /**
      * @var array<int, Token>
      */
@@ -146,6 +148,15 @@ final class File
     public function changeNewStmts(array $newStmts): void
     {
         $this->newStmts = $newStmts;
+        ++$this->newStmtsVersion;
+    }
+
+    /**
+     * Increases with every change of the new stmts, so data derived from them can be cached per version
+     */
+    public function getNewStmtsVersion(): int
+    {
+        return $this->newStmtsVersion;
     }
 
     public function addRectorClassWithLine(RectorWithLineChange $rectorWithLineChange): void
