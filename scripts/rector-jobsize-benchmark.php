@@ -99,7 +99,7 @@ final class JobSizeBenchmark
             escapeshellarg($wrapperConfigPath)
         );
 
-        printf("jobSize %-6d running ... ", $jobSize);
+        printf('jobSize %-6d running ... ', $jobSize);
 
         $startedAt = hrtime(true);
         exec($command, $outputLines, $exitCode);
@@ -142,14 +142,15 @@ final class JobSizeBenchmark
                     $rectorConfig->cacheDirectory(%s);
                     $rectorConfig->containerCacheDirectory(%s);
                 };
-                PHP,
+                PHP
+            ,
             var_export($this->configPath, true),
             $this->timeoutSeconds,
             $this->detectCoreCount(),
             $jobSize,
             var_export($cacheDirectory, true),
             var_export($containerCacheDirectory, true)
-     );
+        );
     }
 
     /**
@@ -253,7 +254,7 @@ final class JobSizeBenchmark
         $workerDivider = $this->countProcesses ? ' --: |' : '';
 
         echo "\n| `jobSize` | wall | vs fastest |" . $workerColumn . " exit | analysed | of which changed |\n";
-        echo "| --: | --: | --: |" . $workerDivider . " --: | --: | --: |\n";
+        echo '| --: | --: | --: |' . $workerDivider . " --: | --: | --: |\n";
 
         foreach ($rows as $row) {
             printf(
