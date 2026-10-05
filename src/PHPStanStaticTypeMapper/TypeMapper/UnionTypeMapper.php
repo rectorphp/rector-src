@@ -282,7 +282,7 @@ final class UnionTypeMapper implements TypeMapperInterface
     private function resolveIntersectionPartNames(Node $node): array
     {
         if ($node instanceof Name) {
-            return [strtolower($node->toString())];
+            return [$node->toString()];
         }
 
         if (! $node instanceof PHPParserNodeIntersectionType) {
@@ -295,7 +295,7 @@ final class UnionTypeMapper implements TypeMapperInterface
                 return [];
             }
 
-            $names[] = strtolower($type->toString());
+            $names[] = $type->toString();
         }
 
         return $names;
