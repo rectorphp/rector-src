@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\String_;
 
+use Nette\Utils\Validators;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -27,6 +28,11 @@ final class SimplifyQuoteEscapeRector extends AbstractRector
      * @see https://regex101.com/r/lGUhRb/1
      */
     private const string HAS_NON_PRINTABLE_CHARS = '#[\x00-\x1F\x80-\xFF]#';
+
+    /**
+     * @see https://regex101.com/r/tY7eKW/1
+     */
+    private const string CONTROL_CHARS_REGEX = '#[\x00-\x1F]#';
 
     private bool $hasChanged = false;
 
@@ -77,7 +83,7 @@ CODE_SAMPLE
     {
         $this->hasChanged = false;
 
-        if (StringUtils::isMatch($node->value, self::HAS_NON_PRINTABLE_CHARS)) {
+        if ($this->hasNonPrintableChars($node->value)) {
             return null;
         }
 
@@ -125,6 +131,11 @@ CODE_SAMPLE
                 return;
             }
 
+            // contains escape sequence that will be printed as raw char, e.g. "\u{00A0}"
+            if ($this->hasEscapeSequence($string)) {
+                return;
+            }
+
             $string->setAttribute(AttributeKey::KIND, String_::KIND_SINGLE_QUOTED);
             // invoke override
             $string->setAttribute(AttributeKey::ORIGINAL_NODE, null);
@@ -136,5 +147,30 @@ CODE_SAMPLE
     private function isMatchEscapedChars(string $string): bool
     {
         return StringUtils::isMatch($string, self::ESCAPED_CHAR_REGEX);
+    }
+
+    private function hasEscapeSequence(String_ $string): bool
+    {
+        $rawValue = $string->getAttribute(AttributeKey::RAW_VALUE);
+        if (! is_string($rawValue)) {
+            return false;
+        }
+
+        // any escape sequence other than \" makes the written content differ from the value
+        return str_replace('\\"', '"', substr($rawValue, 1, -1)) !== $string->value;
+    }
+
+    private function hasNonPrintableChars(string $value): bool
+    {
+        if (! StringUtils::isMatch($value, self::HAS_NON_PRINTABLE_CHARS)) {
+            return false;
+        }
+
+        if (StringUtils::isMatch($value, self::CONTROL_CHARS_REGEX)) {
+            return true;
+        }
+
+        // bytes above ASCII are printable as part of valid UTF-8 text, e.g. "é"
+        return ! Validators::isUnicode($value);
     }
 }
