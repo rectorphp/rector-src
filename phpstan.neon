@@ -48,7 +48,6 @@ parameters:
 
     # see https://github.com/TomasVotruba/type-coverage
     type_coverage:
-        declare: 99
         return_type: 99
         param_type: 99
         property_type: 99

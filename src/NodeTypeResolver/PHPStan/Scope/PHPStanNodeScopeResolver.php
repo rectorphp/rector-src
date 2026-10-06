@@ -731,6 +731,9 @@ final readonly class PHPStanNodeScopeResolver
 
         $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $traitContext);
 
+        // the cloned scope keeps node callback scope cached from former context, reset it to use the trait context
+        $this->privatesAccessor->setPrivateProperty($traitScope, 'nodeCallbackScope', null);
+
         $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
         $this->nodeScopeResolverProcessNodes($trait->stmts, $traitScope, $nodeCallback);
         $this->decorateNodeAttrGroups($trait, $traitScope, $nodeCallback);
