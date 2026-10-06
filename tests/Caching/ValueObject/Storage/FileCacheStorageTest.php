@@ -77,9 +77,4 @@ final class FileCacheStorageTest extends AbstractLazyTestCase
 
         $this->fileCacheStorage->clean('aaK1STfY');
     }
-
-    public function provideConfigFilePath(): string
-    {
-        return __DIR__ . '/config.php';
-    }
 }

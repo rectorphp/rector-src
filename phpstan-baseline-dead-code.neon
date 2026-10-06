@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		# unused public methods
+		-
+			message: '#^Unused Rector\\Php80\\Contract\\StrStartWithMatchAndRefactorInterface\:\:(.*?)#'
+			identifier: shipmonk.deadMethod
+			path: rules/Php80/Contract/StrStartWithMatchAndRefactorInterface.php
+
+		-
+			message: '#^Unused Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface\:\:decorate$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/BetterPhpDocParser/Contract/PhpDocParser/PhpDocNodeDecoratorInterface.php
+
+		-
+			message: '#^Unused Rector\\Parallel\\Contract\\SerializableInterface\:\:decode$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Parallel/Contract/SerializableInterface.php
+
+        # called magically by parent
+		-
+			message: '#^Unused Rector\\PhpParser\\Printer\\BetterStandardPrinter\:\:(pInterpolatedStringPart|pStmt_FileNode)$#'
+			identifier: shipmonk.deadMethod
+			path: src/PhpParser/Printer/BetterStandardPrinter.php
+
+        # deprecated, to be removed
+		-
+			message: '#^Unused Rector\\Set\\Contract\\SetInterface\:\:(.*?)$#'
+			identifier: shipmonk.deadMethod
+			path: src/Set/Contract/SetInterface.php

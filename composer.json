@@ -50,13 +50,13 @@
         "phpunit/phpunit": "^13.3",
         "rector/swiss-knife": "^2.7",
         "shipmonk/composer-dependency-analyser": "^1.8",
+        "shipmonk/dead-code-detector": "^1.4",
         "symfony/process": "^8.1",
         "symplify/easy-coding-standard": "^13.2.13",
         "symplify/phpstan-rules": "^14.18",
         "tomasvotruba/class-leak": "^2.1",
         "tomasvotruba/fast-unit": "^0.1",
         "tomasvotruba/type-coverage": "^2.3.6",
-        "tomasvotruba/unused-public": "^2.2",
         "tracy/tracy": "^2.12"
     },
     "replace": {
