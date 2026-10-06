@@ -121,11 +121,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // empty data? nothing to remove
-        if ($removeStmtKeys === []) {
-            return null;
-        }
-
         foreach ($removeStmtKeys as $removeStmtKey) {
             unset($node->stmts[$removeStmtKey]);
         }
