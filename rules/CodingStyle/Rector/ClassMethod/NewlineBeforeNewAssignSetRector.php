@@ -145,8 +145,10 @@ CODE_SAMPLE
                         $nodeVar = $nodeVar->var;
                     } while ($nodeVar instanceof PropertyFetch);
 
+                    // $this->property, namespace it to avoid collision with a local variable of the same name
                     if ($this->getName($nodeVar) === 'this') {
-                        $nodeVar = $previous;
+                        $propertyName = $this->getName($previous);
+                        return $propertyName === null ? null : 'this->' . $propertyName;
                     }
                 }
 
