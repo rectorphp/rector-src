@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Rector;
 
-use Deprecated;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
@@ -17,7 +16,6 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -40,7 +38,7 @@ use Rector\Skipper\Skipper\Skipper;
 use Rector\Skipper\ValueObject\SkipMatch;
 use Rector\ValueObject\Application\File;
 
-abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
+abstract class AbstractRector implements RectorInterface
 {
     private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
 Array of nodes cannot be empty. Ensure "%s->refactor()" returns non-empty array for Nodes.
@@ -101,26 +99,6 @@ CODE_SAMPLE;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->commentsMerger = $commentsMerger;
-    }
-
-    /**
-     * @return Node[]|null
-     *
-     * @internal
-     */
-    final public function beforeTraverse(array $nodes): ?array
-    {
-        return null;
-    }
-
-    /**
-     * @return Node[]|null
-     *
-     * @internal
-     */
-    final public function afterTraverse(array $nodes)
-    {
-        return null;
     }
 
     /**
@@ -188,12 +166,6 @@ CODE_SAMPLE;
         }
 
         return $this->postRefactorProcess($originalNode, $node, $refactoredNodeOrState, $filePath);
-    }
-
-    #[Deprecated(message: 'no longer used')]
-    final public function leaveNode(Node $node): array|int|Node|null
-    {
-        return null;
     }
 
     protected function getFile(): File

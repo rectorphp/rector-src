@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\NodeVisitor;
 use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;
 
-interface RectorInterface extends NodeVisitor, DocumentedRuleInterface
+interface RectorInterface extends DocumentedRuleInterface
 {
     /**
      * List of nodes this class checks, classes that implements \PhpParser\Node
@@ -17,6 +17,11 @@ interface RectorInterface extends NodeVisitor, DocumentedRuleInterface
      * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array;
+
+    /**
+     * @return int|Node|Node[]|null
+     */
+    public function enterNode(Node $node): int|Node|array|null;
 
     /**
      * Process Node of matched type
