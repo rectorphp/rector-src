@@ -7,23 +7,12 @@ namespace Rector\Naming\ValueObject;
 final readonly class ExpectedName
 {
     public function __construct(
-        private string $name,
-        private string $singularized
+        private string $name
     ) {
     }
 
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getSingularized(): string
-    {
-        return $this->singularized;
-    }
-
-    public function isSingular(): bool
-    {
-        return $this->name === $this->singularized;
     }
 }

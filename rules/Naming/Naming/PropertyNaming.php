@@ -14,7 +14,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\Enum\ClassName;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\Naming\RectorNamingInflector;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
@@ -49,11 +48,6 @@ final readonly class PropertyNaming
      */
     private const string GET_PREFIX_REGEX = '#^get(?<root_name>[A-Z].+)#';
 
-    public function __construct(
-        private RectorNamingInflector $rectorNamingInflector,
-    ) {
-    }
-
     public function getExpectedNameFromMethodName(string $methodName): ?ExpectedName
     {
         $matches = Strings::match($methodName, self::GET_PREFIX_REGEX);
@@ -63,7 +57,7 @@ final readonly class PropertyNaming
 
         $originalName = lcfirst((string) $matches['root_name']);
 
-        return new ExpectedName($originalName, $this->rectorNamingInflector->singularize($originalName));
+        return new ExpectedName($originalName);
     }
 
     public function getExpectedNameFromType(Type $type): ?ExpectedName
@@ -99,7 +93,7 @@ final readonly class PropertyNaming
         // special cases to keep context
         foreach (self::CONTEXT_AWARE_NAMES_BY_TYPE as $specialType => $contextAwareName) {
             if ($className === $specialType) {
-                return new ExpectedName($contextAwareName, $contextAwareName);
+                return new ExpectedName($contextAwareName);
             }
         }
 
@@ -109,7 +103,7 @@ final readonly class PropertyNaming
         // prolong too short generic names with one namespace up
         $originalName = $this->prolongIfTooShort($shortClassName, $className);
 
-        return new ExpectedName($originalName, $this->rectorNamingInflector->singularize($originalName));
+        return new ExpectedName($originalName);
     }
 
     public function fqnToVariableName(ThisType|ObjectType|Name|string $objectType): string
