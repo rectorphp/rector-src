@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Naming\ValueObjectFactory;
 
 use PhpParser\Node\Expr\Error;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -18,7 +18,7 @@ final readonly class ParamRenameFactory
     }
 
     public function createFromResolvedExpectedName(
-        FunctionLike $functionLike,
+        ClassMethod $functionLike,
         Param $param,
         string $expectedName
     ): ?ParamRename {

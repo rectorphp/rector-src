@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use Rector\Naming\ExpectedNameResolver\MatchParamTypeExpectedNameResolver;
 use Rector\Naming\PhpArray\ArrayFilter;
 use Rector\NodeManipulator\FunctionLikeManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -25,33 +24,13 @@ final class ConflictingNameResolver
         private readonly ArrayFilter $arrayFilter,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ExpectedNameResolver $expectedNameResolver,
-        private readonly MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver,
         private readonly FunctionLikeManipulator $functionLikeManipulator
     ) {
     }
 
-    /**
-     * @return string[]
-     */
-    public function resolveConflictingVariableNamesForParam(
-        ClassMethod|Function_|Closure|ArrowFunction $classMethod
-    ): array {
-        $expectedNames = [];
-        foreach ($classMethod->params as $param) {
-            $expectedName = $this->matchParamTypeExpectedNameResolver->resolve($param);
-            if ($expectedName === null) {
-                continue;
-            }
-
-            $expectedNames[] = $expectedName;
-        }
-
-        return $this->arrayFilter->filterWithAtLeastTwoOccurrences($expectedNames);
-    }
-
     public function hasNameIsInFunctionLike(
         string $variableName,
-        ClassMethod|Function_|Closure|ArrowFunction $functionLike
+        ClassMethod $functionLike
     ): bool {
         $conflictingVariableNames = $this->resolveConflictingVariableNamesForNew($functionLike);
         return in_array($variableName, $conflictingVariableNames, true);
