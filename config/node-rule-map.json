@@ -9,6 +9,7 @@
     "PhpParser\\Node\\Attribute": [
         "Rector\\CodeQuality\\Rector\\Attribute\\ExplicitAttributeNamedArgsRector",
         "Rector\\CodeQuality\\Rector\\Attribute\\SortAttributeNamedArgsRector",
+        "Rector\\Doctrine\\Orm37\\Rector\\Attribute\\DoctrineOrderByAttributeSortDirectionRector",
         "Rector\\Symfony\\Symfony61\\Rector\\Attribute\\RouteRequirementStringToConstantRector"
     ],
     "PhpParser\\Node\\AttributeGroup": [
@@ -537,6 +538,7 @@
         "Rector\\Doctrine\\Orm28\\Rector\\MethodCall\\IterateToToIterableRector",
         "Rector\\Doctrine\\Orm30\\Rector\\MethodCall\\CastDoctrineExprToStringRector",
         "Rector\\Doctrine\\Orm30\\Rector\\MethodCall\\SetParametersArrayToCollectionRector",
+        "Rector\\Doctrine\\Orm37\\Rector\\MethodCall\\DoctrineQueryBuilderSortDirectionRector",
         "Rector\\Doctrine\\TypedCollections\\Rector\\MethodCall\\AssertNullOnCollectionToAssertEmptyRector",
         "Rector\\Doctrine\\TypedCollections\\Rector\\MethodCall\\AssertSameCountOnCollectionToAssertCountRector",
         "Rector\\Doctrine\\TypedCollections\\Rector\\MethodCall\\SetArrayToNewCollectionRector",
@@ -567,6 +569,7 @@
         "Rector\\PHPUnit\\CodeQuality\\Rector\\MethodCall\\StringCastAssertStringContainsStringRector",
         "Rector\\PHPUnit\\CodeQuality\\Rector\\MethodCall\\UseSpecificWillMethodRector",
         "Rector\\PHPUnit\\CodeQuality\\Rector\\MethodCall\\UseSpecificWithMethodRector",
+        "Rector\\PHPUnit\\CodeQuality\\Rector\\MethodCall\\WillReturnCallbackFallbackToReturnFalseRector",
         "Rector\\PHPUnit\\CodeQuality\\Rector\\MethodCall\\WithCallbackIdenticalToStandaloneAssertsRector",
         "Rector\\PHPUnit\\PHPUnit100\\Rector\\MethodCall\\PropertyExistsWithoutAssertRector",
         "Rector\\PHPUnit\\PHPUnit100\\Rector\\MethodCall\\RemoveSetMethodsMethodCallRector",
@@ -633,6 +636,7 @@
         "Rector\\DeadCode\\Rector\\MethodCall\\RemoveNullArgOnNullDefaultParamRector",
         "Rector\\DeadCode\\Rector\\MethodCall\\RemoveNullNamedArgOnNullDefaultParamRector",
         "Rector\\Doctrine\\Dbal42\\Rector\\New_\\AddArrayResultColumnNamesRector",
+        "Rector\\Doctrine\\Orm37\\Rector\\MethodCall\\DoctrineQueryBuilderSortDirectionRector",
         "Rector\\Doctrine\\TypedCollections\\Rector\\MethodCall\\SetArrayToNewCollectionRector",
         "Rector\\Doctrine\\TypedCollections\\Rector\\New_\\RemoveNewArrayCollectionWrapRector",
         "Rector\\PHPUnit\\CodeQuality\\Rector\\CallLike\\DirectInstanceOverMockArgRector",
@@ -1203,7 +1207,6 @@
         "Rector\\PHPUnit\\PHPUnit100\\Rector\\Class_\\AddProphecyTraitRector",
         "Rector\\PHPUnit\\PHPUnit100\\Rector\\Class_\\ParentTestClassConstructorRector",
         "Rector\\PHPUnit\\PHPUnit100\\Rector\\Class_\\PublicDataProviderClassMethodRector",
-        "Rector\\PHPUnit\\PHPUnit100\\Rector\\Class_\\RemoveNamedArgsInDataProviderRector",
         "Rector\\PHPUnit\\PHPUnit100\\Rector\\Class_\\StaticDataProviderClassMethodRector",
         "Rector\\PHPUnit\\PHPUnit110\\Rector\\Class_\\NamedArgumentForDataProviderRector",
         "Rector\\PHPUnit\\PHPUnit120\\Rector\\Class_\\AllowMockObjectsForDataProviderRector",
@@ -1531,7 +1534,6 @@
         "Rector\\Doctrine\\TypedCollections\\Rector\\Expression\\RemoveAssertNotNullOnCollectionRector",
         "Rector\\Doctrine\\TypedCollections\\Rector\\Expression\\RemoveCoalesceAssignOnCollectionRector",
         "Rector\\PHPUnit\\CodeQuality\\Rector\\Expression\\AssertArrayCastedObjectToAssertSameRector",
-        "Rector\\PHPUnit\\CodeQuality\\Rector\\Expression\\ConfiguredMockEntityToSetterObjectRector",
         "Rector\\PHPUnit\\PHPUnit100\\Rector\\StmtsAwareInterface\\WithConsecutiveRector",
         "Rector\\Php72\\Rector\\Assign\\ListEachRector",
         "Rector\\Php72\\Rector\\Assign\\ReplaceEachAssignmentWithKeyCurrentRector",
@@ -1944,9 +1946,7 @@
         "Rector\\TypeDeclarationDocblocks\\Rector\\Property\\MergePhpstanDocTagIntoNativeRector",
         "Rector\\TypeDeclaration\\Rector\\Property\\AddPropertyTypeDeclarationRector"
     ],
-    "PhpParser\\Node\\Stmt\\Return_": [
-        "Rector\\PHPUnit\\CodeQuality\\Rector\\Expression\\ConfiguredMockEntityToSetterObjectRector"
-    ],
+    "PhpParser\\Node\\Stmt\\Return_": [],
     "PhpParser\\Node\\Stmt\\Static_": [],
     "PhpParser\\Node\\Stmt\\Switch_": [
         "Rector\\CodeQuality\\Rector\\Switch_\\SingularSwitchToIfRector",

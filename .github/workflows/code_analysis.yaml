@@ -30,9 +30,7 @@ jobs:
 
                     -
                         name: 'Node Rule Map Up To Date'
-                        run: |
-                            composer build-node-rule-map
-                            git diff --exit-code config/node-rule-map.json
+                        run: php scripts/validate-node-rule-map.php
 
                     -
                         name: 'PHPStan'

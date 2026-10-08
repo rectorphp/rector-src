@@ -178,7 +178,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
      */
     private function isVisitorForNodeClass(RectorInterface $rector, string $nodeClass): bool
     {
-        return array_any($rector->getNodeTypes(), fn(string $nodeType): bool => is_a($nodeClass, $nodeType, true));
+        return array_any($rector->getNodeTypes(), fn (string $nodeType): bool => is_a($nodeClass, $nodeType, true));
     }
 
     private function traverseNode(Node $node): void
