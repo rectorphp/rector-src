@@ -109,6 +109,7 @@
         "rector": "bin/rector process --ansi",
         "duplicated-code": "vendor/bin/swiss-knife duplicated-code src rules --min-tokens 150 --min-lines 5",
         "preload": "php build/build-preload.php .",
+        "build-node-rule-map": "php build/build-node-rule-map.php",
         "release": "vendor/bin/rng --from-commit X --to-commit Y --remote-repository rectorphp/rector-symfony --remote-repository rectorphp/rector-doctrine --remote-repository rectorphp/rector-phpunit"
     },
     "config": {

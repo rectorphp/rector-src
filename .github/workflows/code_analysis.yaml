@@ -29,6 +29,12 @@ jobs:
                         run: php preload.php
 
                     -
+                        name: 'Node Rule Map Up To Date'
+                        run: |
+                            composer build-node-rule-map
+                            git diff --exit-code config/node-rule-map.json
+
+                    -
                         name: 'PHPStan'
                         run: vendor/bin/phpstan analyse --ansi
 
