@@ -70,6 +70,12 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     private array $unknownVisitors = [];
 
     /**
+     * Shared across instances, the static map file is immutable.
+     * @var array<class-string<Node>, array<class-string<RectorInterface>>>|null
+     */
+    private static ?array $cachedNodeRuleMap = null;
+
+    /**
      * @param RectorInterface[] $rectors
      */
     public function __construct(
@@ -363,17 +369,21 @@ final class RectorNodeTraverser implements NodeTraverserInterface
      */
     private function loadNodeRuleMap(): array
     {
+        if (self::$cachedNodeRuleMap !== null) {
+            return self::$cachedNodeRuleMap;
+        }
+
         $nodeRuleMapFilePath = __DIR__ . '/../../../config/node-rule-map.json';
         if (! file_exists($nodeRuleMapFilePath)) {
-            return [];
+            return self::$cachedNodeRuleMap = [];
         }
 
         $nodeRuleMap = Json::decode(FileSystem::read($nodeRuleMapFilePath), true);
         if (! is_array($nodeRuleMap)) {
-            return [];
+            return self::$cachedNodeRuleMap = [];
         }
 
         /** @var array<class-string<Node>, array<class-string<RectorInterface>>> $nodeRuleMap */
-        return $nodeRuleMap;
+        return self::$cachedNodeRuleMap = $nodeRuleMap;
     }
 }
