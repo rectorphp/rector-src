@@ -82,8 +82,8 @@ return [
 
             // remove DocumentedRuleInterface implements
             $content = str_replace(
-                'interface RectorInterface extends NodeVisitor, DocumentedRuleInterface',
-                'interface RectorInterface extends NodeVisitor',
+                'interface RectorInterface extends DocumentedRuleInterface',
+                'interface RectorInterface',
                 $content
             );
 
