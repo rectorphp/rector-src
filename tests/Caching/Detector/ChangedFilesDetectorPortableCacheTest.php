@@ -229,6 +229,25 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
         );
     }
 
+    public function testConfiguredPathsWithEitherSeparatorHashAlike(): void
+    {
+        // on Windows, getcwd() reports backslashes while a path built with "/" in the config keeps
+        // them; both name the same project, so the prefix must be stripped either way
+        chdir($this->firstCheckoutDirectory);
+        SimpleParameterProvider::setParameter(Option::PATHS, [$this->firstCheckoutDirectory . '/src']);
+        $slashSeparatedHash = SimpleParameterProvider::hashForCacheInvalidation();
+
+        SimpleParameterProvider::setParameter(Option::PATHS, [
+            str_replace('/', '\\', $this->firstCheckoutDirectory) . '\\src',
+        ]);
+
+        $this->assertSame(
+            $slashSeparatedHash,
+            SimpleParameterProvider::hashForCacheInvalidation(),
+            'the same configured path hashed differently once spelled with backslashes'
+        );
+    }
+
     private function createCheckout(string $directory): void
     {
         // identical contents in both checkouts, as two checkouts of one commit are
