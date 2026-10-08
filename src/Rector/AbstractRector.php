@@ -77,6 +77,15 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
+    // file-level cache, recomputed once per file (see enterNode())
+    private ?File $cachedFile = null;
+
+    private string $cachedFilePath = '';
+
+    private bool $cachedHtmlAverseSkip = false;
+
+    private ?SkipMatch $cachedSkipMatch = null;
+
     public function autowire(
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
@@ -106,14 +115,22 @@ CODE_SAMPLE;
      */
     final public function enterNode(Node $node): int|Node|null|array
     {
-        // keep $this->file populated for BC; refactor() is only ever reached through here
-        $this->file = $this->getFile();
+        $file = $this->getFile();
 
-        if (is_a($this, HTMLAverseRectorInterface::class, true) && $this->file->containsHTML()) {
-            return null;
+        // file-level invariants are constant across all nodes of a file; compute once per file
+        if ($this->cachedFile !== $file) {
+            $this->cachedFile = $file;
+            // keep $this->file populated for BC; refactor() is only ever reached through here
+            $this->file = $file;
+            $this->cachedFilePath = $file->getFilePath();
+            $this->cachedHtmlAverseSkip = is_a($this, HTMLAverseRectorInterface::class, true)
+                && $file->containsHTML();
+            $this->cachedSkipMatch = $this->skipper->matchSkip($this, $this->cachedFilePath);
         }
 
-        $filePath = $this->file->getFilePath();
+        if ($this->cachedHtmlAverseSkip) {
+            return null;
+        }
 
         // node already changed by this rule in a previous pass → hard skip
         if ($this->skipper->shouldSkipCurrentNode(static::class, $node)) {
@@ -123,10 +140,9 @@ CODE_SAMPLE;
         // class/path skip is configured for this rule and file: run the rule on a deep clone to learn
         // whether it would actually have changed anything. Only a skip that prevents a real change
         // counts as used; the original node is left untouched, so the file stays skipped either way.
-        $skipMatch = $this->skipper->matchSkip($this, $filePath);
-        if ($skipMatch instanceof SkipMatch) {
+        if ($this->cachedSkipMatch instanceof SkipMatch) {
             if ($this->refactor($this->cloneNode($node)) !== null) {
-                $this->skipper->markSkipUsed($skipMatch);
+                $this->skipper->markSkipUsed($this->cachedSkipMatch);
             }
 
             return null;
@@ -165,7 +181,7 @@ CODE_SAMPLE;
             return $refactoredNodeOrState;
         }
 
-        return $this->postRefactorProcess($originalNode, $node, $refactoredNodeOrState, $filePath);
+        return $this->postRefactorProcess($originalNode, $node, $refactoredNodeOrState, $this->cachedFilePath);
     }
 
     protected function getFile(): File
