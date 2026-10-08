@@ -205,7 +205,7 @@ CODE_SAMPLE
         Identifier|Name|NullableType|ComplexType $returnedStrictTypeNode,
         ClassMethod|Function_|Closure $functionLike
     ): Closure|ClassMethod|Function_ {
-        $resolvedType = $this->nodeTypeResolver->getType($return);
+        $resolvedType = $this->getType($return);
 
         if ($resolvedType instanceof UnionType) {
             if (! $returnedStrictTypeNode instanceof NullableType) {

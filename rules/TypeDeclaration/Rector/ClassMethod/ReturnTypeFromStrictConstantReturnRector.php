@@ -130,7 +130,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $classConstFetchTypes[] = $this->nodeTypeResolver->getType($return->expr);
+            $classConstFetchTypes[] = $this->getType($return->expr);
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($classConstFetchTypes);

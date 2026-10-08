@@ -162,7 +162,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $type = $this->nodeTypeResolver->getType($subNode->expr);
+            $type = $this->getType($subNode->expr);
             if ($type->isString()->yes()) {
                 return null;
             }

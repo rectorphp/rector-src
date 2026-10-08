@@ -78,7 +78,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $callerType = $this->nodeTypeResolver->getType($node->class);
+        $callerType = $this->getType($node->class);
         if (! $callerType->isSuperTypeOf(new ObjectType('ReflectionFunction'))->yes()) {
             return null;
         }
