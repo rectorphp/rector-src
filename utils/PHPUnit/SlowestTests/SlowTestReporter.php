@@ -6,16 +6,12 @@ namespace Rector\Utils\PHPUnit\SlowestTests;
 
 final class SlowTestReporter
 {
-    /**
-     * @var int
-     */
-    private const LIMIT = 25;
+    private const int LIMIT = 25;
 
     /**
      * Only report tests slower than this, to keep the list signal-heavy.
-     * @var float
      */
-    private const THRESHOLD_SECONDS = 0.5;
+    private const float THRESHOLD_SECONDS = 0.5;
 
     /**
      * Seconds since run start, captured when a test is prepared, keyed by test id.
