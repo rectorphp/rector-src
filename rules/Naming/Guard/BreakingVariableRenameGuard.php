@@ -48,7 +48,7 @@ final readonly class BreakingVariableRenameGuard
     public function shouldSkipVariable(
         string $currentName,
         string $expectedName,
-        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
+        ClassMethod $classMethod,
         Variable $variable
     ): bool {
         // is the suffix? → also accepted
@@ -57,14 +57,11 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->conflictingNameResolver->hasNameIsInFunctionLike($expectedName, $functionLike)) {
+        if ($this->conflictingNameResolver->hasNameIsInFunctionLike($expectedName, $classMethod)) {
             return true;
         }
 
-        if (! $functionLike instanceof ArrowFunction && $this->overriddenExistingNamesResolver->hasNameInClassMethodForNew(
-            $currentName,
-            $functionLike
-        )) {
+        if ($this->overriddenExistingNamesResolver->hasNameInClassMethodForNew($currentName, $classMethod)) {
             return true;
         }
 
@@ -72,11 +69,7 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->hasConflictVariable($functionLike, $expectedName)) {
-            return true;
-        }
-
-        return $functionLike instanceof Closure && $this->isUsedInClosureUsesName($expectedName, $functionLike);
+        return $this->hasConflictVariable($classMethod, $expectedName);
     }
 
     public function shouldSkipParam(
@@ -167,17 +160,6 @@ final readonly class BreakingVariableRenameGuard
             Variable::class,
             $newName
         );
-    }
-
-    private function isUsedInClosureUsesName(
-        string $expectedName,
-        ClassMethod|Function_|Closure $functionLike
-    ): bool {
-        if (! $functionLike instanceof Closure) {
-            return false;
-        }
-
-        return $this->betterNodeFinder->hasVariableOfName($functionLike->uses, $expectedName);
     }
 
     private function isRamseyUuidInterface(Param $param): bool
