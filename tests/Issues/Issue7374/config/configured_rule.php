@@ -7,4 +7,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector;
 use Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector;
 
 return RectorConfig::configure()
-    ->withRules([RemoveUnusedPrivateMethodParameterRector::class, RenameVariableToMatchNewTypeRector::class]);
+    ->withRules([
+        RemoveUnusedPrivateMethodParameterRector::class,
+        RenameVariableToMatchNewTypeRector::class,
+    ]);

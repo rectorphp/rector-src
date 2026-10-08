@@ -98,6 +98,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->getAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE) === true) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
 
         $arrayCallable = $this->arrayCallableMethodMatcher->match($node, $scope);

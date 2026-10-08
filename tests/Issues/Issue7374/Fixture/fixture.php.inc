@@ -2,6 +2,8 @@
 
 namespace Rector\Tests\Issues\Issue7374\Fixture;
 
+use Rector\Tests\Issues\Issue7374\Source\BusibooksBusinesses;
+
 final class ClassWithTwoMethods
 {
     private function displayTree($name, $data, $other = null)
@@ -19,10 +21,14 @@ final class ClassWithTwoMethods
         ));
     }
 }
+
+?>
 -----
 <?php
 
 namespace Rector\Tests\Issues\Issue7374\Fixture;
+
+use Rector\Tests\Issues\Issue7374\Source\BusibooksBusinesses;
 
 final class ClassWithTwoMethods
 {
@@ -38,3 +44,5 @@ final class ClassWithTwoMethods
         $this->displayTree($equity);
     }
 }
+
+?>
