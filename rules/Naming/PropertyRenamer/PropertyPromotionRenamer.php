@@ -57,10 +57,11 @@ final readonly class PropertyPromotionRenamer
             return false;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
+        // only needed for the trait usage check below; resolving it requires scope,
+        // which is missing right after another rule rewrote the class
+        $classReflection = $class->getTraitUses() === []
+            ? null
+            : $this->reflectionResolver->resolveClassReflection($class);
 
         // resolve possible and existing param names
         $blockingParamNames = $this->resolveBlockingParamNames($constructClassMethod);
@@ -94,7 +95,10 @@ final readonly class PropertyPromotionRenamer
                 continue;
             }
 
-            if ($this->propertyManipulator->isUsedByTrait($classReflection, $currentParamName)) {
+            if ($classReflection instanceof ClassReflection && $this->propertyManipulator->isUsedByTrait(
+                $classReflection,
+                $currentParamName
+            )) {
                 continue;
             }
 
