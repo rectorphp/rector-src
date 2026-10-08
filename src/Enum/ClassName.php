@@ -10,8 +10,6 @@ final class ClassName
 
     public const string MOCK_OBJECT = 'PHPUnit\Framework\MockObject\MockObject';
 
-    public const string DATE_TIME_INTERFACE = 'DateTimeInterface';
-
     public const string JMS_TYPE = 'JMS\Serializer\Annotation\Type';
 
     public const string DOCTRINE_ENTITY = 'Doctrine\ORM\Mapping\Entity';

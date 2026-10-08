@@ -84,7 +84,6 @@ final readonly class VariableRenamer
                     return null;
                 }
 
-                // TODO: Should be implemented in BreakingVariableRenameGuard::shouldSkipParam()
                 if ($this->isParamInParentFunction($node, $currentFunctionLike)) {
                     return null;
                 }
