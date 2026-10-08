@@ -207,8 +207,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
-
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
@@ -466,8 +464,8 @@ final readonly class PHPStanNodeScopeResolver
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
         } catch (ParserErrorsException|ParserException|ShouldNotHappenException|UndefinedVariableException) {
-            // nothing we can do more precise here as error parsing from deep internal PHPStan service with service injection we cannot reset
-            // in the middle of process
+            // nothing we can do more precise here as error parsing from deep internal PHPStan
+            // service with service injection we cannot reset in the middle of process
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $mutatingScope);
         }
@@ -736,6 +734,5 @@ final readonly class PHPStanNodeScopeResolver
 
         $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
         $this->nodeScopeResolverProcessNodes($trait->stmts, $traitScope, $nodeCallback);
-        $this->decorateNodeAttrGroups($trait, $traitScope, $nodeCallback);
     }
 }
