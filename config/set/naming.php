@@ -3,10 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        RenameVariableToMatchNewTypeRector::class,
-    ]);
+    $rectorConfig->rules([]);
 };
