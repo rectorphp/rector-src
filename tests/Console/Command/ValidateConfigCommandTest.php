@@ -50,7 +50,7 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
 
         $validateConfigCommand = new ValidateConfigCommand(
             $symfonyStyle,
-            new DeprecatedRulesReporter($symfonyStyle, []),
+            new DeprecatedRulesReporter($symfonyStyle),
             new MissConfigurationReporter(
                 $symfonyStyle,
                 new VendorMissAnalyseGuard(),

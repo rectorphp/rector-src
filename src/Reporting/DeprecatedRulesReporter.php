@@ -7,19 +7,12 @@ namespace Rector\Reporting;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Contract\Rector\RectorInterface;
-use Rector\PhpParser\Node\FileNode;
-use ReflectionMethod;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class DeprecatedRulesReporter
 {
-    /**
-     * @param RectorInterface[] $rectors
-     */
     public function __construct(
-        private SymfonyStyle $symfonyStyle,
-        private array $rectors
+        private SymfonyStyle $symfonyStyle
     ) {
     }
 
@@ -133,29 +126,6 @@ final readonly class DeprecatedRulesReporter
                 $deprecatedComposerBasedArg
             ));
             ++$reportedCount;
-        }
-
-        return $reportedCount;
-    }
-
-    public function reportDeprecatedRectorUnsupportedMethods(): int
-    {
-        // to be added in related PR
-        if (! class_exists(FileNode::class)) {
-            return 0;
-        }
-
-        $reportedCount = 0;
-        foreach ($this->rectors as $rector) {
-            $beforeTraverseMethodReflection = new ReflectionMethod($rector, 'beforeTraverse');
-            if ($beforeTraverseMethodReflection->getDeclaringClass()->getName() === $rector::class) {
-                $this->symfonyStyle->warning(sprintf(
-                    'Rector rule "%s" uses deprecated "beforeTraverse" method. It should not be used, as will be marked as final. Not part of RectorInterface contract. Use "%s" to hook into file-level changes instead.',
-                    $rector::class,
-                    FileNode::class
-                ));
-                ++$reportedCount;
-            }
         }
 
         return $reportedCount;
