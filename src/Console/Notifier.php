@@ -40,6 +40,15 @@ final class Notifier
         $symfonyStyle->warning($message);
     }
 
+    public static function notifyDeprecatedNamingSet(): void
+    {
+        $message = 'The "naming" prepared set is deprecated, as it often causes conflicting variable and param names and removes context. '
+            . 'Renaming to match types belongs to a coding standard tool rather than Rector.';
+
+        $symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+        $symfonyStyle->warning($message);
+    }
+
     public static function errorWithPhpSetsNotSuitableForPHP74AndLower(): void
     {
         if (PHP_VERSION_ID >= 80000) {

@@ -641,6 +641,7 @@ final class RectorConfigBuilder
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
     /**
+     * @param bool $naming @deprecated The naming set often causes conflicting variable and param names; use a coding standard tool instead
      * @param bool $instanceOf @deprecated Use $codeQuality instead, as most instanceof rules were moved there
      * @param bool $if @deprecated Use $codeQuality and $codingStyle instead, as the if rules were moved there or deprecated
      * @param bool $earlyReturn @deprecated Use $codeQuality instead, as all early return rules were moved there
@@ -667,6 +668,10 @@ final class RectorConfigBuilder
         bool $symfonyConfigs = false,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
+
+        if ($naming) {
+            Notifier::notifyDeprecatedNamingSet();
+        }
 
         $setMap = [
             SetList::DEAD_CODE => $deadCode,
