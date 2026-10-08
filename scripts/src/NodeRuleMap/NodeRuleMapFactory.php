@@ -10,10 +10,10 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\Scripts\Finder\RectorClassFinder;
 use ReflectionClass;
 
-final class NodeRuleMapFactory
+final readonly class NodeRuleMapFactory
 {
     public function __construct(
-        private readonly RectorClassFinder $rectorClassFinder
+        private RectorClassFinder $rectorClassFinder
     ) {
     }
 
@@ -54,7 +54,7 @@ final class NodeRuleMapFactory
      */
     private function resolveNodeTypesByRectorClass(array $ruleDirectories): array
     {
-        $ruleDirectories = array_filter($ruleDirectories, 'is_dir');
+        $ruleDirectories = array_filter($ruleDirectories, is_dir(...));
         $rectorClasses = $this->rectorClassFinder->find($ruleDirectories);
 
         $nodeTypesByRectorClass = [];
@@ -90,7 +90,7 @@ final class NodeRuleMapFactory
                 continue;
             }
 
-            if (! (new ReflectionClass($class))->isInstantiable()) {
+            if (! new ReflectionClass($class)->isInstantiable()) {
                 continue;
             }
 
