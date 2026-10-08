@@ -33,7 +33,7 @@ final readonly class BreakingVariableRenameGuard
     /**
      * @see https://regex101.com/r/1pKLgf/1
      */
-    public const string AT_NAMING_REGEX = '#[\w+]At$#';
+    private const string AT_NAMING_REGEX = '#[\w+]At$#';
 
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
