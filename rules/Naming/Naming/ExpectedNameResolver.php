@@ -6,26 +6,20 @@ namespace Rector\Naming\Naming;
 
 use DateTimeInterface;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\UnionType;
-use PHPStan\Type\ObjectType;
 use Rector\Naming\ExpectedNameResolver\MatchParamTypeExpectedNameResolver;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final readonly class ExpectedNameResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private NodeTypeResolver $nodeTypeResolver,
         private PropertyNaming $propertyNaming,
         private MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver
     ) {
@@ -93,53 +87,5 @@ final readonly class ExpectedNameResolver
         }
 
         return $expectedName->getName();
-    }
-
-    public function resolveForCall(MethodCall|StaticCall|FuncCall $expr): ?string
-    {
-        if ($this->isDynamicNameCall($expr)) {
-            return null;
-        }
-
-        $name = $this->nodeNameResolver->getName($expr->name);
-        if ($name === null) {
-            return null;
-        }
-
-        $returnedType = $this->nodeTypeResolver->getType($expr);
-        if (! $returnedType instanceof ObjectType) {
-            return null;
-        }
-
-        $expectedName = $this->propertyNaming->getExpectedNameFromType($returnedType);
-
-        if ($expectedName instanceof ExpectedName) {
-            return $expectedName->getName();
-        }
-
-        // call with args can return different value, so skip there if not sure about the type
-        if ($expr->args !== []) {
-            return null;
-        }
-
-        $expectedNameFromMethodName = $this->propertyNaming->getExpectedNameFromMethodName($name);
-        if ($expectedNameFromMethodName instanceof ExpectedName) {
-            return $expectedNameFromMethodName->getName();
-        }
-
-        return null;
-    }
-
-    private function isDynamicNameCall(MethodCall|StaticCall|FuncCall $expr): bool
-    {
-        if ($expr->name instanceof StaticCall) {
-            return true;
-        }
-
-        if ($expr->name instanceof MethodCall) {
-            return true;
-        }
-
-        return $expr->name instanceof FuncCall;
     }
 }
