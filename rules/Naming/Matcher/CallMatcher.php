@@ -15,18 +15,18 @@ final class CallMatcher
     /**
      * @return FuncCall|StaticCall|MethodCall|null
      */
-    public function matchCall(Assign $node): ?Node
+    public function matchCall(Assign $assign): ?Node
     {
-        if ($node->expr instanceof MethodCall) {
-            return $node->expr;
+        if ($assign->expr instanceof MethodCall) {
+            return $assign->expr;
         }
 
-        if ($node->expr instanceof StaticCall) {
-            return $node->expr;
+        if ($assign->expr instanceof StaticCall) {
+            return $assign->expr;
         }
 
-        if ($node->expr instanceof FuncCall) {
-            return $node->expr;
+        if ($assign->expr instanceof FuncCall) {
+            return $assign->expr;
         }
 
         return null;
