@@ -52,6 +52,9 @@ CODE_SAMPLE
         return [ClassMethod::class];
     }
 
+    /**
+     * @param ClassMethod $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
