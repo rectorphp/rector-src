@@ -325,7 +325,6 @@ parameters:
                 - src/Configuration/RectorConfigBuilder.php
                 - src/Validation/RectorConfigValidator.php
                 - src/Testing/PHPUnit/AbstractLazyTestCase.php
-                - src/Reporting/DeprecatedRulesReporter.php
                 - src/Configuration/OnlyRuleResolver.php
 
         # debug and internal functions
