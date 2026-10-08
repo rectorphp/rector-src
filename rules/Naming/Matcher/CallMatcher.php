@@ -9,14 +9,13 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt\Foreach_;
 
 final class CallMatcher
 {
     /**
      * @return FuncCall|StaticCall|MethodCall|null
      */
-    public function matchCall(Assign|Foreach_ $node): ?Node
+    public function matchCall(Assign $node): ?Node
     {
         if ($node->expr instanceof MethodCall) {
             return $node->expr;

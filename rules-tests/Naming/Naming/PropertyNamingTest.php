@@ -8,7 +8,6 @@ use Iterator;
 use PHPStan\Type\ObjectType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Naming\Naming\PropertyNaming;
-use Rector\Naming\ValueObject\ExpectedName;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class PropertyNamingTest extends AbstractLazyTestCase
@@ -20,34 +19,6 @@ final class PropertyNamingTest extends AbstractLazyTestCase
         parent::setUp();
 
         $this->propertyNaming = $this->make(PropertyNaming::class);
-    }
-
-    #[DataProvider('getExpectedNameFromMethodNameDataProvider')]
-    public function testGetExpectedNameFromMethodName(string $methodName, ?string $expectedPropertyName): void
-    {
-        $expectedName = $this->propertyNaming->getExpectedNameFromMethodName($methodName);
-
-        if ($expectedPropertyName === null) {
-            $this->assertNotInstanceOf(ExpectedName::class, $expectedName);
-        } else {
-            $this->assertInstanceOf(ExpectedName::class, $expectedName);
-            $this->assertSame($expectedPropertyName, $expectedName->getSingularized());
-        }
-    }
-
-    /**
-     * @return Iterator<mixed>
-     */
-    public static function getExpectedNameFromMethodNameDataProvider(): Iterator
-    {
-        yield ['getMethods', 'method'];
-        yield ['getUsedTraits', 'usedTrait'];
-        yield ['getPackagesData', 'packageData'];
-        yield ['getPackagesInfo', 'packageInfo'];
-        yield ['getAnythingElseData', 'anythingElseData'];
-        yield ['getAnythingElseInfo', 'anythingElseInfo'];
-        yield ['getSpaceshipsInfo', 'spaceshipInfo'];
-        yield ['resolveDependencies', null];
     }
 
     #[DataProvider('provideDataPropertyName')]
