@@ -49,9 +49,9 @@ final readonly class ObjectTypeSpecifier
             return new FullyQualifiedObjectType($className);
         }
 
-        $uses = $this->useImportsResolver->resolve();
-
         if (! $withPreslash) {
+            $uses = $this->useImportsResolver->resolve();
+
             $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
             if ($aliasedObjectType instanceof AliasedObjectType) {
                 return $aliasedObjectType;
