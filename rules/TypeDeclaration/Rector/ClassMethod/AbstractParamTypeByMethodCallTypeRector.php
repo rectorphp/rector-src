@@ -22,6 +22,9 @@ abstract class AbstractParamTypeByMethodCallTypeRector extends AbstractRector
         return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
+    /**
+     * @param ClassMethod|Function_|Closure|ArrowFunction $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
