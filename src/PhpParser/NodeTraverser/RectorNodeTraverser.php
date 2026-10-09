@@ -13,6 +13,7 @@ use PhpParser\NodeVisitor;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Rector\RectorRunner;
 use Rector\VersionBonding\ComposerPackageConstraintFilter;
 use Rector\VersionBonding\PhpVersionedFilter;
 use Webmozart\Assert\Assert;
@@ -21,7 +22,7 @@ use Webmozart\Assert\Assert;
  *  Based on native NodeTraverser class, but heavily customized for Rector needs.
  *
  *  The main differences are:
- *  - no leaveNode(), as we do all in enterNode() that calls refactor() method
+ *  - no leaveNode(), the RectorRunner calls each rule's refactor() method on enter
  *  - cached visitors per node class for performance, e.g. when we find rules for Class_ node, they're cached for next time
  *  - immutability features, register Rector rules once, then use; no changes on the fly
  *
@@ -52,6 +53,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
         private readonly PhpVersionedFilter $phpVersionedFilter,
         private readonly ComposerPackageConstraintFilter $composerPackageConstraintFilter,
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
+        private readonly RectorRunner $rectorRunner,
     ) {
     }
 
@@ -144,7 +146,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
             $currentNodeVisitors = $this->getVisitorsForNode($subNode);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {
-                $return = $currentNodeVisitor->enterNode($subNode);
+                $return = $this->rectorRunner->run($currentNodeVisitor, $subNode);
                 if ($return !== null) {
                     if ($return instanceof Node) {
                         $originalSubNodeClass = $subNode::class;
@@ -170,7 +172,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
                         $node->{$name} = null;
                         continue 2;
                     } else {
-                        throw new LogicException('enterNode() returned invalid value of type ' . gettype($return));
+                        throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
                     }
                 }
             }
@@ -204,7 +206,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
             $currentNodeVisitors = $this->getVisitorsForNode($node);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {
-                $return = $currentNodeVisitor->enterNode($node);
+                $return = $this->rectorRunner->run($currentNodeVisitor, $node);
                 if ($return !== null) {
                     if ($return instanceof Node) {
                         $originalNodeNodeClass = $node::class;
@@ -234,7 +236,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
                             'REPLACE_WITH_NULL can not be used if the parent structure is an array'
                         );
                     } else {
-                        throw new LogicException('enterNode() returned invalid value of type ' . gettype($return));
+                        throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
                     }
                 }
             }

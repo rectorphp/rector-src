@@ -19,11 +19,6 @@ interface RectorInterface extends DocumentedRuleInterface
     public function getNodeTypes(): array;
 
     /**
-     * @return int|Node|Node[]|null
-     */
-    public function enterNode(Node $node): int|Node|array|null;
-
-    /**
      * Process Node of matched type
      * @return Node|Node[]|null|NodeVisitor::REMOVE_NODE
      */
