@@ -111,11 +111,7 @@ final readonly class FileProcessor
     private function parseFileAndDecorateNodes(File $file): ?SystemError
     {
         try {
-            try {
-                $this->parseFileNodes($file);
-            } catch (ParserErrorsException) {
-                $this->parseFileNodes($file, false);
-            }
+            $this->parseFileNodes($file);
         } catch (ShouldNotHappenException $shouldNotHappenException) {
             throw $shouldNotHappenException;
         } catch (AnalysedCodeException $analysedCodeException) {
@@ -164,12 +160,11 @@ final readonly class FileProcessor
         FileSystem::write($filePath, $newFileContent, null);
     }
 
-    private function parseFileNodes(File $file, bool $forNewestSupportedVersion = true): void
+    private function parseFileNodes(File $file): void
     {
         // store tokens by original file content, so we don't have to print them right now
         $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens(
             $file->getOriginalFileContent(),
-            $forNewestSupportedVersion
         );
 
         $oldStmts = $stmtsAndTokens->getStmts();
