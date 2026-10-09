@@ -75,8 +75,6 @@ final class AttributeKey
      */
     public const string PHP_ATTRIBUTE_NAME = 'php_attribute_name';
 
-    public const string EXTRA_USE_IMPORT = 'extra_use_import';
-
     /**
      * Used internally by php-parser
      */

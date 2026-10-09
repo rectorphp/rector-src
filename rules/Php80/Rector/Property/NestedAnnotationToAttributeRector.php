@@ -19,14 +19,11 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeFactory\NestedAttrGroupsFactory;
 use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
-use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -125,7 +122,6 @@ CODE_SAMPLE
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         $node->attrGroups = array_merge($node->attrGroups, $attributeGroups);
-        $this->completeExtraUseImports($attributeGroups);
 
         return $node;
     }
@@ -204,29 +200,5 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    /**
-     * @param AttributeGroup[] $attributeGroups
-     */
-    private function completeExtraUseImports(array $attributeGroups): void
-    {
-        $fileNode = $this->file->getFileNode();
-        if (! $fileNode instanceof FileNode) {
-            return;
-        }
-
-        $pendingImports = $fileNode->getPendingImports();
-
-        foreach ($attributeGroups as $attributeGroup) {
-            foreach ($attributeGroup->attrs as $attr) {
-                $namespacedAttrName = $attr->name->getAttribute(AttributeKey::EXTRA_USE_IMPORT);
-                if (! is_string($namespacedAttrName)) {
-                    continue;
-                }
-
-                $pendingImports->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
-            }
-        }
     }
 }
