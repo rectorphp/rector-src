@@ -10,10 +10,12 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor;
+use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\RectorRunner;
+use Rector\ValueObject\Application\File;
 use Rector\VersionBonding\ComposerPackageConstraintFilter;
 use Rector\VersionBonding\PhpVersionedFilter;
 use Webmozart\Assert\Assert;
@@ -40,6 +42,8 @@ final class RectorNodeTraverser implements NodeTraverserInterface
 
     private bool $areNodeVisitorsPrepared = false;
 
+    private File $file;
+
     /**
      * @var array<class-string<Node>, RectorInterface[]>
      */
@@ -54,6 +58,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
         private readonly ComposerPackageConstraintFilter $composerPackageConstraintFilter,
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
         private readonly RectorRunner $rectorRunner,
+        private readonly CurrentFileProvider $currentFileProvider,
     ) {
     }
 
@@ -75,6 +80,14 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     {
         $this->prepareNodeVisitors();
 
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            throw new ShouldNotHappenException(
+                'File object is missing. Make sure you call $this->currentFileProvider->setFile(...) before traversing.'
+            );
+        }
+
+        $this->file = $file;
         $this->stopTraversal = false;
 
         return $this->traverseArray($nodes);
@@ -146,7 +159,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
             $currentNodeVisitors = $this->getVisitorsForNode($subNode);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {
-                $return = $this->rectorRunner->run($currentNodeVisitor, $subNode);
+                $return = $this->rectorRunner->run($currentNodeVisitor, $subNode, $this->file);
                 if ($return !== null) {
                     if ($return instanceof Node) {
                         $originalSubNodeClass = $subNode::class;
@@ -206,7 +219,7 @@ final class RectorNodeTraverser implements NodeTraverserInterface
             $currentNodeVisitors = $this->getVisitorsForNode($node);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {
-                $return = $this->rectorRunner->run($currentNodeVisitor, $node);
+                $return = $this->rectorRunner->run($currentNodeVisitor, $node, $this->file);
                 if ($return !== null) {
                     if ($return instanceof Node) {
                         $originalNodeNodeClass = $node::class;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Tests\Rector\RectorRunner;
 
 use PhpParser\Node\Stmt\Class_;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Rector\RectorRunner;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Rector\RectorRunner\Source\ReturnNullRector;
@@ -23,14 +22,12 @@ final class RectorRunnerTest extends AbstractLazyTestCase
         parent::setUp();
 
         $this->rectorRunner = $this->make(RectorRunner::class);
-
-        $currentFileProvider = $this->make(CurrentFileProvider::class);
-        $currentFileProvider->setFile(new File('some_file.php', '<?php'));
     }
 
     public function testReturnsNullWhenRuleMakesNoChange(): void
     {
-        $return = $this->rectorRunner->run(new ReturnNullRector(), new Class_('SomeClass'));
+        $file = new File('some_file.php', '<?php');
+        $return = $this->rectorRunner->run(new ReturnNullRector(), new Class_('SomeClass'), $file);
 
         $this->assertNull($return);
     }

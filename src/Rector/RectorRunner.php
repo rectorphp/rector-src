@@ -10,7 +10,6 @@ use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Application\ChangedNodeScopeRefresher;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
@@ -46,17 +45,14 @@ CODE_SAMPLE;
         private Skipper $skipper,
         private CreatedByRuleDecorator $createdByRuleDecorator,
         private ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        private CurrentFileProvider $currentFileProvider,
     ) {
     }
 
     /**
      * @return int|Node|Node[]|null
      */
-    public function run(RectorInterface $rector, Node $node): int|Node|null|array
+    public function run(RectorInterface $rector, Node $node, File $file): int|Node|null|array
     {
-        $file = $this->getFile();
-
         if ($rector instanceof HTMLAverseRectorInterface && $file->containsHTML()) {
             return null;
         }
@@ -112,18 +108,6 @@ CODE_SAMPLE;
         }
 
         return $this->postRefactorProcess($rector, $file, $originalNode, $node, $refactoredNodeOrState, $filePath);
-    }
-
-    private function getFile(): File
-    {
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            throw new ShouldNotHappenException(
-                'File object is missing. Make sure you call $this->currentFileProvider->setFile(...) before traversing.'
-            );
-        }
-
-        return $file;
     }
 
     /**
