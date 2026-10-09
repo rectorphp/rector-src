@@ -6,6 +6,7 @@ namespace Rector\Configuration\Parameter;
 
 use Rector\Configuration\Option;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Webmozart\Assert\Assert;
 
 /**
@@ -222,8 +223,15 @@ final class SimpleParameterProvider
                 continue;
             }
 
-            if (is_string($value) && str_starts_with($value, $projectPathPrefix)) {
-                $parameters[$key] = substr($value, strlen($projectPathPrefix));
+            if (! is_string($value)) {
+                continue;
+            }
+
+            // compared with normalized separators: on Windows getcwd() reports backslashes,
+            // while a config path built with "/" keeps them, although both name the same directory
+            $normalizedValue = PathNormalizer::normalize($value);
+            if (str_starts_with($normalizedValue, $projectPathPrefix)) {
+                $parameters[$key] = substr($normalizedValue, strlen($projectPathPrefix));
             }
         }
 
@@ -231,6 +239,7 @@ final class SimpleParameterProvider
     }
 
     /**
+     * Normalized to "/" separators, so the prefix compares alike with config paths on every platform.
      * Empty when the working directory cannot be resolved, which makes the relativizing above a
      * no-op rather than a wrong answer.
      */
@@ -241,7 +250,7 @@ final class SimpleParameterProvider
             return '';
         }
 
-        return rtrim($currentDirectory, '/') . '/';
+        return rtrim(PathNormalizer::normalize($currentDirectory), '/') . '/';
     }
 
     /**
