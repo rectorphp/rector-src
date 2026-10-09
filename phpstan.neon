@@ -7,7 +7,7 @@ rules:
 parameters:
     level: 8
 
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
@@ -331,36 +331,6 @@ parameters:
             paths:
                 - src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
-        -
-            identifier: symplify.noConstructorOverride
-            path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
-
-        # dynamic printer
-        -
-            identifier: symplify.noDynamicName
-            message: '#Use explicit names over dynamic ones#'
-            paths:
-                - src/CustomRules/SimpleNodeDumper.php
-                - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-
-        # copied from /vendor, to keep as original as possible
-        -
-            identifier: symplify.noDynamicName
-            path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
-
-        -
-            identifier: symplify.noReference
-            message: '#Use explicit return value over magic &reference#'
-            paths:
-                - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-                - rules/Php70/EregToPcreTransformer.php
-                - src/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
-                - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
-
-        -
-            identifier: symplify.noReference
-            message: '#Use explicit return value over magic &reference#'
-
         # fixture Rector rules
         -
             identifier: symplify.seeAnnotationToTest
@@ -376,19 +346,3 @@ parameters:
         -
             identifier: varTag.nativeType
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
-
-
-        -
-            identifier: symplify.noNullableServiceInConstructor
-            paths:
-                - src/NodeTypeResolver/PHPStan/ObjectWithoutClassTypeWithParentTypes.php
-
-        - identifier: symplify.commandHasAsCommandAttribute
-          paths:
-                - src/Console/Command/ValidateConfigCommand.php
-                - src/Console/Command/WorkerCommand.php
-                - src/Console/Command/ProcessCommand.php
-                - src/Console/Command/ListRulesCommand.php
-                - src/Console/Command/CustomRuleCommand.php
-                - src/Console/Command/ComposerBasedCommand.php
-                - src/Console/Command/SetupCICommand.php
