@@ -80,7 +80,7 @@ final readonly class TypeNormalizer
                 }
 
                 // should be string[]
-                $itemType = $traverseCallback($type->getItemType(), $traverseCallback);
+                $itemType = $traverseCallback($type->getItemType());
 
                 if ($itemType instanceof ConstantStringType) {
                     $itemType = new StringType();
@@ -159,7 +159,7 @@ final readonly class TypeNormalizer
                 return $uniqueGeneralizedUnionTypes[0];
             }
 
-            $convertedType = $traverseCallback($type, $traverseCallback);
+            $convertedType = $traverseCallback($type);
             if ($convertedType instanceof NeverType) {
                 return new MixedType();
             }
@@ -236,7 +236,7 @@ final readonly class TypeNormalizer
                 return new ShortenedObjectType($shortClassName, $type->getClassName());
             }
 
-            return $traverseCallback($type, $traverseCallback);
+            return $traverseCallback($type);
         });
 
         return $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($objectShortGeneralizedUnionType);
