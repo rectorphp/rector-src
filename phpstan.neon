@@ -338,6 +338,26 @@ parameters:
             paths:
                 - src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
+        -
+            identifier: symplify.noConstructorOverride
+            path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
+
+        # dynamic printer
+        -
+            identifier: symplify.noDynamicName
+            message: '#Use explicit names over dynamic ones#'
+
+        # reference params in legacy/perf code, kept as original
+        -
+            identifier: symplify.noReference
+            message: '#Use explicit return value over magic &reference#'
+
+        -
+            identifier: symplify.noNullableServiceInConstructor
+            path: src/NodeTypeResolver/PHPStan/ObjectWithoutClassTypeWithParentTypes.php
+
+        - identifier: symplify.commandHasAsCommandAttribute
+
         # fixture Rector rules
         -
             identifier: symplify.seeAnnotationToTest
