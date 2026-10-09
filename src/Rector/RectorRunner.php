@@ -28,7 +28,7 @@ use Rector\ValueObject\Application\File;
  *
  * @see \Rector\Tests\Rector\RectorRunner\RectorRunnerTest
  */
-final class RectorRunner
+final readonly class RectorRunner
 {
     private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
 Array of nodes cannot be empty. Ensure "%s->refactor()" returns non-empty array for Nodes.
@@ -43,10 +43,10 @@ B) Remove the Node:
 CODE_SAMPLE;
 
     public function __construct(
-        private readonly Skipper $skipper,
-        private readonly CreatedByRuleDecorator $createdByRuleDecorator,
-        private readonly ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        private readonly CurrentFileProvider $currentFileProvider,
+        private Skipper $skipper,
+        private CreatedByRuleDecorator $createdByRuleDecorator,
+        private ChangedNodeScopeRefresher $changedNodeScopeRefresher,
+        private CurrentFileProvider $currentFileProvider,
     ) {
     }
 
