@@ -7,7 +7,7 @@ rules:
 parameters:
     level: 8
 
-    # reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
@@ -45,6 +45,13 @@ parameters:
     # see https://github.com/symplify/phpstan-rules
     symplify:
         pathStrings: true
+        naming: true
+        complexity: true
+        configurable: true
+        static: true
+        phpunit: true
+        mocks: true
+        ctor: true
 
     # see https://github.com/TomasVotruba/type-coverage
     type_coverage:
