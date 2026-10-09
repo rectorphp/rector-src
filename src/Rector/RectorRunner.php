@@ -51,7 +51,7 @@ CODE_SAMPLE;
     }
 
     /**
-     * @return int|Node|Node[]|null
+     * @return NodeVisitor::REMOVE_NODE|Node|Node[]|null
      */
     public function run(RectorInterface $rector, Node $node): int|Node|null|array
     {

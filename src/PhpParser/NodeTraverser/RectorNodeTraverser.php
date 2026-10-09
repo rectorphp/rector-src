@@ -163,17 +163,17 @@ final class RectorNodeTraverser implements NodeTraverserInterface
                         continue 2;
                     }
 
-                } elseif ($return === NodeVisitor::DONT_TRAVERSE_CHILDREN) {
-                    $traverseChildren = false;
-                } elseif ($return === NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN) {
-                    $traverseChildren = false;
-                    break;
-                } elseif ($return === NodeVisitor::STOP_TRAVERSAL) {
-                    $this->stopTraversal = true;
-                    break 2;
-                } elseif ($return === NodeVisitor::REPLACE_WITH_NULL) {
-                    $node->{$name} = null;
-                    continue 2;
+                    //                } elseif ($return === NodeVisitor::DONT_TRAVERSE_CHILDREN) {
+                    //                    $traverseChildren = false;
+                    //                } elseif ($return === NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN) {
+                    //                    $traverseChildren = false;
+                    //                    break;
+                    //                } elseif ($return === NodeVisitor::STOP_TRAVERSAL) {
+                    //                    $this->stopTraversal = true;
+                    //                    break 2;
+                    //                } elseif ($return === NodeVisitor::REPLACE_WITH_NULL) {
+                    //                    $node->{$name} = null;
+                    //                    continue 2;
                 } else {
                     throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
                 }
