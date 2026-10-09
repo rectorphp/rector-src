@@ -65,11 +65,6 @@ parameters:
         constants: true
 
     ignoreErrors:
-        # keepComments() is a generic helper; do not narrow it after the deprecated CombineIfRector stopped calling it
-        -
-            identifier: typePerfect.narrowPublicClassMethodParamType
-            path: src/BetterPhpDocParser/Comment/CommentsMerger.php
-
         # the deprecated set objects are still resolved internally, until every extension bonds its rules
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
@@ -125,11 +120,6 @@ parameters:
             message: '#Parameter \#1 \$items of class PhpParser\\Node\\Expr\\Array_ constructor expects array<PhpParser\\Node\\ArrayItem>, array<PhpParser\\Node\\ArrayItem\|null> given#'
             path: rules/Php71/Rector/List_/ListToArrayDestructRector.php
 
-        -
-            identifier: argument.type
-            message: '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
-            path: rules/CodeQuality/Rector/FunctionLike/SimplifyUselessVariableRector.php
-
         # scope vs mutating scope
         -
             identifier: argument.type
@@ -147,10 +137,6 @@ parameters:
                 - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeForArrayReduceRector.php
                 - rules/TypeDeclarationDocblocks/Rector/Class_/AddVarArrayDocblockFromDimFetchAssignRector.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
-
-        -
-            identifier: arguments.count
-            message: '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
         # classes are part of *.php.inc fixture
         -
@@ -345,32 +331,6 @@ parameters:
             paths:
                 - src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
-        # native filesystem calls, required for performance reasons
-        -
-            identifier: symplify.forbiddenNode
-            message: '#@(.*?) is forbidden to use#'
-            path: src/Caching/ValueObject/Storage/FileCacheStorage.php
-
-        -
-            identifier: symplify.forbiddenNode
-            message: '#@\\ini_set\(.*\)" is forbidden to use#'
-            path: bin/rector.php
-
-        -
-            message: '#PHPDoc tag @var with type array<string> is not subtype of native type array#'
-            path: src/Bootstrap/ExtensionConfigResolver.php
-
-        -
-            identifier: symplify.forbiddenStaticClassConstFetch
-            message: '#Avoid static access of constants, as they can change value\. Use interface and contract method instead#'
-            paths:
-                - src/PostRector/Rector/AbstractPostRector.php
-                - src/Testing/PHPUnit/AbstractRectorTestCase.php
-
-        -
-            identifier: symplify.forbiddenStaticClassConstFetch
-            path: src/Rector/AbstractRector.php
-
         -
             identifier: symplify.noConstructorOverride
             path: src/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php
@@ -413,11 +373,6 @@ parameters:
             path: src/PhpParser/Parser/RectorParser.php
 
         # known types
-        -
-            identifier: varTag.nativeType
-            message: '#PHPDoc tag @var with type array<string, int> is not subtype of native type array<int<1, max>>#'
-            path: rules/Naming/PhpArray/ArrayFilter.php
-
         -
             identifier: varTag.nativeType
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
