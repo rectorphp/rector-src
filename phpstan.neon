@@ -183,11 +183,6 @@ parameters:
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
             path: src/Parallel/Application/ParallelFileProcessor.php
 
-        -
-            identifier: missingType.callable
-            message: '#Method Rector\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
-            path: src/Util/ArrayParametersMerger.php
-
         # required generics on interface array, not helpful
         -
             identifier: missingType.generics
@@ -211,12 +206,6 @@ parameters:
         -
             identifier: offsetAccess.nonArray
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
-
-        # known non-empty class method
-        -
-            identifier: offsetAccess.notFound
-            message: '#Offset 0 might not exist on array<PhpParser\\Node\\Stmt>\|null#'
-            path: rules/DeadCode/Rector/ClassMethod/RemoveParentDelegatingConstructorRector.php
 
         -
             identifier: offsetAccess.notFound
