@@ -5,19 +5,15 @@ declare(strict_types=1);
 namespace Rector\Parallel;
 
 use Fidry\CpuCoreCounter\CpuCoreCounter;
-use Fidry\CpuCoreCounter\NumberOfCpuCoreNotFound;
 
 final class CpuCoreCountProvider
 {
-    private const int DEFAULT_CORE_COUNT = 2;
-
     public function provide(): int
     {
-        try {
-            return new CpuCoreCounter()
-                ->getCount();
-        } catch (NumberOfCpuCoreNotFound) {
-            return self::DEFAULT_CORE_COUNT;
-        }
+        // getAvailableForParallelisation() respects cgroup/CFS quota (docker --cpus, KUBERNETES_CPU_LIMIT),
+        // unlike getCount() which reports host cores and overcommits workers in containers
+        return new CpuCoreCounter()
+            ->getAvailableForParallelisation()
+            ->availableCpus;
     }
 }
