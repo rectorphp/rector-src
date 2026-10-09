@@ -7,7 +7,7 @@ rules:
 parameters:
     level: 8
 
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
@@ -45,6 +45,13 @@ parameters:
     # see https://github.com/symplify/phpstan-rules
     symplify:
         pathStrings: true
+        naming: true
+        complexity: true
+        configurable: true
+        static: true
+        phpunit: true
+        mocks: true
+        ctor: true
 
     # see https://github.com/TomasVotruba/type-coverage
     type_coverage:
@@ -339,15 +346,8 @@ parameters:
         -
             identifier: symplify.noDynamicName
             message: '#Use explicit names over dynamic ones#'
-            paths:
-                - src/CustomRules/SimpleNodeDumper.php
-                - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
 
-        # copied from /vendor, to keep as original as possible
-        -
-            identifier: symplify.noDynamicName
-            path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
-
+        # reference params in legacy/perf code, kept as original
         -
             identifier: symplify.noReference
             message: '#Use explicit return value over magic &reference#'
@@ -356,10 +356,14 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
                 - src/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
+                - rules/CodeQuality/Rector/Class_/InnerFunctionToPrivateMethodRector.php
+                - rules/CodeQuality/NodeAnalyzer/VariableDimFetchAssignResolver.php
 
         -
-            identifier: symplify.noReference
-            message: '#Use explicit return value over magic &reference#'
+            identifier: symplify.noNullableServiceInConstructor
+            path: src/NodeTypeResolver/PHPStan/ObjectWithoutClassTypeWithParentTypes.php
+
+        - identifier: symplify.commandHasAsCommandAttribute
 
         # fixture Rector rules
         -
@@ -376,19 +380,3 @@ parameters:
         -
             identifier: varTag.nativeType
             path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php
-
-
-        -
-            identifier: symplify.noNullableServiceInConstructor
-            paths:
-                - src/NodeTypeResolver/PHPStan/ObjectWithoutClassTypeWithParentTypes.php
-
-        - identifier: symplify.commandHasAsCommandAttribute
-          paths:
-                - src/Console/Command/ValidateConfigCommand.php
-                - src/Console/Command/WorkerCommand.php
-                - src/Console/Command/ProcessCommand.php
-                - src/Console/Command/ListRulesCommand.php
-                - src/Console/Command/CustomRuleCommand.php
-                - src/Console/Command/ComposerBasedCommand.php
-                - src/Console/Command/SetupCICommand.php
