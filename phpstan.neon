@@ -7,6 +7,7 @@ rules:
 parameters:
     level: 8
 
+    reportUnmatchedIgnoredErrors: false
     errorFormat: symplify
 
     # see https://phpstan.org/writing-php-code/phpdoc-types#global-type-aliases
