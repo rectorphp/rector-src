@@ -22,7 +22,6 @@ use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
@@ -254,10 +253,7 @@ final readonly class PhpNestedAttributeGroupFactory
                 if ($annotationPropertyToAttributeClass->doesNeedNewImport() && count(
                     $attributeName->getParts()
                 ) === 1) {
-                    $attributeName->setAttribute(
-                        AttributeKey::EXTRA_USE_IMPORT,
-                        $annotationPropertyToAttributeClass->getAttributeClass()
-                    );
+                    $attributeName = new FullyQualified($annotationPropertyToAttributeClass->getAttributeClass());
                 }
 
                 $attribute = new Attribute($attributeName, $attributeArgs);
