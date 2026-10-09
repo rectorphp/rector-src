@@ -60,6 +60,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::NEW_LINE_ON_FLUENT_CALL, false);
 
         SimpleParameterProvider::setParameter(Option::TREAT_CLASSES_AS_FINAL, false);
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, false);
 
         // reset PHP version to the test default, so a version-bound test class
         // does not leak its phpVersion() into the next class in the same process

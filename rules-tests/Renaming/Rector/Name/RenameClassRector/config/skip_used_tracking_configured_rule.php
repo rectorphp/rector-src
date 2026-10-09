@@ -17,4 +17,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         RenameClassRector::class => ['*skip_used_renames_old_class*', '*skip_unused_no_old_class*'],
     ]);
+
+    // skip-use tracking only runs when unused-skip reporting is on
+    $rectorConfig->reportUnusedSkips();
 };

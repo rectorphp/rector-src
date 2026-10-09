@@ -12,6 +12,8 @@ use PHPStan\Analyser\MutatingScope;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -68,12 +70,14 @@ CODE_SAMPLE;
             return null;
         }
 
-        // class/path skip is configured for this rule and file: run the rule on a deep clone to learn
-        // whether it would actually have changed anything. Only a skip that prevents a real change
-        // counts as used; the original node is left untouched, so the file stays skipped either way.
+        // class/path skip is configured for this rule and file: only when unused-skip reporting is on,
+        // run the rule on a deep clone to learn whether it would actually have changed anything. Only a
+        // skip that prevents a real change counts as used; the clone keeps the original node untouched.
+        // With reporting off (the default), the clone is pure overhead, so it is skipped entirely.
         $skipMatch = $this->skipper->matchSkip($rector, $filePath);
         if ($skipMatch instanceof SkipMatch) {
-            if ($rector->refactor($this->cloneNode($node)) !== null) {
+            if (SimpleParameterProvider::provideBoolParameter(Option::REPORT_UNUSED_SKIPS, false)
+                && $rector->refactor($this->cloneNode($node)) !== null) {
                 $this->skipper->markSkipUsed($skipMatch);
             }
 
