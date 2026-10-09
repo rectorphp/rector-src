@@ -356,10 +356,8 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
                 - src/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
-                - rules/DeadCode/Rector/Assign/RemoveUnusedVariableAssignRector.php
                 - rules/CodeQuality/Rector/Class_/InnerFunctionToPrivateMethodRector.php
                 - rules/CodeQuality/NodeAnalyzer/VariableDimFetchAssignResolver.php
-                - rules/CodeQuality/Rector/Expression/InlineIfToExplicitIfRector.php
 
         -
             identifier: symplify.noNullableServiceInConstructor
