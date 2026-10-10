@@ -99,6 +99,13 @@ final class ProcessConfigureDecorator
         $command->addOption(Option::PARALLEL_PORT, null, InputOption::VALUE_REQUIRED);
         $command->addOption(Option::PARALLEL_IDENTIFIER, null, InputOption::VALUE_REQUIRED);
 
+        $command->addOption(
+            Option::LPT,
+            null,
+            InputOption::VALUE_NONE,
+            '[EXPERIMENTAL] Balance files across parallel workers by size up front and keep every worker alive for its whole share.'
+        );
+
         $command->addOption(Option::XDEBUG, null, InputOption::VALUE_NONE, 'Display xdebug output.');
 
         $command->addOption(
