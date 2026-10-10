@@ -147,13 +147,7 @@ CODE_SAMPLE
 
     private function hasPrivateMethod(Class_ $class): bool
     {
-        foreach ($class->getMethods() as $classMethod) {
-            if ($classMethod->isPrivate()) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($class->getMethods(), fn(ClassMethod $classMethod): bool => $classMethod->isPrivate());
     }
 
     private function shouldSkip(ClassMethod $classMethod, ClassReflection $classReflection): bool
