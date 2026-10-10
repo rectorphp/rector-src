@@ -6,25 +6,32 @@ namespace Rector\Skipper\Skipper;
 
 use PhpParser\Node;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Skipper\Matcher\FileInfoMatcher;
-use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\ValueObject\SkipMatch;
+use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
 /**
  * @api
  * @see \Rector\Tests\Skipper\Skipper\SkipperTest
  */
-final readonly class Skipper
+final class Skipper
 {
+    /**
+     * @var null|array<class-string, string[]|null>
+     */
+    private null|array $skippedClassesToFiles = null;
+
     public function __construct(
-        private RectifiedAnalyzer $rectifiedAnalyzer,
-        private PathSkipper $pathSkipper,
-        private FileInfoMatcher $fileInfoMatcher,
-        private SkippedClassResolver $skippedClassResolver,
-        private ReflectionProvider $reflectionProvider,
-        private UsedSkipCollector $usedSkipCollector,
+        private readonly RectifiedAnalyzer $rectifiedAnalyzer,
+        private readonly PathSkipper $pathSkipper,
+        private readonly FileInfoMatcher $fileInfoMatcher,
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UsedSkipCollector $usedSkipCollector,
     ) {
     }
 
@@ -54,7 +61,7 @@ final readonly class Skipper
             return null;
         }
 
-        foreach ($this->skippedClassResolver->resolve() as $skippedClass => $skippedFiles) {
+        foreach ($this->resolveSkippedClasses() as $skippedClass => $skippedFiles) {
             if (! is_a($element, $skippedClass, true)) {
                 continue;
             }
@@ -78,6 +85,59 @@ final readonly class Skipper
     public function markSkipUsed(SkipMatch $skipMatch): void
     {
         $this->usedSkipCollector->markUsed($skipMatch->getSkippedClass(), $skipMatch->getMatchedPath());
+    }
+
+    /**
+     * @return array<class-string, string[]|null>
+     */
+    public function resolveSkippedClasses(): array
+    {
+        // disable cache in tests
+        if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
+            $this->skippedClassesToFiles = null;
+        }
+
+        // already cached, even only empty array
+        if ($this->skippedClassesToFiles !== null) {
+            return $this->skippedClassesToFiles;
+        }
+
+        $skip = SimpleParameterProvider::provideArrayParameter(Option::SKIP);
+        $this->skippedClassesToFiles = [];
+
+        foreach ($skip as $key => $value) {
+            // e.g. [SomeClass::class] → shift values to [SomeClass::class => null]
+            if (is_int($key)) {
+                $key = $value;
+                $value = null;
+            }
+
+            if (! is_string($key)) {
+                continue;
+            }
+
+            // this only checks for Rector rules, that are always autoloaded
+            if (! class_exists($key) && ! interface_exists($key)) {
+                continue;
+            }
+
+            $this->skippedClassesToFiles[$key] = $value;
+        }
+
+        return $this->skippedClassesToFiles;
+    }
+
+    /**
+     * @return array<class-string<DeprecatedInterface>>
+     */
+    public function resolveDeprecatedSkippedClasses(): array
+    {
+        $skippedClassNames = array_keys($this->resolveSkippedClasses());
+
+        return array_filter(
+            $skippedClassNames,
+            fn (string $class): bool => is_a($class, DeprecatedInterface::class, true)
+        );
     }
 
     /**

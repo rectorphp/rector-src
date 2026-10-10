@@ -18,7 +18,7 @@ use Rector\Console\ProcessConfigureDecorator;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
-use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
 use Rector\ValueObject\Configuration;
@@ -45,7 +45,7 @@ final class ProcessCommand extends Command
         private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
         private readonly MissConfigurationReporter $missConfigurationReporter,
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
-        private readonly SkippedClassResolver $skippedClassResolver,
+        private readonly Skipper $skipper,
     ) {
         parent::__construct();
     }
@@ -116,11 +116,11 @@ EOF
         }
 
         // 0. warn about skipped rules that are deprecated
-        if ($this->skippedClassResolver->resolveDeprecatedSkippedClasses() !== []) {
+        if ($this->skipper->resolveDeprecatedSkippedClasses() !== []) {
             $this->symfonyStyle->warning(sprintf(
                 'These rules are skipped, but are deprecated. Most likely you do not need to skip them anymore as not part of any set and remove them: %s%s',
                 "\n\n",
-                '* ' . implode("\n* ", $this->skippedClassResolver->resolveDeprecatedSkippedClasses()) . "\n"
+                '* ' . implode("\n* ", $this->skipper->resolveDeprecatedSkippedClasses()) . "\n"
             ));
         }
 

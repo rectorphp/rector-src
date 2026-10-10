@@ -7,7 +7,7 @@ namespace Rector\Reporting;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\FileSystem\FilePathHelper;
-use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Rector\ValueObject\ProcessResult;
 
@@ -17,7 +17,7 @@ use Rector\ValueObject\ProcessResult;
 final readonly class UnusedSkipResolver
 {
     public function __construct(
-        private SkippedClassResolver $skippedClassResolver,
+        private Skipper $skipper,
         private SkippedPathsResolver $skippedPathsResolver,
         private FilePathHelper $filePathHelper,
     ) {
@@ -73,7 +73,7 @@ final readonly class UnusedSkipResolver
     private function resolveRelativePathsByClass(): array
     {
         $relativePathsByClass = [];
-        foreach ($this->skippedClassResolver->resolve() as $rectorClass => $paths) {
+        foreach ($this->skipper->resolveSkippedClasses() as $rectorClass => $paths) {
             if ($paths === null) {
                 continue;
             }
@@ -118,7 +118,7 @@ final readonly class UnusedSkipResolver
             $unusedRelativePaths = [];
             foreach ($relativePaths as $path => $relativePath) {
                 // used skips are tracked scoped to their rule (class => [path]), so the same path
-                // skipped under another rule does not mark this one used (see SkipSkipper)
+                // skipped under another rule does not mark this one used (see Skipper::matchSkip())
                 if (! in_array($path, $usedSkips[$rectorClass] ?? [], true)) {
                     $unusedRelativePaths[] = $relativePath;
                 }
