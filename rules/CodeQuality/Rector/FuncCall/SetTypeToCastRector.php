@@ -56,6 +56,9 @@ CODE_SAMPLE
         return [Expression::class];
     }
 
+    /**
+     * @param Expression $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
