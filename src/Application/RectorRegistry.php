@@ -7,6 +7,9 @@ namespace Rector\Application;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Skipper\Skipper\Skipper;
 
+/**
+ * @see \Rector\Tests\Application\RectorRegistryTest
+ */
 final class RectorRegistry
 {
     /**
