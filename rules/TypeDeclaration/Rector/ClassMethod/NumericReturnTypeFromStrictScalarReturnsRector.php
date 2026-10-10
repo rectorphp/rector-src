@@ -75,6 +75,16 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // type is already known, skip
+        if ($node->returnType instanceof Node) {
+            return null;
+        }
+
+        // empty, nothing to find
+        if ($node->stmts === null || $node->stmts === []) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
         if ($this->shouldSkip($node, $scope)) {
             return null;
@@ -123,16 +133,6 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod|Function_ $functionLike, Scope $scope): bool
     {
-        // type is already known, skip
-        if ($functionLike->returnType instanceof Node) {
-            return true;
-        }
-
-        // empty, nothing to find
-        if ($functionLike->stmts === null || $functionLike->stmts === []) {
-            return true;
-        }
-
         if (! $functionLike instanceof ClassMethod) {
             return false;
         }

@@ -106,7 +106,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         // already filled → skip
         if ($node->returnType instanceof Node) {
             return null;
@@ -116,6 +115,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         if ($this->shouldSkip($node, $scope)) {
             return null;
         }

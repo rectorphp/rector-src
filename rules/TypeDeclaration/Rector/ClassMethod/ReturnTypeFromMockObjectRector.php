@@ -76,12 +76,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
         // type is already known
         if ($node->returnType instanceof Node) {
             return null;
         }
 
+        $scope = ScopeFetcher::fetch($node);
         if (! $this->isInsideTestCaseClass($scope)) {
             return null;
         }

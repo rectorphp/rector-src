@@ -73,6 +73,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->returnType instanceof Node) {
+            return null;
+        }
+
+        // private methods are handled by PrivateMethodReturnTypeFromStrictNewArrayRector
+        if ($node instanceof ClassMethod && $node->isPrivate()) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
         if ($this->shouldSkip($node, $scope)) {
             return null;
@@ -88,15 +97,6 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod|Function_ $node, Scope $scope): bool
     {
-        if ($node->returnType instanceof Node) {
-            return true;
-        }
-
-        // private methods are handled by PrivateMethodReturnTypeFromStrictNewArrayRector
-        if ($node instanceof ClassMethod && $node->isPrivate()) {
-            return true;
-        }
-
         return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
             $scope
