@@ -70,12 +70,12 @@ final class PostFileProcessor implements ResettableInterface
      */
     private function shouldSkipPostRector(PostRectorInterface $postRector, string $filePath, array $stmts): bool
     {
-        if ($this->skipper->shouldSkipElementAndFilePath($postRector, $filePath)) {
+        if ($this->skipper->shouldSkipRectorAndFile($postRector, $filePath)) {
             return true;
         }
 
         // skip renaming if rename class rector is skipped
-        if ($postRector instanceof ClassRenamingPostRector && $this->skipper->shouldSkipElementAndFilePath(
+        if ($postRector instanceof ClassRenamingPostRector && $this->skipper->shouldSkipRectorAndFile(
             RenameClassRector::class,
             $filePath
         )) {

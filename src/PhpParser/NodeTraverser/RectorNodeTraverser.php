@@ -29,7 +29,7 @@ use Webmozart\Assert\Assert;
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
  * @internal No BC promise on this class, it might change any time.
  */
-final class RectorNodeTraverser implements NodeTraverserInterface
+final class RectorNodeTraverser // implements NodeTraverserInterface
 {
     /**
      * @var RectorInterface[]
@@ -57,15 +57,15 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     ) {
     }
 
-    public function addVisitor(NodeVisitor $visitor): void
-    {
-        throw new ShouldNotHappenException('The immutable node traverser does not support adding visitors.');
-    }
-
-    public function removeVisitor(NodeVisitor $visitor): void
-    {
-        throw new ShouldNotHappenException('The immutable node traverser does not support removing visitors.');
-    }
+    //    public function addVisitor(NodeVisitor $visitor): void
+    //    {
+    //        throw new ShouldNotHappenException('The immutable node traverser does not support adding visitors.');
+    //    }
+    //
+    //    public function removeVisitor(NodeVisitor $visitor): void
+    //    {
+    //        throw new ShouldNotHappenException('The immutable node traverser does not support removing visitors.');
+    //    }
 
     /**
      * @param Node[] $nodes
@@ -189,7 +189,6 @@ final class RectorNodeTraverser implements NodeTraverserInterface
                 continue;
             }
 
-            $traverseChildren = true;
             $currentNodeVisitors = $this->getVisitorsForNode($node);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {

@@ -76,7 +76,7 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
             ],
         ]);
 
-        $this->skipper->shouldSkipElementAndFilePath(
+        $this->skipper->shouldSkipRectorAndFile(
             AnotherClassToSkip::class,
             __DIR__ . '/Fixture/someDirectory/anotherFile.php'
         );

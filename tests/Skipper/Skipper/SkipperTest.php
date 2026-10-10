@@ -82,7 +82,7 @@ final class SkipperTest extends AbstractLazyTestCase
     #[DataProvider('provideCheckerAndFile')]
     public function testSkipElementAndFilePath(string $element, string $filePath, bool $expectedSkip): void
     {
-        $resolvedSkip = $this->skipper->shouldSkipElementAndFilePath($element, $filePath);
+        $resolvedSkip = $this->skipper->shouldSkipRectorAndFile($element, $filePath);
         $this->assertSame($expectedSkip, $resolvedSkip);
     }
 

@@ -22,6 +22,7 @@ use Rector\PhpParser\Parser\ParserErrors;
 use Rector\PhpParser\Parser\RectorParser;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\PostRector\Application\PostFileProcessor;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\ValueObject\Application\File;
 use Rector\ValueObject\Configuration;
@@ -44,6 +45,8 @@ final readonly class FileProcessor
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private UsedImportsResolver $usedImportsResolver,
+        private Skipper $skipper,
+        private RectorRegistry $rectorRegistry
     ) {
     }
 
@@ -58,6 +61,10 @@ final readonly class FileProcessor
 
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
+
+        $this->rectorNodeTraverser->refreshPhpRectors(
+            $this->rectorRegistry->forPath($filePath)
+        );
 
         do {
             $file->changeHasChanged(false);
