@@ -8,8 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Bool_;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector\ReplaceMultipleBooleanNotRectorTest

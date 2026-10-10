@@ -9,8 +9,8 @@ use PhpParser\Node\Expr\Closure;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @deprecated as noisy change with little value. Use manually or custom rule where needed instead.

@@ -88,7 +88,7 @@ return [
             );
 
             // remove use import itself, to make contract clean
-            return str_replace('use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;', '', $content);
+            return str_replace('use Rector\RuleDoc\Contract\DocumentedRuleInterface;', '', $content);
         },
 
         static function (string $filePath, string $prefix, string $content): string {

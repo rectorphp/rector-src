@@ -20,9 +20,9 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveDuplicatedReturnSelfDocblockRector\RemoveDuplicatedReturnSelfDocblockRectorTest

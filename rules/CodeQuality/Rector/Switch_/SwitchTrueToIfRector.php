@@ -9,8 +9,8 @@ use PhpParser\Node\Stmt\Switch_;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @deprecated as it worsens readability by expanding a compact `switch (true)` into many separate `if` statements. Use `match (true)` for the same logic instead.

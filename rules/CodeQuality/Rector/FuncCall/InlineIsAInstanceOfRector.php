@@ -15,9 +15,9 @@ use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector\InlineIsAInstanceOfRectorTest

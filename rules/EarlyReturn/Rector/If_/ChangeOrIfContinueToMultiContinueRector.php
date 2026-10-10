@@ -9,8 +9,8 @@ use PhpParser\Node\Stmt\If_;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @deprecated This rule is deprecated, as splitting a single condition into multiple ifs makes the code longer and harder to read in most cases.

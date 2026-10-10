@@ -13,12 +13,12 @@ use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector\ReturnNullableTypeRectorTest

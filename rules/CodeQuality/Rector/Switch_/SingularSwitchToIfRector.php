@@ -17,8 +17,8 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\NodeVisitor;
 use Rector\Rector\AbstractRector;
 use Rector\Renaming\NodeManipulator\SwitchManipulator;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Switch_\SingularSwitchToIfRector\SingularSwitchToIfRectorTest

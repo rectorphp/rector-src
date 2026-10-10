@@ -14,11 +14,11 @@ use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\AddVarArrayDocblockFromDimFetchAssignRector\AddVarArrayDocblockFromDimFetchAssignRectorTest

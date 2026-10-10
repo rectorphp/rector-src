@@ -9,7 +9,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Trait_;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 final class RuleChangingClassToTraitRector extends AbstractRector
 {

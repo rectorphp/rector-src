@@ -12,12 +12,12 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
 use Rector\TypeDeclarationDocblocks\NodeFinder\ArrayDimFetchFinder;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamFromDimFetchKeyUseRector\AddParamFromDimFetchKeyUseRectorTest

@@ -9,8 +9,8 @@ use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Stmt\If_;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector\ReduceAlwaysFalseIfOrRectorTest

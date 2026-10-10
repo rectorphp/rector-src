@@ -16,8 +16,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\StmtsAwareInterface\RemoveDeadInstanceOfAssertRector\RemoveDeadInstanceOfAssertRectorTest

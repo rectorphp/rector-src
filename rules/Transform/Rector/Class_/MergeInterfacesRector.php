@@ -10,8 +10,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

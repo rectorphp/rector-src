@@ -36,9 +36,9 @@ use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector\StrictArrayParamDimFetchRectorTest

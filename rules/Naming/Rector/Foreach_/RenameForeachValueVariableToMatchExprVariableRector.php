@@ -9,8 +9,8 @@ use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @deprecated This rule is deprecated, as it is risky. Renaming a foreach value variable to match the iterated expression variable can clobber meaningful local names and cause conflicts, while offering little real value.

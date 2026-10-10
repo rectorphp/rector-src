@@ -8,9 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\Transform\ValueObject\NewToStaticCall;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

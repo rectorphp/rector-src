@@ -17,8 +17,8 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\Renaming\ValueObject\RenameProperty;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Enum\ObjectReference;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector\StaticToSelfOnFinalClassRectorTest

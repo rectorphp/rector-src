@@ -11,11 +11,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\TypeDeclarationDocblocks\NodeDocblockTypeDecorator;
 use Rector\TypeDeclarationDocblocks\NodeFinder\PropertyGetterFinder;
 use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFromGetterReturnRector\DocblockVarArrayFromGetterReturnRectorTest

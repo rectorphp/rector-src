@@ -13,12 +13,12 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\ValueObject\PolyfillPackage;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * This needs to removed 1 floor above, because only nodes in arrays can be removed why traversing,

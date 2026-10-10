@@ -9,12 +9,12 @@ use PhpParser\Node\Stmt\Nop;
 use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
 use Rector\TypeDeclaration\NodeAnalyzer\StrictTypeSafetyChecker;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector\SafeDeclareStrictTypesRectorTest

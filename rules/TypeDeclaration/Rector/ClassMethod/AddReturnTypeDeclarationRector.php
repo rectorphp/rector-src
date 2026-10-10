@@ -18,13 +18,13 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
+use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;
 use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

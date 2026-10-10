@@ -15,8 +15,8 @@ use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ClassReflectionAnalyzer;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector\CompleteDynamicPropertiesRectorTest

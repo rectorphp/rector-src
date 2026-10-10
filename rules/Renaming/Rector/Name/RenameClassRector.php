@@ -19,8 +19,8 @@ use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
