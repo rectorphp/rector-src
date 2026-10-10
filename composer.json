@@ -53,7 +53,7 @@
         "symfony/process": "^8.1",
         "symplify/easy-coding-standard": "dev-main",
         "symplify/phpstan-rules": "^14.18",
-        "tomasvotruba/class-leak": "^2.3.3",
+        "tomasvotruba/class-leak": "^2.3.4",
         "tomasvotruba/fast-unit": "^0.1",
         "tomasvotruba/type-coverage": "^2.3.6",
         "tracy/tracy": "^2.12"
