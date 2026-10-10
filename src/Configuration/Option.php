@@ -187,7 +187,6 @@ final class Option
     /**
      * @experimental Opt-in to the LPT bucket scheduler
      * @see \Rector\Parallel\Experimental\LptScheduleFactory
-     * @var string
      */
     public const string LPT = 'lpt';
 
