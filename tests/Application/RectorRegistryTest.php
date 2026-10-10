@@ -34,11 +34,6 @@ final class RectorRegistryTest extends AbstractLazyTestCase
 
     public function testForFile(): void
     {
-        $file = new File(__DIR__ . '/skipped_directory/some_file.php', '');
-        $rectorsForPath = $this->rectorRegistry->forFile($file);
-
-        $this->assertSame([], $rectorsForPath);
-
         $file = new File(__DIR__ . '/some_file.php', '');
         $rectorsForPath = $this->rectorRegistry->forFile($file);
 
