@@ -19,6 +19,7 @@ return ECSConfig::configure()
         __DIR__ . '/config',
         __DIR__ . '/scripts',
         __DIR__ . '/build/build-preload.php',
+        __DIR__ . '/build/build-node-rule-map.php',
     ])
     ->withSkip([
         '*/Source/*',

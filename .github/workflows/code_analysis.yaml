@@ -29,6 +29,10 @@ jobs:
                         run: php preload.php
 
                     -
+                        name: 'Node Rule Map Up To Date'
+                        run: php scripts/validate-node-rule-map.php
+
+                    -
                         name: 'PHPStan'
                         run: vendor/bin/phpstan analyse --ansi
 

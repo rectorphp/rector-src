@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\PhpParser\NodeTraverser;
 
 use LogicException;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
@@ -44,6 +46,34 @@ final class RectorNodeTraverser implements NodeTraverserInterface
      * @var array<class-string<Node>, RectorInterface[]>
      */
     private array $visitorsPerNodeClass = [];
+
+    /**
+     * Static precomputed node-class to rule map, shipped with the package.
+     * @var array<class-string<Node>, array<class-string<RectorInterface>>>
+     */
+    private array $nodeRuleMap = [];
+
+    /**
+     * @var array<class-string<RectorInterface>, RectorInterface>
+     */
+    private array $visitorByClass = [];
+
+    /**
+     * @var array<class-string<RectorInterface>, int>
+     */
+    private array $visitorPositionByClass = [];
+
+    /**
+     * Active rules missing from the static map, e.g. third-party rules.
+     * @var array<int, RectorInterface>
+     */
+    private array $unknownVisitors = [];
+
+    /**
+     * Shared across instances, the static map file is immutable.
+     * @var array<class-string<Node>, array<class-string<RectorInterface>>>|null
+     */
+    private static ?array $cachedNodeRuleMap = null;
 
     /**
      * @param RectorInterface[] $rectors
@@ -108,21 +138,52 @@ final class RectorNodeTraverser implements NodeTraverserInterface
     {
         $nodeClass = $node::class;
 
-        if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
-            $this->visitorsPerNodeClass[$nodeClass] = [];
+        if (isset($this->visitorsPerNodeClass[$nodeClass])) {
+            return $this->visitorsPerNodeClass[$nodeClass];
+        }
 
-            /** @var RectorInterface $visitor */
-            foreach ($this->visitors as $visitor) {
-                foreach ($visitor->getNodeTypes() as $nodeType) {
-                    if (is_a($nodeClass, $nodeType, true)) {
-                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
-                        continue 2;
-                    }
+        $visitorsByPosition = [];
+
+        if (array_key_exists($nodeClass, $this->nodeRuleMap)) {
+            // no rule subscribes to this node class and no third-party rules to check
+            if ($this->nodeRuleMap[$nodeClass] === [] && $this->unknownVisitors === []) {
+                return $this->visitorsPerNodeClass[$nodeClass] = [];
+            }
+
+            // O(1) lookup in the static map, then keep only the active rules
+            foreach ($this->nodeRuleMap[$nodeClass] as $ruleClass) {
+                if (isset($this->visitorByClass[$ruleClass])) {
+                    $visitorsByPosition[$this->visitorPositionByClass[$ruleClass]] = $this->visitorByClass[$ruleClass];
+                }
+            }
+
+            // resolve rules missing from the static map, e.g. third-party rules
+            foreach ($this->unknownVisitors as $position => $visitor) {
+                if ($this->isVisitorForNodeClass($visitor, $nodeClass)) {
+                    $visitorsByPosition[$position] = $visitor;
+                }
+            }
+        } else {
+            // node class missing from the static map, resolve against all active rules
+            foreach ($this->visitors as $position => $visitor) {
+                if ($this->isVisitorForNodeClass($visitor, $nodeClass)) {
+                    $visitorsByPosition[$position] = $visitor;
                 }
             }
         }
 
-        return $this->visitorsPerNodeClass[$nodeClass];
+        // keep the original rule registration order
+        ksort($visitorsByPosition);
+
+        return $this->visitorsPerNodeClass[$nodeClass] = array_values($visitorsByPosition);
+    }
+
+    /**
+     * @param class-string<Node> $nodeClass
+     */
+    private function isVisitorForNodeClass(RectorInterface $rector, string $nodeClass): bool
+    {
+        return array_any($rector->getNodeTypes(), fn (string $nodeType): bool => is_a($nodeClass, $nodeType, true));
     }
 
     private function traverseNode(Node $node): void
@@ -276,6 +337,58 @@ final class RectorNodeTraverser implements NodeTraverserInterface
         // filter by configuration
         $this->visitors = $this->configurationRuleFilter->filter($this->visitors);
 
+        $this->prepareNodeRuleMap();
+
         $this->areNodeVisitorsPrepared = true;
+    }
+
+    private function prepareNodeRuleMap(): void
+    {
+        $this->nodeRuleMap = $this->loadNodeRuleMap();
+
+        $knownRuleClasses = [];
+        foreach ($this->nodeRuleMap as $ruleClasses) {
+            foreach ($ruleClasses as $ruleClass) {
+                $knownRuleClasses[$ruleClass] = true;
+            }
+        }
+
+        $this->visitorByClass = [];
+        $this->visitorPositionByClass = [];
+        $this->unknownVisitors = [];
+
+        foreach ($this->visitors as $position => $visitor) {
+            $visitorClass = $visitor::class;
+
+            $this->visitorByClass[$visitorClass] = $visitor;
+            $this->visitorPositionByClass[$visitorClass] = $position;
+
+            if (! isset($knownRuleClasses[$visitorClass])) {
+                $this->unknownVisitors[$position] = $visitor;
+            }
+        }
+    }
+
+    /**
+     * @return array<class-string<Node>, array<class-string<RectorInterface>>>
+     */
+    private function loadNodeRuleMap(): array
+    {
+        if (self::$cachedNodeRuleMap !== null) {
+            return self::$cachedNodeRuleMap;
+        }
+
+        $nodeRuleMapFilePath = __DIR__ . '/../../../config/node-rule-map.json';
+        if (! file_exists($nodeRuleMapFilePath)) {
+            return self::$cachedNodeRuleMap = [];
+        }
+
+        $nodeRuleMap = Json::decode(FileSystem::read($nodeRuleMapFilePath), true);
+        if (! is_array($nodeRuleMap)) {
+            return self::$cachedNodeRuleMap = [];
+        }
+
+        /** @var array<class-string<Node>, array<class-string<RectorInterface>>> $nodeRuleMap */
+        return self::$cachedNodeRuleMap = $nodeRuleMap;
     }
 }

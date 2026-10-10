@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpParser\NodeTraverser;
 
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\PhpParser\NodeTraverser\Class_\RuleUsingClassRector;
@@ -79,5 +83,16 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
+    }
+
+    public function testGetVisitorsForNodeResolvesCoreRuleFromStaticMap(): void
+    {
+        $unnecessaryTernaryExpressionRector = $this->make(UnnecessaryTernaryExpressionRector::class);
+        $this->rectorNodeTraverser->refreshPhpRectors([$unnecessaryTernaryExpressionRector]);
+
+        $ternary = new Ternary(new ConstFetch(new Name('true')), null, new ConstFetch(new Name('false')));
+        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($ternary);
+
+        $this->assertSame([$unnecessaryTernaryExpressionRector], $visitors);
     }
 }
