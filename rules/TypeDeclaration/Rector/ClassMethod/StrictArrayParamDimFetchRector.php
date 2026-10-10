@@ -93,6 +93,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // cheap bail - nothing to add, skip costly parent reflection guards below
+        $hasUntypedParam = array_any(
+            $node->getParams(),
+            static fn (Param $param): bool => ! $param->type instanceof Node && ! $param->variadic
+        );
+        if (! $hasUntypedParam) {
+            return null;
+        }
+
         $hasChanged = false;
         if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
             return null;
