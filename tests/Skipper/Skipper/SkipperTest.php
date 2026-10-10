@@ -8,12 +8,11 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
-use Rector\Tests\Skipper\Skipper\Fixture\Element\ThreeMan;
 use Rector\Tests\Skipper\Skipper\Source\AnotherClassToSkip;
-use Rector\Tests\Skipper\Skipper\Source\NotSkippedClass;
 
 final class SkipperTest extends AbstractLazyTestCase
 {
@@ -69,44 +68,18 @@ final class SkipperTest extends AbstractLazyTestCase
         yield [__DIR__ . '/Fixture/PathSkippedWithMask/another_file.txt', true];
     }
 
-    /**
-     * @param object|class-string $element
-     */
-    #[DataProvider('provideDataShouldSkipElement')]
-    public function testSkipElement(string|object $element, bool $expectedSkip): void
+    #[DataProvider('provideRectorAndFile')]
+    public function testSkipElementAndFilePath(RectorInterface $rector, string $filePath, bool $expectedSkip): void
     {
-        $resultSkip = $this->skipper->shouldSkipElement($element);
-        $this->assertSame($expectedSkip, $resultSkip);
-    }
-
-    #[DataProvider('provideCheckerAndFile')]
-    public function testSkipElementAndFilePath(string $element, string $filePath, bool $expectedSkip): void
-    {
-        $resolvedSkip = $this->skipper->shouldSkipRectorAndFile($element, $filePath);
+        $resolvedSkip = $this->skipper->shouldSkipRectorAndFile($rector, $filePath);
         $this->assertSame($expectedSkip, $resolvedSkip);
     }
 
-    /**
-     * @return Iterator<array<array<int, mixed>, mixed>>
-     */
-    public static function provideCheckerAndFile(): Iterator
+    public static function provideRectorAndFile(): Iterator
     {
-        yield [FifthElement::class, __DIR__ . '/Fixture', true];
+        yield [new FifthElement(), __DIR__ . '/Fixture', true];
 
-        yield [AnotherClassToSkip::class, __DIR__ . '/Fixture/someFile', true];
-        yield [AnotherClassToSkip::class, __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
-
-        yield [NotSkippedClass::class, __DIR__ . '/Fixture/someFile', false];
-        yield [NotSkippedClass::class, __DIR__ . '/Fixture/someOtherFile', false];
-    }
-
-    /**
-     * @return Iterator<array<array<int, mixed>, mixed>>
-     */
-    public static function provideDataShouldSkipElement(): Iterator
-    {
-        yield [ThreeMan::class, false];
-        yield [FifthElement::class, true];
-        yield [new FifthElement(), true];
+        yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someFile', true];
+        yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
     }
 }

@@ -6,7 +6,6 @@ namespace Rector\Application;
 
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Skipper\Skipper\Skipper;
-use Rector\Skipper\ValueObject\SkipMatch;
 
 final class RectorRegistry
 {
@@ -15,9 +14,19 @@ final class RectorRegistry
      */
     public function __construct(
         private array $rectors,
-        private Skipper $skipper
+        private readonly Skipper $skipper
     ) {
-        // @todo exclude directly those that are skipped
+    }
+
+    /**
+     * @param RectorInterface[] $rectors
+     * @api used in tests to update the active rules
+     *
+     * @internal Used only in Rector core, not supported outside. Might change any time.
+     */
+    public function refreshRectors(array $rectors): void
+    {
+        $this->rectors = $rectors;
     }
 
     /**
@@ -25,27 +34,15 @@ final class RectorRegistry
      */
     public function forPath(string $filePath): array
     {
-        // @todo cache?
         $rectorsForPath = [];
         foreach ($this->rectors as $rector) {
             if ($this->skipper->shouldSkipRectorAndFile($rector, $filePath)) {
-                //                $this->skipper->markSkipUsed($skipMatch);
                 continue;
             }
-
-            //            $skipMatch = $this->skipper->matchSkip($rector, $filePath);
-            //            if ($skipMatch instanceof SkipMatch) {
-            //                if ($rector->refactor($this->cloneNode($node)) !== null) {
-            //                    $this->skipper->markSkipUsed($skipMatch);
-            //                }
-
-            //                return null;
-            //            }
 
             $rectorsForPath[] = $rector;
         }
 
         return $rectorsForPath;
-
     }
 }

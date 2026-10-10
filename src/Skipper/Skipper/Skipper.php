@@ -27,19 +27,14 @@ final readonly class Skipper
     ) {
     }
 
-    //    public function shouldSkipElement(string|object $element): bool
-    //    {
-    //        return $this->shouldSkipElementAndFilePath($element, __FILE__);
-    //    }
-
     public function shouldSkipFilePath(string $filePath): bool
     {
         return $this->pathSkipper->shouldSkip($filePath);
     }
 
-    public function shouldSkipRectorAndFile(RectorInterface $rector, string $filePath): bool
+    public function shouldSkipRectorAndFile(string|object $element, string $filePath): bool
     {
-        $skipMatch = $this->matchSkip($rector, $filePath);
+        $skipMatch = $this->matchSkip($element, $filePath);
         if (! $skipMatch instanceof SkipMatch) {
             return false;
         }
