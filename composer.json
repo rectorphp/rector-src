@@ -51,7 +51,7 @@
         "shipmonk/composer-dependency-analyser": "^1.8",
         "shipmonk/dead-code-detector": "^1.4",
         "symfony/process": "^8.1",
-        "symplify/easy-coding-standard": "^13.2.13",
+        "symplify/easy-coding-standard": "dev-main",
         "symplify/phpstan-rules": "^14.18",
         "tomasvotruba/class-leak": "^2.1",
         "tomasvotruba/fast-unit": "^0.1",
