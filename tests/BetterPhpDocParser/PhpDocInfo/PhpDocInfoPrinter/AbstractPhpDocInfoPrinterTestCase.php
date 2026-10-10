@@ -9,13 +9,10 @@ use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
-use Rector\FileSystem\FilePathHelper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractLazyTestCase
 {
-    protected FilePathHelper $filePathHelper;
-
     protected PhpDocInfoPrinter $phpDocInfoPrinter;
 
     private PhpDocInfoFactory $phpDocInfoFactory;
@@ -24,7 +21,6 @@ abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractLazyTestCase
     {
         parent::setUp();
 
-        $this->filePathHelper = $this->make(FilePathHelper::class);
         $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
     }

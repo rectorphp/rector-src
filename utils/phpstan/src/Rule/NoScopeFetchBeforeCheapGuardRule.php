@@ -7,8 +7,11 @@ namespace Rector\Utils\PHPStan\Rule;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -102,7 +105,7 @@ final class NoScopeFetchBeforeCheapGuardRule implements Rule
         }
 
         $staticCall = $assign->expr;
-        if (! $staticCall->class instanceof Node\Name) {
+        if (! $staticCall->class instanceof Name) {
             return null;
         }
 
@@ -110,7 +113,7 @@ final class NoScopeFetchBeforeCheapGuardRule implements Rule
             return null;
         }
 
-        if (! $staticCall->name instanceof Node\Identifier || $staticCall->name->toString() !== 'fetch') {
+        if (! $staticCall->name instanceof Identifier || $staticCall->name->toString() !== 'fetch') {
             return null;
         }
 
@@ -128,17 +131,17 @@ final class NoScopeFetchBeforeCheapGuardRule implements Rule
             return false;
         }
 
-        return $onlyStmt->expr === null || $this->isNullConstant($onlyStmt->expr);
+        return ! $onlyStmt->expr instanceof Expr || $this->isNullConstant($onlyStmt->expr);
     }
 
     private function isNullConstant(Expr $expr): bool
     {
-        return $expr instanceof Node\Expr\ConstFetch && $expr->name->toLowerString() === 'null';
+        return $expr instanceof ConstFetch && $expr->name->toLowerString() === 'null';
     }
 
     private function usesVariable(Expr $expr, string $variableName): bool
     {
-        $foundVariable = (new NodeFinder())->findFirst(
+        $foundVariable = new NodeFinder()->findFirst(
             [$expr],
             static fn (Node $subNode): bool => $subNode instanceof Variable && $subNode->name === $variableName
         );
