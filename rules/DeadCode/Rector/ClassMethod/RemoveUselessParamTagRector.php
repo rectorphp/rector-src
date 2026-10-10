@@ -74,7 +74,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // skip as no comments
-        if ($node->getComments() === []) {
+        if (! str_contains((string) $node->getDocComment(), '@param')) {
             return null;
         }
 
