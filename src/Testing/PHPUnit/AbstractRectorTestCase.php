@@ -113,8 +113,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
             $rectorNodeTraverser->refreshPhpRectors($rectors);
 
-            // the file processor re-pushes the registry rules onto the traverser per file,
-            // so the shared registry must carry the current test's rules too
+            // keep the shared registry in sync with the current test's rules
             /** @var RectorRegistry $rectorRegistry */
             $rectorRegistry = $rectorConfig->make(RectorRegistry::class);
             $rectorRegistry->refreshRectors($rectors);

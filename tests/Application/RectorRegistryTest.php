@@ -9,6 +9,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Application\Source\SkippableRector;
+use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
 
 final class RectorRegistryTest extends AbstractLazyTestCase
 {
@@ -20,10 +21,11 @@ final class RectorRegistryTest extends AbstractLazyTestCase
 
         SimpleParameterProvider::setParameter(Option::SKIP, [
             SkippableRector::class => ['*/skipped_directory/*'],
+            FifthElement::class => ['*/skipped_directory/*'],
         ]);
 
         $this->rectorRegistry = $this->make(RectorRegistry::class);
-        $this->rectorRegistry->refreshRectors([new SkippableRector()]);
+        $this->rectorRegistry->refreshRectors([new FifthElement()]);
     }
 
     protected function tearDown(): void
@@ -44,5 +46,6 @@ final class RectorRegistryTest extends AbstractLazyTestCase
 
         $this->assertCount(1, $rectorsForPath);
         $this->assertInstanceOf(SkippableRector::class, $rectorsForPath[0]);
+        $this->assertInstanceOf(FifthElement::class, $rectorsForPath[0]);
     }
 }

@@ -8,12 +8,11 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Contract\Rector\RectorInterface;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
-use Rector\Tests\Skipper\Skipper\Fixture\Element\NotSkippedClass;
 use Rector\Tests\Skipper\Skipper\Source\AnotherClassToSkip;
+use Rector\Tests\Skipper\Skipper\Source\NotSkippedClass;
 
 final class SkipperTest extends AbstractLazyTestCase
 {
@@ -70,7 +69,7 @@ final class SkipperTest extends AbstractLazyTestCase
     }
 
     #[DataProvider('provideRectorAndFile')]
-    public function testSkipElementAndFilePath(RectorInterface $rector, string $filePath, bool $expectedSkip): void
+    public function testSkipElementAndFilePath(object $rector, string $filePath, bool $expectedSkip): void
     {
         $resolvedSkip = $this->skipper->shouldSkipRectorAndFile($rector, $filePath);
         $this->assertSame($expectedSkip, $resolvedSkip);
