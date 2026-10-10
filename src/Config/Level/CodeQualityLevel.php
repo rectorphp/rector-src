@@ -40,7 +40,6 @@ use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector;
 use Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector;
 use Rector\CodeQuality\Rector\FuncCall\RemoveSoleValueSprintfRector;
-use Rector\CodeQuality\Rector\FuncCall\SetTypeToCastRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyFuncGetArgsCountRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
@@ -152,7 +151,6 @@ final class CodeQualityLevel
         ChangeArrayPushToArrayAssignRector::class,
         ForRepeatedCountToOwnVariableRector::class,
         CommonNotEqualRector::class,
-        SetTypeToCastRector::class,
         LogicalToBooleanRector::class,
         VarToPublicPropertyRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
