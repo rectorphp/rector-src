@@ -122,12 +122,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $conditionStaticType = $this->nodeTypeResolver->getNativeType($node->cond);
-        if (! $conditionStaticType->isTrue()->yes()) {
+        if ($this->shouldSkipExpr($node->cond)) {
             return null;
         }
 
-        if ($this->shouldSkipExpr($node->cond)) {
+        $conditionStaticType = $this->nodeTypeResolver->getNativeType($node->cond);
+        if (! $conditionStaticType->isTrue()->yes()) {
             return null;
         }
 
