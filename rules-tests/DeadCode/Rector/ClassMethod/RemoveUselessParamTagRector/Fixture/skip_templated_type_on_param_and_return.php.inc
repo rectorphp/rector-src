@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Issues\TemplatedTypeOnParamAndReturn\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
 
 abstract class Model {}
 interface EventInterface {}
