@@ -28,7 +28,7 @@ use Rector\ValueObject\Application\File;
  *
  * @see \Rector\Tests\Rector\RectorRunner\RectorRunnerTest
  */
-final readonly class RectorRunner
+final class RectorRunner
 {
     private const string EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
 Array of nodes cannot be empty. Ensure "%s->refactor()" returns non-empty array for Nodes.
@@ -42,11 +42,21 @@ B) Remove the Node:
     return \PhpParser\NodeVisitor::REMOVE_NODE;
 CODE_SAMPLE;
 
+    /**
+     * Skip resolution depends only on the rule and file, not the node, so cache it per file
+     * to avoid re-running reflection + class-skip resolution on every node of the same rule.
+     *
+     * @var array<class-string<RectorInterface>, SkipMatch|null>
+     */
+    private array $skipMatchByRectorClass = [];
+
+    private ?string $skipMatchFilePath = null;
+
     public function __construct(
-        private Skipper $skipper,
-        private CreatedByRuleDecorator $createdByRuleDecorator,
-        private ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        private CurrentFileProvider $currentFileProvider,
+        private readonly Skipper $skipper,
+        private readonly CreatedByRuleDecorator $createdByRuleDecorator,
+        private readonly ChangedNodeScopeRefresher $changedNodeScopeRefresher,
+        private readonly CurrentFileProvider $currentFileProvider,
     ) {
     }
 
@@ -71,7 +81,7 @@ CODE_SAMPLE;
         // class/path skip is configured for this rule and file: run the rule on a deep clone to learn
         // whether it would actually have changed anything. Only a skip that prevents a real change
         // counts as used; the original node is left untouched, so the file stays skipped either way.
-        $skipMatch = $this->skipper->matchSkip($rector, $filePath);
+        $skipMatch = $this->matchSkipByRectorClass($rector, $filePath);
         if ($skipMatch instanceof SkipMatch) {
             if ($rector->refactor($this->cloneNode($node)) !== null) {
                 $this->skipper->markSkipUsed($skipMatch);
@@ -111,6 +121,21 @@ CODE_SAMPLE;
         }
 
         return $this->postRefactorProcess($rector, $file, $originalNode, $node, $refactoredNodeOrState, $filePath);
+    }
+
+    private function matchSkipByRectorClass(RectorInterface $rector, string $filePath): ?SkipMatch
+    {
+        // reset the cache when a new file is processed
+        if ($this->skipMatchFilePath !== $filePath) {
+            $this->skipMatchByRectorClass = [];
+            $this->skipMatchFilePath = $filePath;
+        }
+
+        if (! array_key_exists($rector::class, $this->skipMatchByRectorClass)) {
+            $this->skipMatchByRectorClass[$rector::class] = $this->skipper->matchSkip($rector, $filePath);
+        }
+
+        return $this->skipMatchByRectorClass[$rector::class];
     }
 
     private function getFile(): File
