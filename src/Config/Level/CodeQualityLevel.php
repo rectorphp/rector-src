@@ -7,7 +7,6 @@ namespace Rector\Config\Level;
 use Rector\CodeQuality\Rector\Assign\CombinedAssignRector;
 use Rector\CodeQuality\Rector\AssignOp\NewArrayItemConcatAssignToAssignRector;
 use Rector\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector;
-use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
 use Rector\CodeQuality\Rector\BooleanNot\NegatedAndsToPositiveOrsRector;
@@ -175,7 +174,6 @@ final class CodeQualityLevel
         CleanupUnneededNullsafeOperatorRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
         NumberCompareToMaxFuncCallRector::class,
-        RemoveUselessIsObjectCheckRector::class,
         ConvertStaticToSelfRector::class,
         SortCallLikeNamedArgsRector::class,
         SortAttributeNamedArgsRector::class,
