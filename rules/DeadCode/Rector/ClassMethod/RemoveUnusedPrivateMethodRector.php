@@ -81,12 +81,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->getMethods() === []) {
+        // unreliable to detect on anonymous class: doesn't make sense
+        if ($node->isAnonymous()) {
             return null;
         }
 
-        // unreliable to detect on anonymous class: doesn't make sense
-        if ($node->isAnonymous()) {
+        if (! $this->hasPrivateMethod($node)) {
             return null;
         }
 
@@ -143,6 +143,17 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function hasPrivateMethod(Class_ $class): bool
+    {
+        foreach ($class->getMethods() as $classMethod) {
+            if ($classMethod->isPrivate()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function shouldSkip(ClassMethod $classMethod, ClassReflection $classReflection): bool
