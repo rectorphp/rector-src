@@ -63,6 +63,11 @@ CODE_SAMPLE;
 
         $filePath = $file->getFilePath();
 
+        // node already changed by this rule in a previous pass → hard skip
+        if ($this->skipper->shouldSkipCurrentNode($rector::class, $node)) {
+            return null;
+        }
+
         // class/path skip is configured for this rule and file: run the rule on a deep clone to learn
         // whether it would actually have changed anything. Only a skip that prevents a real change
         // counts as used; the original node is left untouched, so the file stays skipped either way.
