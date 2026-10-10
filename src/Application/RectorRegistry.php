@@ -33,9 +33,7 @@ final class RectorRegistry
     }
 
     /**
-     * @return RectorInterface[]
-     *
-     * @api used in tests
+     * @return array<RectorInterface>
      */
     public function forPath(string $filePath): array
     {

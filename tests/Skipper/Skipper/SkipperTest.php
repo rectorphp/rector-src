@@ -68,22 +68,22 @@ final class SkipperTest extends AbstractLazyTestCase
         yield [__DIR__ . '/Fixture/PathSkippedWithMask/another_file.txt', true];
     }
 
-    #[DataProvider('provideCheckerAndFile')]
-    public function testSkipRectorAndFile(object $rector, string $filePath, bool $expectedSkip): void
+    #[DataProvider('provideRectorAndFile')]
+    public function testSkipElementAndFilePath(object $rector, string $filePath, bool $expectedSkip): void
     {
         $resolvedSkip = $this->skipper->shouldSkipRectorAndFile($rector, $filePath);
         $this->assertSame($expectedSkip, $resolvedSkip);
     }
 
-    /**
-     * @return Iterator<array<array<int, mixed>, mixed>>
-     */
-    public static function provideCheckerAndFile(): Iterator
+    public static function provideRectorAndFile(): Iterator
     {
         yield [new FifthElement(), __DIR__ . '/Fixture', true];
 
         yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someFile', true];
         yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
+
+        yield [new FifthElement(), __DIR__ . '/Fixture/someFile', true];
+        yield [new FifthElement(), __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
 
         yield [new NotSkippedClass(), __DIR__ . '/Fixture/someFile', false];
         yield [new NotSkippedClass(), __DIR__ . '/Fixture/someOtherFile', false];

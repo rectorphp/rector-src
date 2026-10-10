@@ -9,6 +9,7 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Application\ApplicationFileProcessor;
+use Rector\Application\RectorRegistry;
 use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Autoloading\BootstrapFilesIncluder;
 use Rector\Composer\InstalledPackageResolver;
@@ -111,6 +112,11 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
             $rectorNodeTraverser->refreshPhpRectors($rectors);
+
+            // keep the shared registry in sync with the current test's rules
+            /** @var RectorRegistry $rectorRegistry */
+            $rectorRegistry = $rectorConfig->make(RectorRegistry::class);
+            $rectorRegistry->refreshRectors($rectors);
 
             // store cache
             self::$cacheByRuleAndConfig[$cacheKey] = true;
