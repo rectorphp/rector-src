@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ProcessAnalyzer\RectifiedAnalyzer;
+use Rector\Skipper\Matcher\FileInfoMatcher;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\ValueObject\SkipMatch;
 
@@ -20,7 +21,7 @@ final readonly class Skipper
     public function __construct(
         private RectifiedAnalyzer $rectifiedAnalyzer,
         private PathSkipper $pathSkipper,
-        private SkipSkipper $skipSkipper,
+        private FileInfoMatcher $fileInfoMatcher,
         private SkippedClassResolver $skippedClassResolver,
         private ReflectionProvider $reflectionProvider,
         private UsedSkipCollector $usedSkipCollector,
@@ -53,7 +54,25 @@ final readonly class Skipper
             return null;
         }
 
-        return $this->skipSkipper->match($element, $filePath, $this->skippedClassResolver->resolve());
+        foreach ($this->skippedClassResolver->resolve() as $skippedClass => $skippedFiles) {
+            if (! is_a($element, $skippedClass, true)) {
+                continue;
+            }
+
+            // skip everywhere
+            if (! is_array($skippedFiles)) {
+                return new SkipMatch($skippedClass, null);
+            }
+
+            // the same path can be skipped under multiple rules, so the matched path is reported
+            // scoped to its rule, not tracked on its own
+            $matchedPath = $this->fileInfoMatcher->matchPattern($filePath, $skippedFiles);
+            if ($matchedPath !== null) {
+                return new SkipMatch($skippedClass, $matchedPath);
+            }
+        }
+
+        return null;
     }
 
     public function markSkipUsed(SkipMatch $skipMatch): void
