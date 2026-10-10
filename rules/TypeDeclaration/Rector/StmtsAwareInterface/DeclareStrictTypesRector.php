@@ -6,11 +6,11 @@ namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @deprecated This rule is deprecated, as too risky to add `declare(strict_types=1)` without context about type safety. Use SafeDeclareStrictTypesRector instead, which only adds it to type-safe files.

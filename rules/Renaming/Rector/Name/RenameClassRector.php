@@ -15,12 +15,12 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Doc\CodeSample\ConfiguredCodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
-use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

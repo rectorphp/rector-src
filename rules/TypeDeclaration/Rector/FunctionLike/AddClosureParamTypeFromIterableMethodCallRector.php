@@ -16,14 +16,14 @@ use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Type\CallableType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\MethodReflectionResolver;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 /**

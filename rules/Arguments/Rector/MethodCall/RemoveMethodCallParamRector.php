@@ -12,11 +12,11 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\Arguments\ValueObject\RemoveMethodCallParam;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Doc\CodeSample\ConfiguredCodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
-use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

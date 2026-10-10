@@ -12,9 +12,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Doc\CodeSample\ConfiguredCodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\Transform\ValueObject\WrapReturn;
 use Webmozart\Assert\Assert;
 

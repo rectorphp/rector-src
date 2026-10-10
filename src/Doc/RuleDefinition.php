@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\RuleDoc\ValueObject;
+namespace Rector\Doc;
 
+use Rector\Doc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\PoorDocumentationException;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
-use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
 
 /**
  * @api

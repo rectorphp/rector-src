@@ -8,11 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PHPStan\Reflection\MethodReflection;
 use Rector\CodeQuality\NodeManipulator\NamedArgsSorter;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Attribute\SortAttributeNamedArgsRector\SortAttributeNamedArgsRectorTest

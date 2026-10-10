@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rector\RuleDoc\ValueObject\CodeSample;
+namespace Rector\Doc\CodeSample;
 
+use Rector\Doc\AbstractCodeSample;
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
-use Rector\RuleDoc\ValueObject\AbstractCodeSample;
 
 /**
  * @api

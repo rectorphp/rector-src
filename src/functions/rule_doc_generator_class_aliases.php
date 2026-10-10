@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 
+use Rector\Doc\AbstractCodeSample;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\CodeSample\ComposerJsonAwareCodeSample;
+use Rector\Doc\CodeSample\ConfiguredCodeSample;
+use Rector\Doc\CodeSample\ExtraFileCodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\RuleDoc\Contract\Category\CategoryInfererInterface;
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Contract\ConfigurableRuleInterface;
@@ -9,12 +15,6 @@ use Rector\RuleDoc\Contract\DocumentedRuleInterface;
 use Rector\RuleDoc\Contract\RuleCodeSamplePrinterInterface;
 use Rector\RuleDoc\Exception\PoorDocumentationException;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
-use Rector\RuleDoc\ValueObject\AbstractCodeSample;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\CodeSample\ComposerJsonAwareCodeSample;
-use Rector\RuleDoc\ValueObject\CodeSample\ConfiguredCodeSample;
-use Rector\RuleDoc\ValueObject\CodeSample\ExtraFileCodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 // backward-compatibility aliases for the former symplify/rule-doc-generator-contracts package,
 // so existing extension and 3rd party rules referencing the Symplify\RuleDocGenerator namespace keep working

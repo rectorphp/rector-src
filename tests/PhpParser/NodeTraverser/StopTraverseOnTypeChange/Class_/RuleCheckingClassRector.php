@@ -6,8 +6,8 @@ namespace Rector\Tests\PhpParser\NodeTraverser\StopTraverseOnTypeChange\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use Rector\Doc\RuleDefinition;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 final class RuleCheckingClassRector extends AbstractRector

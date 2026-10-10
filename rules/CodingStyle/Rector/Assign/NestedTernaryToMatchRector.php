@@ -7,10 +7,10 @@ namespace Rector\CodingStyle\Rector\Assign;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @deprecated This rule is deprecated, as match(true) with nested conditions is often less readable and more confusing than the original ternary. Refactor to an explicit intent instead, e.g. early returns or a named method.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\RuleDoc\ValueObject;
+namespace Rector\Doc;
 
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;

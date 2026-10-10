@@ -7,10 +7,10 @@ namespace Rector\CodeQuality\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 
 /**
  * @deprecated This rule is deprecated, as shortening ranges like "[a-zA-Z0-9_]" to "\w" is a matter of personal preference. It can worsen regex readability and is rather a coding standard change.

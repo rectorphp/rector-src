@@ -8,10 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\DeadCode\NodeCollector\OverriddenParameterResolver;
 use Rector\DeadCode\NodeManipulator\PrivateMethodParamRemover;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\ValueObject\MethodName;
 
 /**

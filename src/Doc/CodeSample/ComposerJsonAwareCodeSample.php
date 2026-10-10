@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\RuleDoc\ValueObject\CodeSample;
+namespace Rector\Doc\CodeSample;
 
-use Rector\RuleDoc\ValueObject\AbstractCodeSample;
+use Rector\Doc\AbstractCodeSample;
 
 /**
  * @api

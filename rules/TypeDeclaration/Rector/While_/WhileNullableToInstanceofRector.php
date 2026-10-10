@@ -14,10 +14,10 @@ use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\While_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\Doc\CodeSample\CodeSample;
+use Rector\Doc\RuleDefinition;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\ValueObject\CodeSample\CodeSample;
-use Rector\RuleDoc\ValueObject\RuleDefinition;
 use Rector\TypeDeclaration\TypeAnalyzer\NullableTypeAnalyzer;
 
 /**
