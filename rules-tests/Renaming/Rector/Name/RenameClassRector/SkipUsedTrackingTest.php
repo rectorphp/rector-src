@@ -10,7 +10,8 @@ use Rector\Skipper\Skipper\UsedSkipCollector;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /**
- * A class/path skip is only "used" when the rule would actually have changed the skipped file.
+ * A rule-scoped path skip is marked used for every file whose path it matches, as the rule is
+ * skipped once per file.
  *
  * @see RenameClassRector
  */
@@ -32,7 +33,7 @@ final class SkipUsedTrackingTest extends AbstractRectorTestCase
 
         $usedPaths = $usedSkips[RenameClassRector::class] ?? [];
 
-        // the skip that actually prevented a rename is marked used
+        // both skip masks match a processed file, so both are marked used
         $this->assertContains('*skip_used_renames_old_class*', $usedPaths);
 
         // the skip on a file the rule would not have touched is never marked used
