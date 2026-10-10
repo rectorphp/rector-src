@@ -21,4 +21,8 @@
     <php>
         <ini name="memory_limit" value="-1"/>
     </php>
+
+    <extensions>
+        <bootstrap class="Rector\Utils\PHPUnit\SlowestTests\SlowTestExtension"/>
+    </extensions>
 </phpunit>
