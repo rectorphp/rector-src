@@ -12,6 +12,7 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
+use Rector\Tests\Skipper\Skipper\Fixture\Element\NotSkippedClass;
 use Rector\Tests\Skipper\Skipper\Source\AnotherClassToSkip;
 
 final class SkipperTest extends AbstractLazyTestCase
@@ -79,7 +80,10 @@ final class SkipperTest extends AbstractLazyTestCase
     {
         yield [new FifthElement(), __DIR__ . '/Fixture', true];
 
-        yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someFile', true];
-        yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
+        yield [new FifthElement(), __DIR__ . '/Fixture/someFile', true];
+        yield [new FifthElement(), __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
+
+        yield [new NotSkippedClass(), __DIR__ . '/Fixture/someFile', false];
+        yield [new NotSkippedClass(), __DIR__ . '/Fixture/someOtherFile', false];
     }
 }
