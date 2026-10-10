@@ -9,7 +9,7 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Skipper\Skipper\PathSkipper;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Finder\Finder;
 
@@ -22,7 +22,7 @@ final readonly class FilesFinder
         private FilesystemTweaker $filesystemTweaker,
         private UnchangedFilesFilter $unchangedFilesFilter,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
-        private PathSkipper $pathSkipper,
+        private Skipper $skipper,
         private FilePathHelper $filePathHelper,
         private ChangedFilesDetector $changedFilesDetector,
         private FilePathFilter $filePathFilter,
@@ -48,7 +48,7 @@ final readonly class FilesFinder
         $filteredFilePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
         $filteredFilePaths = array_filter(
             $filteredFilePaths,
-            fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
+            fn (string $filePath): bool => ! $this->skipper->shouldSkipFilePath($filePath)
         );
 
         // fallback append `.php` to be used for both $filteredFilePaths and $filteredFilePathsInDirectories
@@ -184,7 +184,7 @@ final readonly class FilesFinder
                 continue;
             }
 
-            if ($this->pathSkipper->shouldSkip($path)) {
+            if ($this->skipper->shouldSkipFilePath($path)) {
                 continue;
             }
 
