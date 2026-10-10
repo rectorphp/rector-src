@@ -42,7 +42,6 @@ use Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector;
 use Rector\CodeQuality\Rector\FuncCall\RemoveSoleValueSprintfRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyFuncGetArgsCountRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
-use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
@@ -119,7 +118,6 @@ final class CodeQualityLevel
         SimplifyForeachToCoalescingRector::class,
         SimplifyFuncGetArgsCountRector::class,
         SimplifyInArrayValuesRector::class,
-        SimplifyStrposLowerRector::class,
         SimplifyArraySearchRector::class,
         SimplifyConditionsRector::class,
         SimplifyIfNotNullReturnRector::class,
