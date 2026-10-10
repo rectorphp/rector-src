@@ -71,14 +71,14 @@ CODE_SAMPLE;
         // class/path skip is configured for this rule and file: run the rule on a deep clone to learn
         // whether it would actually have changed anything. Only a skip that prevents a real change
         // counts as used; the original node is left untouched, so the file stays skipped either way.
-        $skipMatch = $this->skipper->matchSkip($rector, $filePath);
-        if ($skipMatch instanceof SkipMatch) {
-            if ($rector->refactor($this->cloneNode($node)) !== null) {
-                $this->skipper->markSkipUsed($skipMatch);
-            }
-
-            return null;
-        }
+        //        $skipMatch = $this->skipper->matchSkip($rector, $filePath);
+        //        if ($skipMatch instanceof SkipMatch) {
+        //            if ($rector->refactor($this->cloneNode($node)) !== null) {
+        //                $this->skipper->markSkipUsed($skipMatch);
+        //            }
+        //
+        //            return null;
+        //        }
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;

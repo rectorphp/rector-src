@@ -41,6 +41,9 @@ final class RectorRegistry
     {
         $rectorsForPath = [];
         foreach ($this->rectors as $rector) {
+            var_dump($rector);
+            var_dump($file->getFilePath());
+
             if ($this->skipper->shouldSkipRectorAndFile($rector, $file->getFilePath())) {
                 continue;
             }
