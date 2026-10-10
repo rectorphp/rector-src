@@ -7,7 +7,7 @@ namespace Rector\Tests\Skipper\Skipper\Fixture\Element;
 use PhpParser\Node;
 use Rector\RuleDoc\RuleDefinition;
 
-final class FifthElement implements \Rector\Contract\Rector\RectorInterface
+final class NotSkippedClass implements \Rector\Contract\Rector\RectorInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {

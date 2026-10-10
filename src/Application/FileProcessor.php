@@ -44,6 +44,7 @@ final readonly class FileProcessor
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private UsedImportsResolver $usedImportsResolver,
+        private RectorRegistry $rectorRegistry
     ) {
     }
 
@@ -58,6 +59,10 @@ final readonly class FileProcessor
 
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
+
+        $this->rectorNodeTraverser->refreshPhpRectors(
+            $this->rectorRegistry->forPath($filePath)
+        );
 
         do {
             $file->changeHasChanged(false);

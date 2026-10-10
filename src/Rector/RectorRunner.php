@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\Rector;
 
 use PhpParser\Node;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
-use PhpParser\NodeVisitor\CloningVisitor;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
@@ -17,9 +15,7 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\NodeVisitor\PhpDocInfoRemovingNodeVisitor;
 use Rector\Skipper\Skipper\Skipper;
-use Rector\Skipper\ValueObject\SkipMatch;
 use Rector\ValueObject\Application\File;
 
 /**
@@ -61,22 +57,8 @@ CODE_SAMPLE;
             return null;
         }
 
-        $filePath = $file->getFilePath();
-
         // node already changed by this rule in a previous pass → hard skip
         if ($this->skipper->shouldSkipCurrentNode($rector::class, $node)) {
-            return null;
-        }
-
-        // class/path skip is configured for this rule and file: run the rule on a deep clone to learn
-        // whether it would actually have changed anything. Only a skip that prevents a real change
-        // counts as used; the original node is left untouched, so the file stays skipped either way.
-        $skipMatch = $this->skipper->matchSkip($rector, $filePath);
-        if ($skipMatch instanceof SkipMatch) {
-            if ($rector->refactor($this->cloneNode($node)) !== null) {
-                $this->skipper->markSkipUsed($skipMatch);
-            }
-
             return null;
         }
 
@@ -110,7 +92,13 @@ CODE_SAMPLE;
             return $refactoredNodeOrState;
         }
 
-        return $this->postRefactorProcess($rector, $file, $originalNode, $node, $refactoredNodeOrState, $filePath);
+        return $this->postRefactorProcess(
+            $rector,
+            $file,
+            $originalNode,
+            $node,
+            $refactoredNodeOrState,
+        );
     }
 
     private function getFile(): File
@@ -126,15 +114,6 @@ CODE_SAMPLE;
     }
 
     /**
-     * Deep clone, so a skipped rule can be probed on the clone without mutating the real node.
-     */
-    private function cloneNode(Node $node): Node
-    {
-        $nodeTraverser = new NodeTraverser(new CloningVisitor(), new PhpDocInfoRemovingNodeVisitor());
-        return $nodeTraverser->traverse([$node])[0];
-    }
-
-    /**
      * @param Node|Node[] $refactoredNode
      * @return Node|Node[]
      */
@@ -144,7 +123,6 @@ CODE_SAMPLE;
         Node $originalNode,
         Node $node,
         Node|array $refactoredNode,
-        string $filePath
     ): Node|array {
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, $rector::class);
@@ -154,7 +132,7 @@ CODE_SAMPLE;
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
-        $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
+        $this->refreshScopeNodes($refactoredNode, $file->getFilePath(), $currentScope);
 
         return $refactoredNode;
     }

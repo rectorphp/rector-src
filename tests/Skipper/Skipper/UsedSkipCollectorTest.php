@@ -50,7 +50,7 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
     public function testCollectsOnlyMatchedSkips(): void
     {
         $this->skipper->shouldSkipFilePath('tests/Skipper/Skipper/Fixture/SomeSkippedPath/any.txt');
-        $this->skipper->shouldSkipElement(FifthElement::class);
+        $this->skipper->shouldSkipRectorAndFile(new FifthElement(), __DIR__ . '/Fixture/someFile');
 
         $usedSkips = $this->usedSkipCollector->provide();
 
@@ -76,8 +76,8 @@ final class UsedSkipCollectorTest extends AbstractLazyTestCase
             ],
         ]);
 
-        $this->skipper->shouldSkipElementAndFilePath(
-            AnotherClassToSkip::class,
+        $this->skipper->shouldSkipRectorAndFile(
+            new AnotherClassToSkip(),
             __DIR__ . '/Fixture/someDirectory/anotherFile.php'
         );
 
