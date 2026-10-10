@@ -58,6 +58,9 @@ CODE_SAMPLE
         return [For_::class, Expression::class];
     }
 
+    /**
+     * @param For_|Expression $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
