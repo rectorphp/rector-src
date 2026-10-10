@@ -33,7 +33,6 @@ use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
-use Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector;
 use Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector;
@@ -158,7 +157,6 @@ final class CodeQualityLevel
         TernaryFalseExpressionToIfRector::class,
         SwitchTrueToMatchRector::class,
         SimplifyIfNullableReturnRector::class,
-        CallUserFuncWithArrowFunctionToInlineRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
         InlineArrayReturnAssignRector::class,
         RemoveAlwaysElseRector::class,
