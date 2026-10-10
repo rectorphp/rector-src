@@ -15,6 +15,7 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\ThreeMan;
 use Rector\Tests\Skipper\Skipper\Source\AnotherClassToSkip;
+use Rector\Tests\Skipper\Skipper\Source\NotSkippedClass;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -69,7 +70,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
     {
         RectorConfigValidator::ensureRectorRulesExist([
             // not a Rector rule, can never be skipped
-            AnotherClassToSkip::class => ['some/path'],
+            NotSkippedClass::class => ['some/path'],
             // Rector rule, must not be reported
             OrdSingleByteRector::class => ['some/path'],
             // post rector rule, must not be reported
@@ -80,7 +81,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
 
         $output = $this->bufferedOutput->fetch();
 
-        $this->assertStringContainsString('AnotherClassToSkip', $output);
+        $this->assertStringContainsString('NotSkippedClass', $output);
 
         $this->assertStringNotContainsString('OrdSingleByteRector', $output);
         $this->assertStringNotContainsString('NameImportingPostRector', $output);
