@@ -32,9 +32,9 @@ final readonly class Skipper
         return $this->pathSkipper->shouldSkip($filePath);
     }
 
-    public function shouldSkipElementAndFilePath(string|object $element, string $filePath): bool
+    public function shouldSkipRectorAndFile(object $rector, string $filePath): bool
     {
-        $skipMatch = $this->matchSkip($element, $filePath);
+        $skipMatch = $this->matchSkip($rector, $filePath);
         if (! $skipMatch instanceof SkipMatch) {
             return false;
         }

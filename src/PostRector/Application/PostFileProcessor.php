@@ -34,7 +34,8 @@ final class PostFileProcessor implements ResettableInterface
         private readonly ClassRenamingPostRector $classRenamingPostRector,
         private readonly DocblockNameImportingPostRector $docblockNameImportingPostRector,
         private readonly UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private readonly RenameClassRector $renameClassRector
     ) {
     }
 
@@ -70,13 +71,13 @@ final class PostFileProcessor implements ResettableInterface
      */
     private function shouldSkipPostRector(PostRectorInterface $postRector, string $filePath, array $stmts): bool
     {
-        if ($this->skipper->shouldSkipElementAndFilePath($postRector, $filePath)) {
+        if ($this->skipper->shouldSkipRectorAndFile($postRector, $filePath)) {
             return true;
         }
 
         // skip renaming if rename class rector is skipped
-        if ($postRector instanceof ClassRenamingPostRector && $this->skipper->shouldSkipElementAndFilePath(
-            RenameClassRector::class,
+        if ($postRector instanceof ClassRenamingPostRector && $this->skipper->shouldSkipRectorAndFile(
+            $this->renameClassRector,
             $filePath
         )) {
             return true;
