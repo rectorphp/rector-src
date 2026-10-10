@@ -140,38 +140,6 @@ CODE_SAMPLE;
         $this->buildPreloadScriptPhpDocParser($buildDirectory, $preloadFile);
     }
 
-    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
-    {
-        $this->buildPreloadScriptForSplitPhpParser($buildDirectory, $preloadFile);
-        $this->buildPreloadScriptForSplitPhpDocParser($buildDirectory, $preloadFile);
-    }
-
-    private function buildPreloadScriptForSplitPhpParser(string $buildDirectory, string $preloadFile): void
-    {
-        $vendorDir = $buildDirectory . '/vendor';
-        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
-            return;
-        }
-
-        // 1. find php-parser file infos
-        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
-
-        file_put_contents($preloadFile, $preloadFileContent);
-    }
-
-    private function buildPreloadScriptForSplitPhpDocParser(string $buildDirectory, string $preloadFile): void
-    {
-        $vendorDir = $buildDirectory . '/vendor';
-        if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
-            return;
-        }
-
-        // 1. find phpdoc-parser file infos
-        $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
-
-        file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
-    }
-
     private function buildPreloadScriptPhpDocParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
@@ -252,17 +220,6 @@ CODE_SAMPLE;
         }
 
         return $preloadFileContent;
-    }
-
-    private function createRequireOnceFilePathLineForSplitPackage(string $realPath): string
-    {
-        if (! str_contains($realPath, 'vendor')) {
-            $filePath = '/src/' . Strings::after($realPath, '/src/');
-            return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
-        }
-
-        $filePath = '/../../../vendor/' . Strings::after($realPath, 'vendor/');
-        return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
     }
 
     private function createRequireOnceFilePathLine(string $realPath): string
