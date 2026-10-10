@@ -25,6 +25,7 @@ parameters:
         - config
         - src
         - rules
+        - scripts
         # tests
         - tests
         - rules-tests

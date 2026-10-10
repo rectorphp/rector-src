@@ -68,6 +68,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // skip if has no private property
+        $hasAnyPrivateProperty = array_any($node->getProperties(), function (Property $property): bool {
+            return $property->isPrivate();
+        });
+
+        if (! $hasAnyPrivateProperty) {
+            return null;
+        }
+
         if ($this->shouldSkipClass($node)) {
             return null;
         }
