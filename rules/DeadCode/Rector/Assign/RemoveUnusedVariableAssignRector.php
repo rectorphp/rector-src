@@ -94,12 +94,15 @@ CODE_SAMPLE
             return null;
         }
 
-        // we cannot be sure here
-        if ($this->shouldSkip($stmts)) {
+        $assignedVariableNamesByStmtPosition = $this->resolvedAssignedVariablesByStmtPosition($stmts);
+        if ($assignedVariableNamesByStmtPosition === []) {
             return null;
         }
 
-        $assignedVariableNamesByStmtPosition = $this->resolvedAssignedVariablesByStmtPosition($stmts);
+        // we cannot be sure here, deep walk only when there is a candidate to remove
+        if ($this->shouldSkip($stmts)) {
+            return null;
+        }
 
         $hasChanged = false;
 
