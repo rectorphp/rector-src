@@ -17,7 +17,7 @@ use Rector\Parallel\Exception\ParallelShouldNotHappenException;
 use Rector\Parallel\ScheduleFactory;
 use Rector\PhpParser\Parser\ParserErrors;
 use Rector\Reporting\MissConfigurationReporter;
-use Rector\Skipper\Skipper\UsedSkipCollector;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\Util\ArrayParametersMerger;
 use Rector\ValueObject\Application\File;
@@ -50,7 +50,7 @@ final class ApplicationFileProcessor
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
-        private readonly UsedSkipCollector $usedSkipCollector,
+        private readonly Skipper $skipper,
     ) {
     }
 
@@ -106,7 +106,7 @@ final class ApplicationFileProcessor
 
         // path-only skips are matched in the main process while finding files; in parallel runs the
         // result comes from workers only, so merge those marks back in to avoid false "unused skip"
-        $processResult->addUsedSkips($this->usedSkipCollector->provide());
+        $processResult->addUsedSkips($this->skipper->provideUsedSkips());
 
         $this->restoreErrorHandler();
 
@@ -181,7 +181,7 @@ final class ApplicationFileProcessor
             }
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged, $this->usedSkipCollector->provide());
+        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged, $this->skipper->provideUsedSkips());
     }
 
     private function processFile(File $file, Configuration $configuration): FileProcessResult

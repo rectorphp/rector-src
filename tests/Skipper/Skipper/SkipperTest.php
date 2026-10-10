@@ -16,6 +16,11 @@ use Rector\Tests\Skipper\Skipper\Source\NotSkippedClass;
 
 final class SkipperTest extends AbstractLazyTestCase
 {
+    /**
+     * Uniquely named on purpose, so the shared skipper is never polluted by another test.
+     */
+    private const string UNUSED_SKIP_MARKER = '*/UniqueUnusedSkipMarker/*';
+
     private Skipper $skipper;
 
     protected function setUp(): void
@@ -92,5 +97,60 @@ final class SkipperTest extends AbstractLazyTestCase
 
         yield [new NotSkippedClass(), __DIR__ . '/Fixture/someFile', false];
         yield [new NotSkippedClass(), __DIR__ . '/Fixture/someOtherFile', false];
+    }
+
+    public function testCollectsOnlyMatchedSkips(): void
+    {
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            // path skip that will be matched
+            __DIR__ . '/Fixture/SomeSkippedPath',
+
+            // path skip that is never matched
+            self::UNUSED_SKIP_MARKER,
+
+            // class skip that will be matched
+            FifthElement::class,
+        ]);
+
+        $this->skipper->shouldSkipFilePath('tests/Skipper/Skipper/Fixture/SomeSkippedPath/any.txt');
+        $this->skipper->shouldSkipRectorAndFile(new FifthElement(), __DIR__ . '/Fixture/someFile');
+
+        $usedSkips = $this->skipper->provideUsedSkips();
+
+        // matched skips are collected as keys
+        $this->assertArrayHasKey(FifthElement::class, $usedSkips);
+        $this->assertNotEmpty(array_filter(
+            array_keys($usedSkips),
+            static fn (string $usedSkip): bool => str_ends_with($usedSkip, 'SomeSkippedPath')
+        ));
+
+        // unmatched skip is never collected
+        $this->assertArrayNotHasKey(self::UNUSED_SKIP_MARKER, $usedSkips);
+    }
+
+    public function testCollectsMatchedPathNotRuleClassForRuleScopedSkip(): void
+    {
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            AnotherClassToSkip::class => [
+                // matched path
+                '*/someDirectory/*',
+                // sibling path that never matches
+                self::UNUSED_SKIP_MARKER,
+            ],
+        ]);
+
+        $this->skipper->shouldSkipRectorAndFile(
+            new AnotherClassToSkip(),
+            __DIR__ . '/Fixture/someDirectory/anotherFile.php'
+        );
+
+        $usedSkips = $this->skipper->provideUsedSkips();
+
+        // the specific matched path is collected nested under its rule class
+        $this->assertArrayHasKey(AnotherClassToSkip::class, $usedSkips);
+        $this->assertContains('*/someDirectory/*', $usedSkips[AnotherClassToSkip::class]);
+
+        // the unmatched sibling path under the same rule is never collected
+        $this->assertNotContains(self::UNUSED_SKIP_MARKER, $usedSkips[AnotherClassToSkip::class]);
     }
 }

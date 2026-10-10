@@ -26,18 +26,32 @@ final class Skipper
      */
     private null|array $skippedClassesToFiles = null;
 
+    /**
+     * Map of skip element (rule class or global path) to the set of paths matched under it.
+     * Rule-scoped skips collect their matched paths; skip-everywhere rules and global path skips
+     * keep an empty path set, the same shape as the "->withSkip()" config.
+     *
+     * @var array<string, array<string, true>>
+     */
+    private array $usedSkips = [];
+
     public function __construct(
         private readonly RectifiedAnalyzer $rectifiedAnalyzer,
         private readonly PathSkipper $pathSkipper,
         private readonly FileInfoMatcher $fileInfoMatcher,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly UsedSkipCollector $usedSkipCollector,
     ) {
     }
 
     public function shouldSkipFilePath(string $filePath): bool
     {
-        return $this->pathSkipper->shouldSkip($filePath);
+        $matchedPath = $this->pathSkipper->matchSkippedPath($filePath);
+        if ($matchedPath === null) {
+            return false;
+        }
+
+        $this->markUsed($matchedPath);
+        return true;
     }
 
     public function shouldSkipRectorAndFile(object $rector, string $filePath): bool
@@ -84,7 +98,23 @@ final class Skipper
 
     public function markSkipUsed(SkipMatch $skipMatch): void
     {
-        $this->usedSkipCollector->markUsed($skipMatch->getSkippedClass(), $skipMatch->getMatchedPath());
+        $this->markUsed($skipMatch->getSkippedClass(), $skipMatch->getMatchedPath());
+    }
+
+    /**
+     * Skip elements (rule classes and paths) that actually matched during the run,
+     * so unused skips can be reported and removed.
+     *
+     * @return array<string, string[]>
+     */
+    public function provideUsedSkips(): array
+    {
+        $usedSkips = [];
+        foreach ($this->usedSkips as $skip => $paths) {
+            $usedSkips[$skip] = array_keys($paths);
+        }
+
+        return $usedSkips;
     }
 
     /**
@@ -146,5 +176,14 @@ final class Skipper
     public function shouldSkipCurrentNode(string $rectorClass, Node $node): bool
     {
         return $this->rectifiedAnalyzer->hasRectified($rectorClass, $node);
+    }
+
+    private function markUsed(string $skip, ?string $path = null): void
+    {
+        $this->usedSkips[$skip] ??= [];
+
+        if ($path !== null) {
+            $this->usedSkips[$skip][$path] = true;
+        }
     }
 }

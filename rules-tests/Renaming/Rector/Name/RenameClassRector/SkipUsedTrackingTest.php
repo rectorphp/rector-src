@@ -6,7 +6,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector;
 
 use Nette\Utils\FileSystem;
 use Rector\Renaming\Rector\Name\RenameClassRector;
-use Rector\Skipper\Skipper\UsedSkipCollector;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /**
@@ -28,8 +28,8 @@ final class SkipUsedTrackingTest extends AbstractRectorTestCase
         // file does not use OldClass → rule would not change it → its skip is unnecessary
         $this->doTestFile(__DIR__ . '/FixtureSkipUsedTracking/skip_unused_no_old_class.php.inc');
 
-        $usedSkipCollector = $this->make(UsedSkipCollector::class);
-        $usedSkips = $usedSkipCollector->provide();
+        $skipper = $this->make(Skipper::class);
+        $usedSkips = $skipper->provideUsedSkips();
 
         $usedPaths = $usedSkips[RenameClassRector::class] ?? [];
 
