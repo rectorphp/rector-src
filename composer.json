@@ -37,7 +37,6 @@
         "symfony/console": "^6.4.24",
         "symfony/filesystem": "^8.1",
         "symfony/finder": "^8.1",
-        "symplify/rule-doc-generator-contracts": "^11.2",
         "webmozart/assert": "^2.4"
     },
     "require-dev": {
@@ -52,7 +51,7 @@
         "shipmonk/composer-dependency-analyser": "^1.8",
         "shipmonk/dead-code-detector": "^1.4",
         "symfony/process": "^8.1",
-        "symplify/easy-coding-standard": "^13.2.13",
+        "symplify/easy-coding-standard": "dev-main",
         "symplify/phpstan-rules": "^14.18",
         "tomasvotruba/class-leak": "^2.3.3",
         "tomasvotruba/fast-unit": "^0.1",
@@ -60,7 +59,8 @@
         "tracy/tracy": "^2.12"
     },
     "replace": {
-        "rector/rector": "self.version"
+        "rector/rector": "self.version",
+        "symplify/rule-doc-generator-contracts": "*"
     },
     "autoload": {
         "psr-4": {
@@ -72,7 +72,8 @@
             "Rector\\Utils\\PHPStan\\": "utils/phpstan/src"
         },
         "files": [
-            "src/functions/node_helper.php"
+            "src/functions/node_helper.php",
+            "src/functions/rule_doc_generator_class_aliases.php"
         ]
     },
     "autoload-dev": {

@@ -7,8 +7,8 @@ namespace Rector\Tests\PhpParser\NodeTraverser\ClassLike;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
