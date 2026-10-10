@@ -109,6 +109,11 @@ CODE_SAMPLE
         return PhpVersionFeature::VARIADIC_PARAM;
     }
 
+    /**
+     * @template TFunctionLike of ClassMethod|Function_|Closure
+     * @param TFunctionLike $node
+     * @return TFunctionLike|null
+     */
     private function applyVariadicParams(
         ClassMethod|Function_|Closure $node,
         string $variableName

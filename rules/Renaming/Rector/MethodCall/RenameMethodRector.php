@@ -157,6 +157,11 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @template TClassLike of Class_|Trait_|Interface_
+     * @param TClassLike $classOrInterface
+     * @return TClassLike|null
+     */
     private function refactorClass(
         Class_|Trait_|Interface_ $classOrInterface,
         Scope $scope
