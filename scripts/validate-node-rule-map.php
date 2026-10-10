@@ -38,7 +38,7 @@ if (! is_array($committedMap)) {
 // keep only core rules from the committed map
 $committedCoreMap = [];
 foreach ($committedMap as $nodeClass => $ruleClasses) {
-    $coreRuleClasses = array_filter($ruleClasses, static fn(string $ruleClass): bool => array_all($siblingNamespacePrefixes, fn(string $siblingNamespacePrefix): bool => !str_starts_with($ruleClass, $siblingNamespacePrefix)));
+    $coreRuleClasses = array_filter($ruleClasses, static fn (string $ruleClass): bool => array_all($siblingNamespacePrefixes, fn (string $siblingNamespacePrefix): bool => ! str_starts_with($ruleClass, $siblingNamespacePrefix)));
 
     $committedCoreMap[$nodeClass] = array_values($coreRuleClasses);
 }

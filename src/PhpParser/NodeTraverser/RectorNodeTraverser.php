@@ -145,6 +145,11 @@ final class RectorNodeTraverser implements NodeTraverserInterface
         $visitorsByPosition = [];
 
         if (array_key_exists($nodeClass, $this->nodeRuleMap)) {
+            // no rule subscribes to this node class and no third-party rules to check
+            if ($this->nodeRuleMap[$nodeClass] === [] && $this->unknownVisitors === []) {
+                return $this->visitorsPerNodeClass[$nodeClass] = [];
+            }
+
             // O(1) lookup in the static map, then keep only the active rules
             foreach ($this->nodeRuleMap[$nodeClass] as $ruleClass) {
                 if (isset($this->visitorByClass[$ruleClass])) {
