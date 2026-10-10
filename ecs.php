@@ -28,7 +28,6 @@ return ECSConfig::configure()
 
         // avoid re-running on build
         __DIR__ . '/preload.php',
-        __DIR__ . '/preload-split-package.php',
 
         PhpdocTypesFixer::class => [
             // double to Double false positive

@@ -39,7 +39,6 @@ if (! is_string($buildDirectory)) {
 
 $preloadBuilder = new PreloadBuilder();
 $preloadBuilder->buildPreloadScript($buildDirectory, $buildDirectory . '/preload.php');
-$preloadBuilder->buildPreloadScriptForSplitPackage($buildDirectory, $buildDirectory . '/preload-split-package.php');
 
 final class PreloadBuilder
 {
@@ -157,9 +156,6 @@ CODE_SAMPLE;
         // 1. find php-parser file infos
         $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
-        // 2. create preload.php from provided files
-        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos);
-
         file_put_contents($preloadFile, $preloadFileContent);
     }
 
@@ -172,9 +168,6 @@ CODE_SAMPLE;
 
         // 1. find phpdoc-parser file infos
         $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
-
-        // 2. create preload-split-package.php from provided files
-        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos, true);
 
         file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
     }
@@ -256,25 +249,6 @@ CODE_SAMPLE;
             }
 
             $preloadFileContent .= $this->createRequireOnceFilePathLine($realPath);
-        }
-
-        return $preloadFileContent;
-    }
-
-    /**
-     * @param SplFileInfo[] $fileInfos
-     */
-    private function createPreloadFileContentForSplitPackage(array $fileInfos, bool $append = false): string
-    {
-        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE . PHP_EOL . PHP_EOL;
-
-        foreach ($fileInfos as $fileInfo) {
-            $realPath = $fileInfo->getRealPath();
-            if ($realPath === false) {
-                continue;
-            }
-
-            $preloadFileContent .= $this->createRequireOnceFilePathLineForSplitPackage($realPath);
         }
 
         return $preloadFileContent;
