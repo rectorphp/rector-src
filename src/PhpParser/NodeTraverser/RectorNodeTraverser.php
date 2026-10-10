@@ -142,7 +142,6 @@ final class RectorNodeTraverser implements NodeTraverserInterface
                 continue;
             }
 
-            $traverseChildren = true;
             $currentNodeVisitors = $this->getVisitorsForNode($subNode);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {
@@ -162,28 +161,14 @@ final class RectorNodeTraverser implements NodeTraverserInterface
                         // stop traversing as node type changed and visitors won't work
                         continue 2;
                     }
-
-                    //                } elseif ($return === NodeVisitor::DONT_TRAVERSE_CHILDREN) {
-                    //                    $traverseChildren = false;
-                    //                } elseif ($return === NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN) {
-                    //                    $traverseChildren = false;
-                    //                    break;
-                    //                } elseif ($return === NodeVisitor::STOP_TRAVERSAL) {
-                    //                    $this->stopTraversal = true;
-                    //                    break 2;
-                    //                } elseif ($return === NodeVisitor::REPLACE_WITH_NULL) {
-                    //                    $node->{$name} = null;
-                    //                    continue 2;
                 } else {
                     throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
                 }
             }
 
-            if ($traverseChildren) {
-                $this->traverseNode($subNode);
-                if ($this->stopTraversal) {
-                    break;
-                }
+            $this->traverseNode($subNode);
+            if ($this->stopTraversal) {
+                break;
             }
         }
     }
@@ -225,29 +210,15 @@ final class RectorNodeTraverser implements NodeTraverserInterface
                     } elseif ($return === NodeVisitor::REMOVE_NODE) {
                         $doNodes[] = [$i, []];
                         continue 2;
-                    } elseif ($return === NodeVisitor::DONT_TRAVERSE_CHILDREN) {
-                        $traverseChildren = false;
-                    } elseif ($return === NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN) {
-                        $traverseChildren = false;
-                        break;
-                    } elseif ($return === NodeVisitor::STOP_TRAVERSAL) {
-                        $this->stopTraversal = true;
-                        break 2;
-                    } elseif ($return === NodeVisitor::REPLACE_WITH_NULL) {
-                        throw new LogicException(
-                            'REPLACE_WITH_NULL can not be used if the parent structure is an array'
-                        );
                     } else {
                         throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
                     }
                 }
             }
 
-            if ($traverseChildren) {
-                $this->traverseNode($node);
-                if ($this->stopTraversal) {
-                    break;
-                }
+            $this->traverseNode($node);
+            if ($this->stopTraversal) {
+                break;
             }
         }
 
