@@ -63,7 +63,6 @@ use Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector;
 use Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector;
 use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
 use Rector\CodeQuality\Rector\Property\FixClassCaseSensitivityVarDocblockRector;
-use Rector\CodeQuality\Rector\StmtsAwareInterface\MoveInnerFunctionToTopLevelRector;
 use Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector;
 use Rector\CodeQuality\Rector\Switch_\SwitchTrueToMatchRector;
 use Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector;
@@ -113,7 +112,6 @@ final class CodeQualityLevel
         ForeachToInArrayRector::class,
         RepeatedOrEqualToInArrayRector::class,
         RepeatedAndNotEqualToNotInArrayRector::class,
-        MoveInnerFunctionToTopLevelRector::class,
         InnerFunctionToPrivateMethodRector::class,
         SimplifyForeachToCoalescingRector::class,
         SimplifyFuncGetArgsCountRector::class,
