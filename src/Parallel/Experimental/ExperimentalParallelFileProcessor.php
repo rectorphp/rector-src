@@ -67,7 +67,7 @@ final class ExperimentalParallelFileProcessor
     ): ProcessResult {
         // reversed, so that array_pop() hands out the biggest files first
         $jobsPerWorker = array_map(
-            static fn (array $jobs): array => array_reverse($jobs),
+            array_reverse(...),
             $bucketSchedule->getJobsPerWorker()
         );
 
