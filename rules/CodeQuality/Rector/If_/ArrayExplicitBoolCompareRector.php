@@ -9,12 +9,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
-use Rector\CodeQuality\NodeAnalyzer\ExplicitBoolConditionResolver;
-use Rector\CodeQuality\ValueObject\ExplicitBoolCondition;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -27,7 +26,6 @@ final class ArrayExplicitBoolCompareRector extends AbstractRector
 {
     public function __construct(
         private readonly ArrayTypeAnalyzer $arrayTypeAnalyzer,
-        private readonly ExplicitBoolConditionResolver $explicitBoolConditionResolver,
     ) {
     }
 
@@ -75,39 +73,36 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $explicitBoolCondition = $this->explicitBoolConditionResolver->resolve($node);
-        if (! $explicitBoolCondition instanceof ExplicitBoolCondition) {
+        // skip short ternary
+        if ($node instanceof Ternary && ! $node->if instanceof Expr) {
             return null;
         }
 
-        $expr = $explicitBoolCondition->getConditionNode();
-        if (! $this->arrayTypeAnalyzer->isArrayType($expr)) {
+        if ($node->cond instanceof BooleanNot) {
+            $conditionNode = $node->cond->expr;
+            $isNegated = true;
+        } else {
+            $conditionNode = $node->cond;
+            $isNegated = false;
+        }
+
+        // cheap bail - rule only ever rewrites a bare variable, skip costly type resolution otherwise
+        if (! $conditionNode instanceof Variable) {
             return null;
         }
 
-        $binaryOp = $this->resolveArray($explicitBoolCondition->isNegated(), $expr);
-        if (! $binaryOp instanceof Expr) {
-            return null;
-        }
-
-        $node->cond = $binaryOp;
-
-        return $node;
-    }
-
-    private function resolveArray(bool $isNegated, Expr $expr): Identical|NotIdentical|null
-    {
-        if (! $expr instanceof Variable) {
+        // array type already excludes mixed and bool, so a single native type check is enough
+        if (! $this->arrayTypeAnalyzer->isArrayType($conditionNode)) {
             return null;
         }
 
         $array = new Array_([]);
 
         // compare === []
-        if ($isNegated) {
-            return new Identical($expr, $array);
-        }
+        $node->cond = $isNegated
+            ? new Identical($conditionNode, $array)
+            : new NotIdentical($conditionNode, $array);
 
-        return new NotIdentical($expr, $array);
+        return $node;
     }
 }
