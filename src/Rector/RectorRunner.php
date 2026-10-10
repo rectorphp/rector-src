@@ -100,8 +100,7 @@ CODE_SAMPLE;
 
             // only remove node is supported
             if ($refactoredNodeOrState !== NodeVisitor::REMOVE_NODE) {
-                // @todo warn about unsupported state in the future
-                return null;
+                throw new ShouldNotHappenException(sprintf('Unsupported state "%d" returned from "%s".', $refactoredNodeOrState, $rector::class));
             }
 
             // notify this rule changed code
