@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Class_\RemoveRefactorDuplicatedNodeInstanceCheckRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
@@ -11,7 +10,6 @@ use Rector\TypeDeclarationDocblocks\Rector\Class_\AddParamTypeToRefactorMethodRe
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-        PostIncDecToPreIncDecRector::class,
         FinalizeTestCaseClassRector::class,
         AddParamTypeToRefactorMethodRector::class,
         RemoveRefactorDuplicatedNodeInstanceCheckRector::class,
