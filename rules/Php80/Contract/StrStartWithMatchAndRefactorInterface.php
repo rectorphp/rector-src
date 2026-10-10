@@ -15,9 +15,13 @@ use Rector\Php80\ValueObject\StrStartsWith;
 
 interface StrStartWithMatchAndRefactorInterface
 {
+    /**
+     * @api implemented by child classes
+     */
     public function match(Identical|NotIdentical|Equal|NotEqual $binaryOp): ?StrStartsWith;
 
     /**
+     * @api implemented by child classes
      * @return FuncCall|BooleanNot|null
      */
     public function refactorStrStartsWith(StrStartsWith $strStartsWith): ?Node;

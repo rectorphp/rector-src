@@ -1,6 +1,5 @@
 includes:
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
-    - phpstan-baseline-dead-code.neon
 
 rules:
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
@@ -74,6 +73,12 @@ parameters:
             offloadCollectorData: false
 
     ignoreErrors:
+        # called magically by parent
+        -
+            message: '#^Unused Rector\\PhpParser\\Printer\\BetterStandardPrinter\:\:(pInterpolatedStringPart|pStmt_FileNode)$#'
+            identifier: shipmonk.deadMethod
+            path: src/PhpParser/Printer/BetterStandardPrinter.php
+
         # the deprecated set objects are still resolved internally, until every extension bonds its rules
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
