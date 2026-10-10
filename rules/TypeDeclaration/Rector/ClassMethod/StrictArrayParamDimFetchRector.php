@@ -103,12 +103,14 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
-            return null;
-        }
+        if ($node instanceof ClassMethod) {
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
+                return null;
+            }
 
-        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->isTypeGuardedClass($node)) {
-            return null;
+            if ($this->parentClassMethodTypeOverrideGuard->isTypeGuardedClass($node)) {
+                return null;
+            }
         }
 
         foreach ($node->getParams() as $param) {
