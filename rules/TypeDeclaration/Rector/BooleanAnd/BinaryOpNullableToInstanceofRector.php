@@ -82,6 +82,11 @@ CODE_SAMPLE
         return $this->processNullableInstance($node);
     }
 
+    /**
+     * @template TBinaryOp of BooleanAnd|BooleanOr
+     * @param TBinaryOp $node
+     * @return TBinaryOp|null
+     */
     private function processNullableInstance(BooleanAnd|BooleanOr $node): null|BooleanAnd|BooleanOr
     {
         $nullableObjectType = $this->nullableTypeAnalyzer->resolveNullableObjectType($node->left);
@@ -134,9 +139,7 @@ CODE_SAMPLE
             return $booleanOr;
         }
 
-        /** @var BooleanOr|null $result */
-        $result = $this->processNullableInstance($booleanOr);
-        return $result;
+        return $this->processNullableInstance($booleanOr);
     }
 
     private function createExprInstanceof(Expr $expr, ObjectType $objectType): Instanceof_
