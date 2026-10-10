@@ -55,6 +55,11 @@ final class SkipperTest extends AbstractLazyTestCase
         $this->assertSame($expectedSkip, $filePathResultSkip);
     }
 
+    public function testResolveDeprecatedSkippedClasses(): void
+    {
+        $this->assertSame([], $this->skipper->resolveDeprecatedSkippedClasses());
+    }
+
     /**
      * @return Iterator<string[]|bool[]>
      */

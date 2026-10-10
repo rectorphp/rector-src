@@ -14,7 +14,7 @@ use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Reporting\UnusedSkipResolver;
-use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Console\Command\Source\DeprecatedFixtureRule;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -56,7 +56,7 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
                 new VendorMissAnalyseGuard(),
                 $this->make(UnusedSkipResolver::class),
             ),
-            $this->make(SkippedClassResolver::class),
+            $this->make(Skipper::class),
         );
 
         $this->commandTester = new CommandTester($validateConfigCommand);

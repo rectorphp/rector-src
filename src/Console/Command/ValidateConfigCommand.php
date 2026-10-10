@@ -11,7 +11,7 @@ use Rector\Configuration\Option;
 use Rector\Console\ExitCode;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
-use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
+use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +28,7 @@ final class ValidateConfigCommand extends Command
         private readonly SymfonyStyle $symfonyStyle,
         private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
         private readonly MissConfigurationReporter $missConfigurationReporter,
-        private readonly SkippedClassResolver $skippedClassResolver,
+        private readonly Skipper $skipper,
     ) {
         parent::__construct();
     }
@@ -94,7 +94,7 @@ final class ValidateConfigCommand extends Command
 
     private function reportDeprecatedSkippedClasses(): int
     {
-        $deprecatedSkippedClasses = $this->skippedClassResolver->resolveDeprecatedSkippedClasses();
+        $deprecatedSkippedClasses = $this->skipper->resolveDeprecatedSkippedClasses();
         if ($deprecatedSkippedClasses === []) {
             return 0;
         }
