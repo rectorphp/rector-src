@@ -374,10 +374,6 @@ parameters:
                 - tests/Issues/
                 - tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
 
-        -
-            identifier: typePerfect.noMixedMethodCaller
-            path: src/PhpParser/Parser/RectorParser.php
-
         # known types
         -
             identifier: varTag.nativeType
