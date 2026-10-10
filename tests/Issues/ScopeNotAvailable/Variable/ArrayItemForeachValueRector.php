@@ -7,9 +7,9 @@ namespace Rector\Tests\Issues\ScopeNotAvailable\Variable;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 final class ArrayItemForeachValueRector extends AbstractRector
 {

@@ -7,9 +7,9 @@ namespace Rector\Transform\Rector\New_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Doc\CodeSample\ConfiguredCodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\RuleDefinition;
 use Rector\Transform\ValueObject\NewToStaticCall;
 use Webmozart\Assert\Assert;
 

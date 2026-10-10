@@ -15,9 +15,9 @@ use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\ObjectType;
 use Rector\CodeQuality\NodeAnalyzer\ExplicitBoolConditionResolver;
 use Rector\CodeQuality\ValueObject\ExplicitBoolCondition;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\ObjectExplicitBoolCompareRectorTest

@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Doc\CodeSample\ConfiguredCodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Rector\AbstractRector;
 use Rector\Renaming\ValueObject\RenameStaticMethod;
+use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

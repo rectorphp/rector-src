@@ -7,10 +7,10 @@ namespace Rector\CodingStyle\Rector\Encapsed;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\InterpolatedString;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @deprecated This rule is deprecated, as it is a coding standard preference with no real value. Use a coding standard tool instead.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Doc\CodeSample;
+namespace Rector\RuleDoc\CodeSample;
 
-use Rector\Doc\AbstractCodeSample;
+use Rector\RuleDoc\AbstractCodeSample;
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
 

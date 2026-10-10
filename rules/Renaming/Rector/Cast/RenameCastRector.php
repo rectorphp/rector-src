@@ -8,11 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Double;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Doc\CodeSample\ConfiguredCodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\Renaming\ValueObject\RenameCast;
+use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**

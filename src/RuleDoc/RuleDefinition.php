@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Doc;
+namespace Rector\RuleDoc;
 
-use Rector\Doc\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\PoorDocumentationException;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;

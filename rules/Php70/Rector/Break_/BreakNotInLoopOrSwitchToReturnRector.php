@@ -8,10 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitor;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 

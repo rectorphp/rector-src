@@ -7,9 +7,9 @@ namespace Rector\DeadCode\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\FuncCall\RemoveFilterVarOnExactTypeRector\RemoveFilterVarOnExactTypeRectorTest

@@ -15,10 +15,10 @@ use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use Rector\CodeQuality\NodeAnalyzer\ExplicitBoolConditionResolver;
 use Rector\CodeQuality\ValueObject\ExplicitBoolCondition;
-use Rector\Doc\CodeSample\CodeSample;
-use Rector\Doc\RuleDefinition;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector\ArrayExplicitBoolCompareRectorTest

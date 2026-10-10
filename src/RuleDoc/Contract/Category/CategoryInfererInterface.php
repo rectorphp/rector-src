@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\RuleDoc\Contract\Category;
 
-use Rector\Doc\RuleDefinition;
+use Rector\RuleDoc\RuleDefinition;
 
 /**
  * @api
