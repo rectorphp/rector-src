@@ -27,11 +27,6 @@ final readonly class Skipper
     ) {
     }
 
-    public function shouldSkipElement(string|object $element): bool
-    {
-        return $this->shouldSkipElementAndFilePath($element, __FILE__);
-    }
-
     public function shouldSkipFilePath(string $filePath): bool
     {
         return $this->pathSkipper->shouldSkip($filePath);
