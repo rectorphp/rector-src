@@ -50,8 +50,6 @@ final class ClassRenamer
      */
     public function renameNode(Node $node, array $oldToNewClasses, ?Scope $scope): ?Node
     {
-        $oldToNewTypes = $this->createOldToNewTypes($oldToNewClasses);
-
         // execute FullyQualified before Name on purpose so next Name check is pure Name node
         if ($node instanceof FullyQualified) {
             return $this->refactorName($node, $oldToNewClasses, $scope);
@@ -69,6 +67,7 @@ final class ClassRenamer
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if ($phpDocInfo instanceof PhpDocInfo) {
+            $oldToNewTypes = $this->createOldToNewTypes($oldToNewClasses);
             $hasPhpDocChanged = $this->refactorPhpDoc($node, $oldToNewTypes, $oldToNewClasses, $phpDocInfo);
 
             if ($hasPhpDocChanged) {
