@@ -6,18 +6,6 @@ parameters:
 			identifier: shipmonk.deadMethod
 			path: rules/Php80/Contract/StrStartWithMatchAndRefactorInterface.php
 
-		-
-			message: '#^Unused Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface\:\:decorate$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/BetterPhpDocParser/Contract/PhpDocParser/PhpDocNodeDecoratorInterface.php
-
-		-
-			message: '#^Unused Rector\\Parallel\\Contract\\SerializableInterface\:\:decode$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/Parallel/Contract/SerializableInterface.php
-
         # called magically by parent
 		-
 			message: '#^Unused Rector\\PhpParser\\Printer\\BetterStandardPrinter\:\:(pInterpolatedStringPart|pStmt_FileNode)$#'

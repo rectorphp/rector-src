@@ -9,6 +9,7 @@ use JsonSerializable;
 interface SerializableInterface extends JsonSerializable
 {
     /**
+     * @api implemented by child classes
      * @param array<string, mixed> $json
      */
     public static function decode(array $json): self;
