@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Application;
 
+use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Skipper\Skipper\Skipper;
+use Rector\ValueObject\Application\File;
 
 /**
  * @see \Rector\Tests\Application\RectorRegistryTest
@@ -35,11 +37,15 @@ final class RectorRegistry
     /**
      * @return array<RectorInterface>
      */
-    public function forPath(string $filePath): array
+    public function forFile(File $file): array
     {
         $rectorsForPath = [];
         foreach ($this->rectors as $rector) {
-            if ($this->skipper->shouldSkipRectorAndFile($rector, $filePath)) {
+            if ($this->skipper->shouldSkipRectorAndFile($rector, $file->getFilePath())) {
+                continue;
+            }
+
+            if ($rector instanceof HTMLAverseRectorInterface && $file->containsHTML()) {
                 continue;
             }
 

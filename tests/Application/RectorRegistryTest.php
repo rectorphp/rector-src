@@ -9,6 +9,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
+use Rector\ValueObject\Application\File;
 
 final class RectorRegistryTest extends AbstractLazyTestCase
 {
@@ -31,16 +32,15 @@ final class RectorRegistryTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::SKIP, []);
     }
 
-    public function testForPathSkipsRectorForSkippedPath(): void
+    public function testForFile(): void
     {
-        $rectorsForPath = $this->rectorRegistry->forPath(__DIR__ . '/skipped_directory/some_file.php');
+        $file = new File(__DIR__ . '/skipped_directory/some_file.php', '');
+        $rectorsForPath = $this->rectorRegistry->forFile($file);
 
         $this->assertSame([], $rectorsForPath);
-    }
 
-    public function testForPathKeepsRectorForOtherPath(): void
-    {
-        $rectorsForPath = $this->rectorRegistry->forPath(__DIR__ . '/some_file.php');
+        $file = new File(__DIR__ . '/some_file.php', '');
+        $rectorsForPath = $this->rectorRegistry->forFile($file);
 
         $this->assertCount(1, $rectorsForPath);
         $this->assertInstanceOf(FifthElement::class, $rectorsForPath[0]);
