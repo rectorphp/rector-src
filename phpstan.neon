@@ -79,6 +79,12 @@ parameters:
             identifier: shipmonk.deadMethod
             path: src/PhpParser/Printer/BetterStandardPrinter.php
 
+        # deprecated, to be removed
+        -
+            message: '#^Unused Rector\\Set\\Contract\\SetInterface\:\:(.*?)$#'
+            identifier: shipmonk.deadMethod
+            path: src/Set/Contract/SetInterface.php
+
         # the deprecated set objects are still resolved internally, until every extension bonds its rules
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'

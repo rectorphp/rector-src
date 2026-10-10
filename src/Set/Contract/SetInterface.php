@@ -14,18 +14,9 @@ namespace Rector\Set\Contract;
  */
 interface SetInterface
 {
-    /**
-     * @api implemented by child classes
-     */
     public function getGroupName(): string;
 
-    /**
-     * @api implemented by child classes
-     */
     public function getName(): string;
 
-    /**
-     * @api implemented by child classes
-     */
     public function getSetFilePath(): string;
 }
