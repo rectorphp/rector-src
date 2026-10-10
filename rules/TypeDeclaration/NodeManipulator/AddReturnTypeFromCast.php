@@ -27,6 +27,11 @@ final readonly class AddReturnTypeFromCast
     ) {
     }
 
+    /**
+     * @template TFunctionLike of ClassMethod|Function_
+     * @param TFunctionLike $functionLike
+     * @return TFunctionLike|null
+     */
     public function add(ClassMethod|Function_ $functionLike, Scope $scope): ClassMethod|Function_|null
     {
         if ($functionLike->returnType instanceof Node) {

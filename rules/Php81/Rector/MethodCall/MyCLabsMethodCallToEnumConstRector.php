@@ -244,6 +244,11 @@ CODE_SAMPLE
         };
     }
 
+    /**
+     * @template TExpr of PropertyFetch|Variable
+     * @param TExpr $expr
+     * @return TExpr|null
+     */
     private function getPropertyFetchOrVariable(PropertyFetch|Variable $expr): null|PropertyFetch|Variable
     {
         if (! $this->isObjectType($expr, new ObjectType('MyCLabs\Enum\Enum'))) {

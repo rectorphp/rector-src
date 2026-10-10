@@ -128,6 +128,11 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
         return $classReflection->hasTraitUse($traitName);
     }
 
+    /**
+     * @template TPropertyFetch of PropertyFetch|StaticPropertyFetch
+     * @param TPropertyFetch $propertyFetch
+     * @return TPropertyFetch|null
+     */
     private function refactorPropertyFetch(
         PropertyFetch|StaticPropertyFetch $propertyFetch
     ): null|PropertyFetch|StaticPropertyFetch {

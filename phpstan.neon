@@ -4,6 +4,7 @@ includes:
 rules:
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
     - Rector\Utils\PHPStan\Rule\NoScopeFetchBeforeCheapGuardRule
+    - Rector\Utils\PHPStan\Rule\PreferGenericTemplateOnSameUnionTypeRule
 
 parameters:
     level: 8

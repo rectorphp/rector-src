@@ -99,6 +99,11 @@ CODE_SAMPLE
         return new Instanceof_($expr, $fullyQualified);
     }
 
+    /**
+     * @template TLoop of While_|Do_
+     * @param TLoop $while
+     * @return TLoop|null
+     */
     private function refactorNotIdentical(While_|Do_ $while, NotIdentical $notIdentical): While_|Do_|null
     {
         if (! $this->valueResolver->isNull($notIdentical->right)) {

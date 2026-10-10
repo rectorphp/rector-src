@@ -170,6 +170,11 @@ CODE_SAMPLE
         return false;
     }
 
+    /**
+     * @template TFunctionLike of ClassMethod|Function_|Closure
+     * @param TFunctionLike $node
+     * @return TFunctionLike
+     */
     private function processSingleUnionType(
         ClassMethod|Function_|Closure $node,
         UnionType $unionType,
@@ -200,6 +205,11 @@ CODE_SAMPLE
         return $this->isUnionPossibleReturnsVoid($node);
     }
 
+    /**
+     * @template TFunctionLike of ClassMethod|Function_|Closure
+     * @param TFunctionLike $functionLike
+     * @return TFunctionLike
+     */
     private function refactorSingleReturnType(
         Return_ $return,
         Identifier|Name|NullableType|ComplexType $returnedStrictTypeNode,

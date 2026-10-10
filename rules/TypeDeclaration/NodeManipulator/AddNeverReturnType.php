@@ -33,6 +33,11 @@ final readonly class AddNeverReturnType
     ) {
     }
 
+    /**
+     * @template TFunctionLike of ClassMethod|Function_|Closure
+     * @param TFunctionLike $node
+     * @return TFunctionLike|null
+     */
     public function add(ClassMethod|Function_|Closure $node, Scope $scope): ClassMethod|Function_|Closure|null
     {
         if ($this->shouldSkip($node, $scope)) {

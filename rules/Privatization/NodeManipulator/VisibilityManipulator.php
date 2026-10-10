@@ -159,6 +159,11 @@ final readonly class VisibilityManipulator
         }
     }
 
+    /**
+     * @template TNode of ClassConst|ClassMethod|Property
+     * @param TNode $node
+     * @return TNode|null
+     */
     public function publicize(ClassConst|ClassMethod|Property $node): ClassConst|ClassMethod|Property|null
     {
         // already non-public
