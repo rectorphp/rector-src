@@ -79,6 +79,9 @@ final class SkipperTest extends AbstractLazyTestCase
     {
         yield [new FifthElement(), __DIR__ . '/Fixture', true];
 
+        yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someFile', true];
+        yield [new AnotherClassToSkip(), __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
+
         yield [new FifthElement(), __DIR__ . '/Fixture/someFile', true];
         yield [new FifthElement(), __DIR__ . '/Fixture/someDirectory/anotherFile.php', true];
 
