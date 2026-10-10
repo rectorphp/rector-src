@@ -13,7 +13,6 @@ use PHPStan\Analyser\MutatingScope;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
@@ -56,11 +55,6 @@ CODE_SAMPLE;
     public function run(RectorInterface $rector, Node $node): int|Node|null|array
     {
         $file = $this->getFile();
-
-        if ($rector instanceof HTMLAverseRectorInterface && $file->containsHTML()) {
-            return null;
-        }
-
         $filePath = $file->getFilePath();
 
         // node already changed by this rule in a previous pass → hard skip

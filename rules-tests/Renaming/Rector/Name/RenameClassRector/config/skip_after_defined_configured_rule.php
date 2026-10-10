@@ -10,10 +10,9 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClass;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->removeUnusedImports();
 
-    $rectorConfig
-        ->ruleWithConfiguration(RenameClassRector::class, [
-            OldClass::class => NewClass::class,
-        ]);
+    $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
+        OldClass::class => NewClass::class,
+    ]);
 
     // skip the path after defined
     $rectorConfig->skip([
