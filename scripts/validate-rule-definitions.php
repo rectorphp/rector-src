@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Rector\Console\ExitCode;
+use Rector\RuleDoc\Contract\DocumentedRuleInterface;
 use Rector\Scripts\Finder\RectorClassFinder;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 

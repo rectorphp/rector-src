@@ -25,6 +25,7 @@ parameters:
         - config
         - src
         - rules
+        - scripts
         # tests
         - tests
         - rules-tests
@@ -361,6 +362,7 @@ parameters:
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
                 - rules/CodeQuality/Rector/Class_/InnerFunctionToPrivateMethodRector.php
                 - rules/CodeQuality/NodeAnalyzer/VariableDimFetchAssignResolver.php
+                - src/Parallel/Experimental/ExperimentalParallelFileProcessor.php
 
         -
             identifier: symplify.noNullableServiceInConstructor
