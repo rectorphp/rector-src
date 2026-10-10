@@ -81,6 +81,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
         $output = $this->bufferedOutput->fetch();
 
         $this->assertStringContainsString('AnotherClassToSkip', $output);
+
         $this->assertStringNotContainsString('OrdSingleByteRector', $output);
         $this->assertStringNotContainsString('NameImportingPostRector', $output);
     }
