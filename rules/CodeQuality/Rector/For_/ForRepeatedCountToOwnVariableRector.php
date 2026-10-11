@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\For_;
-use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -23,7 +22,7 @@ use Rector\RuleDoc\RuleDefinition;
 /**
  * @see \Rector\Tests\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector\ForRepeatedCountToOwnVariableRectorTest
  */
-final class ForRepeatedCountToOwnVariableRector extends AbstractRector implements HTMLAverseRectorInterface
+final class ForRepeatedCountToOwnVariableRector extends AbstractRector
 {
     private const string COUNTER_NAME = 'counter';
 
@@ -76,6 +75,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?array
     {
+        if ($this->getFile()->containsHTML()) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
 
         if ($scope->hasVariableType(self::COUNTER_NAME)->yes()) {
