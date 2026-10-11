@@ -101,6 +101,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // the native type is read from the @return docblock; skip before scope fetch when there is none
+        if ($node->getDocComment() === null) {
+            return null;
+        }
+
         if (! $this->isGetRepositoryReturnOnly($node)) {
             return null;
         }
