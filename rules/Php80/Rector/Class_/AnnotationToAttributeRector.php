@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -135,6 +136,11 @@ CODE_SAMPLE
     {
         if ($this->annotationsToAttributes === []) {
             throw new InvalidConfigurationException(sprintf('The "%s" rule requires configuration.', self::class));
+        }
+
+        // annotations converted to attributes only come from a docblock; skip nodes without one
+        if (!$node->getDocComment() instanceof Doc) {
+            return null;
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
