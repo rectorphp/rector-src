@@ -40,6 +40,7 @@ use Rector\Console\Command\SetupCICommand;
 use Rector\Console\Command\ValidateConfigCommand;
 use Rector\Console\Command\WorkerCommand;
 use Rector\Console\ConsoleApplication;
+use Rector\Console\Rule\AllRectorRulesProvider;
 use Rector\Console\Style\SymfonyStyleFactory;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -158,6 +159,7 @@ final class LazyContainerFactory
         $rectorConfig->singleton(WorkerCommand::class);
         $rectorConfig->singleton(ValidateConfigCommand::class);
         $rectorConfig->singleton(SetupCICommand::class);
+        $rectorConfig->singleton(AllRectorRulesProvider::class);
         $rectorConfig->singleton(ListRulesCommand::class);
         $rectorConfig->singleton(CustomRuleCommand::class);
         $rectorConfig->singleton(ComposerBasedCommand::class);
