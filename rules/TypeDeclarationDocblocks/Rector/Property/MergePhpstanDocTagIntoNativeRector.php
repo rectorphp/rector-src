@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclarationDocblocks\Rector\Property;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassConst;
@@ -88,7 +89,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // @phpstan-* tags can only live in a docblock; skip nodes without one
-        if ($node->getDocComment() === null) {
+        if (!$node->getDocComment() instanceof Doc) {
             return null;
         }
 
