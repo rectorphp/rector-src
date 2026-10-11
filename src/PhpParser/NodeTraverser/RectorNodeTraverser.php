@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitor;
+use Rector\Application\RectorRegistry;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Rector\RectorRunner;
@@ -35,15 +36,13 @@ final class RectorNodeTraverser
      */
     private array $visitorsPerNodeClass = [];
 
-    /**
-     * @param RectorInterface[] $rectors
-     */
     public function __construct(
-        private array $rectors,
-        private readonly PhpVersionedFilter $phpVersionedFilter,
-        private readonly ComposerPackageConstraintFilter $composerPackageConstraintFilter,
-        private readonly ConfigurationRuleFilter $configurationRuleFilter,
+        //        private array $rectors,
+        //        private readonly PhpVersionedFilter $phpVersionedFilter,
+        //        private readonly ComposerPackageConstraintFilter $composerPackageConstraintFilter,
+        //        private readonly ConfigurationRuleFilter $configurationRuleFilter,
         private readonly RectorRunner $rectorRunner,
+        //        private readonly RectorRegistry $rectorRegistry,
     ) {
     }
 
@@ -53,56 +52,56 @@ final class RectorNodeTraverser
      */
     public function traverse(array $nodes): array
     {
-        $this->prepareNodeVisitors();
+        //        $this->prepareNodeVisitors();
 
         $this->stopTraversal = false;
 
         return $this->traverseArray($nodes);
     }
 
-    /**
-     * @param RectorInterface[] $rectors
-     *
-     * @internal Used only in Rector core, not supported outside. Might change any time.
-     */
-    public function refreshPhpRectors(array $rectors): void
-    {
-        Assert::allIsInstanceOf($rectors, RectorInterface::class);
+    //    /**
+    //     * @param RectorInterface[] $node
+    //     *
+    //     * @internal Used only in Rector core, not supported outside. Might change any time.
+    //     */
+    //    public function refreshPhpRectors(array $rectors): void
+    //    {
+    //        Assert::allIsInstanceOf($rectors, RectorInterface::class);
+    //
+    // //        $this->rectors = $rectors;
+    // //        $this->visitors = [];
+    // //        $this->visitorsPerNodeClass = [];
+    //
+    //        $this->areNodeVisitorsPrepared = false;
+    //
+    // //        $this->prepareNodeVisitors();
+    //    }
 
-        $this->rectors = $rectors;
-        $this->visitors = [];
-        $this->visitorsPerNodeClass = [];
-
-        $this->areNodeVisitorsPrepared = false;
-
-        $this->prepareNodeVisitors();
-    }
-
-    /**
-     * @return RectorInterface[]
-     *
-     * @api used in tests
-     */
-    public function getVisitorsForNode(Node $node): array
-    {
-        $nodeClass = $node::class;
-
-        if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
-            $this->visitorsPerNodeClass[$nodeClass] = [];
-
-            /** @var RectorInterface $visitor */
-            foreach ($this->visitors as $visitor) {
-                foreach ($visitor->getNodeTypes() as $nodeType) {
-                    if (is_a($nodeClass, $nodeType, true)) {
-                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
-                        continue 2;
-                    }
-                }
-            }
-        }
-
-        return $this->visitorsPerNodeClass[$nodeClass];
-    }
+    //    /**
+    //     * @return RectorInterface[]
+    //     *
+    //     * @api used in tests
+    //     */
+    //    public function getVisitorsForNode(Node $node): array
+    //    {
+    //        $nodeClass = $node::class;
+    //
+    //        if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
+    //            $this->visitorsPerNodeClass[$nodeClass] = [];
+    //
+    //            /** @var RectorInterface */
+    //            foreach ($this->visitors as $visitor) {
+    //                foreach ($visitor->getNodeTypes() as $nodeType) {
+    //                    if (is_a($nodeClass, $nodeType, true)) {
+    //                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+    //                        continue 2;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //
+    //        return $this->visitorsPerNodeClass[$nodeClass];
+    //    }
 
     private function traverseNode(Node $node): void
     {
@@ -235,26 +234,26 @@ final class RectorNodeTraverser
         }
     }
 
-    /**
-     * This must happen after $this->configuration is set after ProcessCommand::execute() is run, otherwise we get default false positives.
-     *
-     * This should be removed after https://github.com/rectorphp/rector/issues/5584 is resolved
-     */
-    private function prepareNodeVisitors(): void
-    {
-        if ($this->areNodeVisitorsPrepared) {
-            return;
-        }
-
-        // filter out by PHP version
-        $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
-
-        // filter out by composer package constraint
-        $this->visitors = $this->composerPackageConstraintFilter->filter($this->visitors);
-
-        // filter by configuration
-        $this->visitors = $this->configurationRuleFilter->filter($this->visitors);
-
-        $this->areNodeVisitorsPrepared = true;
-    }
+    //    /**
+    //     * This must happen after $this->configuration is set after ProcessCommand::execute() is run, otherwise we get default false positives.
+    //     *
+    //     * This should be removed after https://github.com/rectorphp/rector/issues/5584 is resolved
+    //     */
+    //    private function prepareNodeVisitors(): void
+    //    {
+    //        if ($this->areNodeVisitorsPrepared) {
+    //            return;
+    //        }
+    //
+    //        // filter out by PHP version
+    //        $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
+    //
+    //        // filter out by composer package constraint
+    //        $this->visitors = $this->composerPackageConstraintFilter->filter($this->visitors);
+    //
+    //        // filter by configuration
+    //        $this->visitors = $this->configurationRuleFilter->filter($this->visitors);
+    //
+    //        $this->areNodeVisitorsPrepared = true;
+    //    }
 }
