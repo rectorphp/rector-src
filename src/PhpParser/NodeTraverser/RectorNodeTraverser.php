@@ -12,9 +12,6 @@ use PhpParser\NodeVisitor;
 use Rector\Application\RectorRegistry;
 use Rector\Rector\RectorRunner;
 
-/**
- * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
- */
 final class RectorNodeTraverser
 {
     private bool $stopTraversal;

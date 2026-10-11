@@ -19,9 +19,9 @@ final class RectorRegistry
      * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private PhpVersionedFilter $phpVersionedFilter,
-        private ComposerPackageConstraintFilter $composerPackageConstraintFilter,
-        private ConfigurationRuleFilter $configurationRuleFilter,
+        private readonly PhpVersionedFilter $phpVersionedFilter,
+        private readonly ComposerPackageConstraintFilter $composerPackageConstraintFilter,
+        private readonly ConfigurationRuleFilter $configurationRuleFilter,
         private array $rectors,
     ) {
         $this->rectors = $this->filterRectors($rectors);
@@ -36,6 +36,7 @@ final class RectorRegistry
     public function refreshRectors(array $rectors): void
     {
         $this->rectors = $this->filterRectors($rectors);
+        $this->cache = [];
     }
 
     /**
