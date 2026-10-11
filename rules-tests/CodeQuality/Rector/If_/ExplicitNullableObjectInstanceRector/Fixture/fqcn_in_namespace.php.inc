@@ -1,0 +1,47 @@
+<?php
+
+namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Fixture;
+
+use Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Source\stdClass;
+
+class FqcnInNamespace
+{
+    public function run()
+    {
+        $stdClass = $this->getStdClass();
+        if ($stdClass === null) {
+            return;
+        }
+    }
+
+    public function getStdClass(): ?stdClass
+    {
+        return new \stdClass();
+    }
+}
+
+?>
+-----
+<?php
+
+namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Fixture;
+
+use Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Source\stdClass;
+
+class FqcnInNamespace
+{
+    public function run()
+    {
+        $stdClass = $this->getStdClass();
+        if (!$stdClass instanceof \Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Source\stdClass) {
+            return;
+        }
+    }
+
+    public function getStdClass(): ?stdClass
+    {
+        return new \stdClass();
+    }
+}
+
+?>
