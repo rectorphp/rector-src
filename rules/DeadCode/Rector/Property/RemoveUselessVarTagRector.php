@@ -63,6 +63,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // a @var tag can only live in a docblock; skip nodes without one
+        if ($node->getDocComment() === null) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $hasChanged = $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
