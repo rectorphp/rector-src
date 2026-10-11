@@ -44,7 +44,6 @@ final readonly class FileProcessor
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private UsedImportsResolver $usedImportsResolver,
-        private RectorRegistry $rectorRegistry,
     ) {
     }
 
@@ -60,20 +59,11 @@ final readonly class FileProcessor
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-<<<<<<< HEAD
-        $currentRectors = $this->rectorRegistry->getRectors();
-        $this->rectorNodeTraverser->refreshPhpRectors($currentRectors);
-=======
-        $fileRectors = $this->rectorRegistry->forFile($file);
-
-        // $this->rectorNodeTraverser->refreshPhpRectors($fileRectors);
->>>>>>> 7fbb048d92 (move rule selection to RectorRegistry)
-
         do {
             $file->changeHasChanged(false);
 
             // 1. change nodes with Rector Rules
-            $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts(), $fileRectors);
+            $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
             // 2. apply post rectors
             $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);

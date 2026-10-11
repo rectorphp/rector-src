@@ -4,24 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Application;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-use Rector\Contract\Rector\RectorInterface;
-=======
 use PhpParser\Node;
-=======
->>>>>>> 1babe5c467 (fixup! move rule selection to RectorRegistry)
 use Rector\Configuration\ConfigurationRuleFilter;
-use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\ValueObject\Application\File;
 use Rector\VersionBonding\ComposerPackageConstraintFilter;
 use Rector\VersionBonding\PhpVersionedFilter;
-<<<<<<< HEAD
-use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
->>>>>>> 7fbb048d92 (move rule selection to RectorRegistry)
-=======
->>>>>>> 1babe5c467 (fixup! move rule selection to RectorRegistry)
 
 /**
  * @see \Rector\Tests\Application\RectorRegistryTest
@@ -48,7 +35,37 @@ final class RectorRegistry
      */
     public function refreshRectors(array $rectors): void
     {
-        $this->rectors = $this->filteredRectors($rectors);
+        $this->rectors = $this->filterRectors($rectors);
+    }
+
+    /**
+     * @var array<class-string<Node>, RectorInterface[]>
+     */
+    private array $cache = [];
+
+    /**
+     * @return RectorInterface[]
+     *
+     * @api used in tests
+     */
+    public function forNode(Node $node): array
+    {
+        $nodeClass = $node::class;
+
+        if (! isset($this->cache[$nodeClass])) {
+            $this->cache[$nodeClass] = [];
+
+            foreach ($this->rectors as $rector) {
+                foreach ($rector->getNodeTypes() as $nodeType) {
+                    if (is_a($nodeClass, $nodeType, true)) {
+                        $this->cache[$nodeClass][] = $rector;
+                        continue 2;
+                    }
+                }
+            }
+        }
+
+        return $this->cache[$nodeClass];
     }
 
     /**
@@ -63,29 +80,5 @@ final class RectorRegistry
         $rectors = $this->composerPackageConstraintFilter->filter($rectors);
 
         return $this->configurationRuleFilter->filter($rectors);
-    }
-
-    /**
-     * @return array<RectorInterface>
-     */
-    public function getRectors(): array
-    {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return $this->rectors;
-=======
-        $rectorsForFile = $this->filteredRectors($this->rectors);
-=======
-        $rectorsForFile = $this->rectors;
->>>>>>> 211cc67a7a (misc)
-
-        if ($file->containsHTML()) {
-            $rectorsForFile = array_filter($rectorsForFile, static function (RectorInterface $rector): bool {
-                return $rector instanceof HTMLAverseRectorInterface;
-            });
-        }
-
-        return $rectorsForFile;
->>>>>>> 7fbb048d92 (move rule selection to RectorRegistry)
     }
 }
