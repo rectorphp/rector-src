@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\NodeManipulator;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Name;
@@ -24,21 +25,24 @@ use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\Util\FileHasher;
 
 final class ClassRenamer
 {
     /**
-     * @var array<string, OldToNewType[]>
+     * @var array<string, string>
      */
-    private array $oldToNewTypesByCacheKey = [];
+    private array $oldToNewClasses = [];
+
+    /**
+     * @var OldToNewType[]
+     */
+    private array $oldToNewTypes = [];
 
     public function __construct(
         private readonly PhpDocClassRenamer $phpDocClassRenamer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockClassRenamer $docBlockClassRenamer,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly FileHasher $fileHasher,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly RenamedNameCollector $renamedNameCollector
     ) {
@@ -65,13 +69,16 @@ final class ClassRenamer
             return null;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if ($phpDocInfo instanceof PhpDocInfo) {
-            $oldToNewTypes = $this->createOldToNewTypes($oldToNewClasses);
-            $hasPhpDocChanged = $this->refactorPhpDoc($node, $oldToNewTypes, $oldToNewClasses, $phpDocInfo);
+        // only a real docblock can carry a renamable type; plain comments or none never change here
+        if ($node->getDocComment() instanceof Doc) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+            if ($phpDocInfo instanceof PhpDocInfo) {
+                $oldToNewTypes = $this->createOldToNewTypes($oldToNewClasses);
+                $hasPhpDocChanged = $this->refactorPhpDoc($node, $oldToNewTypes, $oldToNewClasses, $phpDocInfo);
 
-            if ($hasPhpDocChanged) {
-                return $node;
+                if ($hasPhpDocChanged) {
+                    return $node;
+                }
             }
         }
 
@@ -261,11 +268,9 @@ final class ClassRenamer
      */
     private function createOldToNewTypes(array $oldToNewClasses): array
     {
-        $serialized = \serialize($oldToNewClasses);
-        $cacheKey = $this->fileHasher->hash($serialized);
-
-        if (isset($this->oldToNewTypesByCacheKey[$cacheKey])) {
-            return $this->oldToNewTypesByCacheKey[$cacheKey];
+        // the rename map is constant during a run, so memoize on the identical array
+        if ($this->oldToNewClasses === $oldToNewClasses) {
+            return $this->oldToNewTypes;
         }
 
         $oldToNewTypes = [];
@@ -276,7 +281,8 @@ final class ClassRenamer
             $oldToNewTypes[] = new OldToNewType($oldObjectType, $newObjectType);
         }
 
-        $this->oldToNewTypesByCacheKey[$cacheKey] = $oldToNewTypes;
+        $this->oldToNewClasses = $oldToNewClasses;
+        $this->oldToNewTypes = $oldToNewTypes;
 
         return $oldToNewTypes;
     }
