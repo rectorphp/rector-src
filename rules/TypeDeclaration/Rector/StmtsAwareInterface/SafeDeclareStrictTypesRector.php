@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Nop;
-use Rector\Contract\Rector\HTMLAverseRectorInterface;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -19,7 +18,7 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector\SafeDeclareStrictTypesRectorTest
  */
-final class SafeDeclareStrictTypesRector extends AbstractRector implements HTMLAverseRectorInterface, MinPhpVersionInterface
+final class SafeDeclareStrictTypesRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly DeclareStrictTypeFinder $declareStrictTypeFinder,
@@ -60,6 +59,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?FileNode
     {
+        if ($this->getFile()->containsHTML()) {
+            return null;
+        }
+
         if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($node)) {
             return null;
         }

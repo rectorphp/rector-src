@@ -60,7 +60,7 @@ final readonly class FileProcessor
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-        $currentRectors = $this->rectorRegistry->forFile($file);
+        $currentRectors = $this->rectorRegistry->getRectors();
         $this->rectorNodeTraverser->refreshPhpRectors($currentRectors);
 
         do {
