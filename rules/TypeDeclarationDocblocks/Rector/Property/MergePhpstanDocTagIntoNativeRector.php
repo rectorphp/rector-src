@@ -87,6 +87,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // @phpstan-* tags can only live in a docblock; skip nodes without one
+        if ($node->getDocComment() === null) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
