@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\NodeManipulator;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Name;
@@ -69,7 +70,7 @@ final class ClassRenamer
         }
 
         // only a real docblock can carry a renamable type; plain comments or none never change here
-        if ($node->getDocComment() !== null) {
+        if ($node->getDocComment() instanceof Doc) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
             if ($phpDocInfo instanceof PhpDocInfo) {
                 $oldToNewTypes = $this->createOldToNewTypes($oldToNewClasses);
