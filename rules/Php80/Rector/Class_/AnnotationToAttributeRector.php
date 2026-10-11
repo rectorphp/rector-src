@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -138,7 +139,7 @@ CODE_SAMPLE
         }
 
         // annotations converted to attributes only come from a docblock; skip nodes without one
-        if ($node->getDocComment() === null) {
+        if (!$node->getDocComment() instanceof Doc) {
             return null;
         }
 
