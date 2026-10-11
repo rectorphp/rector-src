@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Property;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Expression;
@@ -65,7 +66,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // a @var tag can only live in a docblock; skip nodes without one
-        if ($node->getDocComment() === null) {
+        if (!$node->getDocComment() instanceof Doc) {
             return null;
         }
 
