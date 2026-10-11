@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -81,7 +82,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // null param/return/var tags can only live in a docblock; skip nodes without one
-        if ($node->getDocComment() === null) {
+        if (!$node->getDocComment() instanceof Doc) {
             return null;
         }
 
