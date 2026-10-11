@@ -103,7 +103,7 @@ CODE_SAMPLE
         }
 
         // the native type is read from the @return docblock; skip before scope fetch when there is none
-        if (!$node->getDocComment() instanceof Doc) {
+        if (! $node->getDocComment() instanceof Doc) {
             return null;
         }
 

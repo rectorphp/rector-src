@@ -108,7 +108,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // nested annotations converted to attributes only come from a docblock; skip nodes without one
-        if (!$node->getDocComment() instanceof Doc) {
+        if (! $node->getDocComment() instanceof Doc) {
             return null;
         }
 

@@ -82,7 +82,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // null param/return/var tags can only live in a docblock; skip nodes without one
-        if (!$node->getDocComment() instanceof Doc) {
+        if (! $node->getDocComment() instanceof Doc) {
             return null;
         }
 

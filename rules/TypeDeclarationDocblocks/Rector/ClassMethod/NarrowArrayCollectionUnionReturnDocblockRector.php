@@ -87,7 +87,7 @@ CODE_SAMPLE
     public function refactor(Node $node): null|ClassMethod|Function_
     {
         // a @return tag can only live in a docblock; skip nodes without one
-        if (!$node->getDocComment() instanceof Doc) {
+        if (! $node->getDocComment() instanceof Doc) {
             return null;
         }
 
