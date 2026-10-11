@@ -7,6 +7,7 @@ namespace Rector\Console\Command;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Option;
+use Rector\Console\Rule\AllRectorRulesProvider;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Skipper\Skipper\Skipper;
@@ -24,6 +25,7 @@ final class ListRulesCommand extends Command
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,
         private readonly Skipper $skipper,
+        private readonly AllRectorRulesProvider $allRectorRulesProvider,
         private readonly array $rectors
     ) {
         parent::__construct();
@@ -45,11 +47,20 @@ final class ListRulesCommand extends Command
         );
 
         $this->addOption(Option::ONLY, null, InputOption::VALUE_REQUIRED, 'Fully qualified rule class name');
+
+        $this->addOption(
+            'all',
+            null,
+            InputOption::VALUE_NONE,
+            'List all existing rules in core and rector-* packages, not only the loaded ones'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $rectorClasses = $this->resolveRectorClasses();
+        $rectorClasses = $input->getOption('all')
+            ? $this->allRectorRulesProvider->provide()
+            : $this->resolveRectorClasses();
 
         $skippedClasses = $this->getSkippedRectorClasses();
 
