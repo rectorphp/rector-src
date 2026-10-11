@@ -106,6 +106,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // nested annotations converted to attributes only come from a docblock; skip nodes without one
+        if ($node->getDocComment() === null) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
