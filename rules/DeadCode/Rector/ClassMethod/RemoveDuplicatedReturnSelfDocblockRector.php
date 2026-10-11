@@ -92,6 +92,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // a duplicated @return tag can only live in a docblock; skip before resolving reflection
+        if ($node->getDocComment() === null) {
+            return null;
+        }
+
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if (! $classReflection instanceof ClassReflection) {
             return null;
