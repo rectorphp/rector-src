@@ -8,16 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
-use PhpParser\Node\Expr\BooleanNot;
-use PhpParser\Node\Expr\Instanceof_;
-use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
+use Rector\PhpParser\Node\NullableObjectToInstanceofFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\TypeAnalyzer\NullableTypeAnalyzer;
 
 /**
@@ -28,6 +24,7 @@ final class FlipTypeControlToUseExclusiveTypeRector extends AbstractRector
     public function __construct(
         private readonly NullableTypeAnalyzer $nullableTypeAnalyzer,
         private readonly ValueResolver $valueResolver,
+        private readonly NullableObjectToInstanceofFactory $nullableObjectToInstanceofFactory,
     ) {
     }
 
@@ -79,24 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->processConvertToExclusiveType($nullableObjectType, $expr, $node);
-    }
-
-    private function processConvertToExclusiveType(
-        ObjectType $objectType,
-        Expr $expr,
-        Identical|NotIdentical $binaryOp
-    ): BooleanNot|Instanceof_ {
-        $fullyQualifiedType = $objectType instanceof ShortenedObjectType || $objectType instanceof AliasedObjectType
-            ? $objectType->getFullyQualifiedName()
-            : $objectType->getClassName();
-
-        $instanceof = new Instanceof_($expr, new FullyQualified($fullyQualifiedType));
-        if ($binaryOp instanceof NotIdentical) {
-            return $instanceof;
-        }
-
-        return new BooleanNot($instanceof);
+        return $this->nullableObjectToInstanceofFactory->create($expr, $nullableObjectType, $node instanceof Identical);
     }
 
     private function matchNullComparedExpr(Identical|NotIdentical $binaryOp): ?Expr

@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\BooleanNot;
-use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\ObjectType;
 use Rector\CodeQuality\NodeAnalyzer\ExplicitBoolConditionResolver;
 use Rector\CodeQuality\ValueObject\ExplicitBoolCondition;
+use Rector\PhpParser\Node\NullableObjectToInstanceofFactory;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -26,6 +23,7 @@ final class ObjectExplicitBoolCompareRector extends AbstractRector
 {
     public function __construct(
         private readonly ExplicitBoolConditionResolver $explicitBoolConditionResolver,
+        private readonly NullableObjectToInstanceofFactory $nullableObjectToInstanceofFactory,
     ) {
     }
 
@@ -85,16 +83,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->cond = $this->resolveNullable($explicitBoolCondition->isNegated(), $expr, $objectType);
+        $node->cond = $this->nullableObjectToInstanceofFactory->create(
+            $expr,
+            $objectType,
+            $explicitBoolCondition->isNegated()
+        );
 
         return $node;
-    }
-
-    private function resolveNullable(bool $isNegated, Expr $expr, ObjectType $objectType): BooleanNot|Instanceof_
-    {
-        $fullyQualified = new FullyQualified($objectType->getClassName());
-        $instanceof = new Instanceof_($expr, $fullyQualified);
-
-        return $isNegated ? new BooleanNot($instanceof) : $instanceof;
     }
 }
