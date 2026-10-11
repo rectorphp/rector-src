@@ -80,6 +80,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // null param/return/var tags can only live in a docblock; skip nodes without one
+        if ($node->getDocComment() === null) {
+            return null;
+        }
+
         if ($node instanceof Expression || $node instanceof Property) {
             return $this->processVarTagNull($node);
         }
