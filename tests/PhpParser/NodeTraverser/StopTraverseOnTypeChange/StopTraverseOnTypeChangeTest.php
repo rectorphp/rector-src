@@ -7,6 +7,7 @@ namespace Rector\Tests\PhpParser\NodeTraverser\StopTraverseOnTypeChange;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeFinder;
+use Rector\Application\RectorRegistry;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
@@ -25,7 +26,8 @@ final class StopTraverseOnTypeChangeTest extends AbstractLazyTestCase
 
         $this->rectorNodeTraverser = $this->make(RectorNodeTraverser::class);
 
-        $this->rectorNodeTraverser->refreshPhpRectors([
+        $rectorRegistry = $this->make(RectorRegistry::class);
+        $rectorRegistry->refreshRectors([
             $this->make(RuleChangingClassToTraitRector::class),
             $this->make(RuleCheckingClassRector::class),
         ]);

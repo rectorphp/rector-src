@@ -4,38 +4,72 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Application;
 
+use PhpParser\Node\Stmt\Class_;
 use Rector\Application\RectorRegistry;
-use Rector\Configuration\Option;
-use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
+use Rector\Tests\PhpParser\NodeTraverser\Class_\RuleUsingClassRector;
+use Rector\Tests\PhpParser\NodeTraverser\ClassLike\RuleUsingClassLikeRector;
+use Rector\Tests\PhpParser\NodeTraverser\Function_\RuleUsingFunctionRector;
 
 final class RectorRegistryTest extends AbstractLazyTestCase
 {
     private RectorRegistry $rectorRegistry;
 
+    private RuleUsingFunctionRector $ruleUsingFunctionRector;
+
+    private RuleUsingClassRector $ruleUsingClassRector;
+
+    private RuleUsingClassLikeRector $ruleUsingClassLikeRector;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        SimpleParameterProvider::setParameter(Option::SKIP, [
-            FifthElement::class => ['*/skipped_directory/*'],
+        $this->rectorRegistry = $this->make(RectorRegistry::class);
+        $this->rectorRegistry->refreshRectors([]);
+
+        $this->ruleUsingFunctionRector = new RuleUsingFunctionRector();
+        $this->ruleUsingClassRector = new RuleUsingClassRector();
+        $this->ruleUsingClassLikeRector = new RuleUsingClassLikeRector();
+    }
+
+    public function testForNodeWhenNoRectorsAvailable(): void
+    {
+        $rectors = $this->rectorRegistry->forNode(new Class_('test'));
+
+        $this->assertSame([], $rectors);
+    }
+
+    public function testForNodeWhenNoRectorsMatch(): void
+    {
+        $this->rectorRegistry->refreshRectors([$this->ruleUsingFunctionRector]);
+
+        $rectors = $this->rectorRegistry->forNode(new Class_('test'));
+
+        $this->assertSame([], $rectors);
+    }
+
+    public function testForNodeWhenSomeRectorsMatch(): void
+    {
+        $this->rectorRegistry->refreshRectors([
+            $this->ruleUsingFunctionRector,
+            $this->ruleUsingClassRector,
         ]);
 
-        $this->rectorRegistry = $this->make(RectorRegistry::class);
-        $this->rectorRegistry->refreshRectors([new FifthElement()]);
+        $rectors = $this->rectorRegistry->forNode(new Class_('test'));
+
+        $this->assertEquals([$this->ruleUsingClassRector], $rectors);
     }
 
-    protected function tearDown(): void
+    public function testForNodeWhenAllRectorsMatch(): void
     {
-        SimpleParameterProvider::setParameter(Option::SKIP, []);
-    }
+        $this->rectorRegistry->refreshRectors([
+            $this->ruleUsingClassRector,
+            $this->ruleUsingClassLikeRector,
+        ]);
 
-    public function testGetRectors(): void
-    {
-        $rectors = $this->rectorRegistry->getRectors();
+        $rectors = $this->rectorRegistry->forNode(new Class_('test'));
 
-        $this->assertCount(1, $rectors);
-        $this->assertInstanceOf(FifthElement::class, $rectors[0]);
+        $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $rectors);
     }
 }

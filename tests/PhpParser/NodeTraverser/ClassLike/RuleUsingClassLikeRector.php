@@ -11,7 +11,7 @@ use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 
 /**
- * @see \Rector\Tests\PhpParser\NodeTraverser\RectorNodeTraverserTest
+ * @see \Rector\Tests\Application\RectorRegistryTest
  */
 final class RuleUsingClassLikeRector extends AbstractRector
 {
