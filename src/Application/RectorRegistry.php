@@ -15,6 +15,13 @@ use Rector\VersionBonding\PhpVersionedFilter;
  */
 final class RectorRegistry
 {
+    private bool $areRectorsPrepared = false;
+
+    /**
+     * @var array<class-string<Node>, RectorInterface[]>
+     */
+    private array $cache = [];
+
     /**
      * @param RectorInterface[] $rectors
      */
@@ -24,7 +31,6 @@ final class RectorRegistry
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
         private array $rectors,
     ) {
-        $this->rectors = $this->filterRectors($rectors);
     }
 
     /**
@@ -35,14 +41,10 @@ final class RectorRegistry
      */
     public function refreshRectors(array $rectors): void
     {
-        $this->rectors = $this->filterRectors($rectors);
+        $this->rectors = $rectors;
+        $this->areRectorsPrepared = false;
         $this->cache = [];
     }
-
-    /**
-     * @var array<class-string<Node>, RectorInterface[]>
-     */
-    private array $cache = [];
 
     /**
      * @return RectorInterface[]
@@ -51,6 +53,8 @@ final class RectorRegistry
      */
     public function forNode(Node $node): array
     {
+        $this->prepareRectors();
+
         $nodeClass = $node::class;
 
         if (! isset($this->cache[$nodeClass])) {
@@ -70,16 +74,19 @@ final class RectorRegistry
     }
 
     /**
-     * @param RectorInterface[] $rectors
-     * @return RectorInterface[]
-     *
-     * @api used in tests to update the active rules
+     * Filtering must happen lazily, after the configuration is set in ProcessCommand::execute(),
+     * otherwise options like --only are not yet available and get ignored.
      */
-    private function filterRectors(array $rectors): array
+    private function prepareRectors(): void
     {
-        $rectors = $this->phpVersionedFilter->filter($rectors);
-        $rectors = $this->composerPackageConstraintFilter->filter($rectors);
+        if ($this->areRectorsPrepared) {
+            return;
+        }
 
-        return $this->configurationRuleFilter->filter($rectors);
+        $this->rectors = $this->phpVersionedFilter->filter($this->rectors);
+        $this->rectors = $this->composerPackageConstraintFilter->filter($this->rectors);
+        $this->rectors = $this->configurationRuleFilter->filter($this->rectors);
+
+        $this->areRectorsPrepared = true;
     }
 }
