@@ -18,6 +18,11 @@ final class RectorRegistry
     private bool $areRectorsPrepared = false;
 
     /**
+     * @var RectorInterface[]
+     */
+    private array $activeRectors = [];
+
+    /**
      * @var array<class-string<Node>, RectorInterface[]>
      */
     private array $cache = [];
@@ -35,7 +40,6 @@ final class RectorRegistry
 
     /**
      * @param RectorInterface[] $rectors
-     * @api used in tests to update the active rules
      *
      * @internal Used only in Rector core, not supported outside. Might change any time.
      */
@@ -48,8 +52,6 @@ final class RectorRegistry
 
     /**
      * @return RectorInterface[]
-     *
-     * @api used in tests
      */
     public function forNode(Node $node): array
     {
@@ -60,7 +62,7 @@ final class RectorRegistry
         if (! isset($this->cache[$nodeClass])) {
             $this->cache[$nodeClass] = [];
 
-            foreach ($this->rectors as $rector) {
+            foreach ($this->activeRectors as $rector) {
                 foreach ($rector->getNodeTypes() as $nodeType) {
                     if (is_a($nodeClass, $nodeType, true)) {
                         $this->cache[$nodeClass][] = $rector;
@@ -83,9 +85,9 @@ final class RectorRegistry
             return;
         }
 
-        $this->rectors = $this->phpVersionedFilter->filter($this->rectors);
-        $this->rectors = $this->composerPackageConstraintFilter->filter($this->rectors);
-        $this->rectors = $this->configurationRuleFilter->filter($this->rectors);
+        $activeRectors = $this->phpVersionedFilter->filter($this->rectors);
+        $activeRectors = $this->composerPackageConstraintFilter->filter($activeRectors);
+        $this->activeRectors = $this->configurationRuleFilter->filter($activeRectors);
 
         $this->areRectorsPrepared = true;
     }
