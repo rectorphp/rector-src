@@ -69,10 +69,13 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($this->getFile()->containsHTML()) {
+<<<<<<< HEAD
             return null;
         }
 
         if (! $node->expr instanceof Ternary) {
+=======
+>>>>>>> 211cc67a7a (misc)
             return null;
         }
 

@@ -42,7 +42,7 @@ final class RectorNodeTraverser
         //        private readonly ComposerPackageConstraintFilter $composerPackageConstraintFilter,
         //        private readonly ConfigurationRuleFilter $configurationRuleFilter,
         private readonly RectorRunner $rectorRunner,
-        //        private readonly RectorRegistry $rectorRegistry,
+        private readonly RectorRegistry $rectorRegistry,
     ) {
     }
 

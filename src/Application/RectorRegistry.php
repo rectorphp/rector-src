@@ -37,18 +37,7 @@ final class RectorRegistry
         private ConfigurationRuleFilter $configurationRuleFilter,
         private array $rectors,
     ) {
-    }
-
-    /**
-     * @param array<RectorInterface> $rectors
-     * @return array<RectorInterface>
-     */
-    private function filteredRectors(array $rectors): array
-    {
-        $rectors = $this->phpVersionedFilter->filter($rectors);
-        $rectors = $this->composerPackageConstraintFilter->filter($rectors);
-
-        return $this->configurationRuleFilter->filter($rectors);
+        $this->rectors = $this->filterRectors($rectors);
     }
 
     /**
@@ -63,14 +52,32 @@ final class RectorRegistry
     }
 
     /**
+     * @param RectorInterface[] $rectors
+     * @return RectorInterface[]
+     *
+     * @api used in tests to update the active rules
+     */
+    private function filterRectors(array $rectors): array
+    {
+        $rectors = $this->phpVersionedFilter->filter($rectors);
+        $rectors = $this->composerPackageConstraintFilter->filter($rectors);
+
+        return $this->configurationRuleFilter->filter($rectors);
+    }
+
+    /**
      * @return array<RectorInterface>
      */
     public function getRectors(): array
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return $this->rectors;
 =======
         $rectorsForFile = $this->filteredRectors($this->rectors);
+=======
+        $rectorsForFile = $this->rectors;
+>>>>>>> 211cc67a7a (misc)
 
         if ($file->containsHTML()) {
             $rectorsForFile = array_filter($rectorsForFile, static function (RectorInterface $rector): bool {
