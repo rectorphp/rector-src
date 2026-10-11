@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -93,7 +94,7 @@ CODE_SAMPLE
         }
 
         // a duplicated @return tag can only live in a docblock; skip before resolving reflection
-        if ($node->getDocComment() === null) {
+        if (!$node->getDocComment() instanceof Doc) {
             return null;
         }
 
