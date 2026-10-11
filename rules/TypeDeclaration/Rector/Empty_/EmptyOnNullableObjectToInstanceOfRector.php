@@ -9,16 +9,14 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Instanceof_;
-use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
+use Rector\PhpParser\Node\NullableObjectToInstanceofFactory;
 use Rector\PHPStan\ScopeFetcher;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector\EmptyOnNullableObjectToInstanceOfRectorTest
@@ -26,7 +24,7 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 final class EmptyOnNullableObjectToInstanceOfRector extends AbstractRector
 {
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly NullableObjectToInstanceofFactory $nullableObjectToInstanceofFactory
     ) {
     }
 
@@ -107,17 +105,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $objectType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($exprType, TypeKind::RETURN);
-        if (! $objectType instanceof Name) {
-            return null;
-        }
-
-        $instanceof = new Instanceof_($empty->expr, $objectType);
-
-        if ($isNegated) {
-            return $instanceof;
-        }
-
-        return new BooleanNot($instanceof);
+        return $this->nullableObjectToInstanceofFactory->create($empty->expr, $exprType, ! $isNegated);
     }
 }
