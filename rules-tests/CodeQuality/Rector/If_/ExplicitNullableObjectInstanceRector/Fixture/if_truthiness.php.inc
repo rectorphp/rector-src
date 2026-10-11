@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Fixture;
 
-final class NullableInstanceToInstanceof
+final class IfTruthiness
 {
     public function run(?\stdClass $item)
     {
@@ -14,20 +14,18 @@ final class NullableInstanceToInstanceof
     public function go(?\stdClass $item)
     {
         if ($item) {
-            return 'known';
+            return 'not empty';
         }
     }
 }
-
-
 
 ?>
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Fixture;
 
-final class NullableInstanceToInstanceof
+final class IfTruthiness
 {
     public function run(?\stdClass $item)
     {
@@ -39,11 +37,9 @@ final class NullableInstanceToInstanceof
     public function go(?\stdClass $item)
     {
         if ($item instanceof \stdClass) {
-            return 'known';
+            return 'not empty';
         }
     }
 }
-
-
 
 ?>

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
+namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class WhileNullableToInstanceofRectorTest extends AbstractRectorTestCase
+final class ExplicitNullableObjectInstanceRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

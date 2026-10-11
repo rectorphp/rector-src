@@ -1,27 +1,20 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Fixture;
 
-final class Nullable
+final class NullCompare
 {
     public function run(?\stdClass $item)
     {
-        if (!$item) {
+        if ($item === null) {
             return 'empty';
         }
     }
 
     public function go(?\stdClass $item)
     {
-        if ($item) {
+        if ($item !== null) {
             return 'not empty';
-        }
-    }
-
-    public function away(?string $item)
-    {
-        if (!$item) {
-            return 'empty';
         }
     }
 }
@@ -30,9 +23,9 @@ final class Nullable
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector\Fixture;
 
-final class Nullable
+final class NullCompare
 {
     public function run(?\stdClass $item)
     {
@@ -45,13 +38,6 @@ final class Nullable
     {
         if ($item instanceof \stdClass) {
             return 'not empty';
-        }
-    }
-
-    public function away(?string $item)
-    {
-        if (!$item) {
-            return 'empty';
         }
     }
 }
