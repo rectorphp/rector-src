@@ -41,13 +41,12 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
-use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
 use Rector\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector;
-use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
+use Rector\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
@@ -131,7 +130,7 @@ final class CodeQualityLevel
         IsAWithStringWithThirdArgumentRector::class,
         StrlenZeroToIdenticalEmptyStringRector::class,
         ArrayExplicitBoolCompareRector::class,
-        ObjectExplicitBoolCompareRector::class,
+        ExplicitNullableObjectInstanceRector::class,
         ThrowWithPreviousExceptionRector::class,
         RemoveSoleValueSprintfRector::class,
         ExplicitReturnNullRector::class,
@@ -149,7 +148,6 @@ final class CodeQualityLevel
         InlineIfToExplicitIfRector::class,
         TernaryFalseExpressionToIfRector::class,
         SimplifyIfNullableReturnRector::class,
-        FlipTypeControlToUseExclusiveTypeRector::class,
         InlineArrayReturnAssignRector::class,
         RemoveAlwaysElseRector::class,
         ChangeIfElseValueAssignToEarlyReturnRector::class,
