@@ -13,7 +13,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src',
     ]);
 
-    // the only worker ends on File3.php, so results for File3.php and File4.php are missing;
+    // size-based scheduling processes File3.php last, where the only worker exits without reporting it;
     // the syntax error in File2.php must not hide that
     $rectorConfig->parallel(maxNumberOfProcess: 1, jobSize: 1);
 
