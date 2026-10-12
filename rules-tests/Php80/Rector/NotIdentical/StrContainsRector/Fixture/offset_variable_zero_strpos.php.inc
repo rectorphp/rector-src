@@ -21,7 +21,7 @@ class OffsetVariableZeroStrpos
     public function run()
     {
         $offset = 0;
-        $isMatch = str_contains(substr('abc', $offset), 'a');
+        $isMatch = str_contains('abc', 'a');
     }
 }
 ?>
