@@ -159,6 +159,11 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @template TNode of Expression|Property
+     * @param TNode $node
+     * @return TNode|null
+     */
     private function processVarTagNull(Expression|Property $node): ?Node
     {
         $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);

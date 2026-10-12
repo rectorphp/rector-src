@@ -110,6 +110,11 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @template TNode of Break_|Continue_
+     * @param TNode $stmt
+     * @return TNode|null
+     */
     private function processVariableNum(Break_|Continue_ $stmt, Variable $numVariable): ?Node
     {
         $staticType = $this->getType($numVariable);
