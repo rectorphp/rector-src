@@ -26,14 +26,10 @@ final readonly class ClassConstManipulator
     ) {
     }
 
-    /**
-     * @param ClassLike|null $classLike the already parsed class owning the constant; passing it avoids
-     * re-parsing and re-resolving scope of the current file, which is costly
-     */
     public function hasClassConstFetch(
         ClassConst $classConst,
         ClassReflection $classReflection,
-        ?ClassLike $classLike = null
+        ClassLike $classLike
     ): bool {
         if (! $classReflection->isClass() && ! $classReflection->isEnum()) {
             return true;
@@ -41,17 +37,11 @@ final readonly class ClassConstManipulator
 
         $className = $classReflection->getName();
         $objectType = new ObjectType($className);
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
-            $ancestorClass = $classLike instanceof ClassLike && $ancestorClassReflection === $classReflection
-                ? $classLike
-                : $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
 
-            if (! $ancestorClass instanceof ClassLike) {
-                continue;
-            }
-
-            // has in class?
-            $isClassConstFetchFound = (bool) $this->betterNodeFinder->findFirst($ancestorClass, function (Node $node) use (
+        // private constant can be fetched only in the class itself, or in a trait it uses
+        $classLikes = [$classLike, ...$this->astResolver->parseClassReflectionTraits($classReflection)];
+        foreach ($classLikes as $currentClassLike) {
+            $isClassConstFetchFound = (bool) $this->betterNodeFinder->findFirst($currentClassLike, function (Node $node) use (
                 $classConst,
                 $className,
                 $objectType
