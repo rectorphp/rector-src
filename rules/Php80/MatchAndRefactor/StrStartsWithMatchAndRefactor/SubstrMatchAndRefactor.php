@@ -35,7 +35,7 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
         $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         if ($binaryOp->left instanceof FuncCall && $this->nodeNameResolver->isName($binaryOp->left, 'substr')) {
-            if (! $this->isStrictOrNonNumericStringComparison($binaryOp, $binaryOp->right)) {
+            if (! $this->isRefactorableLooseComparison($binaryOp, $binaryOp->right)) {
                 return null;
             }
 
@@ -48,7 +48,7 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
         }
 
         if ($binaryOp->right instanceof FuncCall && $this->nodeNameResolver->isName($binaryOp->right, 'substr')) {
-            if (! $this->isStrictOrNonNumericStringComparison($binaryOp, $binaryOp->left)) {
+            if (! $this->isRefactorableLooseComparison($binaryOp, $binaryOp->left)) {
                 return null;
             }
 
@@ -138,9 +138,10 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
     }
 
     /**
-     * Loose comparison of two numeric strings is numeric, e.g. '+1' == '01'
+     * Loose comparison of two numeric string literals is numeric, e.g. '+1' == '01';
+     * skip only that case, a variable needle is kept
      */
-    private function isStrictOrNonNumericStringComparison(
+    private function isRefactorableLooseComparison(
         Identical|NotIdentical|Equal|NotEqual $binaryOp,
         Expr $comparedExpr
     ): bool {
@@ -148,6 +149,6 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
             return true;
         }
 
-        return $comparedExpr instanceof String_ && ! is_numeric($comparedExpr->value);
+        return ! ($comparedExpr instanceof String_ && is_numeric($comparedExpr->value));
     }
 }

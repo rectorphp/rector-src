@@ -142,7 +142,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isStrictOrNonNumericStringComparison($binaryOp, $comparedNeedleExpr)) {
+        if (! $this->isRefactorableLooseComparison($binaryOp, $comparedNeedleExpr)) {
             return null;
         }
 
@@ -257,15 +257,16 @@ CODE_SAMPLE
     }
 
     /**
-     * Loose comparison of two numeric strings is numeric, e.g. '+1' == '01'
+     * Loose comparison of two numeric string literals is numeric, e.g. '+1' == '01';
+     * skip only that case, a variable needle is kept
      */
-    private function isStrictOrNonNumericStringComparison(BinaryOp $binaryOp, Expr $comparedExpr): bool
+    private function isRefactorableLooseComparison(BinaryOp $binaryOp, Expr $comparedExpr): bool
     {
         if (! $binaryOp instanceof Equal && ! $binaryOp instanceof NotEqual) {
             return true;
         }
 
-        return $comparedExpr instanceof String_ && ! is_numeric($comparedExpr->value);
+        return ! ($comparedExpr instanceof String_ && is_numeric($comparedExpr->value));
     }
 
     private function buildReturnNode(Expr $haystack, Expr $needle, bool $isPositive): FuncCall|BooleanNot
