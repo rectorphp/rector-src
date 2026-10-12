@@ -7,9 +7,7 @@ namespace Rector\Php80\Rector\NotIdentical;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
@@ -80,11 +78,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Identical::class, NotIdentical::class, Equal::class, NotEqual::class];
+        return [Identical::class, NotIdentical::class];
     }
 
     /**
-     * @param Identical|NotIdentical|Equal|NotEqual $node
+     * @param Identical|NotIdentical $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -118,7 +116,7 @@ CODE_SAMPLE
 
         $funcCall->name = new Name('str_contains');
 
-        if ($node instanceof Identical || $node instanceof Equal) {
+        if ($node instanceof Identical) {
             return new BooleanNot($funcCall);
         }
 

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeResolver;
 
-use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -23,7 +21,7 @@ final readonly class StrFalseComparisonResolver
     /**
      * @param string[] $oldStrFuncNames
      */
-    public function resolve(Identical|NotIdentical|Equal|NotEqual $expr, array $oldStrFuncNames): ?FuncCall
+    public function resolve(Identical|NotIdentical $expr, array $oldStrFuncNames): ?FuncCall
     {
         if ($this->valueResolver->isFalse($expr->left)) {
             if (! $expr->right instanceof FuncCall) {
