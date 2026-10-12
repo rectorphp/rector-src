@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php80\MatchAndRefactor\StrStartsWithMatchAndRefactor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
@@ -34,6 +35,10 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
         $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         if ($binaryOp->left instanceof FuncCall && $this->nodeNameResolver->isName($binaryOp->left, 'substr')) {
+            if (! $this->isStrictOrNonNumericStringComparison($binaryOp, $binaryOp->right)) {
+                return null;
+            }
+
             $funcCall = $binaryOp->left;
 
             $haystack = $funcCall->getArgs()[0]
@@ -43,6 +48,10 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
         }
 
         if ($binaryOp->right instanceof FuncCall && $this->nodeNameResolver->isName($binaryOp->right, 'substr')) {
+            if (! $this->isStrictOrNonNumericStringComparison($binaryOp, $binaryOp->left)) {
+                return null;
+            }
+
             $funcCall = $binaryOp->right;
 
             $haystack = $funcCall->getArgs()[0]
@@ -126,5 +135,19 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
         }
 
         return $lNumberLength->value === strlen($expr->value);
+    }
+
+    /**
+     * Loose comparison of two numeric strings is numeric, e.g. '+1' == '01'
+     */
+    private function isStrictOrNonNumericStringComparison(
+        Identical|NotIdentical|Equal|NotEqual $binaryOp,
+        Expr $comparedExpr
+    ): bool {
+        if (! $binaryOp instanceof Equal && ! $binaryOp instanceof NotEqual) {
+            return true;
+        }
+
+        return $comparedExpr instanceof String_ && ! is_numeric($comparedExpr->value);
     }
 }

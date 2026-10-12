@@ -142,6 +142,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->isStrictOrNonNumericStringComparison($binaryOp, $comparedNeedleExpr)) {
+            return null;
+        }
+
         if (count($substrFuncCall->getArgs()) < 2) {
             return null;
         }
@@ -250,6 +254,18 @@ CODE_SAMPLE
         }
 
         return $lNumber->value === strlen($needle->value);
+    }
+
+    /**
+     * Loose comparison of two numeric strings is numeric, e.g. '+1' == '01'
+     */
+    private function isStrictOrNonNumericStringComparison(BinaryOp $binaryOp, Expr $comparedExpr): bool
+    {
+        if (! $binaryOp instanceof Equal && ! $binaryOp instanceof NotEqual) {
+            return true;
+        }
+
+        return $comparedExpr instanceof String_ && ! is_numeric($comparedExpr->value);
     }
 
     private function buildReturnNode(Expr $haystack, Expr $needle, bool $isPositive): FuncCall|BooleanNot

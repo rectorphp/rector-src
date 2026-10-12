@@ -30,7 +30,12 @@ final readonly class StrposMatchAndRefactor implements StrStartWithMatchAndRefac
 
     public function match(Identical|NotIdentical|Equal|NotEqual $binaryOp): ?StrStartsWith
     {
-        $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
+        // strpos() returns false on no match, and false == 0
+        if ($binaryOp instanceof Equal || $binaryOp instanceof NotEqual) {
+            return null;
+        }
+
+        $isPositive = $binaryOp instanceof Identical;
 
         if ($binaryOp->left instanceof FuncCall && $this->nodeNameResolver->isName($binaryOp->left, 'strpos')) {
             return $this->processBinaryOpLeft($binaryOp, $isPositive);
