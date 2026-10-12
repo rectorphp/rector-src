@@ -14,7 +14,7 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     // size-based scheduling processes File3.php last, where the only worker exits without reporting it;
-    // the syntax error in File2.php must not hide that
+    // expect both File2.php's syntax error and a separate error for File3.php's missing result
     $rectorConfig->parallel(maxNumberOfProcess: 1, jobSize: 1);
 
     $rectorConfig->rules([
