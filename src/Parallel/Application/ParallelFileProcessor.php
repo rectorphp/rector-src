@@ -115,6 +115,7 @@ final class ParallelFileProcessor
         foreach ($jobsPerWorker as $jobs) {
             $scheduledFilesCount += array_sum(array_map(count(...), $jobs));
         }
+
         $processedFilesCount = 0;
         $systemErrorsCount = 0;
         $reachedSystemErrorsCountLimit = false;
