@@ -266,7 +266,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! ($comparedExpr instanceof String_ && is_numeric($comparedExpr->value));
+        return !$comparedExpr instanceof String_ || !is_numeric($comparedExpr->value);
     }
 
     private function buildReturnNode(Expr $haystack, Expr $needle, bool $isPositive): FuncCall|BooleanNot

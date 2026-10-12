@@ -149,6 +149,6 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
             return true;
         }
 
-        return ! ($comparedExpr instanceof String_ && is_numeric($comparedExpr->value));
+        return !$comparedExpr instanceof String_ || !is_numeric($comparedExpr->value);
     }
 }
