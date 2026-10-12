@@ -26,8 +26,15 @@ final readonly class ClassConstManipulator
     ) {
     }
 
-    public function hasClassConstFetch(ClassConst $classConst, ClassReflection $classReflection): bool
-    {
+    /**
+     * @param ClassLike|null $classLike the already parsed class owning the constant; passing it avoids
+     * re-parsing and re-resolving scope of the current file, which is costly
+     */
+    public function hasClassConstFetch(
+        ClassConst $classConst,
+        ClassReflection $classReflection,
+        ?ClassLike $classLike = null
+    ): bool {
         if (! $classReflection->isClass() && ! $classReflection->isEnum()) {
             return true;
         }
@@ -35,7 +42,9 @@ final readonly class ClassConstManipulator
         $className = $classReflection->getName();
         $objectType = new ObjectType($className);
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
-            $ancestorClass = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
+            $ancestorClass = $classLike instanceof ClassLike && $ancestorClassReflection === $classReflection
+                ? $classLike
+                : $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
 
             if (! $ancestorClass instanceof ClassLike) {
                 continue;
