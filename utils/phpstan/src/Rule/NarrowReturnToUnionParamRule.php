@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Utils\PHPStan\Rule;
 
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -22,15 +22,15 @@ use PHPStan\Rules\RuleErrorBuilder;
 
 /**
  * Flags a method that takes a class-type union param (A|B) but declares a broader single return type
- * (e.g. their shared parent Node), then returns that very param - a hidden generic.
- * A @template generic narrows the return to the passed type instead of the broad parent.
+ * (e.g. their shared parent Node), then returns that very param.
+ * The return type should be the explicit union the param carries, not the broad parent.
  *
  * @implements Rule<ClassMethod>
- * @see \Rector\Utils\PHPStan\Tests\Rule\PreferGenericTemplateOnReturnedUnionParamRule\PreferGenericTemplateOnReturnedUnionParamRuleTest
+ * @see \Rector\Utils\PHPStan\Tests\Rule\NarrowReturnToUnionParamRule\NarrowReturnToUnionParamRuleTest
  */
-final class PreferGenericTemplateOnReturnedUnionParamRule implements Rule
+final class NarrowReturnToUnionParamRule implements Rule
 {
-    private const string ERROR_MESSAGE = 'Return type "%s" is broader than the returned union param "%s". Add a @template generic to narrow the return type to the passed one.';
+    private const string ERROR_MESSAGE = 'Return type "%s" is too broad for a returned union param. Declare the explicit union return type "%s" instead.';
 
     public function getNodeType(): string
     {
@@ -43,11 +43,6 @@ final class PreferGenericTemplateOnReturnedUnionParamRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        $docComment = $node->getDocComment();
-        if ($docComment instanceof Doc && str_contains($docComment->getText(), '@template')) {
-            return [];
-        }
-
         $returnName = $this->resolveSingleClassReturnName($node->returnType);
         if ($returnName === null) {
             return [];
@@ -59,7 +54,7 @@ final class PreferGenericTemplateOnReturnedUnionParamRule implements Rule
                 continue;
             }
 
-            // return type is one of the union members, not a broad shared parent - a generic does not apply
+            // return type is one of the union members, not a broad shared parent - already narrow enough
             if (in_array($returnName, $paramNames, true)) {
                 continue;
             }
@@ -77,9 +72,13 @@ final class PreferGenericTemplateOnReturnedUnionParamRule implements Rule
                 return end($parts);
             }, $paramNames);
 
+            if ($this->isNullableReturnType($node->returnType)) {
+                $shortNames[] = 'null';
+            }
+
             return [
                 RuleErrorBuilder::message(sprintf(self::ERROR_MESSAGE, $returnName, implode('|', $shortNames)))
-                    ->identifier('rector.genericTemplateOverBroadReturn')
+                    ->identifier('rector.explicitUnionReturnType')
                     ->line($node->getStartLine())
                     ->build(),
             ];
@@ -104,9 +103,22 @@ final class PreferGenericTemplateOnReturnedUnionParamRule implements Rule
         return $foundReturn instanceof Return_;
     }
 
+    private function isNullableReturnType(null|Identifier|Name|ComplexType $type): bool
+    {
+        if ($type instanceof NullableType) {
+            return true;
+        }
+
+        if (! $type instanceof UnionType) {
+            return false;
+        }
+
+        return array_any($type->types, fn (Identifier|Name|IntersectionType $memberType): bool => $memberType instanceof Identifier && $memberType->toLowerString() === 'null');
+    }
+
     /**
      * Returns the single class return type name (nullable allowed), or null when the return type is
-     * missing, scalar, or a union of 2+ class types - the latter is covered by the same-union rule.
+     * missing, scalar, or a union of 2+ class types - the latter is already an explicit union.
      */
     private function resolveSingleClassReturnName(null|Identifier|Name|ComplexType $type): ?string
     {

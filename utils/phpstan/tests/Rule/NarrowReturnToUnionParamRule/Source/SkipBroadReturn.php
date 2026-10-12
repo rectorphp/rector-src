@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Utils\PHPStan\Tests\Rule\PreferGenericTemplateOnReturnedUnionParamRule\Source;
+namespace Rector\Utils\PHPStan\Tests\Rule\NarrowReturnToUnionParamRule\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -12,16 +12,6 @@ use PhpParser\Node\Expr\Variable;
 
 final class SkipBroadReturn
 {
-    /**
-     * @template TNode of New_|MethodCall
-     * @param TNode $node
-     * @return TNode
-     */
-    public function alreadyGeneric(New_|MethodCall $node): Node
-    {
-        return $node;
-    }
-
     public function doesNotReturnParam(New_|MethodCall $node): ?Node
     {
         if ($node instanceof New_) {
@@ -41,7 +31,7 @@ final class SkipBroadReturn
         return $node;
     }
 
-    public function unionReturn(New_|MethodCall $node): New_|MethodCall|null
+    public function alreadyExplicitUnionReturn(New_|MethodCall $node): New_|MethodCall|null
     {
         return $node;
     }

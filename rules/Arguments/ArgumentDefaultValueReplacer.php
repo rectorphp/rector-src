@@ -105,7 +105,7 @@ final readonly class ArgumentDefaultValueReplacer
     private function processArgs(
         MethodCall|StaticCall|FuncCall|New_ $expr,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
-    ): ?Expr {
+    ): MethodCall|StaticCall|FuncCall|New_|null {
         if ($expr->isFirstClassCallable()) {
             return null;
         }

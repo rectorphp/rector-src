@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Utils\PHPStan\Tests\Rule\PreferGenericTemplateOnReturnedUnionParamRule\Source;
+namespace Rector\Utils\PHPStan\Tests\Rule\NarrowReturnToUnionParamRule\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
