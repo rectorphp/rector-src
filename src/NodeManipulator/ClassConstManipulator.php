@@ -39,7 +39,11 @@ final readonly class ClassConstManipulator
         $objectType = new ObjectType($className);
 
         // private constant can be fetched only in the class itself, or in a trait it uses
-        $classLikes = [$classLike, ...$this->astResolver->parseClassReflectionTraits($classReflection)];
+        $classLikes = [$classLike];
+        if ($classLike->getTraitUses() !== []) {
+            $classLikes = [...$classLikes, ...$this->astResolver->parseClassReflectionTraits($classReflection)];
+        }
+
         foreach ($classLikes as $currentClassLike) {
             $isClassConstFetchFound = (bool) $this->betterNodeFinder->findFirst($currentClassLike, function (Node $node) use (
                 $classConst,
