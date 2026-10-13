@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -104,6 +106,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // keep static/$this, they denote the runtime subclass the native type cannot express
+        if ($this->hasStaticOrThisType($returnTagValueNode->type)) {
+            return null;
+        }
+
         $nativeReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node->returnType);
 
         // keep array-involving native type (array, ?array, union with array), the docblock may carry element types
@@ -130,5 +137,20 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::UNION_TYPES;
+    }
+
+    private function hasStaticOrThisType(UnionTypeNode $unionTypeNode): bool
+    {
+        foreach ($unionTypeNode->types as $typeNode) {
+            if ($typeNode instanceof ThisTypeNode) {
+                return true;
+            }
+
+            if ($typeNode instanceof IdentifierTypeNode && $typeNode->name === 'static') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
