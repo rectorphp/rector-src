@@ -80,7 +80,13 @@ CODE_SAMPLE
         $decoratedConsts = [];
 
         foreach ($consts as $const) {
-            $decoratedConsts[] = new ClassConst([$const], $classConst->flags, $classConst->getAttributes());
+            $decoratedConsts[] = new ClassConst(
+                [$const],
+                $classConst->flags,
+                $classConst->getAttributes(),
+                $classConst->attrGroups,
+                $classConst->type
+            );
         }
 
         return $decoratedConsts;
