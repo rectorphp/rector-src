@@ -89,11 +89,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
-            return null;
-        }
-
         if (count($node->stmts) !== 1) {
             return null;
         }
@@ -108,6 +103,11 @@ CODE_SAMPLE
         }
 
         if ($returnExpr->isFirstClassCallable()) {
+            return null;
+        }
+
+        $scope = ScopeFetcher::fetch($node);
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
             return null;
         }
 
