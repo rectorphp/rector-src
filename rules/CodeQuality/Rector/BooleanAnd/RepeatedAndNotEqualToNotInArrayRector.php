@@ -16,6 +16,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use Rector\CodeQuality\NodeFactory\InArrayFromRepeatedCompareFactory;
 use Rector\CodeQuality\ValueObject\ComparedExprAndValueExpr;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -68,6 +69,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?BooleanNot
     {
+        // in_array() func call is not allowed in a constant expression
+        if ($this->isInConstantExpression($node)) {
+            return null;
+        }
+
         if (! $this->isNotEqualOrNotIdentical($node->right)) {
             return null;
         }
@@ -94,6 +100,19 @@ CODE_SAMPLE
         $inArrayFuncCall = new FuncCall(new Name('in_array'), $args);
 
         return new BooleanNot($inArrayFuncCall);
+    }
+
+    private function isInConstantExpression(BooleanAnd $booleanAnd): bool
+    {
+        if ($booleanAnd->getAttribute(AttributeKey::IS_DEFAULT_PROPERTY_VALUE) === true) {
+            return true;
+        }
+
+        if ($booleanAnd->getAttribute(AttributeKey::IS_CLASS_CONST_VALUE) === true) {
+            return true;
+        }
+
+        return $booleanAnd->getAttribute(AttributeKey::IS_PARAM_DEFAULT) === true;
     }
 
     private function isNotEqualOrNotIdentical(Expr $expr): bool
