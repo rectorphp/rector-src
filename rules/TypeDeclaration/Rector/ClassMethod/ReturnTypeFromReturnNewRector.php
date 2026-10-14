@@ -105,16 +105,16 @@ CODE_SAMPLE
             return null;
         }
 
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
             $scope
         )) {
-            return null;
-        }
-
-        $returns = $this->betterNodeFinder->findReturnsScoped($node);
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
             return null;
         }
 

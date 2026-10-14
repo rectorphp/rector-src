@@ -81,15 +81,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if (! $this->isInsideTestCaseClass($scope)) {
-            return null;
-        }
-
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
-            return null;
-        }
-
         // we need exactly 1 return
         $returns = $this->betterNodeFinder->findReturnsScoped($node);
         if (count($returns) !== 1) {
@@ -97,6 +88,15 @@ CODE_SAMPLE
         }
 
         if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
+            return null;
+        }
+
+        $scope = ScopeFetcher::fetch($node);
+        if (! $this->isInsideTestCaseClass($scope)) {
+            return null;
+        }
+
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
             return null;
         }
 

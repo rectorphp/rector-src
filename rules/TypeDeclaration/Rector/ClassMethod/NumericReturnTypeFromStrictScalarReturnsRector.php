@@ -85,13 +85,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if ($this->shouldSkip($node, $scope)) {
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
             return null;
         }
 
-        $returns = $this->betterNodeFinder->findReturnsScoped($node);
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
+        $scope = ScopeFetcher::fetch($node);
+        if ($this->shouldSkip($node, $scope)) {
             return null;
         }
 
