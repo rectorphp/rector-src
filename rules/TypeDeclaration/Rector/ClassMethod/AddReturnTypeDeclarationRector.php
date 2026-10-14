@@ -154,8 +154,8 @@ CODE_SAMPLE
             return;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if ($classMethod->returnType instanceof Node && $newType instanceof SimpleStaticType) {
+            $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
             if (! $classReflection instanceof ClassReflection) {
                 return;
             }
