@@ -76,15 +76,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $funcReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-
-        if (! $funcReflection instanceof NativeFunctionReflection) {
-            return null;
-        }
-
         $args = $node->getArgs();
 
         if (! isset($args[1]) || ! $args[1]->value instanceof Closure) {
+            return null;
+        }
+
+        $funcReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
+
+        if (! $funcReflection instanceof NativeFunctionReflection) {
             return null;
         }
 
