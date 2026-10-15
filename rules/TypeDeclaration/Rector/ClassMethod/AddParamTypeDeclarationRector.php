@@ -87,6 +87,11 @@ CODE_SAMPLE
     {
         $this->hasChanged = false;
 
+        // skip class without parents/interfaces, there is no param type to mimic
+        if ($node instanceof Class_ && $node->extends === null && $node->implements === []) {
+            return null;
+        }
+
         // skip guarded classes, where adding a param type would break child classes
         if ($this->parentClassMethodTypeOverrideGuard->isTypeGuardedClass($node)) {
             return null;
