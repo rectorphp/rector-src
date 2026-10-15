@@ -77,13 +77,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $emptyExprType = $this->getType($negagedExpr->expr);
-        if (! $emptyExprType->isArray()->yes()) {
+        $dimFetchVar = $node->if->var;
+        if (! $this->nodeComparator->areNodesEqual($negagedExpr->expr, $dimFetchVar)) {
             return null;
         }
 
-        $dimFetchVar = $node->if->var;
-        if (! $this->nodeComparator->areNodesEqual($negagedExpr->expr, $dimFetchVar)) {
+        $emptyExprType = $this->getType($negagedExpr->expr);
+        if (! $emptyExprType->isArray()->yes()) {
             return null;
         }
 

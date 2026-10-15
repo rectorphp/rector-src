@@ -130,12 +130,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $exceptionArgumentPosition = $this->resolveExceptionArgumentPosition($new->class);
-        if ($exceptionArgumentPosition === null) {
+        if ($new->isFirstClassCallable()) {
             return null;
         }
 
-        if ($new->isFirstClassCallable()) {
+        $exceptionArgumentPosition = $this->resolveExceptionArgumentPosition($new->class);
+        if ($exceptionArgumentPosition === null) {
             return null;
         }
 
