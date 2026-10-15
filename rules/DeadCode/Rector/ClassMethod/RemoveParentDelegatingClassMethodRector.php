@@ -94,16 +94,16 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->isParentCallDelegatingParams($node, $node->stmts[0])) {
+            return null;
+        }
+
         if ($this->hasRefiningDocblock($node)) {
             return null;
         }
 
         $parentMethodReflection = $this->matchParentMethodReflection($node);
         if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
-            return null;
-        }
-
-        if (! $this->isParentCallDelegatingParams($node, $node->stmts[0])) {
             return null;
         }
 

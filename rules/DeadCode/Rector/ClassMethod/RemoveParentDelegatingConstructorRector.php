@@ -108,16 +108,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentMethodReflection = $this->matchParentConstructorReflection($node);
-        if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
-            return null;
-        }
-
-        // removing public constructor would expose the narrower parent one
-        if (! $parentMethodReflection->isPublic()) {
-            return null;
-        }
-
         $soleStmt = $node->stmts[0];
         $parentCallArgs = $this->matchParentConstructorCallArgs($soleStmt);
         if ($parentCallArgs === null) {
@@ -126,6 +116,16 @@ CODE_SAMPLE
 
         // match count and order
         if (! $this->isParameterAndArgCountAndOrderIdentical($node)) {
+            return null;
+        }
+
+        $parentMethodReflection = $this->matchParentConstructorReflection($node);
+        if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
+            return null;
+        }
+
+        // removing public constructor would expose the narrower parent one
+        if (! $parentMethodReflection->isPublic()) {
             return null;
         }
 
