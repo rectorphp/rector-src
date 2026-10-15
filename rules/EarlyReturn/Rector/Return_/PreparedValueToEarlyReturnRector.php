@@ -219,16 +219,16 @@ CODE_SAMPLE
         foreach ($bareSingleAssignIfs as $bareSingleAssignIf) {
             $assign = $bareSingleAssignIf->getAssign();
 
+            if (! $this->nodeComparator->areNodesEqual($assign->var, $returnedExpr)) {
+                return false;
+            }
+
             $isVariableUsed = (bool) $this->betterNodeFinder->findFirst(
                 [$bareSingleAssignIf->getIfCondExpr(), $assign->expr],
                 fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $returnedExpr)
             );
 
             if ($isVariableUsed) {
-                return false;
-            }
-
-            if (! $this->nodeComparator->areNodesEqual($assign->var, $returnedExpr)) {
                 return false;
             }
         }
