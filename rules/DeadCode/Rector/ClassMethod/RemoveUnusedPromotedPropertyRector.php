@@ -111,7 +111,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($constructClassMethod);
+        $phpDocInfo = null;
 
         foreach ($constructClassMethod->params as $key => $param) {
             // only private local scope; removing public property might be dangerous
@@ -140,6 +140,7 @@ CODE_SAMPLE
                 continue;
             }
 
+            $phpDocInfo ??= $this->phpDocInfoFactory->createFromNode($constructClassMethod);
             if ($phpDocInfo instanceof PhpDocInfo) {
                 $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
                 if ($paramTagValueNode instanceof ParamTagValueNode) {

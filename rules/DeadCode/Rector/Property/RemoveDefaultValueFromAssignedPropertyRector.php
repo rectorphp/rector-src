@@ -86,12 +86,8 @@ CODE_SAMPLE
             return null;
         }
 
-        // early return can skip the assign, so the default value is still needed
-        if ($this->hasEarlyReturn($node, $constructClassMethod)) {
-            return null;
-        }
-
         $hasChanged = false;
+        $hasEarlyReturn = null;
         $isFinal = $node->isFinal() || FeatureFlags::treatClassesAsFinal($node);
 
         foreach ($node->getProperties() as $property) {
@@ -126,6 +122,12 @@ CODE_SAMPLE
                 // partial assign, e.g. $this->items['key'] = ...; keeps the default value required
                 if ($this->isAssignedViaArrayDimFetch($node, $propertyName)) {
                     continue;
+                }
+
+                // early return can skip the assign, so the default value is still needed
+                $hasEarlyReturn ??= $this->hasEarlyReturn($node, $constructClassMethod);
+                if ($hasEarlyReturn) {
+                    return null;
                 }
 
                 $propertyProperty->default = null;
