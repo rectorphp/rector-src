@@ -78,12 +78,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgType = $this->nodeTypeResolver->getNativeType($args[0]->value);
         $secondArgType = $this->nodeTypeResolver->getNativeType($args[1]->value);
 
         if (! $secondArgType->isArray()->yes()) {
             return null;
         }
+
+        $firstArgType = $this->nodeTypeResolver->getNativeType($args[0]->value);
 
         if ($this->typeComparator->isSubtype($secondArgType->getIterableValueType(), $firstArgType)) {
             $node->args[] = new Arg($this->nodeFactory->createTrue());
