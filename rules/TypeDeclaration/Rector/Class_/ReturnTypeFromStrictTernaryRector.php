@@ -86,11 +86,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if ($this->shouldSkip($node, $scope)) {
-            return null;
-        }
-
         if ($node->stmts === null) {
             return null;
         }
@@ -106,6 +101,11 @@ CODE_SAMPLE
 
         $return = $returns[0];
         if (! $return->expr instanceof Ternary) {
+            return null;
+        }
+
+        $scope = ScopeFetcher::fetch($node);
+        if ($this->shouldSkip($node, $scope)) {
             return null;
         }
 

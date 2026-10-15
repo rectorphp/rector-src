@@ -76,15 +76,15 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->hasReturnArray($node)) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
             $scope
         )) {
-            return null;
-        }
-
-        if (! $this->hasReturnArray($node)) {
             return null;
         }
 

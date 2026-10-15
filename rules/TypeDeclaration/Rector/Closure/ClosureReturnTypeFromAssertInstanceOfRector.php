@@ -95,13 +95,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if (! $this->isInsideTestCaseClass($scope)) {
+        // only handle closures narrowed by assertInstanceOf(); plain returns are handled by ClosureReturnTypeRector
+        if (! $this->hasAssertInstanceOf($node)) {
             return null;
         }
 
-        // only handle closures narrowed by assertInstanceOf(); plain returns are handled by ClosureReturnTypeRector
-        if (! $this->hasAssertInstanceOf($node)) {
+        $scope = ScopeFetcher::fetch($node);
+        if (! $this->isInsideTestCaseClass($scope)) {
             return null;
         }
 
