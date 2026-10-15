@@ -85,6 +85,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // early return if no @return tag is present
+        if (! str_contains((string) $node->getDocComment(), '@return')) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $returnTagValueNode = $phpDocInfo->getReturnTagValue();
