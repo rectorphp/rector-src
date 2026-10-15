@@ -98,17 +98,17 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->stmts as $key => $stmt) {
-            $variableName = $this->matchOverridableAssignVariableName($stmt);
-            if ($variableName === null) {
-                continue;
-            }
-
             $nextStmt = $node->stmts[$key + 1] ?? null;
             if (! $nextStmt instanceof If_) {
                 continue;
             }
 
             if (! $nextStmt->else instanceof Else_ || $nextStmt->elseifs !== []) {
+                continue;
+            }
+
+            $variableName = $this->matchOverridableAssignVariableName($stmt);
+            if ($variableName === null) {
                 continue;
             }
 

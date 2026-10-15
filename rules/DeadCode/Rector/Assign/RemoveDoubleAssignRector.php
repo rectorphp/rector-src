@@ -89,6 +89,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (! $stmt->expr->var instanceof Variable && ! $stmt->expr->var instanceof PropertyFetch && ! $stmt->expr->var instanceof StaticPropertyFetch) {
+                continue;
+            }
+
             // early check self referencing, ensure that variable not re-used
             if ($this->isSelfReferencing($nextAssign)) {
                 continue;
@@ -113,10 +117,6 @@ CODE_SAMPLE
             if (($nextAssign->var instanceof PropertyFetch || $nextAssign->var instanceof StaticPropertyFetch) && $this->sideEffectNodeDetector->detectCallExpr(
                 $nextAssign->expr
             )) {
-                continue;
-            }
-
-            if (! $stmt->expr->var instanceof Variable && ! $stmt->expr->var instanceof PropertyFetch && ! $stmt->expr->var instanceof StaticPropertyFetch) {
                 continue;
             }
 

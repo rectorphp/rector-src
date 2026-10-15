@@ -154,13 +154,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($instanceof);
-        if ($classReflection instanceof ClassReflection && $classReflection->isTrait()) {
+        $exprType = $this->nodeTypeResolver->getNativeType($instanceof->expr);
+        if (! $exprType instanceof ObjectType) {
             return null;
         }
 
-        $exprType = $this->nodeTypeResolver->getNativeType($instanceof->expr);
-        if (! $exprType instanceof ObjectType) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($instanceof);
+        if ($classReflection instanceof ClassReflection && $classReflection->isTrait()) {
             return null;
         }
 

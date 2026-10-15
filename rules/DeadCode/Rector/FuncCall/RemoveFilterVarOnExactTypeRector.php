@@ -72,6 +72,14 @@ CODE_SAMPLE
 
         $constantFilterName = $secondArgValue->name->toString();
 
+        if (! in_array(
+            $constantFilterName,
+            ['FILTER_VALIDATE_INT', 'FILTER_VALIDATE_FLOAT', 'FILTER_VALIDATE_BOOLEAN', 'FILTER_VALIDATE_BOOL'],
+            true
+        )) {
+            return null;
+        }
+
         $valueType = $this->nodeTypeResolver->getNativeType($firstArgValue);
 
         if ($constantFilterName === 'FILTER_VALIDATE_INT' && $valueType->isInteger()->yes()) {

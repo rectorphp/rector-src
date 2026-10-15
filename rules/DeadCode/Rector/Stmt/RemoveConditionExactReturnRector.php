@@ -95,16 +95,6 @@ CODE_SAMPLE
 
             $identicalOrEqual = $stmt->cond;
 
-            if ($this->sideEffectNodeDetector->detect($identicalOrEqual->right)) {
-                continue;
-            }
-
-            if (! $this->nodeComparator->areNodesEqual($identicalOrEqual->right, $soleIfReturn->expr)) {
-                continue;
-            }
-
-            $comparedVariable = $identicalOrEqual->left;
-
             // next if must be return of the same var
             $nextStmt = $node->stmts[$key + 1] ?? null;
             if (! $nextStmt instanceof Return_) {
@@ -114,6 +104,16 @@ CODE_SAMPLE
             if (! $nextStmt->expr instanceof Expr) {
                 continue;
             }
+
+            if ($this->sideEffectNodeDetector->detect($identicalOrEqual->right)) {
+                continue;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($identicalOrEqual->right, $soleIfReturn->expr)) {
+                continue;
+            }
+
+            $comparedVariable = $identicalOrEqual->left;
 
             if (! $this->nodeComparator->areNodesEqual($nextStmt->expr, $comparedVariable)) {
                 continue;
