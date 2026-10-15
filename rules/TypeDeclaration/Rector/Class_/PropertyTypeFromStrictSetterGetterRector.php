@@ -119,13 +119,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            // constructor assignment can set a different type than the setter/getter → skip
-            if ($this->isAssignedInConstructor($node, $property)) {
+            $getterSetterPropertyType = $this->matchGetterSetterIdenticalType($property, $node);
+            if (! $getterSetterPropertyType instanceof Type) {
                 continue;
             }
 
-            $getterSetterPropertyType = $this->matchGetterSetterIdenticalType($property, $node);
-            if (! $getterSetterPropertyType instanceof Type) {
+            // constructor assignment can set a different type than the setter/getter → skip
+            if ($this->isAssignedInConstructor($node, $property)) {
                 continue;
             }
 

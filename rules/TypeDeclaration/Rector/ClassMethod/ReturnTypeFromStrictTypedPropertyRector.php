@@ -128,6 +128,10 @@ CODE_SAMPLE
     {
         $returns = $this->betterNodeFinder->findReturnsScoped($classMethod);
 
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($classMethod, $returns)) {
+            return [];
+        }
+
         $propertyTypes = [];
 
         foreach ($returns as $return) {
@@ -152,10 +156,6 @@ CODE_SAMPLE
             }
 
             $propertyTypes[] = $this->nodeTypeResolver->getNativeType($return->expr);
-        }
-
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($classMethod, $returns)) {
-            return [];
         }
 
         return $propertyTypes;

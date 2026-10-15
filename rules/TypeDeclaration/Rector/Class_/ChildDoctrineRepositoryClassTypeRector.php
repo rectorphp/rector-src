@@ -94,6 +94,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // entity type is resolved from the @extends docblock, bail early when absent
+        if ($node->getDocComment() === null) {
+            return null;
+        }
+
         if (! $this->isObjectType($node, new ObjectType('Doctrine\ORM\EntityRepository'))) {
             return null;
         }
