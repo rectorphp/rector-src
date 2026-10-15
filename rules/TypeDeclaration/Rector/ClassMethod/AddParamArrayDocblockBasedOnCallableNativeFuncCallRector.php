@@ -142,13 +142,6 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $arrayArgValueType = $this->nodeTypeResolver->getNativeType($arrayArgValue);
-
-                // type changed, eg: by reassign
-                if (! $arrayArgValueType->isArray()->yes()) {
-                    return null;
-                }
-
                 $callbackArg = $subNode->getArg(
                     'callback',
                     NativeFuncCallPositions::ARRAY_AND_CALLBACK_POSITIONS[$funcCallName]['callback']
@@ -182,6 +175,13 @@ CODE_SAMPLE
                 }
 
                 if (! $callbackArgValue->params[0]->type instanceof Node) {
+                    return null;
+                }
+
+                $arrayArgValueType = $this->nodeTypeResolver->getNativeType($arrayArgValue);
+
+                // type changed, eg: by reassign
+                if (! $arrayArgValueType->isArray()->yes()) {
                     return null;
                 }
 

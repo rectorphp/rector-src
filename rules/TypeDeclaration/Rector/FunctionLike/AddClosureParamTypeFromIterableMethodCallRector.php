@@ -98,6 +98,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->callUsesClosures($node->getArgs())) {
+            return null;
+        }
+
         $varType = $this->getType($node->var);
 
         if (! $varType instanceof IntersectionType || ! $varType->isIterable()->yes()) {
@@ -124,10 +128,6 @@ CODE_SAMPLE
             ->getParameters();
 
         if (! $this->methodSignatureUsesCallableWithIteratorTypes($className, $parameters)) {
-            return null;
-        }
-
-        if (! $this->callUsesClosures($node->getArgs())) {
             return null;
         }
 
