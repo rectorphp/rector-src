@@ -279,6 +279,10 @@ CODE_SAMPLE
 
     private function refactorMethodCall(MethodCall $methodCall, string $methodName): null|PropertyFetch|Identical
     {
+        if (! in_array($methodName, ['getKey', 'getValue', 'equals'], true)) {
+            return null;
+        }
+
         if (! $this->isObjectType($methodCall->var, new ObjectType('MyCLabs\Enum\Enum'))) {
             return null;
         }
@@ -291,11 +295,7 @@ CODE_SAMPLE
             return $this->refactorGetValueMethodCall($methodCall);
         }
 
-        if ($methodName === 'equals') {
-            return $this->refactorEqualsMethodCall($methodCall);
-        }
-
-        return null;
+        return $this->refactorEqualsMethodCall($methodCall);
     }
 
     private function shouldOmitEnumCase(string $enumCaseName): bool

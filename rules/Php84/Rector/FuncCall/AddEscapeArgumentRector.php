@@ -81,10 +81,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isObjectType($node->var, new ObjectType('SplFileObject'))) {
-            return null;
-        }
-
         if ($this->shouldSkipNamedArg($node)) {
             return null;
         }
@@ -94,6 +90,10 @@ CODE_SAMPLE
         }
 
         if ($name === 'fputcsv' && isset($node->getArgs()[3])) {
+            return null;
+        }
+
+        if (! $this->isObjectType($node->var, new ObjectType('SplFileObject'))) {
             return null;
         }
 
