@@ -83,11 +83,11 @@ CODE_SAMPLE
         }
 
         foreach ($this->addPropertyTypeDeclarations as $addPropertyTypeDeclaration) {
-            if (! $this->isClassReflectionType($classReflection, $addPropertyTypeDeclaration->getClass())) {
+            if (! $this->isName($node, $addPropertyTypeDeclaration->getPropertyName())) {
                 continue;
             }
 
-            if (! $this->isName($node, $addPropertyTypeDeclaration->getPropertyName())) {
+            if (! $this->isClassReflectionType($classReflection, $addPropertyTypeDeclaration->getClass())) {
                 continue;
             }
 

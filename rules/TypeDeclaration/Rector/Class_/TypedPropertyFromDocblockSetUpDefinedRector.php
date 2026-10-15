@@ -92,13 +92,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
-            return null;
-        }
-
         // nothing useful here
         $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
         if (! $setUpClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
             return null;
         }
 
