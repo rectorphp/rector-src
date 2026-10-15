@@ -106,6 +106,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            // possibly by docblock, dynamic array access
+            if ($issetExpr->var instanceof ArrayDimFetch) {
+                continue;
+            }
+
             // has property PHP 7.4 type?
             if ($this->shouldSkipForPropertyTypeDeclaration($issetExpr)) {
                 continue;
@@ -123,11 +128,6 @@ CODE_SAMPLE
             }
 
             if ($classReflection->hasNativeMethod(MethodName::ISSET)) {
-                continue;
-            }
-
-            // possibly by docblock
-            if ($issetExpr->var instanceof ArrayDimFetch) {
                 continue;
             }
 

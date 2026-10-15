@@ -93,9 +93,9 @@ CODE_SAMPLE
         }
 
         $identicals = $this->betterNodeFinder->findInstanceOf($node, Identical::class);
-        $equals = $this->betterNodeFinder->findInstanceOf($node, Equal::class);
 
         if ($identicals !== []) {
+            $equals = $this->betterNodeFinder->findInstanceOf($node, Equal::class);
             if ($equals !== []) {
                 // mix identical and equals, keep as is
                 // @see https://3v4l.org/24cFl
