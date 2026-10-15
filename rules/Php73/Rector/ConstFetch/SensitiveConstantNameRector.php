@@ -140,11 +140,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // constant is defined in current lower/upper case
-        if ($this->reflectionProvider->hasConstant(new Name($constantName), null)) {
-            return null;
-        }
-
         // is uppercase, all good
         if ($constantName === $uppercasedConstantName) {
             return null;
@@ -155,6 +150,11 @@ CODE_SAMPLE
             || str_contains($uppercasedConstantName, '(')
             || str_contains($uppercasedConstantName, "'")
         ) {
+            return null;
+        }
+
+        // constant is defined in current lower/upper case
+        if ($this->reflectionProvider->hasConstant(new Name($constantName), null)) {
             return null;
         }
 

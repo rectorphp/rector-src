@@ -78,13 +78,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $callerType = $this->getType($node->class);
-        if (! $callerType->isSuperTypeOf(new ObjectType('ReflectionFunction'))->yes()) {
+        $firstArg = $node->getArgs()[0] ?? null;
+        if (! $firstArg instanceof Arg) {
             return null;
         }
 
-        $firstArg = $node->getArgs()[0] ?? null;
-        if (! $firstArg instanceof Arg) {
+        $callerType = $this->getType($node->class);
+        if (! $callerType->isSuperTypeOf(new ObjectType('ReflectionFunction'))->yes()) {
             return null;
         }
 
