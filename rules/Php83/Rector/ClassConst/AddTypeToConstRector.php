@@ -88,7 +88,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentClassReflections = $this->getParentReflections($className);
+        $parentClassReflections = null;
 
         $hasChanged = false;
 
@@ -104,11 +104,12 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($this->isConstGuardedByParents($constNode, $parentClassReflections)) {
+                if ($this->canBeInherited($classConst, $node)) {
                     continue;
                 }
 
-                if ($this->canBeInherited($classConst, $node)) {
+                $parentClassReflections ??= $this->getParentReflections($className);
+                if ($this->isConstGuardedByParents($constNode, $parentClassReflections)) {
                     continue;
                 }
 
