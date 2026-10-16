@@ -9,7 +9,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitor;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\RuleDefinition;
 
 final class RemoveIndex1Rector extends AbstractRector
 {

@@ -90,7 +90,7 @@ final class EregToPcreTransformer
     /**
      * Recursively converts ERE into PCRE, starting at the position $i.
      *
-     * @return float[]|int[]|string[]
+     * @return array{string, int}
      */
     private function _ere2pcre(string $content, int $i): array
     {
@@ -223,7 +223,7 @@ final class EregToPcreTransformer
     }
 
     /**
-     * @return float[]|int[]|string[]
+     * @return array{string, int}
      */
     private function processSquareBracket(string $s, int $i, int $l, string $cls, bool $start): array
     {
@@ -313,7 +313,7 @@ final class EregToPcreTransformer
     }
 
     /**
-     * @return int[]|string[]
+     * @return array{string, int}
      */
     private function processCharacterClass(string $content, int $i, string $cls): array
     {

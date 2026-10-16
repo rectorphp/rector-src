@@ -6,7 +6,7 @@ namespace Rector\Tests\VersionBonding\Fixture;
 
 use PhpParser\Node;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\RuleDefinition;
 
 final class NoInterfaceRector extends AbstractRector
 {

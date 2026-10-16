@@ -10,7 +10,7 @@ use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PolyfillPackage;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\RuleDefinition;
 
 final class PolyfillPhp83Rector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {

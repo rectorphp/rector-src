@@ -7,7 +7,7 @@ namespace Rector\Tests\Testing\RectorRuleShouldNotBeApplied\Source;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\RuleDefinition;
 
 final class NoChangeRector extends AbstractRector
 {

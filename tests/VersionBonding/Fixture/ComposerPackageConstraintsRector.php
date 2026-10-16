@@ -8,7 +8,7 @@ use PhpParser\Node;
 use Rector\Rector\AbstractRector;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerPackageConstraint;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\RuleDoc\RuleDefinition;
 
 final class ComposerPackageConstraintsRector extends AbstractRector implements ComposerPackageConstraintInterface
 {
