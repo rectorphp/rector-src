@@ -88,7 +88,7 @@ CODE_SAMPLE
         $this->hasChanged = false;
 
         // skip class without parents/interfaces, there is no param type to mimic
-        if ($node instanceof Class_ && !$node->extends instanceof Name && $node->implements === []) {
+        if ($node instanceof Class_ && ! $node->extends instanceof Name && $node->implements === []) {
             return null;
         }
 

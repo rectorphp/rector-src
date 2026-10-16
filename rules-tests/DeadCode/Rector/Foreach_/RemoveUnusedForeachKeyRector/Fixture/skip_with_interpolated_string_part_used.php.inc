@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Issues\IndentationCrash\PrintCrash;
+namespace Rector\Tests\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector\Fixture;
 
 final class WithInterpolatedStringPart
 {
@@ -11,4 +11,3 @@ final class WithInterpolatedStringPart
         }
     }
 }
-
