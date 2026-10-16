@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\Issues\Issue7112\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector\Fixture;
 
-class Fixture
+class SkipNestedClosureReturnInFluentCall
 {
     public function something($callback = null): self
     {
