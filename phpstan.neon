@@ -4,8 +4,6 @@ includes:
 
 rules:
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
-    - Rector\Utils\PHPStan\Rule\NoScopeFetchBeforeCheapGuardRule
-    - Rector\Utils\PHPStan\Rule\NarrowReturnToUnionParamRule
 
 parameters:
     level: 8
