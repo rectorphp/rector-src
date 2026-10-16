@@ -107,7 +107,7 @@ final readonly class ArrayParser
 
     /**
      * Mimics https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L1354-L1385
-     * @return array<null|mixed, mixed>
+     * @return array{mixed, mixed}
      */
     private function resolveArrayItem(BetterTokenIterator $tokenIterator, Node $currentPhpNode): array
     {
