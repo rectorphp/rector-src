@@ -189,11 +189,6 @@ parameters:
             identifier: offsetAccess.nonArray
             path: src/PhpParser/NodeTraverser/RectorNodeTraverser.php
 
-        -
-            identifier: offsetAccess.notFound
-            message: '#Offset float\|int\|string might not exist on string#'
-            path: rules/Php70/EregToPcreTransformer.php
-
         # phpstan internalls
         - identifier: phpstanApi.class
         - identifier: phpstanApi.classConstant
