@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Issues\AliasedImportDouble\Fixture;
+namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
