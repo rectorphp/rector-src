@@ -96,7 +96,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // entity type is resolved from the @extends docblock, bail early when absent
-        if (!$node->getDocComment() instanceof Doc) {
+        if (! $node->getDocComment() instanceof Doc) {
             return null;
         }
 
