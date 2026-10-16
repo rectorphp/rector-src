@@ -3,8 +3,6 @@ includes:
 
 rules:
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
-    - Rector\Utils\PHPStan\Rule\NoScopeFetchBeforeCheapGuardRule
-    - Rector\Utils\PHPStan\Rule\NarrowReturnToUnionParamRule
 
 parameters:
     level: 8
@@ -56,6 +54,7 @@ parameters:
         phpunit: true
         mocks: true
         ctor: true
+        modern: true
 
     # see https://github.com/TomasVotruba/type-coverage
     type_coverage:
