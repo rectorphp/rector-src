@@ -48,6 +48,7 @@ final class PreloadBuilder
 declare(strict_types=1);
 
 use PhpParser\Node;
+use PhpParser\NodeTraverser;
 use PHPStan\Testing\PHPStanTestCase;
 
 if (defined('__PHPSTAN_RUNNING__')) {
@@ -230,6 +231,15 @@ CODE_SAMPLE;
         }
 
         $filePath = '/vendor/' . Strings::after($realPath, 'vendor/');
+
+        // PHPStan Turbo declares its native NodeTraverser before this file runs
+        if ($filePath === '/vendor/nikic/php-parser/lib/PhpParser/NodeTraverser.php') {
+            return 'if (! class_exists(NodeTraverser::class, false)) {' . PHP_EOL
+                . "    require_once __DIR__ . '" . $filePath . "';" . PHP_EOL
+                . '}' . PHP_EOL
+                . PHP_EOL;
+        }
+
         return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
     }
 
