@@ -6,29 +6,18 @@ namespace Rector\Arguments\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
-use Rector\Arguments\ArgumentDefaultValueReplacer;
 use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
-use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector\FunctionArgumentDefaultValueReplacerRectorTest
+ * @deprecated This rule is deprecated. Its configuration is weak and relies on magic values. Write a dedicated custom Rector rule instead for type-safe argument replacement.
  */
-final class FunctionArgumentDefaultValueReplacerRector extends AbstractRector implements ConfigurableRectorInterface
+final class FunctionArgumentDefaultValueReplacerRector extends AbstractRector implements DeprecatedInterface
 {
-    /**
-     * @var ReplaceFuncCallArgumentDefaultValue[]
-     */
-    private array $replacedArguments = [];
-
-    public function __construct(
-        private readonly ArgumentDefaultValueReplacer $argumentDefaultValueReplacer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Streamline the operator arguments of `version_compare` function', [
@@ -36,7 +25,6 @@ final class FunctionArgumentDefaultValueReplacerRector extends AbstractRector im
                 <<<'CODE_SAMPLE'
 version_compare(PHP_VERSION, '5.6', 'gte');
 CODE_SAMPLE
-
                 ,
                 <<<'CODE_SAMPLE'
 version_compare(PHP_VERSION, '5.6', 'ge');
@@ -58,33 +46,8 @@ CODE_SAMPLE
     /**
      * @param FuncCall $node
      */
-    public function refactor(Node $node): FuncCall|null
+    public function refactor(Node $node): ?Node
     {
-        $hasChanged = false;
-        foreach ($this->replacedArguments as $replacedArgument) {
-            if (! $this->isName($node->name, $replacedArgument->getFunction())) {
-                continue;
-            }
-
-            $changedNode = $this->argumentDefaultValueReplacer->processReplaces($node, $replacedArgument);
-            if ($changedNode instanceof Node) {
-                $hasChanged = true;
-            }
-        }
-
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allIsAOf($configuration, ReplaceFuncCallArgumentDefaultValue::class);
-        $this->replacedArguments = $configuration;
+        throw new ShouldNotHappenException(sprintf('"%s" rule is deprecated, write a dedicated custom Rector rule instead', self::class));
     }
 }

@@ -6,6 +6,9 @@ namespace Rector\Arguments\ValueObject;
 
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 
+/**
+ * @api
+ */
 final readonly class ReplaceFuncCallArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
 {
     public function __construct(
