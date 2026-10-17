@@ -14,8 +14,6 @@ use Rector\FileSystem\FilesFinder;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\CpuCoreCountProvider;
 use Rector\Parallel\Exception\ParallelShouldNotHappenException;
-use Rector\Parallel\Experimental\ExperimentalParallelFileProcessor;
-use Rector\Parallel\Experimental\LptScheduleFactory;
 use Rector\Parallel\ScheduleFactory;
 use Rector\PhpParser\Parser\ParserErrors;
 use Rector\Reporting\MissConfigurationReporter;
@@ -53,9 +51,6 @@ final class ApplicationFileProcessor
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
         private readonly Skipper $skipper,
-        // @experimental, see --lpt
-        private readonly LptScheduleFactory $lptScheduleFactory,
-        private readonly ExperimentalParallelFileProcessor $experimentalParallelFileProcessor,
     ) {
     }
 
@@ -272,23 +267,6 @@ final class ApplicationFileProcessor
         $maxNumberOfProcesses = SimpleParameterProvider::provideIntParameter(
             Option::PARALLEL_MAX_NUMBER_OF_PROCESSES
         );
-
-        // @experimental opt-in, see --lpt
-        if ($input->hasOption(Option::LPT) && (bool) $input->getOption(Option::LPT)) {
-            $bucketSchedule = $this->lptScheduleFactory->create(
-                $cpuCores,
-                $jobSize,
-                $maxNumberOfProcesses,
-                $filePaths
-            );
-
-            return $this->experimentalParallelFileProcessor->process(
-                $bucketSchedule,
-                $mainScript,
-                $postFileCallback,
-                $input
-            );
-        }
 
         $schedule = $this->scheduleFactory->create($cpuCores, $jobSize, $maxNumberOfProcesses, $filePaths);
 
