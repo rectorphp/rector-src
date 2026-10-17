@@ -132,7 +132,6 @@ parameters:
             identifier: class.notFound
             message: '#Class (.*?) not found#'
             paths:
-                - rules-tests/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector/config
                 - rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/config
                 - rules-tests/Renaming/Rector/Name/RenameClassRector/config
                 - rules-tests/Renaming/Rector/MethodCall/RenameMethodRector/config
