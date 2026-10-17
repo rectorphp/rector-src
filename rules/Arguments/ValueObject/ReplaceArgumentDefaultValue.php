@@ -9,12 +9,10 @@ use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Validation\RectorAssert;
 
 /**
- * @api used in rector-symfony
+ * @deprecated Use custom rule instead, see ReplaceArgumentDefaultValueRector deprecation.
  */
 final readonly class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
 {
-    public const string ANY_VALUE_BEFORE = '*ANY_VALUE_BEFORE*';
-
     /**
      * @param int<0, max> $position
      */
