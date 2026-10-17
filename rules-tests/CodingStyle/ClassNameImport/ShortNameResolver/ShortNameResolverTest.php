@@ -54,6 +54,23 @@ final class ShortNameResolverTest extends AbstractLazyTestCase
         $this->assertSame(['RenamedClass'], $this->shortNameResolver->resolveShortClassLikeNames($file));
     }
 
+    public function testResolveFromFileAgainAfterStmtsChange(): void
+    {
+        $file = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/various_imports.php.inc');
+        $this->assertArrayHasKey('VariousImports', $this->shortNameResolver->resolveFromFile($file));
+
+        $class = new NodeFinder()
+            ->findFirstInstanceOf($file->getNewStmts(), Class_::class);
+        $this->assertInstanceOf(Class_::class, $class);
+
+        $class->name = new Identifier('RenamedClass');
+        $file->changeNewStmts($file->getNewStmts());
+
+        $shortNamesAfterChange = $this->shortNameResolver->resolveFromFile($file);
+        $this->assertArrayNotHasKey('VariousImports', $shortNamesAfterChange);
+        $this->assertArrayHasKey('RenamedClass', $shortNamesAfterChange);
+    }
+
     public function testResolveShortClassLikeNamesPerFile(): void
     {
         $firstFile = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/various_imports.php.inc');
