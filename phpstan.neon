@@ -253,7 +253,6 @@ parameters:
             identifier: return.type
             paths:
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
-                - rules/Arguments/ArgumentDefaultValueReplacer.php
 
         # from mapper interface
         -
