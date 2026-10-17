@@ -55,6 +55,9 @@ CODE_SAMPLE
         return [Expression::class];
     }
 
+    /**
+     * @param Expression $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf('"%s" rule is deprecated, as too niche for wide application', self::class));
