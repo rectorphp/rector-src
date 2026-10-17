@@ -28,7 +28,7 @@ final readonly class AliasClassNameImportSkipVoter implements ClassNameImportSki
 
     public function shouldSkip(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType, Node $node): bool
     {
-        $aliasedUses = $this->aliasUsesResolver->resolveFromNode($node, $file->getNewStmts());
+        $aliasedUses = $this->aliasUsesResolver->resolveFromFile($file);
         $longNameLowered = strtolower($fullyQualifiedObjectType->getClassName());
         $shortNameLowered = $fullyQualifiedObjectType->getShortNameLowered();
 

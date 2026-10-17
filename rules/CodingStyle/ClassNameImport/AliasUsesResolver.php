@@ -4,41 +4,48 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
-use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
 use Rector\PhpParser\Node\FileNode;
+use Rector\ValueObject\Application\File;
 
-final readonly class AliasUsesResolver
+final class AliasUsesResolver
 {
+    private ?File $cachedFile = null;
+
+    private int $cachedVersion = -1;
+
+    /**
+     * @var string[]
+     */
+    private array $cachedAliasedUses = [];
+
     public function __construct(
-        private UseImportsTraverser $useImportsTraverser
+        private readonly UseImportsTraverser $useImportsTraverser
     ) {
     }
 
     /**
-     * @param Stmt[] $stmts
+     * Aliased uses are file-global, so resolve once per file stmts version and reuse
+     * across every imported name in the same traversal
+     *
      * @return string[]
      */
-    public function resolveFromNode(Node $node, array $stmts): array
+    public function resolveFromFile(File $file): array
     {
-        if (! $node instanceof Namespace_ && ! $node instanceof FileNode) {
-            /** @var Namespace_[]|FileNode[] $namespaces */
-            $namespaces = array_filter(
-                $stmts,
-                static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileNode
-            );
-            if (count($namespaces) !== 1) {
-                return [];
-            }
-
-            $node = current($namespaces);
+        $newStmtsVersion = $file->getNewStmtsVersion();
+        if ($file === $this->cachedFile && $newStmtsVersion === $this->cachedVersion) {
+            return $this->cachedAliasedUses;
         }
 
-        return $this->resolveFromStmts($node->stmts);
+        $this->cachedFile = $file;
+        $this->cachedVersion = $newStmtsVersion;
+        $this->cachedAliasedUses = $this->resolveFromNewStmts($file->getNewStmts());
+
+        return $this->cachedAliasedUses;
     }
 
     /**
@@ -67,5 +74,26 @@ final readonly class AliasUsesResolver
         });
 
         return $aliasedUses;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @return string[]
+     */
+    private function resolveFromNewStmts(array $stmts): array
+    {
+        /** @var Namespace_[]|FileNode[] $namespaces */
+        $namespaces = array_filter(
+            $stmts,
+            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileNode
+        );
+
+        if (count($namespaces) !== 1) {
+            return [];
+        }
+
+        $namespace = current($namespaces);
+
+        return $this->resolveFromStmts($namespace->stmts);
     }
 }
