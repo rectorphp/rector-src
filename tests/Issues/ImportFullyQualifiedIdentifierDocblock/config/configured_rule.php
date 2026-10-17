@@ -7,7 +7,10 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector;
 use Rector\Tests\Issues\ImportFullyQualifiedIdentifierDocblock\Source\AddFullyQualifiedIdentifierDocblockRector;
 
 return RectorConfig::configure()
-    ->withRules([AddFullyQualifiedIdentifierDocblockRector::class, RemoveUnusedConstructorParamRector::class])
+    ->withRules([
+        AddFullyQualifiedIdentifierDocblockRector::class,
+        RemoveUnusedConstructorParamRector::class,
+    ])
     ->withImportNames()
     ->withSkip([
         RemoveUnusedConstructorParamRector::class => [

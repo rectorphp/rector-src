@@ -170,8 +170,9 @@ final readonly class ArgumentDefaultValueReplacer
                 && str_contains($replaceArgumentDefaultValue->getValueAfter(), '::')) {
                 [$targetClass, $targetConstant] = explode('::', $replaceArgumentDefaultValue->getValueAfter());
                 $type = $this->nodeTypeResolver->getType($particularArg->value->class);
+                // already the target constant, possibly via self::/subclass that inherits it → no-op
                 if ($type instanceof FullyQualifiedObjectType
-                    && $type->getClassName() === $targetClass
+                    && ($type->getClassName() === $targetClass || $type->isInstanceOf($targetClass)->yes())
                     && $particularArg->value->name instanceof Identifier
                     && $particularArg->value->name->toString() === $targetConstant) {
                     return null;
