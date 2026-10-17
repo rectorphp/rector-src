@@ -59,6 +59,9 @@ CODE_SAMPLE
         return [MethodCall::class, StaticCall::class, ClassMethod::class, New_::class];
     }
 
+    /**
+     * @param MethodCall|StaticCall|ClassMethod|New_ $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf('"%s" rule is deprecated, write a dedicated custom Rector rule instead', self::class));
