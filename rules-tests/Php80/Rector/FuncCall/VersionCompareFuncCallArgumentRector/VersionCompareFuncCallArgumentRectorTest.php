@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
+namespace Rector\Tests\Php80\Rector\FuncCall\VersionCompareFuncCallArgumentRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class FunctionArgumentDefaultValueReplacerRectorTest extends AbstractRectorTestCase
+final class VersionCompareFuncCallArgumentRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

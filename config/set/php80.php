@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector;
-use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
-use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
 use Rector\Config\RectorConfig;
@@ -18,6 +16,8 @@ use Rector\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector;
 use Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector;
 use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
+use Rector\Php80\Rector\FuncCall\GetHeadersArgumentFormatRector;
+use Rector\Php80\Rector\FuncCall\VersionCompareFuncCallArgumentRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
@@ -47,6 +47,8 @@ return static function (RectorConfig $rectorConfig): void {
         ClassOnThisVariableObjectRector::class,
         ConsistentImplodeRector::class,
         OptionalParametersAfterRequiredRector::class,
+        VersionCompareFuncCallArgumentRector::class,
+        GetHeadersArgumentFormatRector::class,
     ]);
 
     $rectorConfig
@@ -90,18 +92,5 @@ return static function (RectorConfig $rectorConfig): void {
             'pg_numrows' => 'pg_num_rows',
             'pg_result' => 'pg_fetch_result',
             'pg_setclientencoding' => 'pg_set_client_encoding',
-        ]);
-
-    $rectorConfig
-        ->ruleWithConfiguration(FunctionArgumentDefaultValueReplacerRector::class, [
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'lte', 'le'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, '', '!='),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, '!', '!='),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'g', 'gt'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'l', 'lt'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'n', 'ne'),
-            new ReplaceFuncCallArgumentDefaultValue('get_headers', 1, 0, false),
-            new ReplaceFuncCallArgumentDefaultValue('get_headers', 1, 1, true),
         ]);
 };
