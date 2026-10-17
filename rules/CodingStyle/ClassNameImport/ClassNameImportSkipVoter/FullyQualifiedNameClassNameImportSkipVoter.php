@@ -6,7 +6,7 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
-use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
+use Rector\CodingStyle\ClassNameImport\ClassNameImportContext;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
@@ -23,15 +23,14 @@ use Rector\ValueObject\Application\File;
 final readonly class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private ShortNameResolver $shortNameResolver
+        private ClassNameImportContext $classNameImportContext
     ) {
     }
 
     public function shouldSkip(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType, Node $node): bool
     {
         // "new X" or "X::static()"
-        /** @var array<string, string> $shortNamesToFullyQualifiedNames */
-        $shortNamesToFullyQualifiedNames = $this->shortNameResolver->resolveFromFile($file);
+        $shortNamesToFullyQualifiedNames = $this->classNameImportContext->resolveShortNamesToFullyQualifiedNames($file);
         $fullyQualifiedObjectTypeShortName = $fullyQualifiedObjectType->getShortName();
         $className = $fullyQualifiedObjectType->getClassName();
 
