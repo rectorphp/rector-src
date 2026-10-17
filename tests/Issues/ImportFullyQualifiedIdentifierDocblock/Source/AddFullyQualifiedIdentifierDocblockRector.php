@@ -36,7 +36,14 @@ final class AddFullyQualifiedIdentifierDocblockRector extends AbstractRector
     public function refactor(Node $node)
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        // make rule idempotent, do not add if already present
+        if ($phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
+            return null;
+        }
+
         $varTagValueNode = new VarTagValueNode(new FullyQualifiedIdentifierTypeNode('DateTime'), '', '');
+
 
         $phpDocInfo->addTagValueNode($varTagValueNode);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);

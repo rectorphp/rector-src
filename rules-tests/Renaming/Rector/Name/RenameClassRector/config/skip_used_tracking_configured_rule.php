@@ -12,8 +12,7 @@ return static function (RectorConfig $rectorConfig): void {
         OldClass::class => NewClass::class,
     ]);
 
-    // both paths are skipped, but only the first file actually uses OldClass, so only its skip
-    // prevents a real change - the second one would not have changed anyway
+    // both paths are skipped; the rule is skipped once per matching file, so both masks are marked used
     $rectorConfig->skip([
         RenameClassRector::class => ['*skip_used_renames_old_class*', '*skip_unused_no_old_class*'],
     ]);

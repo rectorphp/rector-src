@@ -7,6 +7,8 @@ namespace Rector\Application;
 use PhpParser\Node;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\Skipper\Skipper\Skipper;
+use Rector\ValueObject\Application\File;
 use Rector\VersionBonding\ComposerPackageConstraintFilter;
 use Rector\VersionBonding\PhpVersionedFilter;
 
@@ -34,6 +36,7 @@ final class RectorRegistry
         private readonly PhpVersionedFilter $phpVersionedFilter,
         private readonly ComposerPackageConstraintFilter $composerPackageConstraintFilter,
         private readonly ConfigurationRuleFilter $configurationRuleFilter,
+        private readonly Skipper $skipper,
         private array $rectors,
     ) {
     }
@@ -73,6 +76,21 @@ final class RectorRegistry
         }
 
         return $this->cache[$nodeClass];
+    }
+
+    /**
+     * @return RectorInterface[]
+     */
+    public function forNodeAndFile(Node $node, File $file): array
+    {
+        $rectors = $this->forNode($node);
+
+        $filePath = $file->getFilePath();
+
+        return array_filter(
+            $rectors,
+            fn (RectorInterface $rector): bool => ! $this->skipper->shouldSkipRectorAndFile($rector, $filePath)
+        );
     }
 
     /**
