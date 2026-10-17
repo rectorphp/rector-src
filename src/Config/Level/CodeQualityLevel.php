@@ -27,7 +27,6 @@ use Rector\CodeQuality\Rector\Concat\DirnameDirConcatStringToDirectStringPathRec
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
 use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
-use Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
@@ -146,7 +145,6 @@ final class CodeQualityLevel
         VariableConstFetchToClassConstFetchRector::class,
         SingularSwitchToIfRector::class,
         InlineIfToExplicitIfRector::class,
-        TernaryFalseExpressionToIfRector::class,
         SimplifyIfNullableReturnRector::class,
         InlineArrayReturnAssignRector::class,
         RemoveAlwaysElseRector::class,
