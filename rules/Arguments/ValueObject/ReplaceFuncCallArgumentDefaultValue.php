@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Arguments\ValueObject;
 
-use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
-
 /**
  * @api
  */
-final readonly class ReplaceFuncCallArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
+final readonly class ReplaceFuncCallArgumentDefaultValue
 {
     public function __construct(
         private string $function,

@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Rector\Arguments\ValueObject;
 
 use PHPStan\Type\ObjectType;
-use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Validation\RectorAssert;
 
 /**
  * @deprecated Use custom rule instead, see ReplaceArgumentDefaultValueRector deprecation.
  */
-final readonly class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
+final readonly class ReplaceArgumentDefaultValue
 {
     /**
      * @param int<0, max> $position
