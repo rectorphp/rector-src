@@ -48,6 +48,16 @@ final class ClassNameImportContext
     }
 
     /**
+     * Short names of class-likes (class, interface, trait) declared in the file
+     *
+     * @return string[]
+     */
+    public function resolveShortClassLikeNames(File $file): array
+    {
+        return $this->shortNameResolver->resolveShortClassLikeNames($file);
+    }
+
+    /**
      * @return string[]
      */
     public function resolveAliasedUses(File $file): array
