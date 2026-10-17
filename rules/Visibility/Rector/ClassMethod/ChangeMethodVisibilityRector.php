@@ -27,11 +27,6 @@ final class ChangeMethodVisibilityRector extends AbstractRector implements Confi
      */
     private array $methodVisibilities = [];
 
-    /**
-     * @var string[]
-     */
-    private array $methodNames = [];
-
     public function __construct(
         private readonly ParentClassScopeResolver $parentClassScopeResolver,
         private readonly VisibilityManipulator $visibilityManipulator,
@@ -99,7 +94,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isNames($node, $this->methodNames)) {
+        if (! $this->hasMatchingMethodName($node)) {
             return null;
         }
 
@@ -134,9 +129,16 @@ CODE_SAMPLE
         Assert::allIsAOf($configuration, ChangeMethodVisibility::class);
 
         $this->methodVisibilities = $configuration;
-        $this->methodNames = array_map(
-            static fn (ChangeMethodVisibility $changeMethodVisibility): string => $changeMethodVisibility->getMethod(),
-            $configuration
-        );
+    }
+
+    private function hasMatchingMethodName(ClassMethod $classMethod): bool
+    {
+        foreach ($this->methodVisibilities as $methodVisibility) {
+            if ($this->isName($classMethod, $methodVisibility->getMethod())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
