@@ -94,6 +94,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->hasMatchingMethodName($node)) {
+            return null;
+        }
+
         $scope = ScopeFetcher::fetch($node);
         $parentClassName = $this->parentClassScopeResolver->resolveParentClassName($scope);
         if ($parentClassName === null) {
@@ -125,5 +129,16 @@ CODE_SAMPLE
         Assert::allIsAOf($configuration, ChangeMethodVisibility::class);
 
         $this->methodVisibilities = $configuration;
+    }
+
+    private function hasMatchingMethodName(ClassMethod $classMethod): bool
+    {
+        foreach ($this->methodVisibilities as $methodVisibility) {
+            if ($this->isName($classMethod, $methodVisibility->getMethod())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
