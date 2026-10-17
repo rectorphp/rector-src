@@ -274,7 +274,6 @@ final class LazyContainerFactory
         $rectorConfig->autodiscover(__DIR__ . '/../NodeNameResolver/NodeNameResolver');
         $rectorConfig->autodiscover(__DIR__ . '/../NodeTypeResolver/NodeTypeResolver');
         $rectorConfig->autodiscover(__DIR__ . '/../ChangesReporting/Output');
-        $rectorConfig->autodiscover(__DIR__ . '/../../rules/CodingStyle/ClassNameImport/ClassNameImportSkipVoter');
 
         $rectorConfig->singleton(
             SymfonyStyle::class,
