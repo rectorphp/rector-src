@@ -32,8 +32,19 @@ final class ClassNameImportContext
     private array $usedImportTypes = [];
 
     public function __construct(
-        private readonly AliasUsesResolver $aliasUsesResolver
+        private readonly AliasUsesResolver $aliasUsesResolver,
+        private readonly ShortNameResolver $shortNameResolver
     ) {
+    }
+
+    /**
+     * Short names actually used in the file (class-likes, names, docblock types) mapped to their FQN
+     *
+     * @return array<string, string>
+     */
+    public function resolveShortNamesToFullyQualifiedNames(File $file): array
+    {
+        return $this->shortNameResolver->resolveFromFile($file);
     }
 
     /**
