@@ -36,6 +36,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             return null;
         }
 
+        // no use import at this level → nothing to remove, skip the full name resolution walks
+        if (! $this->hasUseStmt($node->stmts)) {
+            return null;
+        }
+
         $hasChanged = false;
         $namespaceOriginalCase = $node instanceof Namespace_ && $node->name instanceof Name
             ? $node->name->toString()
@@ -96,6 +101,20 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         $this->addRectorClassWithLine($node);
         $node->stmts = array_values($node->stmts);
         return $node;
+    }
+
+    /**
+     * @param Node[] $stmts
+     */
+    private function hasUseStmt(array $stmts): bool
+    {
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof Use_) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
