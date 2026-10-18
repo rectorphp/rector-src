@@ -35,6 +35,22 @@ final class FileInfoMatcherTest extends AbstractLazyTestCase
         $this->assertNull($matchedPattern);
     }
 
+    public function testRealPathOfEachPatternIsResolvedSeparatelyOnRepeatedCalls(): void
+    {
+        // the file paths are not real paths, so only the realpath() comparison can match them
+        $pathInPattern = __DIR__ . '/Fixture/path/in';
+        $inPattern = __DIR__ . '/Fixture/in';
+        $patterns = [$pathInPattern, $inPattern];
+
+        $pathInFile = __DIR__ . '/Fixture/path/with/../in/it/KeepThisFile.txt';
+        $inFile = __DIR__ . '/Fixture/path/../in/it/KeepThisFile.txt';
+
+        for ($i = 0; $i < 2; ++$i) {
+            $this->assertSame($pathInPattern, $this->fileInfoMatcher->matchPattern($pathInFile, $patterns));
+            $this->assertSame($inPattern, $this->fileInfoMatcher->matchPattern($inFile, $patterns));
+        }
+    }
+
     #[DataProvider('providePatterns')]
     public function testPatternNormalization(string $filePath, string $filePattern, bool $shouldMatch): void
     {
