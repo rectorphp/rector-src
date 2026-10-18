@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\Array_;
 
 use PhpParser\Node;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -90,6 +91,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): StaticCall|MethodCall|null
     {
+        if (count($node->items) !== 2) {
+            return null;
+        }
+
+        if (! $node->items[0] instanceof ArrayItem || ! $node->items[1] instanceof ArrayItem) {
+            return null;
+        }
+
         if ($node->getAttribute(AttributeKey::IS_ARG_NOT_ACCEPTING_CLOSURE)) {
             return null;
         }
@@ -99,18 +108,6 @@ CODE_SAMPLE
         }
 
         if ($node->getAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE) === true) {
-            return null;
-        }
-
-        $scope = ScopeFetcher::fetch($node);
-
-        $arrayCallable = $this->arrayCallableMethodMatcher->match($node, $scope);
-        if (! $arrayCallable instanceof ArrayCallable) {
-            return null;
-        }
-
-        $callerExpr = $arrayCallable->getCallerExpr();
-        if (! $callerExpr instanceof Variable && ! $callerExpr instanceof PropertyFetch && ! $callerExpr instanceof ClassConstFetch) {
             return null;
         }
 
@@ -127,6 +124,18 @@ CODE_SAMPLE
         }
 
         if ($node->getAttribute(AttributeKey::IS_UNPACKED_ARG_VALUE)) {
+            return null;
+        }
+
+        $scope = ScopeFetcher::fetch($node);
+
+        $arrayCallable = $this->arrayCallableMethodMatcher->match($node, $scope);
+        if (! $arrayCallable instanceof ArrayCallable) {
+            return null;
+        }
+
+        $callerExpr = $arrayCallable->getCallerExpr();
+        if (! $callerExpr instanceof Variable && ! $callerExpr instanceof PropertyFetch && ! $callerExpr instanceof ClassConstFetch) {
             return null;
         }
 
