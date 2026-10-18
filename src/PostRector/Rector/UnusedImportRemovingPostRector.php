@@ -108,13 +108,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
      */
     private function hasUseStmt(array $stmts): bool
     {
-        foreach ($stmts as $stmt) {
-            if ($stmt instanceof Use_) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($stmts, fn(Node $stmt): bool => $stmt instanceof Use_);
     }
 
     /**
