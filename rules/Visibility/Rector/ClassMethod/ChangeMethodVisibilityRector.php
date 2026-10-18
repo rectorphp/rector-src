@@ -133,6 +133,6 @@ CODE_SAMPLE
 
     private function hasMatchingMethodName(ClassMethod $classMethod): bool
     {
-        return array_any($this->methodVisibilities, fn(ChangeMethodVisibility $methodVisibility): bool => $this->isName($classMethod, $methodVisibility->getMethod()));
+        return array_any($this->methodVisibilities, fn (ChangeMethodVisibility $methodVisibility): bool => $this->isName($classMethod, $methodVisibility->getMethod()));
     }
 }
