@@ -77,24 +77,40 @@ CODE_SAMPLE
     {
         $hasChanged = false;
         $isFinal = $node->isFinal() || FeatureFlags::treatClassesAsFinal($node);
-        $scope = ScopeFetcher::fetch($node);
-        $classReflection = $scope->getClassReflection();
-
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
+        $scope = null;
+        $classReflection = null;
 
         $this->traverseNodesWithCallable($node->stmts, function (Node $subNode) use (
             &$hasChanged,
-            $classReflection,
+            &$classReflection,
             $isFinal,
-            $scope,
+            &$scope,
+            $node,
         ): ?Node {
             if (
                 ! $subNode instanceof StaticPropertyFetch
                 && ! $subNode instanceof StaticCall
                 && ! $subNode instanceof ClassConstFetch
             ) {
+                return null;
+            }
+
+            if (! $subNode->class instanceof Name) {
+                return null;
+            }
+
+            if (! $this->isName($subNode->class, ObjectReference::STATIC)) {
+                return null;
+            }
+
+            if (! $subNode->name instanceof Identifier) {
+                return null;
+            }
+
+            $scope ??= ScopeFetcher::fetch($node);
+            $classReflection ??= $scope->getClassReflection();
+
+            if (! $classReflection instanceof ClassReflection) {
                 return null;
             }
 
@@ -116,18 +132,6 @@ CODE_SAMPLE
         bool $isFinal,
         Scope $scope,
     ): bool {
-        if (! $node->class instanceof Name) {
-            return true;
-        }
-
-        if (! $this->isName($node->class, ObjectReference::STATIC)) {
-            return true;
-        }
-
-        if (! $node->name instanceof Identifier) {
-            return true;
-        }
-
         $name = (string) $this->getName($node->name);
 
         // For final classes, we can safely convert all static:: to self::, even
