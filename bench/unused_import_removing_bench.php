@@ -52,6 +52,8 @@ $cpuSeconds = static function (): float {
 };
 
 $file = $testingParser->parseFilePathToFile($sourceFilePath);
+$postRector->setFile($file);
+
 $fileNode = $file->getFileNode();
 assert($fileNode instanceof FileNode);
 

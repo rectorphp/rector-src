@@ -21,9 +21,17 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\FileNode;
+use Rector\ValueObject\Application\File;
 
 final class UnusedImportRemovingPostRector extends AbstractPostRector
 {
+    private ?File $usedNamesFile = null;
+
+    /**
+     * @var array<int, array{version: int, names: string[]}>
+     */
+    private array $usedNamesCache = [];
+
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -198,11 +206,32 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
      */
     private function resolveUsedPhpAndDocNames(Namespace_|FileNode $rootNode): array
     {
+        // the referenced names only change with a new stmts version, while the post-rector chain
+        // re-runs this node across convergence iterations, so cache per (file, version)
+        $file = $this->getFile();
+        if ($file !== $this->usedNamesFile) {
+            $this->usedNamesFile = $file;
+            $this->usedNamesCache = [];
+        }
+
+        $version = $file->getNewStmtsVersion();
+        $objectId = spl_object_id($rootNode);
+
+        $cached = $this->usedNamesCache[$objectId] ?? null;
+        if ($cached !== null && $cached['version'] === $version) {
+            return $cached['names'];
+        }
+
         $phpNames = $this->findNonUseImportNames($rootNode);
         $docBlockNames = $this->findNamesInDocBlocks($rootNode);
 
-        $names = [...$phpNames, ...$docBlockNames];
-        return array_unique($names);
+        $names = array_unique([...$phpNames, ...$docBlockNames]);
+        $this->usedNamesCache[$objectId] = [
+            'version' => $version,
+            'names' => $names,
+        ];
+
+        return $names;
     }
 
     /**
