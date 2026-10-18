@@ -120,15 +120,22 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     }
 
     /**
+     * Single walk that collects both the referenced PHP names and the docblock class names,
+     * so the file stmts are traversed once instead of twice.
+     *
      * @return string[]
      */
-    private function findNonUseImportNames(Namespace_|FileNode $fileNode): array
+    private function findUsedNames(Namespace_|FileNode $rootNode): array
     {
-        $names = [];
+        // the root node's own docblock (the former doc walk traversed the root node, not just its stmts)
+        $names = $this->resolveDocBlockNames($rootNode);
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($fileNode->stmts, static function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($rootNode->stmts, function (Node $node) use (
             &$names
-        ): int|null|Name {
+        ): int|null {
+            // collect the node's docblock first, so a Use_ node's own doc is still read before we stop descending
+            $names = [...$names, ...$this->resolveDocBlockNames($node)];
+
             if ($node instanceof Use_) {
                 return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
@@ -143,12 +150,12 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 if ($originalName instanceof Name) {
                     // collect original Name as cover namespaced used
                     $names[] = $originalName->toString();
-                    return $node;
+                    return null;
                 }
             }
 
             $names[] = $node->toString();
-            return $node;
+            return null;
         });
 
         return $names;
@@ -157,46 +164,41 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @return string[]
      */
-    private function findNamesInDocBlocks(Namespace_|FileNode $rootNode): array
+    private function resolveDocBlockNames(Node $node): array
     {
+        $comments = $node->getComments();
+        if ($comments === []) {
+            return [];
+        }
+
+        $docs = array_filter($comments, static fn (Comment $comment): bool => $comment instanceof Doc);
+        if ($docs === []) {
+            return [];
+        }
+
         $names = [];
-
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($rootNode, function (Node $node) use (
-            &$names
-        ) {
-            $comments = $node->getComments();
-            if ($comments === []) {
-                return null;
+        $totalDocs = count($docs);
+        foreach ($docs as $doc) {
+            $nodeToCheck = $totalDocs === 1 ? $node : clone $node;
+            if ($totalDocs > 1) {
+                $nodeToCheck->setDocComment($doc);
             }
 
-            $docs = array_filter($comments, static fn (Comment $comment): bool => $comment instanceof Doc);
-            if ($docs === []) {
-                return null;
-            }
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nodeToCheck);
+            $names = [...$names, ...$phpDocInfo->getAnnotationClassNames()];
 
-            $totalDocs = count($docs);
-            foreach ($docs as $doc) {
-                $nodeToCheck = $totalDocs === 1 ? $node : clone $node;
-                if ($totalDocs > 1) {
-                    $nodeToCheck->setDocComment($doc);
-                }
+            $constFetchNodeNames = $phpDocInfo->getConstFetchNodeClassNames();
+            $names = [...$names, ...$constFetchNodeNames];
 
-                $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nodeToCheck);
-                $names = [...$names, ...$phpDocInfo->getAnnotationClassNames()];
+            $genericTagClassNames = $phpDocInfo->getGenericTagClassNames();
+            $names = [...$names, ...$genericTagClassNames];
 
-                $constFetchNodeNames = $phpDocInfo->getConstFetchNodeClassNames();
-                $names = [...$names, ...$constFetchNodeNames];
+            $inlineGenericUsesTagClassNames = $phpDocInfo->getInlineGenericUsesTagClassNames();
+            $names = [...$names, ...$inlineGenericUsesTagClassNames];
 
-                $genericTagClassNames = $phpDocInfo->getGenericTagClassNames();
-                $names = [...$names, ...$genericTagClassNames];
-
-                $inlineGenericUsesTagClassNames = $phpDocInfo->getInlineGenericUsesTagClassNames();
-                $names = [...$names, ...$inlineGenericUsesTagClassNames];
-
-                $arrayItemTagClassNames = $phpDocInfo->getArrayItemNodeClassNames();
-                $names = [...$names, ...$arrayItemTagClassNames];
-            }
-        });
+            $arrayItemTagClassNames = $phpDocInfo->getArrayItemNodeClassNames();
+            $names = [...$names, ...$arrayItemTagClassNames];
+        }
 
         return $names;
     }
@@ -222,10 +224,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             return $cached['names'];
         }
 
-        $phpNames = $this->findNonUseImportNames($rootNode);
-        $docBlockNames = $this->findNamesInDocBlocks($rootNode);
-
-        $names = array_unique([...$phpNames, ...$docBlockNames]);
+        $names = array_unique($this->findUsedNames($rootNode));
         $this->usedNamesCache[$objectId] = [
             'version' => $version,
             'names' => $names,
