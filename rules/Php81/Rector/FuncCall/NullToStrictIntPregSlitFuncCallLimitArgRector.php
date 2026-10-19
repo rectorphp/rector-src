@@ -80,15 +80,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
         $args = $node->getArgs();
         $position = $this->argsAnalyzer->resolveArgPosition($args, 'limit', 2);
 
         if (! isset($args[$position])) {
+            return null;
+        }
+
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
             return null;
         }
 
