@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\EarlyReturn\Rector\If_;
 
+use PhpParser\Node\Stmt;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\Throw_;
@@ -140,7 +141,7 @@ CODE_SAMPLE
 
             // only statement lists are split; expression/argument lists are left untouched
             foreach ($subNode as $subNodeItem) {
-                if (! $subNodeItem instanceof Node\Stmt) {
+                if (! $subNodeItem instanceof Stmt) {
                     continue 2;
                 }
             }
