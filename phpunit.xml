@@ -20,5 +20,7 @@
 
     <php>
         <ini name="memory_limit" value="-1"/>
+        <!-- fail a rule that does not reach its final result in a single pass; only rector-src enforces this -->
+        <env name="RECTOR_ENFORCE_SINGLE_PASS" value="1"/>
     </php>
 </phpunit>
