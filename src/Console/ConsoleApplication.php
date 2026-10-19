@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Console;
 
-use Composer\XdebugHandler\XdebugHandler;
 use Rector\Application\VersionResolver;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Option;
@@ -48,8 +47,6 @@ final class ConsoleApplication extends Application
 
             return ExitCode::SUCCESS;
         }
-
-        $this->enableXdebug($input);
 
         $shouldFollowByNewline = false;
 
@@ -164,16 +161,5 @@ final class ConsoleApplication extends Application
             InputOption::VALUE_NONE,
             'Clear cache before starting the execution of the command'
         ));
-    }
-
-    private function enableXdebug(InputInterface $input): void
-    {
-        $isXdebugAllowed = $input->hasParameterOption('--xdebug');
-        if (! $isXdebugAllowed) {
-            $xdebugHandler = new XdebugHandler('rector');
-            $xdebugHandler->setPersistent();
-            $xdebugHandler->check();
-            unset($xdebugHandler);
-        }
     }
 }
