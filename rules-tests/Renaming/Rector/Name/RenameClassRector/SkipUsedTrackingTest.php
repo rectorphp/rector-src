@@ -17,15 +17,15 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
  */
 final class SkipUsedTrackingTest extends AbstractRectorTestCase
 {
-    public function testMarksSkipUsedOnlyWhenRuleWouldChangeFile(): void
+    public function testMarksSkipUsedForEveryMatchedFile(): void
     {
-        // file uses OldClass → rule would rename it → its skip is what prevents the change
+        // file uses OldClass → rule matches the path and is skipped → its skip mask is marked used
         $this->doTestFile(__DIR__ . '/FixtureSkipUsedTracking/skip_used_renames_old_class.php.inc');
 
         // doTestFile() only cleans up the last processed temp file, so remove this one explicitly
         FileSystem::delete(__DIR__ . '/FixtureSkipUsedTracking/skip_used_renames_old_class.php');
 
-        // file does not use OldClass → rule would not change it → its skip is unnecessary
+        // file does not use OldClass, but its path still matches a skip mask → skip is applied and marked used
         $this->doTestFile(__DIR__ . '/FixtureSkipUsedTracking/skip_unused_no_old_class.php.inc');
 
         $skipper = $this->make(Skipper::class);
@@ -33,11 +33,9 @@ final class SkipUsedTrackingTest extends AbstractRectorTestCase
 
         $usedPaths = $usedSkips[RenameClassRector::class] ?? [];
 
-        // both skip masks match a processed file, so both are marked used
+        // the rule is skipped once per file whose path matches, so every matched mask is marked used
         $this->assertContains('*skip_used_renames_old_class*', $usedPaths);
-
-        // the skip on a file the rule would not have touched is never marked used
-        $this->assertNotContains('*skip_unused_no_old_class*', $usedPaths);
+        $this->assertContains('*skip_unused_no_old_class*', $usedPaths);
     }
 
     public function provideConfigFilePath(): string

@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitor;
 use Rector\Application\RectorRegistry;
 use Rector\Rector\RectorRunner;
+use Rector\ValueObject\Application\File;
 
 final class RectorNodeTraverser
 {
@@ -26,19 +27,19 @@ final class RectorNodeTraverser
      * @param Node[] $nodes
      * @return Node[]
      */
-    public function traverse(array $nodes): array
+    public function traverse(array $nodes, File $file): array
     {
         $this->stopTraversal = false;
 
-        return $this->traverseArray($nodes);
+        return $this->traverseArray($nodes, $file);
     }
 
-    private function traverseNode(Node $node): void
+    private function traverseNode(Node $node, File $file): void
     {
         foreach ($node->getSubNodeNames() as $name) {
             $subNode = $node->{$name};
             if (\is_array($subNode)) {
-                $node->{$name} = $this->traverseArray($subNode);
+                $node->{$name} = $this->traverseArray($subNode, $file);
                 if ($this->stopTraversal) {
                     break;
                 }
@@ -50,7 +51,7 @@ final class RectorNodeTraverser
                 continue;
             }
 
-            $currentNodeVisitors = $this->rectorRegistry->forNode($subNode);
+            $currentNodeVisitors = $this->rectorRegistry->forNodeAndFile($subNode, $file);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {
                 $return = $this->rectorRunner->run($currentNodeVisitor, $subNode);
@@ -74,7 +75,8 @@ final class RectorNodeTraverser
                 }
             }
 
-            $this->traverseNode($subNode);
+            $this->traverseNode($subNode, $file);
+
             if ($this->stopTraversal) {
                 break;
             }
@@ -85,7 +87,7 @@ final class RectorNodeTraverser
      * @param array<Node|null> $nodes The null can be in case of empty list(, , )
      * @return Node[]
      */
-    private function traverseArray(array $nodes): array
+    private function traverseArray(array $nodes, File $file): array
     {
         $doNodes = [];
         foreach ($nodes as $i => $node) {
@@ -97,7 +99,7 @@ final class RectorNodeTraverser
                 continue;
             }
 
-            $currentNodeVisitors = $this->rectorRegistry->forNode($node);
+            $currentNodeVisitors = $this->rectorRegistry->forNodeAndFile($node, $file);
 
             foreach ($currentNodeVisitors as $currentNodeVisitor) {
                 $return = $this->rectorRunner->run($currentNodeVisitor, $node);
@@ -123,7 +125,7 @@ final class RectorNodeTraverser
                 }
             }
 
-            $this->traverseNode($node);
+            $this->traverseNode($node, $file);
             if ($this->stopTraversal) {
                 break;
             }
