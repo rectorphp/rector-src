@@ -32,6 +32,12 @@ use Throwable;
 
 final readonly class FileProcessor
 {
+    /**
+     * Safety cap for the fixed-point loop; a well-behaved rule set settles within a few passes,
+     * so this only trips on a non-idempotent rule that keeps changing the same node.
+     */
+    private const int MAX_ITERATIONS = 5;
+
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
@@ -59,7 +65,16 @@ final readonly class FileProcessor
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
+        $iteration = 0;
         do {
+            // safety cap: a non-idempotent rule can keep changing a node every pass, so the
+            // fixed-point loop would never settle; stop and report instead of looping forever
+            if ($iteration >= self::MAX_ITERATIONS) {
+                return $this->createNotConvergingResult($file, $fileHasChanged);
+            }
+
+            ++$iteration;
+
             $file->changeHasChanged(false);
 
             // 1. change nodes with Rector Rules
@@ -106,6 +121,28 @@ final readonly class FileProcessor
         }
 
         return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
+    }
+
+    private function createNotConvergingResult(File $file, bool $fileHasChanged): FileProcessResult
+    {
+        $rectorClasses = [];
+        foreach ($file->getRectorWithLineChanges() as $rectorWithLineChange) {
+            $rectorClasses[$rectorWithLineChange->getRectorClass()] = true;
+        }
+
+        $message = sprintf(
+            'File did not stabilize after %d passes, a rule keeps changing it. Rules applied: %s',
+            self::MAX_ITERATIONS,
+            implode(', ', array_keys($rectorClasses))
+        );
+
+        // in tests a non-converging file is a rule bug that must surface, not a silent partial result
+        if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
+            throw new ShouldNotHappenException($message . ' in ' . $file->getFilePath());
+        }
+
+        $systemError = new SystemError($message, $this->filePathHelper->relativePath($file->getFilePath()));
+        return new FileProcessResult([$systemError], $file->getFileDiff(), $fileHasChanged);
     }
 
     private function parseFileAndDecorateNodes(File $file): ?SystemError
