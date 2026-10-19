@@ -92,3 +92,31 @@ rules-tests/<Category>/Rector/<NodeType>/<RuleName>/
 ## CI parity
 
 `.github/workflows/code_analysis.yaml`, `tests.yaml`, `rector.yaml`, `e2e*.yaml`, and `phpstan_printer_test.yaml` mirror the local `composer complete-check`. If it passes locally with `composer complete-check && composer rector`, CI usually agrees.
+
+## Performance work
+
+Measure before changing, and prove the change with numbers - never ship a perf change on reasoning alone.
+
+### 1. Find the hot spot (don't guess)
+
+Profile a single-process real run - parallel workers each write their own profile and make the numbers useless. `scripts/rector-hotspot-profile.php` runs `rector process --dry-run` over a project under the Xdebug profiler and ranks functions by call count (memoization candidates) and self cost (where CPU burns):
+
+```bash
+php scripts/rector-hotspot-profile.php --project=/path/to/a/real/app --filter='^(Rector|PHPStan)'
+```
+
+Use a large real project (on a few files, container bootstrap dominates both tables). Most type/scope cost lives in `PHPStan\*`, not `Rector\*`, so widen the filter to see it.
+
+### 2. Qualify a cache/memo candidate
+
+A high call count is not enough. Instrument the input key and confirm the inputs actually **repeat** - unique inputs make a cache pure overhead. Decide the correct key up front: the AST is mutated to a fixpoint across passes, so a cache keyed by node identity or file path goes stale. Key by stmts-version instead (see `ShortNameResolver`, `UnusedImportRemovingPostRector`).
+
+### 3. Prove it (A/B)
+
+- Micro: a `bench/*.php` script - `LazyContainerFactory` + `TestingParser`, `getrusage` CPU (user+sys, **not** wall), a REPEAT loop with warmup excluded, run on both branches. Every perf PR ships one.
+- Macro: `scripts/rector-ab-benchmark.php` for full-run wall/memory, plus the hot function's call count dropping (the reliable signal; wall is noise under load).
+- Report CPU and call counts, not wall time. Confirm the changed-file fingerprint is identical - a perf change that alters it changed behaviour, not just speed.
+
+### 4. Correctness gates
+
+Full `vendor/bin/phpunit` (engine changes, not just one rule test) plus the order-dependent/fixpoint tests - a bad cache key surfaces as order-flaky failures, not a clean red. The cheapest reliable win is hoisting a node-only guard above an expensive `reflectionResolver->resolve*` / `getType` / `getAncestors` / matcher call; `ScopeFetcher::fetch` itself is a cheap attribute read, so hoisting above it alone buys nothing.
