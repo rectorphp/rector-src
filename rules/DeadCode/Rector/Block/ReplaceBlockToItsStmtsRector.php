@@ -60,6 +60,31 @@ CODE_SAMPLE
             return NodeVisitor::REMOVE_NODE;
         }
 
-        return $node->stmts;
+        $stmts = $this->flattenBlocks($node->stmts);
+        if ($stmts === []) {
+            return NodeVisitor::REMOVE_NODE;
+        }
+
+        return $stmts;
+    }
+
+    /**
+     * Flatten nested blocks and drop empty ones in the same pass, as replaced stmts are not re-traversed
+     * @param Stmt[] $stmts
+     * @return Stmt[]
+     */
+    private function flattenBlocks(array $stmts): array
+    {
+        $flattenedStmts = [];
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof Block) {
+                $flattenedStmts = [...$flattenedStmts, ...$this->flattenBlocks($stmt->stmts)];
+                continue;
+            }
+
+            $flattenedStmts[] = $stmt;
+        }
+
+        return $flattenedStmts;
     }
 }
