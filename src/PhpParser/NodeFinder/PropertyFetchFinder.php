@@ -199,6 +199,11 @@ final readonly class PropertyFetchFinder
                 }
 
                 if ($subNode instanceof PropertyFetch) {
+                    // cheap name mismatch bail before the anonymous-class reflection lookup
+                    if (! $this->nodeNameResolver->isName($subNode->name, $propertyName)) {
+                        return false;
+                    }
+
                     if ($this->isInAnonymous($subNode, $class, $hasTrait)) {
                         return false;
                     }
