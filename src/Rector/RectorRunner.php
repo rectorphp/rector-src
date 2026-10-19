@@ -12,9 +12,7 @@ use Rector\Application\Provider\CurrentFileProvider;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 
 /**
@@ -38,8 +36,6 @@ B) Remove the Node:
 CODE_SAMPLE;
 
     public function __construct(
-        private Skipper $skipper,
-        private CreatedByRuleDecorator $createdByRuleDecorator,
         private ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         private CurrentFileProvider $currentFileProvider,
     ) {
@@ -52,11 +48,6 @@ CODE_SAMPLE;
     {
         $file = $this->getFile();
         $filePath = $file->getFilePath();
-
-        // node already changed by this rule in a previous pass → hard skip
-        if ($this->skipper->shouldSkipCurrentNode($rector::class, $node)) {
-            return null;
-        }
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
@@ -74,8 +65,6 @@ CODE_SAMPLE;
         }
 
         if (is_int($refactoredNodeOrState)) {
-            $this->createdByRuleDecorator->decorate($node, $originalNode, $rector::class);
-
             // only remove node is supported
             if ($refactoredNodeOrState !== NodeVisitor::REMOVE_NODE) {
                 throw new ShouldNotHappenException(sprintf('Unsupported state "%d" returned from "%s".', $refactoredNodeOrState, $rector::class));
@@ -116,8 +105,6 @@ CODE_SAMPLE;
         string $filePath
     ): Node|array {
         /** @var non-empty-array<Node>|Node $refactoredNode */
-        $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, $rector::class);
-
         $rectorWithLineChange = new RectorWithLineChange($rector::class, $originalNode->getStartLine());
         $file->addRectorClassWithLine($rectorWithLineChange);
 
