@@ -32,12 +32,6 @@ use Throwable;
 
 final readonly class FileProcessor
 {
-    /**
-     * Safety cap for the fixed-point loop; a well-behaved rule set settles within a few passes,
-     * so this only trips on a non-idempotent rule that keeps changing the same node.
-     */
-    private const int MAX_ITERATIONS = 5;
-
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
@@ -65,16 +59,14 @@ final readonly class FileProcessor
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-        $iteration = 0;
+        // infinite-loop guard: remember every file content the loop produces; a rule set that
+        // keeps flipping the file between states would never settle, so once a content repeats
+        // we stop and report instead of looping forever
+        $seenContentHashes = [
+            hash('xxh128', $file->getOriginalFileContent()) => true,
+        ];
+
         do {
-            // safety cap: a non-idempotent rule can keep changing a node every pass, so the
-            // fixed-point loop would never settle; stop and report instead of looping forever
-            if ($iteration >= self::MAX_ITERATIONS) {
-                return $this->createNotConvergingResult($file, $fileHasChanged);
-            }
-
-            ++$iteration;
-
             $file->changeHasChanged(false);
 
             // 1. change nodes with Rector Rules
@@ -96,6 +88,15 @@ final readonly class FileProcessor
             }
 
             $fileHasChanged = true;
+
+            // this exact content was already produced in an earlier pass: the rules cycle
+            // and will never converge, so stop here
+            $contentHash = hash('xxh128', $file->getFileContent());
+            if (isset($seenContentHashes[$contentHash])) {
+                return $this->createNotConvergingResult($file, $fileHasChanged);
+            }
+
+            $seenContentHashes[$contentHash] = true;
         } while (true);
 
         // 5. add as cacheable if not changed at all
@@ -131,8 +132,7 @@ final readonly class FileProcessor
         }
 
         $message = sprintf(
-            'File did not stabilize after %d passes, a rule keeps changing it. Rules applied: %s',
-            self::MAX_ITERATIONS,
+            'File did not stabilize, the rules keep flipping it between states. Rules applied: %s',
             implode(', ', array_keys($rectorClasses))
         );
 
