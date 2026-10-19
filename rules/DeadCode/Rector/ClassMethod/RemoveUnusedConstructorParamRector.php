@@ -85,6 +85,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // attribute marker classes keep constructor params; read straight off the node, no reflection
+        if ($this->isAttributeClass($node) && $constructorClassMethod->getDocComment() instanceof Doc) {
+            return null;
+        }
+
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if (! $classReflection instanceof ClassReflection) {
             return null;
@@ -98,16 +103,24 @@ CODE_SAMPLE
             }
         }
 
-        // attributes can be used as markers
-        if ($classReflection->isAttributeClass() && $constructorClassMethod->getDocComment() instanceof Doc) {
-            return null;
-        }
-
         $changedConstructorClassMethod = $this->classMethodParamRemover->processRemoveParams($constructorClassMethod);
         if (! $changedConstructorClassMethod instanceof ClassMethod) {
             return null;
         }
 
         return $node;
+    }
+
+    private function isAttributeClass(Class_ $class): bool
+    {
+        foreach ($class->attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attr) {
+                if ($this->isName($attr->name, 'Attribute')) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
