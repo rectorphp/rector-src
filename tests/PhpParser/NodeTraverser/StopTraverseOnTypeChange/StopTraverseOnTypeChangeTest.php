@@ -38,9 +38,9 @@ final class StopTraverseOnTypeChangeTest extends AbstractLazyTestCase
     public function testGetVisitorsForNodeWhenNoVisitorsAvailable(): void
     {
         // must be cloned + Scope set to allow node replacement
-        $nodes = $this->testingParser->parseFileToDecoratedNodes(__DIR__ . '/Fixture/SimpleClass.php');
+        $file = $this->testingParser->parseFilePathToFile(__DIR__ . '/Fixture/SimpleClass.php');
 
-        $changedNodes = $this->rectorNodeTraverser->traverse($nodes);
+        $changedNodes = $this->rectorNodeTraverser->traverse($file->getNewStmts(), $file);
 
         $nodeFinder = new NodeFinder();
         $classes = $nodeFinder->findInstanceOf($changedNodes, Class_::class);

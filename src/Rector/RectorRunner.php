@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Rector\Rector;
 
 use PhpParser\Node;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
-use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
@@ -18,7 +15,6 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Skipper\Skipper\Skipper;
-use Rector\Skipper\ValueObject\SkipMatch;
 use Rector\ValueObject\Application\File;
 
 /**
@@ -59,18 +55,6 @@ CODE_SAMPLE;
 
         // node already changed by this rule in a previous pass → hard skip
         if ($this->skipper->shouldSkipCurrentNode($rector::class, $node)) {
-            return null;
-        }
-
-        // class/path skip is configured for this rule and file: run the rule on a deep clone to learn
-        // whether it would actually have changed anything. Only a skip that prevents a real change
-        // counts as used; the original node is left untouched, so the file stays skipped either way.
-        $skipMatch = $this->skipper->matchSkip($rector, $filePath);
-        if ($skipMatch instanceof SkipMatch) {
-            if ($rector->refactor($this->cloneNode($node)) !== null) {
-                $this->skipper->markSkipUsed($skipMatch);
-            }
-
             return null;
         }
 
@@ -117,23 +101,6 @@ CODE_SAMPLE;
         }
 
         return $file;
-    }
-
-    /**
-     * Deep clone, so a skipped rule can be probed on the clone without mutating the real node.
-     */
-    private function cloneNode(Node $node): Node
-    {
-        $phpDocInfoRemovingNodeVisitor = new class() extends NodeVisitorAbstract {
-            public function enterNode(Node $node): Node
-            {
-                $node->setAttribute(AttributeKey::PHP_DOC_INFO, null);
-                return $node;
-            }
-        };
-
-        $nodeTraverser = new NodeTraverser(new CloningVisitor(), $phpDocInfoRemovingNodeVisitor);
-        return $nodeTraverser->traverse([$node])[0];
     }
 
     /**

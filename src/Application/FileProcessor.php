@@ -63,7 +63,7 @@ final readonly class FileProcessor
             $file->changeHasChanged(false);
 
             // 1. change nodes with Rector Rules
-            $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
+            $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts(), $file);
 
             // 2. apply post rectors
             $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
