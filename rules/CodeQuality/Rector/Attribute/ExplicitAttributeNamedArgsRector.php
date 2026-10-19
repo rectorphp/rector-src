@@ -65,6 +65,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // no arguments to name
+        if ($node->args === []) {
+            return null;
+        }
+
         $methodReflection = $this->reflectionResolver->resolveConstructorReflectionFromAttribute($node);
         if (! $methodReflection instanceof MethodReflection) {
             return null;
