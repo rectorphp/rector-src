@@ -95,12 +95,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if ($this->shouldSkip($node, $scope)) {
+        if (! $this->hasOnlyBooleanConstExprs($returns)) {
             return null;
         }
 
-        if (! $this->hasOnlyBooleanConstExprs($returns)) {
+        $scope = ScopeFetcher::fetch($node);
+        if ($this->shouldSkip($node, $scope)) {
             return null;
         }
 
