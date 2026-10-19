@@ -96,6 +96,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // no parent:: call to trim? skip the ancestor reflection lookup
+        if (! $this->hasParentStaticCall($node)) {
+            return null;
+        }
+
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
 
         if (! $classReflection instanceof ClassReflection) {
@@ -203,5 +208,34 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function hasParentStaticCall(Class_ $class): bool
+    {
+        foreach ($class->getMethods() as $classMethod) {
+            if ($classMethod->isPrivate()) {
+                continue;
+            }
+
+            if ($classMethod->isAbstract()) {
+                continue;
+            }
+
+            foreach ((array) $classMethod->stmts as $stmt) {
+                if (! $stmt instanceof Expression) {
+                    continue;
+                }
+
+                if (! $stmt->expr instanceof StaticCall) {
+                    continue;
+                }
+
+                if ($this->isName($stmt->expr->class, 'parent')) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
