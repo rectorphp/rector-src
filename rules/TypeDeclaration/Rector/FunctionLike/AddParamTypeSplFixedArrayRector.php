@@ -6,17 +6,22 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector\AddParamTypeSplFixedArrayRectorTest
@@ -34,6 +39,7 @@ final class AddParamTypeSplFixedArrayRector extends AbstractRector
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
 
@@ -118,6 +124,11 @@ CODE_SAMPLE
 
             $functionLikePhpDocInfo ??= $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $paramName = $this->getName($param);
+
+            if ($this->isAlreadyDocumented($functionLikePhpDocInfo, $param, $paramName, $genericParamType)) {
+                continue;
+            }
+
             $changedParamType = $this->phpDocTypeChanger->changeParamType(
                 $node,
                 $functionLikePhpDocInfo,
@@ -136,6 +147,37 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * An existing "Tokens<Token>" docblock, with short or fully qualified names, resolves to "iterable<Token>&Tokens",
+     * as the fixed array class is not generic itself. That never equals the generic object type, so the tag would be
+     * rewritten with fully qualified names on every run.
+     */
+    private function isAlreadyDocumented(
+        PhpDocInfo $phpDocInfo,
+        Param $param,
+        string $paramName,
+        GenericObjectType $genericObjectType
+    ): bool {
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
+        if (! $paramTagValueNode instanceof ParamTagValueNode) {
+            return false;
+        }
+
+        $genericTypeNode = $paramTagValueNode->type;
+        if (! $genericTypeNode instanceof GenericTypeNode || count($genericTypeNode->genericTypes) !== 1) {
+            return false;
+        }
+
+        $currentType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($genericTypeNode->type, $param);
+        $currentItemType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+            $genericTypeNode->genericTypes[0],
+            $param
+        );
+
+        return $currentType->equals(new ObjectType($genericObjectType->getClassName()))
+            && $currentItemType->equals($genericObjectType->getTypes()[0]);
     }
 
     private function resolveGenericType(TypeWithClassName $typeWithClassName): GenericObjectType|null
