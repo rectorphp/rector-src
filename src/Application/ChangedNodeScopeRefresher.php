@@ -36,6 +36,7 @@ use PhpParser\Node\UseItem;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ScopeAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
@@ -80,6 +81,8 @@ final readonly class ChangedNodeScopeRefresher
         // a class-like scope is already inside the class, so PHPStan cannot enter it again and would fail
         // on the class node, leaving its methods with the class scope; process the class stmts directly instead
         if ($node instanceof ClassLike && $mutatingScope->isInClass()) {
+            // the class node itself is not part of its stmts, e.g. an Enum_ replaced by a new Class_ has no scope yet
+            $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $this->phpStanNodeScopeResolver->processNodes($node->stmts, $filePath, $mutatingScope);
             return;
         }
