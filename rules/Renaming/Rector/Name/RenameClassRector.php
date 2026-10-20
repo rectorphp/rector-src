@@ -139,7 +139,8 @@ CODE_SAMPLE
         FullyQualified $fullyQualified,
         array $oldToNewClasses
     ): bool {
-        if (! $this->reflectionProvider->hasClass($fullyQualified->toString())) {
+        $oldClass = $fullyQualified->toString();
+        if (! $this->reflectionProvider->hasClass($oldClass)) {
             return false;
         }
 
@@ -149,24 +150,20 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($oldToNewClasses as $oldClass => $newClass) {
-            if (! $this->isName($fullyQualified, $oldClass)) {
-                continue;
-            }
-
-            if (! $this->reflectionProvider->hasClass($newClass)) {
-                continue;
-            }
-
-            $classReflection = $this->reflectionProvider->getClass($newClass);
-            $oldClassReflection = $this->reflectionProvider->getClass($oldClass);
-
-            if ($oldClassReflection->hasConstant($constFetchName) && ! $classReflection->hasConstant($constFetchName)) {
-                // should be skipped as new class does not have access to the constant
-                return true;
-            }
+        // the node name is looked up directly, same as the rename itself does, instead of scanning the whole map
+        $newClass = $oldToNewClasses[$oldClass] ?? null;
+        if ($newClass === null) {
+            return false;
         }
 
-        return false;
+        if (! $this->reflectionProvider->hasClass($newClass)) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($newClass);
+        $oldClassReflection = $this->reflectionProvider->getClass($oldClass);
+
+        // should be skipped as new class does not have access to the constant
+        return $oldClassReflection->hasConstant($constFetchName) && ! $classReflection->hasConstant($constFetchName);
     }
 }
