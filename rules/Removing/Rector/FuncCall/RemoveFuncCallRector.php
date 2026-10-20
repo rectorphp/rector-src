@@ -20,9 +20,10 @@ use Webmozart\Assert\Assert;
 final class RemoveFuncCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var string[]
+     * keyed by lowercased function name (function names are case-insensitive)
+     * @var array<string, true>
      */
-    private array $removedFunctions = [];
+    private array $removedFunctionNames = [];
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -60,15 +61,16 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($this->removedFunctions as $removedFunction) {
-            if (! $this->isName($expr->name, $removedFunction)) {
-                continue;
-            }
-
-            return NodeVisitor::REMOVE_NODE;
+        $funcName = $this->getName($expr->name);
+        if ($funcName === null) {
+            return null;
         }
 
-        return null;
+        if (! isset($this->removedFunctionNames[strtolower($funcName)])) {
+            return null;
+        }
+
+        return NodeVisitor::REMOVE_NODE;
     }
 
     /**
@@ -77,6 +79,10 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allString($configuration);
-        $this->removedFunctions = $configuration;
+
+        $this->removedFunctionNames = [];
+        foreach ($configuration as $removedFunction) {
+            $this->removedFunctionNames[strtolower($removedFunction)] = true;
+        }
     }
 }
