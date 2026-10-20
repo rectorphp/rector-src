@@ -23,6 +23,7 @@ use PhpParser\Node\PropertyItem;
 use PhpParser\Node\StaticVar;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
@@ -75,6 +76,13 @@ final readonly class ChangedNodeScopeRefresher
             $node,
             fn (Node $subNode): ?Node => NodeAttributeReIndexer::reIndexNodeAttributes($subNode)
         );
+
+        // a class-like scope is already inside the class, so PHPStan cannot enter it again and would fail
+        // on the class node, leaving its methods with the class scope; process the class stmts directly instead
+        if ($node instanceof ClassLike && $mutatingScope->isInClass()) {
+            $this->phpStanNodeScopeResolver->processNodes($node->stmts, $filePath, $mutatingScope);
+            return;
+        }
 
         $stmts = $this->resolveStmts($node);
         $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath, $mutatingScope);
