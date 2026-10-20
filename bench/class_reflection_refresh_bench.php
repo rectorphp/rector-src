@@ -17,14 +17,22 @@ declare(strict_types=1);
  * attaches scope (as the real run does), then drives refresh() over every class node - the exact
  * path RectorRunner takes after a rule returns a changed Class_.
  *
+ * By default the classes are refreshed with the same content on every pass, as when a rule keeps
+ * visiting a class it does not change further. With "changed", every refresh toggles an extra
+ * constant first, so each refresh sees a class content different from the former one.
+ *
  * Run on both branches to compare:
  *   php bench/class_reflection_refresh_bench.php
+ *   php bench/class_reflection_refresh_bench.php changed
  *
  * Reports CPU time (user+sys) and wall time; CPU is the reliable metric, wall is noisy under
  * concurrent load.
  */
 
+use PhpParser\Node\Const_;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\DependencyInjection\LazyContainerFactory;
@@ -37,6 +45,8 @@ require __DIR__ . '/../vendor/autoload.php';
 const CLASSES = 40;  // classes in the parsed file
 const METHODS = 10;  // methods per class
 const REPEAT = 20;   // outer repeats over the whole set
+
+$isChanged = ($argv[1] ?? '') === 'changed';
 
 $rectorConfig = (new LazyContainerFactory())->create();
 $rectorConfig->boot();
@@ -100,8 +110,21 @@ $cpuSeconds = static function (): float {
         + $usage['ru_stime.tv_sec'] + $usage['ru_stime.tv_usec'] / 1_000_000;
 };
 
-$run = static function () use ($changedNodeScopeRefresher, $classes, $scopes, $sourceFilePath): void {
+$run = static function () use ($changedNodeScopeRefresher, $classes, $scopes, $sourceFilePath, $isChanged): void {
     foreach ($classes as $key => $class) {
+        if ($isChanged) {
+            if ($class->stmts[0] instanceof ClassConst && $class->stmts[0]->consts[0]->name->toString() === 'EXTRA') {
+                array_shift($class->stmts);
+            } else {
+                // BetterReflection asserts the constant lines, so mirror the class lines as rules do for new nodes
+                $lines = [
+                    'startLine' => $class->getStartLine(),
+                    'endLine' => $class->getStartLine(),
+                ];
+                array_unshift($class->stmts, new ClassConst([new Const_('EXTRA', new Int_(1), $lines)], 0, $lines));
+            }
+        }
+
         $changedNodeScopeRefresher->refresh($class, $sourceFilePath, $scopes[$key]);
     }
 };
@@ -125,6 +148,7 @@ $memory = memory_get_usage() - $memoryStart;
 
 $totalCalls = REPEAT * count($classes);
 
+printf('mode: %s%s', $isChanged ? 'changed' : 'same', PHP_EOL);
 printf('classes: %d, methods/class: %d, repeats: %d, refresh() calls: %d%s', count($classes), METHODS + 1, REPEAT, $totalCalls, PHP_EOL);
 printf('CPU:  %.4f s  (%.3f us/call)%s', $cpu, $cpu / $totalCalls * 1_000_000, PHP_EOL);
 printf('wall: %.4f s%s', $wall, PHP_EOL);

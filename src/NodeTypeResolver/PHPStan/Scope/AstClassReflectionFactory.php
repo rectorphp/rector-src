@@ -19,6 +19,7 @@ use PHPStan\BetterReflection\SourceLocator\Ast\Strategy\NodeToReflection;
 use PHPStan\BetterReflection\SourceLocator\Located\LocatedSource;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ClassReflectionFactory;
+use Rector\PhpParser\Printer\BetterStandardPrinter;
 
 /**
  * The class reflection from the reflection provider is built from the original file,
@@ -26,11 +27,19 @@ use PHPStan\Reflection\ClassReflectionFactory;
  *
  * @see \PHPStan\Analyser\StmtHandler\ClassLikeHandler::createAstClassReflection()
  */
-final readonly class AstClassReflectionFactory
+final class AstClassReflectionFactory
 {
+    /**
+     * Last rebuilt reflection per class, keyed by file and class node, with the hash of the class content it was built from
+     *
+     * @var array<string, array{string, ClassReflection}>
+     */
+    private array $classReflectionsByClass = [];
+
     public function __construct(
-        private Reflector $reflector,
-        private ClassReflectionFactory $classReflectionFactory,
+        private readonly Reflector $reflector,
+        private readonly ClassReflectionFactory $classReflectionFactory,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
     ) {
     }
 
@@ -38,6 +47,15 @@ final readonly class AstClassReflectionFactory
     {
         $filePath = $mutatingScope->getFile();
         $namespace = $mutatingScope->getNamespace();
+
+        // the class node is refreshed on every change in it, while its members often stay the same between passes;
+        // reuse the reflection built from the same content, so its cache key and member caches are not created again
+        $classKey = $filePath . ':' . $namespace . '\\' . $classLike->name;
+        $contentHash = hash('xxh128', $this->betterStandardPrinter->print($classLike));
+
+        if (isset($this->classReflectionsByClass[$classKey]) && $this->classReflectionsByClass[$classKey][0] === $contentHash) {
+            return $this->classReflectionsByClass[$classKey][1];
+        }
 
         $betterReflectionClass = new NodeToReflection()->__invoke(
             $this->reflector,
@@ -55,14 +73,18 @@ final readonly class AstClassReflectionFactory
             : new ReflectionClassAdapter($betterReflectionClass);
 
         // the member caches are keyed by the class reflection cache key,
-        // so each rebuilt reflection needs its own key not to read members of the former one
-        return $this->classReflectionFactory->create(
+        // so each changed class content needs its own key not to read members of the former one
+        $classReflection = $this->classReflectionFactory->create(
             $betterReflectionClass->getName(),
             $reflectionClassAdapter,
             null,
             null,
             null,
-            uniqid($filePath . ':', true)
+            $filePath . ':' . $contentHash
         );
+
+        $this->classReflectionsByClass[$classKey] = [$contentHash, $classReflection];
+
+        return $classReflection;
     }
 }
