@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\Tests\Issues\ClassReflectionRefresh\Source\AddSomeTraitRector;
-use Rector\Tests\Issues\ClassReflectionRefresh\Source\FinalizeOnReflectedTraitRector;
+use Rector\Tests\Issues\ClassReflectionRefresh\Source\FinalizeByReflectionRector;
+use Rector\Tests\Issues\ClassReflectionRefresh\Source\ReadonlyOnFinalByReflectionRector;
 
 return RectorConfig::configure()
-    ->withRules([AddSomeTraitRector::class, FinalizeOnReflectedTraitRector::class]);
+    ->withRules([FinalizeByReflectionRector::class, ReadonlyOnFinalByReflectionRector::class]);

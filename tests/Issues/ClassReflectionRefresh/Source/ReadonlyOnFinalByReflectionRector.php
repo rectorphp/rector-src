@@ -13,10 +13,10 @@ use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\RuleDefinition;
 
 /**
- * Sees the trait added by AddSomeTraitRector only when the class reflection reflects the changed class node,
- * both on the scope and on the resolved type
+ * Sees the final added by FinalizeByReflectionRector only when the class reflection is refreshed
+ * after the class node changed, both on the scope and on the resolved type
  */
-final class FinalizeOnReflectedTraitRector extends AbstractRector
+final class ReadonlyOnFinalByReflectionRector extends AbstractRector
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver
@@ -41,26 +41,22 @@ final class FinalizeOnReflectedTraitRector extends AbstractRector
      */
     public function refactor(Node $node): ?Class_
     {
-        if ($node->isFinal()) {
+        $scopeClassReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $scopeClassReflection instanceof ClassReflection || ! $scopeClassReflection->isFinal()) {
             return null;
         }
 
-        $scopeClassReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $scopeClassReflection instanceof ClassReflection || ! $scopeClassReflection->hasTraitUse(
-            SomeTrait::class
-        )) {
+        if ($scopeClassReflection->isReadOnly()) {
             return null;
         }
 
         $typeClassReflection = $this->getType($node)
             ->getObjectClassReflections()[0] ?? null;
-        if (! $typeClassReflection instanceof ClassReflection || ! $typeClassReflection->hasTraitUse(
-            SomeTrait::class
-        )) {
+        if (! $typeClassReflection instanceof ClassReflection || ! $typeClassReflection->isFinal()) {
             return null;
         }
 
-        $node->flags |= Modifiers::FINAL;
+        $node->flags |= Modifiers::READONLY;
 
         return $node;
     }

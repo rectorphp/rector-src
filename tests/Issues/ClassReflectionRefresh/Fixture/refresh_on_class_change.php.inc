@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\ClassReflectionRefresh\Fixture;
 
-class AddTraitOnce
+class RefreshOnClassChange
 {
     public function run()
     {
@@ -15,9 +15,8 @@ class AddTraitOnce
 
 namespace Rector\Tests\Issues\ClassReflectionRefresh\Fixture;
 
-final class AddTraitOnce
+final readonly class RefreshOnClassChange
 {
-    use \Rector\Tests\Issues\ClassReflectionRefresh\Source\SomeTrait;
     public function run()
     {
     }

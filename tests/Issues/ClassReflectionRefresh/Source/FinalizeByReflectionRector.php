@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Issues\ClassReflectionRefresh\Source;
 
+use PhpParser\Modifiers;
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\TraitUse;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\RuleDefinition;
 
-final class AddSomeTraitRector extends AbstractRector
+final class FinalizeByReflectionRector extends AbstractRector
 {
+    public function __construct(
+        private readonly ReflectionResolver $reflectionResolver
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('', []);
@@ -31,15 +37,12 @@ final class AddSomeTraitRector extends AbstractRector
      */
     public function refactor(Node $node): ?Class_
     {
-        foreach ($node->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $trait) {
-                if ($this->isName($trait, SomeTrait::class)) {
-                    return null;
-                }
-            }
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection || $classReflection->isFinal()) {
+            return null;
         }
 
-        $node->stmts = array_merge([new TraitUse([new FullyQualified(SomeTrait::class)])], $node->stmts);
+        $node->flags |= Modifiers::FINAL;
 
         return $node;
     }
