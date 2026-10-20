@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\ClassReflectionRefresh\Fixture;
 
-final class AddTraitOnce
+class AddTraitOnce
 {
     public function run()
     {
