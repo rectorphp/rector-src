@@ -68,15 +68,17 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->functionToNew as $function => $new) {
-            if (! $this->isName($node, $function)) {
-                continue;
-            }
-
-            return new New_(new FullyQualified($new), $node->args);
+        $funcName = $this->getName($node);
+        if ($funcName === null) {
+            return null;
         }
 
-        return null;
+        $new = $this->functionToNew[strtolower($funcName)] ?? null;
+        if ($new === null) {
+            return null;
+        }
+
+        return new New_(new FullyQualified($new), $node->args);
     }
 
     /**
@@ -86,6 +88,10 @@ CODE_SAMPLE
     {
         Assert::allString($configuration);
 
-        $this->functionToNew = $configuration;
+        // keyed by lowercased function name (function names are case-insensitive)
+        $this->functionToNew = [];
+        foreach ($configuration as $function => $new) {
+            $this->functionToNew[strtolower($function)] = $new;
+        }
     }
 }

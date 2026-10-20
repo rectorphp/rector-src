@@ -19,9 +19,9 @@ use Webmozart\Assert\Assert;
 final class FuncCallToStaticCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var FuncCallToStaticCall[]
+     * @var array<string, FuncCallToStaticCall[]>
      */
-    private array $funcCallsToStaticCalls = [];
+    private array $funcCallsToStaticCallsByOldFunc = [];
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -47,11 +47,12 @@ final class FuncCallToStaticCallRector extends AbstractRector implements Configu
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->funcCallsToStaticCalls as $funcCallToStaticCall) {
-            if (! $this->isName($node, $funcCallToStaticCall->getOldFuncName())) {
-                continue;
-            }
+        $funcName = $this->getName($node);
+        if ($funcName === null) {
+            return null;
+        }
 
+        foreach ($this->funcCallsToStaticCallsByOldFunc[strtolower($funcName)] ?? [] as $funcCallToStaticCall) {
             return $this->nodeFactory->createStaticCall(
                 $funcCallToStaticCall->getNewClassName(),
                 $funcCallToStaticCall->getNewMethodName(),
@@ -69,6 +70,10 @@ final class FuncCallToStaticCallRector extends AbstractRector implements Configu
     {
         Assert::allIsAOf($configuration, FuncCallToStaticCall::class);
 
-        $this->funcCallsToStaticCalls = $configuration;
+        // bucket by lowercased old function name (function names are case-insensitive)
+        $this->funcCallsToStaticCallsByOldFunc = [];
+        foreach ($configuration as $funcCallToStaticCall) {
+            $this->funcCallsToStaticCallsByOldFunc[strtolower($funcCallToStaticCall->getOldFuncName())][] = $funcCallToStaticCall;
+        }
     }
 }
