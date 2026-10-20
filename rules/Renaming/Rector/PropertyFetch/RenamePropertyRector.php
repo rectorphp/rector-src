@@ -31,6 +31,11 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
      */
     private array $renamedProperties = [];
 
+    /**
+     * @var array<string, RenameProperty[]>
+     */
+    private array $renamedPropertiesByOldProperty = [];
+
     private bool $hasChanged = false;
 
     public function __construct(
@@ -86,6 +91,12 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
     {
         Assert::allIsAOf($configuration, RenameProperty::class);
         $this->renamedProperties = $configuration;
+
+        // bucket by lowercased old property name for the per-fetch path
+        $this->renamedPropertiesByOldProperty = [];
+        foreach ($configuration as $renameProperty) {
+            $this->renamedPropertiesByOldProperty[strtolower($renameProperty->getOldProperty())][] = $renameProperty;
+        }
     }
 
     private function renameProperty(ClassLike $classLike, RenameProperty $renameProperty): void
@@ -136,12 +147,12 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
     private function refactorPropertyFetch(
         PropertyFetch|StaticPropertyFetch $propertyFetch
     ): null|PropertyFetch|StaticPropertyFetch {
-        foreach ($this->renamedProperties as $renamedProperty) {
-            $oldProperty = $renamedProperty->getOldProperty();
-            if (! $this->isName($propertyFetch, $oldProperty)) {
-                continue;
-            }
+        $propertyName = $this->getName($propertyFetch);
+        if ($propertyName === null) {
+            return null;
+        }
 
+        foreach ($this->renamedPropertiesByOldProperty[strtolower($propertyName)] ?? [] as $renamedProperty) {
             $varPropertyFetch = $propertyFetch instanceof PropertyFetch ? $propertyFetch->var : $propertyFetch->class;
             if (! $this->isObjectType($varPropertyFetch, $renamedProperty->getObjectType())) {
                 continue;
