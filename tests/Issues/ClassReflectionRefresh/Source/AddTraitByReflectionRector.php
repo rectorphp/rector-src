@@ -47,7 +47,16 @@ final class AddTraitByReflectionRector extends AbstractRector
             return null;
         }
 
-        if ($classReflection->hasTraitUse(SomeTrait::class)) {
+        // both the scope and the resolved type must see the refreshed class reflection
+        $typeClassReflection = $this->getType($node)
+            ->getObjectClassReflections()[0] ?? null;
+
+        $hasTraitInScope = $classReflection->hasTraitUse(SomeTrait::class);
+        $hasTraitInType = $typeClassReflection instanceof ClassReflection && $typeClassReflection->hasTraitUse(
+            SomeTrait::class
+        );
+
+        if ($hasTraitInScope && $hasTraitInType) {
             return null;
         }
 
