@@ -33,9 +33,9 @@ use Webmozart\Assert\Assert;
 final class AddReturnTypeDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var AddReturnTypeDeclaration[]
+     * @var array<string, AddReturnTypeDeclaration[]>
      */
-    private array $methodReturnTypes = [];
+    private array $methodReturnTypesByMethod = [];
 
     private bool $hasChanged = false;
 
@@ -94,24 +94,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $classMethodNames = [];
         foreach ($node->getMethods() as $classMethod) {
-            $classMethodNames[strtolower((string) $this->getName($classMethod))] = true;
-        }
-
-        foreach ($this->methodReturnTypes as $methodReturnType) {
-            // cheap name check before the expensive type resolution below
-            if (! isset($classMethodNames[strtolower($methodReturnType->getMethod())])) {
+            $methodName = $this->getName($classMethod);
+            if ($methodName === null) {
                 continue;
             }
 
-            $objectType = $methodReturnType->getObjectType();
-            if (! $this->isObjectType($node, $objectType)) {
-                continue;
-            }
-
-            foreach ($node->getMethods() as $classMethod) {
-                if (! $this->isName($classMethod, $methodReturnType->getMethod())) {
+            foreach ($this->methodReturnTypesByMethod[strtolower($methodName)] ?? [] as $methodReturnType) {
+                $objectType = $methodReturnType->getObjectType();
+                if (! $this->isObjectType($node, $objectType)) {
                     continue;
                 }
 
@@ -138,7 +129,10 @@ CODE_SAMPLE
     {
         Assert::allIsAOf($configuration, AddReturnTypeDeclaration::class);
 
-        $this->methodReturnTypes = $configuration;
+        $this->methodReturnTypesByMethod = [];
+        foreach ($configuration as $methodReturnType) {
+            $this->methodReturnTypesByMethod[strtolower($methodReturnType->getMethod())][] = $methodReturnType;
+        }
     }
 
     private function processClassMethodNodeWithTypehints(
