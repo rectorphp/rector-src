@@ -27,17 +27,22 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Static_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
 use PHPStan\Analyser\MutatingScope;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Scope\AstClassReflectionFactory;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 /**
@@ -48,7 +53,9 @@ final readonly class ChangedNodeScopeRefresher
     public function __construct(
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private ScopeAnalyzer $scopeAnalyzer,
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private AstClassReflectionFactory $astClassReflectionFactory,
+        private ScopeFactory $scopeFactory
     ) {
     }
 
@@ -81,6 +88,8 @@ final readonly class ChangedNodeScopeRefresher
         // a class-like scope is already inside the class, so PHPStan cannot enter it again and would fail
         // on the class node, leaving its methods with the class scope; process the class stmts directly instead
         if ($node instanceof ClassLike && $mutatingScope->isInClass()) {
+            $mutatingScope = $this->refreshClassReflection($node, $mutatingScope);
+
             // the class node itself is not part of its stmts, e.g. an Enum_ replaced by a new Class_ has no scope yet
             $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $this->phpStanNodeScopeResolver->processNodes($node->stmts, $filePath, $mutatingScope);
@@ -89,6 +98,43 @@ final readonly class ChangedNodeScopeRefresher
 
         $stmts = $this->resolveStmts($node);
         $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath, $mutatingScope);
+    }
+
+    /**
+     * The in-class scope holds the class reflection of the original file, which does not know about
+     * members the rule just added or removed; re-enter the class with the reflection of the changed node
+     */
+    private function refreshClassReflection(ClassLike $classLike, MutatingScope $mutatingScope): MutatingScope
+    {
+        if (! $classLike instanceof Class_ && ! $classLike instanceof Interface_ && ! $classLike instanceof Enum_) {
+            return $mutatingScope;
+        }
+
+        if ($classLike instanceof Class_ && $classLike->isAnonymous()) {
+            return $mutatingScope;
+        }
+
+        $classReflection = $this->astClassReflectionFactory->create($classLike, $mutatingScope);
+        if (! $classReflection instanceof ClassReflection) {
+            return $mutatingScope;
+        }
+
+        $currentClassReflection = $mutatingScope->getClassReflection();
+        if (! $currentClassReflection instanceof ClassReflection || $currentClassReflection->getName() !== $classReflection->getName()) {
+            return $mutatingScope;
+        }
+
+        $classOutsideScope = $this->scopeFactory->createFromFile($mutatingScope->getFile());
+        if ($mutatingScope->isDeclareStrictTypes()) {
+            $classOutsideScope = $classOutsideScope->enterDeclareStrictTypes();
+        }
+
+        $namespace = $mutatingScope->getNamespace();
+        if ($namespace !== null) {
+            $classOutsideScope = $classOutsideScope->enterNamespace($namespace);
+        }
+
+        return $classOutsideScope->enterClass($classReflection);
     }
 
     /**
