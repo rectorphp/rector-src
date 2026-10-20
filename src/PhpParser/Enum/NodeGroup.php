@@ -82,6 +82,28 @@ final class NodeGroup
 
     public static function isStmtAwareNode(Node $node): bool
     {
-        return array_any(self::STMTS_AWARE, fn (string $stmtAwareClass): bool => $node instanceof $stmtAwareClass);
+        // native instanceof instead of array_any() over STMTS_AWARE - avoids the per-element
+        // closure call and dynamic instanceof on this hot traversal path; subclass semantics kept
+        return match (true) {
+            $node instanceof Block,
+            $node instanceof Closure,
+            $node instanceof Case_,
+            $node instanceof Catch_,
+            $node instanceof ClassMethod,
+            $node instanceof Do_,
+            $node instanceof Else_,
+            $node instanceof ElseIf_,
+            $node instanceof Finally_,
+            $node instanceof For_,
+            $node instanceof Foreach_,
+            $node instanceof Function_,
+            $node instanceof If_,
+            $node instanceof Namespace_,
+            $node instanceof TryCatch,
+            $node instanceof While_,
+            $node instanceof FileNode,
+            $node instanceof Declare_ => true,
+            default => false,
+        };
     }
 }
