@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Issues\ClassReflectionRefresh\Fixture;
+namespace Rector\Tests\Issues\ClassReflectionRefreshOnModifier\Fixture;
 
 class RefreshOnClassChange
 {
@@ -13,7 +13,7 @@ class RefreshOnClassChange
 -----
 <?php
 
-namespace Rector\Tests\Issues\ClassReflectionRefresh\Fixture;
+namespace Rector\Tests\Issues\ClassReflectionRefreshOnModifier\Fixture;
 
 final readonly class RefreshOnClassChange
 {

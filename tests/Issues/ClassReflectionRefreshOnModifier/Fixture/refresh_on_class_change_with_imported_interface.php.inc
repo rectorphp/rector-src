@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\Issues\ClassReflectionRefresh\Fixture;
+namespace Rector\Tests\Issues\ClassReflectionRefreshOnModifier\Fixture;
 
-use Rector\Tests\Issues\ClassReflectionRefresh\Source\SomeInterface;
+use Rector\Tests\Issues\ClassReflectionRefreshOnModifier\Source\SomeInterface;
 
 class RefreshOnClassChangeWithImportedInterface implements SomeInterface
 {
@@ -16,9 +16,9 @@ class RefreshOnClassChangeWithImportedInterface implements SomeInterface
 -----
 <?php
 
-namespace Rector\Tests\Issues\ClassReflectionRefresh\Fixture;
+namespace Rector\Tests\Issues\ClassReflectionRefreshOnModifier\Fixture;
 
-use Rector\Tests\Issues\ClassReflectionRefresh\Source\SomeInterface;
+use Rector\Tests\Issues\ClassReflectionRefreshOnModifier\Source\SomeInterface;
 
 final readonly class RefreshOnClassChangeWithImportedInterface implements SomeInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Issues\ClassReflectionRefresh\Source;
+namespace Rector\Tests\Issues\ClassReflectionRefreshOnModifier\Source;
 
 use PhpParser\Modifiers;
 use PhpParser\Node;
