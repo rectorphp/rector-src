@@ -90,7 +90,7 @@ CODE_SAMPLE
 
         // -, +
         $result = $this->processBinaryOp($node);
-        if (!$result instanceof Expr) {
+        if (! $result instanceof Expr) {
             return null;
         }
 
@@ -99,7 +99,7 @@ CODE_SAMPLE
         // so reduce its chain here to finish in a single pass
         while ($result instanceof Plus || $result instanceof Minus || $result instanceof Mul || $result instanceof Div) {
             $reduced = $this->processBinaryOp($result);
-            if (!$reduced instanceof Expr || $reduced === $result) {
+            if (! $reduced instanceof Expr || $reduced === $result) {
                 break;
             }
 
