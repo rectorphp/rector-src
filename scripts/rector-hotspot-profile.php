@@ -99,8 +99,12 @@ final readonly class HotspotProfiler
 
     private function profileRun(string $configPath, string $profileDirectory): string
     {
+        // --xdebug is essential: without it Rector's XdebugHandler restarts the process without
+        // xdebug before the container boots, so the profile would only cover the thin pre-restart
+        // launcher. With it the restart is skipped and xdebug stays live for the real run, which
+        // --withoutParallel() (see buildConfig) keeps in this same process - no worker child.
         $rectorCommand = sprintf(
-            '%s -d %s -d %s -d %s -d %s %s process --dry-run --no-progress-bar --output-format=json --config=%s',
+            '%s -d %s -d %s -d %s -d %s %s process --dry-run --no-progress-bar --xdebug --output-format=json --config=%s',
             escapeshellarg(PHP_BINARY),
             escapeshellarg('xdebug.mode=profile'),
             escapeshellarg('xdebug.start_with_request=yes'),
