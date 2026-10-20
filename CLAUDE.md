@@ -120,3 +120,7 @@ A high call count is not enough. Instrument the input key and confirm the inputs
 ### 4. Correctness gates
 
 Full `vendor/bin/phpunit` (engine changes, not just one rule test) plus the order-dependent/fixpoint tests - a bad cache key surfaces as order-flaky failures, not a clean red. The cheapest reliable win is hoisting a node-only guard above an expensive `reflectionResolver->resolve*` / `getType` / `getAncestors` / matcher call; `ScopeFetcher::fetch` itself is a cheap attribute read, so hoisting above it alone buys nothing.
+
+### 5. Configurable-rule config scan -> keyed lookup
+
+A profile on this repo cannot see it: rector-src's own config has no large rename/upgrade sets, so the cost is zero here. A `ConfigurableRectorInterface` rule that does `foreach ($this->config as ...)` per visited node to pick one entry by name is O(config) per node, and real upgrade sets ship hundreds of entries. Resolve the node key once, then look it up directly: an already-keyed map becomes `$map[$key] ?? null`; a flat value-object list gets a bucket built once in `configure()` (keyed by old name), with any secondary object-type check kept inside the per-bucket branch. Watch case: function/method names are case-insensitive (lowercase the key), constants/strings/class names case-sensitive. Shipped examples: `RenameMethodRector`, `RenameClassRector`, `RenameFunctionRector`.
