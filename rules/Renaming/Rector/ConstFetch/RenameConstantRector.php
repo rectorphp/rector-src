@@ -69,16 +69,19 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->oldToNewConstants as $oldConstant => $newConstant) {
-            if (! $this->isName($node->name, $oldConstant)) {
-                continue;
-            }
-
-            $node->name = new Name($newConstant);
-            return $node;
+        $constantName = $this->getName($node->name);
+        if ($constantName === null) {
+            return null;
         }
 
-        return null;
+        // constant names are case-sensitive, look the rename up directly instead of scanning the map
+        $newConstant = $this->oldToNewConstants[$constantName] ?? null;
+        if ($newConstant === null) {
+            return null;
+        }
+
+        $node->name = new Name($newConstant);
+        return $node;
     }
 
     /**
