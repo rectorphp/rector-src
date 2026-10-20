@@ -9,10 +9,12 @@ use Doctrine\Inflector\Rules\English\InflectorFactory;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
+use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\Parser\Parser;
 use PHPStan\Php\PhpVersionFactory;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\ParserConfig;
+use PHPStan\Reflection\ClassReflectionFactory;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Application\FileProcessor;
 use Rector\Application\Provider\CurrentFileProvider;
@@ -110,6 +112,8 @@ final class LazyContainerFactory
         NodeScopeResolver::class,
         ReflectionProvider::class,
         PhpVersionFactory::class,
+        Reflector::class,
+        ClassReflectionFactory::class,
     ];
 
     /**

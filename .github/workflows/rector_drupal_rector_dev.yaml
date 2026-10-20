@@ -12,6 +12,7 @@ env:
 jobs:
     rector_drupal_rector_dev:
         runs-on: ubuntu-latest
+        timeout-minutes: 4
 
         steps:
             -
