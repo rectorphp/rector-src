@@ -23,9 +23,9 @@ use Webmozart\Assert\Assert;
 final class MethodCallToFuncCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var MethodCallToFuncCall[]
+     * @var array<string, MethodCallToFuncCall[]>
      */
-    private array $methodCallsToFuncCalls = [];
+    private array $methodCallsToFuncCallsByMethod = [];
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -74,11 +74,12 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($this->methodCallsToFuncCalls as $methodCallToFuncCall) {
-            if (! $this->isName($node->name, $methodCallToFuncCall->getMethodName())) {
-                continue;
-            }
+        $methodName = $this->getName($node->name);
+        if ($methodName === null) {
+            return null;
+        }
 
+        foreach ($this->methodCallsToFuncCallsByMethod[strtolower($methodName)] ?? [] as $methodCallToFuncCall) {
             if (! $this->isObjectType($node->var, new ObjectType($methodCallToFuncCall->getObjectType()))) {
                 continue;
             }
@@ -95,6 +96,10 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allIsInstanceOf($configuration, MethodCallToFuncCall::class);
-        $this->methodCallsToFuncCalls = $configuration;
+
+        $this->methodCallsToFuncCallsByMethod = [];
+        foreach ($configuration as $methodCallToFuncCall) {
+            $this->methodCallsToFuncCallsByMethod[strtolower($methodCallToFuncCall->getMethodName())][] = $methodCallToFuncCall;
+        }
     }
 }
