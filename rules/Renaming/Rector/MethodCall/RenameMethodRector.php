@@ -36,9 +36,9 @@ use Webmozart\Assert\Assert;
 final class RenameMethodRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var MethodCallRenameInterface[]
+     * @var array<string, MethodCallRenameInterface[]>
      */
-    private array $methodCallRenames = [];
+    private array $methodCallRenamesByOldMethod = [];
 
     public function __construct(
         private readonly ClassManipulator $classManipulator,
@@ -101,7 +101,12 @@ CODE_SAMPLE
     {
         Assert::allIsAOf($configuration, MethodCallRenameInterface::class);
 
-        $this->methodCallRenames = $configuration;
+        // bucket by old method name, so a node matches only the few renames sharing its name,
+        // instead of scanning the whole configured list per node
+        $this->methodCallRenamesByOldMethod = [];
+        foreach ($configuration as $methodCallRename) {
+            $this->methodCallRenamesByOldMethod[strtolower($methodCallRename->getOldMethod())][] = $methodCallRename;
+        }
     }
 
     private function shouldSkipClassMethod(
@@ -176,7 +181,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            foreach ($this->methodCallRenames as $methodCallRename) {
+            foreach ($this->methodCallRenamesByOldMethod[strtolower($methodName)] ?? [] as $methodCallRename) {
                 if ($this->shouldSkipRename(
                     $methodName,
                     $classMethod,
@@ -238,7 +243,7 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($this->methodCallRenames as $methodCallRename) {
+        foreach ($this->methodCallRenamesByOldMethod[strtolower($callName)] ?? [] as $methodCallRename) {
             if (! $this->nodeNameResolver->isStringName($callName, $methodCallRename->getOldMethod())) {
                 continue;
             }

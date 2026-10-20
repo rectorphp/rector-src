@@ -130,6 +130,12 @@ final readonly class PhpDocClassRenamer
 
         $classNameArrayItemNode = $doctrineAnnotationTagValueNode->getSilentValue();
 
+        // loop-invariant, resolve once instead of per configured class
+        $currentTypeArrayItemNode = $doctrineAnnotationTagValueNode->getValue('type');
+        $currentTypeStringNode = $currentTypeArrayItemNode instanceof ArrayItemNode
+            ? $currentTypeArrayItemNode->value
+            : null;
+
         foreach ($oldToNewClasses as $oldClass => $newClass) {
             if ($classNameArrayItemNode instanceof ArrayItemNode && $classNameArrayItemNode->value instanceof StringNode) {
                 $classNameStringNode = $classNameArrayItemNode->value;
@@ -151,17 +157,7 @@ final readonly class PhpDocClassRenamer
                 $hasChanged = true;
             }
 
-            $currentTypeArrayItemNode = $doctrineAnnotationTagValueNode->getValue('type');
-            if (! $currentTypeArrayItemNode instanceof ArrayItemNode) {
-                continue;
-            }
-
-            $currentTypeStringNode = $currentTypeArrayItemNode->value;
-            if (! $currentTypeStringNode instanceof StringNode) {
-                continue;
-            }
-
-            if ($currentTypeStringNode->value === $oldClass) {
+            if ($currentTypeStringNode instanceof StringNode && $currentTypeStringNode->value === $oldClass) {
                 $currentTypeStringNode->value = $newClass;
 
                 $hasChanged = true;
