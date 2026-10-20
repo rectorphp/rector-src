@@ -64,6 +64,13 @@ final readonly class ObjectTypeSpecifier
         }
 
         if ($this->reflectionProvider->hasClass($className)) {
+            // keep the scope class reflection of the current class, as it is refreshed on class change,
+            // while the reflection provider one still reads the original file
+            $classReflection = $scope?->getClassReflection();
+            if ($classReflection instanceof ClassReflection && $classReflection->getName() === $className) {
+                return new FullyQualifiedObjectType($className, null, $classReflection);
+            }
+
             return new FullyQualifiedObjectType($className);
         }
 
