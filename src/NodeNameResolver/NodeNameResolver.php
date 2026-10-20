@@ -34,7 +34,7 @@ final class NodeNameResolver
     /**
      * Used to check if a string might contain a regex or fnmatch pattern
      */
-    private const array REGEX_WILDCARD_CHARS = ['*', '#', '~', '/'];
+    private const string REGEX_WILDCARD_CHARS = '*#~/';
 
     /**
      * @var array<string, NodeNameResolverInterface|null>
@@ -181,12 +181,10 @@ final class NodeNameResolver
             return true;
         }
 
-        foreach (self::REGEX_WILDCARD_CHARS as $char) {
-            if (str_contains($desiredName, $char)) {
-                throw new ShouldNotHappenException(
-                    'Matching of regular expressions is no longer supported. Use $this->getName() and compare with e.g. str_ends_with() or str_starts_with() instead.'
-                );
-            }
+        if (strpbrk($desiredName, self::REGEX_WILDCARD_CHARS) !== false) {
+            throw new ShouldNotHappenException(
+                'Matching of regular expressions is no longer supported. Use $this->getName() and compare with e.g. str_ends_with() or str_starts_with() instead.'
+            );
         }
 
         return false;
