@@ -20,7 +20,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\NodeTraverser\SimpleNodeTraverser;
 
 /**
- * Marks by-ref returns (IS_BYREF_RETURN / IS_INSIDE_BYREF_FUNCTION_LIKE) and by-ref variables
+ * Marks by-ref returns IS_INSIDE_BYREF_FUNCTION_LIKE and by-ref variables
  * (IS_BYREF_VAR) from a single FunctionLike entry, sharing the one node subscription.
  */
 final class ByRefNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
@@ -62,23 +62,6 @@ final class ByRefNodeVisitor extends NodeVisitorAbstract implements DecoratingNo
         }
 
         SimpleNodeTraverser::decorateWithAttributeValue($stmts, AttributeKey::IS_INSIDE_BYREF_FUNCTION_LIKE, true);
-
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $stmts,
-            static function (Node $node): int|null|Node {
-                // avoid nested functions or classes
-                if ($node instanceof Class_ || $node instanceof FunctionLike) {
-                    return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                }
-
-                if (! $node instanceof Return_) {
-                    return null;
-                }
-
-                $node->setAttribute(AttributeKey::IS_BYREF_RETURN, true);
-                return $node;
-            }
-        );
     }
 
     /**

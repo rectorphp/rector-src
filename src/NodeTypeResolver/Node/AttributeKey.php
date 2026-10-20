@@ -93,8 +93,6 @@ final class AttributeKey
 
     public const string IS_BYREF_VAR = 'is_byref_var';
 
-    public const string IS_BYREF_RETURN = 'is_byref_return';
-
     public const string IS_BEING_ASSIGNED = 'is_being_assigned';
 
     public const string IS_ASSIGN_OP_VAR = 'is_assign_op_var';
