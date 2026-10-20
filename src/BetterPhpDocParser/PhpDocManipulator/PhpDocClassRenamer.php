@@ -16,11 +16,16 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Enum\ClassName;
 use Rector\Renaming\Collector\RenamedNameCollector;
 
-final readonly class PhpDocClassRenamer
+final class PhpDocClassRenamer
 {
+    /**
+     * @var array<string, string>
+     */
+    private array $wordBoundaryPatternByOldClass = [];
+
     public function __construct(
-        private ClassAnnotationMatcher $classAnnotationMatcher,
-        private RenamedNameCollector $renamedNameCollector
+        private readonly ClassAnnotationMatcher $classAnnotationMatcher,
+        private readonly RenamedNameCollector $renamedNameCollector
     ) {
     }
 
@@ -148,7 +153,7 @@ final readonly class PhpDocClassRenamer
                 $this->renamedNameCollector->add($oldClass);
                 $classNameStringNode->value = Strings::replace(
                     $classNameStringNode->value,
-                    '#\b' . preg_quote($oldClass, '#') . '\b#',
+                    $this->wordBoundaryPatternByOldClass[$oldClass] ??= '#\b' . preg_quote($oldClass, '#') . '\b#',
                     $newClass
                 );
 
