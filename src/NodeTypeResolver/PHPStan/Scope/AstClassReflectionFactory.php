@@ -39,7 +39,7 @@ final readonly class AstClassReflectionFactory
         $filePath = $mutatingScope->getFile();
         $namespace = $mutatingScope->getNamespace();
 
-        $betterReflectionClass = (new NodeToReflection())->__invoke(
+        $betterReflectionClass = new NodeToReflection()->__invoke(
             $this->reflector,
             $classLike,
             new LocatedSource(null, null, $filePath),
