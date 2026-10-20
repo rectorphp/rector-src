@@ -26,9 +26,9 @@ use Webmozart\Assert\Assert;
 final class RemoveMethodCallParamRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var RemoveMethodCallParam[]
+     * @var array<string, RemoveMethodCallParam[]>
      */
-    private array $removeMethodCallParams = [];
+    private array $removeMethodCallParamsByMethod = [];
 
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
@@ -84,11 +84,12 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($this->removeMethodCallParams as $removeMethodCallParam) {
-            if (! $this->isName($node->name, $removeMethodCallParam->getMethodName())) {
-                continue;
-            }
+        $methodName = $this->getName($node->name);
+        if ($methodName === null) {
+            return null;
+        }
 
+        foreach ($this->removeMethodCallParamsByMethod[strtolower($methodName)] ?? [] as $removeMethodCallParam) {
             if (! $this->isCallerObjectType($node, $removeMethodCallParam)) {
                 continue;
             }
@@ -147,7 +148,11 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allIsInstanceOf($configuration, RemoveMethodCallParam::class);
-        $this->removeMethodCallParams = $configuration;
+
+        $this->removeMethodCallParamsByMethod = [];
+        foreach ($configuration as $removeMethodCallParam) {
+            $this->removeMethodCallParamsByMethod[strtolower($removeMethodCallParam->getMethodName())][] = $removeMethodCallParam;
+        }
     }
 
     private function isCallerObjectType(StaticCall|MethodCall $call, RemoveMethodCallParam $removeMethodCallParam): bool
