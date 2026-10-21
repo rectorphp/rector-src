@@ -64,20 +64,6 @@ final class RectorConfigBuilder
     ];
 
     /**
-     * Any of these installed packages loads the composer-based set; each rule inside is bound to its own package
-     *
-     * @var array<string, string[]> withComposerBased() argument name => package names
-     */
-    private const array COMPOSER_BASED_TRIGGER_PACKAGES = [
-        'twig' => ['twig/twig'],
-        'doctrine' => ['doctrine/orm', 'doctrine/dbal', 'doctrine/doctrine-bundle'],
-        'phpunit' => ['phpunit/phpunit'],
-        'symfony' => ['symfony/framework-bundle', 'symfony/http-kernel', 'symfony/console'],
-        'laravel' => ['laravel/framework', 'illuminate/support'],
-        'drupal' => ['drupal/core'],
-    ];
-
-    /**
      * @var string[]
      */
     private array $paths = [];
@@ -1176,7 +1162,7 @@ final class RectorConfigBuilder
         $installedPackageResolver = new InstalledPackageResolver();
 
         $installedPackages = [];
-        foreach (self::COMPOSER_BASED_TRIGGER_PACKAGES as $argumentName => $packageNames) {
+        foreach (ComposerBasedTriggerPackages::PACKAGES_BY_ARGUMENT as $argumentName => $packageNames) {
             $installedPackages[$argumentName] = false;
 
             foreach ($packageNames as $packageName) {
