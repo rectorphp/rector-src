@@ -210,7 +210,7 @@ function resolveFixtureCounts(string $testsDirectory): array
         return [];
     }
 
-    $ruleTestDirectories = (new Finder())
+    $ruleTestDirectories = new Finder()
         ->in($testsDirectory)
         ->directories()
         ->name('#Rector$#')
@@ -223,7 +223,7 @@ function resolveFixtureCounts(string $testsDirectory): array
             continue;
         }
 
-        $fixtureCountByRule[$basename] = (new Finder())
+        $fixtureCountByRule[$basename] = new Finder()
             ->files()
             ->name('*.php.inc')
             ->in($ruleTestDirectory->getPathname())
