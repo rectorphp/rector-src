@@ -7,7 +7,6 @@ namespace Rector\NodeAnalyzer;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use Rector\CodeQuality\ValueObject\DefinedPropertyWithType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\PostRector\ValueObject\PropertyMetadata;
@@ -26,15 +25,9 @@ final readonly class PropertyPresenceChecker
     /**
      * Includes parent classes and traits
      */
-    public function hasClassContextProperty(Class_ $class, DefinedPropertyWithType $definedPropertyWithType): bool
-    {
-        $propertyOrParam = $this->getClassContextProperty($class, $definedPropertyWithType);
-        return $propertyOrParam !== null;
-    }
-
     public function getClassContextProperty(
         Class_ $class,
-        DefinedPropertyWithType|PropertyMetadata $definedPropertyWithType
+        PropertyMetadata $definedPropertyWithType
     ): Property|Param|null {
         $className = $this->nodeNameResolver->getName($class);
         if ($className === null) {
