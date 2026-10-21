@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Rector\Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
+use Rector\Configuration\ComposerBasedTriggerPackages;
 use Rector\Configuration\RectorConfigBuilder;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\Symfony\Set\TwigSetList;
 use ReflectionClass;
+use ReflectionMethod;
+use ReflectionParameter;
 
 final class ComposerBasedAutoDetectTest extends TestCase
 {
@@ -65,6 +68,19 @@ final class ComposerBasedAutoDetectTest extends TestCase
             ->withComposerBased(phpunit: false);
 
         $this->assertSame([], $this->readSets($rectorConfigBuilder));
+    }
+
+    public function testEveryArgumentHasTriggerPackages(): void
+    {
+        $argumentNames = array_map(
+            static fn (ReflectionParameter $reflectionParameter): string => $reflectionParameter->getName(),
+            new ReflectionMethod(RectorConfigBuilder::class, 'withComposerBased')->getParameters()
+        );
+
+        // deprecated, no longer applied
+        $argumentNames = array_values(array_diff($argumentNames, ['netteUtils']));
+
+        $this->assertSame($argumentNames, array_keys(ComposerBasedTriggerPackages::PACKAGES_BY_ARGUMENT));
     }
 
     private function changeProjectDirectory(string $projectName): void
