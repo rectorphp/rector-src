@@ -15,7 +15,6 @@ use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\BooleanOr\RepeatedOrEqualToInArrayRector;
 use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
-use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\ConvertStaticToSelfRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\ClassConstFetch\VariableConstFetchToClassConstFetchRector;
@@ -125,7 +124,6 @@ final class CodeQualityLevel
         BooleanNotIdenticalToNotIdenticalRector::class,
         AndAssignsToSeparateLinesRector::class,
         CompactToVariablesRector::class,
-        CompleteDynamicPropertiesRector::class,
         IsAWithStringWithThirdArgumentRector::class,
         StrlenZeroToIdenticalEmptyStringRector::class,
         ArrayExplicitBoolCompareRector::class,
