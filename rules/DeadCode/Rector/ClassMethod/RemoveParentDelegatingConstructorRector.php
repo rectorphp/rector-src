@@ -120,7 +120,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentMethodReflection = $this->matchParentConstructorReflection($constructClassMethod);
+        $parentMethodReflection = $this->matchParentConstructorReflection($node);
         if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
             return null;
         }
@@ -165,9 +165,9 @@ CODE_SAMPLE
         return $phpDocInfo->hasByNames(['@param', '@phpstan-param', '@psalm-param']);
     }
 
-    private function matchParentConstructorReflection(ClassMethod $classMethod): ?ExtendedMethodReflection
+    private function matchParentConstructorReflection(Class_ $class): ?ExtendedMethodReflection
     {
-        $scope = ScopeFetcher::fetch($classMethod);
+        $scope = ScopeFetcher::fetch($class);
 
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
