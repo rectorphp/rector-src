@@ -24,13 +24,13 @@ use Rector\Contract\Rector\RectorInterface;
  * @implements Rule<Foreach_>
  * @see \Rector\Utils\PHPStan\Tests\Rule\NoResolveClassReflectionInForeachRule\NoResolveClassReflectionInForeachRuleTest
  */
-final class NoResolveClassReflectionInForeachRule implements Rule
+final readonly class NoResolveClassReflectionInForeachRule implements Rule
 {
     private const string ERROR_MESSAGE = 'resolveClassReflection() is called inside a foreach() loop. The class reflection is the same for every iteration, hoist the call above the loop.';
 
     private const string METHOD_NAME = 'resolveClassReflection';
 
-    private readonly NodeFinder $nodeFinder;
+    private NodeFinder $nodeFinder;
 
     public function __construct()
     {
