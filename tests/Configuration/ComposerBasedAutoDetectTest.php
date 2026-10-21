@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Rector\Configuration\RectorConfigBuilder;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Symfony\Set\SymfonySetList;
 use Rector\Symfony\Set\TwigSetList;
 use ReflectionClass;
 
@@ -18,7 +19,7 @@ final class ComposerBasedAutoDetectTest extends TestCase
     protected function setUp(): void
     {
         $this->originalWorkingDirectory = (string) getcwd();
-        chdir(__DIR__ . '/Fixture/ComposerBasedAutoDetect/doctrine_project');
+        $this->changeProjectDirectory('installed_packages');
     }
 
     protected function tearDown(): void
@@ -27,17 +28,27 @@ final class ComposerBasedAutoDetectTest extends TestCase
     }
 
     /**
-     * symfony/console is installed as well, but only symfony/framework-bundle marks a Symfony project
+     * doctrine/dbal and symfony/console are enough to load their sets, no doctrine/orm or symfony/framework-bundle needed
      */
-    public function testNoArgumentLoadsSetsOfInstalledFrameworks(): void
+    public function testNoArgumentLoadsSetsOfInstalledPackages(): void
     {
         $rectorConfigBuilder = new RectorConfigBuilder()
             ->withComposerBased();
 
         $this->assertSame(
-            [PHPUnitSetList::COMPOSER_BASED, DoctrineSetList::COMPOSER_BASED],
+            [PHPUnitSetList::COMPOSER_BASED, DoctrineSetList::COMPOSER_BASED, SymfonySetList::COMPOSER_BASED],
             $this->readSets($rectorConfigBuilder)
         );
+    }
+
+    public function testNoArgumentWithoutTriggerPackagesLoadsNothing(): void
+    {
+        $this->changeProjectDirectory('no_trigger_packages');
+
+        $rectorConfigBuilder = new RectorConfigBuilder()
+            ->withComposerBased();
+
+        $this->assertSame([], $this->readSets($rectorConfigBuilder));
     }
 
     public function testExplicitArgumentSkipsDetection(): void
@@ -54,6 +65,11 @@ final class ComposerBasedAutoDetectTest extends TestCase
             ->withComposerBased(phpunit: false);
 
         $this->assertSame([], $this->readSets($rectorConfigBuilder));
+    }
+
+    private function changeProjectDirectory(string $projectName): void
+    {
+        chdir(__DIR__ . '/Fixture/ComposerBasedAutoDetect/' . $projectName);
     }
 
     /**
