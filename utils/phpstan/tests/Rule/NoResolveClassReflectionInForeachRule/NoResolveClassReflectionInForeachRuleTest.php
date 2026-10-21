@@ -15,7 +15,7 @@ final class NoResolveClassReflectionInForeachRuleTest extends RuleTestCase
 {
     public function testCallInForeach(): void
     {
-        $expectedErrorMessage = 'resolveClassReflection() is called inside a foreach() loop. The class reflection is the same for every iteration, hoist the call above the loop.';
+        $expectedErrorMessage = 'resolveClassReflection() in a foreach() returns the same value every iteration, so the null guard that continues repeats pointlessly. Hoist the call above the loop and return null once.';
 
         $this->analyse([__DIR__ . '/Source/CallInForeach.php'], [[$expectedErrorMessage, 19]]);
     }

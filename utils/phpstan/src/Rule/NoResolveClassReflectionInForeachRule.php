@@ -26,7 +26,7 @@ use Rector\Contract\Rector\RectorInterface;
  */
 final readonly class NoResolveClassReflectionInForeachRule implements Rule
 {
-    private const string ERROR_MESSAGE = 'resolveClassReflection() is called inside a foreach() loop. The class reflection is the same for every iteration, hoist the call above the loop.';
+    private const string ERROR_MESSAGE = 'resolveClassReflection() in a foreach() returns the same value every iteration, so the null guard that continues repeats pointlessly. Hoist the call above the loop and return null once.';
 
     private const string METHOD_NAME = 'resolveClassReflection';
 
