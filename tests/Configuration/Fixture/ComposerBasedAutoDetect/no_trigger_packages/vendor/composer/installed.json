@@ -1,0 +1,9 @@
+{
+    "packages": [
+        {
+            "name": "webmozart/assert",
+            "version": "1.11.0",
+            "version_normalized": "1.11.0.0"
+        }
+    ]
+}

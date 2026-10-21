@@ -64,18 +64,17 @@ final class RectorConfigBuilder
     ];
 
     /**
-     * The package that marks a framework as used by the project. Its own package, not one of its components:
-     * Laravel requires symfony/console, symfony/process etc., which must not switch the Symfony set on.
+     * Any of these installed packages loads the composer-based set; each rule inside is bound to its own package
      *
-     * @var array<string, string> withComposerBased() argument name => package name
+     * @var array<string, string[]> withComposerBased() argument name => package names
      */
-    private const array COMPOSER_BASED_FRAMEWORK_PACKAGES = [
-        'twig' => 'twig/twig',
-        'doctrine' => 'doctrine/orm',
-        'phpunit' => 'phpunit/phpunit',
-        'symfony' => 'symfony/framework-bundle',
-        'laravel' => 'laravel/framework',
-        'drupal' => 'drupal/core',
+    private const array COMPOSER_BASED_TRIGGER_PACKAGES = [
+        'twig' => ['twig/twig'],
+        'doctrine' => ['doctrine/orm', 'doctrine/dbal', 'doctrine/doctrine-bundle'],
+        'phpunit' => ['phpunit/phpunit'],
+        'symfony' => ['symfony/framework-bundle', 'symfony/http-kernel', 'symfony/console'],
+        'laravel' => ['laravel/framework', 'illuminate/support'],
+        'drupal' => ['drupal/core'],
     ];
 
     /**
@@ -668,7 +667,7 @@ final class RectorConfigBuilder
     }
 
     /**
-     * Call it with no argument to load the sets of every framework installed in the project.
+     * Call it with no argument to load the sets of every package installed in the project.
      * Any argument switches the detection off, and only the passed sets are loaded.
      */
     public function withComposerBased(
@@ -681,7 +680,7 @@ final class RectorConfigBuilder
         bool $drupal = false,
     ): self {
         if (func_num_args() === 0) {
-            return $this->withComposerBased(...$this->resolveInstalledComposerBasedFrameworks());
+            return $this->withComposerBased(...$this->resolveInstalledComposerBasedPackages());
         }
 
         if ($laravel && class_exists('RectorLaravel\Set\LaravelSetList') && constant('RectorLaravel\Set\LaravelSetList::COMPOSER_BASED')) {
@@ -1170,17 +1169,24 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @return array<string, bool> withComposerBased() argument name => is the framework installed
+     * @return array<string, bool> withComposerBased() argument name => is any of its packages installed
      */
-    private function resolveInstalledComposerBasedFrameworks(): array
+    private function resolveInstalledComposerBasedPackages(): array
     {
         $installedPackageResolver = new InstalledPackageResolver();
 
-        $installedFrameworks = [];
-        foreach (self::COMPOSER_BASED_FRAMEWORK_PACKAGES as $argumentName => $packageName) {
-            $installedFrameworks[$argumentName] = $installedPackageResolver->resolvePackageVersion($packageName) !== null;
+        $installedPackages = [];
+        foreach (self::COMPOSER_BASED_TRIGGER_PACKAGES as $argumentName => $packageNames) {
+            $installedPackages[$argumentName] = false;
+
+            foreach ($packageNames as $packageName) {
+                if ($installedPackageResolver->resolvePackageVersion($packageName) !== null) {
+                    $installedPackages[$argumentName] = true;
+                    break;
+                }
+            }
         }
 
-        return $installedFrameworks;
+        return $installedPackages;
     }
 }

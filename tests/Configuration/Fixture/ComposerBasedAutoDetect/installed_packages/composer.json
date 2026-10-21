@@ -1,7 +1,7 @@
 {
     "type": "project",
     "require": {
-        "doctrine/orm": "^3.0",
+        "doctrine/dbal": "^4.0",
         "phpunit/phpunit": "^12.0",
         "symfony/console": "^7.0"
     }
