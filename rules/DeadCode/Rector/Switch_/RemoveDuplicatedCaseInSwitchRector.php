@@ -177,8 +177,14 @@ CODE_SAMPLE
             return $this->areSwitchStmtsEqualsConsideringComments($currentCase, $nextCase);
         }
 
-        if (! $this->nodeComparator->areNodesEqual($currentCase->stmts, $nextCase->stmts)) {
+        if (count($currentCase->stmts) !== count($nextCase->stmts)) {
             return false;
+        }
+
+        foreach ($currentCase->stmts as $key => $currentStmt) {
+            if (! $this->nodeComparator->areNodesEqual($currentStmt, $nextCase->stmts[$key])) {
+                return false;
+            }
         }
 
         return array_any(
