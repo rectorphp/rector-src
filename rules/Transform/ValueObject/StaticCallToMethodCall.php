@@ -10,6 +10,9 @@ use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
+/**
+ * @api used in deprecated StaticCallToMethodCallRector configs
+ */
 final readonly class StaticCallToMethodCall
 {
     public function __construct(
