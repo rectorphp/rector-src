@@ -33,6 +33,7 @@ use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 
 /**
+ * @api used by rector-symfony and rector-doctrine
  * @see \Rector\Tests\NodeManipulator\ClassDependencyManipulatorTest
  */
 final readonly class ClassDependencyManipulator
