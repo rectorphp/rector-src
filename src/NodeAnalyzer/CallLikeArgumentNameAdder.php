@@ -23,7 +23,7 @@ final readonly class CallLikeArgumentNameAdder
      *
      * @var string[]
      */
-    private const NO_NAMED_ARGUMENTS_FUNCTION_NAMES = ['session_set_save_handler'];
+    private const array NO_NAMED_ARGUMENTS_FUNCTION_NAMES = ['session_set_save_handler'];
 
     public function __construct(
         private ReflectionResolver $reflectionResolver,
