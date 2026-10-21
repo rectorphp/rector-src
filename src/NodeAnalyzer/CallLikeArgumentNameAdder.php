@@ -17,6 +17,14 @@ use Rector\Reflection\ReflectionResolver;
 
 final readonly class CallLikeArgumentNameAdder
 {
+    /**
+     * Internal functions that reflection reports as named-argument capable,
+     * but reject named arguments at runtime due to alternate signatures.
+     *
+     * @var string[]
+     */
+    private const NO_NAMED_ARGUMENTS_FUNCTION_NAMES = ['session_set_save_handler'];
+
     public function __construct(
         private ReflectionResolver $reflectionResolver,
     ) {
@@ -41,6 +49,14 @@ final readonly class CallLikeArgumentNameAdder
         }
 
         if (! $reflection->acceptsNamedArguments()->yes()) {
+            return null;
+        }
+
+        if ($reflection instanceof FunctionReflection && in_array(
+            $reflection->getName(),
+            self::NO_NAMED_ARGUMENTS_FUNCTION_NAMES,
+            true
+        )) {
             return null;
         }
 
