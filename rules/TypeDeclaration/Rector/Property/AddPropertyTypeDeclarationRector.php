@@ -25,9 +25,9 @@ use Webmozart\Assert\Assert;
 final class AddPropertyTypeDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var AddPropertyTypeDeclaration[]
+     * @var array<string, AddPropertyTypeDeclaration[]>
      */
-    private array $addPropertyTypeDeclarations = [];
+    private array $addPropertyTypeDeclarationsByProperty = [];
 
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper
@@ -82,11 +82,12 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($this->addPropertyTypeDeclarations as $addPropertyTypeDeclaration) {
-            if (! $this->isName($node, $addPropertyTypeDeclaration->getPropertyName())) {
-                continue;
-            }
+        $propertyName = $this->getName($node);
+        if ($propertyName === null) {
+            return null;
+        }
 
+        foreach ($this->addPropertyTypeDeclarationsByProperty[strtolower($propertyName)] ?? [] as $addPropertyTypeDeclaration) {
             if (! $this->isClassReflectionType($classReflection, $addPropertyTypeDeclaration->getClass())) {
                 continue;
             }
@@ -113,7 +114,11 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allIsAOf($configuration, AddPropertyTypeDeclaration::class);
-        $this->addPropertyTypeDeclarations = $configuration;
+
+        $this->addPropertyTypeDeclarationsByProperty = [];
+        foreach ($configuration as $addPropertyTypeDeclaration) {
+            $this->addPropertyTypeDeclarationsByProperty[strtolower($addPropertyTypeDeclaration->getPropertyName())][] = $addPropertyTypeDeclaration;
+        }
     }
 
     private function isClassReflectionType(ClassReflection $classReflection, string $type): bool
