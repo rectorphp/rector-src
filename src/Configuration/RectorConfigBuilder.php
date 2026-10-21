@@ -9,6 +9,7 @@ use Nette\Utils\Strings;
 use PhpParser\NodeVisitor;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\CodingStyleLevel;
 use Rector\Config\Level\DeadCodeLevel;
@@ -60,6 +61,21 @@ final class RectorConfigBuilder
         'withDeadCodeLevel' => [SetList::DEAD_CODE, 'dead code'],
         'withCodeQualityLevel' => [SetList::CODE_QUALITY, 'code quality'],
         'withCodingStyleLevel' => [SetList::CODING_STYLE, 'coding style'],
+    ];
+
+    /**
+     * The package that marks a framework as used by the project. Its own package, not one of its components:
+     * Laravel requires symfony/console, symfony/process etc., which must not switch the Symfony set on.
+     *
+     * @var array<string, string> withComposerBased() argument name => package name
+     */
+    private const array COMPOSER_BASED_FRAMEWORK_PACKAGES = [
+        'twig' => 'twig/twig',
+        'doctrine' => 'doctrine/orm',
+        'phpunit' => 'phpunit/phpunit',
+        'symfony' => 'symfony/framework-bundle',
+        'laravel' => 'laravel/framework',
+        'drupal' => 'drupal/core',
     ];
 
     /**
@@ -651,6 +667,10 @@ final class RectorConfigBuilder
         return $this;
     }
 
+    /**
+     * Call it with no argument to load the sets of every framework installed in the project.
+     * Any argument switches the detection off, and only the passed sets are loaded.
+     */
     public function withComposerBased(
         bool $twig = false,
         bool $doctrine = false,
@@ -660,6 +680,10 @@ final class RectorConfigBuilder
         bool $laravel = false,
         bool $drupal = false,
     ): self {
+        if (func_num_args() === 0) {
+            return $this->withComposerBased(...$this->resolveInstalledComposerBasedFrameworks());
+        }
+
         if ($laravel && class_exists('RectorLaravel\Set\LaravelSetList') && constant('RectorLaravel\Set\LaravelSetList::COMPOSER_BASED')) {
             $this->sets[] = LaravelSetList::COMPOSER_BASED;
         }
@@ -1143,5 +1167,20 @@ final class RectorConfigBuilder
         $this->rules = array_merge($this->rules, $levelRules);
 
         return $this;
+    }
+
+    /**
+     * @return array<string, bool> withComposerBased() argument name => is the framework installed
+     */
+    private function resolveInstalledComposerBasedFrameworks(): array
+    {
+        $installedPackageResolver = new InstalledPackageResolver();
+
+        $installedFrameworks = [];
+        foreach (self::COMPOSER_BASED_FRAMEWORK_PACKAGES as $argumentName => $packageName) {
+            $installedFrameworks[$argumentName] = $installedPackageResolver->resolvePackageVersion($packageName) !== null;
+        }
+
+        return $installedFrameworks;
     }
 }
