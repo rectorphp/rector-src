@@ -34,6 +34,10 @@ final readonly class NodeComparator
      */
     public function areNodesEqual(Node|array|null $firstNode, Node|array|null $secondNode): bool
     {
+        if ($firstNode === null || $secondNode === null) {
+            return false;
+        }
+
         if ($firstNode instanceof Node && ! $secondNode instanceof Node) {
             return false;
         }
@@ -47,6 +51,10 @@ final readonly class NodeComparator
         }
 
         if (! is_array($secondNode)) {
+            if ($firstNode::class !== $secondNode::class) {
+                return false;
+            }
+
             return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
         }
 
