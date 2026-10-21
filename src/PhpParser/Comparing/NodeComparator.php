@@ -28,41 +28,17 @@ final readonly class NodeComparator
         return trim($content);
     }
 
-    /**
-     * @param Node|Node[]|null $firstNode
-     * @param Node|Node[]|null $secondNode
-     */
-    public function areNodesEqual(Node|array|null $firstNode, Node|array|null $secondNode): bool
+    public function areNodesEqual(Node|null $firstNode, Node|null $secondNode): bool
     {
-        if ($firstNode === null || $secondNode === null) {
+        if (! $firstNode instanceof Node || ! $secondNode instanceof Node) {
             return false;
         }
 
-        if ($firstNode instanceof Node && ! $secondNode instanceof Node) {
+        if ($firstNode::class !== $secondNode::class) {
             return false;
         }
 
-        if (! $firstNode instanceof Node && $secondNode instanceof Node) {
-            return false;
-        }
-
-        if (is_array($firstNode) && ! is_array($secondNode)) {
-            return false;
-        }
-
-        if (! is_array($secondNode)) {
-            if ($firstNode::class !== $secondNode::class) {
-                return false;
-            }
-
-            return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
-        }
-
-        if (is_array($firstNode)) {
-            return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
-        }
-
-        return false;
+        return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
     }
 
     /**
