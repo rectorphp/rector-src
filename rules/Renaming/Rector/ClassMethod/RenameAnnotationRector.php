@@ -6,38 +6,20 @@ namespace Rector\Renaming\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Property;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\Renaming\Contract\RenameAnnotationInterface;
 use Rector\Renaming\ValueObject\RenameAnnotationByType;
 use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Renaming\Rector\ClassMethod\RenameAnnotationRector\RenameAnnotationRectorTest
+ * @deprecated This rule is deprecated, as too niche, never used and needs project context. Write a custom rule for the exact project case instead.
  */
-final class RenameAnnotationRector extends AbstractRector implements ConfigurableRectorInterface
+final class RenameAnnotationRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
 {
-    /**
-     * @var RenameAnnotationInterface[]
-     */
-    private array $renameAnnotations = [];
-
-    public function __construct(
-        private readonly DocBlockTagReplacer $docBlockTagReplacer,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -91,47 +73,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node instanceof Expression) {
-            return $this->refactorExpression($node);
-        }
-
-        $hasChanged = false;
-        foreach ($node->stmts as $stmt) {
-            if (! $stmt instanceof ClassMethod && ! $stmt instanceof Property) {
-                continue;
-            }
-
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($stmt);
-            if (! $phpDocInfo instanceof PhpDocInfo) {
-                continue;
-            }
-
-            foreach ($this->renameAnnotations as $renameAnnotation) {
-                if ($renameAnnotation instanceof RenameAnnotationByType && ! $this->isObjectType(
-                    $node,
-                    $renameAnnotation->getObjectType()
-                )) {
-                    continue;
-                }
-
-                $hasDocBlockChanged = $this->docBlockTagReplacer->replaceTagByAnother(
-                    $phpDocInfo,
-                    $renameAnnotation->getOldAnnotation(),
-                    $renameAnnotation->getNewAnnotation()
-                );
-
-                if ($hasDocBlockChanged) {
-                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
-                    $hasChanged = true;
-                }
-            }
-        }
-
-        if (! $hasChanged) {
-            return null;
-        }
-
-        return $node;
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" rule is deprecated, as too niche and part of no set; write a custom rule for the exact project case instead',
+            self::class
+        ));
     }
 
     /**
@@ -139,33 +84,5 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, RenameAnnotationInterface::class);
-        $this->renameAnnotations = $configuration;
-    }
-
-    private function refactorExpression(Expression $expression): ?Expression
-    {
-        $hasChanged = false;
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
-
-        foreach ($this->renameAnnotations as $renameAnnotation) {
-            $hasDocBlockChanged = $this->docBlockTagReplacer->replaceTagByAnother(
-                $phpDocInfo,
-                $renameAnnotation->getOldAnnotation(),
-                $renameAnnotation->getNewAnnotation()
-            );
-
-            if ($hasDocBlockChanged) {
-                $hasChanged = true;
-            }
-        }
-
-        if ($hasChanged) {
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($expression);
-            return $expression;
-        }
-
-        return null;
     }
 }
