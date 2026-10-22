@@ -26,7 +26,7 @@ final class ConsistentImplodeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes various implode forms to consistent one',
+            'Change various implode forms to consistent one',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -28,7 +28,7 @@ final class SensitiveHereNowDocRector extends AbstractRector implements MinPhpVe
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes heredoc/nowdoc that contains closing word to safe wrapper name',
+            'Change heredoc/nowdoc that contains closing word to safe wrapper name',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

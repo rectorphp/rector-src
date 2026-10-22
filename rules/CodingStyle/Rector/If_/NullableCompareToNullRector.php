@@ -20,7 +20,7 @@ final class NullableCompareToNullRector extends AbstractRector implements Deprec
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes negate of empty comparison of nullable value to explicit === or !== compare',
+            'Change negate of empty comparison of nullable value to explicit === or !== compare',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -27,7 +27,7 @@ final class RenameCastRector extends AbstractRector implements ConfigurableRecto
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Renames casts', [
+        return new RuleDefinition('Rename casts', [
             new ConfiguredCodeSample(
                 '$real = (real) $real;',
                 '$real = (float) $real;',

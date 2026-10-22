@@ -26,7 +26,7 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes multiple dirname() calls to one with nesting level',
+            'Change multiple `dirname()` calls to one with nesting level',
             [new CodeSample('dirname(dirname($path));', 'dirname($path, 2);')]
         );
     }

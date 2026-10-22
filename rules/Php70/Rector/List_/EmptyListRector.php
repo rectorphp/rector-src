@@ -22,7 +22,7 @@ final class EmptyListRector extends AbstractRector implements MinPhpVersionInter
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'list() cannot be empty',
+            'Add dummy variable to empty `list()`',
             [new CodeSample(
                 <<<'CODE_SAMPLE'
 'list() = $values;'

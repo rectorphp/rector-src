@@ -21,7 +21,7 @@ final class RenameMktimeWithoutArgsToTimeRector extends AbstractRector implement
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Renames mktime() without arguments to time()',
+            'Rename `mktime()` without arguments to `time()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

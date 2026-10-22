@@ -51,7 +51,7 @@ final class VersionCompareFuncCallToConstantRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes use of call to version compare function to use of PHP version constant',
+            'Change use of call to version compare function to use of PHP version constant',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

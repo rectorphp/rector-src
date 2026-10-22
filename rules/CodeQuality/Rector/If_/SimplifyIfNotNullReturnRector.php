@@ -30,7 +30,7 @@ final class SimplifyIfNotNullReturnRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes redundant null check to instant return',
+            'Change redundant null check to instant return',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

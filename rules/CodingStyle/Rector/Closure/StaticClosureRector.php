@@ -20,7 +20,7 @@ final class StaticClosureRector extends AbstractRector implements DeprecatedInte
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes Closure to be static when possible',
+            'Change Closure to be static when possible',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

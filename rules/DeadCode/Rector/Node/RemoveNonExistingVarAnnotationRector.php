@@ -66,7 +66,7 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Removes non-existing @var annotations above the code',
+            'Remove non-existing @var annotations above the code',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

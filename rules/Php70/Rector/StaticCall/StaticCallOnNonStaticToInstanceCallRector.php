@@ -27,7 +27,7 @@ final class StaticCallOnNonStaticToInstanceCallRector extends AbstractRector imp
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes static call to instance call, where not useful',
+            'Change static call to instance call, where not useful',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

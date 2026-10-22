@@ -26,7 +26,7 @@ final class FuncCallToConstFetchRector extends AbstractRector implements Configu
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Changes use of function calls to use constants', [
+        return new RuleDefinition('Change use of function calls to use constants', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

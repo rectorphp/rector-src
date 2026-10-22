@@ -20,7 +20,7 @@ final class StaticArrowFunctionRector extends AbstractRector implements Deprecat
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes ArrowFunction to be static when possible',
+            'Change ArrowFunction to be static when possible',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

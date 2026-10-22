@@ -39,7 +39,7 @@ final class SimplifyIfReturnBoolRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Shortens if return false/true to direct return',
+            'Shorten if return false/true to direct return',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

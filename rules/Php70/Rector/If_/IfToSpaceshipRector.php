@@ -38,7 +38,7 @@ final class IfToSpaceshipRector extends AbstractRector implements MinPhpVersionI
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes if/else to spaceship <=> where useful',
+            'Change if/else to spaceship <=> where useful',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -44,7 +44,7 @@ final class ThisCallOnStaticMethodToStaticCallRector extends AbstractRector impl
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes $this->call() to static method to static call',
+            'Change `$this->call()` to static method to static call',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
