@@ -7,37 +7,22 @@ namespace Rector\Visibility\Rector\ClassConst;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
-use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Privatization\NodeManipulator\VisibilityManipulator;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\Visibility;
-use Rector\Visibility\ValueObject\ChangeConstantVisibility;
-use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Visibility\Rector\ClassConst\ChangeConstantVisibilityRector\ChangeConstantVisibilityRectorTest
+ * @deprecated This rule is deprecated, as too niche and never used. Changing a constant visibility against its parent needs extra care to not break the code. Use a custom rule to handle your case instead.
  */
-final class ChangeConstantVisibilityRector extends AbstractRector implements ConfigurableRectorInterface
+final class ChangeConstantVisibilityRector extends AbstractRector implements DeprecatedInterface
 {
-    /**
-     * @var ChangeConstantVisibility[]
-     */
-    private array $classConstantVisibilityChanges = [];
-
-    public function __construct(
-        private readonly VisibilityManipulator $visibilityManipulator,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition(
-            'Change visibility of constant from parent class',
-            [
-                new ConfiguredCodeSample(
-                    <<<'CODE_SAMPLE'
+        return new RuleDefinition('Change visibility of constant from parent class', [
+            new CodeSample(
+                <<<'CODE_SAMPLE'
 class FrameworkClass
 {
     protected const SOME_CONSTANT = 1;
@@ -48,8 +33,8 @@ class MyClass extends FrameworkClass
     public const SOME_CONSTANT = 1;
 }
 CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
+                ,
+                <<<'CODE_SAMPLE'
 class FrameworkClass
 {
     protected const SOME_CONSTANT = 1;
@@ -60,11 +45,8 @@ class MyClass extends FrameworkClass
     protected const SOME_CONSTANT = 1;
 }
 CODE_SAMPLE
-                    ,
-                    [new ChangeConstantVisibility('ParentObject', 'SOME_CONSTANT', Visibility::PROTECTED)]
-                ),
-            ]
-        );
+            ),
+        ]);
     }
 
     /**
@@ -80,54 +62,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $hasChanged = false;
-
-        $constantNames = [];
-        foreach ($node->getConstants() as $classConst) {
-            if ($classConst->consts === []) {
-                continue;
-            }
-
-            $constantNames[strtolower($classConst->consts[0]->name->toString())] = true;
-        }
-
-        foreach ($this->classConstantVisibilityChanges as $classConstantVisibilityChange) {
-            // cheap name check before the expensive type resolution below
-            if (! isset($constantNames[strtolower($classConstantVisibilityChange->getConstant())])) {
-                continue;
-            }
-
-            if (! $this->isObjectType($node, $classConstantVisibilityChange->getObjectType())) {
-                continue;
-            }
-
-            foreach ($node->getConstants() as $classConst) {
-                if (! $this->isName($classConst, $classConstantVisibilityChange->getConstant())) {
-                    continue;
-                }
-
-                $this->visibilityManipulator->changeNodeVisibility(
-                    $classConst,
-                    $classConstantVisibilityChange->getVisibility()
-                );
-                $hasChanged = true;
-            }
-        }
-
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allIsAOf($configuration, ChangeConstantVisibility::class);
-
-        $this->classConstantVisibilityChanges = $configuration;
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" rule is deprecated, as too niche and risky. Use a custom rule to handle your case instead',
+            self::class
+        ));
     }
 }
