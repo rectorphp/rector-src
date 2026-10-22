@@ -26,7 +26,7 @@ final class SingleInArrayToCompareRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes in_array() with single element to ===',
+            'Change `in_array()` with single element to ===',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

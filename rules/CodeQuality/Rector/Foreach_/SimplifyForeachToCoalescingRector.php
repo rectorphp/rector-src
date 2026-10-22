@@ -31,7 +31,7 @@ final class SimplifyForeachToCoalescingRector extends AbstractRector implements 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes foreach that returns set value to ??',
+            'Change foreach that returns set value to ??',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

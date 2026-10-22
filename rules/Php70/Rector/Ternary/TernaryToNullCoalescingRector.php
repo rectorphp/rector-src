@@ -37,7 +37,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes unneeded null check to ?? operator',
+            'Change unneeded null check to ?? operator',
             [
                 new CodeSample('$value === null ? 10 : $value;', '$value ?? 10;'),
                 new CodeSample('isset($value) ? $value : 10;', '$value ?? 10;'),

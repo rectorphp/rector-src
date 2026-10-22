@@ -31,7 +31,7 @@ final class IsCountableRector extends AbstractRector implements MinPhpVersionInt
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes is_array + Countable check to is_countable',
+            'Change is_array + Countable check to is_countable',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

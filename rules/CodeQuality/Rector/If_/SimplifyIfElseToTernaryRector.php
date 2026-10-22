@@ -20,7 +20,7 @@ final class SimplifyIfElseToTernaryRector extends AbstractRector implements Depr
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes if/else for same value as assign to ternary',
+            'Change if/else for same value as assign to ternary',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

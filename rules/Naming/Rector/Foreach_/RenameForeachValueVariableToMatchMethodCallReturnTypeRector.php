@@ -22,7 +22,7 @@ final class RenameForeachValueVariableToMatchMethodCallReturnTypeRector extends 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Renames value variable name in foreach loop to match method type',
+            'Rename value variable name in foreach loop to match method type',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

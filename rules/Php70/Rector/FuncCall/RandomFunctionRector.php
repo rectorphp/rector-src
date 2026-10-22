@@ -38,7 +38,7 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes rand, srand, and getrandmax to newer alternatives',
+            'Change `rand()`, `srand()`, and `getrandmax()` to newer alternatives',
             [new CodeSample('rand();', 'random_int();')]
         );
     }

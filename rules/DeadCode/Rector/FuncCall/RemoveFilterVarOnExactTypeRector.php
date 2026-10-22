@@ -19,7 +19,7 @@ final class RemoveFilterVarOnExactTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Removes filter_var() calls with exact type',
+            'Remove `filter_var()` calls with exact type',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

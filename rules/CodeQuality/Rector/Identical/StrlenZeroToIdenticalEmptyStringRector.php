@@ -30,7 +30,7 @@ final class StrlenZeroToIdenticalEmptyStringRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes strlen comparison to 0 to direct empty string compare',
+            'Change `strlen()` comparison to 0 to direct empty string compare',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

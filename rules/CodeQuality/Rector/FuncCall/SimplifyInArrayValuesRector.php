@@ -19,7 +19,7 @@ final class SimplifyInArrayValuesRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Removes unneeded array_values() in in_array() call',
+            'Remove unneeded `array_values()` in `in_array()` call',
             [new CodeSample('in_array("key", array_values($array), true);', 'in_array("key", $array, true);')]
         );
     }

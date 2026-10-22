@@ -54,7 +54,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes ereg*() to preg*() calls',
+            'Change `ereg*()` to `preg*()` calls',
             [new CodeSample('ereg("hi")', 'preg_match("#hi#");')]
         );
     }
