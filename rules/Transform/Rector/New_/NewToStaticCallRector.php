@@ -6,27 +6,21 @@ namespace Rector\Transform\Rector\New_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
-use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
-use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
+use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\Transform\ValueObject\NewToStaticCall;
-use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Transform\Rector\New_\NewToStaticCallRector\NewToStaticCallRectorTest
+ * @deprecated This rule is deprecated, as too niche, never used, and requires careful context to pick the correct static call. Write a custom rule for the exact project case instead.
  */
-final class NewToStaticCallRector extends AbstractRector implements ConfigurableRectorInterface
+final class NewToStaticCallRector extends AbstractRector implements DeprecatedInterface
 {
-    /**
-     * @var NewToStaticCall[]
-     */
-    private array $typeToStaticCalls = [];
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change new Object to static call', [
-            new ConfiguredCodeSample(
+            new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -46,8 +40,6 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-                ,
-                [new NewToStaticCall('Cookie', 'Cookie', 'create')]
             ),
         ]);
     }
@@ -65,28 +57,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->typeToStaticCalls as $typeToStaticCall) {
-            if (! $this->isObjectType($node->class, $typeToStaticCall->getObjectType())) {
-                continue;
-            }
-
-            return $this->nodeFactory->createStaticCall(
-                $typeToStaticCall->getStaticCallClass(),
-                $typeToStaticCall->getStaticCallMethod(),
-                $node->args
-            );
-        }
-
-        return null;
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allIsAOf($configuration, NewToStaticCall::class);
-
-        $this->typeToStaticCalls = $configuration;
+        throw new ShouldNotHappenException(sprintf(
+            '"%s" rule is deprecated, as too niche and never used. Write a custom rule for the exact project case instead',
+            self::class
+        ));
     }
 }
