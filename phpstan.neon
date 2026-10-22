@@ -236,7 +236,6 @@ parameters:
             identifier: rector.registerRector
             paths:
                 - rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
-                - rules/Removing/Rector/Class_/RemoveTraitUseRector.php
                 - rules/Transform/Rector/String_/StringToClassConstantRector.php
 
         # lack of generic array in nikic/php-parser
