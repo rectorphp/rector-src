@@ -40,6 +40,9 @@ CODE_SAMPLE
         return [Assign::class, Isset_::class, Unset_::class, ArrayDimFetch::class];
     }
 
+    /**
+     * @param Assign|Isset_|Unset_|ArrayDimFetch $node
+     */
     public function refactor(Node $node): ?Node
     {
         throw new ShouldNotHappenException(sprintf(
