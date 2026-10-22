@@ -238,8 +238,6 @@ parameters:
                 - rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
                 - rules/Removing/Rector/Class_/RemoveTraitUseRector.php
                 - rules/Renaming/Rector/StaticCall/RenameStaticMethodRector.php
-                - rules/Transform/Rector/FuncCall/FuncCallToNewRector.php
-                - rules/Transform/Rector/FuncCall/FuncCallToStaticCallRector.php
                 - rules/Transform/Rector/String_/StringToClassConstantRector.php
 
         # lack of generic array in nikic/php-parser
