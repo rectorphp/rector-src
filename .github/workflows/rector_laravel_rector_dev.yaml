@@ -26,6 +26,7 @@ jobs:
                 env:
                     COMPOSER_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-            -   run: git clone https://github.com/driftingly/rector-laravel.git
+            # temporarily use PR #587 branch, see https://github.com/driftingly/rector-laravel/pull/587
+            -   run: git clone --single-branch --branch array-access-to-method-call-rule https://github.com/driftingly/rector-laravel.git
             -   run: composer require rector/rector:dev-main --working-dir rector-laravel
             -   run: cd rector-laravel && vendor/bin/phpunit
