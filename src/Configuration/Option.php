@@ -241,11 +241,6 @@ final class Option
     public const string SKIPPED_NON_RECTOR_CLASSES = 'skipped_non_rector_classes';
 
     /**
-     * @internal For reporting deprecated cache meta extensions
-     */
-    public const string CACHE_META_EXTENSIONS = 'cache_meta_extensions';
-
-    /**
      * @internal For reporting deprecated withPhp53Sets() ... withPhp74Sets() methods
      */
     public const string DEPRECATED_PHP_SETS_METHODS = 'deprecated_php_sets_methods';

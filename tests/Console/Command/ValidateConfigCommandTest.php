@@ -36,7 +36,6 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
             Option::SKIPPED_NON_RECTOR_CLASSES,
             Option::SKIPPED_RECTOR_RULES,
             Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES,
-            Option::CACHE_META_EXTENSIONS,
             Option::DEPRECATED_PHP_SETS_METHODS,
             Option::DEPRECATED_ATTRIBUTES_SETS_ARGS,
             Option::DEPRECATED_COMPOSER_BASED_ARGS,
