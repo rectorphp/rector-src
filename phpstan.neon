@@ -100,6 +100,9 @@ parameters:
             identifier: argument.type
             message: '#expects array<PhpParser\\Node\\Stmt>, array<PhpParser\\Node> given#'
 
+        # unable for the downgraded rector to find the class, but it is there
+        - identifier: symplify.commandHasAsCommandAttribute
+
         # false positive, can accept non-class string
         -
             identifier: argument.type
