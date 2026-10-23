@@ -25,11 +25,13 @@ use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(name: 'process')]
 final class ProcessCommand extends Command
 {
     public function __construct(
@@ -52,7 +54,6 @@ final class ProcessCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('process');
         $this->setAliases(['p']);
         $this->setDescription('Upgrades or refactors source code with provided Rector rules');
         $this->setHelp(

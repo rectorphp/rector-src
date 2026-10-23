@@ -13,6 +13,7 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
 use ReflectionObject;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -23,6 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @see \Rector\Tests\Console\Command\ComposerBasedCommandTest
  */
+#[AsCommand(name: 'composer-based')]
 final class ComposerBasedCommand extends Command
 {
     /**
@@ -38,7 +40,6 @@ final class ComposerBasedCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('composer-based');
         $this->setDescription('Show loaded rules that are triggered by an installed composer package version');
     }
 

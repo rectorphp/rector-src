@@ -24,6 +24,7 @@ use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,6 +38,7 @@ use Webmozart\Assert\Assert;
  * ↓↓↓
  * https://github.com/phpstan/phpstan-src/commit/b84acd2e3eadf66189a64fdbc6dd18ff76323f67#diff-7f625777f1ce5384046df08abffd6c911cfbb1cfc8fcb2bdeaf78f337689e3e2
  */
+#[AsCommand(name: 'worker')]
 final class WorkerCommand extends Command
 {
     private const string RESULT = 'result';
@@ -54,7 +56,6 @@ final class WorkerCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('worker');
         $this->setDescription('[INTERNAL] Support for parallel process');
 
         ProcessConfigureDecorator::decorate($this);

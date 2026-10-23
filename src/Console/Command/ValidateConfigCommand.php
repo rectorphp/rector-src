@@ -13,6 +13,7 @@ use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Configuration;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,6 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @see \Rector\Tests\Console\Command\ValidateConfigCommandTest
  */
+#[AsCommand(name: 'validate-config')]
 final class ValidateConfigCommand extends Command
 {
     public function __construct(
@@ -35,7 +37,6 @@ final class ValidateConfigCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('validate-config');
         $this->setDescription('Report config hygiene issues without processing any files');
         $this->addOption(
             Option::OUTPUT_FORMAT,
