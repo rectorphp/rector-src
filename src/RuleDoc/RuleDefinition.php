@@ -13,6 +13,8 @@ final class RuleDefinition
 {
     private ?string $ruleFilePath = null;
 
+    private ?string $ruleClass = null;
+
     /**
      * @var CodeSampleInterface[]
      */
@@ -52,6 +54,26 @@ final class RuleDefinition
         }
 
         return $this->ruleFilePath;
+    }
+
+    /**
+     * @api used by getrector.com website
+     */
+    public function setRuleClass(string $ruleClass): void
+    {
+        $this->ruleClass = $ruleClass;
+    }
+
+    /**
+     * @api used by getrector.com website
+     */
+    public function getRuleClass(): string
+    {
+        if ($this->ruleClass === null) {
+            throw new ShouldNotHappenException();
+        }
+
+        return $this->ruleClass;
     }
 
     /**

@@ -7,16 +7,6 @@ namespace Rector\PhpDocParser\ValueObject;
 final class AttributeKey
 {
     /**
-     * Used in php-parser, do not change
-     */
-    public const string KIND = 'kind';
-
-    /**
-     * Used by php-parser, do not change
-     */
-    public const string COMMENTS = 'comments';
-
-    /**
      * PHPStan @api Used in PHPStan for printed node content. Useful for printing error messages without need to reprint
      * it again.
      */
