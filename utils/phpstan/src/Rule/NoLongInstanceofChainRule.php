@@ -31,7 +31,7 @@ final readonly class NoLongInstanceofChainRule implements Rule
 
     private const string ERROR_MESSAGE = 'Boolean chain has %d instanceof checks, more than the allowed %d. Extract it to a helper method, a match(), or a keyed lookup.';
 
-    private readonly NodeFinder $nodeFinder;
+    private NodeFinder $nodeFinder;
 
     public function __construct()
     {
