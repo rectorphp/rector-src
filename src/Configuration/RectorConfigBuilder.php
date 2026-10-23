@@ -743,21 +743,6 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @param class-string $cacheMetaExtensionClass
-     * @deprecated Niche mechanism, no longer applied. Let Rector handle cache on its own.
-     */
-    #[Deprecated(message: <<<'TXT'
-    Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
-     invalidation is needed, handle it in CI in a more generic way, e.g. by clearing the cache directory.
-    TXT)]
-    public function withCacheMetaExtension(string $cacheMetaExtensionClass): self
-    {
-        SimpleParameterProvider::addParameter(Option::CACHE_META_EXTENSIONS, $cacheMetaExtensionClass);
-
-        return $this;
-    }
-
-    /**
      * @param class-string<ConfigurableRectorInterface> $rectorClass
      * @param mixed[] $configuration
      */
