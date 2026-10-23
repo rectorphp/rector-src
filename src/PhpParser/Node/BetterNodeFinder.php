@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor;
-use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Webmozart\Assert\Assert;
@@ -29,7 +28,6 @@ final readonly class BetterNodeFinder
     public function __construct(
         private NodeFinder $nodeFinder,
         private NodeNameResolver $nodeNameResolver,
-        private ClassAnalyzer $classAnalyzer,
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
