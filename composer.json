@@ -18,7 +18,7 @@
         "composer/semver": "^3.4",
         "composer/xdebug-handler": "^3.0.5",
         "doctrine/inflector": "^2.1",
-        "entropy/entropy": "^0.4.12",
+        "entropy/entropy": "^0.4.35",
         "fidry/cpu-core-counter": "^1.1",
         "nette/utils": "^4.1.5",
         "nikic/php-parser": "^5.9",

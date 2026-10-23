@@ -22,7 +22,7 @@ final class RectorTest extends TestCase
         ];
         yield 'Exception with previous console output' => [
             'command' => PHP_BINARY . ' bin/rector -c tests/Bin/config/incorrect-phpstan-files.php',
-            'expectedOutput' => PHP_EOL . "[ERROR] Unexpected item 'parameters › invalidParameters'." . PHP_EOL,
+            'expectedOutput' => PHP_EOL . " [ERROR] Unexpected item 'parameters › invalidParameters'." . PHP_EOL,
         ];
         yield 'Exception with previous console output in JSON format' => [
             'command' => PHP_BINARY . ' bin/rector -c tests/Bin/config/incorrect-phpstan-files.php --output-format json',
