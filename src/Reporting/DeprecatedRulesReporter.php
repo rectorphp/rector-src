@@ -7,12 +7,12 @@ namespace Rector\Reporting;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Rector\Console\Style\RectorStyle;
 
 final readonly class DeprecatedRulesReporter
 {
     public function __construct(
-        private SymfonyStyle $symfonyStyle
+        private RectorStyle $rectorStyle
     ) {
     }
 
@@ -27,7 +27,7 @@ final readonly class DeprecatedRulesReporter
                 continue;
             }
 
-            $this->symfonyStyle->warning(
+            $this->rectorStyle->warning(
                 sprintf(
                     'Registered rule "%s" is deprecated and will be removed. Upgrade your config to use another rule or remove it',
                     $registeredRectorRule
@@ -50,7 +50,7 @@ final readonly class DeprecatedRulesReporter
                 continue;
             }
 
-            $this->symfonyStyle->warning(sprintf('Skipped rule "%s" is deprecated', $skippedRectorRule));
+            $this->rectorStyle->warning(sprintf('Skipped rule "%s" is deprecated', $skippedRectorRule));
             ++$reportedCount;
         }
 
@@ -66,7 +66,7 @@ final readonly class DeprecatedRulesReporter
 
         $reportedCount = 0;
         foreach (array_unique($deprecatedAttributesSetsArgs) as $deprecatedAttributesSetsArg) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->rectorStyle->warning(sprintf(
                 'The "->withAttributesSets(%s: true)" argument is deprecated and no longer applied. It is already included in the "symfony: true" argument, use it instead.',
                 $deprecatedAttributesSetsArg
             ));
@@ -85,7 +85,7 @@ final readonly class DeprecatedRulesReporter
 
         $reportedCount = 0;
         foreach (array_unique($deprecatedComposerBasedArgs) as $deprecatedComposerBasedArg) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->rectorStyle->warning(sprintf(
                 'The "->withComposerBased(%s: true)" argument is deprecated and no longer applied. It only added named args to 2 methods of a single package, register the rule directly if needed.',
                 $deprecatedComposerBasedArg
             ));
