@@ -474,18 +474,6 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param class-string $cacheMetaExtensionClass
-     */
-    #[Deprecated(message: <<<'TXT'
-    Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
-     invalidation is needed, handle it in CI in a more generic way, e.g. by clearing the cache directory.
-    TXT)]
-    public function cacheMetaExtension(string $cacheMetaExtensionClass): void
-    {
-        SimpleParameterProvider::addParameter(Option::CACHE_META_EXTENSIONS, $cacheMetaExtensionClass);
-    }
-
-    /**
      * @see https://github.com/nikic/PHP-Parser/issues/723#issuecomment-712401963
      */
     public function indent(string $character, int $count): void

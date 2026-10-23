@@ -44,7 +44,6 @@ final class SimpleParameterProvider
         Option::DEPRECATED_ATTRIBUTES_SETS_ARGS,
         Option::DEPRECATED_COMPOSER_BASED_ARGS,
         Option::LEVEL_OVERFLOWS,
-        Option::CACHE_META_EXTENSIONS,
         Option::COMPOSER_BOUND_RULE_CONFIGURATIONS,
         Option::ROOT_STANDALONE_REGISTERED_RULES,
         Option::SET_REGISTERED_RULES,
