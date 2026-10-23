@@ -212,7 +212,7 @@ CODE_SAMPLE
                 return $uniqueKeyTypes[0];
             }
 
-            return new UnionType($uniqueKeyTypes);
+            return new UnionType(array_values($uniqueKeyTypes));
         }
 
         return new MixedType();

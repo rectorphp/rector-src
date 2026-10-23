@@ -574,7 +574,6 @@ final class PhpDocInfo
     }
 
     /**
-     * @param class-string $desiredClass
      * @return DoctrineAnnotationTagValueNode[]
      */
     public function findByAnnotationClass(string $desiredClass): array

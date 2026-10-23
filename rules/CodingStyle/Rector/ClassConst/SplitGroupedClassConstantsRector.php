@@ -84,7 +84,7 @@ CODE_SAMPLE
                 [$const],
                 $classConst->flags,
                 $classConst->getAttributes(),
-                $classConst->attrGroups,
+                array_values($classConst->attrGroups),
                 $classConst->type
             );
         }

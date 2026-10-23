@@ -89,11 +89,30 @@ parameters:
 
         -
             identifier: argument.type
-            message: '#(.*?) class\-string, string given#'
+            message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|80500\|80600\|100000, 79999 given#'
 
+        # class name string resolved from AST/ObjectType, not statically provable as class-string
         -
             identifier: argument.type
-            message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|80500\|80600\|100000, 79999 given#'
+            message: '#class\-string, string given#'
+            paths:
+                - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
+                - rules/TypeDeclaration/Rector/FunctionLike/AddClosureParamTypeFromIterableMethodCallRector.php
+                - src/PhpParser/AstResolver.php
+                - src/StaticTypeMapper/ValueObject/Type/FullyQualifiedObjectType.php
+                - tests/BetterPhpDocParser/PhpDocParser/TagValueNodeReprint/TagValueNodeReprintTest.php
+
+        # getObjectClassNames() returns string[], semantically a class-string
+        -
+            identifier: return.type
+            message: '#should return class-string\|null but returns string#'
+            path: src/StaticTypeMapper/Resolver/ClassNameFromObjectTypeResolver.php
+
+        # deliberately widened token param on parser wrapper
+        -
+            identifier: argument.type
+            message: '#expects list<array\{string, int, int\}>, array<int, mixed> given#'
+            path: src/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
 
         # node vs stmts mix
         -
@@ -115,11 +134,6 @@ parameters:
         -
             identifier: argument.type
             message: '#Parameter \#3 \$nodeCallback of method PHPStan\\Analyser\\NodeScopeResolver\:\:processNodes\(\) expects callable\(PhpParser\\Node, PHPStan\\Analyser\\Scope\)\: void, callable\(PhpParser\\Node, PHPStan\\Analyser\\MutatingScope\)\: void given#'
-
-        # list vs array
-        -
-            identifier: argument.type
-            message: '#Parameter (.*?) expects list<(.*?)>, array<(.*?)> given#'
 
         -
             identifier: argument.type
@@ -253,11 +267,6 @@ parameters:
         -
             identifier: return.type
             message: '#Method (.*?) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|80500\|80600\|100000 but returns int#'
-
-        # from constant string
-        -
-            identifier: return.type
-            message: '#Method Rector\\.*::filterPolyfillPackages\(\) should return array\<#'
 
         -
             identifier: return.type

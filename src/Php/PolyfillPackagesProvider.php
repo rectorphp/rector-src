@@ -8,17 +8,16 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\ValueObject\PolyfillPackage;
 
 final class PolyfillPackagesProvider
 {
     /**
-     * @var null|array<int, PolyfillPackage::*>
+     * @var null|array<int, string>
      */
     private null|array $cachedPolyfillPackages = null;
 
     /**
-     * @return array<int, PolyfillPackage::*>
+     * @return array<int, string>
      */
     public function provide(): array
     {
@@ -48,7 +47,7 @@ final class PolyfillPackagesProvider
 
     /**
      * @param array<string, string> $require
-     * @return array<int, PolyfillPackage::*>
+     * @return array<int, string>
      */
     private function filterPolyfillPackages(array $require): array
     {

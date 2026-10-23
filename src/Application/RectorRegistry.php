@@ -110,7 +110,7 @@ final class RectorRegistry
             return;
         }
 
-        $activeRectors = $this->phpVersionedFilter->filter($this->rectors);
+        $activeRectors = $this->phpVersionedFilter->filter(array_values($this->rectors));
         $activeRectors = $this->composerPackageConstraintFilter->filter($activeRectors);
 
         $this->activeRectors = $this->configurationRuleFilter->filter($activeRectors);
