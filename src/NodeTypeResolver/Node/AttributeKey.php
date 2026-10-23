@@ -63,11 +63,6 @@ final class AttributeKey
 
     public const string IS_REGULAR_PATTERN = 'is_regular_pattern';
 
-    /**
-     * Helps with infinite loop detection
-     */
-    public const string CREATED_BY_RULE = 'created_by_rule';
-
     public const string WRAPPED_IN_PARENTHESES = 'wrapped_in_parentheses';
 
     /**

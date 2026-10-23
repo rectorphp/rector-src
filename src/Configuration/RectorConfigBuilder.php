@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
-use Deprecated;
 use DrupalRector\Set\DrupalSetList;
 use Nette\Utils\Strings;
 use PhpParser\NodeVisitor;
@@ -583,60 +582,6 @@ final class RectorConfigBuilder
         return $this->addPhpLevelSets($pickedPhpVersions[0]);
     }
 
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp53Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp54Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp55Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp56Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp70Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp71Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp72Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp73Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp74Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
     // there is no withPhp80Sets() and above,
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
@@ -792,21 +737,6 @@ final class RectorConfigBuilder
     ): self {
         $this->cacheDirectory = $cacheDirectory;
         $this->containerCacheDirectory = $containerCacheDirectory;
-
-        return $this;
-    }
-
-    /**
-     * @param class-string $cacheMetaExtensionClass
-     * @deprecated Niche mechanism, no longer applied. Let Rector handle cache on its own.
-     */
-    #[Deprecated(message: <<<'TXT'
-    Niche mechanism, no longer applied. Let Rector handle cache on its own. If custom
-     invalidation is needed, handle it in CI in a more generic way, e.g. by clearing the cache directory.
-    TXT)]
-    public function withCacheMetaExtension(string $cacheMetaExtensionClass): self
-    {
-        SimpleParameterProvider::addParameter(Option::CACHE_META_EXTENSIONS, $cacheMetaExtensionClass);
 
         return $this;
     }
@@ -1176,13 +1106,6 @@ final class RectorConfigBuilder
         $this->pickedPhpSetsVersion = $phpVersion;
 
         $this->sets[] = SetList::PHP_VERSION_BASED_SET;
-
-        return $this;
-    }
-
-    private function reportDeprecatedPhpSetsMethod(string $methodName): self
-    {
-        SimpleParameterProvider::addParameter(Option::DEPRECATED_PHP_SETS_METHODS, $methodName);
 
         return $this;
     }
