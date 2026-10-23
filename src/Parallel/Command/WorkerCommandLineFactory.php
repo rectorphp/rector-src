@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Parallel\Command;
 
+use PHPStan\Turbo\TurboExtensionSelector;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\Option;
 use Rector\FileSystem\FilePathHelper;
@@ -46,7 +47,7 @@ final readonly class WorkerCommandLineFactory
             $commandArguments = array_merge(['process'], $commandArguments);
         }
 
-        $args = [PHP_BINARY, $mainScript, ...$commandArguments];
+        $args = [PHP_BINARY, ...$this->createTurboExtensionArguments(), $mainScript, ...$commandArguments];
         $workerCommandArray = [];
 
         $mainCommand = $this->commandFromReflectionFactory->create($mainCommandClass);
@@ -138,6 +139,28 @@ final readonly class WorkerCommandLineFactory
 
         // skip output format and config, handled separately in create()
         return $optionName === Option::OUTPUT_FORMAT || $optionName === Option::CONFIG;
+    }
+
+    /**
+     * Spawned workers do not inherit command-line -d options, so PHPStan Turbo is passed to them explicitly.
+     * This also covers a main process that did not restart into Turbo, for example without pcntl.
+     *
+     * @return string[]
+     */
+    private function createTurboExtensionArguments(): array
+    {
+        $extensionPath = TurboExtensionSelector::findExtensionForWorkers();
+        if ($extensionPath === null) {
+            return [];
+        }
+
+        // quote the value, so PHP parses it as a string even when the path contains an operator like ~
+        return [
+            '-d',
+            "extension='" . $extensionPath . "'",
+            '-d',
+            TurboExtensionSelector::EXTENSION_PATH_INI . "='" . $extensionPath . "'",
+        ];
     }
 
     /**
