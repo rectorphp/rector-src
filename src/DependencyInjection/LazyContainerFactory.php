@@ -41,9 +41,9 @@ use Rector\Console\Command\ProcessCommand;
 use Rector\Console\Command\SetupCICommand;
 use Rector\Console\Command\ValidateConfigCommand;
 use Rector\Console\Command\WorkerCommand;
-use Rector\Console\ConsoleApplication;
 use Rector\Console\Rule\AllRectorRulesProvider;
-use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\Console\Style\RectorStyle;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
@@ -72,8 +72,6 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 final class LazyContainerFactory
@@ -137,18 +135,6 @@ final class LazyContainerFactory
 
     private function registerConsole(RectorConfig $rectorConfig): void
     {
-        $rectorConfig->singleton(Application::class, static function (RectorConfig $rectorConfig): Application {
-            $consoleApplication = $rectorConfig->make(ConsoleApplication::class);
-
-            $commandNamesToHide = ['list', 'completion', 'help', 'worker'];
-            foreach ($commandNamesToHide as $commandNameToHide) {
-                $commandToHide = $consoleApplication->get($commandNameToHide);
-                $commandToHide->setHidden();
-            }
-
-            return $consoleApplication;
-        });
-
         $rectorConfig->singleton(Inflector::class, static function (): Inflector {
             $inflectorFactory = new InflectorFactory();
             return $inflectorFactory->build();
@@ -277,10 +263,10 @@ final class LazyContainerFactory
         $rectorConfig->autodiscover(__DIR__ . '/../ChangesReporting/Output');
 
         $rectorConfig->singleton(
-            SymfonyStyle::class,
-            static function (RectorConfig $rectorConfig): SymfonyStyle {
-                $symfonyStyleFactory = $rectorConfig->make(SymfonyStyleFactory::class);
-                return $symfonyStyleFactory->create();
+            RectorStyle::class,
+            static function (RectorConfig $rectorConfig): RectorStyle {
+                $rectorStyleFactory = $rectorConfig->make(RectorStyleFactory::class);
+                return $rectorStyleFactory->create();
             }
         );
 

@@ -5,9 +5,8 @@
 declare(strict_types=1);
 
 use Nette\Utils\Strings;
-use Rector\Console\Style\SymfonyStyleFactory;
-use Rector\Util\Reflection\PrivatesAccessor;
-use Symfony\Component\Console\Command\Command;
+use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyleFactory;
 use Symfony\Component\Finder\Finder;
 
 $possiblePaths = [
@@ -28,13 +27,13 @@ foreach ($possiblePaths as $possiblePath) {
 
 $buildDirectory = $argv[1];
 
-$symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
-$symfonyStyle = $symfonyStyleFactory->create();
+$rectorStyleFactory = new RectorStyleFactory();
+$rectorStyle = $rectorStyleFactory->create();
 
 if (! is_string($buildDirectory)) {
     $errorMessage = 'Provide build directory path as an argument, e.g. "php build-preload.php rector-build-directory"';
-    $symfonyStyle->error($errorMessage);
-    exit(Command::FAILURE);
+    $rectorStyle->error($errorMessage);
+    exit(ExitCode::FAILURE);
 }
 
 $preloadBuilder = new PreloadBuilder();

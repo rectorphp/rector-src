@@ -8,12 +8,11 @@ use Nette\Utils\Strings;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\Style\RectorStyle;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
-use Symfony\Component\Console\Formatter\OutputFormatter;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 {
@@ -25,7 +24,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
     private const string ON_LINE_REGEX = '# on line #';
 
     public function __construct(
-        private SymfonyStyle $symfonyStyle,
+        private RectorStyle $rectorStyle,
     ) {
     }
 
@@ -43,7 +42,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
         // to keep space between progress bar and success message
         if ($configuration->shouldShowProgressBar() && $processResult->getFileDiffs() === []) {
-            $this->symfonyStyle->newLine();
+            $this->rectorStyle->newLine();
         }
 
         if ($configuration->shouldShowRulesSummary()) {
@@ -51,7 +50,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
         }
 
         $message = $this->createSuccessMessage($processResult, $configuration);
-        $this->symfonyStyle->success($message);
+        $this->rectorStyle->success($message);
     }
 
     public function getName(): string
@@ -72,7 +71,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
         ksort($fileDiffs);
         $message = sprintf('%d file%s with changes', count($fileDiffs), count($fileDiffs) === 1 ? '' : 's');
 
-        $this->symfonyStyle->title($message);
+        $this->rectorStyle->title($message);
 
         $i = 0;
         foreach ($fileDiffs as $fileDiff) {
@@ -95,14 +94,14 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
             $message = sprintf('<options=bold>%d) %s</>', ++$i, $filePathWithUrl);
 
-            $this->symfonyStyle->writeln($message);
-            $this->symfonyStyle->newLine();
-            $this->symfonyStyle->writeln($fileDiff->getDiffConsoleFormatted());
+            $this->rectorStyle->writeln($message);
+            $this->rectorStyle->newLine();
+            $this->rectorStyle->writeln($fileDiff->getDiffConsoleFormatted());
 
             if ($fileDiff->getRectorChanges() !== []) {
-                $this->symfonyStyle->writeln('<options=underscore>Applied rules:</>');
-                $this->symfonyStyle->listing($fileDiff->getRectorShortClasses());
-                $this->symfonyStyle->newLine();
+                $this->rectorStyle->writeln('<options=underscore>Applied rules:</>');
+                $this->rectorStyle->listing($fileDiff->getRectorShortClasses());
+                $this->rectorStyle->newLine();
             }
         }
     }
@@ -131,7 +130,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
                 $message .= ' On line: ' . $error->getLine();
             }
 
-            $this->symfonyStyle->error($message);
+            $this->rectorStyle->error($message);
         }
     }
 
@@ -144,11 +143,11 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
         $verb = $configuration->isDryRun() ? 'would have been applied' : 'was applied';
 
-        $this->symfonyStyle->section('Rules Summary');
+        $this->rectorStyle->section('Rules Summary');
 
         foreach ($ruleApplicationCounts as $ruleClass => $count) {
             $ruleShortClass = (string) Strings::after($ruleClass, '\\', -1);
-            $this->symfonyStyle->writeln(sprintf(
+            $this->rectorStyle->writeln(sprintf(
                 ' * <info>%s</info> %s <comment>%d</comment> time%s',
                 $ruleShortClass,
                 $verb,
@@ -157,7 +156,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
             ));
         }
 
-        $this->symfonyStyle->newLine();
+        $this->rectorStyle->newLine();
     }
 
     private function normalizePathsToRelativeWithLine(string $errorMessage): string
@@ -196,7 +195,8 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
                 [(string) $absoluteFilePath, (string) $relativeFilePath, (string) $lineNumber],
                 $editorUrl,
             );
-            $filePath = '<href=' . OutputFormatter::escape($editorUrl) . '>' . $filePath . '</>';
+            // OSC-8 hyperlink keeps the path clickable without symfony/console's <href> tag
+            $filePath = sprintf("\e]8;;%s\e\\%s\e]8;;\e\\", $editorUrl, $filePath);
         }
 
         return $filePath;

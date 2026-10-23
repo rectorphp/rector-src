@@ -6,6 +6,7 @@ namespace Rector\Config;
 
 use Composer\Semver\Semver;
 use Deprecated;
+use Entropy\Console\Contract\CommandInterface;
 use Entropy\Container\Container;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Composer\InstalledPackageResolver;
@@ -23,7 +24,6 @@ use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PolyfillPackage;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
-use Symfony\Component\Console\Command\Command;
 use Webmozart\Assert\Assert;
 
 /**
@@ -319,7 +319,7 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param class-string<Command> $commandClass
+     * @param class-string<CommandInterface> $commandClass
      */
     public function command(string $commandClass): void
     {

@@ -18,11 +18,7 @@ final class Option
 
     public const string DRY_RUN = 'dry-run';
 
-    public const string DRY_RUN_SHORT = 'n';
-
     public const string OUTPUT_FORMAT = 'output-format';
-
-    public const string NO_PROGRESS_BAR = 'no-progress-bar';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::phpVersion() instead
@@ -142,14 +138,6 @@ final class Option
      */
     public const string CACHE_DIR = 'cache_dir';
 
-    public const string DEBUG = 'debug';
-
-    public const string XDEBUG = 'xdebug';
-
-    public const string RULES_SUMMARY = 'rules-summary';
-
-    public const string MAX_CHANGES = 'max-changes';
-
     public const string CONFIG = 'config';
 
     /**
@@ -159,8 +147,6 @@ final class Option
     public const string PHPSTAN_FOR_RECTOR_PATHS = 'phpstan_for_rector_paths';
 
     public const string NO_DIFFS = 'no-diffs';
-
-    public const string AUTOLOAD_FILE_SHORT = 'a';
 
     public const string PARALLEL_IDENTIFIER = 'identifier';
 
@@ -293,11 +279,6 @@ final class Option
      * @internal To filter files by specific suffix
      */
     public const string ONLY_SUFFIX = 'only-suffix';
-
-    /**
-     * @internal To keep only files matching all given patterns
-     */
-    public const string FILTER = 'filter';
 
     /**
      * @internal To report overflow levels in ->with*Level() methods
