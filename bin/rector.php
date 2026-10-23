@@ -231,8 +231,8 @@ function rector_normalize_argv(array $argv): array
         $normalized[1] = 'process';
     }
 
-    // a leading "help" token shows the application help, matching the former symfony/console behavior
-    if (isset($normalized[1]) && $normalized[1] === 'help') {
+    // leading "help" or "list" tokens show the application help, matching the former symfony/console behavior
+    if (isset($normalized[1]) && ($normalized[1] === 'help' || $normalized[1] === 'list')) {
         return [$normalized[0], '--help'];
     }
 
