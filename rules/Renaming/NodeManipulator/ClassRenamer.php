@@ -20,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocClassRenamer;
 use Rector\BetterPhpDocParser\ValueObject\NodeTypes;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
@@ -44,7 +45,8 @@ final class ClassRenamer
         private readonly DocBlockClassRenamer $docBlockClassRenamer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly RenamedNameCollector $renamedNameCollector
+        private readonly RenamedNameCollector $renamedNameCollector,
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -56,14 +58,14 @@ final class ClassRenamer
     {
         // execute FullyQualified before Name on purpose so next Name check is pure Name node
         if ($node instanceof FullyQualified) {
-            return $this->refactorName($node, $oldToNewClasses, $scope);
+            return $this->refactorName($node, $oldToNewClasses);
         }
 
         // Name as parent of FullyQualified executed for fallback annotation to attribute rename to Name
         if ($node instanceof Name) {
             $phpAttributeName = $node->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
             if (is_string($phpAttributeName)) {
-                return $this->refactorName(new FullyQualified($phpAttributeName), $oldToNewClasses, $scope);
+                return $this->refactorName(new FullyQualified($phpAttributeName), $oldToNewClasses);
             }
 
             return null;
@@ -141,10 +143,14 @@ final class ClassRenamer
      */
     private function refactorName(
         FullyQualified $fullyQualified,
-        array $oldToNewClasses,
-        ?Scope $scope
+        array $oldToNewClasses
     ): ?FullyQualified {
         if ($fullyQualified->getAttribute(AttributeKey::IS_FUNCCALL_NAME) === true) {
+            return null;
+        }
+
+        // class extends is handled on Class_ node level, to resolve self-extends without scope
+        if ($fullyQualified->getAttribute(AttributeKey::IS_CLASS_EXTENDS) === true) {
             return null;
         }
 
@@ -155,7 +161,7 @@ final class ClassRenamer
             return null;
         }
 
-        if (! $this->isClassToInterfaceValidChange($fullyQualified, $newName, $scope)) {
+        if (! $this->isClassToInterfaceValidChange($fullyQualified, $newName)) {
             return null;
         }
 
@@ -178,6 +184,22 @@ final class ClassRenamer
         }
 
         $hasChanged = false;
+
+        if ($classLike->extends instanceof FullyQualified) {
+            $extendsName = $classLike->extends->toString();
+            $newName = $oldToNewClasses[$extendsName] ?? null;
+
+            // skip when the class would extend itself after rename; this might happen when you run a rename class on new child class that extends the deprecated one
+            if ($newName !== null
+                && $newName !== $this->nodeNameResolver->getName($classLike)
+                && $this->isClassToInterfaceValidChange($classLike->extends, $newName)
+            ) {
+                $this->renamedNameCollector->add($extendsName);
+                $classLike->extends = new FullyQualified($newName);
+                $hasChanged = true;
+            }
+        }
+
         $classLike->implements = array_unique($classLike->implements);
         foreach ($classLike->implements as $key => $implementName) {
             $namespaceName = $scope instanceof Scope ? $scope->getNamespace() : null;
@@ -213,8 +235,7 @@ final class ClassRenamer
      */
     private function isClassToInterfaceValidChange(
         FullyQualified $fullyQualified,
-        string $newClassName,
-        ?Scope $scope
+        string $newClassName
     ): bool {
         if (! $this->reflectionProvider->hasClass($newClassName)) {
             return true;
@@ -223,14 +244,6 @@ final class ClassRenamer
         $classReflection = $this->reflectionProvider->getClass($newClassName);
         // ensure new is not with interface
         if ($fullyQualified->getAttribute(AttributeKey::IS_NEW_INSTANCE_NAME) !== true) {
-            if ($fullyQualified->getAttribute(AttributeKey::IS_CLASS_EXTENDS) === true && $scope instanceof Scope) {
-                $currentClassReflection = $scope->getClassReflection();
-
-                if ($currentClassReflection instanceof ClassReflection && $currentClassReflection->getName() === $newClassName) {
-                    return false;
-                }
-            }
-
             return $this->isValidClassNameChange($fullyQualified, $classReflection);
         }
 
