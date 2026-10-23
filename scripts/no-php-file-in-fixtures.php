@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyle;
+use Rector\Console\Style\RectorStyleFactory;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Webmozart\Assert\Assert;
@@ -22,11 +21,11 @@ final readonly class NoPhpFileInFixturesDetector
         'rules-tests/Renaming/Rector/Name/RenameClassRector/FixtureAutoImportNames/SomeShort.php',
     ];
 
-    private SymfonyStyle $symfonyStyle;
+    private RectorStyle $rectorStyle;
 
     public function __construct()
     {
-        $this->symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+        $this->rectorStyle = new RectorStyleFactory()->create();
     }
 
     /**
@@ -56,16 +55,16 @@ final readonly class NoPhpFileInFixturesDetector
         }
 
         if ($relativeInvalidFilePaths === []) {
-            $this->symfonyStyle->success(sprintf('All %d fixtures are valid', count($allFixtureFiles)));
-            return Command::SUCCESS;
+            $this->rectorStyle->success(sprintf('All %d fixtures are valid', count($allFixtureFiles)));
+            return ExitCode::SUCCESS;
         }
 
-        $this->symfonyStyle->error(
+        $this->rectorStyle->error(
             'The following files were found in /Fixtures directory, but only "*.php.inc" files are picked up and allowed. Rename their suffix or remove them'
         );
-        $this->symfonyStyle->listing($relativeInvalidFilePaths);
+        $this->rectorStyle->listing($relativeInvalidFilePaths);
 
-        return Command::FAILURE;
+        return ExitCode::FAILURE;
     }
 
     /**

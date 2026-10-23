@@ -266,6 +266,11 @@ function rector_normalize_argv(array $argv): array
         $normalized[1] = 'process';
     }
 
+    // a leading "help" token shows the application help, matching the former symfony/console behavior
+    if (isset($normalized[1]) && $normalized[1] === 'help') {
+        return [$normalized[0], '--help'];
+    }
+
     // first real argument is an option or a path - inject the default "process" command, so the parser
     // does not mistake a leading "--option" or a path for an unknown command
     $helpFlags = ['-h', '--help'];
