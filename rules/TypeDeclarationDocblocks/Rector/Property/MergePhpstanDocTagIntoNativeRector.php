@@ -103,9 +103,20 @@ CODE_SAMPLE
         $phpstanParamNames = [];
         $phpstanVarNames = [];
         $hasPhpstanReturn = false;
+        $nativeDescriptions = [];
 
         foreach ($phpDocNode->children as $phpDocChildNode) {
             if (! $phpDocChildNode instanceof PhpDocTagNode) {
+                continue;
+            }
+
+            // remember native tag descriptions, so they survive when the native tag is overruled
+            if (in_array($phpDocChildNode->name, self::PHPSTAN_TAG_TO_NATIVE_TAG, true)) {
+                $tagValueNode = $phpDocChildNode->value;
+                if (($tagValueNode instanceof ParamTagValueNode || $tagValueNode instanceof VarTagValueNode || $tagValueNode instanceof ReturnTagValueNode) && $tagValueNode->description !== '') {
+                    $nativeDescriptions[$this->resolveTagKey($tagValueNode)] = $tagValueNode->description;
+                }
+
                 continue;
             }
 
@@ -144,6 +155,12 @@ CODE_SAMPLE
             // promote the @phpstan-* tag to its native counterpart
             $nativeTagName = self::PHPSTAN_TAG_TO_NATIVE_TAG[$phpDocChildNode->name] ?? null;
             if ($nativeTagName !== null) {
+                // keep the description of the overruled native tag
+                $tagValueNode = $phpDocChildNode->value;
+                if (($tagValueNode instanceof ParamTagValueNode || $tagValueNode instanceof VarTagValueNode || $tagValueNode instanceof ReturnTagValueNode) && $tagValueNode->description === '') {
+                    $tagValueNode->description = $nativeDescriptions[$this->resolveTagKey($tagValueNode)] ?? '';
+                }
+
                 $phpDocNode->children[$key] = new PhpDocTagNode($nativeTagName, $phpDocChildNode->value);
                 $hasChanged = true;
             }
@@ -194,5 +211,18 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function resolveTagKey(ParamTagValueNode|VarTagValueNode|ReturnTagValueNode $tagValueNode): string
+    {
+        if ($tagValueNode instanceof ParamTagValueNode) {
+            return '@param ' . $tagValueNode->parameterName;
+        }
+
+        if ($tagValueNode instanceof VarTagValueNode) {
+            return '@var ' . $tagValueNode->variableName;
+        }
+
+        return '@return';
     }
 }
