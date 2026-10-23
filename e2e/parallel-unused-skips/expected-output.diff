@@ -1,7 +1,5 @@
 [OK] Rector is done!
 
- [WARNING] This skip is unused, it never matched any element. You can remove it
-           from "->withSkip()"
-
- * Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector:
+[WARNING] This skip is unused, it never matched any element. You can remove it from "->withSkip()"
+* Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector:
      * */NonexistentUnused/*

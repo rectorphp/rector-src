@@ -12,8 +12,7 @@
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 2) src/File11.php:1
 
@@ -26,8 +25,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 3) src/File12.php:1
 
@@ -40,8 +38,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 4) src/File01.php:1
 
@@ -54,8 +51,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 5) src/File02.php:1
 
@@ -68,8 +64,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 6) src/File03.php:1
 
@@ -82,8 +77,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 7) src/File04.php:1
 
@@ -96,8 +90,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 8) src/File05.php:1
 
@@ -110,8 +103,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 9) src/File06.php:1
 
@@ -124,8 +116,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 10) src/File07.php:1
 
@@ -138,8 +129,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 11) src/File08.php:1
 
@@ -152,8 +142,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
-
+* LongArrayToShortArrayRector
 
 12) src/File09.php:1
 
@@ -166,7 +155,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * LongArrayToShortArrayRector
+* LongArrayToShortArrayRector
 
 
- [OK] 12 files would have been changed (dry-run) by Rector
+[OK] 12 files would have been changed (dry-run) by Rector
