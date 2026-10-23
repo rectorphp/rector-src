@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Parallel\Experimental\ValueObject;
+namespace Rector\Parallel\ValueObject;
 
 /**
- * @experimental Filled by @see \Rector\Parallel\Experimental\LptScheduleFactory, consumed only by the
- * "--lpt" parallel run.
- *
- * Unlike @see \Rector\Parallel\ValueObject\Schedule, jobs are not a shared pool: every worker owns its
+ * Filled by @see \Rector\Parallel\ScheduleFactory. Jobs are not a shared pool: every worker owns its
  * own queue, decided up front.
  */
 final readonly class BucketSchedule
