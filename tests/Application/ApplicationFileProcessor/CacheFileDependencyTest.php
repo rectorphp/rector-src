@@ -7,6 +7,7 @@ namespace Rector\Tests\Application\ApplicationFileProcessor;
 use Nette\Utils\FileSystem;
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\ValueObject\Configuration;
 
@@ -44,7 +45,7 @@ final class CacheFileDependencyTest extends AbstractLazyTestCase
         FileSystem::delete($this->temporaryDirectory);
     }
 
-    public function testChildIsNotReconsideredWhenParentChanges(): void
+    public function testChildIsReconsideredWhenParentChanges(): void
     {
         $parentFilePath = $this->temporaryDirectory . '/ParentClass.php';
         $childFilePath = $this->temporaryDirectory . '/ChildClass.php';
@@ -52,6 +53,10 @@ final class CacheFileDependencyTest extends AbstractLazyTestCase
         // parent method has no return type yet, so the child gets nothing to copy
         FileSystem::write($parentFilePath, $this->createParentContents(''));
         FileSystem::write($childFilePath, $this->createChildContents());
+
+        // register the files for static reflection, as the process command does for a real run
+        $this->make(DynamicSourceLocatorDecorator::class)
+            ->addPaths([$this->temporaryDirectory]);
 
         $this->applicationFileProcessor->processFiles(
             [$parentFilePath, $childFilePath],
@@ -64,10 +69,9 @@ final class CacheFileDependencyTest extends AbstractLazyTestCase
         // the parent now declares a return type the child should inherit on the next run
         FileSystem::write($parentFilePath, $this->createParentContents(': string'));
 
-        // BUG #8493: the child's output now depends on the changed parent, yet the cache keys the
-        // child only by its own (untouched) contents, so it is wrongly reported as unchanged.
-        // Once per-file dependency tracking lands, flip this to assertTrue.
-        $this->assertFalse($this->changedFilesDetector->hasFileChanged($childFilePath));
+        // the child's own contents are untouched, yet its output now depends on the changed parent,
+        // so it must be reconsidered rather than served from the stale cache entry (#8493)
+        $this->assertTrue($this->changedFilesDetector->hasFileChanged($childFilePath));
     }
 
     private function createParentContents(string $returnType): string

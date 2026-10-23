@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem as UtilsFileSystem;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\Detector\FileDependencyResolver;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\FileSystem\FilesFinder;
@@ -53,6 +54,7 @@ final class ApplicationFileProcessor
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly MissConfigurationReporter $missConfigurationReporter,
         private readonly Skipper $skipper,
+        private readonly FileDependencyResolver $fileDependencyResolver,
         // @experimental, see --lpt
         private readonly LptScheduleFactory $lptScheduleFactory,
         private readonly ExperimentalParallelFileProcessor $experimentalParallelFileProcessor,
@@ -201,7 +203,8 @@ final class ApplicationFileProcessor
             // gate on the actual content change, not on FileDiff: a FileDiff also carries reported line changes
             // that print identically, and such files would otherwise be re-processed on every dry run
             // selective runs are safe to cache now — the key is scoped to the rule selection
-            $this->changedFilesDetector->cacheFile($file->getFilePath());
+            $dependentFilePaths = $this->fileDependencyResolver->resolveDependentFilePaths($file);
+            $this->changedFilesDetector->cacheFile($file->getFilePath(), $dependentFilePaths);
         }
 
         return $fileProcessResult;

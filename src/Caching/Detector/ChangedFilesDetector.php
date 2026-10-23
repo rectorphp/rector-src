@@ -46,7 +46,10 @@ final class ChangedFilesDetector
             : '|only:' . implode(',', $onlyRules) . '|suffix:' . ($onlySuffix ?? '') . '|filter:' . implode(',', $filters);
     }
 
-    public function cacheFile(string $filePath): void
+    /**
+     * @param string[] $dependentFilePaths ancestry files whose change must also invalidate this file
+     */
+    public function cacheFile(string $filePath, array $dependentFilePaths = []): void
     {
         $filePathCacheKey = $this->getFilePathCacheKey($filePath);
 
@@ -57,6 +60,7 @@ final class ChangedFilesDetector
         $hash = $this->hashFile($filePath);
 
         $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $hash);
+        $this->storeDependentFiles($filePath, $dependentFilePaths);
     }
 
     public function addCacheableFile(string $filePath): void
@@ -68,17 +72,24 @@ final class ChangedFilesDetector
     public function hasFileChanged(string $filePath): bool
     {
         $cachedValue = $this->cache->load($this->getFilePathCacheKey($filePath), CacheKey::FILE_HASH_KEY);
+        $dependentFilesCacheKey = $this->getDependentFilesCacheKey($filePath);
 
         // a scoped (--only) run reuses the full-run cache: a file left clean by all rules stays
         // clean under a single rule too, and the content is still compared below
         if ($cachedValue === null && $this->scopeSuffix !== '') {
             $unscopedCacheKey = $this->fileHasher->hash($this->cacheKeyPath($filePath));
             $cachedValue = $this->cache->load($unscopedCacheKey, CacheKey::FILE_HASH_KEY);
+            $dependentFilesCacheKey = CacheKey::DEPENDENT_FILES_KEY . '_' . $unscopedCacheKey;
         }
 
         if ($cachedValue !== null) {
             $currentFileHash = $this->hashFile($filePath);
-            return $currentFileHash !== $cachedValue;
+            if ($currentFileHash !== $cachedValue) {
+                return true;
+            }
+
+            // the file itself is unchanged, but a parent/interface/trait it relies on might have changed
+            return $this->haveDependentFilesChanged($dependentFilesCacheKey);
         }
 
         // we don't have a value to compare against. Be defensive and assume its changed
@@ -89,6 +100,7 @@ final class ChangedFilesDetector
     {
         $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
         $this->cache->clean($fileInfoCacheKey);
+        $this->cache->clean($this->getDependentFilesCacheKey($filePath));
         unset($this->cacheableFiles[$fileInfoCacheKey]);
     }
 
@@ -105,6 +117,58 @@ final class ChangedFilesDetector
         // the first config is core to all → if it was changed, just invalidate it
         $configurationSnapshot = $this->createConfigurationSnapshot($filePath);
         $this->storeConfigurationDataHash($filePath, $configurationSnapshot);
+    }
+
+    /**
+     * @param string[] $dependentFilePaths
+     */
+    private function storeDependentFiles(string $filePath, array $dependentFilePaths): void
+    {
+        $dependentFilesCacheKey = $this->getDependentFilesCacheKey($filePath);
+
+        // drop any stale dependency set from a previous run, e.g. a parent class was removed
+        if ($dependentFilePaths === []) {
+            $this->cache->clean($dependentFilesCacheKey);
+            return;
+        }
+
+        $dependentFileHashes = [];
+        foreach ($dependentFilePaths as $dependentFilePath) {
+            $dependentFileHashes[$dependentFilePath] = $this->hashFile($dependentFilePath);
+        }
+
+        $this->cache->save($dependentFilesCacheKey, CacheKey::DEPENDENT_FILES_KEY, $dependentFileHashes);
+    }
+
+    private function haveDependentFilesChanged(string $dependentFilesCacheKey): bool
+    {
+        $dependentFileHashes = $this->cache->load($dependentFilesCacheKey, CacheKey::DEPENDENT_FILES_KEY);
+        if (! is_array($dependentFileHashes)) {
+            return false;
+        }
+
+        foreach ($dependentFileHashes as $dependentFilePath => $dependentFileHash) {
+            if (! is_string($dependentFilePath) || ! is_string($dependentFileHash)) {
+                // unexpected shape, be defensive and treat as changed
+                return true;
+            }
+
+            // a dependency disappeared, the file must be reconsidered
+            if (! is_file($dependentFilePath)) {
+                return true;
+            }
+
+            if ($this->hashFile($dependentFilePath) !== $dependentFileHash) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getDependentFilesCacheKey(string $filePath): string
+    {
+        return CacheKey::DEPENDENT_FILES_KEY . '_' . $this->getFilePathCacheKey($filePath);
     }
 
     private function getFilePathCacheKey(string $filePath): string
