@@ -318,6 +318,9 @@ parameters:
             identifier: symplify.noDynamicName
             message: '#Use explicit names over dynamic ones#'
 
+        # AsCommand attribute cannot be used to keep downgrade working
+        - identifier: symplify.commandHasAsCommandAttribute
+
         # reference params in legacy/perf code, kept as original
         -
             identifier: symplify.noReference
