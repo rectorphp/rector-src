@@ -19,12 +19,6 @@ final class SetList
 
     /**
      * @deprecated Niche set for a rarely used extension, it is empty now and will be removed.
-     * Register RenameClassRector and RenameMethodRector with your own configuration instead.
-     */
-    public const string GMAGICK_TO_IMAGICK = __DIR__ . '/../../../config/set/gmagick-to-imagick.php';
-
-    /**
-     * @deprecated Niche set for a rarely used extension, it is empty now and will be removed.
      */
     public const string NAMING = __DIR__ . '/../../../config/set/naming.php';
 
