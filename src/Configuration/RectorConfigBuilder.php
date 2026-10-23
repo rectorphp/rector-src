@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
-use Deprecated;
 use DrupalRector\Set\DrupalSetList;
 use Nette\Utils\Strings;
 use PhpParser\NodeVisitor;
