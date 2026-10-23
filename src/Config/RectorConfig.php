@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Config;
 
 use Composer\Semver\Semver;
-use Deprecated;
 use Entropy\Container\Container;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Configuration\Option;

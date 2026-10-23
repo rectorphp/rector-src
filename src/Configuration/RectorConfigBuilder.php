@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
-use Deprecated;
 use DrupalRector\Set\DrupalSetList;
 use Nette\Utils\Strings;
 use PhpParser\NodeVisitor;
@@ -1107,13 +1106,6 @@ final class RectorConfigBuilder
         $this->pickedPhpSetsVersion = $phpVersion;
 
         $this->sets[] = SetList::PHP_VERSION_BASED_SET;
-
-        return $this;
-    }
-
-    private function reportDeprecatedPhpSetsMethod(string $methodName): self
-    {
-        SimpleParameterProvider::addParameter(Option::DEPRECATED_PHP_SETS_METHODS, $methodName);
 
         return $this;
     }
