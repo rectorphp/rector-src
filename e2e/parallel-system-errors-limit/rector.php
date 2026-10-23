@@ -10,8 +10,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src',
     ]);
 
-    // 4 valid files first, so the 50th syntax error arrives with the 54th chunk, when a worker's chunk budget
-    // (MAX_CHUNKS_PER_WORKER + 1) runs out while one job is left
+    // 4 valid files first, then 50 syntax errors, so the system error limit is reached mid-bucket
     $rectorConfig->parallel(maxNumberOfProcess: 1, jobSize: 1);
 
     $rectorConfig->rules([

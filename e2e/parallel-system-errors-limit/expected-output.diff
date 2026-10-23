@@ -147,10 +147,3 @@
 
  [ERROR] Could not process "src/File54.php" file, due to:
          "Syntax error, unexpected ';'". On line: 3
-
- [ERROR] Could not process some files, due to:
-         "Reached system errors count limit of 50, exiting...".
-
- [ERROR] Could not process some files, due to:
-         "Some parallel jobs have not finished, results for 1 of 55 files are
-         missing".

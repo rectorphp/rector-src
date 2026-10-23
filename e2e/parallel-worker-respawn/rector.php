@@ -10,7 +10,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src',
     ]);
 
-    // a single worker with more single-file jobs than its chunk budget (MAX_CHUNKS_PER_WORKER + 1) has to be respawned mid-run
+    // a single worker streams all its single-file jobs as separate chunks and must report every one
     $rectorConfig->parallel(maxNumberOfProcess: 1, jobSize: 1);
 
     $rectorConfig->rules([

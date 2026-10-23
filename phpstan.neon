@@ -160,12 +160,6 @@ parameters:
             identifier: greaterOrEqual.alwaysTrue
             message: '#Comparison operation ".*" between int<\d+, \d+> and \d+ is always true#'
 
-        # known value object, nullable due to typed property
-        -
-            identifier: method.nonObject
-            message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
-            path: src/Parallel/Application/ParallelFileProcessor.php
-
         # required generics on interface array, not helpful
         -
             identifier: missingType.generics
