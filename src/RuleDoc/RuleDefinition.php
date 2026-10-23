@@ -9,6 +9,9 @@ use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\PoorDocumentationException;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
 
+/**
+ * @api
+ */
 final class RuleDefinition
 {
     private ?string $ruleFilePath = null;
@@ -56,17 +59,11 @@ final class RuleDefinition
         return $this->ruleFilePath;
     }
 
-    /**
-     * @api used by getrector.com website
-     */
     public function setRuleClass(string $ruleClass): void
     {
         $this->ruleClass = $ruleClass;
     }
 
-    /**
-     * @api used by getrector.com website
-     */
     public function getRuleClass(): string
     {
         if ($this->ruleClass === null) {
