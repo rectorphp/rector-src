@@ -337,8 +337,6 @@ parameters:
             identifier: symplify.noNullableServiceInConstructor
             path: src/NodeTypeResolver/PHPStan/ObjectWithoutClassTypeWithParentTypes.php
 
-        - identifier: symplify.commandHasAsCommandAttribute
-
         # fixture Rector rules
         -
             identifier: symplify.seeAnnotationToTest
