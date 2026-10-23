@@ -33,7 +33,6 @@
         "rector/rector-phpunit": "dev-main",
         "rector/rector-symfony": "dev-main",
         "sebastian/diff": "^9.0",
-        "symfony/console": "^6.4.24",
         "symfony/filesystem": "^8.1",
         "symfony/finder": "^8.1",
         "webmozart/assert": "^2.5"
@@ -58,6 +57,7 @@
     },
     "replace": {
         "rector/rector": "self.version",
+        "symfony/console": "*",
         "symplify/rule-doc-generator-contracts": "*"
     },
     "autoload": {

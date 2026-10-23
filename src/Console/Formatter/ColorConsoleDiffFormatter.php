@@ -6,7 +6,6 @@ namespace Rector\Console\Formatter;
 
 use Nette\Utils\Strings;
 use Rector\Util\NewLineSplitter;
-use Symfony\Component\Console\Formatter\OutputFormatter;
 
 /**
  * Inspired by @see https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/master/src/Differ/DiffConsoleFormatter.php to be
@@ -54,9 +53,7 @@ final readonly class ColorConsoleDiffFormatter
 
     private function formatWithTemplate(string $diff, string $template): string
     {
-        $escapedDiff = OutputFormatter::escape(rtrim($diff));
-
-        $escapedDiffLines = NewLineSplitter::split($escapedDiff);
+        $escapedDiffLines = NewLineSplitter::split(rtrim($diff));
 
         // remove description of added + remove, obvious on diffs
         // decorize lines
