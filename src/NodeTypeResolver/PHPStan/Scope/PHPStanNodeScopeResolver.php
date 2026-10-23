@@ -10,24 +10,15 @@ use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp;
-use PhpParser\Node\Expr\BitwiseNot;
-use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\Clone_;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\Empty_;
-use PhpParser\Node\Expr\ErrorSuppress;
-use PhpParser\Node\Expr\Eval_;
-use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Include_;
-use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Match_;
@@ -38,17 +29,12 @@ use PhpParser\Node\Expr\PostDec;
 use PhpParser\Node\Expr\PostInc;
 use PhpParser\Node\Expr\PreDec;
 use PhpParser\Node\Expr\PreInc;
-use PhpParser\Node\Expr\Print_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Expr\Throw_;
-use PhpParser\Node\Expr\UnaryMinus;
-use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
@@ -61,7 +47,6 @@ use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Enum_;
-use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
@@ -69,7 +54,6 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
@@ -212,26 +196,16 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ((
-                $node instanceof Expression ||
-                $node instanceof Return_ ||
-                $node instanceof EnumCase ||
-                $node instanceof Cast ||
-                $node instanceof YieldFrom ||
-                $node instanceof UnaryMinus ||
-                $node instanceof UnaryPlus ||
-                $node instanceof Throw_ ||
-                $node instanceof Empty_ ||
-                $node instanceof BooleanNot ||
-                $node instanceof Clone_ ||
-                $node instanceof ErrorSuppress ||
-                $node instanceof BitwiseNot ||
-                $node instanceof Eval_ ||
-                $node instanceof Print_ ||
-                $node instanceof Exit_ ||
-                $node instanceof Include_ ||
-                $node instanceof Instanceof_
-            ) && $node->expr instanceof Expr) {
+            // propagate scope to the single $expr child of any expr-bearing node;
+            // Assign*/Foreach_ keep their dedicated branches below, ArrowFunction->expr must not inherit it here
+            if (property_exists($node, 'expr')
+                && $node->expr instanceof Expr
+                && ! $node instanceof Assign
+                && ! $node instanceof AssignOp
+                && ! $node instanceof AssignRef
+                && ! $node instanceof ArrowFunction
+                && ! $node instanceof Foreach_
+            ) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
             }

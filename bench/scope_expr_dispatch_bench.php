@@ -77,10 +77,29 @@ function matchesChain(Node $node): bool
 
 /**
  * Candidate guard: a single property lookup.
+ *
+ * NOT equivalent to the chain on its own - it also matches Assign/AssignOp/AssignRef,
+ * ArrowFunction and Foreach_.
  */
 function matchesPropertyExists(Node $node): bool
 {
     return property_exists($node, 'expr') && $node->expr instanceof Expr;
+}
+
+/**
+ * Shipped guard: property lookup minus the 5 node groups the chain deliberately excludes.
+ * This matches the chain exactly across all 42 expr-bearing php-parser node classes
+ * (AssignOp is abstract and covers its 13 subclasses).
+ */
+function matchesPropertyExistsGuarded(Node $node): bool
+{
+    return property_exists($node, 'expr')
+        && $node->expr instanceof Expr
+        && ! $node instanceof Assign
+        && ! $node instanceof AssignOp
+        && ! $node instanceof AssignRef
+        && ! $node instanceof ArrowFunction
+        && ! $node instanceof Foreach_;
 }
 
 $v = new Variable('x');
@@ -145,6 +164,17 @@ if ($divergent === []) {
 
     echo "\n";
 }
+
+$guardedDivergent = [];
+foreach ($all as $node) {
+    if (matchesChain($node) !== matchesPropertyExistsGuarded($node)) {
+        $guardedDivergent[] = $node::class;
+    }
+}
+
+echo "Guarded variant (shipped) vs chain\n";
+echo "----------------------------------\n";
+echo $guardedDivergent === [] ? "identical on sample set\n\n" : "DIVERGENT: " . implode(', ', $guardedDivergent) . "\n\n";
 
 // --- 2. speed ----------------------------------------------------------------
 function cpuSeconds(): float

@@ -279,6 +279,7 @@ parameters:
                 - src/NodeNameResolver/NodeNameResolver.php
                 - src/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
                 - src/BetterPhpDocParser/NodeDecorator/DoctrineAnnotationDecorator.php
+                - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
 
         -
             identifier: symplify.forbiddenFuncCall
