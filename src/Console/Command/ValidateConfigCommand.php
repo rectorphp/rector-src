@@ -59,7 +59,6 @@ final class ValidateConfigCommand extends Command
 
         $issueCount += $this->deprecatedRulesReporter->reportDeprecatedRules();
         $issueCount += $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
-        $issueCount += $this->deprecatedRulesReporter->reportDeprecatedPhpSetsMethods();
         $issueCount += $this->deprecatedRulesReporter->reportDeprecatedAttributesSetsArgs();
         $issueCount += $this->deprecatedRulesReporter->reportDeprecatedComposerBasedArgs();
 

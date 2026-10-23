@@ -241,11 +241,6 @@ final class Option
     public const string SKIPPED_NON_RECTOR_CLASSES = 'skipped_non_rector_classes';
 
     /**
-     * @internal For reporting deprecated withPhp53Sets() ... withPhp74Sets() methods
-     */
-    public const string DEPRECATED_PHP_SETS_METHODS = 'deprecated_php_sets_methods';
-
-    /**
      * @internal For reporting deprecated withAttributesSets() arguments
      */
     public const string DEPRECATED_ATTRIBUTES_SETS_ARGS = 'deprecated_attributes_sets_args';

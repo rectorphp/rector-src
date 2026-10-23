@@ -583,60 +583,6 @@ final class RectorConfigBuilder
         return $this->addPhpLevelSets($pickedPhpVersions[0]);
     }
 
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp53Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp54Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp55Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp56Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp70Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp71Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp72Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp73Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
-    #[Deprecated(message: 'Use "withPhpLevel()" instead, it raises PHP level one rule at a time.')]
-    public function withPhp74Sets(): self
-    {
-        return $this->reportDeprecatedPhpSetsMethod(__FUNCTION__);
-    }
-
     // there is no withPhp80Sets() and above,
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
@@ -1161,13 +1107,6 @@ final class RectorConfigBuilder
         $this->pickedPhpSetsVersion = $phpVersion;
 
         $this->sets[] = SetList::PHP_VERSION_BASED_SET;
-
-        return $this;
-    }
-
-    private function reportDeprecatedPhpSetsMethod(string $methodName): self
-    {
-        SimpleParameterProvider::addParameter(Option::DEPRECATED_PHP_SETS_METHODS, $methodName);
 
         return $this;
     }
