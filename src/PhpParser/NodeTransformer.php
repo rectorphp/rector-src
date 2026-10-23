@@ -19,6 +19,9 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Util\StringUtils;
 use Rector\ValueObject\SprintfStringAndArgs;
 
+/**
+ * @api used in phpunit
+ */
 final class NodeTransformer
 {
     /**
@@ -27,6 +30,8 @@ final class NodeTransformer
     private const string PERCENT_TEXT_REGEX = '#^%\w$#';
 
     /**
+     * @api used in phpunit symfony
+     *
      * From:
      * - sprintf("Hi %s", $name);
      *
@@ -83,6 +88,9 @@ final class NodeTransformer
         return $yields;
     }
 
+    /**
+     * @api symfony
+     */
     public function transformConcatToStringArray(Concat $concat): Array_
     {
         $arrayItems = $this->transformConcatToItems($concat);

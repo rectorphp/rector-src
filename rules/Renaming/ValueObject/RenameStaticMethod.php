@@ -7,6 +7,9 @@ namespace Rector\Renaming\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
+/**
+ * @api used in deprecated RenameStaticMethodRector configs
+ */
 final readonly class RenameStaticMethod
 {
     public function __construct(

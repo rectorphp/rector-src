@@ -27,6 +27,7 @@ use Symfony\Component\Console\Command\Command;
 use Webmozart\Assert\Assert;
 
 /**
+ * @api
  * @see \Rector\Tests\Config\RectorConfigTest
  */
 final class RectorConfig extends Container
@@ -372,6 +373,7 @@ final class RectorConfig extends Container
     /**
      * @internal
      *
+     * @api only for testing. It is parsed from composer.json "require" packages by default
      * @param array<PolyfillPackage::*> $polyfillPackages
      */
     public function polyfillPackages(array $polyfillPackages): void
@@ -482,6 +484,7 @@ final class RectorConfig extends Container
 
     /**
      * @internal
+     * @api used only in tests
      */
     public function resetRuleConfigurations(): void
     {

@@ -8,6 +8,9 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\Type;
 
+/**
+ * @api
+ */
 final class ShortenedGenericObjectType extends GenericObjectType
 {
     /**

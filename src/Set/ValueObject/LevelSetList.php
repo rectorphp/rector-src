@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Set\ValueObject;
 
+/**
+ * @api
+ */
 final class LevelSetList
 {
     public const string UP_TO_PHP_86 = __DIR__ . '/../../../config/set/level/up-to-php86.php';

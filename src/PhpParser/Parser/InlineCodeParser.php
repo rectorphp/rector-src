@@ -65,6 +65,8 @@ final readonly class InlineCodeParser
     }
 
     /**
+     * @api downgrade
+     *
      * @return Stmt[]
      */
     public function parseFile(string $fileName): array

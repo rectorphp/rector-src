@@ -31,6 +31,9 @@ final readonly class RichParserFactory
     ) {
     }
 
+    /**
+     * @api used by config/phpstan/parser.neon
+     */
     public function create(): RichParser
     {
         return new RichParser(

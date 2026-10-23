@@ -8,6 +8,8 @@ use DateTime;
 use Rector\Exception\VersionException;
 
 /**
+ * @api
+ *
  * Inspired by https://github.com/composer/composer/blob/master/src/Composer/Composer.php
  * See https://github.com/composer/composer/blob/6587715d0f8cae0cd39073b3bc5f018d0e6b84fe/src/Composer/Compiler.php#L208
  *
@@ -15,8 +17,14 @@ use Rector\Exception\VersionException;
  */
 final class VersionResolver
 {
+    /**
+     * @api
+     */
     public const string PACKAGE_VERSION = '@package_version@';
 
+    /**
+     * @api
+     */
     public const string RELEASE_DATE = '@release_date@';
 
     private const int SUCCESS_CODE = 0;

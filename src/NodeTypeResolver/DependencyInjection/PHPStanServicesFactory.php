@@ -69,26 +69,41 @@ MESSAGE_ERROR;
         }
     }
 
+    /**
+     * @api
+     */
     public function createReflectionProvider(): ReflectionProvider
     {
         return $this->container->getByType(ReflectionProvider::class);
     }
 
+    /**
+     * @api
+     */
     public function createEmulativeLexer(): Lexer
     {
         return $this->container->getService('currentPhpVersionLexer');
     }
 
+    /**
+     * @api
+     */
     public function createPHPStanParser(): Parser
     {
         return $this->container->getService('currentPhpVersionRichParser');
     }
 
+    /**
+     * @api
+     */
     public function createNodeScopeResolver(): NodeScopeResolver
     {
         return $this->container->getByType(NodeScopeResolver::class);
     }
 
+    /**
+     * @api
+     */
     public function createScopeFactory(): ScopeFactory
     {
         return $this->container->getByType(ScopeFactory::class);
@@ -105,21 +120,33 @@ MESSAGE_ERROR;
         return $this->container->getByType($type);
     }
 
+    /**
+     * @api
+     */
     public function createFileHelper(): FileHelper
     {
         return $this->container->getByType(FileHelper::class);
     }
 
+    /**
+     * @api
+     */
     public function createTypeNodeResolver(): TypeNodeResolver
     {
         return $this->container->getByType(TypeNodeResolver::class);
     }
 
+    /**
+     * @api
+     */
     public function createDynamicSourceLocatorProvider(): DynamicSourceLocatorProvider
     {
         return $this->container->getByType(DynamicSourceLocatorProvider::class);
     }
 
+    /**
+     * @api
+     */
     public function getContainer(): Container
     {
         return $this->container;

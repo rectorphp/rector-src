@@ -6,8 +6,14 @@ namespace Rector\Naming\Naming;
 
 use PHPStan\Analyser\Scope;
 
+/**
+ * @api used in downgrade
+ */
 final class VariableNaming
 {
+    /**
+     * @api used in downgrade
+     */
     public function createCountedValueName(string $valueName, ?Scope $scope): string
     {
         if (! $scope instanceof Scope) {

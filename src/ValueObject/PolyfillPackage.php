@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject;
 
+/**
+ * @api
+ */
 final class PolyfillPackage
 {
     public const string PHP_85 = 'symfony/polyfill-php85';

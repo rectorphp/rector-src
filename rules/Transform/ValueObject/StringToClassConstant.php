@@ -6,6 +6,9 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
+/**
+ * @api used in deprecated StringToClassConstantRector configs
+ */
 final readonly class StringToClassConstant
 {
     public function __construct(

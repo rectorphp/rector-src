@@ -47,6 +47,9 @@ final readonly class ReflectionResolver
     ) {
     }
 
+    /**
+     * @api
+     */
     public function resolveClassAndAnonymousClass(ClassLike $classLike): ClassReflection
     {
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
@@ -206,6 +209,9 @@ final readonly class ReflectionResolver
         return null;
     }
 
+    /**
+     * @api used in rector-laravel
+     */
     public function resolveMethodReflectionFromClassMethod(ClassMethod $classMethod, Scope $scope): ?MethodReflection
     {
         $classReflection = $scope->getClassReflection();
