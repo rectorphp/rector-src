@@ -30,22 +30,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
 
 /**
- * Inspired from @see
- * https://github.com/phpstan/phpstan-src/commit/9124c66dcc55a222e21b1717ba5f60771f7dda92#diff-39c7a3b0cbb217bbfff96fbb454e6e5e60c74cf92fbb0f9d246b8bebbaad2bb0
- *
- * https://github.com/phpstan/phpstan-src/commit/b84acd2e3eadf66189a64fdbc6dd18ff76323f67#diff-7f625777f1ce5384046df08abffd6c911cfbb1cfc8fcb2bdeaf78f337689e3e2R150
+ * Workers keep their caches for the whole run and process their own balanced bucket first.
+ * Idle workers take pending chunks from the largest remaining queue.
+ * Each chunk advances progress and re-arms the per-job timeout.
  */
 final class ParallelFileProcessor
 {
     private const int SYSTEM_ERROR_LIMIT = 50;
 
-    /**
-     * The number of chunks a worker can process before getting killed.
-     * In contrast the jobSize defines the maximum size of a chunk, a worker process at a time.
-     */
-    private const int MAX_CHUNKS_PER_WORKER = 8;
-
-    private ProcessPool|null $processPool = null;
+    private ProcessPool $processPool;
 
     public function __construct(
         private readonly WorkerCommandLineFactory $workerCommandLineFactory,
@@ -61,22 +54,35 @@ final class ParallelFileProcessor
         callable $postFileCallback,
         InputInterface $input
     ): ProcessResult {
-        $jobs = array_reverse($schedule->getJobs());
-        $streamSelectLoop = new StreamSelectLoop();
+        // reversed, so that array_pop() hands out the biggest files first
+        $jobsPerWorker = array_map(
+            array_reverse(...),
+            $schedule->getJobsPerWorker()
+        );
 
-        // basic properties setup
-        $numberOfProcesses = $schedule->getNumberOfProcesses();
+        /** @var array<string, int> $bucketKeyByIdentifier */
+        $bucketKeyByIdentifier = [];
+
+        $streamSelectLoop = new StreamSelectLoop();
 
         $parallelResultCollector = new ParallelResultCollector();
 
         $tcpServer = new TcpServer('127.0.0.1:0', $streamSelectLoop);
         $this->processPool = new ProcessPool($tcpServer);
 
-        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs): void {
+        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (
+            &$jobsPerWorker,
+            &$bucketKeyByIdentifier
+        ): void {
             $inDecoder = new Decoder($connection, true, StreamFormat::DEPTH, 0, StreamFormat::MAX_LENGTH);
             $outEncoder = new Encoder($connection);
 
-            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder): void {
+            $inDecoder->on(ReactEvent::DATA, function (array $data) use (
+                &$jobsPerWorker,
+                &$bucketKeyByIdentifier,
+                $inDecoder,
+                $outEncoder
+            ): void {
                 $action = $data[ReactCommand::ACTION];
                 if ($action !== Action::HELLO) {
                     return;
@@ -86,12 +92,11 @@ final class ParallelFileProcessor
                 $parallelProcess = $this->processPool->getProcess($processIdentifier);
                 $parallelProcess->bindConnection($inDecoder, $outEncoder);
 
-                if ($jobs === []) {
+                $jobsChunk = $this->popJobChunk($processIdentifier, $jobsPerWorker, $bucketKeyByIdentifier);
+                if ($jobsChunk === null) {
                     $this->processPool->quitProcess($processIdentifier);
                     return;
                 }
-
-                $jobsChunk = array_pop($jobs);
 
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
@@ -106,10 +111,14 @@ final class ParallelFileProcessor
         /** @var int $serverPort */
         $serverPort = parse_url($serverAddress, PHP_URL_PORT);
 
+        $scheduledFilesCount = 0;
+        foreach ($jobsPerWorker as $jobs) {
+            $scheduledFilesCount += array_sum(array_map(count(...), $jobs));
+        }
+
+        $processedFilesCount = 0;
         $systemErrorsCount = 0;
         $reachedSystemErrorsCountLimit = false;
-        $scheduledFilesCount = array_sum(array_map(count(...), $jobs));
-        $processedFilesCount = 0;
 
         $handleErrorCallable = function (Throwable $throwable) use (
             $parallelResultCollector,
@@ -126,18 +135,17 @@ final class ParallelFileProcessor
             $reachedSystemErrorsCountLimit = true;
             $this->processPool->quitAll();
 
-            // This sleep has to be here, because event though we have called $this->processPool->quitAll(),
-            // it takes some time for the child processes to actually die, during which they can still write to cache
+            // give the child processes time to actually die, they can still write to cache meanwhile
             // @see https://github.com/rectorphp/rector-src/pull/3834/files#r1231696531
             sleep(1);
         };
 
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
-        $fileChunksBudgetPerProcess = [];
 
-        $processSpawner = function () use (
+        $processSpawner = function (int $bucketKey) use (
             $parallelResultCollector,
-            &$jobs,
+            &$jobsPerWorker,
+            &$bucketKeyByIdentifier,
             $postFileCallback,
             &$systemErrorsCount,
             &$reachedSystemErrorsCountLimit,
@@ -147,11 +155,11 @@ final class ParallelFileProcessor
             $streamSelectLoop,
             $timeoutInSeconds,
             $handleErrorCallable,
-            &$fileChunksBudgetPerProcess,
-            &$processSpawner,
             &$processedFilesCount
         ): void {
             $processIdentifier = Random::generate();
+            $bucketKeyByIdentifier[$processIdentifier] = $bucketKey;
+
             $workerCommandLine = $this->workerCommandLineFactory->create(
                 $mainScript,
                 ProcessCommand::class,
@@ -160,7 +168,6 @@ final class ParallelFileProcessor
                 $processIdentifier,
                 $serverPort,
             );
-            $fileChunksBudgetPerProcess[$processIdentifier] = self::MAX_CHUNKS_PER_WORKER;
 
             $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
 
@@ -169,13 +176,12 @@ final class ParallelFileProcessor
                 function (array $json) use (
                     $parallelProcess,
                     $parallelResultCollector,
-                    &$jobs,
+                    &$jobsPerWorker,
+                    &$bucketKeyByIdentifier,
                     $postFileCallback,
                     &$systemErrorsCount,
                     &$reachedSystemErrorsCountLimit,
                     $processIdentifier,
-                    &$fileChunksBudgetPerProcess,
-                    &$processSpawner,
                     &$processedFilesCount
                 ): void {
                     /** @var array{
@@ -197,25 +203,17 @@ final class ParallelFileProcessor
                         return;
                     }
 
-                    if ($jobs === []) {
+                    $jobsChunk = $this->popJobChunk($processIdentifier, $jobsPerWorker, $bucketKeyByIdentifier);
+                    if ($jobsChunk === null) {
+                        // bucket done, this worker has nothing left to do
                         $this->processPool->quitProcess($processIdentifier);
                         return;
                     }
 
-                    if ($fileChunksBudgetPerProcess[$processIdentifier] <= 0) {
-                        // replace the current worker with a fresh one to free memory; spawn the replacement first,
-                        // as quitting the last worker in the pool closes the server the replacement connects to
-                        ($processSpawner)();
-                        $this->processPool->quitProcess($processIdentifier);
-                        return;
-                    }
-
-                    $jobsChunk = array_pop($jobs);
                     $parallelProcess->request([
                         ReactCommand::ACTION => Action::MAIN,
                         Content::FILES => $jobsChunk,
                     ]);
-                    --$fileChunksBudgetPerProcess[$processIdentifier];
                 },
 
                 // 2. callable on error
@@ -241,13 +239,8 @@ final class ParallelFileProcessor
             $this->processPool->attachProcess($processIdentifier, $parallelProcess);
         };
 
-        for ($i = 0; $i < $numberOfProcesses; ++$i) {
-            // nothing else to process, stop now
-            if ($jobs === []) {
-                break;
-            }
-
-            ($processSpawner)();
+        foreach (array_keys($jobsPerWorker) as $bucketKey) {
+            ($processSpawner)($bucketKey);
         }
 
         $streamSelectLoop->run();
@@ -259,7 +252,7 @@ final class ParallelFileProcessor
             )));
         }
 
-        // a worker can end without reporting its files, e.g. when killed by the OS, so missing results must always be reported
+        // Workers may exit without reporting their assigned files.
         if ($processedFilesCount < $scheduledFilesCount) {
             $parallelResultCollector->collectSystemError(new SystemError(sprintf(
                 'Some parallel jobs have not finished, results for %d of %d files are missing',
@@ -269,5 +262,55 @@ final class ParallelFileProcessor
         }
 
         return $parallelResultCollector->createProcessResult();
+    }
+
+    /**
+     * @param array<int, array<int, array<string>>> $jobsPerWorker
+     * @param array<string, int> $bucketKeyByIdentifier
+     * @return array<string>|null
+     */
+    private function popJobChunk(
+        string $processIdentifier,
+        array &$jobsPerWorker,
+        array $bucketKeyByIdentifier
+    ): ?array {
+        $bucketKey = $bucketKeyByIdentifier[$processIdentifier] ?? null;
+
+        if ($bucketKey !== null && ($jobsPerWorker[$bucketKey] ?? []) !== []) {
+            return array_pop($jobsPerWorker[$bucketKey]);
+        }
+
+        return $this->stealJobChunk($jobsPerWorker);
+    }
+
+    /**
+     * Own bucket drained while others still have work. Byte size only estimates the cost of a file, and
+     * not every core is equally fast - on a big.LITTLE CPU (Apple silicon, recent Intel) a bucket handed
+     * to an efficiency core takes several times longer. Take over a chunk from whoever has the most left,
+     * so the run is not held up by one straggler.
+     *
+     * @param array<int, array<int, array<string>>> $jobsPerWorker
+     * @return array<string>|null
+     */
+    private function stealJobChunk(array &$jobsPerWorker): ?array
+    {
+        $fattestBucketKey = null;
+        $fattestJobCount = 0;
+
+        foreach ($jobsPerWorker as $currentBucketKey => $jobs) {
+            $jobCount = count($jobs);
+            if ($jobCount <= $fattestJobCount) {
+                continue;
+            }
+
+            $fattestJobCount = $jobCount;
+            $fattestBucketKey = $currentBucketKey;
+        }
+
+        if ($fattestBucketKey === null) {
+            return null;
+        }
+
+        return array_pop($jobsPerWorker[$fattestBucketKey]);
     }
 }
