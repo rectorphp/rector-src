@@ -3,13 +3,11 @@
 declare(strict_types=1);
 
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Scripts\Finder\RectorClassFinder;
 use Rector\Scripts\Finder\RectorSetFilesFinder;
 use Rector\Scripts\Resolver\UsedRectorClassResolver;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -24,8 +22,8 @@ $rectorClasses = $rectorClassFinder->find([
     __DIR__ . '/../vendor/rector/rector-downgrade-php',
 ]);
 
-$symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
-$symfonyStyle->writeln(sprintf('<fg=green>Found Rector %d rules</>', count($rectorClasses)));
+$rectorStyle = new RectorStyleFactory()->create();
+$rectorStyle->writeln(sprintf('<fg=green>Found Rector %d rules</>', count($rectorClasses)));
 
 $rectorSeFinder = new RectorSetFilesFinder();
 
@@ -37,13 +35,13 @@ $rectorSetFiles = $rectorSeFinder->find([
     __DIR__ . '/../vendor/rector/rector-downgrade-php/config/set',
 ]);
 
-$symfonyStyle->writeln(sprintf('<fg=green>Found %d sets</>', count($rectorSetFiles)));
+$rectorStyle->writeln(sprintf('<fg=green>Found %d sets</>', count($rectorSetFiles)));
 
 $usedRectorClassResolver = new UsedRectorClassResolver();
 $usedRectorRules = $usedRectorClassResolver->resolve($rectorSetFiles);
 
-$symfonyStyle->newLine();
-$symfonyStyle->writeln(sprintf('<fg=yellow>Found %d used Rector rules in sets</>', count($usedRectorRules)));
+$rectorStyle->newLine();
+$rectorStyle->writeln(sprintf('<fg=yellow>Found %d used Rector rules in sets</>', count($usedRectorRules)));
 
 $unusedRectorRules = array_diff($rectorClasses, $usedRectorRules);
 
@@ -63,16 +61,16 @@ $deprecatedRectorRules = array_filter(
 
 $unusedRectorRules = array_diff($unusedRectorRules, $deprecatedRectorRules);
 
-$symfonyStyle->newLine();
-$symfonyStyle->listing($unusedRectorRules);
+$rectorStyle->newLine();
+$rectorStyle->listing($unusedRectorRules);
 
-$symfonyStyle->writeln(
+$rectorStyle->writeln(
     sprintf('<fg=yellow;options=bold>Found %d Rector rules not in any set</>', count($unusedRectorRules))
 );
-$symfonyStyle->writeln(
+$rectorStyle->writeln(
     sprintf('<fg=green>Skipped %d configurable Rector rules</>', count($configurableRectorRules))
 );
-$symfonyStyle->writeln(
+$rectorStyle->writeln(
     sprintf('<fg=green>Skipped %d deprecated Rector rules</>', count($deprecatedRectorRules))
 );
-$symfonyStyle->newLine();
+$rectorStyle->newLine();

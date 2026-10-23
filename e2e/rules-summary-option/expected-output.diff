@@ -1,3 +1,5 @@
+[WARNING] The "--rules-summary" option is deprecated and will be removed. Use "--output-format=json" instead, which reports every applied rule with its file and line.
+
 3 files with changes
 ====================
 
@@ -20,8 +22,7 @@
     ----------- end diff -----------
 
 Applied rules:
- * RemoveAlwaysTrueIfConditionRector
-
+* RemoveAlwaysTrueIfConditionRector
 
 2) src/AnotherAlwaysTrue.php:4
 
@@ -39,8 +40,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * RemoveAlwaysTrueIfConditionRector
-
+* RemoveAlwaysTrueIfConditionRector
 
 3) src/DeadConstructor.php:2
 
@@ -56,13 +56,13 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * RemoveEmptyClassMethodRector
+* RemoveEmptyClassMethodRector
 
 
 Rules Summary
 -------------
-
  * RemoveAlwaysTrueIfConditionRector would have been applied 2 times
  * RemoveEmptyClassMethodRector would have been applied 1 time
 
- [OK] 3 files would have been changed (dry-run) by Rector
+
+[OK] 3 files would have been changed (dry-run) by Rector

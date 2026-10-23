@@ -13,8 +13,7 @@
     ----------- end diff -----------
 
 Applied rules:
- * RemoveUnusedPrivatePropertyRector
-
+* RemoveUnusedPrivatePropertyRector
 
 2) src/SomeClassNotFound.php:4
 
@@ -28,7 +27,7 @@ Applied rules:
     ----------- end diff -----------
 
 Applied rules:
- * RemoveUnusedPrivatePropertyRector
+* RemoveUnusedPrivatePropertyRector
 
 
- [OK] 2 files would have been changed (dry-run) by Rector
+[OK] 2 files would have been changed (dry-run) by Rector
