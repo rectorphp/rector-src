@@ -109,19 +109,6 @@ final readonly class BetterNodeFinder
     }
 
     /**
-     * @param Node[] $nodes
-     * @return Class_|null
-     */
-    public function findFirstNonAnonymousClass(array $nodes): ?Node
-    {
-        // skip anonymous classes
-        return $this->findFirst(
-            $nodes,
-            fn (Node $node): bool => $node instanceof Class_ && ! $this->classAnalyzer->isAnonymousClass($node)
-        );
-    }
-
-    /**
      * @param Node|Node[] $nodes
      * @param callable(Node $filter): bool $filter
      */
