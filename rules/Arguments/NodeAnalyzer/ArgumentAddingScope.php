@@ -14,19 +14,10 @@ use Rector\NodeNameResolver\NodeNameResolver;
 
 final readonly class ArgumentAddingScope
 {
-    /**
-     * @api
-     */
     public const string SCOPE_PARENT_CALL = 'parent_call';
 
-    /**
-     * @api
-     */
     public const string SCOPE_METHOD_CALL = 'method_call';
 
-    /**
-     * @api
-     */
     public const string SCOPE_CLASS_METHOD = 'class_method';
 
     public function __construct(

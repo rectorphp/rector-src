@@ -36,9 +36,6 @@ use RectorLaravel\Set\LaravelSetList;
 use Symfony\Component\Finder\Finder;
 use Webmozart\Assert\Assert;
 
-/**
- * @api
- */
 final class RectorConfigBuilder
 {
     private const int MAX_LEVEL_GAP = 10;

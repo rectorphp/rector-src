@@ -9,9 +9,6 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\Skipper\FileSystem\PathNormalizer;
 use Webmozart\Assert\Assert;
 
-/**
- * @api
- */
 final class SimpleParameterProvider
 {
     /**
@@ -154,7 +151,6 @@ final class SimpleParameterProvider
     }
 
     /**
-     * @api
      * Strict hash for cache invalidation. Ignored and directionally compared parameters are left
      * out, so only a real change to an output-affecting parameter drops the cache.
      */
@@ -183,7 +179,6 @@ final class SimpleParameterProvider
     }
 
     /**
-     * @api
      * @return array{rules: mixed[], sets: mixed[], skip: mixed[]}
      */
     public static function provideCacheDirectionalParameters(): array

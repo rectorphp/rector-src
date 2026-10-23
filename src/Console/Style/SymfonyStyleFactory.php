@@ -18,9 +18,6 @@ final readonly class SymfonyStyleFactory
     ) {
     }
 
-    /**
-     * @api
-     */
     public function create(): RectorStyle
     {
         $_SERVER['argv'] ??= [];

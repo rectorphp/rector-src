@@ -6,9 +6,6 @@ namespace Rector\Renaming\ValueObject;
 
 use Rector\Renaming\Contract\RenameAnnotationInterface;
 
-/**
- * @api
- */
 final readonly class RenameAnnotation implements RenameAnnotationInterface
 {
     public function __construct(

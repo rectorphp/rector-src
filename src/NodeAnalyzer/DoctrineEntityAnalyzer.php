@@ -10,9 +10,6 @@ use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 
-/**
- * @api used in doctrine
- */
 final readonly class DoctrineEntityAnalyzer
 {
     /**

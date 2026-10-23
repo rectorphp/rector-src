@@ -83,9 +83,6 @@ final class PhpDocInfo
         }
     }
 
-    /**
-     * @api
-     */
     public function addPhpDocTagNode(PhpDocChildNode $phpDocChildNode): void
     {
         $this->phpDocNode->children[] = $phpDocChildNode;
@@ -192,9 +189,6 @@ final class PhpDocInfo
         return (bool) $this->getTagsByName($name);
     }
 
-    /**
-     * @api
-     */
     public function getByName(string $name): ?Node
     {
         return $this->getTagsByName($name)[0] ?? null;
@@ -213,9 +207,6 @@ final class PhpDocInfo
         return $doctrineAnnotationTagValueNodes[0] ?? null;
     }
 
-    /**
-     * @api doctrine/symfony
-     */
     public function getByAnnotationClass(string $class): ?DoctrineAnnotationTagValueNode
     {
         $doctrineAnnotationTagValueNodes = $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass(

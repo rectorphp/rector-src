@@ -21,9 +21,6 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
  */
 final class NestedFuncCallsToPipeOperatorRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface, DeprecatedInterface
 {
-    /**
-     * @api
-     */
     public const string MINIMUM_DEPTH = 'minimum_depth';
 
     /**

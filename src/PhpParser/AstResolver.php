@@ -57,9 +57,6 @@ final class AstResolver
     ) {
     }
 
-    /**
-     * @api downgrade
-     */
     public function resolveClassFromName(string $className): Class_|Trait_|Interface_|Enum_|null
     {
         if (! $this->reflectionProvider->hasClass($className)) {

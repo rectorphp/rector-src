@@ -9,9 +9,6 @@ use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\PoorDocumentationException;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
 
-/**
- * @api
- */
 final class RuleDefinition
 {
     private ?string $ruleFilePath = null;

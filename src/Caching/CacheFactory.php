@@ -16,9 +16,6 @@ final readonly class CacheFactory
     ) {
     }
 
-    /**
-     * @api config factory
-     */
     public function create(): Cache
     {
         $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);

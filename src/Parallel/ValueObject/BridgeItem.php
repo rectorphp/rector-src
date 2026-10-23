@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Parallel\ValueObject;
 
 /**
- * @api
  * Helpers constant for passing constant names around
  */
 final class BridgeItem

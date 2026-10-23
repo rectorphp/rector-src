@@ -53,19 +53,10 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
  */
 final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
-    /**
-     * @api
-     */
     public const string INLINE_PUBLIC = 'inline_public';
 
-    /**
-     * @api
-     */
     public const string RENAME_PROPERTY = 'rename_property';
 
-    /**
-     * @api
-     */
     public const string ALLOW_MODEL_BASED_CLASSES = 'allow_model_based_classes';
 
     /**

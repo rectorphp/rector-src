@@ -21,7 +21,6 @@ abstract class AbstractLazyTestCase extends TestCase
     }
 
     /**
-     * @api
      * @param string[] $configFiles
      */
     protected function bootFromConfigFiles(array $configFiles): void

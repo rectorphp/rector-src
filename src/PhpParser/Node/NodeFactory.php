@@ -150,9 +150,6 @@ final readonly class NodeFactory
         return $this->createPropertyAssignmentWithExpr($propertyName, $variable);
     }
 
-    /**
-     * @api
-     */
     public function createPropertyAssignmentWithExpr(string $propertyName, Expr $expr): Assign
     {
         $propertyFetch = $this->createPropertyFetch(self::THIS, $propertyName);
@@ -198,7 +195,6 @@ final readonly class NodeFactory
     }
 
     /**
-     * @api symfony
      * @param mixed[] $arguments
      */
     public function createLocalMethodCall(string $method, array $arguments = []): MethodCall
@@ -208,7 +204,6 @@ final readonly class NodeFactory
     }
 
     /**
-     * @api symfony, doctrine, phpunit
      * @param mixed[] $arguments
      */
     public function createMethodCall(Expr|string $exprOrVariableName, string $method, array $arguments = []): MethodCall
@@ -223,9 +218,6 @@ final readonly class NodeFactory
         return $this->builderFactory->propertyFetch($fetcherExpr, $property);
     }
 
-    /**
-     * @api doctrine
-     */
     public function createPrivateProperty(string $name): Property
     {
         $propertyBuilder = new PropertyBuilder($name);
@@ -327,7 +319,6 @@ final readonly class NodeFactory
     }
 
     /**
-     * @api phpunit
      * @param string|ObjectReference::* $constantName
      */
     public function createClassConstFetchFromName(Name $className, string $constantName): ClassConstFetch

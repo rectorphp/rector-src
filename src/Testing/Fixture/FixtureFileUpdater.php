@@ -9,7 +9,6 @@ use Nette\Utils\FileSystem;
 final class FixtureFileUpdater
 {
     /**
-     * @api
      */
     public static function updateFixtureContent(
         string $originalContent,

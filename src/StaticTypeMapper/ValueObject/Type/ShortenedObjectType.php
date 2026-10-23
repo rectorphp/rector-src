@@ -8,9 +8,6 @@ use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 
-/**
- * @api
- */
 final class ShortenedObjectType extends ObjectType
 {
     /**

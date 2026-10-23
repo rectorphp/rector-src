@@ -46,8 +46,6 @@ final class AttributeKey
     public const string NAMESPACED_NAME = 'namespacedName';
 
     /**
-     * @api
-     *
      * Internal php-parser name.
      * Do not change this even if you want!
      */

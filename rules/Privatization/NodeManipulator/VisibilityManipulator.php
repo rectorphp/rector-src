@@ -30,17 +30,11 @@ final readonly class VisibilityManipulator
         return (bool) ($node->flags & $visibility);
     }
 
-    /**
-     * @api
-     */
     public function makeStatic(ClassMethod|Property|ClassConst|Param $node): void
     {
         $this->addVisibilityFlag($node, Visibility::STATIC);
     }
 
-    /**
-     * @api
-     */
     public function makeNonStatic(ClassMethod|Property $node): void
     {
         if (! $node->isStatic()) {
@@ -50,9 +44,6 @@ final readonly class VisibilityManipulator
         $node->flags -= Modifiers::STATIC;
     }
 
-    /**
-     * @api
-     */
     public function makeNonAbstract(ClassMethod|Class_ $node): void
     {
         if (! $node->isAbstract()) {
@@ -62,17 +53,11 @@ final readonly class VisibilityManipulator
         $node->flags -= Modifiers::ABSTRACT;
     }
 
-    /**
-     * @api
-     */
     public function makeFinal(Class_|ClassMethod|Param|ClassConst $node): void
     {
         $this->addVisibilityFlag($node, Visibility::FINAL);
     }
 
-    /**
-     * @api
-     */
     public function makeNonFinal(Class_|ClassMethod|Param $node): void
     {
         if (! $this->hasVisibility($node, Visibility::FINAL)) {
@@ -101,9 +86,6 @@ final readonly class VisibilityManipulator
         $this->replaceVisibilityFlag($node, Visibility::PUBLIC);
     }
 
-    /**
-     * @api
-     */
     public function makeProtected(ClassMethod|Property|ClassConst $node): void
     {
         $this->replaceVisibilityFlag($node, Visibility::PROTECTED);
@@ -121,9 +103,6 @@ final readonly class VisibilityManipulator
         $node->flags &= ~Modifiers::FINAL;
     }
 
-    /**
-     * @api
-     */
     public function removeFinal(Class_|ClassConst $node): void
     {
         $node->flags -= Modifiers::FINAL;
@@ -134,9 +113,6 @@ final readonly class VisibilityManipulator
         $this->addVisibilityFlag($node, Visibility::READONLY);
     }
 
-    /**
-     * @api
-     */
     public function isReadonly(Class_|Property|Param $node): bool
     {
         return $this->hasVisibility($node, Visibility::READONLY);
@@ -204,9 +180,6 @@ final readonly class VisibilityManipulator
         }
     }
 
-    /**
-     * @api
-     */
     private function addVisibilityFlag(Class_|ClassMethod|Property|ClassConst|Param $node, int $visibility): void
     {
         $node->flags |= $visibility;

@@ -33,7 +33,6 @@ use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 
 /**
- * @api used by rector-symfony and rector-doctrine
  * @see \Rector\Tests\NodeManipulator\ClassDependencyManipulatorTest
  */
 final readonly class ClassDependencyManipulator
@@ -104,9 +103,6 @@ final readonly class ClassDependencyManipulator
         );
     }
 
-    /**
-     * @api doctrine
-     */
     public function addConstructorDependencyWithCustomAssign(
         Class_ $class,
         string $name,
@@ -160,7 +156,6 @@ final readonly class ClassDependencyManipulator
     }
 
     /**
-     * @api doctrine
      * @param Stmt[] $stmts
      */
     public function addStmtsToConstructorIfNotThereYet(Class_ $class, array $stmts): void

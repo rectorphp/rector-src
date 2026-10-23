@@ -16,9 +16,6 @@ use Rector\PhpParser\Node\FileNode;
 use Rector\PhpParser\Parser\RectorParser;
 use Rector\ValueObject\Application\File;
 
-/**
- * @api
- */
 final readonly class TestingParser
 {
     public function __construct(

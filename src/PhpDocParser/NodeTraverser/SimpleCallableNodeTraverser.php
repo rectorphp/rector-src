@@ -8,16 +8,12 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\PhpDocParser\NodeVisitor\CallableNodeVisitor;
 
-/**
- * @api
- */
 final class SimpleCallableNodeTraverser
 {
     /**
      * @param Node|Node[]|null $node
      *
      * @param callable(Node $node): (int|Node|null|Node[]) $callable
-     * @api shortcut helper
      */
     public static function traverse(Node|array|null $node, callable $callable): void
     {

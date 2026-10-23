@@ -6,9 +6,6 @@ namespace Rector\RuleDoc\CodeSample;
 
 use Rector\RuleDoc\AbstractCodeSample;
 
-/**
- * @api
- */
 final class ExtraFileCodeSample extends AbstractCodeSample
 {
     public function __construct(

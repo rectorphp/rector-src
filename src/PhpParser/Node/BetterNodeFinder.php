@@ -76,7 +76,6 @@ final readonly class BetterNodeFinder
     }
 
     /**
-     * @api
      * @param Node|Node[] $nodes
      * @return Variable|null
      */
@@ -110,7 +109,6 @@ final readonly class BetterNodeFinder
     }
 
     /**
-     * @api symfony
      * @param Node[] $nodes
      * @return Class_|null
      */
@@ -195,8 +193,6 @@ final readonly class BetterNodeFinder
     }
 
     /**
-     * @api to be used
-     *
      * @template T of Node
      * @param Node[] $nodes
      * @param class-string<T>|array<class-string<T>> $types

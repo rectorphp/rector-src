@@ -26,7 +26,6 @@ use Rector\Transform\ValueObject\AttributeKeyToClassConstFetch;
 use Webmozart\Assert\Assert;
 
 /**
- * @api used in rector-doctrine
  * @see \Rector\Tests\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector\AttributeKeyToClassConstFetchRectorTest
  */
 final class AttributeKeyToClassConstFetchRector extends AbstractRector implements ConfigurableRectorInterface

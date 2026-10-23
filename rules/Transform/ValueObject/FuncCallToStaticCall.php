@@ -6,9 +6,6 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-/**
- * @api used in deprecated FuncCallToStaticCallRector configs
- */
 final readonly class FuncCallToStaticCall
 {
     public function __construct(

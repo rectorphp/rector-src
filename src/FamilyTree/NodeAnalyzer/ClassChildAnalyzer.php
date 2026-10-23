@@ -10,15 +10,10 @@ use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 
-/**
- * @api
- */
 final readonly class ClassChildAnalyzer
 {
     /**
      * Look both parent class and interface, yes, all PHP interface methods are abstract
-     *
-     * @api rector-symfony
      */
     public function hasAbstractParentClassMethod(ClassReflection $classReflection, string $methodName): bool
     {
@@ -33,9 +28,6 @@ final readonly class ClassChildAnalyzer
         );
     }
 
-    /**
-     * @api downgrade
-     */
     public function resolveParentClassMethodReturnType(ClassReflection $classReflection, string $methodName): Type
     {
         $parentClassMethods = $this->resolveParentClassMethods($classReflection, $methodName);

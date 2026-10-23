@@ -47,9 +47,6 @@ final class InstalledPackageResolver
         Assert::directory($this->projectDirectory);
     }
 
-    /**
-     * @api used in tests to resolve the versions from a standalone "composer.json"
-     */
     public function changeComposerJsonFilePath(?string $composerJsonFilePath): void
     {
         $this->composerJsonFilePath = $composerJsonFilePath;

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Set\ValueObject;
 
-/**
- * @api
- */
 final class SetList
 {
     /**

@@ -28,7 +28,6 @@ final readonly class SimplePhpParser
     }
 
     /**
-     * @api tests
      * @return Node[]
      */
     public function parseFile(string $filePath): array

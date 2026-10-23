@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\VersionBonding\ValueObject;
 
-/**
- * @api used by extensions
- */
 final readonly class ComposerPackageConstraint
 {
     public function __construct(

@@ -6,9 +6,6 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-/**
- * @api kept for deprecated ConstFetchToClassConstFetchRector code sample
- */
 final readonly class ConstFetchToClassConstFetch
 {
     public function __construct(

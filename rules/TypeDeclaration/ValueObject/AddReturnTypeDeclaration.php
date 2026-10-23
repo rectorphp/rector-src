@@ -8,9 +8,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Validation\RectorAssert;
 
-/**
- * @api
- */
 final readonly class AddReturnTypeDeclaration
 {
     public function __construct(

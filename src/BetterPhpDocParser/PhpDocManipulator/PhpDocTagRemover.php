@@ -12,9 +12,6 @@ use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
 final class PhpDocTagRemover
 {
-    /**
-     * @api phpunit
-     */
     public function removeByName(PhpDocInfo $phpDocInfo, string $name): bool
     {
         $hasChanged = false;

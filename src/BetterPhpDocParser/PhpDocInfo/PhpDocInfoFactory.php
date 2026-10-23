@@ -84,9 +84,6 @@ final class PhpDocInfoFactory
         return $phpDocInfo;
     }
 
-    /**
-     * @api downgrade
-     */
     public function createEmpty(Node $node): PhpDocInfo
     {
         $phpDocNode = new PhpDocNode([]);

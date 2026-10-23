@@ -26,9 +26,6 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     ) {
     }
 
-    /**
-     * @api
-     */
     public function removeValue(string $desiredKey): void
     {
         foreach ($this->values as $key => $value) {

@@ -113,9 +113,6 @@ final readonly class PropertyManipulator
         return false;
     }
 
-    /**
-     * @api Used in rector-symfony
-     */
     public function resolveExistingClassPropertyNameByType(Class_ $class, ObjectType $objectType): ?string
     {
         foreach ($class->getProperties() as $property) {

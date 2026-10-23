@@ -7,9 +7,6 @@ namespace Rector\Transform\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
-/**
- * @api used in deprecated FuncCallToMethodCallRector configs
- */
 final readonly class FuncCallToMethodCall
 {
     public function __construct(

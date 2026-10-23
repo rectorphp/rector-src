@@ -8,9 +8,6 @@ use Rector\RuleDoc\AbstractCodeSample;
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
 
-/**
- * @api
- */
 final class ConfiguredCodeSample extends AbstractCodeSample implements CodeSampleInterface
 {
     /**

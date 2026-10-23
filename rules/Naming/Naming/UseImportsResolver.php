@@ -36,7 +36,6 @@ final readonly class UseImportsResolver
     }
 
     /**
-     * @api
      * @return Use_[]
      */
     public function resolveBareUses(): array

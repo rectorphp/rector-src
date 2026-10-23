@@ -36,9 +36,6 @@ final readonly class ClassManipulator
         return false;
     }
 
-    /**
-     * @api phpunit
-     */
     public function hasTrait(Class_ $class, string $desiredTrait): bool
     {
         foreach ($class->getTraitUses() as $traitUse) {

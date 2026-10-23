@@ -116,9 +116,6 @@ final class LazyContainerFactory
         ClassReflectionFactory::class,
     ];
 
-    /**
-     * @api used as next rectorConfig factory
-     */
     public function create(): RectorConfig
     {
         $rectorConfig = new RectorConfig();

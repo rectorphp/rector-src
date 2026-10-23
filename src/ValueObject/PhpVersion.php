@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject;
 
-/**
- * @api
- */
 final class PhpVersion
 {
     public const int PHP_52 = 50200;

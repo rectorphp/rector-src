@@ -8,9 +8,6 @@ use PHPStan\Type\ObjectType;
 use Rector\Renaming\Contract\RenameAnnotationInterface;
 use Rector\Validation\RectorAssert;
 
-/**
- * @api used in deprecated RenameAnnotationRector configs
- */
 final readonly class RenameAnnotationByType implements RenameAnnotationInterface
 {
     public function __construct(

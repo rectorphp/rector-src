@@ -21,7 +21,6 @@ final class BinaryOpConditionsCollector
      * Similarly, for right-associative operations (e.g. `a ?? b ?? c`), the result produced by
      * the implicit parenthesization (`[a, b ?? c]`) might not match the expectations.
      *
-     * @api
      * @param class-string<BinaryOp> $binaryOpClass
      * @return array<int, Expr>
      */
