@@ -21,8 +21,6 @@ final class BridgeItem
 
     public const string DIFF_CONSOLE_FORMATTED = 'diff_console_formatted';
 
-    public const string APPLIED_RECTORS = 'applied_rectors';
-
     public const string RECTOR_CLASS = 'rector_class';
 
     public const string RECTORS_WITH_LINE_CHANGES = 'rectors_with_line_changes';

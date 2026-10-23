@@ -22,10 +22,6 @@ final class AttributeKey
      */
     public const string PHPSTAN_CACHE_PRINTER = 'phpstan_cache_printer';
 
-    public const string ASSIGNED_TO = 'assigned_to';
-
-    public const string NULLSAFE_CHECKED = 'nullsafe_checked';
-
     /**
      * PHPStan @api
      */
