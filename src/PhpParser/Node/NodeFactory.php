@@ -197,15 +197,6 @@ final readonly class NodeFactory
     /**
      * @param mixed[] $arguments
      */
-    public function createLocalMethodCall(string $method, array $arguments = []): MethodCall
-    {
-        $variable = new Variable('this');
-        return $this->createMethodCall($variable, $method, $arguments);
-    }
-
-    /**
-     * @param mixed[] $arguments
-     */
     public function createMethodCall(Expr|string $exprOrVariableName, string $method, array $arguments = []): MethodCall
     {
         $callerExpr = $this->createMethodCaller($exprOrVariableName);
