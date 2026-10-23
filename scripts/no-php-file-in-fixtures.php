@@ -32,7 +32,6 @@ final readonly class NoPhpFileInFixturesDetector
     /**
      * @param string[] $ruleTestDirectories
      * @param string[] $testDirectories
-     * @return Command::SUCCESS|Command::FAILURE
      */
     public function run(array $ruleTestDirectories, array $testDirectories): int
     {

@@ -23,7 +23,6 @@ final readonly class SameBeforeAfterFixtureDetector
 
     /**
      * @param string[] $testDirectories
-     * @return Command::SUCCESS|Command::FAILURE
      */
     public function run(array $testDirectories): int
     {
