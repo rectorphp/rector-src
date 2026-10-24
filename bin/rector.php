@@ -6,7 +6,6 @@ use Composer\XdebugHandler\XdebugHandler;
 use Nette\Utils\Json;
 use PHPStan\PharAutoloader;
 use PHPStan\Turbo\TurboExtensionEnabler;
-use PHPStan\Turbo\TurboProcessRestarter;
 use Rector\Bootstrap\AutoloadFileParameterResolver;
 use Rector\Bootstrap\RectorConfigsResolver;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
@@ -34,7 +33,7 @@ $autoloadIncluder = new AutoloadIncluder();
 $autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 
 // PHPStan Turbo replaces php-parser classes, so it is activated before preload.php declares them.
-// The same single restart also turns Xdebug off.
+// The main process only gets Turbo when php.ini loads it; the workers get it from WorkerCommandLineFactory.
 $phpstanBootstrapFile = __DIR__ . '/../../../phpstan/phpstan/bootstrap.php';
 if (! class_exists(PharAutoloader::class) && is_file($phpstanBootstrapFile)) {
     // Rector installed as a dependency: the project autoloader that loads PHPStan comes after preload.php,
@@ -45,7 +44,6 @@ if (! class_exists(PharAutoloader::class) && is_file($phpstanBootstrapFile)) {
 
 if (class_exists(PharAutoloader::class)) {
     $phpstanPharPath = dirname((string) new ReflectionClass(PharAutoloader::class)->getFileName()) . '/phpstan.phar';
-    TurboProcessRestarter::restartIfSuitable($_SERVER['argv'], $phpstanPharPath, 'rector');
     TurboExtensionEnabler::trustOwnTypesIfSuitable($_SERVER['argv'], $phpstanPharPath);
     TurboExtensionEnabler::activateIfCompatible($phpstanPharPath);
     unset($phpstanPharPath);
