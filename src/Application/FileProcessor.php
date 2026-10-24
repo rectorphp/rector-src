@@ -59,13 +59,6 @@ final readonly class FileProcessor
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-        // infinite-loop guard: remember every file content the loop produces; a rule set that
-        // keeps flipping the file between states would never settle, so once a content repeats
-        // we stop and report instead of looping forever
-        $seenContentHashes = [
-            hash('xxh128', $file->getOriginalFileContent()) => true,
-        ];
-
         do {
             $file->changeHasChanged(false);
 
@@ -88,15 +81,6 @@ final readonly class FileProcessor
             }
 
             $fileHasChanged = true;
-
-            // this exact content was already produced in an earlier pass: the rules cycle
-            // and will never converge, so stop here
-            $contentHash = hash('xxh128', $file->getFileContent());
-            if (isset($seenContentHashes[$contentHash])) {
-                return $this->createNotConvergingResult($file, $fileHasChanged);
-            }
-
-            $seenContentHashes[$contentHash] = true;
         } while (true);
 
         // 5. add as cacheable if not changed at all
