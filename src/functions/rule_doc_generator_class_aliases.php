@@ -11,7 +11,6 @@ use Rector\RuleDoc\Contract\Category\CategoryInfererInterface;
 use Rector\RuleDoc\Contract\CodeSampleInterface;
 use Rector\RuleDoc\Contract\ConfigurableRuleInterface;
 use Rector\RuleDoc\Contract\DocumentedRuleInterface;
-use Rector\RuleDoc\Contract\RuleCodeSamplePrinterInterface;
 use Rector\RuleDoc\Exception\PoorDocumentationException;
 use Rector\RuleDoc\Exception\ShouldNotHappenException;
 use Rector\RuleDoc\RuleDefinition;
@@ -22,7 +21,6 @@ $ruleDocGeneratorClassAliases = [
     DocumentedRuleInterface::class => 'Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface',
     ConfigurableRuleInterface::class => 'Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface',
     CodeSampleInterface::class => 'Symplify\RuleDocGenerator\Contract\CodeSampleInterface',
-    RuleCodeSamplePrinterInterface::class => 'Symplify\RuleDocGenerator\Contract\RuleCodeSamplePrinterInterface',
     CategoryInfererInterface::class => 'Symplify\RuleDocGenerator\Contract\Category\CategoryInfererInterface',
     RuleDefinition::class => 'Symplify\RuleDocGenerator\ValueObject\RuleDefinition',
     AbstractCodeSample::class => 'Symplify\RuleDocGenerator\ValueObject\AbstractCodeSample',
