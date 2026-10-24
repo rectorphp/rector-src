@@ -35,10 +35,8 @@ use Rector\Config\RectorConfig;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Console\Command\ComposerBasedCommand;
-use Rector\Console\Command\CustomRuleCommand;
 use Rector\Console\Command\ListRulesCommand;
 use Rector\Console\Command\ProcessCommand;
-use Rector\Console\Command\SetupCICommand;
 use Rector\Console\Command\ValidateConfigCommand;
 use Rector\Console\Command\WorkerCommand;
 use Rector\Console\ConsoleApplication;
@@ -159,10 +157,8 @@ final class LazyContainerFactory
         $rectorConfig->singleton(ProcessCommand::class);
         $rectorConfig->singleton(WorkerCommand::class);
         $rectorConfig->singleton(ValidateConfigCommand::class);
-        $rectorConfig->singleton(SetupCICommand::class);
         $rectorConfig->singleton(AllRectorRulesProvider::class);
         $rectorConfig->singleton(ListRulesCommand::class);
-        $rectorConfig->singleton(CustomRuleCommand::class);
         $rectorConfig->singleton(ComposerBasedCommand::class);
 
     }
