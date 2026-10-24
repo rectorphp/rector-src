@@ -108,27 +108,6 @@ final readonly class FileProcessor
         return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
     }
 
-    private function createNotConvergingResult(File $file, bool $fileHasChanged): FileProcessResult
-    {
-        $rectorClasses = [];
-        foreach ($file->getRectorWithLineChanges() as $rectorWithLineChange) {
-            $rectorClasses[$rectorWithLineChange->getRectorClass()] = true;
-        }
-
-        $message = sprintf(
-            'File did not stabilize, the rules keep flipping it between states. Rules applied: %s',
-            implode(', ', array_keys($rectorClasses))
-        );
-
-        // in tests a non-converging file is a rule bug that must surface, not a silent partial result
-        if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
-            throw new ShouldNotHappenException($message . ' in ' . $file->getFilePath());
-        }
-
-        $systemError = new SystemError($message, $this->filePathHelper->relativePath($file->getFilePath()));
-        return new FileProcessResult([$systemError], $file->getFileDiff(), $fileHasChanged);
-    }
-
     private function parseFileAndDecorateNodes(File $file): ?SystemError
     {
         try {
