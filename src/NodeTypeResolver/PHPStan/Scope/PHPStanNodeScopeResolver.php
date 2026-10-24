@@ -226,14 +226,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof PostInc ||
-                $node instanceof PostDec ||
-                $node instanceof PreInc ||
-                $node instanceof PreDec) {
-                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                return;
-            }
-
             if ($node instanceof ArrayDimFetch) {
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 if ($node->dim instanceof Expr) {
@@ -479,8 +471,6 @@ final readonly class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): void {
-        Assert::allIsInstanceOf($stmts, Stmt::class);
-
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
         } catch (ParserErrorsException|ParserException|ShouldNotHappenException|UndefinedVariableException) {
