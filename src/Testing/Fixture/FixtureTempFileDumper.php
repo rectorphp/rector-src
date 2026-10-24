@@ -6,6 +6,9 @@ namespace Rector\Testing\Fixture;
 
 use Nette\Utils\FileSystem;
 
+/**
+ * @api used in tests
+ */
 final class FixtureTempFileDumper
 {
     /**
