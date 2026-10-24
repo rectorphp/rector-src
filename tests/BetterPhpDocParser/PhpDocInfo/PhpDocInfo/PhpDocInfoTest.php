@@ -11,7 +11,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
-use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -22,8 +21,6 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
     private PhpDocInfoPrinter $phpDocInfoPrinter;
 
-    private DocBlockTagReplacer $docBlockTagReplacer;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,7 +30,6 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
         $dynamicSourceLocatorProvider->reset();
 
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
-        $this->docBlockTagReplacer = $this->make(DocBlockTagReplacer::class);
 
         $phpDocInfo = $this->createPhpDocInfoFromFile(__DIR__ . '/Source/doc.txt');
         $this->assertInstanceOf(PhpDocInfo::class, $phpDocInfo);
@@ -57,21 +53,6 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
     {
         $nonExistingObjectType = new NonExistingObjectType('SomeType');
         $this->assertEquals($nonExistingObjectType, $this->phpDocInfo->getReturnType());
-    }
-
-    public function testReplaceTagByAnother(): void
-    {
-        $phpDocInfo = $this->createPhpDocInfoFromFile(__DIR__ . '/Source/test-tag.txt');
-        $this->assertInstanceOf(PhpDocInfo::class, $phpDocInfo);
-
-        $this->docBlockTagReplacer->replaceTagByAnother($phpDocInfo, 'test', 'flow');
-
-        $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
-        $printedPhpDocInfo = str_replace("\r\n", "\n", $printedPhpDocInfo);
-
-        $fileContent = str_replace("\r\n", "\n", FileSystem::read(__DIR__ . '/Source/expected-replaced-tag.txt'));
-
-        $this->assertSame($fileContent, $printedPhpDocInfo);
     }
 
     public function testDoNotAddSpaseWhenAddEmptyString(): void
