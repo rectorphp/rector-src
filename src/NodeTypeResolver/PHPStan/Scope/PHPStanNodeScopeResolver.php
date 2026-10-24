@@ -36,10 +36,6 @@ use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
-use PhpParser\Node\Expr\PostDec;
-use PhpParser\Node\Expr\PostInc;
-use PhpParser\Node\Expr\PreDec;
-use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Expr\Print_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
@@ -52,7 +48,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
@@ -75,7 +70,6 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
-use PhpParser\Node\UnionType;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeCallbackScope;
@@ -102,7 +96,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\Reflection\PrivatesAccessor;
-use Webmozart\Assert\Assert;
 
 /**
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
@@ -226,14 +219,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof PostInc ||
-                $node instanceof PostDec ||
-                $node instanceof PreInc ||
-                $node instanceof PreDec) {
-                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                return;
-            }
-
             if ($node instanceof ArrayDimFetch) {
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 if ($node->dim instanceof Expr) {
@@ -315,14 +300,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof NullableType) {
                 $node->type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                return;
-            }
-
-            if ($node instanceof UnionType || $node instanceof IntersectionType) {
-                foreach ($node->types as $type) {
-                    $type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-
                 return;
             }
 
@@ -479,8 +456,6 @@ final readonly class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): void {
-        Assert::allIsInstanceOf($stmts, Stmt::class);
-
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
         } catch (ParserErrorsException|ParserException|ShouldNotHappenException|UndefinedVariableException) {
