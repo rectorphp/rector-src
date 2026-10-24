@@ -12,9 +12,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-/**
- * @api
- */
 final class FullyQualifiedObjectType extends ObjectType
 {
     public function getShortNameType(): ShortenedObjectType

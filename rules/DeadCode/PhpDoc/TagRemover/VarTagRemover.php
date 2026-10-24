@@ -54,9 +54,6 @@ final readonly class VarTagRemover
         return true;
     }
 
-    /**
-     * @api generic
-     */
     public function removeVarTag(Node $node): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);

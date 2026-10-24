@@ -11,9 +11,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
-/**
- * @api
- */
 final class AliasedObjectType extends ObjectType
 {
     public function __construct(

@@ -40,9 +40,6 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
  */
 final class TypedPropertyFromAssignsRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
-    /**
-     * @api
-     */
     public const string INLINE_PUBLIC = 'inline_public';
 
     /**

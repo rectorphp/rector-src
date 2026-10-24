@@ -48,7 +48,6 @@ final readonly class AnonymousFunctionFactory
     }
 
     /**
-     * @api
      * @param Param[] $params
      * @param Stmt[] $stmts
      */

@@ -1,12 +1,6 @@
 # deprecated code kept temporarily, ignores to drop once the deprecated API is removed
 parameters:
     ignoreErrors:
-        # deprecated, to be removed
-        -
-            message: '#^Unused Rector\\Set\\Contract\\SetInterface\:\:(.*?)$#'
-            identifier: shipmonk.deadMethod
-            path: src/Set/Contract/SetInterface.php
-
         -
             message: '#^Unused Rector\\Arguments\\ValueObject\\ReplaceArgumentDefaultValue\:\:(.*?)$#'
             identifier: shipmonk.deadMethod

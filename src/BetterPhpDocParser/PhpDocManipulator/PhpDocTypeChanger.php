@@ -241,9 +241,6 @@ final readonly class PhpDocTypeChanger
         return in_array((string) $typeNode, self::ALLOWED_IDENTIFIER_TYPENODE_TYPES, true);
     }
 
-    /**
-     * @api downgrade
-     */
     public function changeVarTypeNode(Stmt $stmt, PhpDocInfo $phpDocInfo, TypeNode $typeNode): void
     {
         $existingVarTagValueNode = $phpDocInfo->getVarTagValueNode();

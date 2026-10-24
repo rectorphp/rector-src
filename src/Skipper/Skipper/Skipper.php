@@ -13,7 +13,6 @@ use Rector\Skipper\ValueObject\SkipMatch;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
 /**
- * @api
  * @see \Rector\Tests\Skipper\Skipper\SkipperTest
  */
 final class Skipper

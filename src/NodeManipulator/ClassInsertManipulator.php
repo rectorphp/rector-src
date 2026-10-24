@@ -19,9 +19,6 @@ final readonly class ClassInsertManipulator
     ) {
     }
 
-    /**
-     * @api
-     */
     public function addAsFirstMethod(Class_ $class, Property|ClassConst|ClassMethod $addedStmt): void
     {
         $scope = $class->getAttribute(AttributeKey::SCOPE);

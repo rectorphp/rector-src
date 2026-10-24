@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor;
-use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Webmozart\Assert\Assert;
@@ -29,7 +28,6 @@ final readonly class BetterNodeFinder
     public function __construct(
         private NodeFinder $nodeFinder,
         private NodeNameResolver $nodeNameResolver,
-        private ClassAnalyzer $classAnalyzer,
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
@@ -76,7 +74,6 @@ final readonly class BetterNodeFinder
     }
 
     /**
-     * @api
      * @param Node|Node[] $nodes
      * @return Variable|null
      */
@@ -107,20 +104,6 @@ final readonly class BetterNodeFinder
     public function find(Node|array $nodes, callable $filter): array
     {
         return $this->nodeFinder->find($nodes, $filter);
-    }
-
-    /**
-     * @api symfony
-     * @param Node[] $nodes
-     * @return Class_|null
-     */
-    public function findFirstNonAnonymousClass(array $nodes): ?Node
-    {
-        // skip anonymous classes
-        return $this->findFirst(
-            $nodes,
-            fn (Node $node): bool => $node instanceof Class_ && ! $this->classAnalyzer->isAnonymousClass($node)
-        );
     }
 
     /**
@@ -195,8 +178,6 @@ final readonly class BetterNodeFinder
     }
 
     /**
-     * @api to be used
-     *
      * @template T of Node
      * @param Node[] $nodes
      * @param class-string<T>|array<class-string<T>> $types

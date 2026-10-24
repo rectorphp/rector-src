@@ -10,7 +10,6 @@ use ReflectionClass;
 final class ExtensionConfigResolver
 {
     /**
-     * @api
      * @return string[]
      */
     public function provide(): array

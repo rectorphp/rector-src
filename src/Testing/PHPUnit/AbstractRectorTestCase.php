@@ -28,9 +28,6 @@ use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\PHPUnit\ValueObject\RectorTestResult;
 use Rector\ValueObject\PhpVersion;
 
-/**
- * @api used by public
- */
 abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements RectorTestInterface
 {
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
@@ -149,8 +146,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
      * Override to test a rule that implements @see \Rector\VersionBonding\Contract\ComposerPackageConstraintInterface
      * against a package that is not installed. The versions are read from the "require" and "require-dev" sections of
      * the provided "composer.json", instead of the installed packages.
-     *
-     * @api used by extensions
      */
     protected function provideComposerJsonFilePath(): ?string
     {

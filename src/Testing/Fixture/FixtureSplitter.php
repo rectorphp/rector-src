@@ -6,9 +6,6 @@ namespace Rector\Testing\Fixture;
 
 use Nette\Utils\FileSystem;
 
-/**
- * @api
- */
 final class FixtureSplitter
 {
     public static function containsSplit(string $fixtureFileContent): bool

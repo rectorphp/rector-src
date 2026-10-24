@@ -72,7 +72,6 @@ final readonly class PropertyFetchFinder
     }
 
     /**
-     * @api used by other Rector packages
      * @return PropertyFetch[]|StaticPropertyFetch[]|NullsafePropertyFetch[]
      */
     public function findLocalPropertyFetchesByName(Class_|ClassMethod $node, string $paramName): array

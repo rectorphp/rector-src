@@ -19,9 +19,6 @@ use Rector\RuleDoc\RuleDefinition;
  */
 final class DisallowedEmptyRuleFixerRector extends AbstractRector implements ConfigurableRectorInterface, DeprecatedInterface
 {
-    /**
-     * @api
-     */
     public const string TREAT_AS_NON_EMPTY = 'treat_as_non_empty';
 
     /**
