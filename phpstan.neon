@@ -6,6 +6,7 @@ rules:
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
     - Rector\Utils\PHPStan\Rule\NoResolveClassReflectionInForeachRule
     - Rector\Utils\PHPStan\Rule\RegisterRectorRule
+    - Rector\Utils\PHPStan\Rule\NoLongInstanceofChainRule
 
 parameters:
     level: 8
@@ -77,6 +78,20 @@ parameters:
             offloadCollectorData: false
 
     ignoreErrors:
+        # long instanceof chains, to refactor into a helper/match/lookup later
+        -
+            identifier: rector.longInstanceofChain
+            path: src/NodeAnalyzer/ExprAnalyzer.php
+            count: 2
+        -
+            identifier: rector.longInstanceofChain
+            path: src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+            count: 1
+        -
+            identifier: rector.longInstanceofChain
+            path: src/PhpParser/Node/NodeFactory.php
+            count: 1
+
         # called magically by parent
         -
             message: '#^Unused Rector\\PhpParser\\Printer\\BetterStandardPrinter\:\:(pInterpolatedStringPart|pStmt_FileNode)$#'
