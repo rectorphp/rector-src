@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject;
 
-/**
- * @api
- */
 final class PhpVersionFeature
 {
     public const int PROPERTY_MODIFIER = PhpVersion::PHP_52;
 
     public const int CONTINUE_TO_BREAK = PhpVersion::PHP_52;
-
-    public const int NO_REFERENCE_IN_NEW = PhpVersion::PHP_53;
 
     public const int SERVER_VAR = PhpVersion::PHP_53;
 
@@ -29,8 +24,6 @@ final class PhpVersionFeature
 
     public const int SHORT_ARRAY = PhpVersion::PHP_54;
 
-    public const int DATE_TIME_INTERFACE = PhpVersion::PHP_55;
-
     /**
      * @see https://wiki.php.net/rfc/class_name_scalars
      */
@@ -39,8 +32,6 @@ final class PhpVersionFeature
     public const int PREG_REPLACE_CALLBACK_E_MODIFIER = PhpVersion::PHP_55;
 
     public const int EXP_OPERATOR = PhpVersion::PHP_56;
-
-    public const int REQUIRE_DEFAULT_VALUE = PhpVersion::PHP_56;
 
     public const int SCALAR_TYPES = PhpVersion::PHP_70;
 
@@ -68,8 +59,6 @@ final class PhpVersionFeature
 
     public const int NO_EREG_FUNCTION = PhpVersion::PHP_70;
 
-    public const int VARIABLE_ON_FUNC_CALL = PhpVersion::PHP_70;
-
     public const int NO_MKTIME_WITHOUT_ARG = PhpVersion::PHP_70;
 
     public const int NO_EMPTY_LIST = PhpVersion::PHP_70;
@@ -88,11 +77,7 @@ final class PhpVersionFeature
 
     public const int ANONYMOUS_FUNCTION_RETURN_TYPE = PhpVersion::PHP_70;
 
-    public const int ITERABLE_TYPE = PhpVersion::PHP_71;
-
     public const int VOID_TYPE = PhpVersion::PHP_71;
-
-    public const int CONSTANT_VISIBILITY = PhpVersion::PHP_71;
 
     public const int ARRAY_DESTRUCT = PhpVersion::PHP_71;
 
@@ -104,8 +89,6 @@ final class PhpVersionFeature
 
     public const int NO_EXTRA_PARAMETERS = PhpVersion::PHP_71;
 
-    public const int RESERVED_OBJECT_KEYWORD = PhpVersion::PHP_71;
-
     public const int DEPRECATE_EACH = PhpVersion::PHP_72;
 
     public const int OBJECT_TYPE = PhpVersion::PHP_72;
@@ -115,8 +98,6 @@ final class PhpVersionFeature
     public const int DEPRECATE_CREATE_FUNCTION = PhpVersion::PHP_72;
 
     public const int NO_NULL_ON_GET_CLASS = PhpVersion::PHP_72;
-
-    public const int INVERTED_BOOL_IS_OBJECT_INCOMPLETE_CLASS = PhpVersion::PHP_72;
 
     public const int RESULT_ARG_IN_PARSE_STR = PhpVersion::PHP_72;
 
@@ -151,22 +132,13 @@ final class PhpVersionFeature
 
     public const int ARROW_FUNCTION = PhpVersion::PHP_74;
 
-    public const int LITERAL_SEPARATOR = PhpVersion::PHP_74;
-
     public const int NULL_COALESCE_ASSIGN = PhpVersion::PHP_74;
 
     public const int TYPED_PROPERTIES = PhpVersion::PHP_74;
 
-    /**
-     * @see https://wiki.php.net/rfc/covariant-returns-and-contravariant-parameters
-     */
-    public const int COVARIANT_RETURN = PhpVersion::PHP_74;
-
     public const int ARRAY_SPREAD = PhpVersion::PHP_74;
 
     public const int DEPRECATE_CURLY_BRACKET_ARRAY_STRING = PhpVersion::PHP_74;
-
-    public const int DEPRECATE_REAL = PhpVersion::PHP_74;
 
     public const int DEPRECATE_MONEY_FORMAT = PhpVersion::PHP_74;
 
@@ -175,10 +147,6 @@ final class PhpVersionFeature
     public const int FILTER_VAR_TO_ADD_SLASHES = PhpVersion::PHP_74;
 
     public const int CHANGE_MB_STRPOS_ARG_POSITION = PhpVersion::PHP_74;
-
-    public const int RESERVED_FN_FUNCTION_NAME = PhpVersion::PHP_74;
-
-    public const int REFLECTION_TYPE_GETNAME = PhpVersion::PHP_74;
 
     public const int EXPORT_TO_REFLECTION_FUNCTION = PhpVersion::PHP_74;
 
@@ -196,8 +164,6 @@ final class PhpVersionFeature
 
     public const int NO_FINAL_PRIVATE = PhpVersion::PHP_80;
 
-    public const int DEPRECATE_REQUIRED_PARAMETER_AFTER_OPTIONAL = PhpVersion::PHP_80;
-
     public const int STATIC_VISIBILITY_SET_STATE = PhpVersion::PHP_80;
 
     public const int NULLSAFE_OPERATOR = PhpVersion::PHP_80;
@@ -207,8 +173,6 @@ final class PhpVersionFeature
     public const int NULLABLE_TYPE = PhpVersion::PHP_71;
 
     public const int PARENT_VISIBILITY_OVERRIDE = PhpVersion::PHP_72;
-
-    public const int COUNT_ON_NULL = PhpVersion::PHP_71;
 
     /**
      * @see https://wiki.php.net/rfc/constructor_promotion
@@ -221,8 +185,6 @@ final class PhpVersionFeature
     public const int ATTRIBUTES = PhpVersion::PHP_80;
 
     public const int STRINGABLE = PhpVersion::PHP_80;
-
-    public const int PHP_TOKEN = PhpVersion::PHP_80;
 
     public const int STR_ENDS_WITH = PhpVersion::PHP_80;
 
@@ -268,19 +230,9 @@ final class PhpVersionFeature
     public const int NON_CAPTURING_CATCH = PhpVersion::PHP_80;
 
     /**
-     * @see https://www.php.net/manual/en/migration80.incompatible.php#migration80.incompatible.resource2object
-     */
-    public const int PHP8_RESOURCE_TO_OBJECT = PhpVersion::PHP_80;
-
-    /**
      * @see https://wiki.php.net/rfc/lsp_errors
      */
     public const int FATAL_ERROR_ON_INCOMPATIBLE_METHOD_SIGNATURE = PhpVersion::PHP_80;
-
-    /**
-     * @see https://www.php.net/manual/en/migration81.incompatible.php#migration81.incompatible.resource2object
-     */
-    public const int PHP81_RESOURCE_TO_OBJECT = PhpVersion::PHP_81;
 
     /**
      * @see https://wiki.php.net/rfc/new_in_initializers
@@ -298,24 +250,9 @@ final class PhpVersionFeature
     public const int UNION_INTERSECTION_TYPES = PhpVersion::PHP_82;
 
     /**
-     * @see https://wiki.php.net/rfc/array_unpacking_string_keys
-     */
-    public const int ARRAY_SPREAD_STRING_KEYS = PhpVersion::PHP_81;
-
-    /**
-     * @see https://wiki.php.net/rfc/internal_method_return_types
-     */
-    public const int RETURN_TYPE_WILL_CHANGE_ATTRIBUTE = PhpVersion::PHP_81;
-
-    /**
      * @see https://wiki.php.net/rfc/first_class_callable_syntax
      */
     public const int FIRST_CLASS_CALLABLE_SYNTAX = PhpVersion::PHP_81;
-
-    /**
-     * @see https://wiki.php.net/rfc/deprecate_dynamic_properties
-     */
-    public const int DEPRECATE_DYNAMIC_PROPERTIES = PhpVersion::PHP_82;
 
     /**
      * @see https://wiki.php.net/rfc/readonly_classes
@@ -336,11 +273,6 @@ final class PhpVersionFeature
      * @see https://wiki.php.net/rfc/mixed_type_v2
      */
     public const int MIXED_TYPE = PhpVersion::PHP_80;
-
-    /**
-     * @see https://3v4l.org/OWtO5
-     */
-    public const int ARRAY_ON_ARRAY_MERGE = PhpVersion::PHP_80;
 
     public const int DEPRECATE_NULL_ARG_IN_STRING_FUNCTION = PhpVersion::PHP_81;
 
