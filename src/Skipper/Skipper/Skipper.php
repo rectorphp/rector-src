@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\Skipper;
 
-use PhpParser\Node;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Contract\Rector\RectorInterface;
-use Rector\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Skipper\Matcher\FileInfoMatcher;
 use Rector\Skipper\ValueObject\SkipMatch;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
@@ -36,7 +33,6 @@ final class Skipper
     private array $usedSkips = [];
 
     public function __construct(
-        private readonly RectifiedAnalyzer $rectifiedAnalyzer,
         private readonly PathSkipper $pathSkipper,
         private readonly FileInfoMatcher $fileInfoMatcher,
         private readonly ReflectionProvider $reflectionProvider,
@@ -168,14 +164,6 @@ final class Skipper
             $skippedClassNames,
             fn (string $class): bool => is_a($class, DeprecatedInterface::class, true)
         );
-    }
-
-    /**
-     * @param class-string<RectorInterface> $rectorClass
-     */
-    public function shouldSkipCurrentNode(string $rectorClass, Node $node): bool
-    {
-        return $this->rectifiedAnalyzer->hasRectified($rectorClass, $node);
     }
 
     private function markUsed(string $skip, ?string $path = null): void
