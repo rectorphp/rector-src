@@ -14,8 +14,6 @@ use Rector\RuleDoc\Exception\ShouldNotHappenException;
  */
 final class RuleDefinition
 {
-    private ?string $ruleClass = null;
-
     private ?string $ruleFilePath = null;
 
     /**
@@ -44,20 +42,6 @@ final class RuleDefinition
         return $this->description;
     }
 
-    public function setRuleClass(string $ruleClass): void
-    {
-        $this->ruleClass = $ruleClass;
-    }
-
-    public function getRuleClass(): string
-    {
-        if ($this->ruleClass === null) {
-            throw new ShouldNotHappenException();
-        }
-
-        return $this->ruleClass;
-    }
-
     public function setRuleFilePath(string $ruleFilePath): void
     {
         // fir relative file path for GitHub
@@ -71,16 +55,6 @@ final class RuleDefinition
         }
 
         return $this->ruleFilePath;
-    }
-
-    public function getRuleShortClass(): string
-    {
-        if ($this->ruleClass === null) {
-            throw new ShouldNotHappenException();
-        }
-
-        // get short class name
-        return basename(str_replace('\\', '/', $this->ruleClass));
     }
 
     /**
