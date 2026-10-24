@@ -15,10 +15,8 @@ use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -54,8 +52,8 @@ MESSAGE_ERROR;
             );
         } catch (Throwable $throwable) {
             if ($throwable->getMessage() === "File 'phar://phpstan.phar/conf/bleedingEdge.neon' is missing or is not readable.") {
-                $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
-                $symfonyStyle->error(
+                $rectorStyle = new RectorStyleFactory()->create();
+                $rectorStyle->error(
                     str_replace("\r\n", "\n", sprintf(
                         self::INVALID_BLEEDING_EDGE_PATH_MESSAGE,
                         $throwable->getMessage()

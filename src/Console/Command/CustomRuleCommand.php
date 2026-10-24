@@ -4,31 +4,38 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Entropy\Console\Contract\CommandInterface;
+use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyle;
 
-final class CustomRuleCommand extends Command
+final readonly class CustomRuleCommand implements CommandInterface
 {
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle
+        private RectorStyle $rectorStyle
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function getName(): string
     {
-        $this->setName('custom-rule');
-        $this->setDescription('[DEPRECATED] Create base of local custom rule with tests');
+        return 'custom-rule';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getDescription(): string
     {
-        $this->symfonyStyle->error(
+        return '[DEPRECATED] Create base of local custom rule with tests';
+    }
+
+    /**
+     * @api invoked via reflection by the Entropy console application
+     *
+     * @return ExitCode::*
+     */
+    public function run(): int
+    {
+        $this->rectorStyle->error(
             'The "custom-rule" command is deprecated and no longer generates files. Use an AI agent to scaffold a custom rule instead - it handles the setup faster and with less guesswork.'
         );
 
-        return Command::FAILURE;
+        return ExitCode::FAILURE;
     }
 }

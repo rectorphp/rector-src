@@ -14,7 +14,6 @@
 Applied rules:
  * LongArrayToShortArrayRector
 
-
 2) src/File11.php:1
 
     ---------- begin diff ----------
@@ -27,7 +26,6 @@ Applied rules:
 
 Applied rules:
  * LongArrayToShortArrayRector
-
 
 3) src/File12.php:1
 
@@ -42,7 +40,6 @@ Applied rules:
 Applied rules:
  * LongArrayToShortArrayRector
 
-
 4) src/File01.php:1
 
     ---------- begin diff ----------
@@ -55,7 +52,6 @@ Applied rules:
 
 Applied rules:
  * LongArrayToShortArrayRector
-
 
 5) src/File02.php:1
 
@@ -70,7 +66,6 @@ Applied rules:
 Applied rules:
  * LongArrayToShortArrayRector
 
-
 6) src/File03.php:1
 
     ---------- begin diff ----------
@@ -83,7 +78,6 @@ Applied rules:
 
 Applied rules:
  * LongArrayToShortArrayRector
-
 
 7) src/File04.php:1
 
@@ -98,7 +92,6 @@ Applied rules:
 Applied rules:
  * LongArrayToShortArrayRector
 
-
 8) src/File05.php:1
 
     ---------- begin diff ----------
@@ -111,7 +104,6 @@ Applied rules:
 
 Applied rules:
  * LongArrayToShortArrayRector
-
 
 9) src/File06.php:1
 
@@ -126,7 +118,6 @@ Applied rules:
 Applied rules:
  * LongArrayToShortArrayRector
 
-
 10) src/File07.php:1
 
     ---------- begin diff ----------
@@ -140,7 +131,6 @@ Applied rules:
 Applied rules:
  * LongArrayToShortArrayRector
 
-
 11) src/File08.php:1
 
     ---------- begin diff ----------
@@ -153,7 +143,6 @@ Applied rules:
 
 Applied rules:
  * LongArrayToShortArrayRector
-
 
 12) src/File09.php:1
 

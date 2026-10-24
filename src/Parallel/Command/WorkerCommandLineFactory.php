@@ -7,85 +7,73 @@ namespace Rector\Parallel\Command;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\Option;
 use Rector\FileSystem\FilePathHelper;
-use Rector\Parallel\Exception\ParallelShouldNotHappenException;
-use Rector\Parallel\Reflection\CommandFromReflectionFactory;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
+use Rector\ValueObject\Configuration;
 
 /**
  * @see \Rector\Tests\Parallel\Command\WorkerCommandLineFactoryTest
- * @todo possibly extract to symplify/easy-parallel
  */
 final readonly class WorkerCommandLineFactory
 {
     private const string OPTION_DASHES = '--';
 
     public function __construct(
-        private CommandFromReflectionFactory $commandFromReflectionFactory,
         private FilePathHelper $filePathHelper
     ) {
     }
 
     /**
-     * @param class-string<Command> $mainCommandClass
+     * Build the worker subprocess command line from the resolved Configuration.
+     * Options mirror the Entropy run() contract: a flag is "--name", a value option "--name value".
      */
     public function create(
         string $mainScript,
-        string $mainCommandClass,
         string $workerCommandName,
-        InputInterface $input,
+        Configuration $configuration,
         string $identifier,
-        int $port
+        int $port,
     ): string {
-        $commandArguments = array_slice($_SERVER['argv'], 1);
+        $workerCommandArray = [escapeshellarg(PHP_BINARY), escapeshellarg($mainScript), $workerCommandName];
 
-        // add implicit "process" command name if missing
-        if ($commandArguments !== [] && ($commandArguments[0] !== 'process' && $commandArguments[0] !== 'p') && ! defined(
-            'PHPUNIT_COMPOSER_INSTALL'
-        )) {
-            $commandArguments = array_merge(['process'], $commandArguments);
+        if ($configuration->isDryRun()) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::DRY_RUN;
         }
 
-        $args = [PHP_BINARY, $mainScript, ...$commandArguments];
-        $workerCommandArray = [];
-
-        $mainCommand = $this->commandFromReflectionFactory->create($mainCommandClass);
-
-        if ($mainCommand->getName() === null) {
-            $errorMessage = sprintf('The command name for "%s" is missing', $mainCommand::class);
-            throw new ParallelShouldNotHappenException($errorMessage);
+        if ($configuration->shouldClearCache()) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::CLEAR_CACHE;
         }
 
-        $mainCommandName = $mainCommand->getName();
-        $mainCommandNames = [$mainCommandName, $mainCommandName[0]];
-
-        foreach ($args as $arg) {
-            // skip command name
-            if (in_array($arg, $mainCommandNames, true)) {
-                break;
-            }
-
-            $workerCommandArray[] = escapeshellarg((string) $arg);
+        if ($configuration->isComposerBased()) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::COMPOSER_BASED;
         }
 
-        $workerCommandArray[] = $workerCommandName;
+        if ($configuration->isPhpOnly()) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::PHP;
+        }
 
-        $mainCommandOptionNames = $this->getCommandOptionNames($mainCommand);
-        $workerCommandOptions = $this->mirrorCommandOptions($input, $mainCommandOptionNames);
-        $workerCommandArray = array_merge($workerCommandArray, $workerCommandOptions);
+        // narrow the run to the same rules
+        foreach ($configuration->getOnlyRules() as $onlyRule) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::ONLY;
+            $workerCommandArray[] = escapeshellarg($onlyRule);
+        }
+
+        $onlySuffix = $configuration->getOnlySuffix();
+        if ($onlySuffix !== null && $onlySuffix !== '') {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::ONLY_SUFFIX;
+            $workerCommandArray[] = escapeshellarg($onlySuffix);
+        }
+
+        $memoryLimit = $configuration->getMemoryLimit();
+        if ($memoryLimit !== null && $memoryLimit !== '') {
+            // "=" form, so a negative value like -1 is not parsed as another option
+            $workerCommandArray[] = self::OPTION_DASHES . Option::MEMORY_LIMIT . '=' . escapeshellarg($memoryLimit);
+        }
 
         // for TCP local server
-        $workerCommandArray[] = '--port';
-        $workerCommandArray[] = $port;
+        $workerCommandArray[] = self::OPTION_DASHES . Option::PARALLEL_PORT;
+        $workerCommandArray[] = (string) $port;
 
-        $workerCommandArray[] = '--identifier';
+        $workerCommandArray[] = self::OPTION_DASHES . Option::PARALLEL_IDENTIFIER;
         $workerCommandArray[] = escapeshellarg($identifier);
-
-        /** @var string[] $paths */
-        $paths = $input->getArgument(Option::SOURCE);
-        foreach ($paths as $path) {
-            $workerCommandArray[] = escapeshellarg($path);
-        }
 
         // set json output
         $workerCommandArray[] = self::OPTION_DASHES . Option::OUTPUT_FORMAT;
@@ -95,118 +83,44 @@ final readonly class WorkerCommandLineFactory
         // @see https://github.com/symfony/symfony/issues/1238
         $workerCommandArray[] = '--no-ansi';
 
-        // Only pass --config if explicitly set via command line
-        // If not set, the worker will resolve config using RectorConfigsResolver fallback mechanism
-        if ($input->hasOption(Option::CONFIG)) {
-            $configValue = $input->getOption(Option::CONFIG);
-            if (is_string($configValue) && $configValue !== '') {
-                $workerCommandArray[] = '--config';
-                /**
-                 * On parallel, the command is generated with `--config` addition
-                 * Using escapeshellarg() to ensure the --config path escaped, even when it has a space.
-                 *
-                 * eg:
-                 *    --config /path/e2e/parallel with space/rector.php
-                 *
-                 * that can cause error:
-                 *
-                 *    File /rector-src/e2e/parallel\" was not found
-                 *
-                 * the escaped result is:
-                 *
-                 *    --config '/path/e2e/parallel with space/rector.php'
-                 *
-                 * tested in macOS and Ubuntu (github action)
-                 */
-                $config = $configValue;
-                $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
-            }
+        // only pass --config if explicitly set via command line; otherwise the worker resolves it
+        // through the RectorConfigsResolver fallback, same as the main process
+        $config = $this->resolveConfigFromArgv();
+        if ($config !== null) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::CONFIG;
+            $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
         }
 
-        if ((bool) $input->getOption(Option::COMPOSER_BASED)) {
-            $workerCommandArray[] = self::OPTION_DASHES . Option::COMPOSER_BASED;
+        // paths last, as positional arguments
+        foreach ($configuration->getPaths() as $path) {
+            $workerCommandArray[] = escapeshellarg($path);
         }
 
         return implode(' ', $workerCommandArray);
     }
 
-    private function shouldSkipOption(InputInterface $input, string $optionName): bool
-    {
-        if (! $input->hasOption($optionName)) {
-            return true;
-        }
-
-        // skip output format and config, handled separately in create()
-        return $optionName === Option::OUTPUT_FORMAT || $optionName === Option::CONFIG;
-    }
-
     /**
-     * @return string[]
+     * Resolve "--config <file>", "--config=<file>", "-c <file>" or "-c=<file>" from raw argv.
      */
-    private function getCommandOptionNames(Command $command): array
+    private function resolveConfigFromArgv(): ?string
     {
-        $inputDefinition = $command->getDefinition();
+        $argv = $_SERVER['argv'] ?? [];
 
-        $optionNames = [];
-        foreach ($inputDefinition->getOptions() as $inputOption) {
-            $optionNames[] = $inputOption->getName();
-        }
-
-        return $optionNames;
-    }
-
-    /**
-     * Keeps all options that are allowed in check command options
-     *
-     * @param string[] $mainCommandOptionNames
-     * @return string[]
-     */
-    private function mirrorCommandOptions(InputInterface $input, array $mainCommandOptionNames): array
-    {
-        $workerCommandOptions = [];
-
-        foreach ($mainCommandOptionNames as $mainCommandOptionName) {
-            if ($this->shouldSkipOption($input, $mainCommandOptionName)) {
-                continue;
+        foreach ($argv as $index => $arg) {
+            if ($arg === self::OPTION_DASHES . Option::CONFIG || $arg === '-c') {
+                $nextArg = $argv[$index + 1] ?? null;
+                return is_string($nextArg) ? $nextArg : null;
             }
 
-            /** @var bool|string|string[]|null $optionValue */
-            $optionValue = $input->getOption($mainCommandOptionName);
-
-            // skip clutter
-            if ($optionValue === null) {
-                continue;
+            if (is_string($arg) && str_starts_with($arg, self::OPTION_DASHES . Option::CONFIG . '=')) {
+                return substr($arg, strlen(self::OPTION_DASHES . Option::CONFIG . '='));
             }
 
-            if (is_bool($optionValue)) {
-                if ($optionValue) {
-                    $workerCommandOptions[] = self::OPTION_DASHES . $mainCommandOptionName;
-                }
-
-                continue;
-            }
-
-            // array options (e.g. repeated --only) are mirrored one flag per value
-            if (is_array($optionValue)) {
-                foreach ($optionValue as $singleOptionValue) {
-                    $workerCommandOptions[] = self::OPTION_DASHES . $mainCommandOptionName;
-                    $workerCommandOptions[] = \escapeshellarg($singleOptionValue);
-                }
-
-                continue;
-            }
-
-            if ($mainCommandOptionName === 'memory-limit') {
-                // symfony/console does not accept -1 as value without assign
-                $workerCommandOptions[] = self::OPTION_DASHES . $mainCommandOptionName . '=' . \escapeshellarg(
-                    $optionValue
-                );
-            } else {
-                $workerCommandOptions[] = self::OPTION_DASHES . $mainCommandOptionName;
-                $workerCommandOptions[] = \escapeshellarg($optionValue);
+            if (is_string($arg) && str_starts_with($arg, '-c=')) {
+                return substr($arg, strlen('-c='));
             }
         }
 
-        return $workerCommandOptions;
+        return null;
     }
 }

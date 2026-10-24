@@ -13,6 +13,7 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
+use Rector\Console\Style\RectorStyle;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\FilePathHelper;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
@@ -27,7 +28,6 @@ use Rector\ValueObject\Application\File;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\FileProcessResult;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 final readonly class FileProcessor
@@ -35,7 +35,7 @@ final readonly class FileProcessor
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
-        private SymfonyStyle $symfonyStyle,
+        private RectorStyle $rectorStyle,
         private FileDiffFactory $fileDiffFactory,
         private ChangedFilesDetector $changedFilesDetector,
         private ErrorFactory $errorFactory,
@@ -126,7 +126,7 @@ final readonly class FileProcessor
 
             return $this->errorFactory->createAutoloadError($analysedCodeException, $file->getFilePath());
         } catch (Throwable $throwable) {
-            if ($this->symfonyStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
+            if ($this->rectorStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;
             }
 

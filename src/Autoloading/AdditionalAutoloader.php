@@ -7,7 +7,6 @@ namespace Rector\Autoloading;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
-use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\Assert\Assert;
 
 /**
@@ -20,15 +19,14 @@ final readonly class AdditionalAutoloader
     ) {
     }
 
-    public function autoloadInput(InputInterface $input): void
+    public function autoloadFile(): void
     {
-        if (! $input->hasOption(Option::AUTOLOAD_FILE)) {
+        if (! SimpleParameterProvider::hasParameter(Option::AUTOLOAD_FILE)) {
             return;
         }
 
-        /** @var string|null $autoloadFile */
-        $autoloadFile = $input->getOption(Option::AUTOLOAD_FILE);
-        if ($autoloadFile === null) {
+        $autoloadFile = SimpleParameterProvider::provideStringParameter(Option::AUTOLOAD_FILE);
+        if ($autoloadFile === '') {
             return;
         }
 

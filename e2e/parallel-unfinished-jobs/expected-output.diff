@@ -14,7 +14,6 @@
 Applied rules:
  * LongArrayToShortArrayRector
 
-
 2) src/File4.php:1
 
     ---------- begin diff ----------
@@ -30,8 +29,7 @@ Applied rules:
 
 
  [ERROR] Could not process "src/File2.php" file, due to:
-         "Syntax error, unexpected ';'". On line: 3
+"Syntax error, unexpected ';'". On line: 3
 
  [ERROR] Could not process some files, due to:
-         "Some parallel jobs have not finished, results for 1 of 4 files are
-         missing".
+"Some parallel jobs have not finished, results for 1 of 4 files are missing".

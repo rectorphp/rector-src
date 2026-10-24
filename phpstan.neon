@@ -77,6 +77,11 @@ parameters:
             offloadCollectorData: false
 
     ignoreErrors:
+        # services are instantiated by the container via reflection, which shipmonk cannot see
+        -
+            identifier: shipmonk.deadMethod
+            message: '#::__construct$#'
+
         # called magically by parent
         -
             message: '#^Unused Rector\\PhpParser\\Printer\\BetterStandardPrinter\:\:(pInterpolatedStringPart|pStmt_FileNode)$#'
@@ -99,9 +104,6 @@ parameters:
         -
             identifier: argument.type
             message: '#expects array<PhpParser\\Node\\Stmt>, array<PhpParser\\Node> given#'
-
-        # unable for the downgraded rector to find the class, but it is there
-        - identifier: symplify.commandHasAsCommandAttribute
 
         # false positive, can accept non-class string
         -
