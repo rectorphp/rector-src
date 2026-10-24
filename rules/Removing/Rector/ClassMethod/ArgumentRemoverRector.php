@@ -115,9 +115,13 @@ CODE_SAMPLE
     ): void {
         if ($argumentRemover->getValue() === null) {
             if ($node instanceof MethodCall || $node instanceof StaticCall) {
-                unset($node->args[$argumentRemover->getPosition()]);
-            } else {
+                if (isset($node->args[$argumentRemover->getPosition()])) {
+                    unset($node->args[$argumentRemover->getPosition()]);
+                    $this->hasChanged = true;
+                }
+            } elseif (isset($node->params[$argumentRemover->getPosition()])) {
                 unset($node->params[$argumentRemover->getPosition()]);
+                $this->hasChanged = true;
             }
 
             return;
@@ -149,6 +153,7 @@ CODE_SAMPLE
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
             if (isset($node->args[$position]) && $this->isName($node->args[$position], $name)) {
                 unset($node->args[$position]);
+                $this->hasChanged = true;
             }
 
             return;
@@ -159,6 +164,7 @@ CODE_SAMPLE
         }
 
         unset($node->params[$position]);
+        $this->hasChanged = true;
     }
 
     /**
