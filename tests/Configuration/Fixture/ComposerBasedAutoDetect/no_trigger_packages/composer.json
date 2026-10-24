@@ -1,0 +1,6 @@
+{
+    "type": "project",
+    "require": {
+        "webmozart/assert": "^1.11"
+    }
+}
