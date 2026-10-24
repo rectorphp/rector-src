@@ -35,7 +35,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\NarrowObjectReturnTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\PrivateMethodReturnTypeFromStrictNewArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
@@ -140,7 +139,6 @@ final class TypeDeclarationLevel
 
         // param
         AddMethodCallBasedStrictParamTypeRector::class,
-        ParamTypeByParentCallTypeRector::class,
 
         NarrowObjectReturnTypeRector::class,
 
