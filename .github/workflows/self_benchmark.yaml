@@ -1,0 +1,47 @@
+# Runs scripts/rector-ab-benchmark.php on Rector's own rules/ with the base branch and with the pull request,
+# and puts the A/B table in the job summary
+name: Self Benchmark
+
+on:
+    pull_request:
+        branches:
+            - main
+
+env:
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    self_benchmark:
+        runs-on: ubuntu-latest
+        timeout-minutes: 40
+
+        steps:
+            -
+                uses: actions/checkout@v5
+                with:
+                    ref: ${{ github.event.pull_request.base.sha }}
+                    path: base
+
+            -
+                uses: actions/checkout@v5
+                with:
+                    path: head
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    coverage: none
+
+            -   run: composer install --no-progress --ansi --working-dir=base
+            -   run: composer install --no-progress --ansi --working-dir=head
+
+            # GNU time gives the CPU time and peak memory
+            -   run: sudo apt-get install -y time
+
+            # both sides process the same code: the rules/ directory of the pull request
+            -   run: php head/scripts/rector-ab-benchmark.php --bin=base/bin/rector --project=head/rules --runs=5 --save=base.json
+            -   run: php head/scripts/rector-ab-benchmark.php --bin=head/bin/rector --project=head/rules --runs=5 --baseline=base.json | tee results.txt
+
+            -   run: cat results.txt >> "$GITHUB_STEP_SUMMARY"
+                if: always()
