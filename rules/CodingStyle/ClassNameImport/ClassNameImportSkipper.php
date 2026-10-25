@@ -230,11 +230,7 @@ final readonly class ClassNameImportSkipper
                 continue;
             }
 
-            if ($namespace === '') {
-                return true;
-            }
-
-            if ($namespace !== $fullyQualifiedObjectTypeNamespace) {
+            if ($namespace === '' || $namespace !== $fullyQualifiedObjectTypeNamespace) {
                 return true;
             }
         }
