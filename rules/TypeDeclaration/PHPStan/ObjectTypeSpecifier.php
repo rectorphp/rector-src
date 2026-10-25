@@ -44,8 +44,9 @@ final readonly class ObjectTypeSpecifier
         Scope|null $scope,
         bool $withPreslash = false
     ): TypeWithClassName|NonExistingObjectType|UnionType|MixedType|TemplateType {
-        $className = ltrim($objectType->getClassName(), '\\');
-        if (str_starts_with($objectType->getClassName(), '\\')) {
+        $rawClassName = $objectType->getClassName();
+        $className = ltrim($rawClassName, '\\');
+        if (str_starts_with($rawClassName, '\\')) {
             return new FullyQualifiedObjectType($className);
         }
 
@@ -87,27 +88,18 @@ final readonly class ObjectTypeSpecifier
 
             $classReflection = $scope->getClassReflection();
             if ($classReflection instanceof ClassReflection) {
-                $templateTags = $classReflection->getTemplateTags();
                 $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
                 $templateTypeScope = $nameScope->getTemplateTypeScope();
+                $currentTemplateTag = $classReflection->getTemplateTags()[$className] ?? null;
 
-                if (! $templateTypeScope instanceof TemplateTypeScope) {
-                    // invalid type
-                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);
+                if ($templateTypeScope instanceof TemplateTypeScope && $currentTemplateTag !== null) {
+                    return TemplateTypeFactory::create(
+                        $templateTypeScope,
+                        $currentTemplateTag->getName(),
+                        $currentTemplateTag->getBound(),
+                        $currentTemplateTag->getVariance()
+                    );
                 }
-
-                $currentTemplateTag = $templateTags[$className] ?? null;
-                if ($currentTemplateTag === null) {
-                    // invalid type
-                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);
-                }
-
-                return TemplateTypeFactory::create(
-                    $templateTypeScope,
-                    $currentTemplateTag->getName(),
-                    $currentTemplateTag->getBound(),
-                    $currentTemplateTag->getVariance()
-                );
             }
         }
 
@@ -120,15 +112,7 @@ final readonly class ObjectTypeSpecifier
         string $className,
         bool $withPreslash
     ): NonExistingObjectType {
-        if ($namespacedName === null) {
-            return new NonExistingObjectType($className);
-        }
-
-        if ($withPreslash) {
-            return new NonExistingObjectType($className);
-        }
-
-        if (str_contains($className, '\\')) {
+        if ($namespacedName === null || $withPreslash || str_contains($className, '\\')) {
             return new NonExistingObjectType($className);
         }
 
@@ -153,14 +137,12 @@ final readonly class ObjectTypeSpecifier
                     continue;
                 }
 
-                $useName = $prefix . $useUse->name->toString();
                 $alias = $useUse->alias->toString();
                 $fullyQualifiedName = $prefix . $useUse->name->toString();
 
                 $processAliasedObject = $this->processAliasedObject(
                     $alias,
                     $className,
-                    $useName,
                     $fullyQualifiedName
                 );
 
@@ -176,7 +158,6 @@ final readonly class ObjectTypeSpecifier
     private function processAliasedObject(
         string $alias,
         string $className,
-        string $useName,
         string $fullyQualifiedName
     ): ?AliasedObjectType {
         // A. is alias in use statement matching this class alias
@@ -185,7 +166,7 @@ final readonly class ObjectTypeSpecifier
         }
 
         // B. is aliased classes matching the class name
-        if ($useName === $className) {
+        if ($fullyQualifiedName === $className) {
             return new AliasedObjectType($className, $fullyQualifiedName);
         }
 
