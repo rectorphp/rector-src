@@ -1,0 +1,15 @@
+<?php
+
+namespace Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
+
+final class NonStringParamTypeInUseClosure
+{
+    public function run($subject)
+    {
+        function () use ($subject) {
+            preg_split('#a#', $subject);
+        };
+    }
+}
+
+?>

@@ -22,7 +22,7 @@ class NullDefinedInVariableFirst
     public function getTitle()
     {
         $title = null;
-        return trim((string) $title);
+        return trim('');
     }
 }
 
