@@ -5,6 +5,7 @@ includes:
 rules:
     - Rector\Utils\PHPStan\Rule\RegisterRelatedPolyfillRectorRule
     - Rector\Utils\PHPStan\Rule\NoResolveClassReflectionInForeachRule
+    - Rector\Utils\PHPStan\Rule\NoGetClassReflectionOnScopeRule
     - Rector\Utils\PHPStan\Rule\RegisterRectorRule
 
 parameters:
@@ -77,6 +78,39 @@ parameters:
             offloadCollectorData: false
 
     ignoreErrors:
+        # Scope is the correct source of the enclosing class reflection in the engine resolvers,
+        # in rules that reuse the same Scope for other calls, and in ObjectTypeSpecifier where the
+        # scope reflection is refreshed on class change while ReflectionProvider reads the original file
+        -
+            identifier: rector.getClassReflectionOnScope
+            paths:
+                - rules/CodeQuality/Rector/Class_/ConvertStaticToSelfRector.php
+                - rules/DeadCode/Rector/ClassMethod/RemoveReturnTagIncompatibleWithNativeTypeRector.php
+                - rules/DeadCode/Rector/If_/RemoveAlwaysTrueIfConditionRector.php
+                - rules/Php55/Rector/FuncCall/GetCalledClassToStaticClassRector.php
+                - rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
+                - rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php
+                - rules/Php81/Rector/Array_/ArrayToFirstClassCallableRector.php
+                - rules/Php81/Rector/FuncCall/NullToStrictIntPregSlitFuncCallLimitArgRector.php
+                - rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php
+                - rules/Php81/Rector/New_/MyCLabsConstructorCallToEnumFromRector.php
+                - rules/Php82/NodeManipulator/ReadonlyClassManipulator.php
+                - rules/Php85/Rector/FuncCall/ArrayKeyExistsNullToEmptyStringRector.php
+                - rules/Renaming/Rector/MethodCall/RenameMethodRector.php
+                - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
+                - rules/TypeDeclaration/Rector/ClassMethod/AddVoidReturnTypeWhereNoReturnRector.php
+                - rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromMockObjectRector.php
+                - rules/TypeDeclaration/Rector/Closure/ClosureReturnTypeFromAssertInstanceOfRector.php
+                - src/Application/ChangedNodeScopeRefresher.php
+                - src/NodeCollector/ScopeResolver/ParentClassScopeResolver.php
+                - src/NodeTypeResolver/NodeTypeResolver.php
+                - src/NodeTypeResolver/NodeTypeResolver/ClassAndInterfaceTypeResolver.php
+                - src/NodeTypeResolver/NodeTypeResolver/NameTypeResolver.php
+                - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+                - src/Reflection/ReflectionResolver.php
+                - src/StaticTypeMapper/Naming/NameScopeFactory.php
+                - utils/phpstan/src/Rule/NoResolveClassReflectionInForeachRule.php
+
         # called magically by parent
         -
             message: '#^Unused Rector\\PhpParser\\Printer\\BetterStandardPrinter\:\:(pInterpolatedStringPart|pStmt_FileNode)$#'
