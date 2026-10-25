@@ -25,7 +25,8 @@ jobs:
                 env:
                     COMPOSER_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-            -   run: git clone https://github.com/palantirnet/drupal-rector.git
+                # use samsonasik fork fix-composer branch until merged upstream
+            -   run: git clone --branch fix-composer https://github.com/samsonasik/drupal-rector.git
 
                 # drupal-rector pins a stopgap "conflict" against rector >=2.6.2 until it ports to composer-based sets;
                 # strip it so dev-main can be smoke-tested here
