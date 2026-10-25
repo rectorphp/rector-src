@@ -26,6 +26,7 @@ declare(strict_types=1);
  * (cache primed once, then reused):
  *
  * - median wall time
+ * - median CPU time, user + system with the workers included, when /usr/bin/time is available (Linux)
  * - peak resident memory, when /usr/bin/time is available (Linux)
  * - changed-file count AND a fingerprint of the sorted changed-file list. The fingerprint
  *   must stay identical across refs - a perf change that alters it changed behaviour, not
@@ -95,7 +96,7 @@ final readonly class AbBenchmark
     }
 
     /**
-     * @return array{seconds: float, peakKb: int, changed: int, fingerprint: string}
+     * @return array{seconds: float, cpuSeconds: float, peakKb: int, changed: int, fingerprint: string}
      */
     private function measurePhase(string $phase, string $configPath, string $cacheDirectory, bool $cold): array
     {
@@ -105,6 +106,7 @@ final readonly class AbBenchmark
         }
 
         $durations = [];
+        $cpuDurations = [];
         $peakKb = 0;
         $changed = 0;
         $fingerprint = '';
@@ -115,6 +117,7 @@ final readonly class AbBenchmark
             $measurement = $this->runRector($configPath, $cacheDirectory, $cold);
 
             $durations[] = $measurement['seconds'];
+            $cpuDurations[] = $measurement['cpuSeconds'];
             $peakKb = max($peakKb, $measurement['peakKb']);
             $changed = $measurement['changed'];
             $fingerprint = $measurement['fingerprint'];
@@ -124,6 +127,7 @@ final readonly class AbBenchmark
 
         return [
             'seconds' => $this->median($durations),
+            'cpuSeconds' => $this->median($cpuDurations),
             'peakKb' => $peakKb,
             'changed' => $changed,
             'fingerprint' => $fingerprint,
@@ -131,7 +135,7 @@ final readonly class AbBenchmark
     }
 
     /**
-     * @return array{seconds: float, peakKb: int, changed: int, fingerprint: string}
+     * @return array{seconds: float, cpuSeconds: float, peakKb: int, changed: int, fingerprint: string}
      */
     private function runRector(string $configPath, string $cacheDirectory, bool $cold): array
     {
@@ -159,12 +163,14 @@ final readonly class AbBenchmark
         $seconds = (hrtime(true) - $startedAt) / 1_000_000_000;
 
         $peakKb = $usesGnuTime ? $this->parsePeakKb($timeOutputPath) : 0;
+        $cpuSeconds = $usesGnuTime ? $this->parseCpuSeconds($timeOutputPath) : 0.0;
         @unlink($timeOutputPath);
 
         $changedFiles = $this->parseChangedFiles(is_string($jsonOutput) ? $jsonOutput : '');
 
         return [
             'seconds' => $seconds,
+            'cpuSeconds' => $cpuSeconds,
             'peakKb' => $peakKb,
             'changed' => count($changedFiles),
             'fingerprint' => substr(hash('xxh128', implode("\n", $changedFiles)), 0, 12),
@@ -235,6 +241,27 @@ final readonly class AbBenchmark
         return 0;
     }
 
+    private function parseCpuSeconds(string $timeErrorPath): float
+    {
+        if (! is_file($timeErrorPath)) {
+            return 0.0;
+        }
+
+        $contents = file_get_contents($timeErrorPath);
+        if (! is_string($contents)) {
+            return 0.0;
+        }
+
+        $cpuSeconds = 0.0;
+        foreach (['User', 'System'] as $kind) {
+            if (preg_match('/' . $kind . ' time \(seconds\):\s*([\d.]+)/', $contents, $matches) === 1) {
+                $cpuSeconds += (float) $matches[1];
+            }
+        }
+
+        return $cpuSeconds;
+    }
+
     private function hasGnuTime(): bool
     {
         if (! is_file('/usr/bin/time')) {
@@ -266,8 +293,8 @@ final readonly class AbBenchmark
     }
 
     /**
-     * @param array{seconds: float, peakKb: int, changed: int, fingerprint: string} $current
-     * @param array{seconds: float, peakKb: int, changed: int, fingerprint: string}|null $baseline
+     * @param array{seconds: float, cpuSeconds: float, peakKb: int, changed: int, fingerprint: string} $current
+     * @param array{seconds: float, cpuSeconds: float, peakKb: int, changed: int, fingerprint: string}|null $baseline
      */
     private function printPhase(string $phase, array $current, ?array $baseline): void
     {
@@ -275,8 +302,9 @@ final readonly class AbBenchmark
 
         if ($baseline === null) {
             printf(
-                "wall:    %.2f s\npeak:    %s\nchanged: %d (fingerprint %s)\n\n",
+                "wall:    %.2f s\ncpu:     %s\npeak:    %s\nchanged: %d (fingerprint %s)\n\n",
                 $current['seconds'],
+                $this->formatCpu($current['cpuSeconds']),
                 $this->formatMemory($current['peakKb']),
                 $current['changed'],
                 $current['fingerprint']
@@ -286,11 +314,13 @@ final readonly class AbBenchmark
         }
 
         $wallDelta = $this->percentDelta($baseline['seconds'], $current['seconds']);
+        $cpuDelta = $this->percentDelta($baseline['cpuSeconds'], $current['cpuSeconds']);
         $memoryDelta = $this->percentDelta((float) $baseline['peakKb'], (float) $current['peakKb']);
 
         printf("| metric | baseline | this run | delta |\n");
         printf("| --- | --: | --: | --: |\n");
         printf("| wall | %.2f s | %.2f s | %s |\n", $baseline['seconds'], $current['seconds'], $wallDelta);
+        printf("| cpu | %s | %s | %s |\n", $this->formatCpu($baseline['cpuSeconds']), $this->formatCpu($current['cpuSeconds']), $cpuDelta);
         printf("| peak | %s | %s | %s |\n", $this->formatMemory($baseline['peakKb']), $this->formatMemory($current['peakKb']), $memoryDelta);
         printf("| changed | %d | %d | %s |\n", $baseline['changed'], $current['changed'], $baseline['changed'] === $current['changed'] ? 'same' : 'DIFFERENT');
 
@@ -310,6 +340,15 @@ final readonly class AbBenchmark
         $delta = ($current - $baseline) / $baseline * 100;
 
         return sprintf('%+.1f%% (%s)', $delta, $delta < 0 ? 'faster/less' : 'slower/more');
+    }
+
+    private function formatCpu(float $seconds): string
+    {
+        if ($seconds <= 0.0) {
+            return 'n/a';
+        }
+
+        return sprintf('%.2f s', $seconds);
     }
 
     private function formatMemory(int $kb): string
