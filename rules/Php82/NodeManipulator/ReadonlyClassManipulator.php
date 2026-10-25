@@ -16,7 +16,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\Visibility;
@@ -32,8 +31,14 @@ final readonly class ReadonlyClassManipulator
 
     public function process(Class_ $class): Class_|null
     {
-        $scope = ScopeFetcher::fetch($class);
-        if ($this->shouldSkip($class, $scope)) {
+        $className = $class->namespacedName->toString();
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+
+        if ($this->shouldSkip($classReflection, $class)) {
             return null;
         }
 
@@ -75,25 +80,20 @@ final readonly class ReadonlyClassManipulator
         return array_any($properties, fn (Property $property): bool => ! $property->type instanceof Node);
     }
 
-    private function shouldSkip(Class_ $class, Scope $scope): bool
+    private function shouldSkip(ClassReflection $classReflection, Class_ $class): bool
     {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
         if ($this->shouldSkipClass($class)) {
             return true;
         }
 
-        $parents = $this->resolveParentClassReflections($scope);
+        $parentClassReflections = $classReflection->getParents();
 
         if (! $class->isAnonymous() && ! $class->isFinal()) {
-            return ! $this->isExtendsReadonlyClass($parents);
+            return ! $this->isExtendsReadonlyClass($parentClassReflections);
         }
 
-        foreach ($parents as $parent) {
-            if (! $parent->isReadOnly()) {
+        foreach ($parentClassReflections as $parentClassReflection) {
+            if (! $parentClassReflection->isReadOnly()) {
                 return true;
             }
         }
