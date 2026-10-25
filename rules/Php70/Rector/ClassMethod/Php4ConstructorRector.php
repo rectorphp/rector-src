@@ -13,10 +13,8 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Enum\ObjectReference;
-use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\Php70\NodeAnalyzer\MethodCallNameAnalyzer;
 use Rector\Php70\NodeAnalyzer\Php4ConstructorClassMethodAnalyzer;
 use Rector\PHPStan\ScopeFetcher;
@@ -34,7 +32,6 @@ final class Php4ConstructorRector extends AbstractRector implements MinPhpVersio
 {
     public function __construct(
         private readonly Php4ConstructorClassMethodAnalyzer $php4ConstructorClassMethodAnalyzer,
-        private readonly ParentClassScopeResolver $parentClassScopeResolver,
         private readonly MethodCallNameAnalyzer $methodCallNameAnalyzer,
     ) {
     }
@@ -102,6 +99,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $parentClassReflection = $classReflection->getParentClass();
+
         foreach ($node->stmts as $classStmtKey => $classStmt) {
             if (! $classStmt instanceof ClassMethod) {
                 continue;
@@ -114,7 +113,7 @@ CODE_SAMPLE
             $psr4ConstructorMethod = $classStmt;
 
             // process parent call references first
-            $this->processClassMethodStatementsForParentConstructorCalls($psr4ConstructorMethod, $scope);
+            $this->processClassMethodStatementsForParentConstructorCalls($psr4ConstructorMethod, $parentClassReflection);
 
             // does it already have a __construct method?
             if (! $node->getMethod(MethodName::CONSTRUCT) instanceof ClassMethod) {
@@ -153,8 +152,15 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processClassMethodStatementsForParentConstructorCalls(ClassMethod $classMethod, Scope $scope): void
-    {
+    private function processClassMethodStatementsForParentConstructorCalls(
+        ClassMethod $classMethod,
+        ?ClassReflection $parentClassReflection
+    ): void {
+        // no parent class
+        if (! $parentClassReflection instanceof ClassReflection) {
+            return;
+        }
+
         foreach ((array) $classMethod->stmts as $methodStmt) {
             if (! $methodStmt instanceof Expression) {
                 continue;
@@ -165,19 +171,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->processParentPhp4ConstructCall($methodStmt, $scope);
+            $this->processParentPhp4ConstructCall($methodStmt, $parentClassReflection);
         }
     }
 
-    private function processParentPhp4ConstructCall(StaticCall $staticCall, Scope $scope): void
+    private function processParentPhp4ConstructCall(StaticCall $staticCall, ClassReflection $parentClassReflection): void
     {
-        $parentClassReflection = $this->parentClassScopeResolver->resolveParentClassReflection($scope);
-
-        // no parent class
-        if (! $parentClassReflection instanceof ClassReflection) {
-            return;
-        }
-
         if (! $staticCall->class instanceof Name) {
             return;
         }
