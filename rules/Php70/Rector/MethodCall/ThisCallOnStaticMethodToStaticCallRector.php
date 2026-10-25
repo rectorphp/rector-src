@@ -92,7 +92,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $classReflection = $this->getClassReflection($node);
+        $classReflection = $this->fetchClassLikeReflection($node);
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }

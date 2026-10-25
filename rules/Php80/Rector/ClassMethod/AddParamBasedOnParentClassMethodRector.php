@@ -112,7 +112,7 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        $classReflection = $this->getClassReflection($node);
+        $classReflection = $this->fetchClassLikeReflection($node);
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }
