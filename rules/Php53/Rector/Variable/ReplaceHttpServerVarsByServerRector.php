@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\Variable;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -32,7 +32,7 @@ final class ReplaceHttpServerVarsByServerRector extends AbstractRector implement
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SERVER_VAR;
+        return PhpVersion::PHP_53;
     }
 
     public function getRuleDefinition(): RuleDefinition

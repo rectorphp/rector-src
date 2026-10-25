@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessUnionReturnDocblockRector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
-    ->withPhpVersion(PhpVersionFeature::UNION_TYPES)
+    ->withPhpVersion(PhpVersion::PHP_80)
     ->withRules([RemoveUselessUnionReturnDocblockRector::class]);

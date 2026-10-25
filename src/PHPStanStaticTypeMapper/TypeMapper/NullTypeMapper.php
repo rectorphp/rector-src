@@ -12,7 +12,7 @@ use PHPStan\Type\Type;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<NullType>
@@ -48,14 +48,14 @@ final readonly class NullTypeMapper implements TypeMapperInterface
     {
         // can be a standalone type, only case where null makes sense
         if ($this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE
+            PhpVersion::PHP_82
         ) && $typeKind === TypeKind::RETURN) {
             return new Identifier('null');
         }
 
         // if part of union, can be added even in PHP 8.0
         if ($typeKind === TypeKind::UNION && $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::NULLABLE_TYPE
+            PhpVersion::PHP_71
         )) {
             return new Identifier('null');
         }

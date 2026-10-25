@@ -30,7 +30,7 @@ use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Rector\ValueObject\MethodName;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * @api used by rector-symfony and rector-doctrine
@@ -63,7 +63,7 @@ final readonly class ClassDependencyManipulator
         $autowireClassMethod = $this->autowiredClassMethodOrPropertyAnalyzer->matchAutowiredMethodInClass($class);
 
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::PROPERTY_PROMOTION
+            PhpVersion::PHP_80
         ) || $autowireClassMethod instanceof ClassMethod) {
             $this->classInsertManipulator->addPropertyToClass(
                 $class,
@@ -363,7 +363,7 @@ final readonly class ClassDependencyManipulator
 
     private function shouldAddPromotedProperty(Class_ $class, PropertyMetadata $propertyMetadata): bool
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PROPERTY_PROMOTION)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80)) {
             return false;
         }
 

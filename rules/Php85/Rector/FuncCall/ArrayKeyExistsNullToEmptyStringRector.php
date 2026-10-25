@@ -11,7 +11,7 @@ use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -80,6 +80,6 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION;
+        return PhpVersion::PHP_85;
     }
 }

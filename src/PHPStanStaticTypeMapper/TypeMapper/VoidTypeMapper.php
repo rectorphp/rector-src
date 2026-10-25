@@ -12,7 +12,7 @@ use PHPStan\Type\VoidType;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<VoidType>
@@ -48,7 +48,7 @@ final readonly class VoidTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::VOID_TYPE)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_71)) {
             return null;
         }
 

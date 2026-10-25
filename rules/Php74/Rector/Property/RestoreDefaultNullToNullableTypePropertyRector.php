@@ -13,7 +13,7 @@ use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -94,7 +94,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::TYPED_PROPERTIES;
+        return PhpVersion::PHP_74;
     }
 
     private function shouldSkipProperty(Property $property, Class_ $class): bool

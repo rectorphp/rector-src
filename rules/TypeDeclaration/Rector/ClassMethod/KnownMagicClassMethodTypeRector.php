@@ -13,7 +13,7 @@ use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\ValueObject\MethodName;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
@@ -110,14 +110,14 @@ CODE_SAMPLE
             }
 
             if ($this->isName($classMethod, MethodName::__GET) && $this->phpVersionProvider->isAtLeastPhpVersion(
-                PhpVersionFeature::MIXED_TYPE
+                PhpVersion::PHP_80
             ) && ! $classMethod->returnType instanceof Node) {
                 $classMethod->returnType = new Identifier('mixed');
                 $hasChanged = true;
             }
 
             if ($this->isName($classMethod, MethodName::__SET) && $this->phpVersionProvider->isAtLeastPhpVersion(
-                PhpVersionFeature::MIXED_TYPE
+                PhpVersion::PHP_80
             )) {
                 $secondParam = $classMethod->getParams()[1];
                 if (! $secondParam->type instanceof Node) {
@@ -136,6 +136,6 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SCALAR_TYPES;
+        return PhpVersion::PHP_70;
     }
 }

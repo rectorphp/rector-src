@@ -20,7 +20,7 @@ use Rector\Php70\EregToPcreTransformer;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Webmozart\Assert\Assert;
 
@@ -48,7 +48,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NO_EREG_FUNCTION;
+        return PhpVersion::PHP_70;
     }
 
     public function getRuleDefinition(): RuleDefinition

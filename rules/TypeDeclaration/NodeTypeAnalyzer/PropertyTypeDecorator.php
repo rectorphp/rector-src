@@ -16,7 +16,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\NodeFactory;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 final readonly class PropertyTypeDecorator
 {
@@ -35,7 +35,7 @@ final readonly class PropertyTypeDecorator
         bool $changeVarTypeFallback = true
     ): void {
         if (! TypeCombinator::containsNull($unionType)) {
-            if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
+            if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80)) {
                 $property->type = $typeNode;
                 return;
             }

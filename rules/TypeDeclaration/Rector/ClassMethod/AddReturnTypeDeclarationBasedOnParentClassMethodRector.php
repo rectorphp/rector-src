@@ -19,7 +19,7 @@ use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\MethodName;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
@@ -37,7 +37,7 @@ final class AddReturnTypeDeclarationBasedOnParentClassMethodRector extends Abstr
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SCALAR_TYPES;
+        return PhpVersion::PHP_70;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -167,7 +167,7 @@ CODE_SAMPLE
         }
 
         if ($parentType instanceof MixedType && ! $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::MIXED_TYPE
+            PhpVersion::PHP_80
         )) {
             return null;
         }

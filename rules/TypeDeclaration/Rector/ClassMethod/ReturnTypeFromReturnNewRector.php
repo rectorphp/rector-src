@@ -36,7 +36,7 @@ use Rector\Symfony\CodeQuality\Enum\ResponseClass;
 use Rector\Symfony\TypeAnalyzer\ControllerAnalyzer;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictReturnNewAnalyzer;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
@@ -136,7 +136,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SCALAR_TYPES;
+        return PhpVersion::PHP_70;
     }
 
     private function createObjectTypeFromNew(New_ $new): ObjectType|ObjectWithoutClassType|StaticType|null

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::UNION_TYPES);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
     $rectorConfig->rule(AddMethodCallBasedStrictParamTypeRector::class);
     $rectorConfig->treatClassesAsFinal();
 };

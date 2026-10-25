@@ -24,7 +24,7 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
 
@@ -145,7 +145,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     private function resolveNullableType(NullableType $nullableType): null|NullableType|PhpParserUnionType
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NULLABLE_TYPE)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_71)) {
             return null;
         }
 
@@ -154,7 +154,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         if (! $type instanceof PHPParserNodeIntersectionType) {
             // ?false is allowed only since PHP 8.2+, lets fallback to bool instead
             if ($type->toString() === 'false' && ! $this->phpVersionProvider->isAtLeastPhpVersion(
-                PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE
+                PhpVersion::PHP_82
             )) {
                 return new NullableType(new Identifier('bool'));
             }
@@ -162,7 +162,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $nullableType;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80)) {
             return null;
         }
 
@@ -174,7 +174,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     private function resolveUnionTypes(PhpParserUnionType $phpParserUnionType): ?PhpParserUnionType
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80)) {
             return null;
         }
 
@@ -303,7 +303,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     private function resolveUnionTypeNode(PhpParserUnionType $phpParserUnionType): ?PhpParserUnionType
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80)) {
             return null;
         }
 

@@ -23,7 +23,6 @@ use Rector\NodeManipulator\ClassDependencyManipulator;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\ValueObject\PhpVersion;
-use Rector\ValueObject\PhpVersionFeature;
 
 final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
 {
@@ -40,7 +39,7 @@ final class ClassDependencyManipulatorTest extends AbstractLazyTestCase
         $this->printerStandard = new Standard();
 
         // use at least readonly property
-        SimpleParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, PhpVersionFeature::READONLY_PROPERTY);
+        SimpleParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_81);
     }
 
     protected function tearDown(): void

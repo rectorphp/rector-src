@@ -12,7 +12,7 @@ use PhpParser\Node\Name\FullyQualified;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -94,6 +94,6 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::ROUNDING_MODES;
+        return PhpVersion::PHP_84;
     }
 }

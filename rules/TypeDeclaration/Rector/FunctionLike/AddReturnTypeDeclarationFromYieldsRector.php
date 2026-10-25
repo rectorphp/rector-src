@@ -15,7 +15,7 @@ use Rector\RuleDoc\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclarationDocblocks\NodeFinder\YieldNodeFinder;
 use Rector\TypeDeclarationDocblocks\TypeResolver\YieldTypeResolver;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
@@ -108,6 +108,6 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SCALAR_TYPES;
+        return PhpVersion::PHP_70;
     }
 }

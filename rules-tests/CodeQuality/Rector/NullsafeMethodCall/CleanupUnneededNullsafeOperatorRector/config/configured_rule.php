@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
 use Rector\Config\RectorConfig;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::NULLSAFE_OPERATOR);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 
     $rectorConfig->rule(CleanupUnneededNullsafeOperatorRector::class);
 };

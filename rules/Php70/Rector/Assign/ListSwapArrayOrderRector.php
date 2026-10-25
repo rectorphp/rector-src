@@ -11,7 +11,7 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -48,6 +48,6 @@ final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVer
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::LIST_SWAP_ORDER;
+        return PhpVersion::PHP_70;
     }
 }

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::PROPERTY_PROMOTION);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 
     $rectorConfig->rule(RemoveUnusedPromotedPropertyRector::class);
 };

@@ -13,7 +13,7 @@ use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -86,7 +86,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SETCOOKIE_ACCEPT_ARRAY_OPTIONS;
+        return PhpVersion::PHP_73;
     }
 
     private function shouldSkip(FuncCall $funcCall): bool

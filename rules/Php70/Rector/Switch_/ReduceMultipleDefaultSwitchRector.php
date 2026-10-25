@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Switch_;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -20,7 +20,7 @@ final class ReduceMultipleDefaultSwitchRector extends AbstractRector implements 
 {
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NO_MULTIPLE_DEFAULT_SWITCH;
+        return PhpVersion::PHP_70;
     }
 
     public function getRuleDefinition(): RuleDefinition

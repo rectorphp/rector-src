@@ -42,7 +42,7 @@ use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\Util\StringUtils;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Webmozart\Assert\Assert;
 
@@ -193,7 +193,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::ATTRIBUTES;
+        return PhpVersion::PHP_80;
     }
 
     /**

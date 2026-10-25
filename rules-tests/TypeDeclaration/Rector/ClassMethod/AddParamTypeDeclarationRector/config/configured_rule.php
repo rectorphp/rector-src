@@ -12,7 +12,7 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRecto
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Source\ParserInterface;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
@@ -34,5 +34,5 @@ return static function (RectorConfig $rectorConfig): void {
             new AddParamTypeDeclaration(ParentTypeToMixed::class, 'process', 0, new MixedType(true)),
         ]);
 
-    $rectorConfig->phpVersion(PhpVersionFeature::MIXED_TYPE);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 };

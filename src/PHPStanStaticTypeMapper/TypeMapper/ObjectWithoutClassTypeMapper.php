@@ -15,7 +15,7 @@ use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<ObjectWithoutClassType>
@@ -57,7 +57,7 @@ final readonly class ObjectWithoutClassTypeMapper implements TypeMapperInterface
             }
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::OBJECT_TYPE)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_72)) {
             return null;
         }
 

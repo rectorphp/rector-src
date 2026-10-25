@@ -32,7 +32,7 @@ use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\ValueObject\MethodName;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\Visibility;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
@@ -138,7 +138,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::READONLY_PROPERTY;
+        return PhpVersion::PHP_81;
     }
 
     private function refactorProperty(Class_ $class, Property $property, Scope $scope): ?Property
