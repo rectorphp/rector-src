@@ -241,6 +241,7 @@ final class LazyContainerFactory
                     $rectorConfig->get(NodeComparator::class),
                     $rectorConfig->get(CurrentFileProvider::class),
                     $rectorConfig->get(CommentsMerger::class),
+                    $rectorConfig->get(ReflectionProvider::class)
                 );
             }
         );

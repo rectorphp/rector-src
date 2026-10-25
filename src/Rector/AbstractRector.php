@@ -8,11 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\PropertyItem;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Const_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Application\Provider\CurrentFileProvider;
@@ -42,6 +45,8 @@ abstract class AbstractRector implements RectorInterface
 
     private CommentsMerger $commentsMerger;
 
+    private ReflectionProvider $reflectionProvider;
+
     public function autowire(
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
@@ -49,7 +54,8 @@ abstract class AbstractRector implements RectorInterface
         NodeFactory $nodeFactory,
         NodeComparator $nodeComparator,
         CurrentFileProvider $currentFileProvider,
-        CommentsMerger $commentsMerger
+        CommentsMerger $commentsMerger,
+        ReflectionProvider $reflectionProvider
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -58,6 +64,21 @@ abstract class AbstractRector implements RectorInterface
         $this->nodeComparator = $nodeComparator;
         $this->currentFileProvider = $currentFileProvider;
         $this->commentsMerger = $commentsMerger;
+        $this->reflectionProvider = $reflectionProvider;
+    }
+
+    protected function getClassReflection(ClassLike $classLike): ?ClassReflection
+    {
+        $className = $this->getName($classLike);
+        if ($className === null) {
+            return null;
+        }
+
+        if (! $this->reflectionProvider->hasClass($className)) {
+            throw new ShouldNotHappenException(sprintf('Class "%s" should be known at this point', $className));
+        }
+
+        return $this->reflectionProvider->getClass($className);
     }
 
     protected function getFile(): File

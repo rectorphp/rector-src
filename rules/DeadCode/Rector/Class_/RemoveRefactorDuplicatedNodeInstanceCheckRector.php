@@ -16,7 +16,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -91,9 +90,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
-        $classReflection = $scope->getClassReflection();
-
+        $classReflection = $this->getClassReflection($node);
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }
