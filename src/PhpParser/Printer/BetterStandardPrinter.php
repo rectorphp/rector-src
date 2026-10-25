@@ -230,9 +230,6 @@ final class BetterStandardPrinter extends Standard
         string $subNodeName,
         ?int $fixup
     ): ?string {
-        // reindex positions for printer
-        $nodes = array_values($nodes);
-
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeClass, $subNodeName, $fixup);
         if ($content === null) {
             return $content;
