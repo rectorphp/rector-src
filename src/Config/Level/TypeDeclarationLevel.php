@@ -8,7 +8,6 @@ use Rector\CodeQuality\Rector\Class_\ReturnIteratorInDataProviderRector;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Symfony\CodeQuality\Rector\ClassMethod\ResponseReturnTypeControllerActionRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
-use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\Class_\AddTestsVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Class_\ChildDoctrineRepositoryClassTypeRector;
 use Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector;
@@ -119,9 +118,6 @@ final class TypeDeclarationLevel
         ReturnTypeFromStrictTypedPropertyRector::class,
 
         ReturnNullableTypeRector::class,
-
-        // php 7.4
-        BinaryOpNullableToInstanceofRector::class,
 
         // php 7.4
         TypedPropertyFromStrictConstructorRector::class,
