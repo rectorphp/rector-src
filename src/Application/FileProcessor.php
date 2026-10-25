@@ -56,65 +56,74 @@ final readonly class FileProcessor
             return new FileProcessResult([$parsingSystemError], null, false);
         }
 
-        $fileHasChanged = false;
+        //        $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-        do {
-            $file->changeHasChanged(false);
+        //        do {
+        //            $file->changeHasChanged(false);
 
-            // every rule and post rector records a line change when it mutates the AST
-            $changeCountBeforePass = count($file->getRectorWithLineChanges());
+        // every rule and post rector records a line change when it mutates the AST
+        //            $changeCountBeforePass = count($file->getRectorWithLineChanges());
 
-            // 1. change nodes with Rector Rules
-            $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts(), $file);
+        // 1. change nodes with Rector Rules
+        $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts(), $file);
 
-            // 2. apply post rectors
-            $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
+        // 2. apply post rectors
+        $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
 
-            // 3. this is needed for new tokens added in "afterTraverse()"
-            $file->changeNewStmts($postNewStmts);
+        // 3. this is needed for new tokens added in "afterTraverse()"
+        $file->changeNewStmts($postNewStmts);
 
-            // file never changed and this pass changed nothing: the print would just reproduce the
-            // original content, so skip the expensive format-preserving print entirely.
-            // once the file has changed we keep printing every pass, as a reprint can still
-            // stabilize the output (e.g. drop a leftover trailing comma)
-            if (! $fileHasChanged && count($file->getRectorWithLineChanges()) === $changeCountBeforePass) {
-                break;
-            }
+        // file never changed and this pass changed nothing: the print would just reproduce the
+        // original content, so skip the expensive format-preserving print entirely.
+        // once the file has changed we keep printing every pass, as a reprint can still
+        // stabilize the output (e.g. drop a leftover trailing comma)
+        //            if (! $fileHasChanged && count($file->getRectorWithLineChanges()) === $changeCountBeforePass) {
+        //                break;
+        //            }
 
-            // 4. print to file or string
-            // important to detect if file has changed
+        //        if (! $file->hasChanged()) {
+        //            continue;
+
+        // 4. print to file or string
+        // important to detect if file has changed
+        //            $this->printFile($file, $configuration, $filePath);
+
+        // no change in current iteration, stop
+        if (! $file->hasChanged()) {
+            $this->changedFilesDetector->addCacheableFile($filePath);
+            return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
+
+            //                break;
+
+        } else {
             $this->printFile($file, $configuration, $filePath);
+        }
 
-            // no change in current iteration, stop
-            if (! $file->hasChanged()) {
-                break;
-            }
-
-            $fileHasChanged = true;
-        } while (true);
+        //            $fileHasChanged = true;
+        //        } while (true);
 
         // 5. add as cacheable if not changed at all
-        if (! $fileHasChanged) {
-            $this->changedFilesDetector->addCacheableFile($filePath);
-        } else {
-            // when changed, set final status changed to true
-            // to ensure it make sense to verify in next process when needed
-            $file->changeHasChanged(true);
-        }
+        //        if (! $fileHasChanged) {
+        //            $this->changedFilesDetector->addCacheableFile($filePath);
+        //        } else {
+        //            // when changed, set final status changed to true
+        //            // to ensure it make sense to verify in next process when needed
+        //            $file->changeHasChanged(true);
+        //        }
 
-        $rectorWithLineChanges = $file->getRectorWithLineChanges();
-        if ($file->hasChanged() || $rectorWithLineChanges !== []) {
-            $currentFileDiff = $this->fileDiffFactory->createFileDiffWithLineChanges(
-                $configuration->shouldShowDiffs(),
-                $file,
-                $file->getOriginalFileContent(),
-                $file->getFileContent(),
-                $file->getRectorWithLineChanges()
-            );
+        $file->getRectorWithLineChanges();
+        //        if ($file->hasChanged() || $rectorWithLineChanges !== []) {
+        $currentFileDiff = $this->fileDiffFactory->createFileDiffWithLineChanges(
+            $configuration->shouldShowDiffs(),
+            $file,
+            $file->getOriginalFileContent(),
+            $file->getFileContent(),
+            $file->getRectorWithLineChanges()
+        );
 
-            $file->setFileDiff($currentFileDiff);
-        }
+        $file->setFileDiff($currentFileDiff);
+        //        }
 
         return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
     }

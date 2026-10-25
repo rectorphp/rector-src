@@ -17,7 +17,7 @@ use Rector\ValueObject\Reporting\FileDiff;
 
 final class File
 {
-    private bool $hasChanged = false;
+    //    private bool $hasChanged = false;
 
     private readonly string $originalFileContent;
 
@@ -74,7 +74,7 @@ final class File
         }
 
         $this->fileContent = $newFileContent;
-        $this->hasChanged = true;
+        //        $this->hasChanged = true;
     }
 
     public function getOriginalFileContent(): string
@@ -84,13 +84,14 @@ final class File
 
     public function hasChanged(): bool
     {
-        return $this->hasChanged;
+        return $this->rectorWithLineChanges !== [];
+        //         return $this->hasChanged;
     }
 
-    public function changeHasChanged(bool $status): void
-    {
-        $this->hasChanged = $status;
-    }
+    //    public function changeHasChanged(bool $status): void
+    //    {
+    //        $this->hasChanged = $status;
+    //    }
 
     public function setFileDiff(FileDiff $fileDiff): void
     {
