@@ -77,10 +77,10 @@ final class RectorNodeTraverser
             }
 
             $this->traverseNode($subNode, $file);
-
             // a descendant removal (e.g. an emptied method body) can make a Class_ rule
             // newly apply; re-offer the class once, now that its children are settled
-            $node->{$name} = $subNode = $this->reRunClassRectors($subNode, $file);
+            $node->{$name} = $this->reRunClassRectors($subNode, $file);
+            $subNode = $node->{$name};
 
             if ($this->stopTraversal) {
                 break;
