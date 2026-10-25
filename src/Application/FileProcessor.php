@@ -95,6 +95,7 @@ final readonly class FileProcessor
             return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
 
             //                break;
+
         } else {
             $this->printFile($file, $configuration, $filePath);
         }
