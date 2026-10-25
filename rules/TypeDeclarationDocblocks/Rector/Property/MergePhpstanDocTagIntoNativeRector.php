@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Attribute;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
@@ -101,9 +102,8 @@ CODE_SAMPLE
 
         $phpDocNode = $phpDocInfo->getPhpDocNode();
 
-        $phpstanParamNames = [];
-        $phpstanVarNames = [];
-        $hasPhpstanReturn = false;
+        $phpstanTagKeys = [];
+        $multilineTagKeys = [];
         $nativeDescriptions = [];
 
         foreach ($phpDocNode->children as $phpDocChildNode) {
@@ -111,74 +111,60 @@ CODE_SAMPLE
                 continue;
             }
 
-            // remember native tag descriptions, so they survive when the native tag is overruled
-            if (in_array($phpDocChildNode->name, self::PHPSTAN_TAG_TO_NATIVE_TAG, true)) {
-                // skip multiline native tag, as phpcs does not support moving its multiline description yet
-                if ($this->isMultiline($phpDocChildNode)) {
-                    return null;
-                }
-
-                $tagValueNode = $phpDocChildNode->value;
-                if (($tagValueNode instanceof ParamTagValueNode || $tagValueNode instanceof VarTagValueNode || $tagValueNode instanceof ReturnTagValueNode) && $tagValueNode->description !== '') {
-                    $nativeDescriptions[$this->resolveTagKey($tagValueNode)] = $tagValueNode->description;
-                }
-
+            $tagValueNode = $this->resolveMergeableTagValueNode($phpDocChildNode);
+            if (! $tagValueNode instanceof PhpDocTagValueNode) {
                 continue;
             }
 
-            // skip multiline @phpstan-* tag, as phpcs does not support multiline native tag yet
-            if (isset(self::PHPSTAN_TAG_TO_NATIVE_TAG[$phpDocChildNode->name]) && $this->isMultiline($phpDocChildNode)) {
-                return null;
+            $tagKey = $this->resolveTagKey($tagValueNode);
+
+            // skip multiline tag, as phpcs does not support multiline native tag yet
+            if ($this->isMultiline($phpDocChildNode)) {
+                $multilineTagKeys[] = $tagKey;
             }
 
-            if ($phpDocChildNode->name === '@phpstan-param' && $phpDocChildNode->value instanceof ParamTagValueNode) {
-                $phpstanParamNames[] = $phpDocChildNode->value->parameterName;
-            } elseif ($phpDocChildNode->name === '@phpstan-var' && $phpDocChildNode->value instanceof VarTagValueNode) {
-                $phpstanVarNames[] = $phpDocChildNode->value->variableName;
-            } elseif ($phpDocChildNode->name === '@phpstan-return' && $phpDocChildNode->value instanceof ReturnTagValueNode) {
-                $hasPhpstanReturn = true;
+            if (isset(self::PHPSTAN_TAG_TO_NATIVE_TAG[$phpDocChildNode->name])) {
+                $phpstanTagKeys[] = $tagKey;
+            } elseif ($tagValueNode->description !== '') {
+                // remember native tag descriptions, so they survive when the native tag is overruled
+                $nativeDescriptions[$tagKey] = $tagValueNode->description;
             }
         }
 
-        if ($phpstanParamNames === [] && $phpstanVarNames === [] && ! $hasPhpstanReturn) {
+        $mergeableTagKeys = array_diff($phpstanTagKeys, $multilineTagKeys);
+        if ($mergeableTagKeys === []) {
             return null;
         }
-
-        $hasChanged = false;
 
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             if (! $phpDocChildNode instanceof PhpDocTagNode) {
                 continue;
             }
 
-            // drop the weaker native tag that the @phpstan-* variant overrules
-            if ($this->isOverruledNativeTag(
-                $phpDocChildNode,
-                $phpstanParamNames,
-                $phpstanVarNames,
-                $hasPhpstanReturn
-            )) {
-                unset($phpDocNode->children[$key]);
-                $hasChanged = true;
+            $tagValueNode = $this->resolveMergeableTagValueNode($phpDocChildNode);
+            if (! $tagValueNode instanceof PhpDocTagValueNode) {
                 continue;
             }
 
-            // promote the @phpstan-* tag to its native counterpart
-            $nativeTagName = self::PHPSTAN_TAG_TO_NATIVE_TAG[$phpDocChildNode->name] ?? null;
-            if ($nativeTagName !== null) {
-                // keep the description of the overruled native tag
-                $tagValueNode = $phpDocChildNode->value;
-                if (($tagValueNode instanceof ParamTagValueNode || $tagValueNode instanceof VarTagValueNode || $tagValueNode instanceof ReturnTagValueNode) && $tagValueNode->description === '') {
-                    $tagValueNode->description = $nativeDescriptions[$this->resolveTagKey($tagValueNode)] ?? '';
-                }
-
-                $phpDocNode->children[$key] = new PhpDocTagNode($nativeTagName, $phpDocChildNode->value);
-                $hasChanged = true;
+            $tagKey = $this->resolveTagKey($tagValueNode);
+            if (! in_array($tagKey, $mergeableTagKeys, true)) {
+                continue;
             }
-        }
 
-        if (! $hasChanged) {
-            return null;
+            $nativeTagName = self::PHPSTAN_TAG_TO_NATIVE_TAG[$phpDocChildNode->name] ?? null;
+
+            // drop the weaker native tag that the @phpstan-* variant overrules
+            if ($nativeTagName === null) {
+                unset($phpDocNode->children[$key]);
+                continue;
+            }
+
+            // promote the @phpstan-* tag to its native counterpart, keeping the description of the overruled native tag
+            if ($tagValueNode->description === '') {
+                $tagValueNode->description = $nativeDescriptions[$tagKey] ?? '';
+            }
+
+            $phpDocNode->children[$key] = new PhpDocTagNode($nativeTagName, $tagValueNode);
         }
 
         $phpDocNode->children = array_values($phpDocNode->children);
@@ -199,29 +185,23 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @param string[] $phpstanParamNames
-     * @param string[] $phpstanVarNames
-     */
-    private function isOverruledNativeTag(
-        PhpDocTagNode $phpDocTagNode,
-        array $phpstanParamNames,
-        array $phpstanVarNames,
-        bool $hasPhpstanReturn
-    ): bool {
-        if ($phpDocTagNode->name === '@param' && $phpDocTagNode->value instanceof ParamTagValueNode) {
-            return in_array($phpDocTagNode->value->parameterName, $phpstanParamNames, true);
+    private function resolveMergeableTagValueNode(
+        PhpDocTagNode $phpDocTagNode
+    ): ParamTagValueNode|VarTagValueNode|ReturnTagValueNode|null {
+        if (! isset(self::PHPSTAN_TAG_TO_NATIVE_TAG[$phpDocTagNode->name]) && ! in_array(
+            $phpDocTagNode->name,
+            self::PHPSTAN_TAG_TO_NATIVE_TAG,
+            true
+        )) {
+            return null;
         }
 
-        if ($phpDocTagNode->name === '@var' && $phpDocTagNode->value instanceof VarTagValueNode) {
-            return in_array($phpDocTagNode->value->variableName, $phpstanVarNames, true);
+        $tagValueNode = $phpDocTagNode->value;
+        if ($tagValueNode instanceof ParamTagValueNode || $tagValueNode instanceof VarTagValueNode || $tagValueNode instanceof ReturnTagValueNode) {
+            return $tagValueNode;
         }
 
-        if ($phpDocTagNode->name === '@return' && $phpDocTagNode->value instanceof ReturnTagValueNode) {
-            return $hasPhpstanReturn;
-        }
-
-        return false;
+        return null;
     }
 
     private function isMultiline(PhpDocTagNode $phpDocTagNode): bool
