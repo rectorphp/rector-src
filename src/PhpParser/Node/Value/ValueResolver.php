@@ -74,9 +74,10 @@ final class ValueResolver
             $class = $this->nodeNameResolver->getName($expr->class);
 
             if (in_array($class, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($expr);
-                if ($classReflection instanceof ClassReflection) {
-                    return $classReflection->getName();
+                $classType = $this->nodeTypeResolver->getType($expr->class);
+                $className = ClassNameFromObjectTypeResolver::resolve($classType);
+                if ($className !== null) {
+                    return $className;
                 }
             }
 
@@ -333,18 +334,20 @@ final class ValueResolver
             return '';
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classConstFetch);
-        if (! $classReflection instanceof ClassReflection) {
-            throw new ShouldNotHappenException(
-                'Complete class parent node for to class const fetch, so "self" or "static" references is resolvable to a class name'
-            );
-        }
-
         if ($class !== ObjectReference::PARENT) {
-            return $classReflection->getName();
+            $classType = $this->nodeTypeResolver->getType($classConstFetch->class);
+            $className = ClassNameFromObjectTypeResolver::resolve($classType);
+            if ($className === null) {
+                throw new ShouldNotHappenException(
+                    'Complete class parent node for to class const fetch, so "self" or "static" references is resolvable to a class name'
+                );
+            }
+
+            return $className;
         }
 
-        if (! $classReflection->isClass()) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classConstFetch);
+        if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
             throw new ShouldNotHappenException(
                 'Complete class parent node for to class const fetch, so "parent" references is resolvable to lookup parent class'
             );
