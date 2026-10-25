@@ -107,7 +107,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->hasUsefulParentPropertyVarTag($classReflection, $node, $property, $propertyDefaultType)) {
+            if ($this->hasUsefulParentPropertyVarTag($classReflection, $property, $propertyDefaultType)) {
                 continue;
             }
 
@@ -127,7 +127,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasUsefulParentPropertyVarTag(ClassReflection $classReflection, Class_ $class, Property $property, Type $propertyDefaultType): bool
+    private function hasUsefulParentPropertyVarTag(ClassReflection $classReflection, Property $property, Type $propertyDefaultType): bool
     {
         $propertyName = $this->getName($property);
         if ($propertyName === null) {
