@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\PHPStan\ScopeFetcher;
@@ -29,6 +30,7 @@ use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 final class DocblockVarArrayFromPropertyDefaultsRector extends AbstractRector
 {
     public function __construct(
+        private readonly ReflectionProvider $reflectionProvider,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
@@ -71,6 +73,13 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
+        $className = $this->getName($node);
+        if( ! $this->reflectionProvider->hasClass($className)) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+
         foreach ($node->getProperties() as $property) {
             if (! $property->type instanceof Identifier) {
                 continue;
@@ -103,7 +112,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->hasUsefulParentPropertyVarTag($node, $property, $propertyDefaultType)) {
+            if ($this->hasUsefulParentPropertyVarTag($classReflection, $node, $property, $propertyDefaultType)) {
                 continue;
             }
 
@@ -123,7 +132,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasUsefulParentPropertyVarTag(Class_ $class, Property $property, Type $propertyDefaultType): bool
+    private function hasUsefulParentPropertyVarTag(ClassReflection $classReflection, Class_ $class, Property $property, Type $propertyDefaultType): bool
     {
         $propertyName = $this->getName($property);
         if ($propertyName === null) {
@@ -132,13 +141,6 @@ CODE_SAMPLE
 
         // private property doesn't override parent property
         if ($property->isPrivate()) {
-            return false;
-        }
-
-        $scope = ScopeFetcher::fetch($class);
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
