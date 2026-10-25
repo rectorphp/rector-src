@@ -6,15 +6,9 @@ namespace Rector\Php81\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\FunctionReflection;
+use PhpParser\Node\Scalar\Int_;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\ValueObject\PhpVersionFeature;
@@ -27,9 +21,7 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 final class NullToStrictIntPregSlitFuncCallLimitArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly NullToStrictStringIntConverter $nullToStrictStringIntConverter
+        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -87,35 +79,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
+        $activeArg = $args[$position];
+        if (! $this->getType($activeArg->value)->isNull()->yes()) {
             return null;
         }
 
-        $classReflection = $scope->getClassReflection();
-        $isTrait = $classReflection instanceof ClassReflection && $classReflection->isTrait();
+        $activeArg->value = new Int_(0);
 
-        $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        if (! $functionReflection instanceof FunctionReflection) {
-            return null;
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
-        $result = $this->nullToStrictStringIntConverter->convertIfNull(
-            $node,
-            $args,
-            $position,
-            $isTrait,
-            $scope,
-            $parametersAcceptor,
-            'int'
-        );
-
-        if ($result instanceof Node) {
-            return $result;
-        }
-
-        return null;
+        return $node;
     }
 
     public function provideMinPhpVersion(): int

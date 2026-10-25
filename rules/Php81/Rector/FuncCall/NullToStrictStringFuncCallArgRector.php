@@ -8,14 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php81\Enum\NameNullToStrictNullFunctionMap;
-use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -29,8 +27,7 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly NullToStrictStringIntConverter $nullToStrictStringIntConverter
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -93,30 +90,20 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReflection = $scope->getClassReflection();
-        $isTrait = $classReflection instanceof ClassReflection && $classReflection->isTrait();
-
-        $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        if (! $functionReflection instanceof FunctionReflection) {
-            return null;
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
         $isChanged = false;
 
         foreach ($positions as $position) {
-            $result = $this->nullToStrictStringIntConverter->convertIfNull(
-                $node,
-                $args,
-                (int) $position,
-                $isTrait,
-                $scope,
-                $parametersAcceptor
-            );
-            if ($result instanceof Node) {
-                $node = $result;
-                $isChanged = true;
+            if (! isset($args[$position])) {
+                continue;
             }
+
+            $activeArg = $args[$position];
+            if (! $this->getType($activeArg->value)->isNull()->yes()) {
+                continue;
+            }
+
+            $activeArg->value = new String_('');
+            $isChanged = true;
         }
 
         if ($isChanged) {

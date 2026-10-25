@@ -6,20 +6,12 @@ namespace Rector\Php85\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Type\TypeCombinator;
-use PHPStan\Type\UnionType;
+use PhpParser\Node\Scalar\String_;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\Php81\NodeManipulator\NullToStrictStringIntConverter;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -29,8 +21,6 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly NullToStrictStringIntConverter $nullToStrictStringIntConverter,
         private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
@@ -71,53 +61,25 @@ final class ArrayKeyExistsNullToEmptyStringRector extends AbstractRector impleme
             return null;
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
         $args = $node->getArgs();
-
         if (count($args) !== 2) {
             return null;
         }
 
-        $classReflection = $scope->getClassReflection();
-        $isTrait = $classReflection instanceof ClassReflection && $classReflection->isTrait();
+        $argPosition = $this->argsAnalyzer->resolveArgPosition($args, 'key', 0);
+        $activeArg = $args[$argPosition];
 
-        $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        if (! $functionReflection instanceof FunctionReflection) {
+        if (! $this->getType($activeArg->value)->isNull()->yes()) {
             return null;
         }
 
-        $argPosition = $this->argsAnalyzer->resolveArgPosition($args, 'key', 0);
-        $originalType = $this->getType($args[$argPosition]->value);
+        $activeArg->value = new String_('');
 
-        if ($originalType instanceof UnionType) {
-            $withoutNullParameterType = TypeCombinator::removeNull($originalType);
-            if ($withoutNullParameterType->equals($originalType)) {
-                return null;
-            }
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($functionReflection, $node, $scope);
-        $result = $this->nullToStrictStringIntConverter->convertIfNull(
-            $node,
-            $args,
-            $argPosition,
-            $isTrait,
-            $scope,
-            $parametersAcceptor
-        );
-        if ($result instanceof Node) {
-            return $result;
-        }
-
-        return null;
+        return $node;
     }
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_ARRAY_KEY_EXISTS_FUNCTION;
+        return PhpVersion::PHP_85;
     }
 }
