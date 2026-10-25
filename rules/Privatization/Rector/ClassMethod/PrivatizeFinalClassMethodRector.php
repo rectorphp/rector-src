@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\Guard\LaravelModelGuard;
 use Rector\Privatization\Guard\OverrideByParentClassGuard;
 use Rector\Privatization\Guard\ParentClassMagicCallGuard;
@@ -80,14 +79,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->overrideByParentClassGuard->isLegal($node)) {
+        $classReflection = $this->getClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
+        if (! $this->overrideByParentClassGuard->isLegal($node)) {
             return null;
         }
 
@@ -133,13 +130,6 @@ CODE_SAMPLE
 
     private function shouldSkipClassMethod(ClassMethod $classMethod): bool
     {
-        // edge case in nette framework
-        /** @var string $methodName */
-        $methodName = $this->getName($classMethod->name);
-        if (str_starts_with($methodName, 'createComponent')) {
-            return true;
-        }
-
         if (! $classMethod->isProtected()) {
             return true;
         }
@@ -149,7 +139,7 @@ CODE_SAMPLE
         }
 
         // if has parent call, its probably overriding parent one → skip it
-        $hasParentCall = (bool) $this->betterNodeFinder->findFirst(
+        return (bool) $this->betterNodeFinder->findFirst(
             (array) $classMethod->stmts,
             function (Node $node): bool {
                 if (! $node instanceof StaticCall) {
@@ -159,7 +149,5 @@ CODE_SAMPLE
                 return $this->isName($node->class, 'parent');
             }
         );
-
-        return $hasParentCall;
     }
 }

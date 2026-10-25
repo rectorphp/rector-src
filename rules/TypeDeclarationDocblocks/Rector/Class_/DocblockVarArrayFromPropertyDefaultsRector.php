@@ -14,10 +14,8 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -30,7 +28,6 @@ use Rector\TypeDeclarationDocblocks\TagNodeAnalyzer\UsefulArrayTagNodeAnalyzer;
 final class DocblockVarArrayFromPropertyDefaultsRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NodeDocblockTypeDecorator $nodeDocblockTypeDecorator,
         private readonly UsefulArrayTagNodeAnalyzer $usefulArrayTagNodeAnalyzer
@@ -73,12 +70,10 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
-        $className = $this->getName($node);
-        if( ! $this->reflectionProvider->hasClass($className)) {
+        $classReflection = $this->getClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
 
         foreach ($node->getProperties() as $property) {
             if (! $property->type instanceof Identifier) {
