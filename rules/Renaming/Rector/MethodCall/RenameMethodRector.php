@@ -15,12 +15,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeManipulator\ClassManipulator;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\Renaming\Contract\MethodCallRenameInterface;
@@ -87,8 +85,8 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Class_ || $node instanceof Trait_ || $node instanceof Interface_) {
-            $scope = ScopeFetcher::fetch($node);
-            return $this->refactorClass($node, $scope);
+            $classReflection = $this->getClassReflection($node);
+            return $this->refactorClass($node, $classReflection);
         }
 
         return $this->refactorMethodCallAndStaticCall($node);
@@ -169,10 +167,8 @@ CODE_SAMPLE
      */
     private function refactorClass(
         Class_|Trait_|Interface_ $classOrInterface,
-        Scope $scope
+        ClassReflection $classReflection
     ): Class_|Trait_|Interface_|null {
-        $classReflection = $scope->getClassReflection();
-
         $hasChanged = false;
 
         foreach ($classOrInterface->getMethods() as $classMethod) {

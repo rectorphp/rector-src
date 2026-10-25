@@ -8,6 +8,7 @@ use LogicException;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeVisitor;
 use Rector\Application\RectorRegistry;
 use Rector\Rector\RectorRunner;
@@ -77,6 +78,10 @@ final class RectorNodeTraverser
 
             $this->traverseNode($subNode, $file);
 
+            // a descendant removal (e.g. an emptied method body) can make a Class_ rule
+            // newly apply; re-offer the class once, now that its children are settled
+            $node->{$name} = $subNode = $this->reRunClassRectors($subNode, $file);
+
             if ($this->stopTraversal) {
                 break;
             }
@@ -126,6 +131,10 @@ final class RectorNodeTraverser
             }
 
             $this->traverseNode($node, $file);
+
+            // re-offer a Class_ after descendant removals settle (see traverseNode)
+            $nodes[$i] = $node = $this->reRunClassRectors($node, $file);
+
             if ($this->stopTraversal) {
                 break;
             }
@@ -138,6 +147,29 @@ final class RectorNodeTraverser
         }
 
         return $nodes;
+    }
+
+    /**
+     * Re-run Class_ rules once, after its children are traversed, so a rule whose
+     * precondition is only met by a descendant removal still fires in a single pass.
+     */
+    private function reRunClassRectors(Node $node, File $file): Node
+    {
+        if (! $node instanceof Class_) {
+            return $node;
+        }
+
+        foreach ($this->rectorRegistry->forNodeAndFile($node, $file) as $currentNodeVisitor) {
+            $return = $this->rectorRunner->run($currentNodeVisitor, $node);
+            if (! $return instanceof Node) {
+                continue;
+            }
+
+            $this->ensureReplacementReasonable($node, $return);
+            $node = $return;
+        }
+
+        return $node;
     }
 
     private function ensureReplacementReasonable(Node $old, Node $new): void
