@@ -59,7 +59,7 @@ final readonly class FileProcessor
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-        for ($loop = 0; $loop < 2; ++$loop) {
+        for ($loop = 0; $loop < 3; ++$loop) {
             $file->changeHasChanged(false);
 
             // every rule and post rector records a line change when it mutates the AST
