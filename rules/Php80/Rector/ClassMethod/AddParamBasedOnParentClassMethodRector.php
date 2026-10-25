@@ -26,7 +26,6 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -113,6 +112,11 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
+        $classReflection = $this->getClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
         foreach ($node->getMethods() as $classMethod) {
             if ($this->isName($classMethod, MethodName::CONSTRUCT)) {
                 continue;
@@ -127,14 +131,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $scope = ScopeFetcher::fetch($node);
-            $currentClassReflection = $scope->getClassReflection();
-
             // It relies on phpstorm stubs that define 2 kind of query method for both php 7.4 and php 8.0
             // @see https://github.com/JetBrains/phpstorm-stubs/blob/e2e898a29929d2f520fe95bdb2109d8fa895ba4a/PDO/PDO.php#L1096-L1126
             if ($parentMethodReflection->getName() === 'query'
-                && $currentClassReflection instanceof ClassReflection
-                && $currentClassReflection->is('PDO')) {
+                // && $classReflection instanceof ClassReflection
+                && $classReflection->is('PDO')) {
                 continue;
             }
 

@@ -77,12 +77,17 @@ CODE_SAMPLE
     {
         $hasChanged = false;
         $isFinal = $node->isFinal() || FeatureFlags::treatClassesAsFinal($node);
+
         $scope = null;
-        $classReflection = null;
+
+        $classReflection = $this->getClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
 
         $this->traverseNodesWithCallable($node->stmts, function (Node $subNode) use (
             &$hasChanged,
-            &$classReflection,
+            $classReflection,
             $isFinal,
             &$scope,
             $node,
@@ -108,11 +113,6 @@ CODE_SAMPLE
             }
 
             $scope ??= ScopeFetcher::fetch($node);
-            $classReflection ??= $scope->getClassReflection();
-
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
-            }
 
             if ($this->shouldSkip($subNode, $classReflection, $isFinal, $scope)) {
                 return null;
