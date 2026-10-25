@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Rector\DeadCode\Rector\ClassMethod;
+namespace Rector\DeadCode\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\NodeVisitor;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Reflection\ExtendedParameterReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Enum\ObjectReference;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -28,13 +28,14 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\MethodName;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveParentDelegatingClassMethodRector\RemoveParentDelegatingClassMethodRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\Class_\RemoveParentDelegatingClassMethodRector\RemoveParentDelegatingClassMethodRectorTest
  */
 final class RemoveParentDelegatingClassMethodRector extends AbstractRector
 {
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -69,66 +70,24 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
-    public function refactor(Node $node): ?int
+    public function refactor(Node $node): ?Node
     {
-        // skip constructors, as removing a delegating constructor is risky and usually intentional
-        if ($this->isName($node, MethodName::CONSTRUCT)) {
+        $className = $this->getName($node);
+        if (! is_string($className)) {
             return null;
         }
 
-        if ($node->isFinal() || $node->isAbstract() || $node->isPrivate() || $node->byRef) {
+        if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }
 
-        if ($node->stmts === null || count($node->stmts) !== 1) {
-            return null;
-        }
-
-        if ($node->attrGroups !== []) {
-            return null;
-        }
-
-        if (! $this->isParentCallDelegatingParams($node, $node->stmts[0])) {
-            return null;
-        }
-
-        if ($this->hasRefiningDocblock($node)) {
-            return null;
-        }
-
-        $parentMethodReflection = $this->matchParentMethodReflection($node);
-        if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
-            return null;
-        }
-
-        if (! $this->isSignatureMatching($node, $parentMethodReflection)) {
-            return null;
-        }
-
-        return NodeVisitor::REMOVE_NODE;
-    }
-
-    private function hasRefiningDocblock(ClassMethod $classMethod): bool
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        return array_any($phpDocInfo->getPhpDocNode()->children, fn (PhpDocChildNode $phpDocChildNode): bool => $phpDocChildNode instanceof PhpDocTagNode);
-    }
-
-    private function matchParentMethodReflection(ClassMethod $classMethod): ?ExtendedMethodReflection
-    {
-        $scope = ScopeFetcher::fetch($classMethod);
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
+        $classReflection = $this->reflectionProvider->getClass($className);
         if (! $classReflection->isClass()) {
             return null;
         }
@@ -138,6 +97,74 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof ClassMethod) {
+                continue;
+            }
+
+            if (! $this->isDelegatingToParent($stmt, $parentClassReflection)) {
+                continue;
+            }
+
+            unset($node->stmts[$key]);
+            $hasChanged = true;
+        }
+
+        if (! $hasChanged) {
+            return null;
+        }
+
+        $node->stmts = array_values($node->stmts);
+
+        return $node;
+    }
+
+    private function isDelegatingToParent(ClassMethod $classMethod, ClassReflection $parentClassReflection): bool
+    {
+        // skip constructors, as removing a delegating constructor is risky and usually intentional
+        if ($this->isName($classMethod, MethodName::CONSTRUCT)) {
+            return false;
+        }
+
+        if ($classMethod->isFinal() || $classMethod->isAbstract() || $classMethod->isPrivate() || $classMethod->byRef) {
+            return false;
+        }
+
+        if ($classMethod->stmts === null || count($classMethod->stmts) !== 1) {
+            return false;
+        }
+
+        if ($classMethod->attrGroups !== []) {
+            return false;
+        }
+
+        if (! $this->isParentCallDelegatingParams($classMethod, $classMethod->stmts[0])) {
+            return false;
+        }
+
+        if ($this->hasRefiningDocblock($classMethod)) {
+            return false;
+        }
+
+        $parentMethodReflection = $this->matchParentMethodReflection($classMethod, $parentClassReflection);
+        if (! $parentMethodReflection instanceof ExtendedMethodReflection) {
+            return false;
+        }
+
+        return $this->isSignatureMatching($classMethod, $parentMethodReflection);
+    }
+
+    private function hasRefiningDocblock(ClassMethod $classMethod): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+        return array_any($phpDocInfo->getPhpDocNode()->children, fn (PhpDocChildNode $phpDocChildNode): bool => $phpDocChildNode instanceof PhpDocTagNode);
+    }
+
+    private function matchParentMethodReflection(
+        ClassMethod $classMethod,
+        ClassReflection $parentClassReflection
+    ): ?ExtendedMethodReflection {
         $methodName = $classMethod->name->toString();
         if (! $parentClassReflection->hasNativeMethod($methodName)) {
             return null;
