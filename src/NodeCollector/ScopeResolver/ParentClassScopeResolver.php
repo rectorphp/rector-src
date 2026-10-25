@@ -9,16 +9,6 @@ use PHPStan\Reflection\ClassReflection;
 
 final class ParentClassScopeResolver
 {
-    public function resolveParentClassName(Scope $scope): ?string
-    {
-        $parentClassReflection = $this->resolveParentClassReflection($scope);
-        if (! $parentClassReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        return $parentClassReflection->getName();
-    }
-
     public function resolveParentClassReflection(Scope $scope): ?ClassReflection
     {
         $classReflection = $scope->getClassReflection();

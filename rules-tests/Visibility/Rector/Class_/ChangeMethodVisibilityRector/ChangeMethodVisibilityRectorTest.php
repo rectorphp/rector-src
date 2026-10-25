@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Visibility\Rector\ClassMethod\ChangeMethodVisibilityRector;
+namespace Rector\Tests\Visibility\Rector\Class_\ChangeMethodVisibilityRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
