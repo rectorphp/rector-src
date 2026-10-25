@@ -11,6 +11,7 @@ composer.lock
 .phpunit.result.cache
 .phpunit.cache
 .fastunit-cache
+.fixture.lock
 
 # scoped & downgraded version
 php-scoper.phar

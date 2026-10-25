@@ -37,6 +37,11 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     private ?string $inputFilePath = null;
 
     /**
+     * @var resource|null
+     */
+    private $fixtureDirectoryLock;
+
+    /**
      * @var array<string, true>
      */
     private static array $cacheByRuleAndConfig = [];
@@ -133,6 +138,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             FileSystem::delete($this->inputFilePath);
         }
 
+        $this->unlockFixtureDirectory();
+
         // a next test that does not set its own paths would still locate the deleted file
         $this->dynamicSourceLocatorProvider->reset();
     }
@@ -176,6 +183,10 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         if ($fixtureFilePath === $inputFilePath) {
             throw new ShouldNotHappenException('Fixture file and input file cannot be the same: ' . $fixtureFilePath);
         }
+
+        // test classes that share a fixture directory write the same temp files,
+        // so in parallel processes one could delete the other's file
+        $this->lockFixtureDirectory(dirname($inputFilePath));
 
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents, null);
@@ -280,6 +291,31 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         // return changed file contents
         $changedFileContents = FileSystem::read($filePath);
         return new RectorTestResult($changedFileContents, $processResult);
+    }
+
+    private function lockFixtureDirectory(string $directory): void
+    {
+        // a test can call doTestFile() more than once; a second lock from this process would wait for the first
+        $this->unlockFixtureDirectory();
+
+        $fixtureDirectoryLock = fopen($directory . '/.fixture.lock', 'c');
+        if ($fixtureDirectoryLock === false) {
+            throw new ShouldNotHappenException('Cannot open the lock file in ' . $directory);
+        }
+
+        flock($fixtureDirectoryLock, LOCK_EX);
+        $this->fixtureDirectoryLock = $fixtureDirectoryLock;
+    }
+
+    private function unlockFixtureDirectory(): void
+    {
+        if (! is_resource($this->fixtureDirectoryLock)) {
+            return;
+        }
+
+        flock($this->fixtureDirectoryLock, LOCK_UN);
+        fclose($this->fixtureDirectoryLock);
+        $this->fixtureDirectoryLock = null;
     }
 
     private function createInputFilePath(string $fixtureFilePath): string
