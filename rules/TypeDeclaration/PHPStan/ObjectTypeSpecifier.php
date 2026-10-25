@@ -44,8 +44,9 @@ final readonly class ObjectTypeSpecifier
         Scope|null $scope,
         bool $withPreslash = false
     ): TypeWithClassName|NonExistingObjectType|UnionType|MixedType|TemplateType {
-        $className = ltrim($objectType->getClassName(), '\\');
-        if (str_starts_with($objectType->getClassName(), '\\')) {
+        $rawClassName = $objectType->getClassName();
+        $className = ltrim($rawClassName, '\\');
+        if (str_starts_with($rawClassName, '\\')) {
             return new FullyQualifiedObjectType($className);
         }
 
@@ -87,27 +88,18 @@ final readonly class ObjectTypeSpecifier
 
             $classReflection = $scope->getClassReflection();
             if ($classReflection instanceof ClassReflection) {
-                $templateTags = $classReflection->getTemplateTags();
                 $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
                 $templateTypeScope = $nameScope->getTemplateTypeScope();
+                $currentTemplateTag = $classReflection->getTemplateTags()[$className] ?? null;
 
-                if (! $templateTypeScope instanceof TemplateTypeScope) {
-                    // invalid type
-                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);
+                if ($templateTypeScope instanceof TemplateTypeScope && $currentTemplateTag !== null) {
+                    return TemplateTypeFactory::create(
+                        $templateTypeScope,
+                        $currentTemplateTag->getName(),
+                        $currentTemplateTag->getBound(),
+                        $currentTemplateTag->getVariance()
+                    );
                 }
-
-                $currentTemplateTag = $templateTags[$className] ?? null;
-                if ($currentTemplateTag === null) {
-                    // invalid type
-                    return $this->resolveNamespacedNonExistingObjectType($namespaceName, $className, $withPreslash);
-                }
-
-                return TemplateTypeFactory::create(
-                    $templateTypeScope,
-                    $currentTemplateTag->getName(),
-                    $currentTemplateTag->getBound(),
-                    $currentTemplateTag->getVariance()
-                );
             }
         }
 
