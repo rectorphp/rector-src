@@ -11,7 +11,7 @@ use PhpParser\Node\Name;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -29,7 +29,7 @@ final class CallUserMethodRector extends AbstractRector implements MinPhpVersion
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NO_CALL_USER_METHOD;
+        return PhpVersion::PHP_70;
     }
 
     public function getRuleDefinition(): RuleDefinition

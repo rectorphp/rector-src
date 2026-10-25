@@ -24,7 +24,7 @@ use Rector\PhpParser\Parser\InlineCodeParser;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -41,7 +41,7 @@ final class CreateFunctionToAnonymousFunctionRector extends AbstractRector imple
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATE_CREATE_FUNCTION;
+        return PhpVersion::PHP_72;
     }
 
     public function getRuleDefinition(): RuleDefinition

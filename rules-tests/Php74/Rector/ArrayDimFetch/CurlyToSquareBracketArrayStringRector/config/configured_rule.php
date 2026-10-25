@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::DEPRECATE_CURLY_BRACKET_ARRAY_STRING);
+    $rectorConfig->phpVersion(PhpVersion::PHP_74);
 
     $rectorConfig->rule(CurlyToSquareBracketArrayStringRector::class);
 };

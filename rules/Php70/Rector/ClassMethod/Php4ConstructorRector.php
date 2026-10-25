@@ -22,7 +22,7 @@ use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\ValueObject\MethodName;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -38,7 +38,7 @@ final class Php4ConstructorRector extends AbstractRector implements MinPhpVersio
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NO_PHP4_CONSTRUCTOR;
+        return PhpVersion::PHP_70;
     }
 
     public function getRuleDefinition(): RuleDefinition

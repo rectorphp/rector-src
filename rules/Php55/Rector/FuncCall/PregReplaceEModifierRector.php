@@ -15,7 +15,7 @@ use Rector\Php72\NodeFactory\AnonymousFunctionFactory;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -31,7 +31,7 @@ final class PregReplaceEModifierRector extends AbstractRector implements MinPhpV
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::PREG_REPLACE_CALLBACK_E_MODIFIER;
+        return PhpVersion::PHP_55;
     }
 
     public function getRuleDefinition(): RuleDefinition

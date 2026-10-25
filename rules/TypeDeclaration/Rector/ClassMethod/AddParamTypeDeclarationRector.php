@@ -21,7 +21,7 @@ use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Webmozart\Assert\Assert;
 
@@ -182,7 +182,7 @@ CODE_SAMPLE
 
         // remove it
         if ($addParamTypeDeclaration->getParamType() instanceof MixedType) {
-            if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
+            if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80)) {
                 $param->type = $paramTypeNode;
                 return;
             }

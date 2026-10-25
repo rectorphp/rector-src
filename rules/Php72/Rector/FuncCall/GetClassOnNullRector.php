@@ -15,7 +15,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -25,7 +25,7 @@ final class GetClassOnNullRector extends AbstractRector implements MinPhpVersion
 {
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NO_NULL_ON_GET_CLASS;
+        return PhpVersion::PHP_72;
     }
 
     public function getRuleDefinition(): RuleDefinition

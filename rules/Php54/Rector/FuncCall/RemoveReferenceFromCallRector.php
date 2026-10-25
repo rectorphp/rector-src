@@ -12,7 +12,7 @@ use PhpParser\Node\Expr\StaticCall;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -22,7 +22,7 @@ final class RemoveReferenceFromCallRector extends AbstractRector implements MinP
 {
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NO_REFERENCE_IN_ARG;
+        return PhpVersion::PHP_54;
     }
 
     public function getRuleDefinition(): RuleDefinition

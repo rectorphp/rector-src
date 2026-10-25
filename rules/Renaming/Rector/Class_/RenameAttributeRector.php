@@ -16,7 +16,7 @@ use Rector\Rector\AbstractRector;
 use Rector\Renaming\ValueObject\RenameAttribute;
 use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Webmozart\Assert\Assert;
 
@@ -106,7 +106,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::ATTRIBUTES;
+        return PhpVersion::PHP_80;
     }
 
     private function matchNewAttributeName(Attribute $attribute): ?string

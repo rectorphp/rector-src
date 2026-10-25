@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
 use Rector\Config\RectorConfig;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::FINAL_CLASS_CONSTANTS);
+    $rectorConfig->phpVersion(PhpVersion::PHP_81);
 
     $rectorConfig->rule(RemoveFinalFromConstRector::class);
 };

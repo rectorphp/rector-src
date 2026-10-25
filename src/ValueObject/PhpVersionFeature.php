@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject;
 
+/**
+ * @api
+ * @deprecated Use \Rector\ValueObject\PhpVersion constants directly instead.
+ */
 final class PhpVersionFeature
 {
     public const int PROPERTY_MODIFIER = PhpVersion::PHP_52;

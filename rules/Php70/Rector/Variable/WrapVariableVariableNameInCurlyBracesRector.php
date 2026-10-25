@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\Variable;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -20,7 +20,7 @@ final class WrapVariableVariableNameInCurlyBracesRector extends AbstractRector i
 {
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::WRAP_VARIABLE_VARIABLE;
+        return PhpVersion::PHP_70;
     }
 
     public function getRuleDefinition(): RuleDefinition

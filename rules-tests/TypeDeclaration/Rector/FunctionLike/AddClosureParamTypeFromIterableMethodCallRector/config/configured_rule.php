@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromIterableMethodCallRector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->rules([AddClosureParamTypeFromIterableMethodCallRector::class]);
 
-    $rectorConfig->phpVersion(PhpVersionFeature::MIXED_TYPE);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 };

@@ -17,7 +17,7 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -33,7 +33,7 @@ final class MoneyFormatToNumberFormatRector extends AbstractRector implements Mi
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATE_MONEY_FORMAT;
+        return PhpVersion::PHP_74;
     }
 
     public function getRuleDefinition(): RuleDefinition

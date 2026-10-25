@@ -6,7 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Issues\Issue9388\Source\AnnotationToAttribute\ValidateAttributeDecorator;
 use Rector\Tests\Issues\Issue9388\Source\Rule\ExtbaseAnnotationToAttributeRector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
     // AttributeDecorator receives every AttributeDecoratorInterface implementation through its
@@ -15,11 +15,11 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->singleton(ValidateAttributeDecorator::class);
 
     $rectorConfig->importNames(false, false);
-    $rectorConfig->phpVersion(PhpVersionFeature::ATTRIBUTES);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
         'TYPO3\CMS\Extbase\Mvc\Web\Request' => 'TYPO3\CMS\Extbase\Mvc\Request',
     ]);
     $rectorConfig->rule(ExtbaseAnnotationToAttributeRector::class);
-    $rectorConfig->phpVersion(PhpVersionFeature::ATTRIBUTES);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 };

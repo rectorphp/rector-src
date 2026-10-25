@@ -12,7 +12,7 @@ use PHPStan\Type\Type;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<BooleanType>
@@ -45,7 +45,7 @@ final readonly class BooleanTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::SCALAR_TYPES)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_70)) {
             return null;
         }
 
@@ -57,7 +57,7 @@ final readonly class BooleanTypeMapper implements TypeMapperInterface
             return new Identifier('false');
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_82)) {
             return new Identifier('bool');
         }
 

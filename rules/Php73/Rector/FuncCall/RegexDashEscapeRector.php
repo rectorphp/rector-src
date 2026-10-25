@@ -12,7 +12,7 @@ use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\Util\StringUtils;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -39,7 +39,7 @@ final class RegexDashEscapeRector extends AbstractRector implements MinPhpVersio
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::ESCAPE_DASH_IN_REGEX;
+        return PhpVersion::PHP_73;
     }
 
     public function getRuleDefinition(): RuleDefinition

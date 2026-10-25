@@ -11,7 +11,7 @@ use PhpParser\Node\Scalar\Int_;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -72,7 +72,7 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DIRNAME_LEVELS;
+        return PhpVersion::PHP_70;
     }
 
     private function shouldSkip(): bool

@@ -21,7 +21,7 @@ use PhpParser\Node\Stmt\If_;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -34,7 +34,7 @@ final class WakeupToUnserializeRector extends AbstractRector implements MinPhpVe
 {
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATED_METHOD_WAKEUP;
+        return PhpVersion::PHP_85;
     }
 
     public function getRuleDefinition(): RuleDefinition

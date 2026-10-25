@@ -16,7 +16,7 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<ClosureType>
@@ -71,28 +71,28 @@ final readonly class ClosureTypeMapper implements TypeMapperInterface
     {
         // ref https://3v4l.org/iKMK6#v5.3.29
         if ($typeKind === TypeKind::PARAM && $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::ANONYMOUS_FUNCTION_PARAM_TYPE
+            PhpVersion::PHP_53
         )) {
             return new FullyQualified('Closure');
         }
 
         // ref https://3v4l.org/g8WvW#v7.4.0
         if ($typeKind === TypeKind::PROPERTY && $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::TYPED_PROPERTIES
+            PhpVersion::PHP_74
         )) {
             return new FullyQualified('Closure');
         }
 
         // ref https://3v4l.org/nUreN#v7.0.0
         if ($typeKind === TypeKind::RETURN && $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::ANONYMOUS_FUNCTION_RETURN_TYPE
+            PhpVersion::PHP_70
         )) {
             return new FullyQualified('Closure');
         }
 
         // ref https://3v4l.org/ruh5g#v8.0.0
         if ($typeKind === TypeKind::UNION && $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::UNION_TYPES
+            PhpVersion::PHP_80
         )) {
             return new FullyQualified('Closure');
         }

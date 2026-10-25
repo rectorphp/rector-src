@@ -13,7 +13,7 @@ use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
@@ -81,7 +81,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATE_FINFO_BUFFER_CONTEXT;
+        return PhpVersion::PHP_85;
     }
 
     private function removeContextArg(FuncCall|MethodCall $callLike): bool
