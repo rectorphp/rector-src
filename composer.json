@@ -72,7 +72,8 @@
         },
         "files": [
             "src/functions/node_helper.php",
-            "src/functions/rule_doc_generator_class_aliases.php"
+            "src/functions/rule_doc_generator_class_aliases.php",
+            "src/functions/rule_class_aliases.php"
         ]
     },
     "autoload-dev": {
