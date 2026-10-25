@@ -59,7 +59,7 @@ final readonly class FileProcessor
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-        do {
+        for ($loop = 0; $loop < 2; ++$loop) {
             $file->changeHasChanged(false);
 
             // every rule and post rector records a line change when it mutates the AST
@@ -92,7 +92,7 @@ final readonly class FileProcessor
             }
 
             $fileHasChanged = true;
-        } while (true);
+        }
 
         // 5. add as cacheable if not changed at all
         if (! $fileHasChanged) {
