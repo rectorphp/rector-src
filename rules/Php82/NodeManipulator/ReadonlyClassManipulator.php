@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Rector\Php82\NodeManipulator;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Analyser\Scope;
 use PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -31,14 +31,9 @@ final readonly class ReadonlyClassManipulator
 
     public function process(Class_ $class): Class_|null
     {
-        $className = $class->namespacedName->toString();
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return null;
-        }
+        $parentClassReflections = $this->resolveParentClassReflections($class);
 
-        $classReflection = $this->reflectionProvider->getClass($className);
-
-        if ($this->shouldSkip($classReflection, $class)) {
+        if ($this->shouldSkip($class, $parentClassReflections)) {
             return null;
         }
 
@@ -60,16 +55,24 @@ final readonly class ReadonlyClassManipulator
     }
 
     /**
+     * Resolve parents from the extends name, so anonymous classes (no name) work too.
+     *
      * @return ClassReflection[]
      */
-    private function resolveParentClassReflections(Scope $scope): array
+    private function resolveParentClassReflections(Class_ $class): array
     {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
+        if (! $class->extends instanceof Name) {
             return [];
         }
 
-        return $classReflection->getParents();
+        $parentName = $class->extends->toString();
+        if (! $this->reflectionProvider->hasClass($parentName)) {
+            return [];
+        }
+
+        $parentClassReflection = $this->reflectionProvider->getClass($parentName);
+
+        return [$parentClassReflection, ...$parentClassReflection->getParents()];
     }
 
     /**
@@ -80,13 +83,14 @@ final readonly class ReadonlyClassManipulator
         return array_any($properties, fn (Property $property): bool => ! $property->type instanceof Node);
     }
 
-    private function shouldSkip(ClassReflection $classReflection, Class_ $class): bool
+    /**
+     * @param ClassReflection[] $parentClassReflections
+     */
+    private function shouldSkip(Class_ $class, array $parentClassReflections): bool
     {
         if ($this->shouldSkipClass($class)) {
             return true;
         }
-
-        $parentClassReflections = $classReflection->getParents();
 
         if (! $class->isAnonymous() && ! $class->isFinal()) {
             return ! $this->isExtendsReadonlyClass($parentClassReflections);
