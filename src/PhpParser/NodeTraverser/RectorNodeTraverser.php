@@ -8,6 +8,7 @@ use LogicException;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeVisitor;
 use Rector\Application\RectorRegistry;
 use Rector\Rector\RectorRunner;
@@ -77,6 +78,11 @@ final class RectorNodeTraverser
 
             $this->traverseNode($subNode, $file);
 
+            // a child mutation (e.g. an emptied method body, or a rename that now duplicates)
+            // can make a Class_ rule newly apply; re-offer the class once children are settled.
+            // this substitutes for the former whole-tree do-while loop in FileProcessor
+            $node->{$name} = $subNode = $this->reRunClassRectors($subNode, $file);
+
             if ($this->stopTraversal) {
                 break;
             }
@@ -126,6 +132,10 @@ final class RectorNodeTraverser
             }
 
             $this->traverseNode($node, $file);
+
+            // re-offer a Class_ after its children settle (see traverseNode)
+            $nodes[$i] = $node = $this->reRunClassRectors($node, $file);
+
             if ($this->stopTraversal) {
                 break;
             }
@@ -138,6 +148,29 @@ final class RectorNodeTraverser
         }
 
         return $nodes;
+    }
+
+    /**
+     * Re-run Class_ rules once, after its children are traversed, so a rule whose
+     * precondition is only met by a descendant removal still fires in a single pass.
+     */
+    private function reRunClassRectors(Node $node, File $file): Node
+    {
+        if (! $node instanceof Class_) {
+            return $node;
+        }
+
+        foreach ($this->rectorRegistry->forNodeAndFile($node, $file) as $currentNodeVisitor) {
+            $return = $this->rectorRunner->run($currentNodeVisitor, $node);
+            if (! $return instanceof Node) {
+                continue;
+            }
+
+            $this->ensureReplacementReasonable($node, $return);
+            $node = $return;
+        }
+
+        return $node;
     }
 
     private function ensureReplacementReasonable(Node $old, Node $new): void
