@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromMockObjectRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromMockObjectRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 

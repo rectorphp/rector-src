@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromMockObjectRector;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromMockObjectRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
