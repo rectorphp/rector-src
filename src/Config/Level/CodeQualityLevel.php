@@ -68,7 +68,6 @@ use Rector\Contract\Rector\RectorInterface;
 use Rector\EarlyReturn\Rector\If_\ChangeIfElseValueAssignToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
-use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 use Rector\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
@@ -148,7 +147,6 @@ final class CodeQualityLevel
         RemoveAlwaysElseRector::class,
         ChangeIfElseValueAssignToEarlyReturnRector::class,
         PreparedValueToEarlyReturnRector::class,
-        ReturnEarlyIfVariableRector::class,
         InlineIsAInstanceOfRector::class,
         FlipNegatedTernaryInstanceofRector::class,
         InlineConstructorDefaultToPropertyRector::class,
