@@ -56,65 +56,42 @@ final readonly class FileProcessor
             return new FileProcessResult([$parsingSystemError], null, false);
         }
 
-        $fileHasChanged = false;
         $filePath = $file->getFilePath();
 
-        do {
-            $file->changeHasChanged(false);
+        // 1. change nodes with Rector Rules
+        $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts(), $file);
 
-            // every rule and post rector records a line change when it mutates the AST
-            $changeCountBeforePass = count($file->getRectorWithLineChanges());
+        // 2. apply post rectors
+        $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
 
-            // 1. change nodes with Rector Rules
-            $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts(), $file);
+        // 3. this is needed for new tokens added in "afterTraverse()"
+        $file->changeNewStmts($postNewStmts);
 
-            // 2. apply post rectors
-            $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
-
-            // 3. this is needed for new tokens added in "afterTraverse()"
-            $file->changeNewStmts($postNewStmts);
-
-            // file never changed and this pass changed nothing: the print would just reproduce the
-            // original content, so skip the expensive format-preserving print entirely.
-            // once the file has changed we keep printing every pass, as a reprint can still
-            // stabilize the output (e.g. drop a leftover trailing comma)
-            if (! $fileHasChanged && count($file->getRectorWithLineChanges()) === $changeCountBeforePass) {
-                break;
-            }
-
-            // 4. print to file or string
-            // important to detect if file has changed
-            $this->printFile($file, $configuration, $filePath);
-
-            // no change in current iteration, stop
-            if (! $file->hasChanged()) {
-                break;
-            }
-
-            $fileHasChanged = true;
-        } while (true);
-
-        // 5. add as cacheable if not changed at all
-        if (! $fileHasChanged) {
+        // no rule recorded a change: the print would just reproduce the original content,
+        // so skip the expensive format-preserving print entirely and cache the file
+        if ($file->getRectorWithLineChanges() === []) {
             $this->changedFilesDetector->addCacheableFile($filePath);
-        } else {
-            // when changed, set final status changed to true
-            // to ensure it make sense to verify in next process when needed
-            $file->changeHasChanged(true);
+            return new FileProcessResult([], null, false);
         }
 
-        $rectorWithLineChanges = $file->getRectorWithLineChanges();
-        if ($file->hasChanged() || $rectorWithLineChanges !== []) {
-            $currentFileDiff = $this->fileDiffFactory->createFileDiffWithLineChanges(
-                $configuration->shouldShowDiffs(),
-                $file,
-                $file->getOriginalFileContent(),
-                $file->getFileContent(),
-                $file->getRectorWithLineChanges()
-            );
+        // 4. print to file or string; this updates the file content and resolves
+        // whether the file really changed (line changes can still print identically)
+        $this->printFile($file, $configuration, $filePath);
 
-            $file->setFileDiff($currentFileDiff);
+        // content is identical despite reported line changes, so it is cacheable
+        if (! $file->hasChanged()) {
+            $this->changedFilesDetector->addCacheableFile($filePath);
         }
+
+        $currentFileDiff = $this->fileDiffFactory->createFileDiffWithLineChanges(
+            $configuration->shouldShowDiffs(),
+            $file,
+            $file->getOriginalFileContent(),
+            $file->getFileContent(),
+            $file->getRectorWithLineChanges()
+        );
+
+        $file->setFileDiff($currentFileDiff);
 
         return new FileProcessResult([], $file->getFileDiff(), $file->hasChanged());
     }
