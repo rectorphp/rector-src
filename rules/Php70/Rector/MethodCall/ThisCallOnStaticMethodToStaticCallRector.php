@@ -16,7 +16,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\Enum\ObjectReference;
 use Rector\NodeCollector\StaticAnalyzer;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -93,12 +92,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = ScopeFetcher::fetch($node);
-        if (! $scope->isInClass()) {
+        $classReflection = $this->getClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
-
-        $classReflection = $scope->getClassReflection();
 
         // skip PHPUnit calls, as they accept both self:: and $this-> formats
         if ($classReflection->is('PHPUnit\Framework\TestCase')) {
