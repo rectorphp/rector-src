@@ -71,22 +71,23 @@ final readonly class UseImportNameMatcher
             throw new ShouldNotHappenException();
         }
 
+        $fullyQualifiedName = $prefix . $originalUseUseNode->name->toString();
+
         if (! $originalUseUseNode->alias instanceof Identifier) {
             $lastName = $originalUseUseNode->name->getLast();
             if (str_starts_with($tag, $lastName . '\\')) {
-                $tagName = Strings::after($tag, '\\');
-                return $prefix . $originalUseUseNode->name->toString() . '\\' . $tagName;
+                return $fullyQualifiedName . '\\' . Strings::after($tag, '\\');
             }
 
-            return $prefix . $originalUseUseNode->name->toString();
+            return $fullyQualifiedName;
         }
 
         $unaliasedShortClass = Strings::substring($tag, strlen($originalUseUseNode->alias->toString()));
         if (\str_starts_with($unaliasedShortClass, '\\')) {
-            return $prefix . $originalUseUseNode->name . $unaliasedShortClass;
+            return $fullyQualifiedName . $unaliasedShortClass;
         }
 
-        return $prefix . $originalUseUseNode->name . '\\' . $unaliasedShortClass;
+        return $fullyQualifiedName . '\\' . $unaliasedShortClass;
     }
 
     private function isUseMatchingName(string $tag, UseItem $useItem): bool
