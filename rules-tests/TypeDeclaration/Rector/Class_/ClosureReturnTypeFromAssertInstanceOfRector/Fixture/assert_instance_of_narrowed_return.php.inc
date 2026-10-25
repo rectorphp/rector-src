@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeFromAssertInstanceOfRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\ClosureReturnTypeFromAssertInstanceOfRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +20,7 @@ final class AssertInstanceOfNarrowedReturn extends TestCase
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeFromAssertInstanceOfRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\ClosureReturnTypeFromAssertInstanceOfRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
 

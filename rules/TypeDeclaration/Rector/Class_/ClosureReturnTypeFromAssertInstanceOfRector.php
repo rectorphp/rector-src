@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Rector\TypeDeclaration\Rector\Closure;
+namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PHPStan\Analyser\Scope;
+use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NeverType;
 use Rector\Enum\ClassName;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -24,7 +23,7 @@ use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeFromAssertInstanceOfRector\ClosureReturnTypeFromAssertInstanceOfRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\Class_\ClosureReturnTypeFromAssertInstanceOfRector\ClosureReturnTypeFromAssertInstanceOfRectorTest
  */
 final class ClosureReturnTypeFromAssertInstanceOfRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -82,44 +81,60 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Closure::class];
+        return [Class_::class];
     }
 
     /**
-     * @param Closure $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        // type is already set
-        if ($node->returnType instanceof Node) {
+        $classReflection = $this->fetchClassLikeReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        // only handle closures narrowed by assertInstanceOf(); plain returns are handled by ClosureReturnTypeRector
-        if (! $this->hasAssertInstanceOf($node)) {
+        // is phpunit test case?
+        if (! $classReflection->is(ClassName::TEST_CASE_CLASS)) {
             return null;
         }
 
-        $scope = ScopeFetcher::fetch($node);
-        if (! $this->isInsideTestCaseClass($scope)) {
-            return null;
+        $hasChanged = false;
+
+        /** @var Closure[] $closures */
+        $closures = $this->betterNodeFinder->findInstancesOf($node, [Closure::class]);
+        foreach ($closures as $closure) {
+            // type is already set
+            if ($closure->returnType instanceof Node) {
+                continue;
+            }
+
+            // only handle closures narrowed by assertInstanceOf(); plain returns are handled by ClosureReturnTypeRector
+            if (! $this->hasAssertInstanceOf($closure)) {
+                continue;
+            }
+
+            $closureReturnType = $this->returnTypeInferer->inferFunctionLike($closure);
+
+            // handled by other rules
+            if ($closureReturnType instanceof NeverType) {
+                continue;
+            }
+
+            $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($closureReturnType, TypeKind::RETURN);
+            if (! $returnTypeNode instanceof Node) {
+                continue;
+            }
+
+            $closure->returnType = $returnTypeNode;
+            $hasChanged = true;
         }
 
-        $closureReturnType = $this->returnTypeInferer->inferFunctionLike($node);
-
-        // handled by other rules
-        if ($closureReturnType instanceof NeverType) {
-            return null;
+        if ($hasChanged) {
+            return $node;
         }
 
-        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($closureReturnType, TypeKind::RETURN);
-        if (! $returnTypeNode instanceof Node) {
-            return null;
-        }
-
-        $node->returnType = $returnTypeNode;
-
-        return $node;
+        return null;
     }
 
     public function provideMinPhpVersion(): int
@@ -134,16 +149,5 @@ CODE_SAMPLE
             fn (Node $node): bool => ($node instanceof MethodCall || $node instanceof StaticCall)
                 && $this->isName($node->name, 'assertInstanceOf')
         );
-    }
-
-    private function isInsideTestCaseClass(Scope $scope): bool
-    {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        // is phpunit test case?
-        return $classReflection->is(ClassName::TEST_CASE_CLASS);
     }
 }
