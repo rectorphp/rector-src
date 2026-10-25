@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\Attribute;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
@@ -120,6 +121,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            // skip multiline @phpstan-* tag, as phpcs does not support multiline native tag yet
+            if (isset(self::PHPSTAN_TAG_TO_NATIVE_TAG[$phpDocChildNode->name]) && $this->isMultiline($phpDocChildNode)) {
+                return null;
+            }
+
             if ($phpDocChildNode->name === '@phpstan-param' && $phpDocChildNode->value instanceof ParamTagValueNode) {
                 $phpstanParamNames[] = $phpDocChildNode->value->parameterName;
             } elseif ($phpDocChildNode->name === '@phpstan-var' && $phpDocChildNode->value instanceof VarTagValueNode) {
@@ -131,6 +137,22 @@ CODE_SAMPLE
 
         if ($phpstanParamNames === [] && $phpstanVarNames === [] && ! $hasPhpstanReturn) {
             return null;
+        }
+
+        foreach ($phpDocNode->children as $phpDocChildNode) {
+            if (! $phpDocChildNode instanceof PhpDocTagNode) {
+                continue;
+            }
+
+            // skip multiline overruled native tag, as phpcs does not support moving its multiline description yet
+            if ($this->isOverruledNativeTag(
+                $phpDocChildNode,
+                $phpstanParamNames,
+                $phpstanVarNames,
+                $hasPhpstanReturn
+            ) && $this->isMultiline($phpDocChildNode)) {
+                return null;
+            }
         }
 
         $hasChanged = false;
@@ -211,6 +233,14 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function isMultiline(PhpDocTagNode $phpDocTagNode): bool
+    {
+        $startLine = $phpDocTagNode->getAttribute(Attribute::START_LINE);
+        $endLine = $phpDocTagNode->getAttribute(Attribute::END_LINE);
+
+        return is_int($startLine) && is_int($endLine) && $endLine > $startLine;
     }
 
     private function resolveTagKey(ParamTagValueNode|VarTagValueNode|ReturnTagValueNode $tagValueNode): string
