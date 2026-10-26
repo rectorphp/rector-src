@@ -24,6 +24,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Annotation\AnnotationNaming;
@@ -31,7 +32,6 @@ use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocNodeFinder\PhpDocNodeByTypeFinder;
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
 use Rector\Exception\ShouldNotHappenException;
@@ -70,7 +70,7 @@ final class PhpDocInfo
 
     public function __construct(
         private readonly PhpDocNode $phpDocNode,
-        private readonly BetterTokenIterator $betterTokenIterator,
+        private readonly TokenIterator $tokenIterator,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly \PhpParser\Node $node,
         private readonly AnnotationNaming $annotationNaming,
@@ -79,7 +79,7 @@ final class PhpDocInfo
     ) {
         $this->originalPhpDocNode = clone $phpDocNode;
 
-        if (! $betterTokenIterator->containsTokenType(Lexer::TOKEN_PHPDOC_EOL)) {
+        if (! in_array(Lexer::TOKEN_PHPDOC_EOL, array_column($tokenIterator->getTokens(), Lexer::TYPE_OFFSET), true)) {
             $this->isSingleLine = true;
         }
     }
@@ -109,12 +109,12 @@ final class PhpDocInfo
      */
     public function getTokens(): array
     {
-        return $this->betterTokenIterator->getTokens();
+        return $this->tokenIterator->getTokens();
     }
 
     public function getTokenCount(): int
     {
-        return $this->betterTokenIterator->count();
+        return $this->tokenIterator->getTokenCount();
     }
 
     public function getVarTagValueNode(string $tagName = '@var'): ?VarTagValueNode
@@ -349,7 +349,7 @@ final class PhpDocInfo
             return false;
         }
 
-        return $this->betterTokenIterator->count() === 0;
+        return $this->tokenIterator->getTokenCount() === 0;
     }
 
     public function isSingleLine(): bool

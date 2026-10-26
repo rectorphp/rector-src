@@ -426,7 +426,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
     private function isClosedContent(string $composedContent): bool
     {
         $composedTokenIterator = $this->tokenIteratorFactory->create($composedContent);
-        $tokenCount = $composedTokenIterator->count();
+        $tokenCount = $composedTokenIterator->getTokenCount();
 
         $openBracketCount = 0;
         $closeBracketCount = 0;
@@ -455,7 +455,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             }
 
             $composedTokenIterator->next();
-        } while ($composedTokenIterator->currentPosition() < ($tokenCount - 1));
+        } while ($composedTokenIterator->currentTokenIndex() < ($tokenCount - 1));
 
         return $openBracketCount === $closeBracketCount;
     }

@@ -34,10 +34,10 @@ final class StaticDoctrineAnnotationParserTest extends AbstractLazyTestCase
     #[DataProvider('provideData')]
     public function test(string $docContent, CurlyListNode|array $expectedValue): void
     {
-        $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
+        $tokenIterator = $this->tokenIteratorFactory->create($docContent);
 
         $string = new String_('some_node');
-        $value = $this->staticDoctrineAnnotationParser->resolveAnnotationValue($betterTokenIterator, $string);
+        $value = $this->staticDoctrineAnnotationParser->resolveAnnotationValue($tokenIterator, $string);
 
         // "equals" on purpose to compare 2 object with same content
         $this->assertEquals($expectedValue, $value);

@@ -9,8 +9,8 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class PhpDocNodeMapperTest extends AbstractLazyTestCase
@@ -28,7 +28,7 @@ final class PhpDocNodeMapperTest extends AbstractLazyTestCase
     {
         $phpDocNode = $this->createParamDocNode();
 
-        $phpDocNode = $this->phpDocNodeMapper->transform($phpDocNode, new BetterTokenIterator([]));
+        $phpDocNode = $this->phpDocNodeMapper->transform($phpDocNode, new TokenIterator([]));
 
         $childNode = $phpDocNode->children[0];
         $this->assertInstanceOf(PhpDocTagNode::class, $childNode);

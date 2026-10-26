@@ -8,11 +8,11 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\Annotation\AnnotationNaming;
 use Rector\BetterPhpDocParser\PhpDocNodeFinder\PhpDocNodeByTypeFinder;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -68,11 +68,11 @@ final class PhpDocInfoFactory
             }
 
             // create empty node
-            $tokenIterator = new BetterTokenIterator([]);
+            $tokenIterator = new TokenIterator([]);
             $phpDocNode = new PhpDocNode([]);
         } else {
             $tokens = $this->lexer->tokenize($docComment->getText());
-            $tokenIterator = new BetterTokenIterator($tokens);
+            $tokenIterator = new TokenIterator($tokens);
 
             $phpDocNode = $this->betterPhpDocParser->parseWithNode($tokenIterator, $node);
             $this->setPositionOfLastToken($phpDocNode);
@@ -87,7 +87,7 @@ final class PhpDocInfoFactory
     public function createEmpty(Node $node): PhpDocInfo
     {
         $phpDocNode = new PhpDocNode([]);
-        $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, new BetterTokenIterator([]), $node);
+        $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, new TokenIterator([]), $node);
 
         // multiline by default
         $phpDocInfo->makeMultiLined();
@@ -115,14 +115,14 @@ final class PhpDocInfoFactory
 
     private function createFromPhpDocNode(
         PhpDocNode $phpDocNode,
-        BetterTokenIterator $betterTokenIterator,
+        TokenIterator $tokenIterator,
         Node $node
     ): PhpDocInfo {
-        $phpDocNode = $this->phpDocNodeMapper->transform($phpDocNode, $betterTokenIterator);
+        $phpDocNode = $this->phpDocNodeMapper->transform($phpDocNode, $tokenIterator);
 
         $phpDocInfo = new PhpDocInfo(
             $phpDocNode,
-            $betterTokenIterator,
+            $tokenIterator,
             $this->staticTypeMapper,
             $node,
             $this->annotationNaming,

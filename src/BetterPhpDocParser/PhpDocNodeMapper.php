@@ -6,9 +6,9 @@ namespace Rector\BetterPhpDocParser;
 
 use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\DataProvider\CurrentTokenIteratorProvider;
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CloningPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVisitor;
 use Webmozart\Assert\Assert;
@@ -38,9 +38,9 @@ final readonly class PhpDocNodeMapper
         ]);
     }
 
-    public function transform(PhpDocNode $phpDocNode, BetterTokenIterator $betterTokenIterator): PhpDocNode
+    public function transform(PhpDocNode $phpDocNode, TokenIterator $tokenIterator): PhpDocNode
     {
-        $this->currentTokenIteratorProvider->setBetterTokenIterator($betterTokenIterator);
+        $this->currentTokenIteratorProvider->setTokenIterator($tokenIterator);
 
         [$phpDocNode] = $this->phpDocNodeTraverser->traverse([$phpDocNode]);
         Assert::isInstanceOf($phpDocNode, PhpDocNode::class);

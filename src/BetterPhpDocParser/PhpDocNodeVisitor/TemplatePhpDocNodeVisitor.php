@@ -9,10 +9,10 @@ use PHPStan\PhpDocParser\Ast\Attribute;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\Attributes\AttributeMirrorer;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\DataProvider\CurrentTokenIteratorProvider;
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\SpacingAwareTemplateTagValueNode;
 use Rector\Exception\ShouldNotHappenException;
 
@@ -34,7 +34,7 @@ final class TemplatePhpDocNodeVisitor extends AbstractNodeVisitor implements Bas
             return null;
         }
 
-        $betterTokenIterator = $this->currentTokenIteratorProvider->provide();
+        $tokenIterator = $this->currentTokenIteratorProvider->provide();
 
         $startIndex = $node->getAttribute(Attribute::START_INDEX);
         $endIndex = $node->getAttribute(Attribute::END_INDEX);
@@ -42,7 +42,7 @@ final class TemplatePhpDocNodeVisitor extends AbstractNodeVisitor implements Bas
             throw new ShouldNotHappenException();
         }
 
-        $prepositions = $this->resolvePreposition($betterTokenIterator, $startIndex, $endIndex);
+        $prepositions = $this->resolvePreposition($tokenIterator, $startIndex, $endIndex);
         $spacingAwareTemplateTagValueNode = new SpacingAwareTemplateTagValueNode(
             $node->name,
             $node->bound,
@@ -56,11 +56,11 @@ final class TemplatePhpDocNodeVisitor extends AbstractNodeVisitor implements Bas
     }
 
     private function resolvePreposition(
-        BetterTokenIterator $betterTokenIterator,
+        TokenIterator $tokenIterator,
         int $startIndex,
         int $endIndex
     ): string {
-        $partialTokens = $betterTokenIterator->partialTokens($startIndex, $endIndex);
+        $partialTokens = array_slice($tokenIterator->getTokens(), $startIndex, $endIndex - $startIndex + 1);
 
         foreach ($partialTokens as $partialToken) {
             if ($partialToken[1] !== Lexer::TOKEN_IDENTIFIER) {
