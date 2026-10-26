@@ -21,6 +21,8 @@ use PhpParser\NodeVisitor;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use Rector\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector;
+use Rector\Contract\Rector\OrderedRectorInterface;
 use Rector\NodeManipulator\IfManipulator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
@@ -31,7 +33,7 @@ use Rector\RuleDoc\RuleDefinition;
 /**
  * @see \Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\RemoveDeadInstanceOfRectorTest
  */
-final class RemoveDeadInstanceOfRector extends AbstractRector
+final class RemoveDeadInstanceOfRector extends AbstractRector implements OrderedRectorInterface
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
@@ -70,6 +72,11 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [If_::class];
+    }
+
+    public function precededRule(): string
+    {
+        return ExplicitNullableObjectInstanceRector::class;
     }
 
     /**

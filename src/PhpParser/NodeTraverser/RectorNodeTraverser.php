@@ -10,16 +10,24 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitor;
 use Rector\Application\RectorRegistry;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Rector\RectorRunner;
 use Rector\ValueObject\Application\File;
 
 final class RectorNodeTraverser
 {
+    /**
+     * Safety cap on local re-visits of a single node, so a rule that never settles cannot loop forever.
+     */
+    private const int MAX_REVISITS = 50;
+
     private bool $stopTraversal;
 
     public function __construct(
         private readonly RectorRunner $rectorRunner,
         private readonly RectorRegistry $rectorRegistry,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
     ) {
     }
 
@@ -51,31 +59,8 @@ final class RectorNodeTraverser
                 continue;
             }
 
-            $currentNodeVisitors = $this->rectorRegistry->forNodeAndFile($subNode, $file);
-
-            foreach ($currentNodeVisitors as $currentNodeVisitor) {
-                $return = $this->rectorRunner->run($currentNodeVisitor, $subNode);
-                if ($return === null) {
-                    continue;
-                }
-
-                if ($return instanceof Node) {
-                    $originalSubNodeClass = $subNode::class;
-
-                    $this->ensureReplacementReasonable($subNode, $return);
-                    $subNode = $return;
-                    $node->{$name} = $return;
-
-                    if ($originalSubNodeClass !== $subNode::class) {
-                        // stop traversing as node type changed and visitors won't work
-                        continue 2;
-                    }
-                } else {
-                    throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
-                }
-            }
-
-            $this->traverseNode($subNode, $file);
+            // a single sub-node slot cannot hold a list or be removed
+            $node->{$name} = $this->refactorNode($subNode, $file, false);
 
             if ($this->stopTraversal) {
                 break;
@@ -99,33 +84,16 @@ final class RectorNodeTraverser
                 continue;
             }
 
-            $currentNodeVisitors = $this->rectorRegistry->forNodeAndFile($node, $file);
+            $result = $this->refactorNode($node, $file, true);
 
-            foreach ($currentNodeVisitors as $currentNodeVisitor) {
-                $return = $this->rectorRunner->run($currentNodeVisitor, $node);
-                if ($return !== null) {
-                    if ($return instanceof Node) {
-                        $originalNodeNodeClass = $node::class;
-                        $this->ensureReplacementReasonable($node, $return);
-                        $nodes[$i] = $node = $return;
-
-                        if ($originalNodeNodeClass !== $return::class) {
-                            // stop traversing as node type changed and visitors won't work
-                            continue 2;
-                        }
-                    } elseif (\is_array($return)) {
-                        $doNodes[] = [$i, $return];
-                        continue 2;
-                    } elseif ($return === NodeVisitor::REMOVE_NODE) {
-                        $doNodes[] = [$i, []];
-                        continue 2;
-                    } else {
-                        throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
-                    }
-                }
+            if (\is_array($result)) {
+                $doNodes[] = [$i, $result];
+            } elseif ($result === NodeVisitor::REMOVE_NODE) {
+                $doNodes[] = [$i, []];
+            } else {
+                $nodes[$i] = $result;
             }
 
-            $this->traverseNode($node, $file);
             if ($this->stopTraversal) {
                 break;
             }
@@ -138,6 +106,114 @@ final class RectorNodeTraverser
         }
 
         return $nodes;
+    }
+
+    /**
+     * Applies the node's rules and traverses into its children, then re-applies its rules while a
+     * descendant keeps changing - so a rule that depends on a change made deeper in the tree (ordered
+     * via OrderedRectorInterface, or a plain multi-pass chain) converges within a single file pass.
+     *
+     * Termination is structural: the loop stops once a round reports no change, or reports a change
+     * that leaves the node's printed form identical (a rule that keeps returning the same result).
+     *
+     * @param bool $allowListReturn whether an array / REMOVE_NODE return is valid here (only for a
+     *                              node that lives inside a list, not a single sub-node slot)
+     * @return NodeVisitor::REMOVE_NODE|Node|Node[]
+     */
+    private function refactorNode(Node $node, File $file, bool $allowListReturn): int|Node|array
+    {
+        $lastPrint = null;
+        $revisits = 0;
+
+        while (true) {
+            $changeCountBefore = $this->changeCount($file);
+            $return = $this->applyRectors($node, $file);
+
+            if (\is_array($return) || $return === NodeVisitor::REMOVE_NODE) {
+                if (! $allowListReturn) {
+                    throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
+                }
+
+                // a list / removal replaces the node in its parent list; its children are not traversed
+                return $return;
+            }
+
+            $typeChanged = $return::class !== $node::class;
+            $node = $return;
+
+            if ($typeChanged) {
+                // stop traversing as node type changed and visitors won't work
+                return $node;
+            }
+
+            $this->traverseNode($node, $file);
+            if ($this->stopTraversal) {
+                return $node;
+            }
+
+            // no rule (here or deeper) reported a change this round: the subtree is stable
+            if ($this->changeCount($file) === $changeCountBefore) {
+                return $node;
+            }
+
+            // a change was reported; keep going only while it actually reshapes the node
+            $printNow = $this->betterStandardPrinter->print($node);
+            if ($printNow === $lastPrint) {
+                return $node;
+            }
+
+            $lastPrint = $printNow;
+
+            if (++$revisits >= self::MAX_REVISITS) {
+                throw new ShouldNotHappenException(
+                    sprintf('Node "%s" did not converge after %d re-visits', $node->getType(), $revisits)
+                );
+            }
+        }
+    }
+
+    /**
+     * Runs every rule subscribed to this node, in order. A rule returning a same-type node keeps the
+     * remaining rules running on the new node; a type change, an array or REMOVE_NODE stops the chain
+     * and is handed back to the caller.
+     *
+     * @return NodeVisitor::REMOVE_NODE|Node|Node[]
+     */
+    private function applyRectors(Node $node, File $file): int|Node|array
+    {
+        $currentNodeVisitors = $this->rectorRegistry->forNodeAndFile($node, $file);
+
+        foreach ($currentNodeVisitors as $currentNodeVisitor) {
+            $return = $this->rectorRunner->run($currentNodeVisitor, $node);
+            if ($return === null) {
+                continue;
+            }
+
+            if ($return instanceof Node) {
+                $originalNodeClass = $node::class;
+                $this->ensureReplacementReasonable($node, $return);
+                $node = $return;
+
+                if ($originalNodeClass !== $node::class) {
+                    return $node;
+                }
+
+                continue;
+            }
+
+            if (\is_array($return) || $return === NodeVisitor::REMOVE_NODE) {
+                return $return;
+            }
+
+            throw new LogicException('RectorRunner::run() returned invalid value of type ' . gettype($return));
+        }
+
+        return $node;
+    }
+
+    private function changeCount(File $file): int
+    {
+        return count($file->getRectorWithLineChanges());
     }
 
     private function ensureReplacementReasonable(Node $old, Node $new): void
