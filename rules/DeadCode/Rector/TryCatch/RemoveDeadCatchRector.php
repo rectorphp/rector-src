@@ -201,11 +201,11 @@ CODE_SAMPLE
     private function isEmpty(array $stmts): bool
     {
         if ($stmts === []) {
-            return \true;
+            return true;
         }
 
         if (\count($stmts) > 1) {
-            return \false;
+            return false;
         }
 
         return $stmts[0] instanceof Nop;

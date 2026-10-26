@@ -74,7 +74,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = \false;
+        $hasChanged = false;
 
         $this->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (
             &$hasChanged
@@ -86,7 +86,7 @@ CODE_SAMPLE
             if ($node instanceof Return_ && (! $node->expr instanceof Expr || $this->valueResolver->isNull(
                 $node->expr
             ))) {
-                $hasChanged = \true;
+                $hasChanged = true;
                 $node->expr = new Array_();
                 return $node;
             }
