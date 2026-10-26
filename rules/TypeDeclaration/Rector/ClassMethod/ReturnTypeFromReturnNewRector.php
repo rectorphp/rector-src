@@ -12,7 +12,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
@@ -27,9 +26,9 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
 use Rector\Symfony\CodeQuality\Enum\ResponseClass;
@@ -48,7 +47,6 @@ final class ReturnTypeFromReturnNewRector extends AbstractRector implements MinP
     public function __construct(
         private readonly TypeFactory $typeFactory,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly ReflectionResolver $reflectionResolver,
         private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ClassAnalyzer $classAnalyzer,
@@ -156,10 +154,13 @@ CODE_SAMPLE
 
         $className = $this->getName($new->class);
         if ($className === ObjectReference::STATIC || $className === ObjectReference::SELF) {
-            $classReflection = $this->reflectionResolver->resolveClassReflection($new);
-            if (! $classReflection instanceof ClassReflection) {
+            $classType = $this->nodeTypeResolver->getType($new->class);
+            $resolvedClassName = ClassNameFromObjectTypeResolver::resolve($classType);
+            if ($resolvedClassName === null || ! $this->reflectionProvider->hasClass($resolvedClassName)) {
                 throw new ShouldNotHappenException();
             }
+
+            $classReflection = $this->reflectionProvider->getClass($resolvedClassName);
 
             if ($className === ObjectReference::SELF) {
                 return new SelfStaticType($classReflection);
