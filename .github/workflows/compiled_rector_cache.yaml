@@ -1,0 +1,41 @@
+# Runs the compiled rector/rector on a small project twice, to check that the cache survives a run.
+# The compiled build is published from main, so this runs after a merge, not on a pull request.
+name: Compiled Rector Cache
+
+on:
+    push:
+        branches:
+            - main
+    schedule:
+        - cron: '0 6 * * *'
+    workflow_dispatch: null
+
+jobs:
+    compiled_rector_cache:
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+
+        steps:
+            -   uses: actions/checkout@v5
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    coverage: none
+
+            -   run: composer require --dev rector/rector:dev-main --ansi
+                working-directory: e2e/compiled-rector-cache
+
+            -   run: vendor/bin/rector process --dry-run --ansi
+                working-directory: e2e/compiled-rector-cache
+
+            # a run that clears the cache also removes this marker
+            -   run: touch cache/marker
+                working-directory: e2e/compiled-rector-cache
+
+            -   run: vendor/bin/rector process --dry-run --ansi
+                working-directory: e2e/compiled-rector-cache
+
+            -   run: test -f cache/marker || (echo "The second run cleared the cache" && exit 1)
+                working-directory: e2e/compiled-rector-cache
