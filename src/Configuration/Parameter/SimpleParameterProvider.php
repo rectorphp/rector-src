@@ -175,7 +175,7 @@ final class SimpleParameterProvider
 
         ksort($strictParameters);
 
-        return sha1(serialize($strictParameters));
+        return sha1(serialize(self::canonicalizeObjects($strictParameters, [])));
     }
 
     /**
@@ -229,6 +229,42 @@ final class SimpleParameterProvider
         }
 
         return $parameters;
+    }
+
+    /**
+     * serialize() writes object properties in declaration order, which differs for the same class
+     * between runtimes: PHPStan Turbo replaces e.g. PHPStan\Type\MixedType with a native class
+     * declaring its properties in another order. The main process and the Turbo workers would then
+     * hash the same configuration differently and keep clearing each other's cache.
+     *
+     * @param array<int, true> $visitedObjectIds
+     */
+    private static function canonicalizeObjects(mixed $value, array $visitedObjectIds): mixed
+    {
+        if (is_array($value)) {
+            return array_map(
+                static fn (mixed $item): mixed => self::canonicalizeObjects($item, $visitedObjectIds),
+                $value
+            );
+        }
+
+        if (! is_object($value)) {
+            return $value;
+        }
+
+        $objectId = spl_object_id($value);
+        if (isset($visitedObjectIds[$objectId])) {
+            return $value::class;
+        }
+
+        $visitedObjectIds[$objectId] = true;
+
+        $properties = (array) $value;
+        ksort($properties);
+
+        return [
+            $value::class => self::canonicalizeObjects($properties, $visitedObjectIds),
+        ];
     }
 
     /**

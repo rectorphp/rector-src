@@ -10,6 +10,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\ProcessConfigureDecorator;
 use Rector\FileSystem\FilesFinder;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use stdClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 
@@ -20,6 +21,7 @@ final class ConfigurationFactoryTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, false);
         SimpleParameterProvider::setParameter(Option::SOURCE, []);
         SimpleParameterProvider::setParameter(Option::PATHS, []);
+        SimpleParameterProvider::setParameter(Option::RULE_CONFIGURATIONS, []);
     }
 
     public function test(): void
@@ -91,6 +93,33 @@ final class ConfigurationFactoryTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::SOURCE, ['tests', 'src/Some/Other.php']);
 
         $this->assertSame($hashForOnePath, SimpleParameterProvider::hashForCacheInvalidation());
+    }
+
+    public function testObjectPropertyOrderIsOutsideTheCacheInvalidationHash(): void
+    {
+        // PHPStan Turbo workers declare e.g. MixedType properties in another order than the main process,
+        // the same configured value must hash alike in both
+        $firstOrder = new stdClass();
+        $firstOrder->isExplicitMixed = false;
+        $firstOrder->subtractedType = null;
+
+        SimpleParameterProvider::setParameter(Option::RULE_CONFIGURATIONS, [
+            'SomeRector' => [$firstOrder],
+        ]);
+        $firstOrderHash = SimpleParameterProvider::hashForCacheInvalidation();
+
+        $secondOrder = new stdClass();
+        $secondOrder->subtractedType = null;
+        $secondOrder->isExplicitMixed = false;
+
+        SimpleParameterProvider::setParameter(Option::RULE_CONFIGURATIONS, [
+            'SomeRector' => [$secondOrder],
+        ]);
+
+        $this->assertSame($firstOrderHash, SimpleParameterProvider::hashForCacheInvalidation());
+
+        $secondOrder->isExplicitMixed = true;
+        $this->assertNotSame($firstOrderHash, SimpleParameterProvider::hashForCacheInvalidation());
     }
 
     /**
