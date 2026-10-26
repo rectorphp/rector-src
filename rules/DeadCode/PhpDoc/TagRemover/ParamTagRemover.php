@@ -6,13 +6,14 @@ namespace Rector\DeadCode\PhpDoc\TagRemover;
 
 use PhpParser\Node\FunctionLike;
 use PHPStan\PhpDocParser\Ast\Node;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\DeadParamTagValueNodeAnalyzer;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 
 final readonly class ParamTagRemover
 {
@@ -29,8 +30,7 @@ final readonly class ParamTagRemover
     ): bool {
         $hasChanged = false;
 
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (Node $docNode) use (
+        $phpDocNodeTraverser = new NodeTraverser([new CallablePhpDocNodeVisitor(function (Node $docNode) use (
             $functionLike,
             &$hasChanged,
             $type,
@@ -61,8 +61,9 @@ final readonly class ParamTagRemover
             }
 
             $hasChanged = true;
-            return PhpDocNodeTraverser::NODE_REMOVE;
-        });
+            return NodeTraverser::REMOVE_NODE;
+        })]);
+        $phpDocNodeTraverser->traverse([$phpDocInfo->getPhpDocNode()]);
 
         if ($hasChanged) {
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);

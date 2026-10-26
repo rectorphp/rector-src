@@ -346,7 +346,6 @@ parameters:
             identifier: symplify.noReference
             message: '#Use explicit return value over magic &reference#'
             paths:
-                - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - rules/Php70/EregToPcreTransformer.php
                 - src/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php

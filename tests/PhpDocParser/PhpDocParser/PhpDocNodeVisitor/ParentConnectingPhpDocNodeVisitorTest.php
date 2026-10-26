@@ -4,35 +4,32 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpDocParser\PhpDocParser\PhpDocNodeVisitor;
 
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class ParentConnectingPhpDocNodeVisitorTest extends AbstractLazyTestCase
 {
-    private PhpDocNodeTraverser $phpDocNodeTraverser;
+    private NodeTraverser $phpDocNodeTraverser;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->phpDocNodeTraverser = $this->make(PhpDocNodeTraverser::class);
-
-        /** @var ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor */
         $parentConnectingPhpDocNodeVisitor = $this->make(ParentConnectingPhpDocNodeVisitor::class);
-        $this->phpDocNodeTraverser->addPhpDocNodeVisitor($parentConnectingPhpDocNodeVisitor);
+        $this->phpDocNodeTraverser = new NodeTraverser([$parentConnectingPhpDocNodeVisitor]);
     }
 
     public function testTypeNode(): void
     {
         $phpDocNode = $this->createPhpDocNode();
-        $this->phpDocNodeTraverser->traverse($phpDocNode);
+        $this->phpDocNodeTraverser->traverse([$phpDocNode]);
 
         /** @var PhpDocTagNode $phpDocChildNode */
         $phpDocChildNode = $phpDocNode->children[0];

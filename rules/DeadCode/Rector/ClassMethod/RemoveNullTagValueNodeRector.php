@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node as AstNode;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -19,7 +20,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -137,10 +138,7 @@ CODE_SAMPLE
      */
     private function removeParamNullTag(PhpDocInfo $phpDocInfo, array $paramNames): void
     {
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable(
-            $phpDocInfo->getPhpDocNode(),
-            '',
+        $phpDocNodeTraverser = new NodeTraverser([new CallablePhpDocNodeVisitor(
             static function (AstNode $astNode) use ($paramNames): ?int {
                 if (! $astNode instanceof PhpDocTagNode) {
                     return null;
@@ -151,12 +149,13 @@ CODE_SAMPLE
                 }
 
                 if (in_array($astNode->value->parameterName, $paramNames, true)) {
-                    return PhpDocNodeTraverser::NODE_REMOVE;
+                    return NodeTraverser::REMOVE_NODE;
                 }
 
                 return null;
             }
-        );
+        )]);
+        $phpDocNodeTraverser->traverse([$phpDocInfo->getPhpDocNode()]);
     }
 
     /**

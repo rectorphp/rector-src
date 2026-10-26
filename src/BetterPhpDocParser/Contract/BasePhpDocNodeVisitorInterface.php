@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\Contract;
 
-use Rector\PhpDocParser\PhpDocParser\Contract\PhpDocNodeVisitorInterface;
+use PHPStan\PhpDocParser\Ast\NodeVisitor;
 
-interface BasePhpDocNodeVisitorInterface extends PhpDocNodeVisitorInterface
+interface BasePhpDocNodeVisitorInterface extends NodeVisitor
 {
 }

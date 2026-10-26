@@ -118,7 +118,7 @@ final class PhpDocInfoFactory
         BetterTokenIterator $betterTokenIterator,
         Node $node
     ): PhpDocInfo {
-        $this->phpDocNodeMapper->transform($phpDocNode, $betterTokenIterator);
+        $phpDocNode = $this->phpDocNodeMapper->transform($phpDocNode, $betterTokenIterator);
 
         $phpDocInfo = new PhpDocInfo(
             $phpDocNode,

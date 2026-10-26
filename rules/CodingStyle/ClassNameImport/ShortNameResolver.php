@@ -9,6 +9,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -17,7 +18,7 @@ use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\ValueObject\Application\File;
 
@@ -176,10 +177,7 @@ final class ShortNameResolver
         }
 
         $shortNames = [];
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable(
-            $phpDocInfo->getPhpDocNode(),
-            '',
+        $phpDocNodeTraverser = new NodeTraverser([new CallablePhpDocNodeVisitor(
             static function ($node) use (&$shortNames): null {
                 if ($node instanceof PhpDocTagNode) {
                     $shortName = trim($node->name, '@');
@@ -196,7 +194,8 @@ final class ShortNameResolver
 
                 return null;
             }
-        );
+        )]);
+        $phpDocNodeTraverser->traverse([$phpDocInfo->getPhpDocNode()]);
 
         return $shortNames;
     }

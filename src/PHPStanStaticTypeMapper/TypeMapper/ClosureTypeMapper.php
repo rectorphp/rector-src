@@ -7,13 +7,14 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Node as AstNode;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ClosureType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Php\PhpVersionProvider;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\ValueObject\PhpVersion;
@@ -43,10 +44,7 @@ final readonly class ClosureTypeMapper implements TypeMapperInterface
     {
         $typeNode = $type->toPhpDocNode();
 
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable(
-            $typeNode,
-            '',
+        $phpDocNodeTraverser = new NodeTraverser([new CallablePhpDocNodeVisitor(
             static function (AstNode $astNode): ?FullyQualifiedIdentifierTypeNode {
                 if (! $astNode instanceof IdentifierTypeNode) {
                     return null;
@@ -58,7 +56,8 @@ final readonly class ClosureTypeMapper implements TypeMapperInterface
 
                 return new FullyQualifiedIdentifierTypeNode('Closure');
             }
-        );
+        )]);
+        $phpDocNodeTraverser->traverse([$typeNode]);
 
         return $typeNode;
     }

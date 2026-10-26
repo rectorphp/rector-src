@@ -7,6 +7,7 @@ namespace Rector\BetterPhpDocParser\Printer;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node\Stmt\InlineHTML;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
@@ -21,7 +22,6 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\Util\StringUtils;
 
 /**
@@ -65,7 +65,7 @@ final class PhpDocInfoPrinter
 
     private ?PhpDocInfo $phpDocInfo = null;
 
-    private readonly PhpDocNodeTraverser $changedPhpDocNodeTraverser;
+    private readonly NodeTraverser $changedPhpDocNodeTraverser;
 
     public function __construct(
         private readonly EmptyPhpDocDetector $emptyPhpDocDetector,
@@ -73,10 +73,7 @@ final class PhpDocInfoPrinter
         private readonly RemoveNodesStartAndEndResolver $removeNodesStartAndEndResolver,
         private readonly ChangedPhpDocNodeVisitor $changedPhpDocNodeVisitor,
     ) {
-        $changedPhpDocNodeTraverser = new PhpDocNodeTraverser();
-        $changedPhpDocNodeTraverser->addPhpDocNodeVisitor($this->changedPhpDocNodeVisitor);
-
-        $this->changedPhpDocNodeTraverser = $changedPhpDocNodeTraverser;
+        $this->changedPhpDocNodeTraverser = new NodeTraverser([$this->changedPhpDocNodeVisitor]);
     }
 
     public function printNew(PhpDocInfo $phpDocInfo): string
@@ -342,7 +339,7 @@ final class PhpDocInfoPrinter
 
     private function shouldReprint(PhpDocChildNode $phpDocChildNode): bool
     {
-        $this->changedPhpDocNodeTraverser->traverse($phpDocChildNode);
+        $this->changedPhpDocNodeTraverser->traverse([$phpDocChildNode]);
         return $this->changedPhpDocNodeVisitor->hasChanged();
     }
 

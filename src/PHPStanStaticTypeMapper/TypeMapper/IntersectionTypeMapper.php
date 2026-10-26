@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Node as AstNode;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -18,7 +19,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\Php\PhpVersionProvider;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
@@ -52,40 +53,42 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
     {
         $typeNode = $type->toPhpDocNode();
 
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable(
-            $typeNode,
-            '',
-            function (AstNode $astNode): int|IdentifierTypeNode {
+        $phpDocNodeTraverser = new NodeTraverser([new CallablePhpDocNodeVisitor(
+            function (AstNode $astNode) use ($typeNode): int|IdentifierTypeNode|null {
+                if ($astNode === $typeNode) {
+                    return null;
+                }
+
                 if ($astNode instanceof UnionTypeNode) {
-                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($astNode instanceof ArrayShapeItemNode) {
-                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if (! $astNode instanceof IdentifierTypeNode) {
-                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 $type = $this->scalarStringToTypeMapper->mapScalarStringToType($astNode->name);
                 if ($type->isScalar()->yes()) {
-                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($type->isArray()->yes()) {
-                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($type instanceof MixedType && $type->isExplicitMixed()) {
-                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 $astNode->name = '\\' . ltrim($astNode->name, '\\');
                 return $astNode;
             }
-        );
+        )]);
+        $phpDocNodeTraverser->traverse([$typeNode]);
 
         return $typeNode;
     }

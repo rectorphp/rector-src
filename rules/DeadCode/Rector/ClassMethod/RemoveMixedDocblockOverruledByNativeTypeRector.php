@@ -10,6 +10,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\PhpDocParser\Ast\Node as PhpDocNode;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -18,7 +19,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -113,8 +114,7 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (PhpDocNode $phpDocNode) use (
+        $phpDocNodeTraverser = new NodeTraverser([new CallablePhpDocNodeVisitor(function (PhpDocNode $phpDocNode) use (
             $declaredParamNames,
             &$hasChanged
         ): ?int {
@@ -147,8 +147,9 @@ CODE_SAMPLE
             }
 
             $hasChanged = true;
-            return PhpDocNodeTraverser::NODE_REMOVE;
-        });
+            return NodeTraverser::REMOVE_NODE;
+        })]);
+        $phpDocNodeTraverser->traverse([$phpDocInfo->getPhpDocNode()]);
 
         return $hasChanged;
     }
