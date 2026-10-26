@@ -202,6 +202,11 @@ EOF
         $this->missConfigurationReporter->reportSkippedNonRectorClasses();
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
+        // re-runs skipped rules on their files, so only safe on a dry run that never writes
+        if ($configuration->isDryRun()) {
+            $this->missConfigurationReporter->reportUnnecessarySkips($configuration);
+        }
+
         return $this->resolveReturnCode($processResult, $configuration);
     }
 

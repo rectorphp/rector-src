@@ -13,6 +13,7 @@ use Rector\Console\ExitCode;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
+use Rector\Reporting\NeededSkipVerifier;
 use Rector\Reporting\UnusedSkipResolver;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -53,6 +54,7 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
                 $symfonyStyle,
                 new VendorMissAnalyseGuard(),
                 $this->make(UnusedSkipResolver::class),
+                $this->make(NeededSkipVerifier::class),
             ),
             $this->make(Skipper::class),
         );

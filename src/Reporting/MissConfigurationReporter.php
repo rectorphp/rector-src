@@ -9,6 +9,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
+use Rector\ValueObject\Configuration;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -21,6 +22,7 @@ final readonly class MissConfigurationReporter
         private SymfonyStyle $symfonyStyle,
         private VendorMissAnalyseGuard $vendorMissAnalyseGuard,
         private UnusedSkipResolver $unusedSkipResolver,
+        private NeededSkipVerifier $neededSkipVerifier,
     ) {
     }
 
@@ -45,6 +47,33 @@ final readonly class MissConfigurationReporter
         $spacedUnusedSkips = array_map(static fn (string $unusedSkip): string => $unusedSkip . "\n", $unusedSkips);
 
         $this->symfonyStyle->listing($spacedUnusedSkips);
+    }
+
+    /**
+     * Reports rule-scoped skips that matched a file but whose rule would not have changed it, so the
+     * skip is unnecessary. Enabled with "->reportUnusedSkips()" and only on dry runs, as it re-runs
+     * the rules on the skipped files.
+     */
+    public function reportUnnecessarySkips(Configuration $configuration): void
+    {
+        $unnecessarySkips = $this->neededSkipVerifier->verify($configuration);
+        if ($unnecessarySkips === []) {
+            return;
+        }
+
+        $this->symfonyStyle->warning(sprintf(
+            '%s matched a file, but the rule would not have changed it. You can remove %s from "->withSkip()"',
+            count($unnecessarySkips) > 1 ? 'These skips are unnecessary, they' : 'This skip is unnecessary, it',
+            count($unnecessarySkips) > 1 ? 'them' : 'it'
+        ));
+
+        // add a blank line between items, so grouped rule skips stay visually separated
+        $spacedUnnecessarySkips = array_map(
+            static fn (string $unnecessarySkip): string => $unnecessarySkip . "\n",
+            $unnecessarySkips
+        );
+
+        $this->symfonyStyle->listing($spacedUnnecessarySkips);
     }
 
     public function reportSkippedNeverRegisteredRules(): int
