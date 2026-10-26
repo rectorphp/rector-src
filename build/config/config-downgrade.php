@@ -29,6 +29,5 @@ final class DowngradeRectorConfig
         // loaded with "require-dev" so it'd throw an error
         // only for composer patches on composer install - not needed in final package
         'vendor/cweagans/*',
-        'vendor/rector/rector-generator/templates',
     ];
 }
