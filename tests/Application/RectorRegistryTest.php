@@ -7,6 +7,7 @@ namespace Rector\Tests\Application;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Application\RectorRegistry;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Tests\PhpParser\NodeTraverser\Class_\OrderedClassRector;
 use Rector\Tests\PhpParser\NodeTraverser\Class_\RuleUsingClassRector;
 use Rector\Tests\PhpParser\NodeTraverser\ClassLike\RuleUsingClassLikeRector;
 use Rector\Tests\PhpParser\NodeTraverser\Function_\RuleUsingFunctionRector;
@@ -71,5 +72,20 @@ final class RectorRegistryTest extends AbstractLazyTestCase
         $rectors = $this->rectorRegistry->forNode(new Class_('test'));
 
         $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $rectors);
+    }
+
+    public function testForNodeSortsByPrecededRule(): void
+    {
+        $orderedClassRector = new OrderedClassRector();
+
+        // registered before the rule it depends on
+        $this->rectorRegistry->refreshRectors([
+            $orderedClassRector,
+            $this->ruleUsingClassRector,
+        ]);
+
+        $rectors = $this->rectorRegistry->forNode(new Class_('test'));
+
+        $this->assertEquals([$this->ruleUsingClassRector, $orderedClassRector], $rectors);
     }
 }
