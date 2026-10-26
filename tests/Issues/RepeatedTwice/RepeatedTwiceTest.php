@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Issues\RepeatedThreeTimes;
+namespace Rector\Tests\Issues\RepeatedTwice;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /**
- * Each rule depends on the output of the rule registered after it,
- * so the file only reaches its final state on the 3rd pass
+ * The return-type rule depends on the output of the param-type rule registered after it,
+ * so the file only reaches its final state on the 2nd pass
  *
  * @see https://github.com/rectorphp/rector-src/pull/8826
  */
-final class RepeatedThreeTimesTest extends AbstractRectorTestCase
+final class RepeatedTwiceTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
