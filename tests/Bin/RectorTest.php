@@ -41,4 +41,58 @@ final class RectorTest extends TestCase
             $process->getErrorOutput()
         ));
     }
+
+    /**
+     * @return Iterator<string, array{int, string[]}>
+     */
+    public static function provideParallelTimeouts(): Iterator
+    {
+        yield 'one timeout below the limit' => [0, [
+            'Child process timed out after 1 seconds',
+            'Some parallel jobs have not finished, results for 1 of 1 files are missing',
+        ]];
+
+        yield '49 errors followed by a timeout reach the limit' => [49, [
+            ...array_fill(0, 49, "Syntax error, unexpected ';'"),
+            'Child process timed out after 1 seconds',
+            'Reached system errors count limit of 50, exiting...',
+            'Some parallel jobs have not finished, results for 1 of 50 files are missing',
+        ]];
+    }
+
+    /**
+     * @param string[] $expectedMessages
+     */
+    #[DataProvider('provideParallelTimeouts')]
+    public function testParallelTimeoutReportsErrorLimitOnlyWhenReached(
+        int $previousErrorCount,
+        array $expectedMessages
+    ): void {
+        $filePaths = [];
+        for ($i = 5; $i < 5 + $previousErrorCount; ++$i) {
+            $filePaths[] = __DIR__ . sprintf('/../../e2e/parallel-system-errors-limit/src/File%02d.php', $i);
+        }
+
+        // The syntax-error files are larger, so the single worker processes them before the timeout file.
+        $filePaths[] = __DIR__ . '/Fixture/ParallelTimeout/Timeout.php';
+
+        $process = new Process([
+            PHP_BINARY,
+            'bin/rector',
+            '--config',
+            __DIR__ . '/config/parallel-worker-timeout.php',
+            '--dry-run',
+            '--clear-cache',
+            '--no-progress-bar',
+            '--output-format=json',
+            ...$filePaths,
+        ]);
+        $process->setTimeout(20);
+        $process->run();
+
+        $this->assertSame(1, $process->getExitCode(), $process->getOutput() . $process->getErrorOutput());
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+        $this->assertSame(count($expectedMessages), $result['totals']['errors']);
+        $this->assertSame($expectedMessages, array_column($result['errors'], 'message'));
+    }
 }
