@@ -112,7 +112,7 @@ final readonly class FileProcessor
         //            $file->changeHasChanged(true);
         //        }
 
-        $file->getRectorWithLineChanges();
+        // $file->getRectorWithLineChanges();
         //        if ($file->hasChanged() || $rectorWithLineChanges !== []) {
         $currentFileDiff = $this->fileDiffFactory->createFileDiffWithLineChanges(
             $configuration->shouldShowDiffs(),
