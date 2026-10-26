@@ -82,6 +82,9 @@ final readonly class VisibilityManipulator
         $node->flags -= Modifiers::FINAL;
     }
 
+    /**
+     * @param Visibility::* $visibility
+     */
     public function changeNodeVisibility(ClassMethod|Property|ClassConst $node, int $visibility): void
     {
         Assert::oneOf($visibility, [
