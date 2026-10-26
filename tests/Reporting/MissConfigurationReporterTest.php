@@ -10,6 +10,7 @@ use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\Reporting\MissConfigurationReporter;
+use Rector\Reporting\NeededSkipVerifier;
 use Rector\Reporting\UnusedSkipResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;
@@ -45,6 +46,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
             $symfonyStyle,
             new VendorMissAnalyseGuard(),
             $this->make(UnusedSkipResolver::class),
+            $this->make(NeededSkipVerifier::class),
         );
 
         SimpleParameterProvider::setParameter(Option::SKIP, [
