@@ -319,7 +319,6 @@ parameters:
             identifier: symplify.forbiddenFuncCall
             paths:
                 - src/functions/node_helper.php
-                - tests/debug_functions.php
                 - src/Util/Reflection/PrivatesAccessor.php
 
         # it may return array<Node|null> in case of empty array( , , ), very rare and would nullify all other types

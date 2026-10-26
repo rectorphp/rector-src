@@ -91,7 +91,6 @@
             "rules-tests/Renaming/Rector/Name/RenameClassRector/Source"
         ],
         "files": [
-            "tests/debug_functions.php",
             "rules-tests/TypeDeclaration/Rector/StmtsAwareInterface/SafeDeclareStrictTypesRector/Source/functions.php",
             "rules-tests/Php70/Rector/ClassMethod/Php4ConstructorRector/Source/ParentClass.php"
         ]
