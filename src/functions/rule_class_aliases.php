@@ -17,5 +17,5 @@ $ruleClassAliases = [
 ];
 
 foreach ($ruleClassAliases as $currentClass => $legacyClass) {
-    class_alias($currentClass, $legacyClass);
+    class_alias($currentClass, $legacyClass, false);
 }
