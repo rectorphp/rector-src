@@ -31,7 +31,7 @@ bin/rector process src/functions/node_helper.php -c build/config/config-downgrad
 
 rsync --exclude rector-build -av * rector-build --quiet
 
-rm -rf rector-build/rules-tests rector-build/templates rector-build/tests rector-build/scripts/validate-phpstan-version.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener  rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session rector-build/vendor/symfony/service-contracts/Test
+rm -rf rector-build/rules-tests rector-build/templates rector-build/tests rector-build/scripts/validate-phpstan-version.php rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener  rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session rector-build/vendor/symfony/service-contracts/Test
 
 php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi --no-diffs
 
@@ -41,10 +41,10 @@ sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 composer global require php-parallel-lint/php-parallel-lint
 
 if test -z ${PHP74_BIN_PATH+y}; then
-    ~/.config/composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/symfony/console/Debug/CliRequest.php
+    ~/.config/composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/symfony/console/Debug/CliRequest.php
 else
     echo "verify syntax valid in php 7.4 with specify PHP74_BIN_PATH env";
-    $PHP74_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/symfony/console/Debug/CliRequest.php
+    $PHP74_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/symfony/console/Debug/CliRequest.php
 fi
 
 # rollback, done testing succeed

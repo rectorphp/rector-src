@@ -54,8 +54,7 @@
         "symplify/phpstan-rules": "^14.18.2",
         "tomasvotruba/class-leak": "^2.3.4",
         "tomasvotruba/fast-unit": "^0.1",
-        "tomasvotruba/type-coverage": "^2.3.6",
-        "tracy/tracy": "^2.12"
+        "tomasvotruba/type-coverage": "^2.3.6"
     },
     "replace": {
         "rector/rector": "self.version",
