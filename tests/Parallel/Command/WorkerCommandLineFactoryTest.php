@@ -54,7 +54,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         $expectedCommand = $this->normalizeExpectedCommandOutput(sprintf(
             "'%s' %s'%s' worker --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi 'src'",
             PHP_BINARY,
-            self::turboExtensionArguments(),
+            $this->turboExtensionArguments(),
             self::SPACED_DUMMY_MAIN_SCRIPT
         ));
 
@@ -84,7 +84,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         $expectedCommand = $this->normalizeExpectedCommandOutput(sprintf(
             "'%s' %s'%s' worker%s --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi 'src'",
             PHP_BINARY,
-            self::turboExtensionArguments(),
+            $this->turboExtensionArguments(),
             self::DUMMY_MAIN_SCRIPT,
             $expectedOptionsSegment
         ));
@@ -138,7 +138,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
     /**
      * The worker gets PHPStan Turbo through two -d options, when PHPStan ships a binary for this runtime
      */
-    private static function turboExtensionArguments(): string
+    private function turboExtensionArguments(): string
     {
         $extensionPath = TurboExtensionSelector::findExtensionForWorkers();
         if ($extensionPath === null) {
@@ -159,7 +159,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             // the turbo arguments are escaped by escapeshellarg() already, keep the single quotes inside them
-            $turboExtensionArguments = self::turboExtensionArguments();
+            $turboExtensionArguments = $this->turboExtensionArguments();
 
             return str_replace(
                 str_replace("'", '"', $turboExtensionArguments),

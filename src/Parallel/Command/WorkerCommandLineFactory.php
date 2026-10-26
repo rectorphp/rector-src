@@ -35,7 +35,7 @@ final readonly class WorkerCommandLineFactory
     ): string {
         $workerCommandArray = [
             escapeshellarg(PHP_BINARY),
-            ...array_map('escapeshellarg', $this->createTurboExtensionArguments()),
+            ...array_map(escapeshellarg(...), $this->createTurboExtensionArguments()),
             escapeshellarg($mainScript),
             $workerCommandName,
         ];
