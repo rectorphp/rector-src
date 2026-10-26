@@ -1,9 +1,8 @@
 name: Rector Drupal with dev-main
 
 on:
-    push:
-        branches:
-            - main
+    # skip on main; run manually only
+    workflow_dispatch:
 
 env:
     # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
