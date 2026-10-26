@@ -36,4 +36,12 @@ jobs:
 
             -   uses: "ramsey/composer-install@v4"
 
+            # load PHPStan Turbo from php.ini, so every PHP process of the test suite has it
+            -
+                name: Load PHPStan Turbo
+                run: |
+                    EXTENSION=$(php -r 'require "vendor/autoload.php"; echo PHPStan\Turbo\TurboExtensionSelector::findExtensionForWorkers();')
+                    echo "extension=$EXTENSION" | sudo tee "$(php -r 'echo PHP_CONFIG_FILE_SCAN_DIR;')/99-phpstan-turbo.ini"
+                    php -r 'exit(extension_loaded("phpstan_turbo") ? 0 : 1);'
+
             -   run: vendor/bin/fastunit tests rules-tests utils/phpstan/tests
