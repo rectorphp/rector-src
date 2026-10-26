@@ -14,8 +14,8 @@ use Rector\ValueObject\Configuration;
 
 /**
  * Re-runs each rule-scoped skip on its exact file with skipping off. A skip whose rule still does
- * not change the file never prevented anything and can be removed. Runs on dry runs only, so the
- * re-processing never writes to disk.
+ * not change the file never prevented anything and can be removed. The re-processing is forced to a
+ * dry run, so it never writes, no matter the mode of the real run.
  *
  * @see \Rector\Tests\Reporting\NeededSkipVerifierTest
  */
@@ -34,14 +34,14 @@ final readonly class NeededSkipVerifier
      *
      * @return string[]
      */
-    public function verify(Configuration $configuration): array
+    public function verify(): array
     {
         $skippedFilePathsByRule = $this->skipper->provideSkippedFilePathsByRule();
         if ($skippedFilePathsByRule === []) {
             return [];
         }
 
-        $changedRulesByFilePath = $this->resolveChangedRulesByFilePath($skippedFilePathsByRule, $configuration);
+        $changedRulesByFilePath = $this->resolveChangedRulesByFilePath($skippedFilePathsByRule);
 
         $unnecessarySkips = [];
         foreach ($skippedFilePathsByRule as $rectorClass => $filePaths) {
@@ -75,7 +75,7 @@ final readonly class NeededSkipVerifier
      * @param array<class-string, string[]> $skippedFilePathsByRule
      * @return array<string, string[]> real file path => rule classes that changed it
      */
-    private function resolveChangedRulesByFilePath(array $skippedFilePathsByRule, Configuration $configuration): array
+    private function resolveChangedRulesByFilePath(array $skippedFilePathsByRule): array
     {
         $uniqueFilePaths = [];
         foreach ($skippedFilePathsByRule as $filePaths) {
@@ -83,6 +83,9 @@ final readonly class NeededSkipVerifier
                 $uniqueFilePaths[$filePath] = true;
             }
         }
+
+        // force a dry run, so re-processing detects the change but never writes the skipped file
+        $dryRunConfiguration = new Configuration(isDryRun: true);
 
         $this->skipper->startVerifyingSkips();
 
@@ -92,7 +95,7 @@ final readonly class NeededSkipVerifier
                 $file = new File($filePath, FileSystem::read($filePath));
                 $this->currentFileProvider->setFile($file);
 
-                $fileProcessResult = $this->fileProcessor->processFile($file, $configuration);
+                $fileProcessResult = $this->fileProcessor->processFile($file, $dryRunConfiguration);
 
                 // a broken file is not verifiable, leave it out so its skips are kept
                 if ($fileProcessResult->getSystemErrors() !== []) {

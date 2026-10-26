@@ -13,7 +13,6 @@ use Rector\Reporting\NeededSkipVerifier;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Reporting\Source\MakeClassFinalRector;
-use Rector\ValueObject\Configuration;
 
 final class NeededSkipVerifierTest extends AbstractLazyTestCase
 {
@@ -58,13 +57,16 @@ final class NeededSkipVerifierTest extends AbstractLazyTestCase
         $this->assertTrue($skipper->shouldSkipRectorAndFile($rule, $unnecessaryFilePath));
 
         $neededSkipVerifier = $rectorConfig->make(NeededSkipVerifier::class);
-        $unnecessarySkips = $neededSkipVerifier->verify(new Configuration(isDryRun: true));
+        $unnecessarySkips = $neededSkipVerifier->verify();
 
         // one rule group, listing only the unnecessary file
         $this->assertCount(1, $unnecessarySkips);
         $this->assertStringContainsString(MakeClassFinalRector::class, $unnecessarySkips[0]);
         $this->assertStringContainsString('unnecessary_skip.php', $unnecessarySkips[0]);
         $this->assertStringNotContainsString('needed_skip.php', $unnecessarySkips[0]);
+
+        // the verification is forced to a dry run, so the skipped file on disk stays untouched
+        $this->assertSame('<?php class SomeClass {}', FileSystem::read($neededFilePath));
     }
 
     public function testReportsNothingWithoutCapturedSkips(): void
@@ -72,7 +74,7 @@ final class NeededSkipVerifierTest extends AbstractLazyTestCase
         $rectorConfig = $this->createContainerWithRule();
 
         $neededSkipVerifier = $rectorConfig->make(NeededSkipVerifier::class);
-        $this->assertSame([], $neededSkipVerifier->verify(new Configuration(isDryRun: true)));
+        $this->assertSame([], $neededSkipVerifier->verify());
     }
 
     private function createContainerWithRule(): RectorConfig

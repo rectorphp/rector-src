@@ -9,7 +9,6 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
-use Rector\ValueObject\Configuration;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -51,12 +50,12 @@ final readonly class MissConfigurationReporter
 
     /**
      * Reports rule-scoped skips that matched a file but whose rule would not have changed it, so the
-     * skip is unnecessary. Enabled with "->reportUnusedSkips()" and only on dry runs, as it re-runs
-     * the rules on the skipped files.
+     * skip is unnecessary. Enabled with "->reportUnusedSkips()". The re-run is forced to a dry run,
+     * so it is safe on an apply run too.
      */
-    public function reportUnnecessarySkips(Configuration $configuration): void
+    public function reportUnnecessarySkips(): void
     {
-        $unnecessarySkips = $this->neededSkipVerifier->verify($configuration);
+        $unnecessarySkips = $this->neededSkipVerifier->verify();
         if ($unnecessarySkips === []) {
             return;
         }
