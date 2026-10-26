@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
 use PHPStan\PhpDocParser\Ast\Node;
+use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 
 final class PhpDocTagRemover
 {
@@ -46,14 +47,13 @@ final class PhpDocTagRemover
         $phpDocNode = $phpDocInfo->getPhpDocNode();
         $hasChanged = false;
 
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', static function (Node $node) use (
+        $phpDocNodeTraverser = new NodeTraverser([new CallablePhpDocNodeVisitor(static function (Node $node) use (
             $desiredNode,
             &$hasChanged
         ): ?int {
             if ($node instanceof PhpDocTagNode && $node->value === $desiredNode) {
                 $hasChanged = true;
-                return PhpDocNodeTraverser::NODE_REMOVE;
+                return NodeTraverser::REMOVE_NODE;
             }
 
             if ($node !== $desiredNode) {
@@ -61,8 +61,9 @@ final class PhpDocTagRemover
             }
 
             $hasChanged = true;
-            return PhpDocNodeTraverser::NODE_REMOVE;
-        });
+            return NodeTraverser::REMOVE_NODE;
+        })]);
+        $phpDocNodeTraverser->traverse([$phpDocNode]);
 
         return $hasChanged;
     }

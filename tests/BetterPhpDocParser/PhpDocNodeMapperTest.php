@@ -28,7 +28,7 @@ final class PhpDocNodeMapperTest extends AbstractLazyTestCase
     {
         $phpDocNode = $this->createParamDocNode();
 
-        $this->phpDocNodeMapper->transform($phpDocNode, new BetterTokenIterator([]));
+        $phpDocNode = $this->phpDocNodeMapper->transform($phpDocNode, new BetterTokenIterator([]));
 
         $childNode = $phpDocNode->children[0];
         $this->assertInstanceOf(PhpDocTagNode::class, $childNode);
