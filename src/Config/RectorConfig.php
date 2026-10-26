@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\Config;
 
 use Composer\Semver\Semver;
-use Deprecated;
 use Entropy\Container\Container;
-use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -458,19 +456,6 @@ final class RectorConfig extends Container
         Assert::directory($directoryPath);
 
         SimpleParameterProvider::setParameter(Option::CONTAINER_CACHE_DIRECTORY, $directoryPath);
-    }
-
-    /**
-     * @param class-string<CacheStorageInterface> $cacheClass
-     */
-    #[Deprecated(message: <<<'TXT'
-    Cache storage is selected automatically: file cache locally, in-memory cache in CI,
-     where the ephemeral workspace makes writing a cache that is never re-read wasted IO.
-     The passed value is ignored.
-    TXT)]
-    public function cacheClass(string $cacheClass): void
-    {
-        Assert::isAOf($cacheClass, CacheStorageInterface::class);
     }
 
     /**

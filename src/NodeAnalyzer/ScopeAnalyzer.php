@@ -6,15 +6,17 @@ namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr\BinaryOp\Spaceship;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Break_;
 
 final class ScopeAnalyzer
 {
     /**
      * @var array<class-string<Node>>
      */
-    private const array NON_REFRESHABLE_NODES = [Name::class, Identifier::class, ComplexType::class];
+    private const array NON_REFRESHABLE_NODES = [Name::class, Identifier::class, ComplexType::class, Break_::class, Spaceship::class];
 
     public function isRefreshable(Node $node): bool
     {
