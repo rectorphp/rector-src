@@ -132,7 +132,7 @@ final class ParallelFileProcessor
             ));
 
             ++$systemErrorsCount;
-            $reachedSystemErrorsCountLimit = true;
+            $reachedSystemErrorsCountLimit = $systemErrorsCount >= self::SYSTEM_ERROR_LIMIT;
             $this->processPool->quitAll();
 
             // give the child processes time to actually die, they can still write to cache meanwhile
