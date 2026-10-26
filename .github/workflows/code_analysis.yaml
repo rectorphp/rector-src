@@ -64,6 +64,12 @@ jobs:
                         run: vendor/bin/swiss-knife finalize-classes src tests rules --dry-run --skip-file="src/PhpParser/Node/FileNode.php"
 
                     -
+                        name: 'Composer-based trigger packages are up to date'
+                        run: |
+                            php scripts/generate-composer-based-trigger-packages.php
+                            git diff --exit-code src/Configuration/ComposerBasedTriggerPackages.php
+
+                    -
                         name: 'Fixture Checks'
                         run: |
                             php scripts/check-before-after-same-fixtures.php

@@ -33,7 +33,6 @@ final class ComposerBasedTriggerPackages
             'phpunit/phpunit',
         ],
         'symfony' => [
-            'jms/serializer',
             'symfony/bridge-swift-mailer',
             'symfony/browser-kit',
             'symfony/cache',
