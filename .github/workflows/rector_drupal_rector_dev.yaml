@@ -25,8 +25,8 @@ jobs:
                 env:
                     COMPOSER_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-                # use samsonasik fork fix-composer branch until merged upstream
-            -   run: git clone --branch fix-composer https://github.com/samsonasik/drupal-rector.git
+                # use TomasVotruba fork branch with the ParentClassScopeResolver removal fix until merged, see https://github.com/samsonasik/drupal-rector/pull/1
+            -   run: git clone --branch tv-drop-parent-class-scope-resolver https://github.com/TomasVotruba/drupal-rector.git
 
                 # drupal-rector pins a stopgap "conflict" against rector >=2.6.2 until it ports to composer-based sets;
                 # strip it so dev-main can be smoke-tested here
