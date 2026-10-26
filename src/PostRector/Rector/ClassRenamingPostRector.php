@@ -30,10 +30,10 @@ final class ClassRenamingPostRector extends AbstractPostRector
         // the FileNode resolves the namespace-or-file placement internally
         if ($node instanceof FileNode) {
             // keep only the uses that were actually renamed
-            $removedUses = array_values(array_filter(
+            $removedUses = array_filter(
                 $this->renamedClassesDataCollector->getOldClasses(),
                 $this->renamedNameCollector->has(...)
-            ));
+            );
 
             if ($node->removeImports($removedUses)) {
                 $this->addRectorClassWithLine($node);
