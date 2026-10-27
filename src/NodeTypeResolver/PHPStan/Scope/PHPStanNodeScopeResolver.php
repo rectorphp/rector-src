@@ -41,7 +41,6 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Identifier;
@@ -215,14 +214,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Assign || $node instanceof AssignOp || $node instanceof AssignRef) {
                 $this->processAssign($node, $mutatingScope);
-
-                if ($node->var instanceof Variable && $node->var->name instanceof Expr) {
-                    $this->nodeScopeResolverProcessNodes(
-                        [new Expression($node->var), new Expression($node->expr)],
-                        $mutatingScope,
-                        $nodeCallback
-                    );
-                }
 
                 return;
             }
