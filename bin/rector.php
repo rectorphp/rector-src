@@ -34,7 +34,8 @@ $autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 
 // rector-src on split packages: Turbo resolves php-parser classes through the project autoloader,
 // as preload-split-package.php declares them only after Turbo is activated
-if (file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '/../../../../vendor')) {
+$isSplitPackage = file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '/../../../../vendor');
+if ($isSplitPackage) {
     $autoloadIncluder->autoloadProjectAutoloaderFile();
 }
 
@@ -147,9 +148,11 @@ if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) 
 }
 
 // require rector-src on split packages
-if (file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '/../../../../vendor')) {
+if ($isSplitPackage) {
     require_once __DIR__ . '/../preload-split-package.php';
 }
+
+unset($isSplitPackage);
 
 $autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
 $autoloadIncluder->autoloadProjectAutoloaderFile();
