@@ -32,6 +32,17 @@ final class RectorRegistry
     private array $cache = [];
 
     /**
+     * The file the per-file cache below was built for; compared by identity, so a new File
+     * (next file, a skip-verification re-run, a new test fixture) never reads a stale entry
+     */
+    private ?File $cachedFile = null;
+
+    /**
+     * @var array<class-string<Node>, RectorInterface[]>
+     */
+    private array $fileCache = [];
+
+    /**
      * @param RectorInterface[] $rectors
      */
     public function __construct(
@@ -53,6 +64,8 @@ final class RectorRegistry
         $this->rectors = $rectors;
         $this->areRectorsPrepared = false;
         $this->cache = [];
+        $this->cachedFile = null;
+        $this->fileCache = [];
     }
 
     /**
@@ -88,16 +101,27 @@ final class RectorRegistry
      * rule would not have changed it. This drops precise unused-skip reporting in exchange for not
      * running the rule twice per skipped node.
      *
+     * The skip result only depends on the rule and the file path, so it is cached per node class
+     * for the current file, instead of asking the skipper again for every node and every pass.
+     *
      * @return RectorInterface[]
      */
     public function forNodeAndFile(Node $node, File $file): array
     {
-        $rectors = $this->forNode($node);
+        if ($this->cachedFile !== $file) {
+            $this->cachedFile = $file;
+            $this->fileCache = [];
+        }
+
+        $nodeClass = $node::class;
+        if (isset($this->fileCache[$nodeClass])) {
+            return $this->fileCache[$nodeClass];
+        }
 
         $filePath = $file->getFilePath();
 
-        return array_filter(
-            $rectors,
+        return $this->fileCache[$nodeClass] = array_filter(
+            $this->forNode($node),
             fn (RectorInterface $rector): bool => ! $this->skipper->shouldSkipRectorAndFile($rector, $filePath)
         );
     }
