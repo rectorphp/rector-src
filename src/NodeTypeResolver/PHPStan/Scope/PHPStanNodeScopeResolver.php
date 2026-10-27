@@ -51,7 +51,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
@@ -88,11 +87,8 @@ use PHPStan\PhpDocParser\Parser\ParserException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeCombinator;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\Reflection\PrivatesAccessor;
@@ -116,7 +112,6 @@ final readonly class PHPStanNodeScopeResolver
         array $decoratingNodeVisitors,
         private ScopeFactory $scopeFactory,
         private PrivatesAccessor $privatesAccessor,
-        private NodeNameResolver $nodeNameResolver,
         private ClassAnalyzer $classAnalyzer
     ) {
         // @todo make use of immutable, to avoid tedious traversing
@@ -134,7 +129,7 @@ final readonly class PHPStanNodeScopeResolver
     ): array {
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
-        $this->fillScope($stmts, $filePath, $scope);
+        $this->fillScope($stmts, $scope);
 
         // use after scope filling so DecoratingNodeVisitorInterface instance can fetch the scope of target node
         // @see https://github.com/rectorphp/rector-src/pull/7721#discussion_r2595932460
@@ -146,15 +141,9 @@ final readonly class PHPStanNodeScopeResolver
     /**
      * @param Stmt[] $stmts
      */
-    private function fillScope(array $stmts, string $filePath, MutatingScope $scope): void
+    private function fillScope(array $stmts, MutatingScope $scope): void
     {
-        /** @var array<array{Catch_, MutatingScope}> $catches */
-        $catches = [];
-
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
-            &$nodeCallback,
-            &$catches,
-        ): void {
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback): void {
             if ($mutatingScope instanceof NodeCallbackScope) {
                 $mutatingScope = $mutatingScope->toWalkScope();
             }
@@ -287,17 +276,6 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof Catch_) {
-                // PHPStan fills the catch stmts itself right after this callback, unless no throw point matches;
-                // reset the first stmt scope, so the skipped ones can be detected after processing
-                if ($node->stmts !== []) {
-                    $node->stmts[0]->setAttribute(AttributeKey::SCOPE, null);
-                    $catches[] = [$node, $mutatingScope];
-                }
-
-                return;
-            }
-
             if ($node instanceof NullableType) {
                 $node->type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
@@ -375,10 +353,6 @@ final readonly class PHPStanNodeScopeResolver
             // in the middle of process
             // fallback to fill by found scope
             RectorNodeScopeResolver::processNodes($stmts, $scope);
-        }
-
-        foreach ($catches as [$catch, $catchScope]) {
-            $this->processCatch($catch, $filePath, $catchScope);
         }
     }
 
@@ -529,24 +503,6 @@ final readonly class PHPStanNodeScopeResolver
         foreach ($switch->cases as $case) {
             $case->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
-    }
-
-    private function processCatch(Catch_ $catch, string $filePath, MutatingScope $mutatingScope): void
-    {
-        if ($catch->stmts[0]->getAttribute(AttributeKey::SCOPE) instanceof MutatingScope) {
-            return;
-        }
-
-        $varName = $catch->var instanceof Variable
-        ? $this->nodeNameResolver->getName($catch->var)
-        : null;
-
-        $type = TypeCombinator::union(
-            ...array_map(static fn (Name $name): ObjectType => new ObjectType((string) $name), $catch->types)
-        );
-
-        $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-        $this->fillScope($catch->stmts, $filePath, $catchMutatingScope);
     }
 
     private function processTryCatch(TryCatch $tryCatch, MutatingScope $mutatingScope): void
