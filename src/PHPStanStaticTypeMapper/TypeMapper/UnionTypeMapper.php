@@ -113,7 +113,6 @@ final class UnionTypeMapper implements TypeMapperInterface
     ): PhpParserUnionType|NullableType|null {
         $totalTypes = count($phpParserUnionType->types);
         if ($totalTypes === 2) {
-            $phpParserUnionType->types = array_values($phpParserUnionType->types);
             $firstType = $phpParserUnionType->types[0];
             $secondType = $phpParserUnionType->types[1];
 
@@ -244,8 +243,6 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     private function removeRedundantIntersectionTypes(array $phpParserUnionedTypes): array
     {
-        $phpParserUnionedTypes = array_values($phpParserUnionedTypes);
-
         $typeNames = [];
         foreach ($phpParserUnionedTypes as $key => $phpParserUnionedType) {
             $typeNames[$key] = $this->resolveIntersectionPartNames($phpParserUnionedType);
