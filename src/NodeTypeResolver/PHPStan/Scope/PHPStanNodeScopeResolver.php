@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use Error;
 use PhpParser\Node;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
@@ -76,7 +75,6 @@ use PHPStan\Analyser\UndefinedVariableException;
 use PHPStan\Node\FunctionCallableNode;
 use PHPStan\Node\InstantiationCallableNode;
 use PHPStan\Node\MethodCallableNode;
-use PHPStan\Node\Printer\Printer;
 use PHPStan\Node\StaticMethodCallableNode;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Node\VirtualNode;
@@ -335,18 +333,7 @@ final readonly class PHPStanNodeScopeResolver
             }
         };
 
-        try {
-            $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
-        } catch (Error $error) {
-            if (! str_starts_with($error->getMessage(), 'Call to undefined method ' . Printer::class . '::pPHPStan_')) {
-                throw $error;
-            }
-
-            // nothing we can do more precise here as error printing from deep internal PHPStan Printer service with service injection we cannot reset
-            // in the middle of process
-            // fallback to fill by found scope
-            RectorNodeScopeResolver::processNodes($stmts, $scope);
-        }
+        $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
     }
 
     private function processYield(Yield_ $yield, MutatingScope $mutatingScope): void
