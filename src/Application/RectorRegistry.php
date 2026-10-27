@@ -32,15 +32,15 @@ final class RectorRegistry
     private array $cache = [];
 
     /**
-     * The file the per-file cache below was built for; compared by identity, so a new File
+     * The file that $currentFileRectorsByNodeClass belongs to; compared by identity, so a new File
      * (next file, a skip-verification re-run, a new test fixture) never reads a stale entry
      */
-    private ?File $cachedFile = null;
+    private ?File $currentFile = null;
 
     /**
      * @var array<class-string<Node>, RectorInterface[]>
      */
-    private array $fileCache = [];
+    private array $currentFileRectorsByNodeClass = [];
 
     /**
      * @param RectorInterface[] $rectors
@@ -64,8 +64,8 @@ final class RectorRegistry
         $this->rectors = $rectors;
         $this->areRectorsPrepared = false;
         $this->cache = [];
-        $this->cachedFile = null;
-        $this->fileCache = [];
+        $this->currentFile = null;
+        $this->currentFileRectorsByNodeClass = [];
     }
 
     /**
@@ -108,19 +108,19 @@ final class RectorRegistry
      */
     public function forNodeAndFile(Node $node, File $file): array
     {
-        if ($this->cachedFile !== $file) {
-            $this->cachedFile = $file;
-            $this->fileCache = [];
+        if ($this->currentFile !== $file) {
+            $this->currentFile = $file;
+            $this->currentFileRectorsByNodeClass = [];
         }
 
         $nodeClass = $node::class;
-        if (isset($this->fileCache[$nodeClass])) {
-            return $this->fileCache[$nodeClass];
+        if (isset($this->currentFileRectorsByNodeClass[$nodeClass])) {
+            return $this->currentFileRectorsByNodeClass[$nodeClass];
         }
 
         $filePath = $file->getFilePath();
 
-        return $this->fileCache[$nodeClass] = array_filter(
+        return $this->currentFileRectorsByNodeClass[$nodeClass] = array_filter(
             $this->forNode($node),
             fn (RectorInterface $rector): bool => ! $this->skipper->shouldSkipRectorAndFile($rector, $filePath)
         );
