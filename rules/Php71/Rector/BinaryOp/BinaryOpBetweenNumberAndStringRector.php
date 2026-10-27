@@ -6,6 +6,7 @@ namespace Rector\Php71\Rector\BinaryOp;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Concat;
@@ -88,6 +89,11 @@ CODE_SAMPLE
         }
 
         if ($node instanceof Coalesce) {
+            return null;
+        }
+
+        // array element number type only comes from phpdoc array shape, never a runtime guarantee
+        if ($node->left instanceof ArrayDimFetch || $node->right instanceof ArrayDimFetch) {
             return null;
         }
 
