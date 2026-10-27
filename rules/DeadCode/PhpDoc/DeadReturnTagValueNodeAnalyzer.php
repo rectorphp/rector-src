@@ -13,10 +13,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\DeadCode\PhpDoc\Guard\StandaloneTypeRemovalGuard;
 use Rector\DeadCode\PhpDoc\Guard\TemplateTypeRemovalGuard;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
@@ -79,7 +79,7 @@ final readonly class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        if (! $returnTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
+        if (! $returnTagValueNode->type instanceof UnionTypeNode) {
             return $this->standaloneTypeRemovalGuard->isLegal($returnTagValueNode->type, $returnType);
         }
 
@@ -129,9 +129,9 @@ final readonly class DeadReturnTagValueNodeAnalyzer
         );
     }
 
-    private function hasTrueFalsePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
+    private function hasTrueFalsePseudoType(UnionTypeNode $unionTypeNode): bool
     {
-        $unionTypes = $bracketsAwareUnionTypeNode->types;
+        $unionTypes = $unionTypeNode->types;
 
         foreach ($unionTypes as $unionType) {
             if (! $unionType instanceof IdentifierTypeNode) {

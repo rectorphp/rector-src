@@ -18,12 +18,6 @@ use Rector\Application\FileProcessor;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Application\RectorRegistry;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
-use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
-use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ArrayTypePhpDocNodeVisitor;
-use Rector\BetterPhpDocParser\PhpDocNodeVisitor\CallableTypePhpDocNodeVisitor;
-use Rector\BetterPhpDocParser\PhpDocNodeVisitor\IntersectionTypeNodePhpDocNodeVisitor;
-use Rector\BetterPhpDocParser\PhpDocNodeVisitor\TemplatePhpDocNodeVisitor;
-use Rector\BetterPhpDocParser\PhpDocNodeVisitor\UnionTypeNodePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\PlainValueParser;
@@ -74,17 +68,6 @@ use Webmozart\Assert\Assert;
 
 final class LazyContainerFactory
 {
-    /**
-     * @var array<class-string<BasePhpDocNodeVisitorInterface>>
-     */
-    private const array BASE_PHP_DOC_NODE_VISITORS = [
-        ArrayTypePhpDocNodeVisitor::class,
-        CallableTypePhpDocNodeVisitor::class,
-        IntersectionTypeNodePhpDocNodeVisitor::class,
-        TemplatePhpDocNodeVisitor::class,
-        UnionTypeNodePhpDocNodeVisitor::class,
-    ];
-
     /**
      * @var array<class-string<DecoratingNodeVisitorInterface>>
      */
@@ -247,12 +230,6 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->autodiscover(__DIR__ . '/../StaticTypeMapper/PhpParser');
-
-        $this->registerTagged(
-            $rectorConfig,
-            self::BASE_PHP_DOC_NODE_VISITORS,
-            BasePhpDocNodeVisitorInterface::class
-        );
     }
 
     private function registerTaggedServices(RectorConfig $rectorConfig): void

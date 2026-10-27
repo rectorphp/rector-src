@@ -66,10 +66,9 @@ final class PhpDocInfo
 
     private bool $isSingleLine = false;
 
-    private readonly PhpDocNode $originalPhpDocNode;
-
     public function __construct(
         private readonly PhpDocNode $phpDocNode,
+        private readonly PhpDocNode $originalPhpDocNode,
         private readonly TokenIterator $tokenIterator,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly \PhpParser\Node $node,
@@ -77,8 +76,6 @@ final class PhpDocInfo
         private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder,
         private readonly NameScopeFactory $nameScopeFactory
     ) {
-        $this->originalPhpDocNode = clone $phpDocNode;
-
         if (! in_array(Lexer::TOKEN_PHPDOC_EOL, array_column($tokenIterator->getTokens(), Lexer::TYPE_OFFSET), true)) {
             $this->isSingleLine = true;
         }
@@ -104,17 +101,9 @@ final class PhpDocInfo
         return $this->originalPhpDocNode;
     }
 
-    /**
-     * @return list<array{string, int, int}>
-     */
-    public function getTokens(): array
+    public function getTokenIterator(): TokenIterator
     {
-        return $this->tokenIterator->getTokens();
-    }
-
-    public function getTokenCount(): int
-    {
-        return $this->tokenIterator->getTokenCount();
+        return $this->tokenIterator;
     }
 
     public function getVarTagValueNode(string $tagName = '@var'): ?VarTagValueNode

@@ -6,7 +6,6 @@ namespace Rector\Tests\DependencyInjection;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -33,7 +32,6 @@ final class TaggedServicesTest extends AbstractLazyTestCase
      */
     public static function provideTagInterfaces(): Iterator
     {
-        yield [BasePhpDocNodeVisitorInterface::class];
         yield [ResettableInterface::class];
     }
 }

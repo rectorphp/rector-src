@@ -13,20 +13,21 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\CallableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Guard\NewPhpDocFromPHPStanTypeGuard;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
-use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
-use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
+use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -39,8 +40,8 @@ final readonly class PhpDocTypeChanger
      */
     private const array ALLOWED_TYPES = [
         GenericTypeNode::class,
-        SpacingAwareArrayTypeNode::class,
-        SpacingAwareCallableTypeNode::class,
+        ArrayTypeNode::class,
+        CallableTypeNode::class,
         ArrayShapeNode::class,
     ];
 
@@ -105,7 +106,7 @@ final readonly class PhpDocTypeChanger
         $existingReturnTagValueNode = $phpDocInfo->getReturnTagValue();
         if ($existingReturnTagValueNode instanceof ReturnTagValueNode) {
             // enforce reprint of copied type node
-            $newTypeNode->setAttribute('orig_node', null);
+            $newTypeNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
 
             $existingReturnTagValueNode->type = $newTypeNode;
         } else {
@@ -218,7 +219,7 @@ final readonly class PhpDocTypeChanger
 
     public function isAllowed(TypeNode $typeNode): bool
     {
-        if ($typeNode instanceof BracketsAwareUnionTypeNode || $typeNode instanceof BracketsAwareIntersectionTypeNode) {
+        if ($typeNode instanceof UnionTypeNode || $typeNode instanceof IntersectionTypeNode) {
             foreach ($typeNode->types as $type) {
                 if ($this->isAllowed($type)) {
                     return true;
