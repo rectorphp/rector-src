@@ -230,7 +230,14 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
     private function normalizeExpectedCommandOutput(string $command): string
     {
         if ($this->isWindows()) {
-            return str_replace("'", '"', $command);
+            // the turbo arguments are escaped by escapeshellarg() already, keep the single quotes inside them
+            $turboExtensionArguments = self::turboExtensionArguments();
+
+            return str_replace(
+                str_replace("'", '"', $turboExtensionArguments),
+                $turboExtensionArguments,
+                str_replace("'", '"', $command)
+            );
         }
 
         return $command;
