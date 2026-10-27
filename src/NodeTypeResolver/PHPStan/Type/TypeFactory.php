@@ -16,6 +16,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeUtils;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
@@ -126,7 +127,7 @@ final readonly class TypeFactory
         // unwrap union types
         $unwrappedTypes = [];
         foreach ($types as $type) {
-            $flattenTypes = TypeFlattener::flatten($type);
+            $flattenTypes = TypeUtils::flattenTypes($type);
 
             foreach ($flattenTypes as $flattenType) {
                 if ($flattenType instanceof ConstantArrayType) {
@@ -201,8 +202,8 @@ final readonly class TypeFactory
     {
         $unwrappedTypes = [];
 
-        $flattenKeyTypes = TypeFlattener::flatten($constantArrayType->getIterableKeyType());
-        $flattenItemTypes = TypeFlattener::flatten($constantArrayType->getIterableValueType());
+        $flattenKeyTypes = TypeUtils::flattenTypes($constantArrayType->getIterableKeyType());
+        $flattenItemTypes = TypeUtils::flattenTypes($constantArrayType->getIterableValueType());
 
         foreach ($flattenItemTypes as $position => $nestedFlattenItemType) {
             $nestedFlattenKeyType = $flattenKeyTypes[$position] ?? null;

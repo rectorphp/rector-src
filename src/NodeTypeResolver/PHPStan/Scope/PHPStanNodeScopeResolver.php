@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use Error;
 use PhpParser\Node;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\AssignRef;
@@ -21,7 +19,6 @@ use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Clone_;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\ErrorSuppress;
@@ -44,14 +41,12 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
@@ -79,7 +74,6 @@ use PHPStan\Analyser\UndefinedVariableException;
 use PHPStan\Node\FunctionCallableNode;
 use PHPStan\Node\InstantiationCallableNode;
 use PHPStan\Node\MethodCallableNode;
-use PHPStan\Node\Printer\Printer;
 use PHPStan\Node\StaticMethodCallableNode;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Node\VirtualNode;
@@ -88,11 +82,8 @@ use PHPStan\PhpDocParser\Parser\ParserException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeCombinator;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\Reflection\PrivatesAccessor;
@@ -116,7 +107,6 @@ final readonly class PHPStanNodeScopeResolver
         array $decoratingNodeVisitors,
         private ScopeFactory $scopeFactory,
         private PrivatesAccessor $privatesAccessor,
-        private NodeNameResolver $nodeNameResolver,
         private ClassAnalyzer $classAnalyzer
     ) {
         // @todo make use of immutable, to avoid tedious traversing
@@ -134,7 +124,7 @@ final readonly class PHPStanNodeScopeResolver
     ): array {
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
-        $this->fillScope($stmts, $filePath, $scope);
+        $this->fillScope($stmts, $scope);
 
         // use after scope filling so DecoratingNodeVisitorInterface instance can fetch the scope of target node
         // @see https://github.com/rectorphp/rector-src/pull/7721#discussion_r2595932460
@@ -146,15 +136,9 @@ final readonly class PHPStanNodeScopeResolver
     /**
      * @param Stmt[] $stmts
      */
-    private function fillScope(array $stmts, string $filePath, MutatingScope $scope): void
+    private function fillScope(array $stmts, MutatingScope $scope): void
     {
-        /** @var array<array{Catch_, MutatingScope}> $catches */
-        $catches = [];
-
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
-            &$nodeCallback,
-            &$catches,
-        ): void {
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback): void {
             if ($mutatingScope instanceof NodeCallbackScope) {
                 $mutatingScope = $mutatingScope->toWalkScope();
             }
@@ -231,14 +215,6 @@ final readonly class PHPStanNodeScopeResolver
             if ($node instanceof Assign || $node instanceof AssignOp || $node instanceof AssignRef) {
                 $this->processAssign($node, $mutatingScope);
 
-                if ($node->var instanceof Variable && $node->var->name instanceof Expr) {
-                    $this->nodeScopeResolverProcessNodes(
-                        [new Expression($node->var), new Expression($node->expr)],
-                        $mutatingScope,
-                        $nodeCallback
-                    );
-                }
-
                 return;
             }
 
@@ -284,17 +260,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof TryCatch) {
                 $this->processTryCatch($node, $mutatingScope);
-                return;
-            }
-
-            if ($node instanceof Catch_) {
-                // PHPStan fills the catch stmts itself right after this callback, unless no throw point matches;
-                // reset the first stmt scope, so the skipped ones can be detected after processing
-                if ($node->stmts !== []) {
-                    $node->stmts[0]->setAttribute(AttributeKey::SCOPE, null);
-                    $catches[] = [$node, $mutatingScope];
-                }
-
                 return;
             }
 
@@ -357,29 +322,9 @@ final readonly class PHPStanNodeScopeResolver
 
                 return;
             }
-
-            // PHPStan does not process attributes of closures and arrow functions
-            if (($node instanceof Closure || $node instanceof ArrowFunction) && $node->attrGroups !== []) {
-                $this->processClosureAttributeGroups($node, $mutatingScope, $nodeCallback);
-            }
         };
 
-        try {
-            $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
-        } catch (Error $error) {
-            if (! str_starts_with($error->getMessage(), 'Call to undefined method ' . Printer::class . '::pPHPStan_')) {
-                throw $error;
-            }
-
-            // nothing we can do more precise here as error printing from deep internal PHPStan Printer service with service injection we cannot reset
-            // in the middle of process
-            // fallback to fill by found scope
-            RectorNodeScopeResolver::processNodes($stmts, $scope);
-        }
-
-        foreach ($catches as [$catch, $catchScope]) {
-            $this->processCatch($catch, $filePath, $catchScope);
-        }
+        $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
     }
 
     private function processYield(Yield_ $yield, MutatingScope $mutatingScope): void
@@ -398,32 +343,6 @@ final readonly class PHPStanNodeScopeResolver
         foreach ($node->vars as $var) {
             $var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
-    }
-
-    /**
-     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
-     */
-    private function processClosureAttributeGroups(
-        Closure|ArrowFunction $node,
-        MutatingScope $mutatingScope,
-        callable $nodeCallback
-    ): void {
-        $argExpressions = [];
-        foreach ($node->attrGroups as $attrGroup) {
-            $attrGroup->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-            foreach ($attrGroup->attrs as $attr) {
-                $attr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $attr->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-                foreach ($attr->args as $arg) {
-                    $arg->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                    $argExpressions[] = new Expression($arg->value);
-                }
-            }
-        }
-
-        $this->nodeScopeResolverProcessNodes($argExpressions, $mutatingScope, $nodeCallback);
     }
 
     private function processEcho(Echo_ $echo, MutatingScope $mutatingScope): void
@@ -529,24 +448,6 @@ final readonly class PHPStanNodeScopeResolver
         foreach ($switch->cases as $case) {
             $case->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
-    }
-
-    private function processCatch(Catch_ $catch, string $filePath, MutatingScope $mutatingScope): void
-    {
-        if ($catch->stmts[0]->getAttribute(AttributeKey::SCOPE) instanceof MutatingScope) {
-            return;
-        }
-
-        $varName = $catch->var instanceof Variable
-        ? $this->nodeNameResolver->getName($catch->var)
-        : null;
-
-        $type = TypeCombinator::union(
-            ...array_map(static fn (Name $name): ObjectType => new ObjectType((string) $name), $catch->types)
-        );
-
-        $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-        $this->fillScope($catch->stmts, $filePath, $catchMutatingScope);
     }
 
     private function processTryCatch(TryCatch $tryCatch, MutatingScope $mutatingScope): void
