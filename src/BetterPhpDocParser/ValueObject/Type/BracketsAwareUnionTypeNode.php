@@ -20,25 +20,13 @@ final class BracketsAwareUnionTypeNode extends UnionTypeNode implements Stringab
         parent::__construct($types);
     }
 
-    /**
-     * Preserve common format
-     */
     public function __toString(): string
     {
-        $types = [];
-
-        // get the actual strings first before array_unique
-        // to avoid similar object but different printing to be treated as unique
-        foreach ($this->types as $type) {
-            $types[] = (string) $type;
-        }
-
-        $types = array_unique($types);
         if (! $this->isWrappedInBrackets) {
-            return implode('|', $types);
+            return implode('|', $this->types);
         }
 
-        return '(' . implode('|', $types) . ')';
+        return '(' . implode('|', $this->types) . ')';
     }
 
     public function isWrappedInBrackets(): bool
