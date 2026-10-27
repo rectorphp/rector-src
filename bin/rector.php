@@ -32,6 +32,12 @@ define('__RECTOR_RUNNING__', true);
 $autoloadIncluder = new AutoloadIncluder();
 $autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 
+// rector-src on split packages: Turbo resolves php-parser classes through the project autoloader,
+// as preload-split-package.php declares them only after Turbo is activated
+if (file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '/../../../../vendor')) {
+    $autoloadIncluder->autoloadProjectAutoloaderFile();
+}
+
 // PHPStan Turbo replaces php-parser classes, so it is activated before preload.php declares them.
 // The main process only gets Turbo when php.ini loads it; the workers get it from WorkerCommandLineFactory.
 $phpstanBootstrapFile = __DIR__ . '/../../../phpstan/phpstan/bootstrap.php';
@@ -138,6 +144,11 @@ final class AutoloadIncluder
 
 if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) {
     require_once __DIR__ . '/../preload.php';
+}
+
+// require rector-src on split packages
+if (file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '/../../../../vendor')) {
+    require_once __DIR__ . '/../preload-split-package.php';
 }
 
 $autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');

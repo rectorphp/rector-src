@@ -39,6 +39,7 @@ if (! is_string($buildDirectory)) {
 
 $preloadBuilder = new PreloadBuilder();
 $preloadBuilder->buildPreloadScript($buildDirectory, $buildDirectory . '/preload.php');
+$preloadBuilder->buildPreloadScriptForSplitPackage($buildDirectory, $buildDirectory . '/preload-split-package.php');
 
 final class PreloadBuilder
 {
@@ -141,6 +142,44 @@ CODE_SAMPLE;
         $this->buildPreloadScriptPhpDocParser($buildDirectory, $preloadFile);
     }
 
+    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
+    {
+        $this->buildPreloadScriptForSplitPhpParser($buildDirectory, $preloadFile);
+        $this->buildPreloadScriptForSplitPhpDocParser($buildDirectory, $preloadFile);
+    }
+
+    private function buildPreloadScriptForSplitPhpParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
+            return;
+        }
+
+        // 1. find php-parser file infos
+        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
+
+        // 2. create preload-split-package.php from provided files
+        $preloadFileContent = $this->createPreloadFileContent($fileInfos, '/../../../vendor/');
+
+        file_put_contents($preloadFile, $preloadFileContent);
+    }
+
+    private function buildPreloadScriptForSplitPhpDocParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
+            return;
+        }
+
+        // 1. find phpdoc-parser file infos
+        $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
+
+        // 2. create preload-split-package.php from provided files
+        $preloadFileContent = $this->createPreloadFileContent($fileInfos, '/../../../vendor/', true);
+
+        file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
+    }
+
     private function buildPreloadScriptPhpDocParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
@@ -152,7 +191,7 @@ CODE_SAMPLE;
         $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
 
         // 2. create preload.php from provided files
-        $preloadFileContent = $this->createPreloadFileContent($fileInfos, true);
+        $preloadFileContent = $this->createPreloadFileContent($fileInfos, '/vendor/', true);
 
         file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
     }
@@ -168,7 +207,7 @@ CODE_SAMPLE;
         $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
         // 3. create preload.php from provided files
-        $preloadFileContent = $this->createPreloadFileContent($fileInfos);
+        $preloadFileContent = $this->createPreloadFileContent($fileInfos, '/vendor/');
 
         file_put_contents($preloadFile, $preloadFileContent);
     }
@@ -207,7 +246,7 @@ CODE_SAMPLE;
     /**
      * @param SplFileInfo[] $fileInfos
      */
-    private function createPreloadFileContent(array $fileInfos, bool $append = false): string
+    private function createPreloadFileContent(array $fileInfos, string $vendorPath, bool $append = false): string
     {
         $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE . PHP_EOL . PHP_EOL;
 
@@ -217,23 +256,24 @@ CODE_SAMPLE;
                 continue;
             }
 
-            $preloadFileContent .= $this->createRequireOnceFilePathLine($realPath);
+            $preloadFileContent .= $this->createRequireOnceFilePathLine($realPath, $vendorPath);
         }
 
         return $preloadFileContent;
     }
 
-    private function createRequireOnceFilePathLine(string $realPath): string
+    private function createRequireOnceFilePathLine(string $realPath, string $vendorPath): string
     {
         if (! str_contains($realPath, 'vendor')) {
             $filePath = '/src/' . Strings::after($realPath, '/src/');
             return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
         }
 
-        $filePath = '/vendor/' . Strings::after($realPath, 'vendor/');
+        $vendorFilePath = Strings::after($realPath, 'vendor/');
+        $filePath = $vendorPath . $vendorFilePath;
 
         // PHPStan Turbo declares its native NodeTraverser before this file runs
-        if ($filePath === '/vendor/nikic/php-parser/lib/PhpParser/NodeTraverser.php') {
+        if ($vendorFilePath === 'nikic/php-parser/lib/PhpParser/NodeTraverser.php') {
             return 'if (! class_exists(NodeTraverser::class, false)) {' . PHP_EOL
                 . "    require_once __DIR__ . '" . $filePath . "';" . PHP_EOL
                 . '}' . PHP_EOL
