@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\DataProvider;
 
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\Exception\ShouldNotHappenException;
 
 final class CurrentTokenIteratorProvider
 {
-    private ?BetterTokenIterator $betterTokenIterator = null;
+    private ?TokenIterator $tokenIterator = null;
 
-    public function setBetterTokenIterator(BetterTokenIterator $betterTokenIterator): void
+    public function setTokenIterator(TokenIterator $tokenIterator): void
     {
-        $this->betterTokenIterator = $betterTokenIterator;
+        $this->tokenIterator = $tokenIterator;
     }
 
-    public function provide(): BetterTokenIterator
+    public function provide(): TokenIterator
     {
-        if (! $this->betterTokenIterator instanceof BetterTokenIterator) {
+        if (! $this->tokenIterator instanceof TokenIterator) {
             throw new ShouldNotHappenException();
         }
 
-        return $this->betterTokenIterator;
+        return $this->tokenIterator;
     }
 }

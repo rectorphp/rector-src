@@ -11,11 +11,11 @@ use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprTrueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 
 final class PlainValueParser
@@ -41,7 +41,7 @@ final class PlainValueParser
      * @return string|mixed[]|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode
      */
     public function parseValue(
-        BetterTokenIterator $tokenIterator,
+        TokenIterator $tokenIterator,
         Node $currentPhpNode
     ): string|array|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode {
         $currentTokenValue = $tokenIterator->currentTokenValue();
@@ -76,7 +76,7 @@ final class PlainValueParser
             );
         }
 
-        $start = $tokenIterator->currentPosition();
+        $start = $tokenIterator->currentTokenIndex();
 
         // from "quote to quote"
         if ($currentTokenValue === '"') {
@@ -85,15 +85,15 @@ final class PlainValueParser
             } while (! str_contains($tokenIterator->currentTokenValue(), '"'));
         }
 
-        $end = $tokenIterator->currentPosition();
+        $end = $tokenIterator->currentTokenIndex();
         if ($start + 1 < $end) {
-            return new StringNode($tokenIterator->printFromTo($start, $end));
+            return new StringNode($tokenIterator->getContentBetween($start, $end));
         }
 
         return $currentTokenValue;
     }
 
-    private function parseStringValue(BetterTokenIterator $tokenIterator, string $currentTokenValue): string
+    private function parseStringValue(TokenIterator $tokenIterator, string $currentTokenValue): string
     {
         if (
             // start with a quote but doesn't end with one
@@ -113,7 +113,7 @@ final class PlainValueParser
     }
 
     private function parseMultilineOrWhiteSpacedString(
-        BetterTokenIterator $tokenIterator,
+        TokenIterator $tokenIterator,
         string $currentTokenValue
     ): string {
         while (str_starts_with($currentTokenValue, '"') && ! str_ends_with($currentTokenValue, '"')) {
@@ -148,7 +148,7 @@ final class PlainValueParser
 
     private function parseNestedDoctrineAnnotationTagValueNode(
         string $currentTokenValue,
-        BetterTokenIterator $tokenIterator,
+        TokenIterator $tokenIterator,
         Node $currentPhpNode
     ): DoctrineAnnotationTagValueNode {
         // @todo

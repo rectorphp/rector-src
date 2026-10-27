@@ -33,11 +33,11 @@ final class ArrayParserTest extends AbstractLazyTestCase
     #[DataProvider('provideData')]
     public function test(string $docContent, array $expectedArrayItemNodes): void
     {
-        $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
+        $tokenIterator = $this->tokenIteratorFactory->create($docContent);
 
         $string = new String_('some_node');
 
-        $arrayItemNodes = $this->arrayParser->parseCurlyArray($betterTokenIterator, $string);
+        $arrayItemNodes = $this->arrayParser->parseCurlyArray($tokenIterator, $string);
         $this->assertEquals($expectedArrayItemNodes, $arrayItemNodes);
     }
 

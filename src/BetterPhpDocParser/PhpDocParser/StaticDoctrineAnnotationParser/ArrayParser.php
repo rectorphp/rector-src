@@ -8,9 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
-use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParserTest
@@ -27,7 +27,7 @@ final readonly class ArrayParser
      *
      * @return ArrayItemNode[]
      */
-    public function parseCurlyArray(BetterTokenIterator $tokenIterator, Node $currentPhpNode): array
+    public function parseCurlyArray(TokenIterator $tokenIterator, Node $currentPhpNode): array
     {
         $values = [];
 
@@ -58,7 +58,7 @@ final readonly class ArrayParser
             }
 
             $values[] = $this->resolveArrayItem($tokenIterator, $currentPhpNode);
-            if ($tokenIterator->isNextTokenType(Lexer::TOKEN_CLOSE_CURLY_BRACKET)) {
+            if (NextTokenType::is($tokenIterator, Lexer::TOKEN_CLOSE_CURLY_BRACKET)) {
                 break;
             }
 
@@ -109,7 +109,7 @@ final readonly class ArrayParser
      * Mimics https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L1354-L1385
      * @return array{mixed, mixed}
      */
-    private function resolveArrayItem(BetterTokenIterator $tokenIterator, Node $currentPhpNode): array
+    private function resolveArrayItem(TokenIterator $tokenIterator, Node $currentPhpNode): array
     {
         // skip newlines
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
@@ -117,7 +117,7 @@ final readonly class ArrayParser
         $key = null;
 
         // join "ClassName::CONSTANT_REFERENCE" to identifier
-        if ($tokenIterator->isNextTokenTypes([Lexer::TOKEN_DOUBLE_COLON])) {
+        if (NextTokenType::is($tokenIterator, Lexer::TOKEN_DOUBLE_COLON)) {
             $key = $tokenIterator->currentTokenValue();
 
             // "::"
@@ -139,13 +139,13 @@ final readonly class ArrayParser
 
         if (
             $tokenIterator->isCurrentTokenType(Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON) ||
-            $tokenIterator->isNextTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON])
+            NextTokenType::is($tokenIterator, Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON)
         ) {
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_EQUAL);
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_COLON);
 
             if ($key === null) {
-                if ($tokenIterator->isNextTokenType(Lexer::TOKEN_IDENTIFIER)) {
+                if (NextTokenType::is($tokenIterator, Lexer::TOKEN_IDENTIFIER)) {
                     $key = $this->plainValueParser->parseValue($tokenIterator, $currentPhpNode);
                 } else {
                     $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_COMMA);
