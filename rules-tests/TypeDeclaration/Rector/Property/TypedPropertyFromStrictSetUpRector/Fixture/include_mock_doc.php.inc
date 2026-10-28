@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 final class IncludeMockDoc extends TestCase
 {
-    /** @var (\PHPUnit\Framework\MockObject\MockObject & \DateTime) */
+    /** @var \PHPUnit\Framework\MockObject\MockObject&\DateTime */
     private \PHPUnit\Framework\MockObject\MockObject $value;
 
     public function setUp(): void

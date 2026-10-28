@@ -161,7 +161,7 @@ CODE_SAMPLE
                     $tagValueNode->description = $nativeDescriptions[$this->resolveTagKey($tagValueNode)] ?? '';
                 }
 
-                $phpDocNode->children[$key] = new PhpDocTagNode($nativeTagName, $phpDocChildNode->value);
+                $phpDocChildNode->name = $nativeTagName;
                 $hasChanged = true;
             }
         }

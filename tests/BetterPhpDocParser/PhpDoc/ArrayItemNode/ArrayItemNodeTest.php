@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
+use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\PhpParser\Enum\NodeGroup;
@@ -74,7 +75,7 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
                 $phpDocNode = $phpDocInfo->getPhpDocNode();
 
                 foreach ($phpDocNode->children as $key => $phpDocChildNode) {
-                    $phpDocChildNode->setAttribute('start_and_end', null);
+                    $phpDocChildNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
                     $phpDocNode->children[$key] = $phpDocChildNode;
                 }
 

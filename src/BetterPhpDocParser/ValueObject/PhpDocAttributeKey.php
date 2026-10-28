@@ -22,7 +22,5 @@ final class PhpDocAttributeKey
 
     public const string PARENT = NativePhpDocAttributeKey::PARENT;
 
-    public const string LAST_PHP_DOC_TOKEN_POSITION = 'last_token_position';
-
     public const string ORIG_NODE = NativePhpDocAttributeKey::ORIG_NODE;
 }

@@ -62,7 +62,7 @@ final class AttributeValueResolver
                         if ($docComment === '') {
                             $docComment .= $docValueLine;
                         } else {
-                            $docComment .= "\n * " . $docValueLine;
+                            $docComment .= "\n" . $docValueLine;
                         }
                     }
 

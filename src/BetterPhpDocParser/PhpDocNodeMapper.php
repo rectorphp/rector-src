@@ -6,9 +6,6 @@ namespace Rector\BetterPhpDocParser;
 
 use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
-use PHPStan\PhpDocParser\Parser\TokenIterator;
-use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
-use Rector\BetterPhpDocParser\DataProvider\CurrentTokenIteratorProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CloningPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVisitor;
 use Webmozart\Assert\Assert;
@@ -20,31 +17,24 @@ final readonly class PhpDocNodeMapper
 {
     private NodeTraverser $phpDocNodeTraverser;
 
-    /**
-     * @param BasePhpDocNodeVisitorInterface[] $phpDocNodeVisitors
-     */
     public function __construct(
-        private CurrentTokenIteratorProvider $currentTokenIteratorProvider,
-        ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor,
         CloningPhpDocNodeVisitor $cloningPhpDocNodeVisitor,
-        private array $phpDocNodeVisitors
+        ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor,
     ) {
-        Assert::notEmpty($phpDocNodeVisitors);
-
         $this->phpDocNodeTraverser = new NodeTraverser([
-            $parentConnectingPhpDocNodeVisitor,
             $cloningPhpDocNodeVisitor,
-            ...array_values($this->phpDocNodeVisitors),
+            $parentConnectingPhpDocNodeVisitor,
         ]);
     }
 
-    public function transform(PhpDocNode $phpDocNode, TokenIterator $tokenIterator): PhpDocNode
+    /**
+     * Returns a clone to change; the format-preserving printer compares it with the original node
+     */
+    public function transform(PhpDocNode $phpDocNode): PhpDocNode
     {
-        $this->currentTokenIteratorProvider->setTokenIterator($tokenIterator);
+        [$clonedPhpDocNode] = $this->phpDocNodeTraverser->traverse([$phpDocNode]);
+        Assert::isInstanceOf($clonedPhpDocNode, PhpDocNode::class);
 
-        [$phpDocNode] = $this->phpDocNodeTraverser->traverse([$phpDocNode]);
-        Assert::isInstanceOf($phpDocNode, PhpDocNode::class);
-
-        return $phpDocNode;
+        return $clonedPhpDocNode;
     }
 }
