@@ -18,6 +18,8 @@ use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\FileNode;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierPhpDocTypeMapper;
@@ -94,7 +96,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
             return null;
         }
 
-        return $this->processFqnNameImport($this->currentPhpParserNode, $node, $staticType, $file);
+        return $this->processFqnNameImport($this->currentPhpParserNode, $node, $staticType, $file, $node->name);
     }
 
     public function setCurrentNode(PhpParserNode $phpParserNode): void
@@ -125,11 +127,16 @@ final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
         PhpParserNode $phpParserNode,
         IdentifierTypeNode $identifierTypeNode,
         FullyQualifiedObjectType $fullyQualifiedObjectType,
-        File $file
+        File $file,
+        string $writtenName
     ): ?IdentifierTypeNode {
         $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
         if ($parentNode instanceof TemplateTagValueNode) {
             // might break
+            return null;
+        }
+
+        if ($this->isPartiallyQualifiedNameToKeep($writtenName)) {
             return null;
         }
 
@@ -172,6 +179,19 @@ final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
         }
 
         return null;
+    }
+
+    /**
+     * Uses the name as written, as annotation names get their leading "\" trimmed before import
+     */
+    private function isPartiallyQualifiedNameToKeep(string $writtenName): bool
+    {
+        $writtenName = ltrim($writtenName, '@');
+        if (! str_contains($writtenName, '\\') || str_starts_with($writtenName, '\\')) {
+            return false;
+        }
+
+        return ! SimpleParameterProvider::provideBoolParameter(Option::IMPORT_PARTIALLY_QUALIFIED_NAMES);
     }
 
     private function shouldImport(
@@ -239,7 +259,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
             $currentPhpParserNode,
             $identifierTypeNode,
             $staticType,
-            $file
+            $file,
+            $identifierTypeNode->name
         );
 
         if (! $shortentedIdentifierTypeNode instanceof IdentifierTypeNode) {
@@ -289,7 +310,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
             $currentPhpParserNode,
             $identifierTypeNode,
             $staticType,
-            $file
+            $file,
+            $spacelessPhpDocTagNode->name
         );
 
         if ($importedName instanceof IdentifierTypeNode) {

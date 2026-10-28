@@ -116,6 +116,8 @@ final class RectorConfigBuilder
 
     private bool $importShortClasses = true;
 
+    private bool $importPartiallyQualifiedNames = true;
+
     private bool $removeUnusedImports = false;
 
     private bool $noDiffs = false;
@@ -291,6 +293,7 @@ final class RectorConfigBuilder
         if ($this->importNames || $this->importDocBlockNames) {
             $rectorConfig->importNames($this->importNames, $this->importDocBlockNames);
             $rectorConfig->importShortClasses($this->importShortClasses);
+            $rectorConfig->importPartiallyQualifiedNames($this->importPartiallyQualifiedNames);
         }
 
         if ($this->removeUnusedImports) {
@@ -828,12 +831,14 @@ final class RectorConfigBuilder
         bool $importNames = true,
         bool $importDocBlockNames = true,
         bool $importShortClasses = true,
-        bool $removeUnusedImports = true
+        bool $removeUnusedImports = true,
+        bool $importPartiallyQualifiedNames = true
     ): self {
         $this->importNames = $importNames;
         $this->importDocBlockNames = $importDocBlockNames;
         $this->importShortClasses = $importShortClasses;
         $this->removeUnusedImports = $removeUnusedImports;
+        $this->importPartiallyQualifiedNames = $importPartiallyQualifiedNames;
         return $this;
     }
 

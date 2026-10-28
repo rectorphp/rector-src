@@ -177,6 +177,14 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, $importShortClasses);
     }
 
+    public function importPartiallyQualifiedNames(bool $importPartiallyQualifiedNames = true): void
+    {
+        SimpleParameterProvider::setParameter(
+            Option::IMPORT_PARTIALLY_QUALIFIED_NAMES,
+            $importPartiallyQualifiedNames
+        );
+    }
+
     /**
      * Add PHPStan custom config to load extensions and custom configuration to Rector.
      */
