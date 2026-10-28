@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\RelativeNameNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\Type;
@@ -33,5 +36,15 @@ final class ShortenedGenericObjectType extends GenericObjectType
     public function getShortName(): string
     {
         return $this->getClassName();
+    }
+
+    public function toPhpDocNode(): TypeNode
+    {
+        $typeNode = parent::toPhpDocNode();
+        if ($typeNode instanceof GenericTypeNode) {
+            $typeNode->type = new RelativeNameNode($this->getShortName());
+        }
+
+        return $typeNode;
     }
 }

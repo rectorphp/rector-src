@@ -166,7 +166,7 @@ CODE_SAMPLE
         }
 
         $genericTypeNode = $extendsTagValueNode->type;
-        if ($genericTypeNode->type->name !== 'EntityRepository') {
+        if (! $genericTypeNode->type instanceof IdentifierTypeNode || $genericTypeNode->type->name !== 'EntityRepository') {
             return null;
         }
 
