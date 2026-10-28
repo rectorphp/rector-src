@@ -68,6 +68,11 @@ final class RectorTest extends TestCase
         int $previousErrorCount,
         array $expectedMessages
     ): void {
+        if (PHP_OS_FAMILY === 'Windows') {
+            // the worker runs in a wrapping cmd.exe, terminating it on timeout leaves the sleeping worker running
+            $this->markTestSkipped('Terminating a timed out worker is not reliable on Windows');
+        }
+
         $filePaths = [];
         for ($i = 5; $i < 5 + $previousErrorCount; ++$i) {
             $filePaths[] = __DIR__ . sprintf('/../../e2e/parallel-system-errors-limit/src/File%02d.php', $i);
