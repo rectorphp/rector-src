@@ -9,6 +9,7 @@ use Nette\Utils\Strings;
 use PhpParser\NodeVisitor;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\CodingStyleLevel;
 use Rector\Config\Level\DeadCodeLevel;
@@ -651,6 +652,10 @@ final class RectorConfigBuilder
         return $this;
     }
 
+    /**
+     * Call it with no argument to load the sets of every package installed in the project.
+     * Any argument switches the detection off, and only the passed sets are loaded.
+     */
     public function withComposerBased(
         bool $twig = false,
         bool $doctrine = false,
@@ -660,6 +665,10 @@ final class RectorConfigBuilder
         bool $laravel = false,
         bool $drupal = false,
     ): self {
+        if (func_num_args() === 0) {
+            return $this->withComposerBased(...$this->resolveInstalledComposerBasedPackages());
+        }
+
         if ($laravel && class_exists('RectorLaravel\Set\LaravelSetList') && constant('RectorLaravel\Set\LaravelSetList::COMPOSER_BASED')) {
             $this->sets[] = LaravelSetList::COMPOSER_BASED;
         }
@@ -1143,5 +1152,27 @@ final class RectorConfigBuilder
         $this->rules = array_merge($this->rules, $levelRules);
 
         return $this;
+    }
+
+    /**
+     * @return array<string, bool> withComposerBased() argument name => is any of its packages installed
+     */
+    private function resolveInstalledComposerBasedPackages(): array
+    {
+        $installedPackageResolver = new InstalledPackageResolver();
+
+        $installedPackages = [];
+        foreach (ComposerBasedTriggerPackages::PACKAGES_BY_ARGUMENT as $argumentName => $packageNames) {
+            $installedPackages[$argumentName] = false;
+
+            foreach ($packageNames as $packageName) {
+                if ($installedPackageResolver->resolvePackageVersion($packageName) !== null) {
+                    $installedPackages[$argumentName] = true;
+                    break;
+                }
+            }
+        }
+
+        return $installedPackages;
     }
 }
