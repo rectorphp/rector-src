@@ -12,7 +12,6 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::bootstrapFiles() instead
-     * @var string
      */
     public const string BOOTSTRAP_FILES = 'bootstrap_files';
 
@@ -26,19 +25,16 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::phpVersion() instead
-     * @var string
      */
     public const string PHP_VERSION_FEATURES = 'php_version_features';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::importNames() instead
-     * @var string
      */
     public const string AUTO_IMPORT_NAMES = 'auto_import_names';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::polyfillPackages() instead
-     * @var string
      */
     public const string POLYFILL_PACKAGES = 'polyfill_packages';
 
@@ -52,31 +48,26 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::importNames() instead
-     * @var string
      */
     public const string AUTO_IMPORT_DOC_BLOCK_NAMES = 'auto_import_doc_block_names';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::importShortClasses() instead
-     * @var string
      */
     public const string IMPORT_SHORT_CLASSES = 'import_short_classes';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::symfonyContainerXml() instead
-     * @var string
      */
     public const string SYMFONY_CONTAINER_XML_PATH_PARAMETER = 'symfony_container_xml_path';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::symfonyContainerPhp()
-     * @var string
      */
     public const string SYMFONY_CONTAINER_PHP_PATH_PARAMETER = 'symfony_container_php_path';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::newLineOnFluentCall()
-     * @var string
      */
     public const string NEW_LINE_ON_FLUENT_CALL = 'new_line_on_fluent_call';
 
@@ -86,31 +77,26 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::parallel() instead
-     * @var string
      */
     public const string PARALLEL = 'parallel';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::paths() instead
-     * @var string
      */
     public const string PATHS = 'paths';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::autoloadPaths() instead
-     * @var string
      */
     public const string AUTOLOAD_PATHS = 'autoload_paths';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::skip() instead
-     * @var string
      */
     public const string SKIP = 'skip';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::reportUnusedSkips() instead
-     * @var string
      */
     public const string REPORT_UNUSED_SKIPS = 'report_unused_skips';
 
@@ -154,7 +140,6 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::phpstanConfig() instead
-     * @var string
      */
     public const string PHPSTAN_FOR_RECTOR_PATHS = 'phpstan_for_rector_paths';
 
@@ -168,19 +153,16 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::parallel() instead with pass int $jobSize parameter
-     * @var string
      */
     public const string PARALLEL_JOB_SIZE = 'parallel-job-size';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::parallel() instead with pass int $maxNumberOfProcess parameter
-     * @var string
      */
     public const string PARALLEL_MAX_NUMBER_OF_PROCESSES = 'parallel-max-number-of-processes';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::parallel() instead with pass int $seconds parameter
-     * @var string
      */
     public const string PARALLEL_JOB_TIMEOUT_IN_SECONDS = 'parallel-job-timeout-in-seconds';
 
@@ -188,25 +170,21 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::indent() method
-     * @var string
      */
     public const string INDENT_CHAR = 'indent-char';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::indent() method
-     * @var string
      */
     public const string INDENT_SIZE = 'indent-size';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::removeUnusedImports() method
-     * @var string
      */
     public const string REMOVE_UNUSED_IMPORTS = 'remove-unused-imports';
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::containerCacheDirectory() method
-     * @var string
      */
     public const string CONTAINER_CACHE_DIRECTORY = 'container-cache-directory';
 
@@ -269,7 +247,6 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::treatClassesAsFinal() method
-     * @var string
      */
     public const string TREAT_CLASSES_AS_FINAL = 'treat_classes_as_final';
 
@@ -322,7 +299,6 @@ final class Option
 
     /**
      * @internal Use @see \Rector\Config\RectorConfig::typeGuardedClasses() instead
-     * @var string
      */
     public const string TYPE_GUARDED_CLASSES = 'type_guarded_classes';
 }
