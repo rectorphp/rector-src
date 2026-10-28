@@ -88,6 +88,11 @@ final class RectorConfigBuilder
     private array $rulesWithConfigurations = [];
 
     /**
+     * @var array<array{class-string<ConfigurableRectorInterface>, mixed[], string, string}>
+     */
+    private array $composerBasedRules = [];
+
+    /**
      * @var string[]
      */
     private array $fileExtensions = [];
@@ -259,6 +264,15 @@ final class RectorConfigBuilder
             foreach ($configurations as $configuration) {
                 $rectorConfig->ruleWithConfiguration($rectorClass, $configuration);
             }
+        }
+
+        foreach ($this->composerBasedRules as [$rectorClass, $configuration, $packageName, $versionConstraint]) {
+            $rectorConfig->ruleWithConfigurationComposerVersionBound(
+                $rectorClass,
+                $configuration,
+                $packageName,
+                $versionConstraint
+            );
         }
 
         if ($this->fileExtensions !== []) {
@@ -748,6 +762,24 @@ final class RectorConfigBuilder
     public function withConfiguredRule(string $rectorClass, array $configuration): self
     {
         $this->rulesWithConfigurations[$rectorClass][] = $configuration;
+
+        return $this;
+    }
+
+    /**
+     * Register the rule configuration only if the package version installed in the analysed project
+     * satisfies the version constraint, e.g. a class renamed in a specific framework version.
+     *
+     * @param class-string<ConfigurableRectorInterface> $rectorClass
+     * @param mixed[] $configuration
+     */
+    public function withComposerBasedRule(
+        string $rectorClass,
+        array $configuration,
+        string $packageName,
+        string $versionConstraint
+    ): self {
+        $this->composerBasedRules[] = [$rectorClass, $configuration, $packageName, $versionConstraint];
 
         return $this;
     }
