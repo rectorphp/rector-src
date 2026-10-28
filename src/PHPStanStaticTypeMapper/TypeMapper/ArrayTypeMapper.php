@@ -20,8 +20,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
-use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
@@ -108,7 +106,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
         }
 
         $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($itemType);
-        return new SpacingAwareArrayTypeNode($itemTypeNode);
+        return new ArrayTypeNode($itemTypeNode);
     }
 
     /**
@@ -130,10 +128,10 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
         $arrayTypeNodes = [];
         foreach ($unionTypeNode->types as $unionedTypeNode) {
-            $arrayTypeNodes[] = new SpacingAwareArrayTypeNode($unionedTypeNode);
+            $arrayTypeNodes[] = new ArrayTypeNode($unionedTypeNode);
         }
 
-        return new BracketsAwareUnionTypeNode($arrayTypeNodes);
+        return new UnionTypeNode($arrayTypeNodes);
     }
 
     private function hasOnlySameGenericTypes(UnionTypeNode $unionTypeNode): bool
@@ -176,7 +174,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
         return $this->splitUnionItemType($arrayTypeNode);
     }
 
-    private function createArrayTypeNodeFromUnionType(UnionType $unionType): SpacingAwareArrayTypeNode
+    private function createArrayTypeNodeFromUnionType(UnionType $unionType): ArrayTypeNode
     {
         $unionedArrayType = [];
         foreach ($unionType->getTypes() as $unionedType) {
@@ -185,12 +183,12 @@ final class ArrayTypeMapper implements TypeMapperInterface
         }
 
         if (count($unionedArrayType) > 1) {
-            return new SpacingAwareArrayTypeNode(new BracketsAwareUnionTypeNode($unionedArrayType));
+            return new ArrayTypeNode(new UnionTypeNode($unionedArrayType));
         }
 
         /** @var TypeNode $arrayType */
         $arrayType = array_shift($unionedArrayType);
-        return new SpacingAwareArrayTypeNode($arrayType);
+        return new ArrayTypeNode($arrayType);
     }
 
     private function isGenericArrayCandidate(ArrayType $arrayType): bool
@@ -249,7 +247,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
         $keyTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType->getKeyType());
         $itemTypeNode = $this->createGenericArrayValueTypeNode($itemType);
 
-        if ($itemTypeNode instanceof BracketsAwareUnionTypeNode && $this->isPairClassTooDetailed($itemType)) {
+        if ($itemTypeNode instanceof UnionTypeNode && $this->isPairClassTooDetailed($itemType)) {
             $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(new ClassStringType());
         }
 
