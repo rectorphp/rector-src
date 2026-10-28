@@ -11,10 +11,10 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\UnionType;
 use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -26,7 +26,7 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 final class ReturnNullableTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly UnionTypeMapper $unionTypeMapper,
+        private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReturnTypeInferer $returnTypeInferer,
     ) {
@@ -108,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->unionTypeMapper->mapToPhpParserNode($inferReturnType, TypeKind::RETURN);
+        $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferReturnType, TypeKind::RETURN);
         if (! $returnType instanceof Node) {
             return null;
         }

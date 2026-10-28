@@ -4,27 +4,18 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node;
-use PhpParser\Node\Identifier;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
-use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<ClassStringType>
  */
 final readonly class ClassStringTypeMapper implements TypeMapperInterface
 {
-    public function __construct(
-        private PhpVersionProvider $phpVersionProvider
-    ) {
-    }
-
     /**
      * @return array<class-string<Type>>
      */
@@ -53,17 +44,5 @@ final readonly class ClassStringTypeMapper implements TypeMapperInterface
         });
 
         return $type->toPhpDocNode();
-    }
-
-    /**
-     * @param ClassStringType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
-    {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_70)) {
-            return null;
-        }
-
-        return new Identifier('string');
     }
 }

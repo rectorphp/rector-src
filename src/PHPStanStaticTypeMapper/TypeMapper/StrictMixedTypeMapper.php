@@ -4,28 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node;
-use PhpParser\Node\Identifier;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\StrictMixedType;
 use PHPStan\Type\Type;
-use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<StrictMixedType>
  */
 final readonly class StrictMixedTypeMapper implements TypeMapperInterface
 {
-    private const string MIXED = 'mixed';
-
-    public function __construct(
-        private PhpVersionProvider $phpVersionProvider
-    ) {
-    }
-
     /**
      * @return array<class-string<Type>>
      */
@@ -40,21 +28,5 @@ final readonly class StrictMixedTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return $type->toPhpDocNode();
-    }
-
-    /**
-     * @param StrictMixedType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
-    {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_80)) {
-            return null;
-        }
-
-        if ($typeKind === TypeKind::UNION) {
-            return null;
-        }
-
-        return new Identifier(self::MIXED);
     }
 }

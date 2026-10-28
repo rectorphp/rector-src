@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Accessory\HasMethodType;
 use PHPStan\Type\Type;
@@ -15,11 +14,6 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
  */
 final readonly class HasMethodTypeMapper implements TypeMapperInterface
 {
-    public function __construct(
-        private ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper
-    ) {
-    }
-
     /**
      * @return array<class-string<Type>>
      */
@@ -34,13 +28,5 @@ final readonly class HasMethodTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return $type->toPhpDocNode();
-    }
-
-    /**
-     * @param HasMethodType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
-    {
-        return $this->objectWithoutClassTypeMapper->mapToPhpParserNode($type, $typeKind);
     }
 }

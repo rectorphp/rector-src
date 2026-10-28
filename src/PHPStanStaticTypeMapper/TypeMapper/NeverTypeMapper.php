@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
@@ -29,13 +28,5 @@ final class NeverTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return $type->toPhpDocNode();
-    }
-
-    /**
-     * @param NeverType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
-    {
-        return null;
     }
 }

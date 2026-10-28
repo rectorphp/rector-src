@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\StaticTypeMapper\ValueObject\Type;
 
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\RelativeNameNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\IsSuperTypeOfResult;
+use PHPStan\Type\NativeTypePosition;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 
@@ -57,6 +60,11 @@ final class ShortenedObjectType extends ObjectType
         }
 
         return false;
+    }
+
+    public function toNativePhpTypeNode(NativeTypePosition $position): ?Name
+    {
+        return $position->isClassNameAllowed() ? new FullyQualified($this->fullyQualifiedName) : null;
     }
 
     public function toPhpDocNode(): TypeNode

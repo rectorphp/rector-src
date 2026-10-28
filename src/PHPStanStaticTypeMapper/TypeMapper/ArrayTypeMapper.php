@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node\Identifier;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -61,14 +60,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return $this->splitUnionItemType($this->createArrayTypeNode($type));
-    }
-
-    /**
-     * @param ArrayType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): Identifier
-    {
-        return new Identifier('array');
     }
 
     /**

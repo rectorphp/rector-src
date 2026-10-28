@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node\Identifier;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\Type;
@@ -29,13 +28,5 @@ final class IterableTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return $type->toPhpDocNode();
-    }
-
-    /**
-     * @param IterableType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): Identifier
-    {
-        return new Identifier('iterable');
     }
 }

@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\NonexistentParentClassType;
 use PHPStan\Type\Type;
-use Rector\Enum\ObjectReference;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 
 /**
@@ -35,13 +33,5 @@ final class NonexistentParentClassTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return $type->toPhpDocNode();
-    }
-
-    /**
-     * @param NonexistentParentClassType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): Name
-    {
-        return new Name(ObjectReference::PARENT);
     }
 }

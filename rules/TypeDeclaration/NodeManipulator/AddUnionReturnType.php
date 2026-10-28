@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 
@@ -19,7 +19,7 @@ final readonly class AddUnionReturnType
 {
     public function __construct(
         private ReturnTypeInferer $returnTypeInferer,
-        private UnionTypeMapper $unionTypeMapper,
+        private StaticTypeMapper $staticTypeMapper,
         private ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
     ) {
     }
@@ -53,7 +53,7 @@ final readonly class AddUnionReturnType
             return null;
         }
 
-        $returnType = $this->unionTypeMapper->mapToPhpParserNode($inferReturnType, TypeKind::RETURN);
+        $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferReturnType, TypeKind::RETURN);
         if (! $returnType instanceof Node) {
             return null;
         }

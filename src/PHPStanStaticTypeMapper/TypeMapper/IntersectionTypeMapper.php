@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PhpParser\Node;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Node as AstNode;
 use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
@@ -15,15 +12,10 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
-use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CallablePhpDocNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
-use Rector\ValueObject\PhpVersion;
 
 /**
  * @implements TypeMapperInterface<IntersectionType>
@@ -31,9 +23,6 @@ use Rector\ValueObject\PhpVersion;
 final readonly class IntersectionTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private PhpVersionProvider $phpVersionProvider,
-        private ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper,
-        private ObjectTypeMapper $objectTypeMapper,
         private ScalarStringToTypeMapper $scalarStringToTypeMapper,
     ) {
     }
@@ -91,55 +80,5 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
         $phpDocNodeTraverser->traverse([$typeNode]);
 
         return $typeNode;
-    }
-
-    /**
-     * @param IntersectionType $type
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
-    {
-        // accessory string types, e.g. "numeric-string&non-falsy-string", are just "string"
-        if ($type->isString()->yes()) {
-            return new Identifier('string');
-        }
-
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersion::PHP_81)) {
-            return null;
-        }
-
-        $intersectionedTypeNodes = [];
-        foreach ($type->getTypes() as $type) {
-            if ($type instanceof ObjectWithoutClassType) {
-                return $this->objectWithoutClassTypeMapper->mapToPhpParserNode($type, $typeKind);
-            }
-
-            if (! $type instanceof ObjectType) {
-                return null;
-            }
-
-            $resolvedType = $this->objectTypeMapper->mapToPhpParserNode($type, $typeKind);
-
-            if (! $resolvedType instanceof FullyQualified) {
-                return null;
-            }
-
-            $intersectionedTypeNodes[] = $resolvedType;
-        }
-
-        if ($intersectionedTypeNodes === []) {
-            return null;
-        }
-
-        if (count($intersectionedTypeNodes) === 1) {
-            return current($intersectionedTypeNodes);
-        }
-
-        if ($typeKind === TypeKind::UNION && ! $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersion::PHP_82
-        )) {
-            return null;
-        }
-
-        return new Node\IntersectionType($intersectionedTypeNodes);
     }
 }

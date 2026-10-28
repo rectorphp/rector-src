@@ -57,8 +57,6 @@ use Rector\PhpParser\NodeVisitor\NameAndArgNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PhpVersionConditionNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeForParameterMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\ConditionalTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
@@ -178,31 +176,12 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->afterResolving(
-            ConditionalTypeForParameterMapper::class,
-            static function (
-                ConditionalTypeForParameterMapper $conditionalTypeForParameterMapper
-            ) use ($rectorConfig): void {
-                $phpStanStaticTypeMapper = $rectorConfig->make(PHPStanStaticTypeMapper::class);
-                $conditionalTypeForParameterMapper->autowire($phpStanStaticTypeMapper);
-            }
-        );
-
-        $rectorConfig->afterResolving(
-            ConditionalTypeMapper::class,
-            static function (ConditionalTypeMapper $conditionalTypeMapper) use ($rectorConfig): void {
-                $phpStanStaticTypeMapper = $rectorConfig->make(PHPStanStaticTypeMapper::class);
-                $conditionalTypeMapper->autowire($phpStanStaticTypeMapper);
-            }
-        );
-
-        $rectorConfig->afterResolving(
             UnionTypeMapper::class,
             static function (UnionTypeMapper $unionTypeMapper) use ($rectorConfig): void {
                 $phpStanStaticTypeMapper = $rectorConfig->make(PHPStanStaticTypeMapper::class);
                 $unionTypeMapper->autowire($phpStanStaticTypeMapper);
             }
         );
-
     }
 
     private function registerNodeNameResolvers(RectorConfig $rectorConfig): void

@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper;
 
-use PhpParser\Node\ComplexType;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use Rector\Exception\NotImplementedYetException;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Webmozart\Assert\Assert;
 
 final readonly class PHPStanStaticTypeMapper
@@ -33,19 +29,6 @@ final readonly class PHPStanStaticTypeMapper
         }
 
         return $typeMapper->mapToPHPStanPhpDocTypeNode($type);
-    }
-
-    /**
-     * @param TypeKind::* $typeKind
-     */
-    public function mapToPhpParserNode(Type $type, string $typeKind): Name|ComplexType|Identifier|null
-    {
-        $typeMapper = $this->matchTypeMapper($type);
-        if (! $typeMapper instanceof TypeMapperInterface) {
-            throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
-        }
-
-        return $typeMapper->mapToPhpParserNode($type, $typeKind);
     }
 
     /**
