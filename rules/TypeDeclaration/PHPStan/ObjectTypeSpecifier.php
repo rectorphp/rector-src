@@ -64,6 +64,15 @@ final readonly class ObjectTypeSpecifier
             }
         }
 
+        // a class in the current namespace wins over a global class with the same short name
+        $namespaceName = $scope?->getNamespace();
+        if ($namespaceName !== null && ! $withPreslash && ! str_contains($className, '\\')) {
+            $namespacedClassName = $namespaceName . '\\' . $className;
+            if ($this->reflectionProvider->hasClass($namespacedClassName)) {
+                return new FullyQualifiedObjectType($namespacedClassName);
+            }
+        }
+
         if ($this->reflectionProvider->hasClass($className)) {
             // keep the scope class reflection of the current class, as it is refreshed on class change,
             // while the reflection provider one still reads the original file
