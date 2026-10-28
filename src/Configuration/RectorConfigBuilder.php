@@ -405,6 +405,8 @@ final class RectorConfigBuilder
             // this file cannot be interpreted as PHP file
             // https://www.jetbrains.com/help/phpstorm/ide-advanced-metadata.html#expected-arguments
             ->notName('.phpstorm.meta.php')
+            // the paths are part of the cache hash, so the filesystem order must not leak into it
+            ->sortByName()
         ;
 
         foreach ($rootPhpFilesFinder as $rootPhpFileFinder) {
