@@ -18,7 +18,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
@@ -57,7 +56,7 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param UnionType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type): BracketsAwareUnionTypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): UnionTypeNode
     {
         $unionTypesNodes = [];
 
@@ -77,7 +76,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             }
         }
 
-        return new BracketsAwareUnionTypeNode(array_values($unionTypesNodes));
+        return new UnionTypeNode(array_values($unionTypesNodes));
     }
 
     /**

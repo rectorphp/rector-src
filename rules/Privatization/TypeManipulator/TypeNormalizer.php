@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Privatization\TypeManipulator;
 
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\PhpDocParser\Printer\Printer;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
 use PHPStan\Type\Accessory\AccessoryNonFalsyStringType;
@@ -37,7 +38,8 @@ final readonly class TypeNormalizer
         private TypeFactory $typeFactory,
         private StaticTypeMapper $staticTypeMapper,
         private ArrayTypeLeastCommonDenominatorResolver $arrayTypeLeastCommonDenominatorResolver,
-        private TypeHasher $typeHasher
+        private TypeHasher $typeHasher,
+        private Printer $printer
     ) {
 
     }
@@ -141,7 +143,7 @@ final readonly class TypeNormalizer
                     $shortUnionedDocType = $this->resolveNameShortDocTypeNode($generalizedUnionType);
 
                     if (strlen(
-                        (string) $shortUnionedDocType
+                        $this->printer->print($shortUnionedDocType)
                     ) > self::MAX_PRINTED_UNION_DOC_LENGTH && $this->avoidPrintedDocblockTrimming(
                         $generalizedUnionType
                     ) === false) {

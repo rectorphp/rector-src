@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PHPStanStaticTypeMapper\TypeMapper;
 
 use Iterator;
+use PHPStan\PhpDocParser\Printer\Printer;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
@@ -30,14 +31,14 @@ final class ArrayTypeMapperTest extends AbstractLazyTestCase
     public function testWithoutKeys(ArrayType $arrayType, string $expectedResult): void
     {
         $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType);
-        $this->assertSame($expectedResult, (string) $actualTypeNode);
+        $this->assertSame($expectedResult, new Printer()->print($actualTypeNode));
     }
 
     #[DataProvider('provideDataWithKeys')]
     public function testWithKeys(ArrayType $arrayType, string $expectedResult): void
     {
         $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType);
-        $this->assertSame($expectedResult, (string) $actualTypeNode);
+        $this->assertSame($expectedResult, new Printer()->print($actualTypeNode));
     }
 
     /**
