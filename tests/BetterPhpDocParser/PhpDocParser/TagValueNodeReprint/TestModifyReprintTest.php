@@ -6,6 +6,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Nette\Utils\FileSystem;
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -65,6 +66,36 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
         $this->assertSame($expectedDocContent, $printedPhpDocInfo);
+    }
+
+    public function testIntegerKeys(): void
+    {
+        $phpDocInfo = $this->parseFileAndGetFirstNodeOfType(<<<'PHP'
+<?php
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\DiscriminatorMap({1="First", 5="Second"})
+ */
+final class SomeEntity
+{
+}
+PHP
+            , Class_::class);
+
+        $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass('Doctrine\ORM\Mapping\DiscriminatorMap');
+        $this->assertInstanceOf(DoctrineAnnotationTagValueNode::class, $doctrineAnnotationTagValueNode);
+
+        $curlyListNode = $doctrineAnnotationTagValueNode->values[0]->value;
+        $this->assertInstanceOf(CurlyListNode::class, $curlyListNode);
+        $curlyListNode->values[] = new ArrayItemNode(new StringNode('Third'), 7);
+        $doctrineAnnotationTagValueNode->markAsChanged();
+
+        $this->assertSame(
+            "/**\n * @ORM\DiscriminatorMap({1=\"First\", 5=\"Second\", 7=\"Third\"})\n */",
+            $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo)
+        );
     }
 
     /**

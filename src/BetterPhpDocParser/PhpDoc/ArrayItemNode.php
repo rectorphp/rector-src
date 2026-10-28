@@ -22,7 +22,7 @@ final class ArrayItemNode implements PhpDocTagValueNode, Stringable
     {
         $value = '';
 
-        if ($this->key !== null && ! is_int($this->key)) {
+        if ($this->key !== null) {
             $value .= $this->key . '=';
         }
 
