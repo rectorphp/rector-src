@@ -202,7 +202,19 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         PhpDocNode $phpDocNode,
         Node $currentPhpNode
     ): void {
+        $incompleteAnnotationContent = null;
+
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
+            // the next children are the rest of an incomplete annotation, e.g. its nested annotations; keep them
+            if ($incompleteAnnotationContent !== null) {
+                $incompleteAnnotationContent .= "\n" . $phpDocChildNode;
+                if ($this->isClosedContent($incompleteAnnotationContent)) {
+                    $incompleteAnnotationContent = null;
+                }
+
+                continue;
+            }
+
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
                 $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
@@ -215,6 +227,12 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
             // single quoted got invalid tag, keep process
             if ($phpDocChildNode->value instanceof InvalidTagValueNode) {
+                // the value ends before a nested annotation on the next line
+                if (! $this->isClosedContent($phpDocChildNode->value->value)) {
+                    $incompleteAnnotationContent = $phpDocChildNode->value->value;
+                    continue;
+                }
+
                 $name = ltrim($phpDocChildNode->name, '@');
 
                 $values = $phpDocChildNode->value->value;
