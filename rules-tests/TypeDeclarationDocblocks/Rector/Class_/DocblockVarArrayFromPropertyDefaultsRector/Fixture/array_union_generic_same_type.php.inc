@@ -25,7 +25,7 @@ use stdClass;
 class ArrayUnionGenericSameType
 {
     /**
-     * @var array<int, class-string<\stdClass>|class-string<\DateTime>>
+     * @var array<class-string<\DateTime>|class-string<\stdClass>>
      */
     private array $dependencies = [
         stdClass::class,

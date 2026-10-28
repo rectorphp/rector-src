@@ -55,9 +55,6 @@ use Rector\PhpParser\NodeVisitor\DefaultValueNodeVisitor;
 use Rector\PhpParser\NodeVisitor\LocalVariableScopeNodeVisitor;
 use Rector\PhpParser\NodeVisitor\NameAndArgNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PhpVersionConditionNodeVisitor;
-use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
 use Symfony\Component\Console\Application;
@@ -102,7 +99,6 @@ final class LazyContainerFactory
         $this->registerConsole($rectorConfig);
         $this->registerFileProcessing($rectorConfig);
         $this->registerCachingAndResettables($rectorConfig);
-        $this->registerTypeMappers($rectorConfig);
         $this->registerNodeNameResolvers($rectorConfig);
         $this->registerRectorAutowiring($rectorConfig);
         $this->registerTaggedServices($rectorConfig);
@@ -165,25 +161,6 @@ final class LazyContainerFactory
         });
     }
 
-    private function registerTypeMappers(RectorConfig $rectorConfig): void
-    {
-        // tagged services
-        $rectorConfig->afterResolving(
-            ArrayTypeMapper::class,
-            static function (ArrayTypeMapper $arrayTypeMapper) use ($rectorConfig): void {
-                $arrayTypeMapper->autowire($rectorConfig->make(PHPStanStaticTypeMapper::class));
-            }
-        );
-
-        $rectorConfig->afterResolving(
-            UnionTypeMapper::class,
-            static function (UnionTypeMapper $unionTypeMapper) use ($rectorConfig): void {
-                $phpStanStaticTypeMapper = $rectorConfig->make(PHPStanStaticTypeMapper::class);
-                $unionTypeMapper->autowire($phpStanStaticTypeMapper);
-            }
-        );
-    }
-
     private function registerNodeNameResolvers(RectorConfig $rectorConfig): void
     {
         // node name resolvers
@@ -216,7 +193,6 @@ final class LazyContainerFactory
         // PHP 8.0 attributes
         $rectorConfig->autodiscover(__DIR__ . '/../PhpAttribute/AnnotationToAttributeMapper');
 
-        $rectorConfig->autodiscover(__DIR__ . '/../PHPStanStaticTypeMapper/TypeMapper');
         $rectorConfig->autodiscover(__DIR__ . '/../StaticTypeMapper/PhpDocParser');
         $rectorConfig->autodiscover(__DIR__ . '/../NodeNameResolver/NodeNameResolver');
         $rectorConfig->autodiscover(__DIR__ . '/../NodeTypeResolver/NodeTypeResolver');

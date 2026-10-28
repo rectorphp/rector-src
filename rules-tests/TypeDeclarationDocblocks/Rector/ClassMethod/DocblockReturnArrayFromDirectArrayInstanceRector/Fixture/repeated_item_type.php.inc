@@ -44,7 +44,7 @@ final class RepeatedItemType
     ) {}
 
     /**
-     * @return array<string, string|array<string, string|int>>
+     * @return array<string, array<string, int|string>|string>
      */
     public function toRequestPayload(): array
     {

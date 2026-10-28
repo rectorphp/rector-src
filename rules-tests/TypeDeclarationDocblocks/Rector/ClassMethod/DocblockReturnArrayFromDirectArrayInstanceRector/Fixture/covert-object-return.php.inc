@@ -26,7 +26,7 @@ final class CoverObjectReturn
     private ?\Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Source\SomeObjectInDirectArray $item = null;
 
     /**
-     * @return array<string, \Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Source\SomeObjectInDirectArray|int|null>
+     * @return array<string, int|\Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockReturnArrayFromDirectArrayInstanceRector\Source\SomeObjectInDirectArray|null>
      */
     public function toArray(): array
     {

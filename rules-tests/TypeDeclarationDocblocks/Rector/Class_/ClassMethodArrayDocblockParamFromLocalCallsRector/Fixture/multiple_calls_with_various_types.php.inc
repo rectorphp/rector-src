@@ -30,7 +30,7 @@ final class MultipleCallsWithVariousTypes
     }
 
     /**
-     * @param string[]|int[] $items
+     * @param int[]|string[] $items
      */
     private function run(array $items)
     {
