@@ -69,6 +69,10 @@ final readonly class ClassNameImportSkipper
      */
     public function shouldSkipName(FullyQualified $fullyQualified, array $uses): bool
     {
+        if ($this->isPartiallyQualifiedNameToKeep($fullyQualified)) {
+            return true;
+        }
+
         if (substr_count($fullyQualified->toCodeString(), '\\') === 1) {
             return $this->isFunctionOrConstantImport($fullyQualified);
         }
@@ -97,6 +101,20 @@ final readonly class ClassNameImportSkipper
         }
 
         return false;
+    }
+
+    private function isPartiallyQualifiedNameToKeep(FullyQualified $fullyQualified): bool
+    {
+        $originalName = $fullyQualified->getAttribute(AttributeKey::ORIGINAL_NAME);
+        if (! $originalName instanceof Name) {
+            return false;
+        }
+
+        if (! $originalName->isQualified() && ! $originalName->isRelative()) {
+            return false;
+        }
+
+        return ! SimpleParameterProvider::provideBoolParameter(Option::IMPORT_PARTIALLY_QUALIFIED_NAMES);
     }
 
     private function isFunctionOrConstantImport(FullyQualified $fullyQualified): bool
