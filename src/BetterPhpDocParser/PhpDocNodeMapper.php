@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser;
 
 use PHPStan\PhpDocParser\Ast\NodeTraverser;
+use PHPStan\PhpDocParser\Ast\NodeVisitor\CloningVisitor;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CloningPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVisitor;
 use Webmozart\Assert\Assert;
 
@@ -18,11 +18,10 @@ final readonly class PhpDocNodeMapper
     private NodeTraverser $phpDocNodeTraverser;
 
     public function __construct(
-        CloningPhpDocNodeVisitor $cloningPhpDocNodeVisitor,
         ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor,
     ) {
         $this->phpDocNodeTraverser = new NodeTraverser([
-            $cloningPhpDocNodeVisitor,
+            new CloningVisitor(),
             $parentConnectingPhpDocNodeVisitor,
         ]);
     }
