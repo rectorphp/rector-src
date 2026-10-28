@@ -27,6 +27,22 @@ use Rector\ValueObject\Application\File;
 
 final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
 {
+    /**
+     * @var string[]
+     */
+    private const array PHPDOC_KEYWORD_CLASS_NAMES = [
+        'boolean',
+        'callback',
+        'double',
+        'integer',
+        'noreturn',
+        'number',
+        'numeric',
+        'real',
+        'resource',
+        'scalar',
+    ];
+
     private ?PhpParserNode $currentPhpParserNode = null;
 
     private bool $hasChanged = false;
@@ -75,6 +91,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
         $staticType = $this->identifierPhpDocTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
         $staticType = $this->resolveFullyQualified($staticType);
         if (! $staticType instanceof FullyQualifiedObjectType) {
+            return null;
+        }
+
+        // keep FQN, as the short name would read as a PHPDoc keyword type
+        if (in_array($staticType->getShortNameLowered(), self::PHPDOC_KEYWORD_CLASS_NAMES, true)) {
             return null;
         }
 
