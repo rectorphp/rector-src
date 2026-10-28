@@ -94,4 +94,42 @@ final class RectorConfigTest extends AbstractLazyTestCase
         $registeredRectorRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
         $this->assertNotContains(RenamePropertyRector::class, $registeredRectorRules);
     }
+
+    public function testWithComposerBasedRuleOnSatisfiedConstraint(): void
+    {
+        $rectorConfig = $this->getContainer();
+
+        $rectorConfigBuilder = RectorConfig::configure()
+            ->withComposerBasedRule(
+                RenameClassRector::class,
+                [
+                    'SomeOldClass' => 'SomeNewClass',
+                ],
+                'phpunit/phpunit',
+                '>=9.0'
+            );
+
+        $rectorConfigBuilder($rectorConfig);
+
+        $registeredRectorRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
+        $this->assertContains(RenameClassRector::class, $registeredRectorRules);
+    }
+
+    public function testWithComposerBasedRuleOnUnsatisfiedConstraint(): void
+    {
+        $rectorConfig = $this->getContainer();
+
+        $rectorConfigBuilder = RectorConfig::configure()
+            ->withComposerBasedRule(
+                RenameMethodRector::class,
+                [new MethodCallRename('SomeClass', 'oldMethod', 'newMethod')],
+                'phpunit/phpunit',
+                '<9.0'
+            );
+
+        $rectorConfigBuilder($rectorConfig);
+
+        $registeredRectorRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
+        $this->assertNotContains(RenameMethodRector::class, $registeredRectorRules);
+    }
 }
