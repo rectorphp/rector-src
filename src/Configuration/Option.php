@@ -57,6 +57,11 @@ final class Option
     public const string IMPORT_SHORT_CLASSES = 'import_short_classes';
 
     /**
+     * @internal Use @see \Rector\Config\RectorConfig::importPartiallyQualifiedNames() instead
+     */
+    public const string IMPORT_PARTIALLY_QUALIFIED_NAMES = 'import_partially_qualified_names';
+
+    /**
      * @internal Use @see \Rector\Config\RectorConfig::symfonyContainerXml() instead
      */
     public const string SYMFONY_CONTAINER_XML_PATH_PARAMETER = 'symfony_container_xml_path';
