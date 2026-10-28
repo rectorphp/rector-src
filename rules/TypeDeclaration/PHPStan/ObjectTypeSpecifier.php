@@ -66,7 +66,8 @@ final readonly class ObjectTypeSpecifier
 
         // a class in the current namespace wins over a global class with the same short name
         $namespaceName = $scope?->getNamespace();
-        if ($namespaceName !== null && ! $withPreslash && ! str_contains($className, '\\')) {
+        $isUnqualified = ! $withPreslash && ! str_contains($className, '\\');
+        if ($namespaceName !== null && $isUnqualified) {
             $namespacedClassName = $namespaceName . '\\' . $className;
             if ($this->reflectionProvider->hasClass($namespacedClassName)) {
                 return new FullyQualifiedObjectType($namespacedClassName);
@@ -85,10 +86,8 @@ final readonly class ObjectTypeSpecifier
         }
 
         // probably in same namespace
-        $namespaceName = null;
         if ($scope instanceof Scope) {
-            $namespaceName = $scope->getNamespace();
-            if ($namespaceName !== null) {
+            if ($namespaceName !== null && ! $isUnqualified) {
                 $newClassName = $namespaceName . '\\' . $className;
                 if ($this->reflectionProvider->hasClass($newClassName)) {
                     return new FullyQualifiedObjectType($newClassName);
