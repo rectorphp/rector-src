@@ -10,7 +10,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src',
     ]);
 
-    // a persistent worker must finish all chunks, including workloads larger than the former respawn budget
+    // a single worker with more single-file jobs than its chunk budget (MAX_CHUNKS_PER_WORKER + 1) has to be respawned mid-run
     $rectorConfig->parallel(maxNumberOfProcess: 1, jobSize: 1);
 
     $rectorConfig->rules([
