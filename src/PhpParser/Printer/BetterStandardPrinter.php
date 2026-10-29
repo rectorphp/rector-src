@@ -277,7 +277,7 @@ final class BetterStandardPrinter extends Standard
      * Returns the token position right after the removed clause, or null when not handled.
      *
      * @param mixed[] $nodes
-     * @param mixed[] $origNodes
+     * @param array<int, mixed> $origNodes
      */
     private function resolveEmptiedNodeListEndPos(
         array $nodes,
