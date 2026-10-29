@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeTypeResolver\PHPStan\Scope;
 
+use PHPStan\Reflection\ClassReflection;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Identifier;
@@ -33,7 +34,7 @@ final class AstClassReflectionFactoryTest extends AbstractLazyTestCase
         $class->namespacedName = new Name('ChangingClass');
 
         $reflection = $factory->create($class, $scope);
-        $this->assertNotNull($reflection);
+        $this->assertInstanceOf(ClassReflection::class, $reflection);
         $this->assertSame($reflection, $factory->create($class, $scope));
         $this->assertFalse($reflection->getNativeReflection()->getMethod('run')->isGenerator());
 
