@@ -34,7 +34,7 @@ final class RectorConfigBuilderRootFilesTest extends TestCase
         $temporaryDirectory = realpath(sys_get_temp_dir());
         Assert::string($temporaryDirectory);
 
-        $this->projectDirectory = $temporaryDirectory . '/' . uniqid('rector_root_files_');
+        $this->projectDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . uniqid('rector_root_files_');
         foreach (self::ROOT_FILE_NAMES as $rootFileName) {
             FileSystem::write($this->projectDirectory . '/' . $rootFileName, '<?php' . PHP_EOL, null);
         }
@@ -55,10 +55,10 @@ final class RectorConfigBuilderRootFilesTest extends TestCase
 
         // the paths are part of the cache invalidation hash, so their order has to be stable across machines
         $expectedPaths = [
-            $this->projectDirectory . '/.php-cs-fixer.dist.php',
-            $this->projectDirectory . '/deploy.php',
-            $this->projectDirectory . '/ecs.php',
-            $this->projectDirectory . '/rector.php',
+            $this->projectDirectory . DIRECTORY_SEPARATOR . '.php-cs-fixer.dist.php',
+            $this->projectDirectory . DIRECTORY_SEPARATOR . 'deploy.php',
+            $this->projectDirectory . DIRECTORY_SEPARATOR . 'ecs.php',
+            $this->projectDirectory . DIRECTORY_SEPARATOR . 'rector.php',
         ];
 
         $this->assertSame($expectedPaths, $this->resolvePaths($rectorConfigBuilder));
