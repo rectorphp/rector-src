@@ -26,7 +26,6 @@ use PHPStan\Reflection\ClassReflectionFactory;
  * so it does not know about members a rule added or removed; build it from the current class node instead
  *
  * @see \PHPStan\Analyser\StmtHandler\ClassLikeHandler::createAstClassReflection()
- * @see \Rector\Tests\NodeTypeResolver\PHPStan\Scope\AstClassReflectionFactoryTest
  */
 final class AstClassReflectionFactory
 {
