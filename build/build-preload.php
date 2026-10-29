@@ -119,6 +119,8 @@ CODE_SAMPLE;
         'ConstExprNode.php',
         'PhpDocTagValueNode.php',
         'TypeNode.php',
+        'NameNode.php',
+        'NameNodeTrait.php',
     ];
 
     /**
