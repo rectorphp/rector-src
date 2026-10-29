@@ -11,12 +11,16 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\CloningVisitor;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Parser\RectorParser;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -47,6 +51,32 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
             __DIR__ . '/Source/expected_code_with_non_stmt_placed_nested_comment.php.inc',
             $printed
         );
+    }
+
+    public function testKeepBlankLinesBetweenMethodsWhenImplementsRemoved(): void
+    {
+        $fileContent = <<<'PHP'
+<?php
+
+class SomeClass implements \SomeInterface
+{
+    public function first()
+    {
+    }
+
+    public function second()
+    {
+    }
+}
+PHP;
+
+        $printed = $this->printWithRemovedImplements($fileContent);
+
+        // the interface is gone...
+        $this->assertStringNotContainsString('implements', $printed);
+
+        // ...but the blank line between methods is kept
+        $this->assertStringContainsString("    }\n\n    public function second()", $printed);
     }
 
     public function testStringWithAddedComment(): void
@@ -103,6 +133,26 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
 
         $printed = $this->betterStandardPrinter->print($outerCall);
         $this->assertSame('$foo->bar()->baz()', $printed);
+    }
+
+    private function printWithRemovedImplements(string $fileContent): string
+    {
+        $rectorParser = $this->make(RectorParser::class);
+        $stmtsAndTokens = $rectorParser->parseFileContentToStmtsAndTokens($fileContent);
+
+        $oldStmts = $stmtsAndTokens->getStmts();
+        $tokens = $stmtsAndTokens->getTokens();
+
+        $nodeTraverser = new NodeTraverser(new CloningVisitor());
+        $newStmts = $nodeTraverser->traverse($oldStmts);
+
+        foreach ($newStmts as $newStmt) {
+            if ($newStmt instanceof Class_) {
+                $newStmt->implements = [];
+            }
+        }
+
+        return $this->betterStandardPrinter->printFormatPreserving($newStmts, $oldStmts, $tokens);
     }
 
     /**
