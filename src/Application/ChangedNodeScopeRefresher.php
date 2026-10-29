@@ -116,13 +116,14 @@ final readonly class ChangedNodeScopeRefresher
             return $mutatingScope;
         }
 
-        $classReflection = $this->astClassReflectionFactory->create($classLike, $mutatingScope);
-        if (! $classReflection instanceof ClassReflection) {
+        $currentClassReflection = $mutatingScope->getClassReflection();
+        $className = (string) ($classLike->namespacedName ?? $classLike->name);
+        if (! $currentClassReflection instanceof ClassReflection || $currentClassReflection->getName() !== $className) {
             return $mutatingScope;
         }
 
-        $currentClassReflection = $mutatingScope->getClassReflection();
-        if (! $currentClassReflection instanceof ClassReflection || $currentClassReflection->getName() !== $classReflection->getName()) {
+        $classReflection = $this->astClassReflectionFactory->create($classLike, $mutatingScope);
+        if (! $classReflection instanceof ClassReflection) {
             return $mutatingScope;
         }
 

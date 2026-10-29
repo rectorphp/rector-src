@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\BetterReflection\Reflection\Adapter\ReflectionClass as ReflectionClassAdapter;
 use PHPStan\BetterReflection\Reflection\Adapter\ReflectionEnum as ReflectionEnumAdapter;
@@ -19,7 +20,6 @@ use PHPStan\BetterReflection\SourceLocator\Ast\Strategy\NodeToReflection;
 use PHPStan\BetterReflection\SourceLocator\Located\LocatedSource;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ClassReflectionFactory;
-use Rector\PhpParser\Printer\BetterStandardPrinter;
 
 /**
  * The class reflection from the reflection provider is built from the original file,
@@ -39,7 +39,7 @@ final class AstClassReflectionFactory
     public function __construct(
         private readonly Reflector $reflector,
         private readonly ClassReflectionFactory $classReflectionFactory,
-        private readonly BetterStandardPrinter $betterStandardPrinter,
+        private readonly Standard $standardPrinter,
     ) {
     }
 
@@ -51,7 +51,8 @@ final class AstClassReflectionFactory
         // the class node is refreshed on every change in it, while its members often stay the same between passes;
         // reuse the reflection built from the same content, so its cache key and member caches are not created again
         $classKey = $filePath . ':' . $namespace . '\\' . $classLike->name;
-        $contentHash = hash('xxh128', $this->betterStandardPrinter->print($classLike));
+        // Hashing needs deterministic content, without Rector's output formatting and AST adjustments.
+        $contentHash = hash('xxh128', $this->standardPrinter->prettyPrint([$classLike]));
 
         if (isset($this->classReflectionsByClass[$classKey]) && $this->classReflectionsByClass[$classKey][0] === $contentHash) {
             return $this->classReflectionsByClass[$classKey][1];
