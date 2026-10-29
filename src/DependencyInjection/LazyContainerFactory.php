@@ -18,9 +18,6 @@ use Rector\Application\FileProcessor;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Application\RectorRegistry;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
-use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
-use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
-use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\PlainValueParser;
 use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\Config\RectorConfig;
@@ -273,16 +270,6 @@ final class LazyContainerFactory
             ) use ($rectorConfig): void {
                 $annotationToAttributeMapper = $rectorConfig->make(AnnotationToAttributeMapper::class);
                 $arrayItemNodeAnnotationToAttributeMapper->autowire($annotationToAttributeMapper);
-            }
-        );
-
-        $rectorConfig->afterResolving(
-            PlainValueParser::class,
-            static function (PlainValueParser $plainValueParser) use ($rectorConfig): void {
-                $plainValueParser->autowire(
-                    $rectorConfig->make(StaticDoctrineAnnotationParser::class),
-                    $rectorConfig->make(ArrayParser::class),
-                );
             }
         );
 

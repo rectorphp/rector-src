@@ -300,7 +300,6 @@ parameters:
             message: '#Function "property_exists\(\)" cannot be used/left in the code#'
             paths:
                 - src/NodeNameResolver/NodeNameResolver.php
-                - src/BetterPhpDocParser/NodeDecorator/DoctrineAnnotationDecorator.php
 
         -
             identifier: symplify.forbiddenFuncCall
@@ -361,8 +360,3 @@ parameters:
             paths:
                 - tests/Issues/
                 - tests/PhpParser/NodeTraverser/StopTraverseOnTypeChange/Class_
-
-        # known types
-        -
-            identifier: varTag.nativeType
-            path: src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser.php

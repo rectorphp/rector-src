@@ -14,8 +14,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\InvalidTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\Enum\ClassName;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -31,7 +33,8 @@ final readonly class PromotedPropertyCandidateResolver
         private NodeComparator $nodeComparator,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private PhpDocInfoFactory $phpDocInfoFactory,
-        private PhpAttributeAnalyzer $phpAttributeAnalyzer
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer,
+        private ClassAnnotationMatcher $classAnnotationMatcher
     ) {
     }
 
@@ -79,11 +82,31 @@ final readonly class PromotedPropertyCandidateResolver
     private function hasModelTypeCheck(Class_|Property $node, string $modelType): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if ($phpDocInfo instanceof PhpDocInfo && $phpDocInfo->hasByAnnotationClass($modelType)) {
+        if ($phpDocInfo instanceof PhpDocInfo && ($phpDocInfo->hasByAnnotationClass(
+            $modelType
+        ) || $this->hasInvalidAnnotation($phpDocInfo, $node, $modelType))) {
             return true;
         }
 
         return $this->phpAttributeAnalyzer->hasPhpAttribute($node, $modelType);
+    }
+
+    /**
+     * An annotation with arguments that are not valid, e.g. @JMS\Type('string)
+     */
+    private function hasInvalidAnnotation(PhpDocInfo $phpDocInfo, Class_|Property $node, string $modelType): bool
+    {
+        foreach ($phpDocInfo->getPhpDocNode()->getTags() as $phpDocTagNode) {
+            if (! $phpDocTagNode->value instanceof InvalidTagValueNode) {
+                continue;
+            }
+
+            if ($this->classAnnotationMatcher->resolveTagFullyQualifiedName($phpDocTagNode->name, $node) === $modelType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function matchPropertyPromotionCandidate(
