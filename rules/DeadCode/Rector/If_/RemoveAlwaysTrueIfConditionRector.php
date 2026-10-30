@@ -109,6 +109,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): int|null|array|If_
     {
+        // unwrapping stmts in a PHP + HTML file would drop the close-tag transition and break the file
+        if ($this->getFile()->containsHTML()) {
+            return null;
+        }
+
         if ($node->cond instanceof BooleanAnd) {
             return $this->refactorIfWithBooleanAnd($node);
         }
