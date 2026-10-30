@@ -6,8 +6,8 @@ namespace Rector\Util;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use Rector\Console\Style\RectorStyle;
 use Rector\CustomRules\SimpleNodeDumper;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class NodePrinter
 {
@@ -22,7 +22,7 @@ final readonly class NodePrinter
     private const string PROPERTY_KEY_REGEX = '#(?<key>[\w\d]+)\:#';
 
     public function __construct(
-        private SymfonyStyle $symfonyStyle
+        private RectorStyle $rectorStyle
     ) {
     }
 
@@ -35,9 +35,9 @@ final readonly class NodePrinter
 
         // colorize
         $colorContents = $this->addConsoleColors($dumpedNodesContents);
-        $this->symfonyStyle->writeln($colorContents);
+        $this->rectorStyle->writeln($colorContents);
 
-        $this->symfonyStyle->newLine();
+        $this->rectorStyle->newLine();
     }
 
     private function addConsoleColors(string $contents): string

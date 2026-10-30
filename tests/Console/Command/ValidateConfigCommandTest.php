@@ -10,6 +10,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Console\Command\ValidateConfigCommand;
 use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
@@ -18,14 +19,10 @@ use Rector\Reporting\UnusedSkipResolver;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Console\Command\Source\DeprecatedFixtureRule;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Tester\CommandTester;
 
 final class ValidateConfigCommandTest extends AbstractLazyTestCase
 {
-    private CommandTester $commandTester;
+    private ValidateConfigCommand $validateConfigCommand;
 
     protected function setUp(): void
     {
@@ -45,21 +42,19 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
             SimpleParameterProvider::setParameter($optionName, []);
         }
 
-        $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new BufferedOutput());
+        $rectorStyle = new RectorStyleFactory()->create();
 
-        $validateConfigCommand = new ValidateConfigCommand(
-            $symfonyStyle,
-            new DeprecatedRulesReporter($symfonyStyle),
+        $this->validateConfigCommand = new ValidateConfigCommand(
+            $rectorStyle,
+            new DeprecatedRulesReporter($rectorStyle),
             new MissConfigurationReporter(
-                $symfonyStyle,
+                $rectorStyle,
                 new VendorMissAnalyseGuard(),
                 $this->make(UnusedSkipResolver::class),
                 $this->make(NeededSkipVerifier::class),
             ),
             $this->make(Skipper::class),
         );
-
-        $this->commandTester = new CommandTester($validateConfigCommand);
     }
 
     protected function tearDown(): void
@@ -71,14 +66,14 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [DeprecatedFixtureRule::class]);
 
-        $this->assertSame(ExitCode::FAILURE, $this->commandTester->execute([]));
+        $this->assertSame(ExitCode::FAILURE, $this->validateConfigCommand->run());
     }
 
     public function testSucceedsOnCleanConfig(): void
     {
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [OrdSingleByteRector::class]);
 
-        $this->assertSame(ExitCode::SUCCESS, $this->commandTester->execute([]));
+        $this->assertSame(ExitCode::SUCCESS, $this->validateConfigCommand->run());
     }
 
     public function testJsonOutputOnCleanConfig(): void
@@ -86,9 +81,7 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [OrdSingleByteRector::class]);
 
         ob_start();
-        $exitCode = $this->commandTester->execute([
-            '--output-format' => 'json',
-        ]);
+        $exitCode = $this->validateConfigCommand->run(outputFormat: 'json');
         $json = (string) ob_get_clean();
 
         $this->assertSame(ExitCode::SUCCESS, $exitCode);
@@ -103,9 +96,7 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [DeprecatedFixtureRule::class]);
 
         ob_start();
-        $exitCode = $this->commandTester->execute([
-            '--output-format' => 'json',
-        ]);
+        $exitCode = $this->validateConfigCommand->run(outputFormat: 'json');
         $json = (string) ob_get_clean();
 
         $this->assertSame(ExitCode::FAILURE, $exitCode);
