@@ -32,7 +32,7 @@ use stdClass;
 
 final class UnionMulti
 {
-    public function run(): null|\DateTime|\stdClass
+    public function run(): \DateTime|\stdClass|null
     {
         if (rand(0, 1)) {
             return null;

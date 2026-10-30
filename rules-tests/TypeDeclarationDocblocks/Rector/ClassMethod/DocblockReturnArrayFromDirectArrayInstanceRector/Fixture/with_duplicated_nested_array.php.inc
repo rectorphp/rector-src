@@ -34,7 +34,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 final class WithDuplicatedNestedArray
 {
     /**
-     * @return array<string, bool[]|int[]|string[][]>
+     * @return array<string, string[][]|bool[]|int[]>
      */
     public static function run(): iterable
     {

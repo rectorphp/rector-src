@@ -32,7 +32,7 @@ final class CoverMixedAndKnown
     }
 
     /**
-     * @param string[]|mixed[] $items
+     * @param mixed[] $items
      */
     private function run(array $items)
     {

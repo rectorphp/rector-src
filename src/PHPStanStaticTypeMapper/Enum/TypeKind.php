@@ -11,6 +11,4 @@ final class TypeKind
     public const string RETURN = 'return';
 
     public const string PARAM = 'param';
-
-    public const string UNION = 'union';
 }

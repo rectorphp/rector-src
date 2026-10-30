@@ -23,7 +23,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\DocblockVarArrayFr
 final class IntKeyInside
 {
     /**
-     * @var array<string, array<string, array<int, array<string, string|int>>>>
+     * @var array<string, array<string, array<int, array<string, int|string>>>>
      */
     private array $array = [
         'a' => [

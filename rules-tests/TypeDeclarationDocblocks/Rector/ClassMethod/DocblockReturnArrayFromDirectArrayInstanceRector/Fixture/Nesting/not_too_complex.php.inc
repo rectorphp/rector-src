@@ -26,7 +26,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 final class AvoidExtremeNesting
 {
    /**
-    * @return array<string, int|string|float>
+    * @return array<string, float|int|string>
     */
    public function run(): array
     {

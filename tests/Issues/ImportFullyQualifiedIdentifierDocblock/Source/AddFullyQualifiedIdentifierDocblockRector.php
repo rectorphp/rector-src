@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\FullyQualifiedNameNode;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\RuleDefinition;
@@ -42,7 +42,7 @@ final class AddFullyQualifiedIdentifierDocblockRector extends AbstractRector
             return null;
         }
 
-        $varTagValueNode = new VarTagValueNode(new FullyQualifiedIdentifierTypeNode('DateTime'), '', '');
+        $varTagValueNode = new VarTagValueNode(new FullyQualifiedNameNode('DateTime'), '', '');
 
         $phpDocInfo->addTagValueNode($varTagValueNode);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);

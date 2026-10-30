@@ -33,7 +33,7 @@ use stdClass;
 final class WithArrayFilterAndArrayWalk
 {
     /**
-     * @param string[]|\stdClass[] $items
+     * @param \stdClass[]|string[] $items
      */
     public function process(array $items): void
     {

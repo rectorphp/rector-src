@@ -33,7 +33,7 @@ use stdClass;
 
 final class DifferentUsage {
     /**
-     * @param \stdClass[]|\DateTime[] $items
+     * @param \DateTime[]|\stdClass[] $items
      */
     public function process(array $items): void
     {

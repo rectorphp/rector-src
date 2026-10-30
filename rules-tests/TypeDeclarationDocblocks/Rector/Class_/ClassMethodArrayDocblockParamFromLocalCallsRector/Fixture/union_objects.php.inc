@@ -42,7 +42,7 @@ final class UnionObjects
     }
 
     /**
-     * @param \Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamFromLocalCallsRector\Source\SomeReturnedObject[]|\Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamFromLocalCallsRector\Source\AnotherReturnedObject[] $items
+     * @param \Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamFromLocalCallsRector\Source\AnotherReturnedObject[]|\Rector\Tests\TypeDeclarationDocblocks\Rector\Class_\ClassMethodArrayDocblockParamFromLocalCallsRector\Source\SomeReturnedObject[] $items
      */
     private function run(array $items)
     {

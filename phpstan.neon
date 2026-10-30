@@ -284,11 +284,6 @@ parameters:
             paths:
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
 
-        # from mapper interface
-        -
-            identifier: return.unusedType
-            message: '#mapToPhpParserNode\(\) never returns PhpParser\\.* so it can be removed from the return#'
-
         # false positive
         -
             identifier: return.unusedType

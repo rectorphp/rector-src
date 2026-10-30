@@ -36,7 +36,7 @@ namespace Rector\Tests\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockRetur
 class ComplexArray
 {
    /**
-    * @return array<string, array<string, int|array<string, string>>|array<string, string|int>|bool>
+    * @return array<string, array<string, array<string, string>|int|string>|bool>
     */
    public function run(): array
     {
