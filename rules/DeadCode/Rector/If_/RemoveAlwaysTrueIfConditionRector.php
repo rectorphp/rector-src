@@ -109,17 +109,21 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): int|null|array|If_
     {
-        if ($node->cond instanceof BooleanAnd) {
-            return $this->refactorIfWithBooleanAnd($node);
-        }
-
         if ($node->else instanceof Else_) {
             return null;
         }
 
-        // just one if
+        // not just one if
         if ($node->elseifs !== []) {
             return null;
+        }
+
+        if ($this->getFile()->containsHTML()) {
+            return null;
+        }
+
+        if ($node->cond instanceof BooleanAnd) {
+            return $this->refactorIfWithBooleanAnd($node);
         }
 
         if ($this->shouldSkipExpr($node->cond)) {
