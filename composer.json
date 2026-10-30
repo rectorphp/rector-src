@@ -15,7 +15,7 @@
         "php": "^8.4",
         "clue/ndjson-react": "^1.3",
         "composer/pcre": "^3.4.0",
-        "composer/semver": "^3.5",
+        "composer/semver": "^3.6",
         "composer/xdebug-handler": "^3.0.5",
         "entropy/entropy": "^0.4.12",
         "fidry/cpu-core-counter": "^1.4",
