@@ -18,6 +18,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->removeUnusedImports(false);
 
     $rectorConfig->importShortClasses();
+    $rectorConfig->importPartiallyQualifiedNames();
     $rectorConfig->indent(' ', 4);
 
     $rectorConfig->fileExtensions(['php']);
