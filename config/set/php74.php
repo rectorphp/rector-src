@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use PhpParser\Node\Expr\Cast\Double;
+use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
 use Rector\Config\RectorConfig;
 use Rector\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector;
 use Rector\Php74\Rector\Assign\NullCoalescingOperatorRector;
@@ -43,6 +44,7 @@ return static function (RectorConfig $rectorConfig): void {
         ParenthesizeNestedTernaryRector::class,
         RestoreIncludePathToIniRestoreRector::class,
         HebrevcToNl2brHebrevRector::class,
+        ConsistentImplodeRector::class,
     ]);
 
     $rectorConfig->ruleWithConfiguration(
