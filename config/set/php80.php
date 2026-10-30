@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
-use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
@@ -45,7 +44,6 @@ return static function (RectorConfig $rectorConfig): void {
         FinalPrivateToPrivateVisibilityRector::class,
         AddParamBasedOnParentClassMethodRector::class,
         ClassOnThisVariableObjectRector::class,
-        ConsistentImplodeRector::class,
         OptionalParametersAfterRequiredRector::class,
         VersionCompareFuncCallArgumentRector::class,
         GetHeadersArgumentFormatRector::class,
