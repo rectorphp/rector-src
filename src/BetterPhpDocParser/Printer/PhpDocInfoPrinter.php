@@ -79,8 +79,6 @@ final readonly class PhpDocInfoPrinter
             return $docContent;
         }
 
-        $this->reindexArrays($phpDocNode);
-
         $originalPhpDocNode = $phpDocInfo->getOriginalPhpDocNode();
         $phpDocNode = $this->removeTrailingEmptyLines($phpDocNode, $originalPhpDocNode);
 
@@ -106,33 +104,6 @@ final readonly class PhpDocInfoPrinter
     {
         $printedPhpDocContents = $this->printFormatPreserving($phpDocInfo);
         return [new Comment($printedPhpDocContents)];
-    }
-
-    /**
-     * The printer compares lists of nodes; unset() in rules leaves gaps in the keys
-     */
-    private function reindexArrays(Node $node): void
-    {
-        foreach (get_object_vars($node) as $propertyName => $value) {
-            if ($value instanceof Node) {
-                $this->reindexArrays($value);
-                continue;
-            }
-
-            if (! is_array($value)) {
-                continue;
-            }
-
-            if (! array_is_list($value)) {
-                $node->{$propertyName} = array_values($value);
-            }
-
-            foreach ($value as $item) {
-                if ($item instanceof Node) {
-                    $this->reindexArrays($item);
-                }
-            }
-        }
     }
 
     /**

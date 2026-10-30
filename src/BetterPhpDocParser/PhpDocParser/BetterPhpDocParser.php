@@ -11,9 +11,6 @@ use PHPStan\PhpDocParser\Ast\Node as PhpDocParserNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\ParserException;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
@@ -33,17 +30,6 @@ final readonly class BetterPhpDocParser
      * @see https://regex101.com/r/JOKSmr/5
      */
     private const string MULTI_NEW_LINES_REGEX = '#(?<new_line>\r\n|\n){2,}#';
-
-    /**
-     * @var int[]
-     */
-    private const array NO_TEXT_TOKEN_TYPES = [
-        Lexer::TOKEN_OPEN_PHPDOC,
-        Lexer::TOKEN_CLOSE_PHPDOC,
-        Lexer::TOKEN_PHPDOC_EOL,
-        Lexer::TOKEN_HORIZONTAL_WS,
-        Lexer::TOKEN_END,
-    ];
 
     /**
      * @var PhpDocNodeDecoratorInterface[]
@@ -71,12 +57,7 @@ final readonly class BetterPhpDocParser
 
     public function parseWithNode(TokenIterator $tokenIterator, Node $node): PhpDocNode
     {
-        try {
-            $phpDocNode = $this->phpDocParser->parse($tokenIterator);
-        } catch (ParserException) {
-            // invalid Doctrine annotation arguments; keep the docblock as it is
-            return $this->createTextPhpDocNode($tokenIterator);
-        }
+        $phpDocNode = $this->phpDocParser->parse($tokenIterator);
 
         foreach ($phpDocNode->children as $phpDocChildNode) {
             $this->setStartAndEnd($phpDocChildNode);
@@ -119,29 +100,5 @@ final readonly class BetterPhpDocParser
             PhpDocAttributeKey::START_AND_END,
             new StartAndEnd($startIndex, max($startIndex, $endIndex + 1))
         );
-    }
-
-    /**
-     * One text node with the content between "/**" and "*\/"
-     */
-    private function createTextPhpDocNode(TokenIterator $tokenIterator): PhpDocNode
-    {
-        $tokens = $tokenIterator->getTokens();
-        $startIndex = 0;
-        $endIndex = count($tokens) - 1;
-
-        while ($startIndex < $endIndex && in_array($tokens[$startIndex][Lexer::TYPE_OFFSET], self::NO_TEXT_TOKEN_TYPES, true)) {
-            ++$startIndex;
-        }
-
-        while ($endIndex > $startIndex && in_array($tokens[$endIndex][Lexer::TYPE_OFFSET], self::NO_TEXT_TOKEN_TYPES, true)) {
-            --$endIndex;
-        }
-
-        $phpDocTextNode = new PhpDocTextNode($tokenIterator->getContentBetween($startIndex, $endIndex + 1));
-        $phpDocTextNode->setAttribute(Attribute::START_INDEX, $startIndex);
-        $phpDocTextNode->setAttribute(Attribute::END_INDEX, $endIndex);
-
-        return new PhpDocNode([$phpDocTextNode]);
     }
 }
