@@ -38,6 +38,7 @@ return [
     ],
     'exclude-namespaces' => [
         '#^Rector#',
+        '#^DrupalRector#',
         '#^PhpParser#',
         '#^PHPStan#',
         '#^Symplify\\\\RuleDocGenerator#',
