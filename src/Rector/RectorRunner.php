@@ -46,9 +46,6 @@ CODE_SAMPLE;
      */
     public function run(RectorInterface $rector, Node $node): int|Node|null|array
     {
-        // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
-
         $refactoredNodeOrState = $rector->refactor($node);
 
         // nothing to change → continue
@@ -71,13 +68,13 @@ CODE_SAMPLE;
             }
 
             // notify this rule changed code
-            $rectorWithLineChange = new RectorWithLineChange($rector::class, $originalNode->getStartLine());
+            $rectorWithLineChange = new RectorWithLineChange($rector::class, $node->getStartLine());
             $file->addRectorClassWithLine($rectorWithLineChange);
 
             return $refactoredNodeOrState;
         }
 
-        return $this->postRefactorProcess($rector, $file, $originalNode, $node, $refactoredNodeOrState, $filePath);
+        return $this->postRefactorProcess($rector, $file, $node, $refactoredNodeOrState, $filePath);
     }
 
     private function getFile(): File
@@ -99,13 +96,12 @@ CODE_SAMPLE;
     private function postRefactorProcess(
         RectorInterface $rector,
         File $file,
-        Node $originalNode,
         Node $node,
         Node|array $refactoredNode,
         string $filePath
     ): Node|array {
         /** @var non-empty-array<Node>|Node $refactoredNode */
-        $rectorWithLineChange = new RectorWithLineChange($rector::class, $originalNode->getStartLine());
+        $rectorWithLineChange = new RectorWithLineChange($rector::class, $node->getStartLine());
         $file->addRectorClassWithLine($rectorWithLineChange);
 
         /** @var MutatingScope|null $currentScope */
