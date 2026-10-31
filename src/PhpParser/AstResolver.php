@@ -246,16 +246,16 @@ final class AstResolver
                     return true;
                 }
 
-                return false;
+                if (! $node instanceof Class_) {
+                    return false;
+                }
+
+                $propertyNode = $this->findPromotedPropertyByName($node, $desiredPropertyName);
+                return $propertyNode instanceof Param;
             }
         );
 
-        if ($propertyNode instanceof Property) {
-            return $propertyNode;
-        }
-
-        // promoted property
-        return $this->findPromotedPropertyByName($nodes, $desiredClassName, $desiredPropertyName);
+        return $propertyNode;
     }
 
     /**
@@ -315,48 +315,25 @@ final class AstResolver
         return $classMethod;
     }
 
-    /**
-     * @param Stmt[] $stmts
-     */
     private function findPromotedPropertyByName(
-        array $stmts,
-        string $desiredClassName,
+        Class_ $class,
         string $desiredPropertyName
     ): ?Param {
-        /** @var Param|null $paramNode */
-        $paramNode = null;
+        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
+            return null;
+        }
 
-        $this->betterNodeFinder->findFirst(
-            $stmts,
-            function (Node $node) use ($desiredClassName, $desiredPropertyName, &$paramNode): bool {
-                if (! $node instanceof Class_) {
-                    return false;
-                }
-
-                if (! $this->nodeNameResolver->isName($node, $desiredClassName)) {
-                    return false;
-                }
-
-                $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
-                if (! $constructClassMethod instanceof ClassMethod) {
-                    return false;
-                }
-
-                foreach ($constructClassMethod->getParams() as $param) {
-                    if (! $param->isPromoted()) {
-                        continue;
-                    }
-
-                    if ($this->nodeNameResolver->isName($param, $desiredPropertyName)) {
-                        $paramNode = $param;
-                        return true;
-                    }
-                }
-
-                return false;
+        foreach ($constructClassMethod->getParams() as $param) {
+            if (! $param->isPromoted()) {
+                continue;
             }
-        );
 
-        return $paramNode;
+            if ($this->nodeNameResolver->isName($param, $desiredPropertyName)) {
+                return $param;
+            }
+        }
+
+        return null;
     }
 }
