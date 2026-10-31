@@ -56,6 +56,6 @@ final class ClassRenamingPostRector extends AbstractPostRector
             return false;
         }
 
-        return $this->addUseStatementGuard->shouldTraverse($stmts, $this->getFile()->getFilePath());
+        return $this->addUseStatementGuard->shouldTraverse($stmts, $this->getFile());
     }
 }
