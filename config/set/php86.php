@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Php86\Rector\Class_\ConstructorReadonlyAssignToDefaultRector;
 use Rector\Php86\Rector\FuncCall\MinMaxToClampRector;
+use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
+use Rector\Removing\ValueObject\RemoveFuncCallArg;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -18,4 +20,7 @@ return static function (RectorConfig $rectorConfig): void {
         'doubleval' => 'floatval',
         '_' => 'gettext',
     ]);
+
+    // https://wiki.php.net/rfc/deprecations_php_8_6#deprecate_define_with_case_insensitive_being_specified
+    $rectorConfig->ruleWithConfiguration(RemoveFuncCallArgRector::class, [new RemoveFuncCallArg('define', 2)]);
 };
