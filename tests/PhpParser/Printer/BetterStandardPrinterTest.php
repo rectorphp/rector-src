@@ -152,7 +152,9 @@ PHP;
             }
         }
 
-        return $this->betterStandardPrinter->printFormatPreserving($newStmts, $oldStmts, $tokens);
+        $printed = $this->betterStandardPrinter->printFormatPreserving($newStmts, $oldStmts, $tokens);
+
+        return str_replace("\r\n", "\n", $printed);
     }
 
     /**

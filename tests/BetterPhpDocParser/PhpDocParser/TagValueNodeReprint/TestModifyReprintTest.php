@@ -94,7 +94,7 @@ PHP
 
         $this->assertSame(
             "/**\n * @ORM\DiscriminatorMap({1=\"First\", 5=\"Second\", 7=\"Third\"})\n */",
-            $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo)
+            str_replace("\r\n", "\n", $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo))
         );
     }
 
