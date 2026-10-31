@@ -9,6 +9,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -120,14 +121,21 @@ final class ShortNameResolver
     {
         $shortNamesToFullyQualifiedNames = [];
         $docBlockShortNames = [];
+        $uses = [];
 
         // single traversal collects both PHP names and docblock short names, so the file stmts are walked once
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             &$shortNamesToFullyQualifiedNames,
-            &$docBlockShortNames
+            &$docBlockShortNames,
+            &$uses
         ): null {
             foreach ($this->resolveDocBlockShortNames($node) as $docBlockShortName) {
                 $docBlockShortNames[] = $docBlockShortName;
+            }
+
+            if ($node instanceof Use_) {
+                $uses[] = $node;
+                return null;
             }
 
             // class name is used!
@@ -160,7 +168,7 @@ final class ShortNameResolver
             return null;
         });
 
-        $docBlockShortNamesToFullyQualifiedNames = $this->fqnizeShortNames($docBlockShortNames, $stmts);
+        $docBlockShortNamesToFullyQualifiedNames = $this->fqnizeShortNames($docBlockShortNames, $uses);
         /** @var array<string, string> $result */
         $result = [...$shortNamesToFullyQualifiedNames, ...$docBlockShortNamesToFullyQualifiedNames];
         return $result;
@@ -202,15 +210,15 @@ final class ShortNameResolver
 
     /**
      * @param string[] $shortNames
-     * @param Stmt[] $stmts
+     * @param Use_[] $uses
      * @return array<string, string>
      */
-    private function fqnizeShortNames(array $shortNames, array $stmts): array
+    private function fqnizeShortNames(array $shortNames, array $uses): array
     {
         $shortNamesToFullyQualifiedNames = [];
 
         foreach ($shortNames as $shortName) {
-            $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
+            $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithUses($shortName, $uses);
 
             if ($stmtsMatchedName == null) {
                 continue;
