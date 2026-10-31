@@ -51,14 +51,12 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\ElseIf_;
-use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
@@ -72,6 +70,7 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Analyser\UndefinedVariableException;
 use PHPStan\Node\FunctionCallableNode;
+use PHPStan\Node\InClassNode;
 use PHPStan\Node\InstantiationCallableNode;
 use PHPStan\Node\MethodCallableNode;
 use PHPStan\Node\StaticMethodCallableNode;
@@ -79,11 +78,9 @@ use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Node\VirtualNode;
 use PHPStan\Parser\ParserErrorsException;
 use PHPStan\PhpDocParser\Parser\ParserException;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
-use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\Reflection\PrivatesAccessor;
@@ -106,8 +103,7 @@ final readonly class PHPStanNodeScopeResolver
         private ReflectionProvider $reflectionProvider,
         array $decoratingNodeVisitors,
         private ScopeFactory $scopeFactory,
-        private PrivatesAccessor $privatesAccessor,
-        private ClassAnalyzer $classAnalyzer
+        private PrivatesAccessor $privatesAccessor
     ) {
         // @todo make use of immutable, to avoid tedious traversing
         $this->nodeTraverser = new NodeTraverser(...$decoratingNodeVisitors);
@@ -143,12 +139,11 @@ final readonly class PHPStanNodeScopeResolver
                 $mutatingScope = $mutatingScope->toWalkScope();
             }
 
-            // the class reflection is resolved AFTER entering to class node
-            // so we need to get it from the first after this one
-            if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
-                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
-                $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
+            // the class reflection is resolved AFTER entering to class node,
+            // PHPStan reports the scope it entered the class with here
+            if ($node instanceof InClassNode) {
+                $node->getOriginalNode()
+                    ->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 return;
             }
 
@@ -494,53 +489,17 @@ final readonly class PHPStanNodeScopeResolver
         $ternary->else->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
-    private function resolveClassOrInterfaceScope(
-        Class_|Interface_|Enum_ $classLike,
-        MutatingScope $mutatingScope
-    ): MutatingScope {
-        $isAnonymous = $this->classAnalyzer->isAnonymousClass($classLike);
-
-        // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
-        if ($classLike instanceof Class_ && $isAnonymous) {
-            $classReflection = $this->reflectionProvider->getAnonymousClassReflection($classLike, $mutatingScope);
-        } else {
-            $className = $this->resolveClassName($classLike);
-            if (! $this->reflectionProvider->hasClass($className)) {
-                return $mutatingScope;
-            }
-
-            $classReflection = $this->reflectionProvider->getClass($className);
-        }
-
-        try {
-            return $mutatingScope->enterClass($classReflection);
-        } catch (ShouldNotHappenException) {
-        }
-
-        // enterClass() throws when the scope is already inside a class, which happens when a changed
-        // class node is re-processed on a later pass; keep the in-class scope instead of dropping it
-        $currentClassReflection = $mutatingScope->getClassReflection();
-        if ($currentClassReflection instanceof ClassReflection && $currentClassReflection->getName() === $classReflection->getName()) {
-            return $mutatingScope;
-        }
-
-        $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
-        $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
-
-        return $mutatingScope;
-    }
-
-    private function resolveClassName(Class_|Interface_|Trait_|Enum_ $classLike): string
+    private function resolveClassName(Trait_ $trait): string
     {
-        if ($classLike->namespacedName instanceof Name) {
-            return (string) $classLike->namespacedName;
+        if ($trait->namespacedName instanceof Name) {
+            return (string) $trait->namespacedName;
         }
 
-        if (! $classLike->name instanceof Identifier) {
+        if (! $trait->name instanceof Identifier) {
             return '';
         }
 
-        return $classLike->name->toString();
+        return $trait->name->toString();
     }
 
     /**

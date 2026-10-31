@@ -95,7 +95,6 @@ parameters:
                 - src/Application/ChangedNodeScopeRefresher.php
                 - src/NodeTypeResolver/NodeTypeResolver.php
                 - src/NodeTypeResolver/NodeTypeResolver/NameTypeResolver.php
-                - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
                 - src/Reflection/ReflectionResolver.php
                 - src/StaticTypeMapper/Naming/NameScopeFactory.php
                 - utils/phpstan/src/Rule/NoResolveClassReflectionInForeachRule.php
