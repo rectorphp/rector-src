@@ -132,6 +132,11 @@ final readonly class ConstructorAssignDetector
             return false;
         }
 
+        // nested if/else does not guarantee the assign, the outer condition can skip it
+        if ($node->getAttribute(AttributeKey::IS_FIRST_LEVEL_STATEMENT) !== true) {
+            return false;
+        }
+
         return $this->isAssignedInStmts($node->stmts, $propertyName) && $this->isAssignedInStmts(
             $node->else->stmts,
             $propertyName
