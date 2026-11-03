@@ -7,7 +7,6 @@ namespace Rector\Php74\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -50,29 +49,23 @@ final class MbStrrposEncodingArgumentPositionRector extends AbstractRector imple
             return null;
         }
 
-        if (! isset($node->args[2])) {
+        // encoding already passed, positionally or by name
+        if ($node->getArg('encoding', 3) instanceof Arg) {
             return null;
         }
 
-        if (isset($node->args[3])) {
-            return null;
-        }
-
-        if (! $node->args[2] instanceof Arg) {
-            return null;
-        }
-
-        if ($node->args[2]->name instanceof Identifier) {
+        $offsetArg = $node->getArg('offset', 2);
+        if (! $offsetArg instanceof Arg) {
             return null;
         }
 
         // only string can be an encoding; mixed/unknown can be the int $offset
-        $thirdArgType = $this->nodeTypeResolver->getNativeType($node->args[2]->value);
-        if (! $thirdArgType->isString()->yes()) {
+        $offsetArgType = $this->nodeTypeResolver->getNativeType($offsetArg->value);
+        if (! $offsetArgType->isString()->yes()) {
             return null;
         }
 
-        $node->args[3] = $node->args[2];
+        $node->args[3] = $offsetArg;
         $node->args[2] = new Arg(new Int_(0));
 
         return $node;
