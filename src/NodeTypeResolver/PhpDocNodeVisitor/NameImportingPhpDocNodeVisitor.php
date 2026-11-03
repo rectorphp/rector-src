@@ -191,7 +191,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractNodeVisitor
             return false;
         }
 
-        return ! SimpleParameterProvider::provideBoolParameter(Option::IMPORT_PARTIALLY_QUALIFIED_NAMES);
+        return ! SimpleParameterProvider::provideBoolParameter(Option::IMPORT_PARTIALLY_QUALIFIED_NAMES, true);
     }
 
     private function shouldImport(
