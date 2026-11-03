@@ -19,6 +19,8 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribut
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericSingleImplicitAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\NotAnAttribute;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Options\ConstraintWithOptions;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Options\ConstraintWithoutOptions;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
@@ -45,6 +47,10 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
         new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
         new AnnotationToAttribute('Symfony\Component\Validator\Constraints\File'),
+
+        // unknown named args fold into the attribute's $options parameter
+        new AnnotationToAttribute(ConstraintWithOptions::class),
+        new AnnotationToAttribute(ConstraintWithoutOptions::class),
 
         // JMS + Symfony
         new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),

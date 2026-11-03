@@ -32,7 +32,8 @@ final readonly class PhpAttributeGroupFactory
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
         private AnnotationToAttributeIntegerValueCaster $annotationToAttributeIntegerValueCaster,
-        private AttributeArrayNameInliner $attributeArrayNameInliner
+        private AttributeArrayNameInliner $attributeArrayNameInliner,
+        private UnknownNamedArgsToOptionsFolder $unknownNamedArgsToOptionsFolder
     ) {
     }
 
@@ -85,6 +86,7 @@ final readonly class PhpAttributeGroupFactory
         $this->annotationToAttributeIntegerValueCaster->castAttributeTypes($annotationToAttribute, $args);
 
         $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args, $annotationToAttribute->getAttributeClass());
+        $args = $this->unknownNamedArgsToOptionsFolder->fold($args, $annotationToAttribute->getAttributeClass());
 
         $attributeName = $this->attributeNameFactory->create(
             $annotationToAttribute,
