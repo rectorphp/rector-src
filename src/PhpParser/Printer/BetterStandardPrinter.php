@@ -542,6 +542,11 @@ final class BetterStandardPrinter extends Standard
             $this->reprintLowerPrecedenceOperand($node->right);
         }
 
+        // a format-preserved ternary operand is printed without its original parentheses
+        // @see https://github.com/rectorphp/rector-src/issues/8910
+        $this->keepTernaryParentheses($node->left);
+        $this->keepTernaryParentheses($node->right);
+
         if ($node->left instanceof BinaryOp &&
             $node->left->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
             $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
@@ -550,6 +555,18 @@ final class BetterStandardPrinter extends Standard
         if ($node->right instanceof BinaryOp &&
             $node->right->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
             $node->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
+    }
+
+    private function keepTernaryParentheses(Expr $expr): void
+    {
+        if (! $expr instanceof Ternary || ! $expr->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            return;
+        }
+
+        if ($this->origTokens instanceof TokenStream
+            && $this->origTokens->haveParens($expr->getStartTokenPos(), $expr->getEndTokenPos())) {
+            $expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
     }
 
