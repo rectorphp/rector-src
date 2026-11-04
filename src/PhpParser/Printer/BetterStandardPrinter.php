@@ -542,31 +542,45 @@ final class BetterStandardPrinter extends Standard
             $this->reprintLowerPrecedenceOperand($node->right);
         }
 
-        // a format-preserved ternary operand is printed without its original parentheses
-        // @see https://github.com/rectorphp/rector-src/issues/8910
-        $this->keepTernaryParentheses($node->left);
-        $this->keepTernaryParentheses($node->right);
-
         if ($node->left instanceof BinaryOp &&
             $node->left->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            $this->keepTernaryOperandParentheses($node->left);
             $node->left->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
         if ($node->right instanceof BinaryOp &&
             $node->right->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+            $this->keepTernaryOperandParentheses($node->right);
             $node->right->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
     }
 
-    private function keepTernaryParentheses(Expr $expr): void
+    /**
+     * The binary op is about to be reprinted, while its unchanged ternary operand is still format-preserved,
+     * which prints it without its original parentheses
+     *
+     * @see https://github.com/rectorphp/rector-src/issues/8910
+     */
+    private function keepTernaryOperandParentheses(BinaryOp $binaryOp): void
     {
-        if (! $expr instanceof Ternary || ! $expr->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
+        $originalBinaryOp = $binaryOp->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalBinaryOp instanceof BinaryOp || ! $this->origTokens instanceof TokenStream) {
             return;
         }
 
-        if ($this->origTokens instanceof TokenStream
-            && $this->origTokens->haveParens($expr->getStartTokenPos(), $expr->getEndTokenPos())) {
-            $expr->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+        foreach ([$binaryOp->left, $binaryOp->right] as $key => $operand) {
+            if (! $operand instanceof Ternary) {
+                continue;
+            }
+
+            $originalOperand = $key === 0 ? $originalBinaryOp->left : $originalBinaryOp->right;
+            if ($operand->getAttribute(AttributeKey::ORIGINAL_NODE) !== $originalOperand) {
+                continue;
+            }
+
+            if ($this->origTokens->haveParens($operand->getStartTokenPos(), $operand->getEndTokenPos())) {
+                $operand->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
+            }
         }
     }
 
