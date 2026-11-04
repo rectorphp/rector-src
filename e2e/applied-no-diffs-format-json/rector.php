@@ -13,4 +13,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         RemoveAlwaysElseRector::class,
     ]);
+
+    $rectorConfig->importNames();
 };
