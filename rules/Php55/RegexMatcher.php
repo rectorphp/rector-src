@@ -7,6 +7,8 @@ namespace Rector\Php55;
 use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\InterpolatedStringPart;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 
 final readonly class RegexMatcher
@@ -27,19 +29,11 @@ final readonly class RegexMatcher
      */
     private const array ALL_MODIFIERS_VALUES = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
 
-    public function resolvePatternExpressionWithoutEIfFound(Expr $expr): Concat|String_|null
+    public function resolvePatternExpressionWithoutEIfFound(Expr $expr): Concat|String_|InterpolatedString|null
     {
         if ($expr instanceof String_) {
             $pattern = $expr->value;
-
-            $delimiter = $pattern[0];
-            $delimiter = match ($delimiter) {
-                '(' => ')',
-                '{' => '}',
-                '[' => ']',
-                '<' => '>',
-                default => $delimiter
-            };
+            $delimiter = $this->resolveClosingDelimiter($pattern);
 
             $modifiers = $this->resolveModifiers((string) Strings::after($pattern, $delimiter, -1));
             if (! \str_contains($modifiers, 'e')) {
@@ -55,7 +49,48 @@ final readonly class RegexMatcher
             return $this->matchConcat($expr);
         }
 
+        if ($expr instanceof InterpolatedString) {
+            return $this->matchInterpolatedString($expr);
+        }
+
         return null;
+    }
+
+    private function resolveClosingDelimiter(string $pattern): string
+    {
+        $delimiter = $pattern[0];
+        return match ($delimiter) {
+            '(' => ')',
+            '{' => '}',
+            '[' => ']',
+            '<' => '>',
+            default => $delimiter
+        };
+    }
+
+    private function matchInterpolatedString(InterpolatedString $interpolatedString): ?InterpolatedString
+    {
+        $firstPart = $interpolatedString->parts[0] ?? null;
+        if (! $firstPart instanceof InterpolatedStringPart) {
+            return null;
+        }
+
+        $lastPart = $interpolatedString->parts[array_key_last($interpolatedString->parts)];
+        if (! $lastPart instanceof InterpolatedStringPart) {
+            return null;
+        }
+
+        $delimiter = $this->resolveClosingDelimiter($firstPart->value);
+        $pattern = $lastPart->value;
+
+        $modifiers = $this->resolveModifiers((string) Strings::after($pattern, $delimiter, -1));
+        if (! \str_contains($modifiers, 'e')) {
+            return null;
+        }
+
+        $lastPart->value = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);
+
+        return $interpolatedString;
     }
 
     private function resolveModifiers(string $modifiersCandidate): string
