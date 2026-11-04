@@ -98,6 +98,11 @@ CODE_SAMPLE
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
+        // skip invalid @return tag, as adding a new one would never reach a fixed point
+        if ($phpDocInfo->hasInvalidTag('@return')) {
+            return null;
+        }
+
         if ($this->usefulArrayTagNodeAnalyzer->isUsefulArrayTag($phpDocInfo->getReturnTagValue())) {
             return null;
         }
