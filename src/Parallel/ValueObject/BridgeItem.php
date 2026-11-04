@@ -24,4 +24,6 @@ final class BridgeItem
     public const string RECTOR_CLASS = 'rector_class';
 
     public const string RECTORS_WITH_LINE_CHANGES = 'rectors_with_line_changes';
+
+    public const string HAS_CHANGED = 'has_changed';
 }

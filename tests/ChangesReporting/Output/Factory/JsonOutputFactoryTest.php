@@ -70,4 +70,39 @@ final class JsonOutputFactoryTest extends TestCase
         $expectedOutput = (string) file_get_contents(__DIR__ . '/../Fixtures/with_diffs.json');
         $this->assertSame($expectedOutput, $actualOutput);
     }
+
+    public function testReportShouldSkipUnchangedFileWithNoDiffs(): void
+    {
+        $actualOutput = JsonOutputFactory::create(
+            new ProcessResult(
+                [new SystemError('Some error message', 'some/file.php', 1)],
+                [
+                    new FileDiff(
+                        'some/file.php',
+                        "--- Original\n+++ New\n@@ -38,5 +39,6 @@\nreturn true;\n}\n",
+                        'diff console formatted',
+                        [new RectorWithLineChange(StrStartsWithRector::class, 38)]
+                    ),
+                    new FileDiff(
+                        'some/file_foo.php',
+                        '',
+                        '',
+                        [new RectorWithLineChange(StrStartsWithRector::class, 38)]
+                    ),
+                    new FileDiff(
+                        'some/file_unchanged.php',
+                        '',
+                        '',
+                        [new RectorWithLineChange(StrStartsWithRector::class, 5)],
+                        hasChanged: false
+                    ),
+                ],
+                2
+            ),
+            new Configuration(showDiffs: false)
+        );
+
+        $expectedOutput = (string) file_get_contents(__DIR__ . '/../Fixtures/without_diffs.json');
+        $this->assertSame($expectedOutput, $actualOutput);
+    }
 }
