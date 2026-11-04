@@ -56,7 +56,9 @@ final class JsonOutputFactory
             }
 
             // for Rector CI
-            $errorsJson['changed_files'][] = $filePath;
+            if ($fileDiff->hasChanged()) {
+                $errorsJson['changed_files'][] = $filePath;
+            }
         }
 
         $systemErrors = $processResult->getSystemErrors();

@@ -34,7 +34,8 @@ final readonly class FileDiff implements SerializableInterface
         private string $relativeFilePath,
         private string $diff,
         private string $diffConsoleFormatted,
-        private array $rectorsWithLineChanges = []
+        private array $rectorsWithLineChanges = [],
+        private bool $hasChanged = true
     ) {
         Assert::allIsInstanceOf($rectorsWithLineChanges, RectorWithLineChange::class);
     }
@@ -42,6 +43,11 @@ final readonly class FileDiff implements SerializableInterface
     public function getDiff(): string
     {
         return $this->diff;
+    }
+
+    public function hasChanged(): bool
+    {
+        return $this->hasChanged;
     }
 
     public function getDiffConsoleFormatted(): string
@@ -128,7 +134,7 @@ final readonly class FileDiff implements SerializableInterface
     }
 
     /**
-     * @return array{relative_file_path: string, diff: string, diff_console_formatted: string, rectors_with_line_changes: RectorWithLineChange[]}
+     * @return array{relative_file_path: string, diff: string, diff_console_formatted: string, rectors_with_line_changes: RectorWithLineChange[], has_changed: bool}
      */
     public function jsonSerialize(): array
     {
@@ -137,6 +143,7 @@ final readonly class FileDiff implements SerializableInterface
             BridgeItem::DIFF => $this->diff,
             BridgeItem::DIFF_CONSOLE_FORMATTED => $this->diffConsoleFormatted,
             BridgeItem::RECTORS_WITH_LINE_CHANGES => $this->rectorsWithLineChanges,
+            BridgeItem::HAS_CHANGED => $this->hasChanged,
         ];
     }
 
@@ -156,6 +163,7 @@ final readonly class FileDiff implements SerializableInterface
             $json[BridgeItem::DIFF],
             $json[BridgeItem::DIFF_CONSOLE_FORMATTED],
             $rectorWithLineChanges,
+            $json[BridgeItem::HAS_CHANGED],
         );
     }
 }

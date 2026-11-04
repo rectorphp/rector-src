@@ -9,6 +9,15 @@ use Rector\ValueObject\Reporting\FileDiff;
 
 final class FileDiffTest extends TestCase
 {
+    public function testDecodeShouldKeepUnchangedState(): void
+    {
+        $fileDiff = new FileDiff('some/file.php', '', '', [], hasChanged: false);
+
+        $decodedFileDiff = FileDiff::decode($fileDiff->jsonSerialize());
+
+        $this->assertFalse($decodedFileDiff->hasChanged());
+    }
+
     public function testGetFirstLineNumberShouldReturnFirstLineNumberRegardingHunk(): void
     {
         $fileDiff = new FileDiff(
