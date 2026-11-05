@@ -28,6 +28,7 @@ jobs:
                     - 'e2e/applied-polyfill-php80'
                     - 'e2e/config-dist-fallback'
                     - 'e2e/config-file-priority'
+                    - 'e2e/custom-file-extensions'
                     - 'e2e/only-option'
                     - 'e2e/parallel-custom-config'
                     - 'e2e/parallel-unused-skips'
