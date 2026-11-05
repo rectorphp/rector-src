@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\NodeManipulator;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
@@ -16,9 +17,13 @@ use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
+use Rector\NodeCollector\ValueObject\ArrayCallable;
+use Rector\NodeCollector\ValueObject\ArrayCallableDynamicMethod;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPStan\ScopeFetcher;
 
 final readonly class PrivateMethodParamRemover
 {
@@ -29,6 +34,7 @@ final readonly class PrivateMethodParamRemover
         private BetterNodeFinder $betterNodeFinder,
         private NodeNameResolver $nodeNameResolver,
         private NodeTypeResolver $nodeTypeResolver,
+        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
     ) {
     }
 
@@ -73,6 +79,11 @@ final readonly class PrivateMethodParamRemover
             return false;
         }
 
+        // the code receiving the callable decides how many arguments it passes
+        if ($this->isUsedAsArrayCallable($class, $classMethod)) {
+            return false;
+        }
+
         $keysArg = array_keys($paramsToRemove);
 
         $classObjectType = new ObjectType((string) $this->nodeNameResolver->getName($class));
@@ -110,6 +121,33 @@ final readonly class PrivateMethodParamRemover
         }
 
         return true;
+    }
+
+    private function isUsedAsArrayCallable(Class_ $class, ClassMethod $classMethod): bool
+    {
+        $scope = ScopeFetcher::fetch($class);
+        $methodName = $this->nodeNameResolver->getName($classMethod);
+
+        /** @var Array_[] $arrays */
+        $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
+
+        foreach ($arrays as $array) {
+            $arrayCallable = $this->arrayCallableMethodMatcher->match($array, $scope, $methodName);
+            if ($arrayCallable instanceof ArrayCallableDynamicMethod) {
+                return true;
+            }
+
+            if (! $arrayCallable instanceof ArrayCallable) {
+                continue;
+            }
+
+            if ($this->nodeNameResolver->isName($class, $arrayCallable->getClass())
+                && $this->nodeNameResolver->isName($classMethod, $arrayCallable->getMethod())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
