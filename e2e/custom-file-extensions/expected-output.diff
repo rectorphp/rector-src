@@ -1,0 +1,22 @@
+1 file with changes
+===================
+
+1) src/ChildService.inc:4
+
+    ---------- begin diff ----------
+@@ Line 4 @@
+
+ class ChildService extends ParentService
+ {
+-    public function run($value)
++    public function run($value, $flag = false)
+     {
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * AddParamBasedOnParentClassMethodRector
+
+
+ [OK] 1 file would have been changed (dry-run) by Rector

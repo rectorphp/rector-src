@@ -50,7 +50,11 @@ MESSAGE_ERROR;
             $this->container = $containerFactory->create(
                 SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
                 $additionalConfigFiles,
-                []
+                [],
+                // let PHPStan find classes in files with any configured extension, not only in *.php ones
+                additionalParameters: [
+                    'fileExtensions' => SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS),
+                ]
             );
         } catch (Throwable $throwable) {
             if ($throwable->getMessage() === "File 'phar://phpstan.phar/conf/bleedingEdge.neon' is missing or is not readable.") {
