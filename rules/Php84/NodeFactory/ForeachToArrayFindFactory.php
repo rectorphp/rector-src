@@ -92,11 +92,6 @@ final readonly class ForeachToArrayFindFactory
             $firstNodeInsideForeach = $foreach->stmts[0];
 
             $condition = $firstNodeInsideForeach->cond;
-
-            if ($this->exprModifiedInConditionalAnalyzer->isModified($condition)) {
-                continue;
-            }
-
             $valueParam = $foreach->valueVar;
 
             if (! $valueParam instanceof Variable) {
@@ -149,6 +144,10 @@ final readonly class ForeachToArrayFindFactory
             ! $firstStmt instanceof If_ ||
             count($firstStmt->stmts) !== 2
         ) {
+            return false;
+        }
+
+        if ($this->exprModifiedInConditionalAnalyzer->isModified($firstStmt->cond)) {
             return false;
         }
 

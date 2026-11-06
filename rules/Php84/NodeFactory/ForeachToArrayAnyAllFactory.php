@@ -114,11 +114,6 @@ final readonly class ForeachToArrayAnyAllFactory
             $firstNodeInsideForeach = $foreach->stmts[0];
 
             $condition = $firstNodeInsideForeach->cond;
-
-            if ($this->exprModifiedInConditionalAnalyzer->isModified($condition)) {
-                continue;
-            }
-
             $valueParam = $foreach->valueVar;
 
             if (! $valueParam instanceof Variable) {
@@ -197,10 +192,6 @@ final readonly class ForeachToArrayAnyAllFactory
             $firstNodeInsideForeach = $foreach->stmts[0];
             $condition = $firstNodeInsideForeach->cond;
 
-            if ($this->exprModifiedInConditionalAnalyzer->isModified($condition)) {
-                continue;
-            }
-
             $params = [];
 
             if ($foreach->valueVar instanceof Variable) {
@@ -249,6 +240,10 @@ final readonly class ForeachToArrayAnyAllFactory
             return false;
         }
 
+        if ($this->exprModifiedInConditionalAnalyzer->isModified($firstStmt->cond)) {
+            return false;
+        }
+
         if ($rejectElseBranches && ($firstStmt->elseifs !== [] || $firstStmt->else instanceof Else_)) {
             return false;
         }
@@ -293,6 +288,10 @@ final readonly class ForeachToArrayAnyAllFactory
         }
 
         $ifStmt = $foreach->stmts[0];
+
+        if ($this->exprModifiedInConditionalAnalyzer->isModified($ifStmt->cond)) {
+            return false;
+        }
 
         if ($rejectElseBranches && ($ifStmt->elseifs !== [] || $ifStmt->else instanceof Else_)) {
             return false;
