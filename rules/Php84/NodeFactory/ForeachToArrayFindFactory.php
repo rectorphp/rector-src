@@ -18,6 +18,7 @@ use Rector\NodeManipulator\StmtsManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
+use Rector\Php84\NodeAnalyzer\VariableModifiedInConditionalAnalyzer;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -34,7 +35,8 @@ final readonly class ForeachToArrayFindFactory
         private NodeComparator $nodeComparator,
         private NodeTypeResolver $nodeTypeResolver,
         private NodeFactory $nodeFactory,
-        private NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver,
+        private VariableModifiedInConditionalAnalyzer $variableModifiedInConditionalAnalyzer
     ) {
     }
 
@@ -90,6 +92,11 @@ final readonly class ForeachToArrayFindFactory
             $firstNodeInsideForeach = $foreach->stmts[0];
 
             $condition = $firstNodeInsideForeach->cond;
+
+            if ($this->variableModifiedInConditionalAnalyzer->isModified($condition)) {
+                continue;
+            }
+
             $valueParam = $foreach->valueVar;
 
             if (! $valueParam instanceof Variable) {
