@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\If_;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\Php84\NodeAnalyzer\ExprModifiedInConditionalAnalyzer;
 use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
@@ -34,7 +35,8 @@ final readonly class ForeachToArrayFindFactory
         private NodeComparator $nodeComparator,
         private NodeTypeResolver $nodeTypeResolver,
         private NodeFactory $nodeFactory,
-        private NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver,
+        private ExprModifiedInConditionalAnalyzer $exprModifiedInConditionalAnalyzer
     ) {
     }
 
@@ -142,6 +144,10 @@ final readonly class ForeachToArrayFindFactory
             ! $firstStmt instanceof If_ ||
             count($firstStmt->stmts) !== 2
         ) {
+            return false;
+        }
+
+        if ($this->exprModifiedInConditionalAnalyzer->isModified($firstStmt->cond)) {
             return false;
         }
 

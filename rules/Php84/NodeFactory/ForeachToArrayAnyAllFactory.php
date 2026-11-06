@@ -20,6 +20,7 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\Php84\NodeAnalyzer\ExprModifiedInConditionalAnalyzer;
 use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
@@ -37,7 +38,8 @@ final readonly class ForeachToArrayAnyAllFactory
         private NodeComparator $nodeComparator,
         private NodeTypeResolver $nodeTypeResolver,
         private NodeFactory $nodeFactory,
-        private NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver,
+        private ExprModifiedInConditionalAnalyzer $exprModifiedInConditionalAnalyzer
     ) {
     }
 
@@ -238,6 +240,10 @@ final readonly class ForeachToArrayAnyAllFactory
             return false;
         }
 
+        if ($this->exprModifiedInConditionalAnalyzer->isModified($firstStmt->cond)) {
+            return false;
+        }
+
         if ($rejectElseBranches && ($firstStmt->elseifs !== [] || $firstStmt->else instanceof Else_)) {
             return false;
         }
@@ -282,6 +288,10 @@ final readonly class ForeachToArrayAnyAllFactory
         }
 
         $ifStmt = $foreach->stmts[0];
+
+        if ($this->exprModifiedInConditionalAnalyzer->isModified($ifStmt->cond)) {
+            return false;
+        }
 
         if ($rejectElseBranches && ($ifStmt->elseifs !== [] || $ifStmt->else instanceof Else_)) {
             return false;
