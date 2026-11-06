@@ -6,15 +6,18 @@ namespace Rector\Console\Command;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use Entropy\Console\Contract\CommandInterface;
+use Entropy\Console\Contract\HiddenCommandInterface;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Autoloading\AdditionalAutoloader;
+use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
+use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\ConfigurationRuleFilter;
-use Rector\Configuration\Option;
-use Rector\Console\ProcessConfigureDecorator;
+use Rector\Console\ExitCode;
 use Rector\Parallel\Enum\Action;
 use Rector\Parallel\Enum\ReactCommand;
 use Rector\Parallel\Enum\ReactEvent;
@@ -24,9 +27,6 @@ use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -37,34 +37,99 @@ use Webmozart\Assert\Assert;
  * ↓↓↓
  * https://github.com/phpstan/phpstan-src/commit/b84acd2e3eadf66189a64fdbc6dd18ff76323f67#diff-7f625777f1ce5384046df08abffd6c911cfbb1cfc8fcb2bdeaf78f337689e3e2
  */
-final class WorkerCommand extends Command
+final readonly class WorkerCommand implements CommandInterface, HiddenCommandInterface
 {
     private const string RESULT = 'result';
 
     public function __construct(
-        private readonly AdditionalAutoloader $additionalAutoloader,
-        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly MemoryLimiter $memoryLimiter,
-        private readonly ConfigurationFactory $configurationFactory,
-        private readonly ConfigurationRuleFilter $configurationRuleFilter,
+        private AdditionalAutoloader $additionalAutoloader,
+        private DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
+        private ApplicationFileProcessor $applicationFileProcessor,
+        private MemoryLimiter $memoryLimiter,
+        private ConfigurationFactory $configurationFactory,
+        private ConfigurationRuleFilter $configurationRuleFilter,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function getName(): string
     {
-        $this->setName('worker');
-        $this->setDescription('[INTERNAL] Support for parallel process');
-
-        ProcessConfigureDecorator::decorate($this);
-
-        parent::configure();
+        return 'worker';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getDescription(): string
     {
-        $configuration = $this->configurationFactory->createFromInput($input);
+        return '[INTERNAL] Support for parallel process';
+    }
+
+    /**
+     * @param string[] $only           Fully qualified rule class name; repeat to run several rules
+     * @param string   $config         Path to config file
+     * @param string   $autoloadFile   Path to file with extra autoload (will be included)
+     * @param string   $outputFormat   Select output format
+     * @param string   $onlySuffix     Deprecated, use "--filter" instead
+     * @param string   $filter         Keep only files matching all comma-separated patterns
+     * @param string   $memoryLimit    Memory limit for process
+     * @param string   $maxChanges     Stop after this many changes are made
+     * @param string   $port           [INTERNAL] parallel TCP port
+     * @param string   $identifier     [INTERNAL] parallel identifier
+     * @param string ...$paths         Files or directories to be upgraded
+     *
+     * @option $only
+     * @option $config
+     * @option $autoloadFile
+     * @option $outputFormat
+     * @option $onlySuffix
+     * @option $filter
+     * @option $memoryLimit
+     * @option $maxChanges
+     * @option $port
+     * @option $identifier
+     *
+     * @api invoked via reflection by the Entropy console application
+     *
+     * @return ExitCode::*
+     */
+    public function run(
+        bool $dryRun = false,
+        bool $clearCache = false,
+        bool $noProgressBar = false,
+        bool $noDiffs = false,
+        bool $debug = false,
+        bool $composerBased = false,
+        bool $php = false,
+        bool $rulesSummary = false,
+        array $only = [],
+        string $config = '',
+        string $autoloadFile = '',
+        string $outputFormat = ConsoleOutputFormatter::NAME,
+        string $onlySuffix = '',
+        string $filter = '',
+        string $memoryLimit = '',
+        string $maxChanges = '',
+        string $port = '',
+        string $identifier = '',
+        string ...$paths,
+    ): int {
+        $configuration = $this->configurationFactory->create(
+            array_values($paths),
+            $dryRun,
+            $clearCache,
+            $noProgressBar,
+            $noDiffs,
+            $outputFormat,
+            $only,
+            $composerBased,
+            $php,
+            $onlySuffix !== '' ? $onlySuffix : null,
+            $filter !== '' ? $filter : null,
+            $debug,
+            $memoryLimit !== '' ? $memoryLimit : null,
+            $port,
+            $identifier,
+            $maxChanges !== '' ? (int) $maxChanges : null,
+            $rulesSummary,
+        );
+
         $this->memoryLimiter->adjust($configuration);
         $this->configurationRuleFilter->setConfiguration($configuration);
 
@@ -76,9 +141,7 @@ final class WorkerCommand extends Command
         $promise = $tcpConnector->connect('127.0.0.1:' . $configuration->getParallelPort());
         $promise->then(function (ConnectionInterface $connection) use (
             $parallelIdentifier,
-            $configuration,
-            $input,
-            $output
+            $configuration
         ): void {
             $inDecoder = new Decoder($connection, true, StreamFormat::DEPTH, JSON_INVALID_UTF8_IGNORE, StreamFormat::MAX_LENGTH);
             $outEncoder = new Encoder($connection, JSON_INVALID_UTF8_IGNORE);
@@ -88,27 +151,27 @@ final class WorkerCommand extends Command
                 ReactCommand::IDENTIFIER => $parallelIdentifier,
             ]);
 
-            $this->runWorker($outEncoder, $inDecoder, $configuration, $input, $output);
+            $this->runWorker($outEncoder, $inDecoder, $configuration);
         });
 
         $streamSelectLoop->run();
 
-        return self::SUCCESS;
+        return ExitCode::SUCCESS;
     }
 
     private function runWorker(
         Encoder $encoder,
         Decoder $decoder,
-        Configuration $configuration,
-        InputInterface $input,
-        OutputInterface $output
+        Configuration $configuration
     ): void {
+        $this->additionalAutoloader->autoloadFile();
         $this->additionalAutoloader->autoloadPaths();
+
         $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
 
         if ($configuration->isDebug()) {
-            $preFileCallback = static function (string $filePath) use ($output): void {
-                $output->writeln($filePath);
+            $preFileCallback = static function (string $filePath): void {
+                echo $filePath . PHP_EOL;
             };
         } else {
             $preFileCallback = null;
@@ -135,8 +198,7 @@ final class WorkerCommand extends Command
         $decoder->on(ReactEvent::DATA, function (array $json) use (
             $preFileCallback,
             $encoder,
-            $configuration,
-            $input
+            $configuration
         ): void {
             $action = $json[ReactCommand::ACTION];
             if ($action !== Action::MAIN) {
@@ -161,7 +223,7 @@ final class WorkerCommand extends Command
                 ReactCommand::ACTION => Action::RESULT,
                 self::RESULT => [
                     Bridge::FILE_DIFFS => $processResult->getFileDiffs(
-                        $input->getOption(Option::OUTPUT_FORMAT) !== 'json'
+                        $configuration->getOutputFormat() !== JsonOutputFormatter::NAME
                     ),
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),

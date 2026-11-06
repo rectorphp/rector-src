@@ -7,10 +7,10 @@ namespace Rector\Configuration;
 use Nette\Utils\FileSystem;
 use Rector\Agentic\TerminalDetector;
 use Rector\Bootstrap\RectorConfigsResolver;
+use Rector\Console\Style\RectorStyle;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\FileSystem\InitFilePathsResolver;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class ConfigInitializer
 {
@@ -20,7 +20,7 @@ final readonly class ConfigInitializer
     public function __construct(
         private array $rectors,
         private InitFilePathsResolver $initFilePathsResolver,
-        private SymfonyStyle $symfonyStyle,
+        private RectorStyle $rectorStyle,
         private RectorConfigsResolver $rectorConfigsResolver,
     ) {
     }
@@ -31,14 +31,14 @@ final readonly class ConfigInitializer
         $distRectorConfigPath = $projectDirectory . '/' . RectorConfigsResolver::DEFAULT_DIST_CONFIG_FILE;
 
         if (file_exists($commonRectorConfigPath)) {
-            $this->symfonyStyle->warning(
+            $this->rectorStyle->warning(
                 'Register rules or sets in your "' . RectorConfigsResolver::DEFAULT_CONFIG_FILE . '" config'
             );
             return;
         }
 
         if (file_exists($distRectorConfigPath)) {
-            $this->symfonyStyle->warning(
+            $this->rectorStyle->warning(
                 'Register rules or sets in your "' . RectorConfigsResolver::DEFAULT_DIST_CONFIG_FILE . '" config'
             );
             return;
@@ -47,7 +47,7 @@ final readonly class ConfigInitializer
         $mainConfigFile = $this->rectorConfigsResolver->provide()
             ->getMainConfigFile();
         if ($mainConfigFile !== null && file_exists($mainConfigFile)) {
-            $this->symfonyStyle->warning(
+            $this->rectorStyle->warning(
                 'Register rules or sets in your "' . basename($mainConfigFile) . '" config'
             );
             return;
@@ -56,14 +56,14 @@ final readonly class ConfigInitializer
         // non-interactive terminal, e.g. piped output, CI or an agent: never prompt or silently write a
         // config, just say what to do - Symfony still treats a closed STDIN as interactive here
         if (! TerminalDetector::isInputTty()) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->rectorStyle->warning(sprintf(
                 'No "%s" config found. Create one, or pass "--config <path>".',
                 RectorConfigsResolver::DEFAULT_CONFIG_FILE
             ));
             return;
         }
 
-        $response = $this->symfonyStyle->ask(
+        $response = $this->rectorStyle->ask(
             'No "' . RectorConfigsResolver::DEFAULT_CONFIG_FILE . '" config found. Should we generate it for you?',
             'yes'
         );
@@ -77,7 +77,7 @@ final readonly class ConfigInitializer
         $configContents = $this->replacePathsContents($configContents, $projectDirectory);
 
         FileSystem::write($commonRectorConfigPath, $configContents, null);
-        $this->symfonyStyle->success('The config is added now. Re-run command to make Rector do the work!');
+        $this->rectorStyle->success('The config is added now. Re-run command to make Rector do the work!');
     }
 
     public function areSomeRectorsLoaded(): bool

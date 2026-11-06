@@ -3,15 +3,13 @@
 declare(strict_types=1);
 
 use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\RuleDoc\Contract\DocumentedRuleInterface;
 use Rector\Scripts\Finder\RectorClassFinder;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+$rectorStyle = new RectorStyleFactory()->create();
 
 // core rules + all installed rector extensions (rector-doctrine, rector-symfony, rector-phpunit, ...)
 $ruleDirectories = array_merge(
@@ -54,15 +52,15 @@ foreach ($rectorClasses as $rectorClass) {
 }
 
 if ($errorMessages !== []) {
-    $symfonyStyle->listing($errorMessages);
-    $symfonyStyle->error(sprintf('Found %d rule definition error(s), see above', count($errorMessages)));
+    $rectorStyle->listing($errorMessages);
+    $rectorStyle->error(sprintf('Found %d rule definition error(s), see above', count($errorMessages)));
 
     exit(ExitCode::FAILURE);
 }
 
-$symfonyStyle->writeln('Scanned paths:');
-$symfonyStyle->listing(array_map(realpath(...), $ruleDirectories));
+$rectorStyle->writeln('Scanned paths:');
+$rectorStyle->listing(array_map(realpath(...), $ruleDirectories));
 
-$symfonyStyle->success(sprintf('All %d Rector rule definitions are valid!', count($rectorClasses)));
+$rectorStyle->success(sprintf('All %d Rector rule definitions are valid!', count($rectorClasses)));
 
 exit(ExitCode::SUCCESS);

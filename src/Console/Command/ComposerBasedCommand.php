@@ -5,89 +5,80 @@ declare(strict_types=1);
 namespace Rector\Console\Command;
 
 use Composer\Semver\Semver;
+use Entropy\Console\Contract\CommandInterface;
 use Nette\Utils\Strings;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyle;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
 use ReflectionObject;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\TableCell;
-use Symfony\Component\Console\Helper\TableSeparator;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @see \Rector\Tests\Console\Command\ComposerBasedCommandTest
  */
-final class ComposerBasedCommand extends Command
+final readonly class ComposerBasedCommand implements CommandInterface
 {
     /**
      * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
-        private readonly InstalledPackageResolver $installedPackageResolver,
-        private readonly array $rectors
+        private RectorStyle $rectorStyle,
+        private InstalledPackageResolver $installedPackageResolver,
+        private array $rectors
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function getName(): string
     {
-        $this->setName('composer-based');
-        $this->setDescription('Show loaded rules that are triggered by an installed composer package version');
+        return 'composer-based';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getDescription(): string
+    {
+        return 'Show loaded rules that are triggered by an installed composer package version';
+    }
+
+    /**
+     * @api invoked via reflection by the Entropy console application
+     *
+     * @return ExitCode::*
+     */
+    public function run(): int
     {
         $tableRows = $this->createTableRows();
         $configurationTableRows = $this->createConfigurationTableRows();
 
         if ($tableRows === [] && $configurationTableRows === []) {
-            $this->symfonyStyle->warning('No composer package bound rule is loaded');
+            $this->rectorStyle->warning('No composer package bound rule is loaded');
 
-            return Command::SUCCESS;
+            return ExitCode::SUCCESS;
         }
 
         if ($tableRows !== []) {
-            $this->symfonyStyle->title('Composer package bound rules');
-            $this->symfonyStyle->table(['Rule', 'Package', 'Requires', 'Installed', 'Active'], $tableRows);
+            $this->rectorStyle->title('Composer package bound rules');
+            $this->rectorStyle->table(['Rule', 'Package', 'Requires', 'Installed', 'Active'], $tableRows);
         }
 
         if ($configurationTableRows !== []) {
-            $this->symfonyStyle->title('Composer package bound rule configuration');
-
-            $headers = ['Rule', 'Package', 'Requires', 'Installed', 'Active'];
-
-            $table = $this->symfonyStyle->createTable();
-            $table->setHeaders($headers);
-            $table->setRows($this->createConfigurationDisplayRows($configurationTableRows));
-
-            // keep columns as narrow as their content, so the full-width configuration line does not stretch them
-            foreach ($headers as $columnPosition => $header) {
-                $columnWidth = max(array_map(
-                    static fn (array $configurationTableRow): int => strlen($configurationTableRow[$columnPosition]),
-                    $configurationTableRows
-                ));
-
-                $table->setColumnMaxWidth($columnPosition, max($columnWidth, strlen($header)));
-            }
-
-            $table->render();
+            $this->rectorStyle->title('Composer package bound rule configuration');
+            $this->rectorStyle->table(
+                ['Rule', 'Package', 'Requires', 'Installed', 'Active', 'Configuration'],
+                $configurationTableRows
+            );
         }
 
         $allTableRows = [...$tableRows, ...$configurationTableRows];
         $activeCount = count(array_filter($allTableRows, static fn (array $tableRow): bool => $tableRow[4] === 'yes'));
 
-        $this->symfonyStyle->note(
+        $this->rectorStyle->note(
             sprintf('%d of %d composer package bound items are active', $activeCount, count($allTableRows))
         );
 
-        return Command::SUCCESS;
+        return ExitCode::SUCCESS;
     }
 
     /**
@@ -163,30 +154,6 @@ final class ComposerBasedCommand extends Command
         }
 
         return $tableRows;
-    }
-
-    /**
-     * The configuration is printed on a separated full-width line, to avoid breaking the table layout
-     *
-     * @param array<array{string, string, string, string, string, string}> $configurationTableRows
-     * @return array<array<TableCell|string>|TableSeparator>
-     */
-    private function createConfigurationDisplayRows(array $configurationTableRows): array
-    {
-        $displayRows = [];
-
-        foreach ($configurationTableRows as $configurationTableRow) {
-            if ($displayRows !== []) {
-                $displayRows[] = new TableSeparator();
-            }
-
-            $displayRows[] = array_slice($configurationTableRow, 0, 5);
-            $displayRows[] = [new TableCell($configurationTableRow[5], [
-                'colspan' => 5,
-            ])];
-        }
-
-        return $displayRows;
     }
 
     /**

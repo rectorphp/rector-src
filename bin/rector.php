@@ -3,20 +3,20 @@
 declare(strict_types=1);
 
 use Composer\XdebugHandler\XdebugHandler;
+use Entropy\Console\ConsoleApplication;
 use Nette\Utils\Json;
 use PHPStan\PharAutoloader;
 use PHPStan\Turbo\TurboExtensionEnabler;
+use Rector\Application\VersionResolver;
 use Rector\Bootstrap\AutoloadFileParameterResolver;
+use Rector\Bootstrap\CliOptionValueResolver;
 use Rector\Bootstrap\RectorConfigsResolver;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\Option;
-use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\DependencyInjection\LazyContainerFactory;
 use Rector\DependencyInjection\RectorContainerFactory;
-use Rector\Util\Reflection\PrivatesAccessor;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
 
 // @ intentionally: continue anyway
 @ini_set('memory_limit', '-1');
@@ -160,7 +160,7 @@ $autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
 $autoloadIncluder->autoloadFromCommandLine();
 
 // restart without Xdebug before the container is built, so the restarted process does not repeat that work
-if (! new ArgvInput()->hasParameterOption('--xdebug')) {
+if (! in_array('--xdebug', $_SERVER['argv'] ?? [], true)) {
     $xdebugHandler = new XdebugHandler('rector');
     $xdebugHandler->setPersistent();
     $xdebugHandler->check();
@@ -177,8 +177,7 @@ try {
     $container = $rectorContainerFactory->createFromBootstrapConfigs($bootstrapConfigs);
 } catch (Throwable $throwable) {
     // for json output
-    $argvInput = new ArgvInput();
-    $outputFormat = $argvInput->getParameterOption('--' . Option::OUTPUT_FORMAT);
+    $outputFormat = CliOptionValueResolver::resolve($_SERVER['argv'] ?? [], ['--' . Option::OUTPUT_FORMAT]);
 
     // report fatal error in json format
     if ($outputFormat === JsonOutputFormatter::NAME) {
@@ -192,16 +191,109 @@ try {
         ]);
     } else {
         // report fatal errors in console format
-        $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
-        $symfonyStyle = $symfonyStyleFactory->create();
+        $rectorStyleFactory = new RectorStyleFactory();
+        $rectorStyle = $rectorStyleFactory->create();
         do {
-            $symfonyStyle->error(str_replace("\r\n", "\n", $throwable->getMessage()));
+            $rectorStyle->error(str_replace("\r\n", "\n", $throwable->getMessage()));
         } while ($throwable = $throwable->getPrevious());
     }
 
-    exit(Command::FAILURE);
+    exit(ExitCode::FAILURE);
 }
 
-/** @var Application $application */
-$application = $container->get(Application::class);
-exit($application->run());
+// print version and exit
+$rawArgv = $_SERVER['argv'] ?? [];
+if (in_array('--version', $rawArgv, true) || in_array('-V', $rawArgv, true)) {
+    echo sprintf('Rector %s', VersionResolver::PACKAGE_VERSION) . PHP_EOL;
+    exit(ExitCode::SUCCESS);
+}
+
+$application = $container->make(ConsoleApplication::class);
+exit($application->run(rector_normalize_argv($rawArgv)));
+
+/**
+ * Strip global decoration flags the former symfony/console handled implicitly, and normalize the
+ * short "-c"/"-n"/"-a" options to their long forms, so the Entropy input parser does not treat them
+ * as unknown options. Inject the default "process" command when the first argument is an option or a
+ * path, and expand the "p" alias.
+ *
+ * @param array<int, string> $argv
+ * @return array<int, string>
+ */
+function rector_normalize_argv(array $argv): array
+{
+    $decorationFlags = ['--ansi', '--no-ansi', '--quiet', '-q', '--no-interaction', '-v', '-vv', '-vvv', '--xdebug'];
+
+    if (in_array('--no-ansi', $argv, true)) {
+        putenv('NO_COLOR=1');
+    }
+
+    $shortToLong = [
+        '-c' => '--' . Option::CONFIG,
+        '-n' => '--' . Option::DRY_RUN,
+        '-a' => '--' . Option::AUTOLOAD_FILE,
+    ];
+
+    $normalized = [];
+    foreach ($argv as $arg) {
+        if (in_array($arg, $decorationFlags, true)) {
+            continue;
+        }
+
+        if (isset($shortToLong[$arg])) {
+            $normalized[] = $shortToLong[$arg];
+            continue;
+        }
+
+        $matched = false;
+        foreach ($shortToLong as $short => $long) {
+            if (str_starts_with($arg, $short . '=')) {
+                $normalized[] = $long . '=' . substr($arg, strlen($short) + 1);
+                $matched = true;
+                break;
+            }
+        }
+
+        if ($matched) {
+            continue;
+        }
+
+        $normalized[] = $arg;
+    }
+
+    // expand the "p" alias to the "process" command name
+    if (isset($normalized[1]) && $normalized[1] === 'p') {
+        $normalized[1] = 'process';
+    }
+
+    // leading "help" or "list" tokens show the application help, matching the former symfony/console behavior
+    if (isset($normalized[1]) && ($normalized[1] === 'help' || $normalized[1] === 'list')) {
+        return [$normalized[0], '--help'];
+    }
+
+    // first real argument is an option or a path - inject the default "process" command, so the parser
+    // does not mistake a leading "--option" or a path for an unknown command
+    $helpFlags = ['-h', '--help'];
+    if (
+        isset($normalized[1])
+        && $normalized[1] !== 'process'
+        && ! in_array($normalized[1], $helpFlags, true)
+        && (str_starts_with($normalized[1], '-') || ! rector_is_known_command($normalized[1]))
+    ) {
+        array_splice($normalized, 1, 0, 'process');
+    }
+
+    return $normalized;
+}
+
+/**
+ * The commands a leading token may name; anything else is a path for the default "process" command.
+ */
+function rector_is_known_command(string $token): bool
+{
+    return in_array(
+        $token,
+        ['process', 'worker', 'list-rules', 'validate-config', 'composer-based'],
+        true
+    );
+}

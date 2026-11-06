@@ -17,7 +17,7 @@ final class InstalledPackageResolverTest extends TestCase
         $installedPackages = $installedPackageResolver->resolve();
 
         $this->assertContainsOnlyInstancesOf(InstalledPackage::class, $installedPackages);
-        $this->assertGreaterThan(77, count($installedPackages));
+        $this->assertGreaterThan(70, count($installedPackages));
     }
 
     public function testFallbackToCurrentWorkingDirectory(): void
@@ -26,7 +26,7 @@ final class InstalledPackageResolverTest extends TestCase
         $installedPackages = $installedPackageResolver->resolve();
 
         $this->assertContainsOnlyInstancesOf(InstalledPackage::class, $installedPackages);
-        $this->assertGreaterThan(77, count($installedPackages));
+        $this->assertGreaterThan(70, count($installedPackages));
     }
 
     public function testComposerJsonHasPriorityOverOutdatedInstalledJson(): void

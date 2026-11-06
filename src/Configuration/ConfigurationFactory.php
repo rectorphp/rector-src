@@ -7,10 +7,9 @@ namespace Rector\Configuration;
 use Rector\Agentic\TerminalDetector;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\Style\RectorStyle;
 use Rector\FileSystem\FilePathFilter;
 use Rector\ValueObject\Configuration;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 /**
@@ -19,7 +18,7 @@ use Webmozart\Assert\Assert;
 final readonly class ConfigurationFactory
 {
     public function __construct(
-        private SymfonyStyle $symfonyStyle,
+        private RectorStyle $rectorStyle,
         private OnlyRuleResolver $onlyRuleResolver,
         private FilePathFilter $filePathFilter,
     ) {
@@ -51,38 +50,50 @@ final readonly class ConfigurationFactory
 
     /**
      * Needs to run in the start of the life cycle, since the rest of workflow uses it.
+     *
+     * @param string[] $commandLinePaths
+     * @param string[] $onlyRuleInputs
      */
-    public function createFromInput(InputInterface $input): Configuration
-    {
-        $isDryRun = (bool) $input->getOption(Option::DRY_RUN);
-        $shouldClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
+    public function create(
+        array $commandLinePaths,
+        bool $isDryRun,
+        bool $shouldClearCache,
+        bool $noProgressBar,
+        bool $noDiffs,
+        string $outputFormat,
+        array $onlyRuleInputs,
+        bool $isComposerBased,
+        bool $isPhpOnly,
+        ?string $onlySuffix,
+        ?string $rawFilter,
+        bool $isDebug,
+        ?string $memoryLimit,
+        string $parallelPort,
+        string $parallelIdentifier,
+        ?int $maxChanges,
+        bool $showRulesSummary,
+    ): Configuration {
+        $showProgressBar = $this->shouldShowProgressBar($noProgressBar, $outputFormat);
 
-        $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
-        $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);
+        $showDiffs = $this->shouldShowDiffs($noDiffs);
 
-        $showDiffs = $this->shouldShowDiffs($input);
-
-        $paths = $this->resolvePaths($input);
+        $paths = $this->resolvePaths($commandLinePaths);
 
         $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
         // filter rule and path
-        /** @var string[] $onlyRuleInputs */
-        $onlyRuleInputs = (array) $input->getOption(Option::ONLY);
         $onlyRules = array_map(
             $this->onlyRuleResolver->resolve(...),
             $onlyRuleInputs
         );
 
-        $onlySuffix = $input->getOption(Option::ONLY_SUFFIX);
         if ($onlySuffix !== null) {
-            $this->symfonyStyle->warning(
+            $this->rectorStyle->warning(
                 'The "--only-suffix" option is deprecated and will be removed. Use "--filter" instead, e.g. --filter="*Controller.php"'
             );
         }
 
-        $rawFilter = $input->getOption(Option::FILTER);
-        $filters = $rawFilter !== null ? $this->filePathFilter->parsePatterns((string) $rawFilter) : [];
+        $filters = $rawFilter !== null ? $this->filePathFilter->parsePatterns($rawFilter) : [];
 
         // "--only"/"--only-suffix"/"--filter" narrow the run, so skips outside the scope look falsely unused;
         // mark the run as narrowed to disable unused skip reporting and avoid false positives
@@ -91,38 +102,29 @@ final readonly class ConfigurationFactory
         }
 
         $isParallel = SimpleParameterProvider::provideBoolParameter(Option::PARALLEL);
-        $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
-        $parallelIdentifier = (string) $input->getOption(Option::PARALLEL_IDENTIFIER);
-        $isDebug = (bool) $input->getOption(Option::DEBUG);
 
         // using debug disables parallel, so emitting exception is straightforward and easier to debug
         if ($isDebug) {
             $isParallel = false;
         }
 
-        $maxChanges = $this->resolveMaxChanges($input);
+        $maxChanges = $this->resolveMaxChanges($maxChanges);
 
         // a global change counter cannot be shared across parallel workers, so enforce the limit in a single process
         if ($maxChanges !== null) {
             $isParallel = false;
         }
 
-        $memoryLimit = $this->resolveMemoryLimit($input);
+        $memoryLimit = $this->resolveMemoryLimit($memoryLimit);
 
         $isReportingWithRealPath = SimpleParameterProvider::provideBoolParameter(Option::ABSOLUTE_FILE_PATH);
 
         $levelOverflows = SimpleParameterProvider::provideArrayParameter(Option::LEVEL_OVERFLOWS);
 
-        $showRulesSummary = (bool) $input->getOption(Option::RULES_SUMMARY);
-
-        $isComposerBased = (bool) $input->getOption(Option::COMPOSER_BASED);
-
         // "--composer-based" narrows the run the same way "--only" does
         if ($isComposerBased) {
             SimpleParameterProvider::setParameter(Option::IS_RUN_NARROWED, true);
         }
-
-        $isPhpOnly = (bool) $input->getOption(Option::PHP);
 
         // "--php" narrows the run the same way "--only" does
         if ($isPhpOnly) {
@@ -154,22 +156,19 @@ final readonly class ConfigurationFactory
         );
     }
 
-    private function resolveMaxChanges(InputInterface $input): ?int
+    private function resolveMaxChanges(?int $maxChanges): ?int
     {
-        $maxChanges = $input->getOption(Option::MAX_CHANGES);
         if ($maxChanges === null) {
             return null;
         }
 
-        $maxChanges = (int) $maxChanges;
         Assert::positiveInteger($maxChanges);
 
         return $maxChanges;
     }
 
-    private function shouldShowProgressBar(InputInterface $input, string $outputFormat): bool
+    private function shouldShowProgressBar(bool $noProgressBar, string $outputFormat): bool
     {
-        $noProgressBar = (bool) $input->getOption(Option::NO_PROGRESS_BAR);
         if ($noProgressBar) {
             return false;
         }
@@ -179,16 +178,15 @@ final readonly class ConfigurationFactory
             return false;
         }
 
-        if ($this->symfonyStyle->isVerbose()) {
+        if ($this->rectorStyle->isVerbose()) {
             return false;
         }
 
         return $outputFormat === ConsoleOutputFormatter::NAME;
     }
 
-    private function shouldShowDiffs(InputInterface $input): bool
+    private function shouldShowDiffs(bool $noDiffs): bool
     {
-        $noDiffs = (bool) $input->getOption(Option::NO_DIFFS);
         if ($noDiffs) {
             return false;
         }
@@ -198,12 +196,11 @@ final readonly class ConfigurationFactory
     }
 
     /**
+     * @param string[] $commandLinePaths
      * @return string[]|mixed[]
      */
-    private function resolvePaths(InputInterface $input): array
+    private function resolvePaths(array $commandLinePaths): array
     {
-        $commandLinePaths = (array) $input->getArgument(Option::SOURCE);
-
         // give priority to command line
         if ($commandLinePaths !== []) {
             // mark the run as narrowed, so unused skip reporting can be disabled to avoid false positives
@@ -241,11 +238,10 @@ final readonly class ConfigurationFactory
         }
     }
 
-    private function resolveMemoryLimit(InputInterface $input): string|null
+    private function resolveMemoryLimit(?string $memoryLimit): string|null
     {
-        $memoryLimit = $input->getOption(Option::MEMORY_LIMIT);
         if ($memoryLimit !== null) {
-            return (string) $memoryLimit;
+            return $memoryLimit;
         }
 
         if (! SimpleParameterProvider::hasParameter(Option::MEMORY_LIMIT)) {

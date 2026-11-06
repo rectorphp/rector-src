@@ -4,67 +4,57 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
+use Entropy\Console\Contract\CommandInterface;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Configuration\Option;
+use Rector\Console\ExitCode;
 use Rector\Console\Rule\AllRectorRulesProvider;
+use Rector\Console\Style\RectorStyle;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Skipper\Skipper\Skipper;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class ListRulesCommand extends Command
+final readonly class ListRulesCommand implements CommandInterface
 {
     /**
      * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
-        private readonly Skipper $skipper,
-        private readonly AllRectorRulesProvider $allRectorRulesProvider,
-        private readonly array $rectors
+        private RectorStyle $rectorStyle,
+        private Skipper $skipper,
+        private AllRectorRulesProvider $allRectorRulesProvider,
+        private array $rectors
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function getName(): string
     {
-        $this->setName('list-rules');
-        $this->setDescription('Show loaded Rectors');
-
-        $this->setAliases(['show-rules']);
-
-        $this->addOption(
-            Option::OUTPUT_FORMAT,
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Select output format',
-            ConsoleOutputFormatter::NAME
-        );
-
-        $this->addOption(Option::ONLY, null, InputOption::VALUE_REQUIRED, 'Fully qualified rule class name');
-
-        $this->addOption(
-            'all',
-            null,
-            InputOption::VALUE_NONE,
-            'List all existing rules in core and rector-* packages, not only the loaded ones'
-        );
+        return 'list-rules';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getDescription(): string
     {
-        $rectorClasses = $input->getOption('all')
+        return 'Show loaded Rectors';
+    }
+
+    /**
+     * @param bool   $all          List all existing rules in core and rector-* packages, not only the loaded ones
+     * @param string $outputFormat Select output format
+     *
+     * @option $outputFormat
+     *
+     * @api invoked via reflection by the Entropy console application
+     *
+     * @return ExitCode::*
+     */
+    public function run(bool $all = false, string $outputFormat = ConsoleOutputFormatter::NAME): int
+    {
+        $rectorClasses = $all
             ? $this->allRectorRulesProvider->provide()
             : $this->resolveRectorClasses();
 
         $skippedClasses = $this->getSkippedRectorClasses();
 
-        $outputFormat = $input->getOption(Option::OUTPUT_FORMAT);
         if ($outputFormat === 'json') {
             $data = [
                 'rectors' => $rectorClasses,
@@ -72,21 +62,21 @@ final class ListRulesCommand extends Command
             ];
 
             echo Json::encode($data, pretty: true) . PHP_EOL;
-            return Command::SUCCESS;
+            return ExitCode::SUCCESS;
         }
 
-        $this->symfonyStyle->title('Loaded Rector rules');
-        $this->symfonyStyle->listing($rectorClasses);
+        $this->rectorStyle->title('Loaded Rector rules');
+        $this->rectorStyle->listing($rectorClasses);
 
         if ($skippedClasses !== []) {
-            $this->symfonyStyle->title('Skipped Rector rules');
-            $this->symfonyStyle->listing($skippedClasses);
+            $this->rectorStyle->title('Skipped Rector rules');
+            $this->rectorStyle->listing($skippedClasses);
         }
 
-        $this->symfonyStyle->newLine();
-        $this->symfonyStyle->note(sprintf('Loaded %d rules', count($rectorClasses)));
+        $this->rectorStyle->newLine();
+        $this->rectorStyle->note(sprintf('Loaded %d rules', count($rectorClasses)));
 
-        return Command::SUCCESS;
+        return ExitCode::SUCCESS;
     }
 
     /**

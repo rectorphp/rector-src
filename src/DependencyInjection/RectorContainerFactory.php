@@ -9,7 +9,6 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Config\RectorConfig;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\ValueObject\Bootstrap\BootstrapConfigs;
-use Symfony\Component\Console\Input\ArgvInput;
 
 final class RectorContainerFactory
 {
@@ -21,7 +20,7 @@ final class RectorContainerFactory
 
         // only the main process checks the configuration: the parallel workers share its cache directory,
         // and a worker that clears the cache would delete files the other workers are writing
-        if ($mainConfigFile !== null && new ArgvInput()->getFirstArgument() !== 'worker') {
+        if ($mainConfigFile !== null && ! $this->isWorkerRun()) {
             /** @var ChangedFilesDetector $changedFilesDetector */
             $changedFilesDetector = $rectorConfig->make(ChangedFilesDetector::class);
             $changedFilesDetector->setFirstResolvedConfigFileInfo($mainConfigFile);
@@ -49,5 +48,21 @@ final class RectorContainerFactory
         $rectorConfig->boot();
 
         return $rectorConfig;
+    }
+
+    /**
+     * The parallel workers are launched with "worker" as the first CLI argument.
+     */
+    private function isWorkerRun(): bool
+    {
+        foreach (array_slice($_SERVER['argv'] ?? [], 1) as $arg) {
+            if (! is_string($arg) || str_starts_with($arg, '-')) {
+                continue;
+            }
+
+            return $arg === 'worker';
+        }
+
+        return false;
     }
 }

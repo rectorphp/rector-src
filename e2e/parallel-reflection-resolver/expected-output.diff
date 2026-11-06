@@ -15,7 +15,6 @@
 Applied rules:
  * RemoveUnusedPrivatePropertyRector
 
-
 2) src/SomeClassNotFound.php:4
 
     ---------- begin diff ----------
