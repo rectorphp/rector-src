@@ -17,7 +17,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 /**
  * Arrow functions capture outer variables by value, so writes inside the conditional would be lost
  */
-final readonly class VariableModifiedInConditionalAnalyzer
+final readonly class ExprModifiedInConditionalAnalyzer
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder

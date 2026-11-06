@@ -20,8 +20,8 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\Php84\NodeAnalyzer\ExprModifiedInConditionalAnalyzer;
 use Rector\Php84\NodeAnalyzer\ForeachKeyUsedInConditionalAnalyzer;
-use Rector\Php84\NodeAnalyzer\VariableModifiedInConditionalAnalyzer;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -39,7 +39,7 @@ final readonly class ForeachToArrayAnyAllFactory
         private NodeTypeResolver $nodeTypeResolver,
         private NodeFactory $nodeFactory,
         private NodeNameResolver $nodeNameResolver,
-        private VariableModifiedInConditionalAnalyzer $variableModifiedInConditionalAnalyzer
+        private ExprModifiedInConditionalAnalyzer $exprModifiedInConditionalAnalyzer
     ) {
     }
 
@@ -115,7 +115,7 @@ final readonly class ForeachToArrayAnyAllFactory
 
             $condition = $firstNodeInsideForeach->cond;
 
-            if ($this->variableModifiedInConditionalAnalyzer->isModified($condition)) {
+            if ($this->exprModifiedInConditionalAnalyzer->isModified($condition)) {
                 continue;
             }
 
@@ -197,7 +197,7 @@ final readonly class ForeachToArrayAnyAllFactory
             $firstNodeInsideForeach = $foreach->stmts[0];
             $condition = $firstNodeInsideForeach->cond;
 
-            if ($this->variableModifiedInConditionalAnalyzer->isModified($condition)) {
+            if ($this->exprModifiedInConditionalAnalyzer->isModified($condition)) {
                 continue;
             }
 
