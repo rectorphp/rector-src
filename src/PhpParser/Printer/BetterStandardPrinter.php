@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Pipe;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
@@ -522,6 +523,11 @@ final class BetterStandardPrinter extends Standard
 
         if ($node->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
             return;
+        }
+
+        // A reused ternary needs parentheses in its new, tighter-binding coalesce context.
+        if ($node instanceof Coalesce && $node->right instanceof Ternary) {
+            $node->right->setAttribute(AttributeKey::WRAPPED_IN_PARENTHESES, true);
         }
 
         if ($node->left instanceof Assign
