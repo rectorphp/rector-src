@@ -6,13 +6,19 @@ namespace Rector\Tests\Caching\Detector;
 
 use FilesystemIterator;
 use Nette\Utils\FileSystem;
+use Rector\Caching\Cache;
+use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilePathHelper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Util\FileHasher;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Webmozart\Assert\Assert;
 
 final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
@@ -51,8 +57,6 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
     {
         parent::setUp();
 
-        $this->changedFilesDetector = $this->make(ChangedFilesDetector::class);
-
         $workingDirectory = getcwd();
         Assert::string($workingDirectory);
         $this->originalWorkingDirectory = $workingDirectory;
@@ -64,6 +68,14 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
         $this->rootDirectory = $temporaryDirectory . '/' . uniqid('rector_portable_cache_');
         $this->firstCheckoutDirectory = $this->rootDirectory . '/first/project';
         $this->secondCheckoutDirectory = $this->rootDirectory . '/second/project';
+
+        // own cache directory, as the shared Cache service keeps whichever directory it was first built with
+        $this->changedFilesDetector = new ChangedFilesDetector(
+            $this->make(FileHashComputer::class),
+            new Cache(new FileCacheStorage($this->getCacheDirectory(), $this->make(SymfonyFilesystem::class))),
+            $this->make(FileHasher::class),
+            $this->make(FilePathHelper::class)
+        );
 
         $this->createCheckout($this->firstCheckoutDirectory);
         $this->createCheckout($this->secondCheckoutDirectory);
@@ -281,9 +293,14 @@ final class ChangedFilesDetectorPortableCacheTest extends AbstractLazyTestCase
         }
     }
 
+    private function getCacheDirectory(): string
+    {
+        return $this->rootDirectory . '/cache';
+    }
+
     private function countCacheEntries(): int
     {
-        $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
+        $cacheDirectory = $this->getCacheDirectory();
         if (! is_dir($cacheDirectory)) {
             return 0;
         }
