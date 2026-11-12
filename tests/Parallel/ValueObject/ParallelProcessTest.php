@@ -6,19 +6,24 @@ namespace Rector\Tests\Parallel\ValueObject;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use Nette\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\RequiresFunction;
-use PHPUnit\Framework\TestCase;
 use React\EventLoop\StreamSelectLoop;
 use React\Stream\DuplexResourceStream;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Parallel\ValueObject\ParallelProcess;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Throwable;
 
 #[RequiresFunction('posix_kill')]
-final class ParallelProcessTest extends TestCase
+final class ParallelProcessTest extends AbstractLazyTestCase
 {
     private StreamSelectLoop $streamSelectLoop;
 
     private string $pidFile;
+
+    private string $cacheDirectory;
 
     /**
      * @var string[]
@@ -34,6 +39,13 @@ final class ParallelProcessTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
+        // the container sets the default cache directory
+        self::getContainer();
+        $this->cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
+        FileSystem::createDir($this->cacheDirectory);
+
         $this->streamSelectLoop = new StreamSelectLoop();
         $this->pidFile = (string) tempnam(sys_get_temp_dir(), 'rector_parallel_process_test');
     }
@@ -124,7 +136,13 @@ final class ParallelProcessTest extends TestCase
             escapeshellarg($this->pidFile)
         );
 
-        $parallelProcess = new ParallelProcess($command, $this->streamSelectLoop, 1, $forkedWorker);
+        $parallelProcess = new ParallelProcess(
+            $command,
+            $this->streamSelectLoop,
+            1,
+            $this->cacheDirectory,
+            $forkedWorker
+        );
         $parallelProcess->start(
             static function (): void {
             },

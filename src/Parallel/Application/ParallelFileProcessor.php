@@ -204,8 +204,8 @@ final class ParallelFileProcessor
                     '',
                     $streamSelectLoop,
                     $timeoutInSeconds,
-                    $this->createForkedWorker($input, $processIdentifier, $serverPort),
-                    $cacheDirectory
+                    $cacheDirectory,
+                    $this->createForkedWorker($input, $processIdentifier, $serverPort)
                 );
             } else {
                 $workerCommandLine = $this->workerCommandLineFactory->create(
@@ -217,7 +217,12 @@ final class ParallelFileProcessor
                     $serverPort,
                 );
 
-                $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
+                $parallelProcess = new ParallelProcess(
+                    $workerCommandLine,
+                    $streamSelectLoop,
+                    $timeoutInSeconds,
+                    $cacheDirectory
+                );
             }
 
             $parallelProcess->start(

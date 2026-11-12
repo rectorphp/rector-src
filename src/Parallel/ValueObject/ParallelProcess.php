@@ -58,15 +58,13 @@ final class ParallelProcess
      * @param (callable(): int)|null $forkedWorker Runs the worker in a fork of the current process and returns
      * its exit code. The fork starts with the container and the classes the main process already loaded,
      * instead of booting them again; the command is not used then.
-     * @param string|null $forkedErrorLogDirectory Where a forked worker logs its PHP errors, the system
-     * temp directory by default
      */
     public function __construct(
         private readonly string $command,
         private readonly LoopInterface $loop,
         private readonly int $timetoutInSeconds,
-        ?callable $forkedWorker = null,
-        private readonly ?string $forkedErrorLogDirectory = null
+        private readonly string $cacheDirectory,
+        ?callable $forkedWorker = null
     ) {
         $this->forkedWorker = $forkedWorker;
     }
@@ -193,7 +191,7 @@ final class ParallelProcess
      */
     private function startForked(callable $onExit): void
     {
-        $errorLogFilePath = tempnam($this->forkedErrorLogDirectory ?? sys_get_temp_dir(), 'rector-worker-');
+        $errorLogFilePath = tempnam($this->cacheDirectory, 'rector-worker-');
         if ($errorLogFilePath === false) {
             throw new ParallelShouldNotHappenException('Failed creating the error log file of a worker.');
         }
