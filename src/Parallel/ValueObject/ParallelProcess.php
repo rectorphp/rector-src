@@ -239,7 +239,10 @@ final class ParallelProcess
      */
     private function runForkedWorker(string $errorLogFilePath): never
     {
+        // bin/rector.php displays errors on stderr, which would print a crash of the fork on the terminal
         ini_set('display_errors', '0');
+
+        // off in some php.ini files; the error log stays empty then and the reason of a crash is lost
         ini_set('log_errors', '1');
         ini_set('error_log', $errorLogFilePath);
 
