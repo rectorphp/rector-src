@@ -6,6 +6,6 @@ final class NewDynamicNewExtends
 {
     public function run()
     {
-        new class extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader {};
+        new class extends SomeRealType {};
     }
 }
