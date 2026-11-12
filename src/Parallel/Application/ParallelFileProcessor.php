@@ -6,13 +6,17 @@ namespace Rector\Parallel\Application;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Random;
+use PHPStan\Turbo\TurboExtensionEnabler;
+use PHPStan\Turbo\TurboExtensionSelector;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Command\ProcessCommand;
+use Rector\Console\Command\WorkerCommand;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Parallel\Enum\Action;
 use Rector\Parallel\Enum\Content;
@@ -23,16 +27,22 @@ use Rector\Parallel\ValueObject\Bridge;
 use Rector\Parallel\ValueObject\ParallelProcess;
 use Rector\Parallel\ValueObject\ProcessPool;
 use Rector\Parallel\ValueObject\Schedule;
+use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Throwable;
 
 /**
  * Workers process their own balanced bucket first, and are replaced by a fresh one bound to the same bucket
  * after a few chunks to free memory. Idle workers take pending chunks from the largest remaining queue.
  * Each chunk advances progress and re-arms the per-job timeout.
+ *
+ * Where possible a worker is forked from the main process, so it starts with the container the main process
+ * already booted; otherwise it is spawned as a new process that boots on its own.
  */
 final class ParallelFileProcessor
 {
@@ -46,9 +56,19 @@ final class ParallelFileProcessor
 
     private ProcessPool $processPool;
 
+    /**
+     * @var callable(): WorkerCommand
+     */
+    private $workerCommandResolver;
+
+    /**
+     * @param callable(): WorkerCommand $workerCommandResolver Lazy, as the worker command itself depends on this class
+     */
     public function __construct(
         private readonly WorkerCommandLineFactory $workerCommandLineFactory,
+        callable $workerCommandResolver,
     ) {
+        $this->workerCommandResolver = $workerCommandResolver;
     }
 
     /**
@@ -148,6 +168,13 @@ final class ParallelFileProcessor
 
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
         $fileChunksBudgetPerProcess = [];
+        $canForkWorkers = $this->canForkWorkers();
+
+        // forked workers log their PHP errors next to the cache
+        $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
+        if ($canForkWorkers) {
+            FileSystem::createDir($cacheDirectory);
+        }
 
         $processSpawner = function (int $bucketKey) use (
             $parallelResultCollector,
@@ -162,6 +189,8 @@ final class ParallelFileProcessor
             $streamSelectLoop,
             $timeoutInSeconds,
             $handleErrorCallable,
+            $canForkWorkers,
+            $cacheDirectory,
             &$fileChunksBudgetPerProcess,
             &$processSpawner,
             &$processedFilesCount
@@ -170,16 +199,26 @@ final class ParallelFileProcessor
             $bucketKeyByIdentifier[$processIdentifier] = $bucketKey;
             $fileChunksBudgetPerProcess[$processIdentifier] = self::MAX_CHUNKS_PER_WORKER;
 
-            $workerCommandLine = $this->workerCommandLineFactory->create(
-                $mainScript,
-                ProcessCommand::class,
-                'worker',
-                $input,
-                $processIdentifier,
-                $serverPort,
-            );
+            if ($canForkWorkers) {
+                $parallelProcess = new ParallelProcess(
+                    '',
+                    $streamSelectLoop,
+                    $timeoutInSeconds,
+                    $this->createForkedWorker($input, $processIdentifier, $serverPort),
+                    $cacheDirectory
+                );
+            } else {
+                $workerCommandLine = $this->workerCommandLineFactory->create(
+                    $mainScript,
+                    ProcessCommand::class,
+                    'worker',
+                    $input,
+                    $processIdentifier,
+                    $serverPort,
+                );
 
-            $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
+                $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
+            }
 
             $parallelProcess->start(
                 // 1. callable on data
@@ -284,6 +323,52 @@ final class ParallelFileProcessor
         }
 
         return $parallelResultCollector->createProcessResult();
+    }
+
+    /**
+     * Forking skips starting PHP and booting the container again for every worker, including the ones that
+     * replace a recycled worker. A fork runs on what the main process has loaded, so it is only used when a
+     * spawned worker would not get more than that - PHPStan Turbo on its command line.
+     */
+    private function canForkWorkers(): bool
+    {
+        if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
+            return false;
+        }
+
+        if (! extension_loaded('pcntl') || ! extension_loaded('posix')) {
+            return false;
+        }
+
+        $disabledFunctions = (string) ini_get('disable_functions');
+        if (str_contains($disabledFunctions, 'pcntl_') || str_contains($disabledFunctions, 'posix_kill')) {
+            return false;
+        }
+
+        return TurboExtensionEnabler::isLoaded() || TurboExtensionSelector::findExtensionForWorkers() === null;
+    }
+
+    /**
+     * @return callable(): int
+     */
+    private function createForkedWorker(InputInterface $input, string $processIdentifier, int $serverPort): callable
+    {
+        $workerInput = new ArrayInput($this->workerCommandLineFactory->createInputParameters(
+            ProcessCommand::class,
+            $input,
+            $processIdentifier,
+            $serverPort
+        ));
+
+        return function () use ($workerInput): int {
+            // the main process collects PHP errors on its own while it waits for the workers;
+            // a worker leaves them to PHP, the same as a spawned one
+            restore_error_handler();
+
+            $workerCommand = ($this->workerCommandResolver)();
+
+            return $workerCommand->run($workerInput, new ConsoleOutput());
+        };
     }
 
     /**

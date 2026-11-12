@@ -68,6 +68,29 @@ final class ParallelProcessTest extends TestCase
         $this->assertSame(['Child process timed out after 1 seconds'], $this->errorMessages);
     }
 
+    #[RequiresFunction('pcntl_fork')]
+    public function testTimeoutTerminatesForkedWorker(): void
+    {
+        $parallelProcess = $this->startWorker(true);
+        $this->bindConnection($parallelProcess);
+
+        $parallelProcess->request([]);
+
+        $this->assertWorkerIsTerminated();
+        $this->assertSame(['Child process timed out after 1 seconds'], $this->errorMessages);
+    }
+
+    #[RequiresFunction('pcntl_fork')]
+    public function testQuitTerminatesForkedWorkerThatIsNotConnected(): void
+    {
+        $parallelProcess = $this->startWorker(true);
+
+        $parallelProcess->quit();
+
+        $this->assertWorkerIsTerminated();
+        $this->assertSame([], $this->errorMessages);
+    }
+
     public function testQuitKeepsTimeoutOfBusyWorker(): void
     {
         $parallelProcess = $this->startWorker();
@@ -83,8 +106,17 @@ final class ParallelProcessTest extends TestCase
     /**
      * Starts a worker that neither connects nor answers, like one that is still booting or stuck in an endless loop
      */
-    private function startWorker(): ParallelProcess
+    private function startWorker(bool $isForked = false): ParallelProcess
     {
+        $pidFile = $this->pidFile;
+        $forkedWorker = $isForked ? static function () use ($pidFile): int {
+            file_put_contents($pidFile, getmypid());
+            sleep(10);
+
+            return 0;
+        }
+        : null;
+
         $command = sprintf(
             '%s -r %s -- %s',
             escapeshellarg(PHP_BINARY),
@@ -92,7 +124,7 @@ final class ParallelProcessTest extends TestCase
             escapeshellarg($this->pidFile)
         );
 
-        $parallelProcess = new ParallelProcess($command, $this->streamSelectLoop, 1);
+        $parallelProcess = new ParallelProcess($command, $this->streamSelectLoop, 1, $forkedWorker);
         $parallelProcess->start(
             static function (): void {
             },

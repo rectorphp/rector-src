@@ -198,6 +198,34 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         ];
     }
 
+    public function testInputParametersOfForkedWorker(): void
+    {
+        $arrayInput = new ArrayInput([
+            self::COMMAND => 'process',
+            Option::SOURCE => ['src'],
+            '--' . Option::DRY_RUN => true,
+            '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
+            '--' . Option::ONLY => ['FirstRector', 'SecondRector'],
+        ], $this->prepareProcessCommandDefinition());
+
+        $inputParameters = $this->workerCommandLineFactory->createInputParameters(
+            ProcessCommand::class,
+            $arrayInput,
+            'identifier',
+            2000
+        );
+
+        // the same options the command line of a spawned worker carries; unset ones are left out
+        $this->assertSame([
+            '--dry-run' => true,
+            '--only' => ['FirstRector', 'SecondRector'],
+            '--port' => '2000',
+            '--identifier' => 'identifier',
+            'source' => ['src'],
+            '--output-format' => 'json',
+        ], $inputParameters);
+    }
+
     /**
      * The worker gets PHPStan Turbo through two -d options, when PHPStan ships a binary for this runtime
      */
