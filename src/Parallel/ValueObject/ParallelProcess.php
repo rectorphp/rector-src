@@ -16,6 +16,7 @@ use Rector\Parallel\Enum\Content;
 use Rector\Parallel\Enum\ReactCommand;
 use Rector\Parallel\Enum\ReactEvent;
 use Rector\Parallel\Exception\ParallelShouldNotHappenException;
+use Rector\Parallel\Stream\StderrToFileFilter;
 use Throwable;
 
 /**
@@ -243,6 +244,10 @@ final class ParallelProcess
         // off in some php.ini files; the error log stays empty then and the reason of a crash is lost
         ini_set('log_errors', '1');
         ini_set('error_log', $errorLogFilePath);
+
+        // what the worker itself writes to STDERR, e.g. a console error message
+        stream_filter_register(StderrToFileFilter::NAME, StderrToFileFilter::class);
+        stream_filter_append(STDERR, StderrToFileFilter::NAME, STREAM_FILTER_WRITE, $errorLogFilePath);
 
         $forkedWorker = $this->forkedWorker;
 

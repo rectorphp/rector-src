@@ -103,6 +103,41 @@ final class ParallelProcessTest extends AbstractLazyTestCase
         $this->assertSame([], $this->errorMessages);
     }
 
+    #[RequiresFunction('pcntl_fork')]
+    public function testForkedWorkerStderrIsCaptured(): void
+    {
+        $exitCode = null;
+        $errorOutput = null;
+
+        $parallelProcess = new ParallelProcess(
+            '',
+            $this->streamSelectLoop,
+            1,
+            $this->cacheDirectory,
+            static function (): int {
+                fwrite(STDERR, 'worker failed');
+
+                return 3;
+            }
+        );
+        $parallelProcess->start(
+            static function (): void {
+            },
+            static function (): void {
+            },
+            function (?int $workerExitCode, string $workerErrorOutput) use (&$exitCode, &$errorOutput): void {
+                $exitCode = $workerExitCode;
+                $errorOutput = $workerErrorOutput;
+                $this->hasExited = true;
+            }
+        );
+
+        $this->runLoopUntil(fn (): bool => $this->hasExited);
+
+        $this->assertSame(3, $exitCode);
+        $this->assertSame('worker failed', $errorOutput);
+    }
+
     public function testQuitKeepsTimeoutOfBusyWorker(): void
     {
         $parallelProcess = $this->startWorker();
