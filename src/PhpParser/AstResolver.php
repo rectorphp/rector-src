@@ -23,8 +23,8 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Parser\RectorParser;
 use Rector\Reflection\MethodReflectionResolver;
@@ -48,12 +48,12 @@ final class AstResolver
 
     public function __construct(
         private readonly RectorParser $rectorParser,
-        private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly MethodReflectionResolver $methodReflectionResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver
     ) {
     }
 
@@ -289,9 +289,9 @@ final class AstResolver
             throw $throwable;
         }
 
-        return $this->parsedFileNodes[$fileName] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile(
+        return $this->parsedFileNodes[$fileName] = $this->phpStanNodeScopeResolver->processNodes(
+            $stmts,
             $fileName,
-            $stmts
         );
     }
 
