@@ -19,8 +19,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\InvalidTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\Attributes\AttributeMirrorer;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
@@ -52,6 +54,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
     public function __construct(
         private ClassAnnotationMatcher $classAnnotationMatcher,
         private TokenIteratorFactory $tokenIteratorFactory,
+        private PhpDocParser $phpDocParser,
         private AttributeMirrorer $attributeMirrorer,
         private ObjectTypeSpecifier $objectTypeSpecifier
     ) {
@@ -85,13 +88,33 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 continue;
             }
 
-            if ($phpDocChildNode->value instanceof DoctrineTagValueNode) {
+            $doctrineTagValueNode = $phpDocChildNode->value;
+
+            // phpdoc-parser reads the arguments only when "(" follows the tag name directly
+            $argumentsOnNextLine = $this->resolveArgumentsOnNextLine($doctrineTagValueNode);
+            if ($argumentsOnNextLine !== null && $this->resolveAnnotationClass(
+                $phpDocChildNode->name,
+                $phpNode
+            ) !== null) {
+                $doctrineTagValueNode = $this->parseDoctrineTagValue($phpDocChildNode->name, $argumentsOnNextLine);
+
+                // keep the tag as it is, so its content is not lost
+                if (! $doctrineTagValueNode instanceof DoctrineTagValueNode) {
+                    // e.g. the arguments end after a nested annotation on the next line; keep these too
+                    if (! $this->isClosedContent($argumentsOnNextLine)) {
+                        $incompleteAnnotationContent = $argumentsOnNextLine;
+                    }
+
+                    continue;
+                }
+            }
+
+            if ($doctrineTagValueNode instanceof DoctrineTagValueNode) {
                 $fullyQualifiedAnnotationClass = $this->resolveDoctrineTagClass($phpDocChildNode->name, $phpNode);
                 if ($fullyQualifiedAnnotationClass === null) {
                     continue;
                 }
 
-                $doctrineTagValueNode = $phpDocChildNode->value;
                 $originalContent = '(' . implode(', ', $doctrineTagValueNode->annotation->arguments) . ')'
                     . $doctrineTagValueNode->description;
 
@@ -110,18 +133,8 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 continue;
             }
 
-            // known doc tag to annotation class
-            $fullyQualifiedAnnotationClass = $this->classAnnotationMatcher->resolveTagFullyQualifiedName(
-                $phpDocChildNode->name,
-                $phpNode
-            );
-
-            // not an annotations class
-            if (! \str_contains($fullyQualifiedAnnotationClass, '\\') && ! in_array(
-                $fullyQualifiedAnnotationClass,
-                self::ALLOWED_SHORT_ANNOTATIONS,
-                true
-            )) {
+            $fullyQualifiedAnnotationClass = $this->resolveAnnotationClass($phpDocChildNode->name, $phpNode);
+            if ($fullyQualifiedAnnotationClass === null) {
                 continue;
             }
 
@@ -132,6 +145,66 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 []
             );
         }
+    }
+
+    /**
+     * Doctrine skips the whitespace and "*" between the tag name and "(",
+     * e.g. "@Action" with "(id="value")" on the next line
+     */
+    private function resolveArgumentsOnNextLine(PhpDocTagValueNode $phpDocTagValueNode): ?string
+    {
+        if ($phpDocTagValueNode instanceof GenericTagValueNode) {
+            $content = $phpDocTagValueNode->value;
+        } elseif ($phpDocTagValueNode instanceof DoctrineTagValueNode && $phpDocTagValueNode->annotation->arguments === []) {
+            $content = $phpDocTagValueNode->description;
+        } else {
+            return null;
+        }
+
+        $content = ltrim($content);
+        if (! str_starts_with($content, '(')) {
+            return null;
+        }
+
+        return $content;
+    }
+
+    private function parseDoctrineTagValue(string $tagName, string $arguments): ?DoctrineTagValueNode
+    {
+        $tokenIterator = $this->tokenIteratorFactory->create('/** ' . $tagName . $arguments . ' */');
+        $phpDocNode = $this->phpDocParser->parse($tokenIterator);
+
+        $phpDocChildNode = $phpDocNode->children[0] ?? null;
+        if (! $phpDocChildNode instanceof PhpDocTagNode) {
+            return null;
+        }
+
+        if (! $phpDocChildNode->value instanceof DoctrineTagValueNode) {
+            return null;
+        }
+
+        return $phpDocChildNode->value;
+    }
+
+    /**
+     * Known doc tag to annotation class
+     */
+    private function resolveAnnotationClass(string $tagName, Node $phpNode): ?string
+    {
+        $fullyQualifiedAnnotationClass = $this->classAnnotationMatcher->resolveTagFullyQualifiedName(
+            $tagName,
+            $phpNode
+        );
+
+        if (\str_contains($fullyQualifiedAnnotationClass, '\\')) {
+            return $fullyQualifiedAnnotationClass;
+        }
+
+        if (in_array($fullyQualifiedAnnotationClass, self::ALLOWED_SHORT_ANNOTATIONS, true)) {
+            return $fullyQualifiedAnnotationClass;
+        }
+
+        return null;
     }
 
     /**
