@@ -52,6 +52,7 @@ use Rector\PhpParser\NodeVisitor\DefaultValueNodeVisitor;
 use Rector\PhpParser\NodeVisitor\LocalVariableScopeNodeVisitor;
 use Rector\PhpParser\NodeVisitor\NameAndArgNodeVisitor;
 use Rector\PhpParser\NodeVisitor\PhpVersionConditionNodeVisitor;
+use Rector\PhpParser\NodeVisitor\ReboundClosureNodeVisitor;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
 use Symfony\Component\Console\Application;
@@ -72,6 +73,7 @@ final class LazyContainerFactory
         LocalVariableScopeNodeVisitor::class,
         NameAndArgNodeVisitor::class,
         DefaultValueNodeVisitor::class,
+        ReboundClosureNodeVisitor::class,
     ];
 
     /**
