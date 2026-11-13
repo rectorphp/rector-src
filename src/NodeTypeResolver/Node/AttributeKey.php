@@ -169,4 +169,9 @@ final class AttributeKey
      * e.g. an array callable passed to a "string|array|null" parameter
      */
     public const string IS_ARG_NOT_ACCEPTING_CLOSURE = 'is_arg_not_accepting_closure';
+
+    /**
+     * Closure or arrow function with rebound $this, e.g. (fn () => ...)->call($object)
+     */
+    public const string IS_REBOUND_CLOSURE = 'is_rebound_closure';
 }
