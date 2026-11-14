@@ -5,15 +5,13 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\Symfony\Set\TwigSetList;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -123,10 +121,10 @@ PHP;
 $targetFilePath = __DIR__ . '/../src/Configuration/ComposerBasedTriggerPackages.php';
 file_put_contents($targetFilePath, $fileContents);
 
-$symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+$rectorStyle = new RectorStyleFactory()->create();
 
 foreach ($triggerPackages as $argumentName => $packageNames) {
-    $symfonyStyle->writeln(sprintf('<fg=green>%s</>: %d packages', $argumentName, count($packageNames)));
+    $rectorStyle->writeln(sprintf('<fg=green>%s</>: %d packages', $argumentName, count($packageNames)));
 }
 
-$symfonyStyle->success(sprintf('File "%s" was generated', realpath($targetFilePath)));
+$rectorStyle->success(sprintf('File "%s" was generated', realpath($targetFilePath)));

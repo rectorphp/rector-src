@@ -60,7 +60,7 @@ final readonly class MissConfigurationReporter
             return;
         }
 
-        $this->symfonyStyle->warning(sprintf(
+        $this->rectorStyle->warning(sprintf(
             '%s matched a file, but the rule would not have changed it. You can remove %s from "->withSkip()"',
             count($unnecessarySkips) > 1 ? 'These skips are unnecessary, they' : 'This skip is unnecessary, it',
             count($unnecessarySkips) > 1 ? 'them' : 'it'
@@ -72,7 +72,7 @@ final readonly class MissConfigurationReporter
             $unnecessarySkips
         );
 
-        $this->symfonyStyle->listing($spacedUnnecessarySkips);
+        $this->rectorStyle->listing($spacedUnnecessarySkips);
     }
 
     public function reportSkippedNeverRegisteredRules(): int
