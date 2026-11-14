@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\NewTypeResolver\Source\SomeRealType;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\NewTypeResolver
@@ -31,7 +32,7 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
             $isObjectType,
             $this->nodeTypeResolver->isObjectType(
                 $newNodes[$nodePosition],
-                new ObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader')
+                new ObjectType(SomeRealType::class)
             )
         );
     }
@@ -47,7 +48,7 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
         yield [__DIR__ . '/Source/NewDynamicNew.php', 0, $objectWithoutClassType, false];
 
         $objectWithoutClassTypeWithParentTypes = new ObjectWithoutClassTypeWithParentTypes(
-            [new FullyQualifiedObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader')]
+            [new FullyQualifiedObjectType(SomeRealType::class)]
         );
         yield [__DIR__ . '/Source/NewDynamicNewExtends.php', 0, $objectWithoutClassTypeWithParentTypes, true];
     }
