@@ -69,6 +69,10 @@ final readonly class ClassNameImportSkipper
      */
     public function shouldSkipName(FullyQualified $fullyQualified, array $uses): bool
     {
+        if ($this->isWrittenPartiallyQualified($fullyQualified)) {
+            return true;
+        }
+
         if (substr_count($fullyQualified->toCodeString(), '\\') === 1) {
             return $this->isFunctionOrConstantImport($fullyQualified);
         }
@@ -97,6 +101,19 @@ final readonly class ClassNameImportSkipper
         }
 
         return false;
+    }
+
+    /**
+     * Keep names written as "Field\TextField" or "namespace\Sub\Foo" as they are
+     */
+    private function isWrittenPartiallyQualified(FullyQualified $fullyQualified): bool
+    {
+        $originalName = $fullyQualified->getAttribute(AttributeKey::ORIGINAL_NAME);
+        if (! $originalName instanceof Name) {
+            return false;
+        }
+
+        return $originalName->isQualified() || $originalName->isRelative();
     }
 
     private function isFunctionOrConstantImport(FullyQualified $fullyQualified): bool
