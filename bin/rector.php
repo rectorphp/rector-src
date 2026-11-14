@@ -201,21 +201,15 @@ try {
     exit(ExitCode::FAILURE);
 }
 
-// print version and exit
-$rawArgv = $_SERVER['argv'] ?? [];
-if (in_array('--version', $rawArgv, true) || in_array('-V', $rawArgv, true)) {
-    echo sprintf('Rector %s', VersionResolver::PACKAGE_VERSION) . PHP_EOL;
-    exit(ExitCode::SUCCESS);
-}
-
 $application = $container->make(ConsoleApplication::class);
-exit($application->run(rector_normalize_argv($rawArgv)));
+$application->setVersion(sprintf('Rector %s', VersionResolver::PACKAGE_VERSION));
+
+exit($application->run(rector_normalize_argv($_SERVER['argv'] ?? [])));
 
 /**
- * Strip global decoration flags the former symfony/console handled implicitly, and normalize the
- * short "-c"/"-n"/"-a" options to their long forms, so the Entropy input parser does not treat them
- * as unknown options. Inject the default "process" command when the first argument is an option or a
- * path, and expand the "p" alias.
+ * Strip global decoration flags the former symfony/console handled implicitly, so the Entropy input
+ * parser does not treat them as unknown options. Inject the default "process" command when the first
+ * argument is an option or a path, and expand the "p" alias.
  *
  * @param array<int, string> $argv
  * @return array<int, string>
@@ -228,38 +222,10 @@ function rector_normalize_argv(array $argv): array
         putenv('NO_COLOR=1');
     }
 
-    $shortToLong = [
-        '-c' => '--' . Option::CONFIG,
-        '-n' => '--' . Option::DRY_RUN,
-        '-a' => '--' . Option::AUTOLOAD_FILE,
-    ];
-
-    $normalized = [];
-    foreach ($argv as $arg) {
-        if (in_array($arg, $decorationFlags, true)) {
-            continue;
-        }
-
-        if (isset($shortToLong[$arg])) {
-            $normalized[] = $shortToLong[$arg];
-            continue;
-        }
-
-        $matched = false;
-        foreach ($shortToLong as $short => $long) {
-            if (str_starts_with($arg, $short . '=')) {
-                $normalized[] = $long . '=' . substr($arg, strlen($short) + 1);
-                $matched = true;
-                break;
-            }
-        }
-
-        if ($matched) {
-            continue;
-        }
-
-        $normalized[] = $arg;
-    }
+    $normalized = array_values(array_filter(
+        $argv,
+        static fn (string $arg): bool => ! in_array($arg, $decorationFlags, true)
+    ));
 
     // expand the "p" alias to the "process" command name
     if (isset($normalized[1]) && $normalized[1] === 'p') {

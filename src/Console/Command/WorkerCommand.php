@@ -74,9 +74,10 @@ final readonly class WorkerCommand implements CommandInterface, HiddenCommandInt
      * @param string   $identifier     [INTERNAL] parallel identifier
      * @param string ...$paths         Files or directories to be upgraded
      *
+     * @option $dryRun -n
      * @option $only
-     * @option $config
-     * @option $autoloadFile
+     * @option $config -c
+     * @option $autoloadFile -a
      * @option $outputFormat
      * @option $onlySuffix
      * @option $filter
