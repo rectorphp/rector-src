@@ -131,6 +131,52 @@ final readonly class WorkerCommandLineFactory
         return implode(' ', $workerCommandArray);
     }
 
+    /**
+     * The input of the worker command for a worker that is forked from the main process instead of spawned;
+     * carries the same options as the command line of @see create()
+     *
+     * @param class-string<Command> $mainCommandClass
+     * @return array<string, mixed>
+     */
+    public function createInputParameters(
+        string $mainCommandClass,
+        InputInterface $input,
+        string $identifier,
+        int $port
+    ): array {
+        $mainCommand = $this->commandFromReflectionFactory->create($mainCommandClass);
+
+        $parameters = [];
+        foreach ($this->getCommandOptionNames($mainCommand) as $mainCommandOptionName) {
+            if ($this->shouldSkipOption($input, $mainCommandOptionName)) {
+                continue;
+            }
+
+            $optionValue = $input->getOption($mainCommandOptionName);
+
+            // skip clutter
+            if ($optionValue === null || $optionValue === false) {
+                continue;
+            }
+
+            $parameters[self::OPTION_DASHES . $mainCommandOptionName] = $optionValue;
+        }
+
+        $parameters[self::OPTION_DASHES . Option::PARALLEL_PORT] = (string) $port;
+        $parameters[self::OPTION_DASHES . Option::PARALLEL_IDENTIFIER] = $identifier;
+        $parameters[Option::SOURCE] = $input->getArgument(Option::SOURCE);
+        $parameters[self::OPTION_DASHES . Option::OUTPUT_FORMAT] = JsonOutputFormatter::NAME;
+
+        if ($input->hasOption(Option::CONFIG)) {
+            $configValue = $input->getOption(Option::CONFIG);
+            if (is_string($configValue) && $configValue !== '') {
+                $parameters[self::OPTION_DASHES . Option::CONFIG] = $configValue;
+            }
+        }
+
+        return $parameters;
+    }
+
     private function shouldSkipOption(InputInterface $input, string $optionName): bool
     {
         if (! $input->hasOption($optionName)) {

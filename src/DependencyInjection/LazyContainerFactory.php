@@ -36,6 +36,8 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Rector\Parallel\Application\ParallelFileProcessor;
+use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayAnnotationToAttributeMapper;
 use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayItemNodeAnnotationToAttributeMapper;
@@ -125,6 +127,15 @@ final class LazyContainerFactory
 
         $rectorConfig->singleton(ProcessCommand::class);
         $rectorConfig->singleton(WorkerCommand::class);
+
+        // lazy, as the worker command depends on the processor that forks it
+        $rectorConfig->singleton(
+            ParallelFileProcessor::class,
+            static fn (RectorConfig $rectorConfig): ParallelFileProcessor => new ParallelFileProcessor(
+                $rectorConfig->make(WorkerCommandLineFactory::class),
+                static fn (): WorkerCommand => $rectorConfig->make(WorkerCommand::class)
+            )
+        );
         $rectorConfig->singleton(ValidateConfigCommand::class);
         $rectorConfig->singleton(AllRectorRulesProvider::class);
         $rectorConfig->singleton(ListRulesCommand::class);

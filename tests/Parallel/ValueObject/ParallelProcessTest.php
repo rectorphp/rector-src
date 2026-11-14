@@ -6,19 +6,24 @@ namespace Rector\Tests\Parallel\ValueObject;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use Nette\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\RequiresFunction;
-use PHPUnit\Framework\TestCase;
 use React\EventLoop\StreamSelectLoop;
 use React\Stream\DuplexResourceStream;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Parallel\ValueObject\ParallelProcess;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Throwable;
 
 #[RequiresFunction('posix_kill')]
-final class ParallelProcessTest extends TestCase
+final class ParallelProcessTest extends AbstractLazyTestCase
 {
     private StreamSelectLoop $streamSelectLoop;
 
     private string $pidFile;
+
+    private string $cacheDirectory;
 
     /**
      * @var string[]
@@ -34,6 +39,13 @@ final class ParallelProcessTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
+        // the container sets the default cache directory
+        self::getContainer();
+        $this->cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
+        FileSystem::createDir($this->cacheDirectory);
+
         $this->streamSelectLoop = new StreamSelectLoop();
         $this->pidFile = (string) tempnam(sys_get_temp_dir(), 'rector_parallel_process_test');
     }
@@ -68,6 +80,64 @@ final class ParallelProcessTest extends TestCase
         $this->assertSame(['Child process timed out after 1 seconds'], $this->errorMessages);
     }
 
+    #[RequiresFunction('pcntl_fork')]
+    public function testTimeoutTerminatesForkedWorker(): void
+    {
+        $parallelProcess = $this->startWorker(true);
+        $this->bindConnection($parallelProcess);
+
+        $parallelProcess->request([]);
+
+        $this->assertWorkerIsTerminated();
+        $this->assertSame(['Child process timed out after 1 seconds'], $this->errorMessages);
+    }
+
+    #[RequiresFunction('pcntl_fork')]
+    public function testQuitTerminatesForkedWorkerThatIsNotConnected(): void
+    {
+        $parallelProcess = $this->startWorker(true);
+
+        $parallelProcess->quit();
+
+        $this->assertWorkerIsTerminated();
+        $this->assertSame([], $this->errorMessages);
+    }
+
+    #[RequiresFunction('pcntl_fork')]
+    public function testForkedWorkerStderrIsCaptured(): void
+    {
+        $exitCode = null;
+        $errorOutput = null;
+
+        $parallelProcess = new ParallelProcess(
+            '',
+            $this->streamSelectLoop,
+            1,
+            $this->cacheDirectory,
+            static function (): int {
+                fwrite(STDERR, 'worker failed');
+
+                return 3;
+            }
+        );
+        $parallelProcess->start(
+            static function (): void {
+            },
+            static function (): void {
+            },
+            function (?int $workerExitCode, string $workerErrorOutput) use (&$exitCode, &$errorOutput): void {
+                $exitCode = $workerExitCode;
+                $errorOutput = $workerErrorOutput;
+                $this->hasExited = true;
+            }
+        );
+
+        $this->runLoopUntil(fn (): bool => $this->hasExited);
+
+        $this->assertSame(3, $exitCode);
+        $this->assertSame('worker failed', $errorOutput);
+    }
+
     public function testQuitKeepsTimeoutOfBusyWorker(): void
     {
         $parallelProcess = $this->startWorker();
@@ -83,8 +153,17 @@ final class ParallelProcessTest extends TestCase
     /**
      * Starts a worker that neither connects nor answers, like one that is still booting or stuck in an endless loop
      */
-    private function startWorker(): ParallelProcess
+    private function startWorker(bool $isForked = false): ParallelProcess
     {
+        $pidFile = $this->pidFile;
+        $forkedWorker = $isForked ? static function () use ($pidFile): int {
+            file_put_contents($pidFile, getmypid());
+            sleep(10);
+
+            return 0;
+        }
+        : null;
+
         $command = sprintf(
             '%s -r %s -- %s',
             escapeshellarg(PHP_BINARY),
@@ -92,7 +171,13 @@ final class ParallelProcessTest extends TestCase
             escapeshellarg($this->pidFile)
         );
 
-        $parallelProcess = new ParallelProcess($command, $this->streamSelectLoop, 1);
+        $parallelProcess = new ParallelProcess(
+            $command,
+            $this->streamSelectLoop,
+            1,
+            $this->cacheDirectory,
+            $forkedWorker
+        );
         $parallelProcess->start(
             static function (): void {
             },
