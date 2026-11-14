@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DependencyInjection;
 
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\Rules\English\InflectorFactory;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
@@ -109,11 +107,6 @@ final class LazyContainerFactory
 
     private function registerConsole(RectorConfig $rectorConfig): void
     {
-        $rectorConfig->singleton(Inflector::class, static function (): Inflector {
-            $inflectorFactory = new InflectorFactory();
-            return $inflectorFactory->build();
-        });
-
         $rectorConfig->singleton(ConfigurationRuleFilter::class);
 
         $rectorConfig->singleton(ProcessCommand::class);
