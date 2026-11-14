@@ -2,10 +2,10 @@
 
 namespace Rector\Tests\Issues\AutoImportAliasedNamespace\Fixture;
 
-use Rector\Tests\Issues\AutoImportAliasedNamespace\Source\Mapping as ORM;
-use Rector\Tests\Issues\AutoImportAliasedNamespace\Source\Mapping\Column;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Column;
 
-final class SkipAliasedWithDirectImport
+final class SkipDoctrineWithDirectImport
 {
     #[ORM\Column]
     public string $name;
