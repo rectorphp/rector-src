@@ -137,6 +137,26 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
     }
 
+    public function testCacheClearedWhenSkipRemovedAfterClearCacheRun(): void
+    {
+        SimpleParameterProvider::setParameter(Option::SKIP, ['Rector\\RuleA']);
+        $this->applyRules(['Rector\\RuleA', 'Rector\\RuleB']);
+
+        // --clear-cache wipes the cache after the configuration snapshot was stored
+        $this->changedFilesDetector->clear();
+
+        $filePath = __DIR__ . '/Source/file.php';
+        $this->changedFilesDetector->addCacheableFile($filePath);
+        $this->changedFilesDetector->cacheFile($filePath);
+        $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
+
+        // the next run removes the skip, the snapshot of the cleared run must still be there to compare
+        SimpleParameterProvider::setParameter(Option::SKIP, []);
+        $this->snapshotConfiguration();
+
+        $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
+    }
+
     public function testCacheClearedWhenOutputAffectingParameterChanged(): void
     {
         SimpleParameterProvider::setParameter(Option::FILE_EXTENSIONS, ['php']);

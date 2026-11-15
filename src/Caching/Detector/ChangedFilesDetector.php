@@ -26,6 +26,13 @@ final class ChangedFilesDetector
     // scopes the per-file cache key to the active --only / --only-suffix / --filter selection (empty = full run)
     private string $scopeSuffix = '';
 
+    private ?string $configurationCacheKey = null;
+
+    /**
+     * @var array{hash: string, rules: string[], sets: string[], skip: string[]}|null
+     */
+    private ?array $configurationSnapshot = null;
+
     public function __construct(
         private readonly FileHashComputer $fileHashComputer,
         private readonly Cache $cache,
@@ -95,6 +102,15 @@ final class ChangedFilesDetector
     public function clear(): void
     {
         $this->cache->clear();
+
+        // keep the snapshot of the current run, so the next run can still detect a configuration change
+        if ($this->configurationCacheKey !== null && $this->configurationSnapshot !== null) {
+            $this->cache->save(
+                $this->configurationCacheKey,
+                CacheKey::CONFIGURATION_HASH_KEY,
+                $this->configurationSnapshot
+            );
+        }
     }
 
     public function setFirstResolvedConfigFileInfo(string $filePath): void
@@ -142,6 +158,9 @@ final class ChangedFilesDetector
     {
         $key = CacheKey::CONFIGURATION_HASH_KEY . '_' . $this->getFilePathCacheKey($filePath);
         $this->invalidateCacheIfConfigurationChanged($key, $configurationSnapshot);
+
+        $this->configurationCacheKey = $key;
+        $this->configurationSnapshot = $configurationSnapshot;
 
         $this->cache->save($key, CacheKey::CONFIGURATION_HASH_KEY, $configurationSnapshot);
     }
