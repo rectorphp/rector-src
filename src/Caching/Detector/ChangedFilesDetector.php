@@ -157,10 +157,12 @@ final class ChangedFilesDetector
     private function storeConfigurationDataHash(string $filePath, array $configurationSnapshot): void
     {
         $key = CacheKey::CONFIGURATION_HASH_KEY . '_' . $this->getFilePathCacheKey($filePath);
-        $this->invalidateCacheIfConfigurationChanged($key, $configurationSnapshot);
+        $oldCachedValue = $this->cache->load($key, CacheKey::CONFIGURATION_HASH_KEY);
 
         $this->configurationCacheKey = $key;
         $this->configurationSnapshot = $configurationSnapshot;
+
+        $this->invalidateCacheIfConfigurationChanged($oldCachedValue, $configurationSnapshot);
 
         $this->cache->save($key, CacheKey::CONFIGURATION_HASH_KEY, $configurationSnapshot);
     }
@@ -168,10 +170,8 @@ final class ChangedFilesDetector
     /**
      * @param array{hash: string, rules: string[], sets: string[], skip: string[]} $configurationSnapshot
      */
-    private function invalidateCacheIfConfigurationChanged(string $key, array $configurationSnapshot): void
+    private function invalidateCacheIfConfigurationChanged(mixed $oldCachedValue, array $configurationSnapshot): void
     {
-        $oldCachedValue = $this->cache->load($key, CacheKey::CONFIGURATION_HASH_KEY);
-
         // first run, nothing to compare against
         if ($oldCachedValue === null) {
             return;
