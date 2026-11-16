@@ -53,9 +53,9 @@ final readonly class MissConfigurationReporter
      * skip is unnecessary. Enabled with "->reportUnusedSkips()". The re-run is forced to a dry run,
      * so it is safe on an apply run too.
      */
-    public function reportUnnecessarySkips(): void
+    public function reportUnnecessarySkips(ProcessResult $processResult): void
     {
-        $unnecessarySkips = $this->neededSkipVerifier->verify();
+        $unnecessarySkips = $this->neededSkipVerifier->verify($processResult);
         if ($unnecessarySkips === []) {
             return;
         }

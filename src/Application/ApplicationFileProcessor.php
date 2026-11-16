@@ -181,7 +181,13 @@ final class ApplicationFileProcessor
             }
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs, $totalChanged, $this->skipper->provideUsedSkips());
+        return new ProcessResult(
+            $systemErrors,
+            $fileDiffs,
+            $totalChanged,
+            $this->skipper->provideUsedSkips(),
+            $this->skipper->provideSkippedFilePathsByRule()
+        );
     }
 
     private function processFile(File $file, Configuration $configuration): FileProcessResult

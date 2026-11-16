@@ -11,6 +11,7 @@ use Rector\FileSystem\FilePathHelper;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Application\File;
 use Rector\ValueObject\Configuration;
+use Rector\ValueObject\ProcessResult;
 
 /**
  * Re-runs each rule-scoped skip on its exact file with skipping off. A skip whose rule still does
@@ -34,9 +35,10 @@ final readonly class NeededSkipVerifier
      *
      * @return string[]
      */
-    public function verify(): array
+    public function verify(ProcessResult $processResult): array
     {
-        $skippedFilePathsByRule = $this->skipper->provideSkippedFilePathsByRule();
+        // collected in the process that handled the files - the workers in a parallel run
+        $skippedFilePathsByRule = $processResult->getSkippedFilePathsByRule();
         if ($skippedFilePathsByRule === []) {
             return [];
         }
@@ -72,7 +74,7 @@ final readonly class NeededSkipVerifier
     }
 
     /**
-     * @param array<class-string, string[]> $skippedFilePathsByRule
+     * @param array<string, string[]> $skippedFilePathsByRule
      * @return array<string, string[]> real file path => rule classes that changed it
      */
     private function resolveChangedRulesByFilePath(array $skippedFilePathsByRule): array

@@ -15,12 +15,14 @@ final class ProcessResult
      * @param SystemError[] $systemErrors
      * @param FileDiff[] $fileDiffs
      * @param array<string, string[]> $usedSkips
+     * @param array<string, string[]> $skippedFilePathsByRule
      */
     public function __construct(
         private array $systemErrors,
         private readonly array $fileDiffs,
         private readonly int $totalChanged,
-        private array $usedSkips = []
+        private array $usedSkips = [],
+        private readonly array $skippedFilePathsByRule = []
     ) {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
         Assert::allIsInstanceOf($fileDiffs, FileDiff::class);
@@ -28,6 +30,11 @@ final class ProcessResult
         Assert::allString(array_keys($usedSkips));
         foreach ($usedSkips as $usedSkip) {
             Assert::allString($usedSkip);
+        }
+
+        Assert::allString(array_keys($skippedFilePathsByRule));
+        foreach ($skippedFilePathsByRule as $skippedFilePaths) {
+            Assert::allString($skippedFilePaths);
         }
     }
 
@@ -89,6 +96,16 @@ final class ProcessResult
     public function getUsedSkips(): array
     {
         return $this->usedSkips;
+    }
+
+    /**
+     * Real file paths skipped per rule-scoped path skip, to verify later whether the skip is needed
+     *
+     * @return array<string, string[]>
+     */
+    public function getSkippedFilePathsByRule(): array
+    {
+        return $this->skippedFilePathsByRule;
     }
 
     /**
