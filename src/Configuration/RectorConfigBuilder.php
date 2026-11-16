@@ -1014,10 +1014,6 @@ final class RectorConfigBuilder
     {
         $this->addLevelRules('withCodingStyleLevel', $level, CodingStyleLevel::RULES, 'codingStyle', 'CODING_STYLE');
 
-        foreach (CodingStyleLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
-            $this->rulesWithConfigurations[$rectorClass][] = $configuration;
-        }
-
         return $this;
     }
 
