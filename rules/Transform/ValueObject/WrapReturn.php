@@ -7,6 +7,9 @@ namespace Rector\Transform\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
+/**
+ * @api used in deprecated WrapReturnRector configs
+ */
 final readonly class WrapReturn
 {
     public function __construct(
