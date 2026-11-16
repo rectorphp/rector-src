@@ -13,6 +13,7 @@ use Rector\Reporting\NeededSkipVerifier;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Reporting\Source\MakeClassFinalRector;
+use Rector\ValueObject\ProcessResult;
 
 final class NeededSkipVerifierTest extends AbstractLazyTestCase
 {
@@ -56,8 +57,10 @@ final class NeededSkipVerifierTest extends AbstractLazyTestCase
         $this->assertTrue($skipper->shouldSkipRectorAndFile($rule, $neededFilePath));
         $this->assertTrue($skipper->shouldSkipRectorAndFile($rule, $unnecessaryFilePath));
 
+        $processResult = new ProcessResult([], [], 0, [], $skipper->provideSkippedFilePathsByRule());
+
         $neededSkipVerifier = $rectorConfig->make(NeededSkipVerifier::class);
-        $unnecessarySkips = $neededSkipVerifier->verify();
+        $unnecessarySkips = $neededSkipVerifier->verify($processResult);
 
         // one rule group, listing only the unnecessary file
         $this->assertCount(1, $unnecessarySkips);
@@ -69,12 +72,37 @@ final class NeededSkipVerifierTest extends AbstractLazyTestCase
         $this->assertSame('<?php class SomeClass {}', FileSystem::read($neededFilePath));
     }
 
+    public function testReportsSkipCollectedByWorkers(): void
+    {
+        // already final, so the rule changes nothing - skipping it is unnecessary
+        $unnecessaryFilePath = $this->tempDirectory . '/unnecessary_skip.php';
+        FileSystem::write($unnecessaryFilePath, '<?php final class AlreadyFinal {}', null);
+
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            MakeClassFinalRector::class => [$unnecessaryFilePath],
+        ]);
+
+        $rectorConfig = $this->createContainerWithRule();
+
+        // in a parallel run, the skipped files are captured by workers and only reach the main process via the result
+        $processResult = new ProcessResult([], [], 0, [], [
+            MakeClassFinalRector::class => [$unnecessaryFilePath],
+        ]);
+
+        $neededSkipVerifier = $rectorConfig->make(NeededSkipVerifier::class);
+        $unnecessarySkips = $neededSkipVerifier->verify($processResult);
+
+        $this->assertCount(1, $unnecessarySkips);
+        $this->assertStringContainsString('unnecessary_skip.php', $unnecessarySkips[0]);
+    }
+
     public function testReportsNothingWithoutCapturedSkips(): void
     {
         $rectorConfig = $this->createContainerWithRule();
 
         $neededSkipVerifier = $rectorConfig->make(NeededSkipVerifier::class);
-        $this->assertSame([], $neededSkipVerifier->verify());
+        $this->assertSame([], $neededSkipVerifier->verify(new ProcessResult([], [], 0)));
     }
 
     private function createContainerWithRule(): RectorConfig

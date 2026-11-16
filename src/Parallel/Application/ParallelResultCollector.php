@@ -14,6 +14,7 @@ use Rector\ValueObject\Reporting\FileDiff;
  * who gets which files.
  *
  * Holds mutable per-run state - create one per process() call, never share it.
+ * @see \Rector\Tests\Parallel\Application\ParallelResultCollectorTest
  */
 final class ParallelResultCollector
 {
@@ -34,6 +35,13 @@ final class ParallelResultCollector
      */
     private array $usedSkips = [];
 
+    /**
+     * Paths are kept as keys while collecting, to deduplicate them per rule
+     *
+     * @var array<string, array<string, true>>
+     */
+    private array $skippedFilePathsByRule = [];
+
     private int $totalChanged = 0;
 
     /**
@@ -43,7 +51,8 @@ final class ParallelResultCollector
      *      file_diffs: array<string, mixed>,
      *      files_count: int,
      *      system_errors_count: int,
-     *      used_skips: array<string, string[]>
+     *      used_skips: array<string, string[]>,
+     *      skipped_file_paths_by_rule: array<string, string[]>
      * } $json
      * @return int files covered by this result, to advance the progress bar
      */
@@ -55,6 +64,13 @@ final class ParallelResultCollector
             $this->usedSkips[$skip] ??= [];
             foreach ($paths as $path) {
                 $this->usedSkips[$skip][$path] = true;
+            }
+        }
+
+        foreach ($json[Bridge::SKIPPED_FILE_PATHS_BY_RULE] as $rectorClass => $filePaths) {
+            $this->skippedFilePathsByRule[$rectorClass] ??= [];
+            foreach ($filePaths as $filePath) {
+                $this->skippedFilePathsByRule[$rectorClass][$filePath] = true;
             }
         }
 
@@ -87,6 +103,17 @@ final class ParallelResultCollector
             $mergedUsedSkips[$skip] = array_keys($paths);
         }
 
-        return new ProcessResult($this->systemErrors, $this->fileDiffs, $this->totalChanged, $mergedUsedSkips);
+        $mergedSkippedFilePathsByRule = [];
+        foreach ($this->skippedFilePathsByRule as $rectorClass => $filePaths) {
+            $mergedSkippedFilePathsByRule[$rectorClass] = array_keys($filePaths);
+        }
+
+        return new ProcessResult(
+            $this->systemErrors,
+            $this->fileDiffs,
+            $this->totalChanged,
+            $mergedUsedSkips,
+            $mergedSkippedFilePathsByRule
+        );
     }
 }

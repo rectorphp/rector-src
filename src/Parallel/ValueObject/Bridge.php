@@ -22,4 +22,6 @@ final class Bridge
     public const string TOTAL_CHANGED = 'total_changed';
 
     public const string USED_SKIPS = 'used_skips';
+
+    public const string SKIPPED_FILE_PATHS_BY_RULE = 'skipped_file_paths_by_rule';
 }
