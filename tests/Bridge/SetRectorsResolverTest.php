@@ -7,7 +7,6 @@ namespace Rector\Tests\Bridge;
 use PHPUnit\Framework\TestCase;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\Set\ValueObject\SetList;
 
 final class SetRectorsResolverTest extends TestCase
 {
@@ -33,7 +32,7 @@ final class SetRectorsResolverTest extends TestCase
     public function testResolveWithConfiguration(): void
     {
         $rectorRulesWithConfiguration = $this->setRectorsResolver->resolveFromFilePathIncludingConfiguration(
-            SetList::PHP_73
+            __DIR__ . '/../../config/set/php73.php'
         );
         $this->assertCount(10, $rectorRulesWithConfiguration);
 
