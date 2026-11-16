@@ -16,10 +16,3 @@ parameters:
             identifier: classConstant.deprecated
             paths:
                 - src/Configuration/RectorConfigBuilder.php
-
-        # the deprecated SetList::PHP_* constants are still resolved internally by the level sets and their tests
-        -
-            identifier: classConstant.deprecated
-            paths:
-                - config/set/level
-                - tests/Bridge/SetRectorsResolverTest.php
