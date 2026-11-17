@@ -140,9 +140,8 @@ final readonly class PHPStanNodeScopeResolver
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, &$stmtListsWithLabels): void {
             if (NodeGroup::isStmtAwareNode($node)) {
                 $nodeStmts = $node->stmts ?? [];
-                $label = array_find($nodeStmts, static fn (Stmt $stmt): bool => $stmt instanceof Label);
-                if ($label instanceof Label) {
-                    $stmtListsWithLabels[spl_object_id($label)] = $nodeStmts;
+                if (array_any($nodeStmts, static fn (Stmt $stmt): bool => $stmt instanceof Label)) {
+                    $stmtListsWithLabels[] = $nodeStmts;
                 }
             }
 
