@@ -45,9 +45,9 @@ final class RectorConfigBuilder
     private const int MAX_LEVEL_GAP = 10;
 
     /**
-     * Matches the deprecated per-version PHP set files, e.g. .../config/set/php82.php
+     * Matches the deprecated per-version PHP set files, e.g. .../config/set/php82.php or .../config/set/level/up-to-php82.php
      */
-    private const string DEPRECATED_PHP_SET_REGEX = '#/config/set/php\d+\.php$#';
+    private const string DEPRECATED_PHP_SET_REGEX = '#/config/set/(level/up-to-)?php\d+\.php$#';
 
     /**
      * A level method and the set that contains the very same rules,
