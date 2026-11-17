@@ -19,7 +19,6 @@ use Rector\CodingStyle\Rector\FuncCall\StrictInArrayRector;
 use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
 use Rector\CodingStyle\Rector\If_\AlternativeIfToBracketRector;
 use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
-use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector;
 use Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
@@ -49,7 +48,6 @@ final class CodingStyleLevel
     public const array RULES = [
         SeparateMultiUseImportsRector::class,
         NewlineBetweenClassLikeStmtsRector::class,
-        NewlineAfterStatementRector::class,
         AlternativeIfToBracketRector::class,
         CompleteMissingIfElseBracketRector::class,
         SimplifyQuoteEscapeRector::class,
