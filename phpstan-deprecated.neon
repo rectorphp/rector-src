@@ -10,9 +10,3 @@ parameters:
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
             path: src/Configuration/RectorConfigBuilder.php
-
-        # EARLY_RETURN set is deprecated (empty, merged into code-quality), still mapped internally until removed
-        -
-            identifier: classConstant.deprecated
-            paths:
-                - src/Configuration/RectorConfigBuilder.php

@@ -603,7 +603,7 @@ final class RectorConfigBuilder
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
     /**
-     * @param bool $naming @deprecated The naming set often causes conflicting variable and param names; use a coding standard tool instead
+     * @param bool $naming @deprecated No longer applied. The naming set often causes conflicting variable and param names; use a coding standard tool instead
      * @param bool $instanceOf @deprecated No longer applied, use $codeQuality instead, as most instanceof rules were moved there
      * @param bool $if @deprecated No longer applied, use $codeQuality and $codingStyle instead, as the if rules were moved there or deprecated
      * @param bool $earlyReturn @deprecated No longer applied, use $codeQuality instead, as all early return rules were moved there
@@ -653,7 +653,6 @@ final class RectorConfigBuilder
             SetList::TYPE_DECLARATION => $typeDeclarations,
             SetList::TYPE_DECLARATION_DOCBLOCKS => $typeDeclarationDocblocks,
             SetList::PRIVATIZATION => $privatization,
-            SetList::NAMING => $naming,
             SetList::NAMED_ARGS => $namedArgs,
             SetList::CARBON => $carbon,
             SetList::RECTOR_PRESET => $rectorPreset,
