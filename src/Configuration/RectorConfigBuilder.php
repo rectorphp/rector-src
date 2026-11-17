@@ -604,9 +604,9 @@ final class RectorConfigBuilder
 
     /**
      * @param bool $naming @deprecated The naming set often causes conflicting variable and param names; use a coding standard tool instead
-     * @param bool $instanceOf @deprecated Use $codeQuality instead, as most instanceof rules were moved there
-     * @param bool $if @deprecated Use $codeQuality and $codingStyle instead, as the if rules were moved there or deprecated
-     * @param bool $earlyReturn @deprecated Use $codeQuality instead, as all early return rules were moved there
+     * @param bool $instanceOf @deprecated No longer applied, use $codeQuality instead, as most instanceof rules were moved there
+     * @param bool $if @deprecated No longer applied, use $codeQuality and $codingStyle instead, as the if rules were moved there or deprecated
+     * @param bool $earlyReturn @deprecated No longer applied, use $codeQuality instead, as all early return rules were moved there
      */
     public function withPreparedSets(
         bool $deadCode = false,
@@ -635,6 +635,17 @@ final class RectorConfigBuilder
             Notifier::notifyDeprecatedNamingSet();
         }
 
+        $deprecatedArgs = [
+            'instanceOf' => $instanceOf,
+            'if' => $if,
+            'earlyReturn' => $earlyReturn,
+        ];
+        foreach ($deprecatedArgs as $deprecatedArgName => $isEnabled) {
+            if ($isEnabled) {
+                SimpleParameterProvider::addParameter(Option::DEPRECATED_PREPARED_SETS_ARGS, $deprecatedArgName);
+            }
+        }
+
         $setMap = [
             SetList::DEAD_CODE => $deadCode,
             SetList::CODE_QUALITY => $codeQuality,
@@ -644,9 +655,6 @@ final class RectorConfigBuilder
             SetList::PRIVATIZATION => $privatization,
             SetList::NAMING => $naming,
             SetList::NAMED_ARGS => $namedArgs,
-            SetList::INSTANCEOF => $instanceOf,
-            SetList::IF => $if,
-            SetList::EARLY_RETURN => $earlyReturn,
             SetList::CARBON => $carbon,
             SetList::RECTOR_PRESET => $rectorPreset,
             PHPUnitSetList::PHPUNIT_CODE_QUALITY => $phpunitCodeQuality,

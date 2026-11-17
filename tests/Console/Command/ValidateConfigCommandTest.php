@@ -39,6 +39,7 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
             Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES,
             Option::DEPRECATED_ATTRIBUTES_SETS_ARGS,
             Option::DEPRECATED_COMPOSER_BASED_ARGS,
+            Option::DEPRECATED_PREPARED_SETS_ARGS,
             Option::ROOT_STANDALONE_REGISTERED_RULES,
             Option::SET_REGISTERED_RULES,
         ] as $optionName) {
@@ -70,6 +71,14 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
     public function testFailsOnDeprecatedRegisteredRule(): void
     {
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [DeprecatedFixtureRule::class]);
+
+        $this->assertSame(ExitCode::FAILURE, $this->commandTester->execute([]));
+    }
+
+    public function testFailsOnDeprecatedPreparedSetsArg(): void
+    {
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [OrdSingleByteRector::class]);
+        SimpleParameterProvider::setParameter(Option::DEPRECATED_PREPARED_SETS_ARGS, ['earlyReturn']);
 
         $this->assertSame(ExitCode::FAILURE, $this->commandTester->execute([]));
     }
