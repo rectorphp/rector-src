@@ -1,11 +1,6 @@
 # deprecated code kept temporarily, ignores to drop once the deprecated API is removed
 parameters:
     ignoreErrors:
-        -
-            message: '#^Unused Rector\\Arguments\\ValueObject\\ReplaceArgumentDefaultValue\:\:(.*?)$#'
-            identifier: shipmonk.deadMethod
-            path: rules/Arguments/ValueObject/ReplaceArgumentDefaultValue.php
-
         # the deprecated set objects are still resolved internally, until every extension bonds its rules
         -
             message: '#deprecated (class|interface) Rector\\(Set|Bridge)\\#'
