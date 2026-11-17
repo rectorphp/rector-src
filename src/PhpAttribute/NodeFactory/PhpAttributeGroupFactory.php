@@ -81,7 +81,7 @@ final readonly class PhpAttributeGroupFactory
         array $uses
     ): AttributeGroup {
         $values = $doctrineAnnotationTagValueNode->getValuesWithSilentKey();
-        $args = $this->createArgsFromItems($values, '', $annotationToAttribute->getClassReferenceFields());
+        $args = $this->createArgsFromItems($values, $annotationToAttribute->getClassReferenceFields());
 
         $this->annotationToAttributeIntegerValueCaster->castAttributeTypes($annotationToAttribute, $args);
 
@@ -103,14 +103,12 @@ final readonly class PhpAttributeGroupFactory
 
     /**
      * @param ArrayItemNode[]|mixed[] $items
-     * @param string $attributeClass @deprecated
      * @param string[] $classReferencedFields
      *
      * @return list<Arg>
      */
     public function createArgsFromItems(
         array $items,
-        string $attributeClass = '',
         array $classReferencedFields = []
     ): array {
         $mappedItems = $this->annotationToAttributeMapper->map($items);
