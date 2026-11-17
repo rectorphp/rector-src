@@ -187,6 +187,7 @@ EOF
         $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
         $this->deprecatedRulesReporter->reportDeprecatedAttributesSetsArgs();
         $this->deprecatedRulesReporter->reportDeprecatedComposerBasedArgs();
+        $this->deprecatedRulesReporter->reportDeprecatedPreparedSetsArgs();
 
         $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
         $this->missConfigurationReporter->reportSkippedNonRectorClasses();
