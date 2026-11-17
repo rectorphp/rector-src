@@ -136,7 +136,7 @@ final readonly class PHPStanNodeScopeResolver
      */
     private function fillScope(array $stmts, MutatingScope $scope): void
     {
-        $stmtListsWithLabels = [$stmts];
+        $stmtListsWithLabels = [];
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, &$stmtListsWithLabels): void {
             if (NodeGroup::isStmtAwareNode($node)) {
                 $nodeStmts = $node->stmts ?? [];
