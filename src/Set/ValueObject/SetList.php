@@ -35,6 +35,11 @@ final class SetList
     public const string BEHAT_ANNOTATIONS_TO_ATTRIBUTES = __DIR__ . '/../../../config/set/behat-annotations-to-attributes.php';
 
     /**
+     * Opt-in: ->withPreparedSets(throwsTag: true), plus the project's unchecked exceptions via ->withConfiguredRule(AddThrowsTagRector::class, [...])
+     */
+    public const string THROWS_TAG = __DIR__ . '/../../../config/set/throws-tag.php';
+
+    /**
      * All PHP version rules in one set; each rule gates itself by PHP version at runtime
      */
     public const string PHP_VERSION_BASED_SET = __DIR__ . '/../../../config/set/php-version-based.php';

@@ -628,6 +628,7 @@ final class RectorConfigBuilder
         bool $doctrineCodeQuality = false,
         bool $symfonyCodeQuality = false,
         bool $symfonyConfigs = false,
+        bool $throwsTag = false,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
@@ -655,6 +656,7 @@ final class RectorConfigBuilder
             SetList::PRIVATIZATION => $privatization,
             SetList::NAMED_ARGS => $namedArgs,
             SetList::CARBON => $carbon,
+            SetList::THROWS_TAG => $throwsTag,
             SetList::RECTOR_PRESET => $rectorPreset,
             PHPUnitSetList::PHPUNIT_CODE_QUALITY => $phpunitCodeQuality,
             PHPUnitSetList::PHPUNIT_NARROW_ASSERTS => $phpunitNarrowAsserts,
