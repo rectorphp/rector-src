@@ -75,7 +75,7 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, [OrdSingleByteRector::class]);
         SimpleParameterProvider::setParameter(Option::DEPRECATED_PREPARED_SETS_ARGS, ['earlyReturn']);
 
-        $this->assertSame(ExitCode::FAILURE, $this->commandTester->execute([]));
+        $this->assertSame(ExitCode::FAILURE, $this->validateConfigCommand->run());
     }
 
     public function testSucceedsOnCleanConfig(): void

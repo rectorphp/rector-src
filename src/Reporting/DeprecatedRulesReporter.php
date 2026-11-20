@@ -104,7 +104,7 @@ final readonly class DeprecatedRulesReporter
 
         $reportedCount = 0;
         foreach (array_unique($deprecatedPreparedSetsArgs) as $deprecatedPreparedSetsArg) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->rectorStyle->warning(sprintf(
                 'The "->withPreparedSets(%s: true)" argument is deprecated and no longer applied. Its rules were moved to the "codeQuality" and "codingStyle" sets, use them instead.',
                 $deprecatedPreparedSetsArg
             ));
