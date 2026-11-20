@@ -2,11 +2,12 @@
 
 namespace Rector\Tests\Php84\Rector\MethodCall\NewMethodCallWithoutParenthesesRector\Fixture;
 
-final class ArrayDimFetch
+final class NewOnPropertyFetch
 {
     public function run()
     {
-        $value = (new \ArrayObject(['key' => 'value']))['key'];
+        $message = (new Regex('some-pattern'))->message;
+        $nested = (new Request())->uri->path;
     }
 }
 
@@ -16,11 +17,12 @@ final class ArrayDimFetch
 
 namespace Rector\Tests\Php84\Rector\MethodCall\NewMethodCallWithoutParenthesesRector\Fixture;
 
-final class ArrayDimFetch
+final class NewOnPropertyFetch
 {
     public function run()
     {
-        $value = new \ArrayObject(['key' => 'value'])['key'];
+        $message = new Regex('some-pattern')->message;
+        $nested = new Request()->uri->path;
     }
 }
 
