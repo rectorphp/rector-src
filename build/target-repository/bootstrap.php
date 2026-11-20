@@ -47,6 +47,12 @@ spl_autoload_register(function (string $class): void {
 
         // some weird collision with PHPStan custom rule tests
         if (! is_int($composerAutoloader)) {
+            // PHPStan calls the registered autoloaders for symbols that may already be declared;
+            // loading one again would fail with "Cannot redeclare"
+            if (class_exists($class, false) || interface_exists($class, false) || trait_exists($class, false)) {
+                return;
+            }
+
             $composerAutoloader->loadClass($class);
         }
     }
