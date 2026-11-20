@@ -5,8 +5,17 @@ declare(strict_types=1);
 namespace Rector\Php84\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -23,21 +32,35 @@ final class NewMethodCallWithoutParenthesesRector extends AbstractRector impleme
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class];
+        return [
+            MethodCall::class,
+            NullsafeMethodCall::class,
+            PropertyFetch::class,
+            NullsafePropertyFetch::class,
+            StaticCall::class,
+            StaticPropertyFetch::class,
+            ClassConstFetch::class,
+            ArrayDimFetch::class,
+            FuncCall::class,
+        ];
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove parentheses on new method call with parentheses',
+            'Remove parentheses around new with arguments on method call, property fetch, static access, array access or invocation',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 (new Request())->withMethod('GET')->withUri('/hello-world');
+$message = (new Regex('some-pattern'))->message;
+$value = (new ArrayObject($items))['key'];
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 new Request()->withMethod('GET')->withUri('/hello-world');
+$message = new Regex('some-pattern')->message;
+$value = new ArrayObject($items)['key'];
 CODE_SAMPLE
                 ),
             ]
@@ -45,11 +68,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param MethodCall|NullsafeMethodCall|PropertyFetch|NullsafePropertyFetch|StaticCall|StaticPropertyFetch|ClassConstFetch|ArrayDimFetch|FuncCall $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->var instanceof New_) {
+        $new = $this->resolveDereferencedExpr($node);
+        if (! $new instanceof New_) {
             return null;
         }
 
@@ -57,13 +81,13 @@ CODE_SAMPLE
             ->getOldTokens();
 
         $loop = 1;
-        while (isset($oldTokens[$node->var->getStartTokenPos() + $loop])) {
-            if (trim((string) $oldTokens[$node->var->getStartTokenPos() + $loop]) === '') {
+        while (isset($oldTokens[$new->getStartTokenPos() + $loop])) {
+            if (trim((string) $oldTokens[$new->getStartTokenPos() + $loop]) === '') {
                 ++$loop;
                 continue;
             }
 
-            if ((string) $oldTokens[$node->var->getStartTokenPos() + $loop] !== '(') {
+            if ((string) $oldTokens[$new->getStartTokenPos() + $loop] !== '(') {
                 break;
             }
 
@@ -75,14 +99,14 @@ CODE_SAMPLE
             return null;
         }
 
-        // end of "var" node
-        if (! isset($oldTokens[$node->var->getEndTokenPos()])) {
+        // end of "new" node
+        if (! isset($oldTokens[$new->getEndTokenPos()])) {
             return null;
         }
 
-        if ((string) $oldTokens[$node->getStartTokenPos()] === '(' && (string) $oldTokens[$node->var->getEndTokenPos()] === ')') {
+        if ((string) $oldTokens[$node->getStartTokenPos()] === '(' && (string) $oldTokens[$new->getEndTokenPos()] === ')') {
             $oldTokens[$node->getStartTokenPos()]->text = '';
-            $oldTokens[$node->var->getEndTokenPos()]->text = '';
+            $oldTokens[$new->getEndTokenPos()]->text = '';
 
             return $node;
         }
@@ -93,5 +117,19 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_84;
+    }
+
+    private function resolveDereferencedExpr(
+        MethodCall|NullsafeMethodCall|PropertyFetch|NullsafePropertyFetch|StaticCall|StaticPropertyFetch|ClassConstFetch|ArrayDimFetch|FuncCall $node
+    ): ?Node {
+        if ($node instanceof StaticCall || $node instanceof StaticPropertyFetch || $node instanceof ClassConstFetch) {
+            return $node->class;
+        }
+
+        if ($node instanceof FuncCall) {
+            return $node->name instanceof Expr ? $node->name : null;
+        }
+
+        return $node->var;
     }
 }
