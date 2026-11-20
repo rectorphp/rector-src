@@ -10,20 +10,17 @@ use Rector\Config\RectorConfig;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Command\ComposerBasedCommand;
+use Rector\Console\Style\RectorStyle;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Console\Command\Source\ComposerBoundRector;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ComposerBasedCommandTest extends TestCase
 {
-    private BufferedOutput $bufferedOutput;
+    private RectorStyle $rectorStyle;
 
     protected function setUp(): void
     {
-        $this->bufferedOutput = new BufferedOutput();
-
         // the parameter provider is static, reset it between tests
         SimpleParameterProvider::setParameter(Option::COMPOSER_BOUND_RULE_CONFIGURATIONS, []);
     }
@@ -38,9 +35,9 @@ final class ComposerBasedCommandTest extends TestCase
     public function testSkipWithoutComposerBoundRules(): void
     {
         $composerBasedCommand = $this->createComposerBasedCommand([]);
-        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+        $composerBasedCommand->run();
 
-        $this->assertStringContainsString('No composer package bound rule is loaded', $this->bufferedOutput->fetch());
+        $this->assertStringContainsString('No composer package bound rule is loaded', $this->rectorStyle->getRecordedOutput());
     }
 
     public function testActiveRule(): void
@@ -49,9 +46,9 @@ final class ComposerBasedCommandTest extends TestCase
         $composerBoundRector = new ComposerBoundRector('phpunit/phpunit', '>=9.0');
 
         $composerBasedCommand = $this->createComposerBasedCommand([$composerBoundRector]);
-        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+        $composerBasedCommand->run();
 
-        $output = $this->bufferedOutput->fetch();
+        $output = $this->rectorStyle->getRecordedOutput();
 
         $this->assertStringContainsString('phpunit/phpunit', $output);
         $this->assertStringContainsString('>=9.0', $output);
@@ -63,9 +60,9 @@ final class ComposerBasedCommandTest extends TestCase
         $composerBoundRector = new ComposerBoundRector('not-installed/package', '>=1.0');
 
         $composerBasedCommand = $this->createComposerBasedCommand([$composerBoundRector]);
-        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+        $composerBasedCommand->run();
 
-        $output = $this->bufferedOutput->fetch();
+        $output = $this->rectorStyle->getRecordedOutput();
 
         $this->assertStringContainsString('not-installed/package', $output);
         $this->assertStringContainsString('0 of 1 composer package bound items are active', $output);
@@ -86,9 +83,9 @@ final class ComposerBasedCommandTest extends TestCase
         );
 
         $composerBasedCommand = $this->createComposerBasedCommand([]);
-        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+        $composerBasedCommand->run();
 
-        $output = $this->bufferedOutput->fetch();
+        $output = $this->rectorStyle->getRecordedOutput();
 
         $this->assertStringContainsString('Composer package bound rule configuration', $output);
         $this->assertStringContainsString('SomeOldClass: SomeNewClass', $output);
@@ -109,9 +106,9 @@ final class ComposerBasedCommandTest extends TestCase
         );
 
         $composerBasedCommand = $this->createComposerBasedCommand([]);
-        $composerBasedCommand->run(new ArrayInput([]), $this->bufferedOutput);
+        $composerBasedCommand->run();
 
-        $output = $this->bufferedOutput->fetch();
+        $output = $this->rectorStyle->getRecordedOutput();
 
         $this->assertStringContainsString('not-installed/package', $output);
         $this->assertStringContainsString('0 of 1 composer package bound items are active', $output);
@@ -122,8 +119,9 @@ final class ComposerBasedCommandTest extends TestCase
      */
     private function createComposerBasedCommand(array $rectors): ComposerBasedCommand
     {
-        $symfonyStyle = new SymfonyStyle(new ArrayInput([]), $this->bufferedOutput);
+        $this->rectorStyle = new RectorStyleFactory()->create();
+        $this->rectorStyle->startRecording();
 
-        return new ComposerBasedCommand($symfonyStyle, new InstalledPackageResolver(getcwd()), $rectors);
+        return new ComposerBasedCommand($this->rectorStyle, new InstalledPackageResolver(getcwd()), $rectors);
     }
 }
