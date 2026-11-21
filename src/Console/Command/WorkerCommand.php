@@ -15,6 +15,7 @@ use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\ConfigurationRuleFilter;
 use Rector\Configuration\Option;
 use Rector\Console\ProcessConfigureDecorator;
+use Rector\FileSystem\JsonFileSystem;
 use Rector\Parallel\Enum\Action;
 use Rector\Parallel\Enum\ReactCommand;
 use Rector\Parallel\Enum\ReactEvent;
@@ -26,6 +27,7 @@ use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -58,12 +60,18 @@ final class WorkerCommand extends Command
         $this->setDescription('[INTERNAL] Support for parallel process');
 
         ProcessConfigureDecorator::decorate($this);
+        $this->addOption(Option::PARALLEL_PATHS_FILE, null, InputOption::VALUE_REQUIRED);
 
         parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $pathsFile = $input->getOption(Option::PARALLEL_PATHS_FILE);
+        if (is_string($pathsFile)) {
+            $input->setArgument(Option::SOURCE, JsonFileSystem::readFilePath($pathsFile));
+        }
+
         $configuration = $this->configurationFactory->createFromInput($input);
         $this->memoryLimiter->adjust($configuration);
         $this->configurationRuleFilter->setConfiguration($configuration);

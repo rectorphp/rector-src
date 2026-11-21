@@ -23,6 +23,7 @@ use Rector\Parallel\ValueObject\Bridge;
 use Rector\Parallel\ValueObject\ParallelProcess;
 use Rector\Parallel\ValueObject\ProcessPool;
 use Rector\Parallel\ValueObject\Schedule;
+use Rector\Parallel\ValueObject\WorkerPathsFile;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Command\Command;
@@ -148,6 +149,10 @@ final class ParallelFileProcessor
 
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
         $fileChunksBudgetPerProcess = [];
+        /** @var string[] $paths */
+        $paths = $input->getArgument(Option::SOURCE);
+        $workerPathsFile = $paths === [] ? null : WorkerPathsFile::create($paths);
+        $pathsFile = $workerPathsFile?->getFilePath();
 
         $processSpawner = function (int $bucketKey) use (
             $parallelResultCollector,
@@ -159,6 +164,7 @@ final class ParallelFileProcessor
             $mainScript,
             $input,
             $serverPort,
+            $pathsFile,
             $streamSelectLoop,
             $timeoutInSeconds,
             $handleErrorCallable,
@@ -177,6 +183,7 @@ final class ParallelFileProcessor
                 $input,
                 $processIdentifier,
                 $serverPort,
+                $pathsFile,
             );
 
             $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
@@ -266,7 +273,11 @@ final class ParallelFileProcessor
             ($processSpawner)($bucketKey);
         }
 
-        $streamSelectLoop->run();
+        try {
+            $streamSelectLoop->run();
+        } finally {
+            $workerPathsFile?->remove();
+        }
 
         if ($reachedSystemErrorsCountLimit) {
             $parallelResultCollector->collectSystemError(new SystemError(sprintf(

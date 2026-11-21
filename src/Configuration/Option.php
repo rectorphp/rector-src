@@ -152,6 +152,12 @@ final class Option
     public const string PARALLEL_PORT = 'port';
 
     /**
+     * @internal The main process passes the command-line paths to its workers in this JSON file,
+     * as their command line would get too long for the OS with many paths
+     */
+    public const string PARALLEL_PATHS_FILE = 'paths-file';
+
+    /**
      * @internal Use @see \Rector\Config\RectorConfig::parallel() instead with pass int $jobSize parameter
      */
     public const string PARALLEL_JOB_SIZE = 'parallel-job-size';

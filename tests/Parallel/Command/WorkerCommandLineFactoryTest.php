@@ -73,7 +73,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 self::COMMAND => 'process',
                 Option::SOURCE => ['src'],
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -82,7 +82,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 Option::SOURCE => ['src'],
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -92,7 +92,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
                 '--' . Option::DEBUG => true,
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -103,7 +103,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::DEBUG => true,
                 '--' . Option::XDEBUG => true,
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
     }
 
@@ -144,7 +144,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 self::COMMAND => 'process',
                 Option::SOURCE => ['src'],
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -153,7 +153,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 Option::SOURCE => ['src'],
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -163,7 +163,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
                 '--' . Option::DEBUG => true,
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -174,7 +174,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::DEBUG => true,
                 '--' . Option::XDEBUG => true,
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -184,7 +184,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
                 '--' . Option::MEMORY_LIMIT => '-1',
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --memory-limit='-1' --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --memory-limit='-1' --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
 
         yield [
@@ -194,8 +194,40 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
                 '--' . Option::PHP => true,
             ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --php --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --php --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi",
         ];
+    }
+
+    public function testPathsGoInPathsFile(): void
+    {
+        $inputDefinition = $this->prepareProcessCommandDefinition();
+
+        // ~260 KiB of paths, more than one command-line argument may hold on Linux (128 KiB)
+        $paths = [];
+        for ($index = 0; $index < 1000; ++$index) {
+            $paths[] = '/project/src/' . str_repeat('a_folder_with_a_long_name/', 9) . 'SomeClass' . $index . '.php';
+        }
+
+        $arrayInput = new ArrayInput([
+            self::COMMAND => 'process',
+            Option::SOURCE => $paths,
+        ], $inputDefinition);
+
+        $workerCommandLine = $this->workerCommandLineFactory->create(
+            self::DUMMY_MAIN_SCRIPT,
+            ProcessCommand::class,
+            'worker',
+            $arrayInput,
+            'identifier',
+            2000,
+            '/tmp/rector_paths_file'
+        );
+
+        $this->assertStringNotContainsString($paths[0], $workerCommandLine);
+        $this->assertStringContainsString(
+            '--' . Option::PARALLEL_PATHS_FILE . ' ' . escapeshellarg('/tmp/rector_paths_file'),
+            $workerCommandLine
+        );
     }
 
     /**

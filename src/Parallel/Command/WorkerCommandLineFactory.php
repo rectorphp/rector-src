@@ -36,7 +36,8 @@ final readonly class WorkerCommandLineFactory
         string $workerCommandName,
         InputInterface $input,
         string $identifier,
-        int $port
+        int $port,
+        ?string $pathsFile = null
     ): string {
         $commandArguments = array_slice($_SERVER['argv'], 1);
 
@@ -82,10 +83,10 @@ final readonly class WorkerCommandLineFactory
         $workerCommandArray[] = '--identifier';
         $workerCommandArray[] = escapeshellarg($identifier);
 
-        /** @var string[] $paths */
-        $paths = $input->getArgument(Option::SOURCE);
-        foreach ($paths as $path) {
-            $workerCommandArray[] = escapeshellarg($path);
+        // the paths go in a file, as many paths make the command line too long to start the worker
+        if ($pathsFile !== null) {
+            $workerCommandArray[] = self::OPTION_DASHES . Option::PARALLEL_PATHS_FILE;
+            $workerCommandArray[] = escapeshellarg($pathsFile);
         }
 
         // set json output
