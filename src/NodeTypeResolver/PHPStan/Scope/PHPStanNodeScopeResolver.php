@@ -394,7 +394,7 @@ final readonly class PHPStanNodeScopeResolver
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
 
-        if ($callLike->isFirstClassCallable()) {
+        if ($callLike->isPartialFunctionApplication()) {
             return;
         }
 
