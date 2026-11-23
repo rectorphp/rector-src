@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -56,18 +55,16 @@ final class WhileEachToForeachRector extends AbstractRector implements MinPhpVer
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Use `foreach()` instead of deprecated `each()`, when the array pointer is reset right before the loop',
+            'Use `foreach()` instead of deprecated `each()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-reset($callbacks);
 while (list($key, $callback) = each($callbacks)) {
     // ...
 }
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-reset($callbacks);
 foreach ($callbacks as $key => $callback) {
     // ...
 }
@@ -75,14 +72,12 @@ CODE_SAMPLE
                 ),
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-reset($callbacks);
 while (list($key) = each($callbacks)) {
     // ...
 }
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-reset($callbacks);
 foreach (array_keys($callbacks) as $key) {
     // ...
 }
@@ -137,7 +132,7 @@ CODE_SAMPLE
 
             $previousStmt = null;
             foreach ($stmtsAwareNode->stmts as $key => $stmt) {
-                if ($stmt instanceof While_ && $previousStmt instanceof Stmt) {
+                if ($stmt instanceof While_) {
                     $foreach = $this->refactorWhile($stmt, $previousStmt, $node);
                     if ($foreach instanceof Foreach_) {
                         $stmtsAwareNode->stmts[$key] = $foreach;
@@ -158,7 +153,7 @@ CODE_SAMPLE
 
     private function refactorWhile(
         While_ $while,
-        Stmt $previousStmt,
+        ?Stmt $previousStmt,
         FileNode|Namespace_|ClassMethod|Function_|Closure $scopeNode
     ): ?Foreach_ {
         if (! $while->cond instanceof Assign) {
@@ -221,7 +216,7 @@ CODE_SAMPLE
 
     private function isPointerAtStart(
         Expr $expr,
-        Stmt $previousStmt,
+        ?Stmt $previousStmt,
         FileNode|Namespace_|ClassMethod|Function_|Closure $scopeNode,
         FuncCall $eachFuncCall
     ): bool {
@@ -230,14 +225,11 @@ CODE_SAMPLE
         }
 
         $variableName = $expr->name;
-        if (! $previousStmt instanceof Expression) {
-            return false;
-        }
 
-        $resetFuncCall = $this->matchResetFuncCall($previousStmt->expr, $variableName);
-        if (! $resetFuncCall instanceof FuncCall && ! $this->isArrayLiteralAssign($previousStmt->expr, $variableName)) {
-            return false;
-        }
+        // a reset() right before the loop leaves the pointer where foreach starts
+        $resetFuncCall = $previousStmt instanceof Expression
+            ? $this->matchResetFuncCall($previousStmt->expr, $variableName)
+            : null;
 
         // the caller sees the pointer of a by-reference variable
         if (! $scopeNode instanceof FileNode && ! $scopeNode instanceof Namespace_) {
@@ -294,15 +286,6 @@ CODE_SAMPLE
         }
 
         return $expr;
-    }
-
-    private function isArrayLiteralAssign(Expr $expr, string $variableName): bool
-    {
-        if (! $expr instanceof Assign || ! $expr->expr instanceof Array_) {
-            return false;
-        }
-
-        return $expr->var instanceof Variable && $this->isName($expr->var, $variableName);
     }
 
     /**
