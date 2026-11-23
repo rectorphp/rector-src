@@ -4,7 +4,10 @@ namespace Rector\Tests\CodingStyle\Rector\FuncCall\ClosureFromCallableToFirstCla
 
 use Closure;
 
-Closure::fromCallable([$obj, 'method']);
+function objectCallableArray(\stdClass $obj)
+{
+    return Closure::fromCallable([$obj, 'method']);
+}
 
 ?>
 -----
@@ -14,6 +17,9 @@ namespace Rector\Tests\CodingStyle\Rector\FuncCall\ClosureFromCallableToFirstCla
 
 use Closure;
 
-$obj->method(...);
+function objectCallableArray(\stdClass $obj)
+{
+    return $obj->method(...);
+}
 
 ?>
