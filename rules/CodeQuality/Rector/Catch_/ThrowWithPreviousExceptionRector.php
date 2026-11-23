@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\Catch_;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Throw_;
@@ -19,18 +20,28 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
+use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\ValueObject\MethodName;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector\ThrowWithPreviousExceptionRectorTest
  */
-final class ThrowWithPreviousExceptionRector extends AbstractRector
+final class ThrowWithPreviousExceptionRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @api
+     */
+    public const string INHERIT_CODE = 'inherit_code';
+
+    private bool $inheritCode = true;
+
     private const int DEFAULT_EXCEPTION_ARGUMENT_POSITION = 2;
 
     public function __construct(
@@ -45,35 +56,67 @@ final class ThrowWithPreviousExceptionRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        try {
-            $someCode = 1;
-        } catch (Throwable $throwable) {
-            throw new \RuntimeException('ups');
-        }
-    }
-}
-CODE_SAMPLE
+                        class SomeClass
+                        {
+                            public function run()
+                            {
+                                try {
+                                    $someCode = 1;
+                                } catch (Throwable $throwable) {
+                                    throw new \RuntimeException('ups');
+                                }
+                            }
+                        }
+                        CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        try {
-            $someCode = 1;
-        } catch (Throwable $throwable) {
-            throw new \RuntimeException('ups', $throwable->getCode(), $throwable);
-        }
-    }
-}
-CODE_SAMPLE
+                        class SomeClass
+                        {
+                            public function run()
+                            {
+                                try {
+                                    $someCode = 1;
+                                } catch (Throwable $throwable) {
+                                    throw new \RuntimeException('ups', $throwable->getCode(), $throwable);
+                                }
+                            }
+                        }
+                        CODE_SAMPLE
+                ),
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
+                        try {
+                            $someCode = 1;
+                        } catch (Throwable $throwable) {
+                            throw new \RuntimeException('ups', $throwable->getCode());
+                        }
+                        CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+                        try {
+                            $someCode = 1;
+                        } catch (Throwable $throwable) {
+                            throw new \RuntimeException('ups', previous: $throwable);
+                        }
+                        CODE_SAMPLE
+                    ,
+                    [
+                        self::INHERIT_CODE => false,
+                    ]
                 ),
             ]
         );
+    }
+
+    /**
+     * @param array<string, bool> $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $inheritCode = $configuration[self::INHERIT_CODE] ?? true;
+        Assert::boolean($inheritCode);
+
+        $this->inheritCode = $inheritCode;
     }
 
     /**
@@ -132,6 +175,10 @@ CODE_SAMPLE
 
         if ($new->isFirstClassCallable()) {
             return null;
+        }
+
+        if (! $this->inheritCode) {
+            return $this->refactorThrowWithoutCode($new, $caughtThrowableVariable);
         }
 
         $exceptionArgumentPosition = $this->resolveExceptionArgumentPosition($new->class);
@@ -210,6 +257,75 @@ CODE_SAMPLE
 
         // nothing more to add
         return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+    }
+
+    /**
+     * Pass the previous exception as named "previous" argument and drop "$caught->getCode()", as the parent constructor inherits it
+     */
+    private function refactorThrowWithoutCode(New_ $new, Variable $caughtThrowableVariable): ?int
+    {
+        $hasChanged = false;
+
+        foreach ($new->getArgs() as $position => $arg) {
+            $isCodeArgument = $arg->name instanceof Identifier
+                ? $arg->name->toString() === 'code'
+                : $position === 1;
+
+            if (! $isCodeArgument || ! $this->isCaughtThrowableGetCode($arg->value, $caughtThrowableVariable)) {
+                continue;
+            }
+
+            unset($new->args[$position]);
+            $new->args = array_values($new->args);
+            $hasChanged = true;
+
+            foreach ($new->getArgs() as $remainingArg) {
+                if (! $remainingArg->name instanceof Identifier && $this->nodeComparator->areNodesEqual(
+                    $remainingArg->value,
+                    $caughtThrowableVariable
+                )) {
+                    $remainingArg->name = new Identifier('previous');
+                }
+            }
+
+            break;
+        }
+
+        if (! $this->hasArgument($new, 'previous')
+            && ! isset($new->getArgs()[2])
+            && ! $this->hasPositionalCaughtThrowable($new, $caughtThrowableVariable)
+            && $this->hasParameter($new, 'previous')
+        ) {
+            $new->args[] = new Arg($caughtThrowableVariable, name: new Identifier('previous'));
+            $hasChanged = true;
+        }
+
+        if (! $hasChanged) {
+            return null;
+        }
+
+        // fix broken format preserving printers, see https://github.com/rectorphp/rector/issues/5576
+        $new->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+
+        return NodeVisitor::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+    }
+
+    private function isCaughtThrowableGetCode(Expr $expr, Variable $caughtThrowableVariable): bool
+    {
+        return $expr instanceof MethodCall
+            && $this->isName($expr->name, 'getCode')
+            && $this->nodeComparator->areNodesEqual($expr->var, $caughtThrowableVariable);
+    }
+
+    private function hasPositionalCaughtThrowable(New_ $new, Variable $caughtThrowableVariable): bool
+    {
+        return array_any(
+            $new->getArgs(),
+            fn (Arg $arg): bool => ! $arg->name instanceof Identifier && $this->nodeComparator->areNodesEqual(
+                $arg->value,
+                $caughtThrowableVariable
+            )
+        );
     }
 
     private function hasParameter(New_ $new, string $parameterName): bool
