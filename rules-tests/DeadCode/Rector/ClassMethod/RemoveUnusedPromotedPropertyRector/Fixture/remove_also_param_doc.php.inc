@@ -27,7 +27,11 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyR
 
 class RemoveAlsoParamDoc
 {
+    /**
+     * @param non-empty-string $someUnusedDependency
+     */
     public function __construct(
+        $someUnusedDependency,
         private $usedDependency
     ) {
     }
