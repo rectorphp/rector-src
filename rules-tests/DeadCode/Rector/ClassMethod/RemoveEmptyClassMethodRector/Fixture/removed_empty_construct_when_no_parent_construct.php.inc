@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector\
 
 use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector\Source\ParentWithoutConstructor;
 
-class RemovedEmptyConstructWhenNoParentConstruct extends ParentWithoutConstructor
+final class RemovedEmptyConstructWhenNoParentConstruct extends ParentWithoutConstructor
 {
     public function __construct()
     {
@@ -19,7 +19,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector\
 
 use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector\Source\ParentWithoutConstructor;
 
-class RemovedEmptyConstructWhenNoParentConstruct extends ParentWithoutConstructor
+final class RemovedEmptyConstructWhenNoParentConstruct extends ParentWithoutConstructor
 {
 }
 

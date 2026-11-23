@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector\Fixture;
 
-class Simple
+final class Simple
 {
     public function __construct()
     {
@@ -20,7 +20,7 @@ class Simple
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector\Fixture;
 
-class Simple
+final class Simple
 {
     public function boom()
     {
