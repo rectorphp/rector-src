@@ -218,6 +218,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->shouldSkipNarrowedPropertyAssignedElsewhere($node, $property, $param, $propertyName)) {
+                continue;
+            }
+
             if ($this->shouldSkipUntypedParentProperty($classReflection, $propertyName)) {
                 continue;
             }
@@ -511,6 +515,38 @@ CODE_SAMPLE
         }
 
         return $this->typeComparator->areTypesEqual($propertyType, $paramType);
+    }
+
+    /**
+     * Promotion puts the param type on the property. When it is narrower than the property type,
+     * any other write of the wider type would fail with a TypeError.
+     */
+    private function shouldSkipNarrowedPropertyAssignedElsewhere(
+        Class_ $class,
+        Property $property,
+        Param $param,
+        string $propertyName
+    ): bool {
+        if (! $property->type instanceof Node || ! $param->type instanceof Node) {
+            return false;
+        }
+
+        $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
+        $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+        if ($this->typeComparator->areTypesEqual($propertyType, $paramType)) {
+            return false;
+        }
+
+        $propertyAssigns = $this->betterNodeFinder->find(
+            $class,
+            fn (Node $node): bool => $node instanceof Assign
+                && $node->var instanceof PropertyFetch
+                && $this->isName($node->var->var, 'this')
+                && $this->isName($node->var->name, $propertyName)
+        );
+
+        // the constructor assign itself is one of them
+        return count($propertyAssigns) > 1;
     }
 
     private function shouldSkipPropertyAssignedNull(Class_ $class, string $propertyName): bool
