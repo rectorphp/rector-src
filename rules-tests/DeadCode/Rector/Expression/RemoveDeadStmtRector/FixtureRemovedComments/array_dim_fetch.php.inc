@@ -32,9 +32,9 @@ function wrapToPreventPhpStanCallingMethods()
 
     //comment 2
     methodCall();
-    methodCall2();
 
     //comment 3
     methodCall1();
+    methodCall2();
 }
 ?>

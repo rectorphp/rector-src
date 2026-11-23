@@ -20,8 +20,8 @@ class X
 {
     public function f()
     {
-        $object->b();
         $object->a();
+        $object->b();
     }
 }
 
