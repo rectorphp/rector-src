@@ -6,10 +6,9 @@
 
 use Rector\Console\Formatter\ColorConsoleDiffFormatter;
 use Rector\Console\Formatter\ConsoleDiffer;
-use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Differ\DefaultDiffer;
-use Rector\Util\Reflection\PrivatesAccessor;
-use Symfony\Component\Console\Command\Command;
 
 $projectRoot = __DIR__ .'/..';
 $rectorBin = $projectRoot . '/bin/rector';
@@ -59,20 +58,20 @@ if (!file_exists($expectedDiff)) {
     exit($exitCode);
 }
 
-$symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
-$symfonyStyle =  $symfonyStyleFactory->create();
+$rectorStyleFactory = new RectorStyleFactory();
+$rectorStyle = $rectorStyleFactory->create();
 
 $matchedExpectedOutput = false;
 $expectedOutput = trim((string) file_get_contents($expectedDiff));
 if ($output === $expectedOutput) {
-    $symfonyStyle->success('End-to-end test successfully completed');
-    exit(Command::SUCCESS);
+    $rectorStyle->success('End-to-end test successfully completed');
+    exit(ExitCode::SUCCESS);
 }
 
 // print color diff, to make easy find the differences
 $defaultDiffer = new DefaultDiffer();
 $colorConsoleDiffFormatter = new ColorConsoleDiffFormatter();
 $diff = $colorConsoleDiffFormatter->format($defaultDiffer->diff($output, $expectedOutput));
-$symfonyStyle->writeln($diff);
+$rectorStyle->writeln($diff);
 
-exit(Command::FAILURE);
+exit(ExitCode::FAILURE);
