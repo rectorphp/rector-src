@@ -9,7 +9,8 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
-use Rector\PhpParser\Node\Value\ValueResolver;
+use PHPStan\Type\Constant\ConstantIntegerType;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -31,7 +32,7 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
     ];
 
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -61,29 +62,16 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
         }
 
         foreach (self::OLD_TO_NEW_FUNCTION_NAMES as $oldFunctionName => $newFunctionName) {
-            if ($this->isName($node, $oldFunctionName)) {
-                $node->name = new Name($newFunctionName);
-
-                // special case: random_int(); → random_int(0, getrandmax());
-                if ($newFunctionName === 'random_int') {
-                    $args = $node->getArgs();
-                    if ($args === []) {
-                        $node->args[0] = new Arg(new Int_(0));
-                        $node->args[1] = new Arg($this->nodeFactory->createFuncCall('mt_getrandmax'));
-                    } elseif (count($args) === 2) {
-                        $minValue = $this->valueResolver->getValue($args[0]->value);
-                        $maxValue = $this->valueResolver->getValue($args[1]->value);
-
-                        if (is_int($minValue) && is_int($maxValue) && $minValue > $maxValue) {
-                            $temp = $node->args[0];
-                            $node->args[0] = $node->args[1];
-                            $node->args[1] = $temp;
-                        }
-                    }
-                }
-
-                return $node;
+            if (! $this->isName($node, $oldFunctionName)) {
+                continue;
             }
+
+            if ($newFunctionName === 'random_int' && ! $this->refactorRandArgs($node)) {
+                return null;
+            }
+
+            $node->name = new Name($newFunctionName);
+            return $node;
         }
 
         return null;
@@ -92,5 +80,51 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    /**
+     * random_int() ignores the seed and throws on min > max, unlike rand()
+     */
+    private function refactorRandArgs(FuncCall $funcCall): bool
+    {
+        if ($this->isSeededFile()) {
+            return false;
+        }
+
+        $args = $funcCall->getArgs();
+
+        // special case: random_int(); → random_int(0, getrandmax());
+        if ($args === []) {
+            $funcCall->args[0] = new Arg(new Int_(0));
+            $funcCall->args[1] = new Arg($this->nodeFactory->createFuncCall('mt_getrandmax'));
+            return true;
+        }
+
+        if (count($args) !== 2) {
+            return true;
+        }
+
+        $minType = $this->getType($args[0]->value);
+        $maxType = $this->getType($args[1]->value);
+        if (! $minType instanceof ConstantIntegerType || ! $maxType instanceof ConstantIntegerType) {
+            return false;
+        }
+
+        if ($minType->getValue() > $maxType->getValue()) {
+            $funcCall->args = [$funcCall->args[1], $funcCall->args[0]];
+        }
+
+        return true;
+    }
+
+    private function isSeededFile(): bool
+    {
+        $seedFuncCall = $this->betterNodeFinder->findFirst(
+            $this->getFile()
+                ->getNewStmts(),
+            fn (Node $node): bool => $node instanceof FuncCall && $this->isNames($node, ['srand', 'mt_srand'])
+        );
+
+        return $seedFuncCall instanceof FuncCall;
     }
 }
