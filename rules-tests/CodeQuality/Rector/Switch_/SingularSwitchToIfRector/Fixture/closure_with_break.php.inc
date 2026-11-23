@@ -28,7 +28,7 @@ final class ClosureWithBreak
 {
     public function run($value, array $items)
     {
-        if ($value === 100) {
+        if ($value == 100) {
             $callback = function () use ($items) {
                 foreach ($items as $item) {
                     break;

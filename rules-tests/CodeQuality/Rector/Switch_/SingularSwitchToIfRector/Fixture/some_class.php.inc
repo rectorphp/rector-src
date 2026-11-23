@@ -27,7 +27,7 @@ class SomeClass
     public function run($value)
     {
         $result = 1;
-        if ($value === 100) {
+        if ($value == 100) {
             $result = 1000;
         }
 
