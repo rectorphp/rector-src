@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\Expression;
 
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\Void_;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Stmt\Expression;
@@ -123,13 +124,7 @@ CODE_SAMPLE
         $vars = $expression->expr->vars;
         array_shift($vars);
 
-        foreach ($vars as $var) {
-            if ($this->livingCodeManipulator->keepLivingCodeFromExpr($var) !== []) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($vars, fn (Expr $var): bool => $this->livingCodeManipulator->keepLivingCodeFromExpr($var) !== []);
     }
 
     private function isVoidCastNoDiscardCall(Expression $expression): bool
