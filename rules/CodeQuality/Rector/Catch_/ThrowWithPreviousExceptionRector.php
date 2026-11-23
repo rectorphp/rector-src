@@ -292,7 +292,7 @@ final class ThrowWithPreviousExceptionRector extends AbstractRector implements C
         }
 
         if (! $this->hasArgument($new, 'previous')
-            && ! isset($new->getArgs()[2])
+            && $new->getArg('previous', 2) === null
             && ! $this->hasPositionalCaughtThrowable($new, $caughtThrowableVariable)
             && $this->hasParameter($new, 'previous')
         ) {
