@@ -7,8 +7,16 @@ namespace Rector\Php86\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\UnaryMinus;
+use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar;
+use PhpParser\Node\Scalar\InterpolatedString;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -122,10 +130,47 @@ CODE_SAMPLE
         [$valueExpr, $innerBoundExpr] = $valueAndBound;
 
         if ($this->isName($outerFuncCall, 'max')) {
-            return $this->nodeFactory->createFuncCall('clamp', [$valueExpr, $outerBoundExpr, $innerBoundExpr]);
+            [$minExpr, $maxExpr] = [$outerBoundExpr, $innerBoundExpr];
+        } else {
+            [$minExpr, $maxExpr] = [$innerBoundExpr, $outerBoundExpr];
         }
 
-        return $this->nodeFactory->createFuncCall('clamp', [$valueExpr, $innerBoundExpr, $outerBoundExpr]);
+        // clamp() throws ValueError when min > max, while nested min()/max() does not
+        if (! $this->areOrderedConstantBounds($minExpr, $maxExpr)) {
+            return null;
+        }
+
+        return $this->nodeFactory->createFuncCall('clamp', [$valueExpr, $minExpr, $maxExpr]);
+    }
+
+    private function areOrderedConstantBounds(Expr $minExpr, Expr $maxExpr): bool
+    {
+        if (! $this->isKnownBound($minExpr) || ! $this->isKnownBound($maxExpr)) {
+            return false;
+        }
+
+        $minValues = $this->getNativeType($minExpr)
+            ->getConstantScalarValues();
+        $maxValues = $this->getNativeType($maxExpr)
+            ->getConstantScalarValues();
+
+        // clamp() throws ValueError on a NAN bound too
+        foreach ([...$minValues, ...$maxValues] as $value) {
+            if (is_float($value) && is_nan($value)) {
+                return false;
+            }
+        }
+
+        // e.g. PHP_INT_MAX differs per platform, so every possible value must be ordered
+        foreach ($minValues as $minValue) {
+            foreach ($maxValues as $maxValue) {
+                if ($minValue > $maxValue) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private function isSupportedArg(Arg $arg): bool
@@ -154,8 +199,37 @@ CODE_SAMPLE
 
     private function isKnownBound(Expr $expr): bool
     {
+        if (! $this->isConstantExpr($expr)) {
+            return false;
+        }
+
         return $this->getNativeType($expr)
             ->isConstantScalarValue()
             ->yes();
+    }
+
+    private function isConstantExpr(Expr $expr): bool
+    {
+        if ($expr instanceof Scalar) {
+            return ! $expr instanceof InterpolatedString;
+        }
+
+        if ($expr instanceof ConstFetch) {
+            return true;
+        }
+
+        if ($expr instanceof ClassConstFetch) {
+            return $expr->class instanceof Name && ! $this->isName($expr->class, 'static');
+        }
+
+        if ($expr instanceof UnaryMinus || $expr instanceof UnaryPlus) {
+            return $this->isConstantExpr($expr->expr);
+        }
+
+        if ($expr instanceof BinaryOp) {
+            return $this->isConstantExpr($expr->left) && $this->isConstantExpr($expr->right);
+        }
+
+        return false;
     }
 }
