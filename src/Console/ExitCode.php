@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Console;
 
-use Symfony\Component\Console\Command\Command;
-
 final class ExitCode
 {
-    public const int SUCCESS = Command::SUCCESS;
+    public const int SUCCESS = 0;
 
-    public const int FAILURE = Command::FAILURE;
+    public const int FAILURE = 1;
 
     public const int CHANGED_CODE = 2;
 }
