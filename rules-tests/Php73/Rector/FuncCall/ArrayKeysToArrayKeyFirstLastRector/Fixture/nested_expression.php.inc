@@ -9,6 +9,9 @@ final class NestedExpression
         return trim((string) current(array_keys($this->resolveItems($items))));
     }
 
+    /**
+     * @return non-empty-array
+     */
     private function resolveItems(array $items): array
     {
         return $items;
@@ -28,6 +31,9 @@ final class NestedExpression
         return trim((string) array_key_first($this->resolveItems($items)));
     }
 
+    /**
+     * @return non-empty-array
+     */
     private function resolveItems(array $items): array
     {
         return $items;

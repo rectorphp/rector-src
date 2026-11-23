@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -37,11 +38,15 @@ final class ArrayKeysToArrayKeyFirstLastRector extends AbstractRector implements
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
+$items = ['first' => 1, 'last' => 2];
+
 $firstKey = current(array_keys($items));
 $lastKey = end(array_keys($items));
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
+$items = ['first' => 1, 'last' => 2];
+
 $firstKey = array_key_first($items);
 $lastKey = array_key_last($items);
 CODE_SAMPLE
@@ -106,6 +111,12 @@ CODE_SAMPLE
         }
 
         if ($arrayKeysArgs[0]->name instanceof Identifier || $arrayKeysArgs[0]->unpack) {
+            return null;
+        }
+
+        // on an empty array, current/reset/end() return false, while array_key_first/last() return null
+        $scope = ScopeFetcher::fetch($node);
+        if (! $scope->getType($arrayKeysArgs[0]->value)->isIterableAtLeastOnce()->yes()) {
             return null;
         }
 

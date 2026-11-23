@@ -4,6 +4,9 @@ namespace Rector\Tests\Php73\Rector\FuncCall\ArrayKeysToArrayKeyFirstLastRector\
 
 final class SomeClass
 {
+    /**
+     * @param non-empty-array $items
+     */
     public function run(array $items)
     {
         $firstKey = current(array_keys($items));
@@ -22,6 +25,9 @@ namespace Rector\Tests\Php73\Rector\FuncCall\ArrayKeysToArrayKeyFirstLastRector\
 
 final class SomeClass
 {
+    /**
+     * @param non-empty-array $items
+     */
     public function run(array $items)
     {
         $firstKey = array_key_first($items);
