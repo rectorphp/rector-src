@@ -9,7 +9,9 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\VarLikeIdentifier;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\ValueObject\PhpVersion;
@@ -20,6 +22,11 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
  */
 final class RemoveGetClassGetParentClassNoArgsRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly ReflectionResolver $reflectionResolver
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -76,11 +83,21 @@ final class RemoveGetClassGetParentClassNoArgsRector extends AbstractRector impl
             $target = 'parent';
         }
 
-        if ($target !== null) {
-            return new ClassConstFetch(new Name([$target]), new VarLikeIdentifier('class'));
+        if ($target === null) {
+            return null;
         }
 
-        return null;
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        // parent::class is a fatal error in a class without parent
+        if ($target === 'parent' && ! $classReflection->getParentClass() instanceof ClassReflection) {
+            return null;
+        }
+
+        return new ClassConstFetch(new Name([$target]), new VarLikeIdentifier('class'));
     }
 
     public function provideMinPhpVersion(): int

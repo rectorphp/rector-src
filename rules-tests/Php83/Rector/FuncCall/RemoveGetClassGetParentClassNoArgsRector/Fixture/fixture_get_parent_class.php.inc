@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\Fixture;
 
-class Fixture
+use Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\Source\SomeParentClass;
+
+class Fixture extends SomeParentClass
 {
     public function test()
     {
@@ -16,7 +18,9 @@ class Fixture
 
 namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\Fixture;
 
-class Fixture
+use Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\Source\SomeParentClass;
+
+class Fixture extends SomeParentClass
 {
     public function test()
     {
