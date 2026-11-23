@@ -24,7 +24,7 @@ class SomeClass
 {
     public function run(object $object)
     {
-        return $object instanceof \Rector\Tests\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector\Source\SomeType;
+        return $object instanceof SomeType;
     }
 }
 

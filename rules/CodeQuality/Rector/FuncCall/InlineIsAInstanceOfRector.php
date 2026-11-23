@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
@@ -94,6 +95,10 @@ CODE_SAMPLE
         $className = $this->resolveClassName($secondArgValue);
         if ($className === null) {
             return null;
+        }
+
+        if ($secondArgValue->class instanceof Name) {
+            return new Instanceof_($firstArgValue, $secondArgValue->class);
         }
 
         return new Instanceof_($firstArgValue, new FullyQualified($className));
