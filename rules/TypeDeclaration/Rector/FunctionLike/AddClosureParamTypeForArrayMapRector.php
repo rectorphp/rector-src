@@ -84,9 +84,11 @@ CODE_SAMPLE
             return null;
         }
 
-        // array_map passes the value of each array positionally to the closure:
-        // the i-th closure param receives values from the i-th array argument.
+        // with several arrays, array_map() pads the shorter ones with null
         $arrayArgs = array_slice($node->args, 1);
+        if (count($arrayArgs) !== 1) {
+            return null;
+        }
 
         $closure = $args[0]->value;
         $changed = false;

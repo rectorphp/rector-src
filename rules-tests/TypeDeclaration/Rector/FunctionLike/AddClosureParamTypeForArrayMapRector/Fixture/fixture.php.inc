@@ -18,36 +18,13 @@ class Fixture
     }
 
     /**
-     * @param array<int, string> $array
-     * @param array<int, Foo> $arrayTwo
+     * @param array<int, Foo|Bar> $objects
      */
-    public function runTwo(array $array, array $arrayTwo)
+    public function runTwo(array $objects)
     {
-        return array_map(function ($value, $second) {
-            return get_class($second) . $value;
-        }, $array, $arrayTwo);
-    }
-
-    /**
-     * @param array<int, string> $array
-     * @param array<int, Foo|Bar> $arrayTwo
-     */
-    public function runThree(array $array, array $arrayTwo)
-    {
-        return array_map(function ($value, $second) {
-            return get_class($second) . $value;
-        }, $array, $arrayTwo);
-    }
-
-    /**
-     * @param array<int, string> $array
-     * @param array<string> $arrayTwo
-     */
-    public function runFour(array $array, array $arrayTwo)
-    {
-        return array_map(function ($value, $second) {
-            return $second . $value;
-        }, $array, $arrayTwo);
+        return array_map(function ($object) {
+            return get_class($object);
+        }, $objects);
     }
 }
 
@@ -73,36 +50,13 @@ class Fixture
     }
 
     /**
-     * @param array<int, string> $array
-     * @param array<int, Foo> $arrayTwo
+     * @param array<int, Foo|Bar> $objects
      */
-    public function runTwo(array $array, array $arrayTwo)
+    public function runTwo(array $objects)
     {
-        return array_map(function (string $value, \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo $second) {
-            return get_class($second) . $value;
-        }, $array, $arrayTwo);
-    }
-
-    /**
-     * @param array<int, string> $array
-     * @param array<int, Foo|Bar> $arrayTwo
-     */
-    public function runThree(array $array, array $arrayTwo)
-    {
-        return array_map(function (string $value, \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo|\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar $second) {
-            return get_class($second) . $value;
-        }, $array, $arrayTwo);
-    }
-
-    /**
-     * @param array<int, string> $array
-     * @param array<string> $arrayTwo
-     */
-    public function runFour(array $array, array $arrayTwo)
-    {
-        return array_map(function (string $value, string $second) {
-            return $second . $value;
-        }, $array, $arrayTwo);
+        return array_map(function (\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo|\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar $object) {
+            return get_class($object);
+        }, $objects);
     }
 }
 
