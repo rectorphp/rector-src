@@ -19,6 +19,7 @@ use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeAnalyzer\BinaryOpAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -155,6 +156,18 @@ CODE_SAMPLE
             return null;
         }
 
+        $needleType = ScopeFetcher::fetch($binaryOp)->getType($comparedNeedleExpr);
+
+        // str_ends_with() is always true for an empty needle, while the original comparison is not
+        if (! $needleType->isNonEmptyString()->yes()) {
+            return null;
+        }
+
+        // loose comparison of numeric strings compares them as numbers
+        if (($binaryOp instanceof Equal || $binaryOp instanceof NotEqual) && ! $needleType->isNumericString()->no()) {
+            return null;
+        }
+
         $haystack = $substrFuncCall->getArgs()[0]
             ->value;
 
@@ -198,6 +211,11 @@ CODE_SAMPLE
             ! $this->isUnaryMinusStrlenFuncCallArgValue($thirdArgValue, $needle) &&
             ! $this->isHardCodedLNumberAndString($thirdArgValue, $needle)
         ) {
+            return null;
+        }
+
+        // str_ends_with() is always true for an empty needle, while substr_compare() is not 0
+        if (! ScopeFetcher::fetch($binaryOp)->getType($needle)->isNonEmptyString()->yes()) {
             return null;
         }
 

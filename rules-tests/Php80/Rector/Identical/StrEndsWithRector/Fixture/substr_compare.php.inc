@@ -4,7 +4,10 @@ namespace Rector\Tests\Php80\Rector\Identical\StrEndsWithRector\Fixture;
 
 class SubstrCompare
 {
-    public function run()
+    /**
+     * @param non-empty-string $needle
+     */
+    public function run(string $haystack, string $needle)
     {
         $isMatch = substr_compare($haystack, $needle, -strlen($needle)) === 0;
 
@@ -20,7 +23,10 @@ namespace Rector\Tests\Php80\Rector\Identical\StrEndsWithRector\Fixture;
 
 class SubstrCompare
 {
-    public function run()
+    /**
+     * @param non-empty-string $needle
+     */
+    public function run(string $haystack, string $needle)
     {
         $isMatch = str_ends_with($haystack, $needle);
 
