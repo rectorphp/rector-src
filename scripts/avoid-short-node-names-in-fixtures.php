@@ -5,10 +5,8 @@
 declare(strict_types=1);
 
 use Nette\Utils\Strings;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Scripts\Finder\FixtureFinder;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -31,7 +29,7 @@ foreach ($nodeFileInfos as $nodeFileInfo) {
     $shortNodeClassNames[] = $nodeFileInfo->getBasename('.php');
 }
 
-$symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+$rectorStyle = new RectorStyleFactory()->create();
 
 $hasErrors = false;
 
@@ -49,7 +47,7 @@ foreach ($fixtureFiles as $fixtureFile) {
         continue;
     }
 
-    $symfonyStyle->writeln(sprintf(
+    $rectorStyle->writeln(sprintf(
         'Fixture class name "%s" conflicts with native short node name.%sChange it to different to avoid IDE incorrect autocomplete:%s%s%s',
         $fixtureClassName,
         PHP_EOL,
