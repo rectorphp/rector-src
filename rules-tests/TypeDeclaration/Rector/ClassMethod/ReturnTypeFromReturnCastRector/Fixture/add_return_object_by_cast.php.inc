@@ -26,7 +26,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnCa
 
 final class AddReturnObjectByCast
 {
-    public function getObject($data): \stdClass
+    public function getObject($data): object
     {
         try {
             return (object) $data;
