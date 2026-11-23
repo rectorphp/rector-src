@@ -2,8 +2,10 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassLike\AddVoidReturnTypeWhereNoReturnRector\Fixture;
 
-trait AuthUserTrait
+enum EnumPublicMethod
 {
+    case A;
+
     public function getValues()
     {
         $value = 1000;
@@ -17,8 +19,10 @@ trait AuthUserTrait
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassLike\AddVoidReturnTypeWhereNoReturnRector\Fixture;
 
-trait AuthUserTrait
+enum EnumPublicMethod
 {
+    case A;
+
     public function getValues(): void
     {
         $value = 1000;

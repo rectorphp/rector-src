@@ -134,8 +134,9 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($classMethod->isProtected()) {
-            return ! $isFinalClass;
+        // public or protected method of extendable class or trait can be overridden by child with return value
+        if (! $isFinalClass && ! $classMethod->isPrivate() && ! $classMethod->isFinal()) {
+            return true;
         }
 
         return $classReflection->isAbstract();
