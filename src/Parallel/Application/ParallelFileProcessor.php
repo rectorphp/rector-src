@@ -12,7 +12,6 @@ use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Console\Command\ProcessCommand;
 use Rector\Console\ExitCode;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Parallel\Enum\Action;
@@ -24,9 +23,9 @@ use Rector\Parallel\ValueObject\Bridge;
 use Rector\Parallel\ValueObject\ParallelProcess;
 use Rector\Parallel\ValueObject\ProcessPool;
 use Rector\Parallel\ValueObject\Schedule;
+use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
-use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
 
 /**
@@ -58,7 +57,7 @@ final class ParallelFileProcessor
         Schedule $schedule,
         string $mainScript,
         callable $postFileCallback,
-        InputInterface $input
+        Configuration $configuration
     ): ProcessResult {
         // reversed, so that array_pop() hands out the jobs in bucket order
         $jobsPerWorker = array_map(
@@ -157,7 +156,7 @@ final class ParallelFileProcessor
             &$systemErrorsCount,
             &$reachedSystemErrorsCountLimit,
             $mainScript,
-            $input,
+            $configuration,
             $serverPort,
             $streamSelectLoop,
             $timeoutInSeconds,
@@ -172,9 +171,8 @@ final class ParallelFileProcessor
 
             $workerCommandLine = $this->workerCommandLineFactory->create(
                 $mainScript,
-                ProcessCommand::class,
                 'worker',
-                $input,
+                $configuration,
                 $processIdentifier,
                 $serverPort,
             );
