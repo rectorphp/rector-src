@@ -130,12 +130,6 @@ parameters:
             identifier: argument.type
             message: '#Parameter \#1 \$name of method PHPStan\\BetterReflection\\Reflection\\Adapter\\ReflectionClass\:\:getAttributes\(\) expects class\-string\|null, string given#'
 
-        # false positive, checked above
-        -
-            identifier: argument.type
-            message: '#Parameter \#1 \$items of class PhpParser\\Node\\Expr\\Array_ constructor expects array<PhpParser\\Node\\ArrayItem>, array<PhpParser\\Node\\ArrayItem\|null> given#'
-            path: rules/Php71/Rector/List_/ListToArrayDestructRector.php
-
         # scope vs mutating scope
         -
             identifier: argument.type

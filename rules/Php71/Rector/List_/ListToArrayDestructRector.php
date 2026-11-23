@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php71\Rector\List_;
 
 use PhpParser\Node;
-use PhpParser\Node\ArrayItem;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Stmt\Foreach_;
@@ -77,14 +75,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $list = $node->var;
-
-            // all list items must be set
-            if ($this->hasPartialDestruct($list)) {
-                return null;
-            }
-
-            $node->var = new Array_($list->items);
+            $node->var = $this->createShortList($node->var);
             return $node;
         }
 
@@ -96,14 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $list = $node->valueVar;
-
-        // all list items must be set
-        if ($this->hasPartialDestruct($list)) {
-            return null;
-        }
-
-        $node->valueVar = new Array_($list->items);
+        $node->valueVar = $this->createShortList($node->valueVar);
 
         return $node;
     }
@@ -113,8 +97,10 @@ CODE_SAMPLE
         return PhpVersion::PHP_71;
     }
 
-    private function hasPartialDestruct(List_ $list): bool
+    private function createShortList(List_ $list): List_
     {
-        return array_any($list->items, fn (?ArrayItem $arrayItem): bool => ! $arrayItem instanceof ArrayItem);
+        return new List_($list->items, [
+            AttributeKey::KIND => List_::KIND_ARRAY,
+        ]);
     }
 }
