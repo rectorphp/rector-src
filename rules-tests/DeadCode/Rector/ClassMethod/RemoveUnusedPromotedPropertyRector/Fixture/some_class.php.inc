@@ -25,6 +25,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyR
 class SomeClass
 {
     public function __construct(
+        $someUnusedDependency,
         private $usedDependency
     ) {
     }
