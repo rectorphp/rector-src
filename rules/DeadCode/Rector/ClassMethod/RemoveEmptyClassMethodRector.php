@@ -44,7 +44,7 @@ final class RemoveEmptyClassMethodRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class OrphanClass
+final class OrphanClass
 {
     public function __construct()
     {
@@ -53,7 +53,7 @@ class OrphanClass
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class OrphanClass
+final class OrphanClass
 {
 }
 CODE_SAMPLE
@@ -115,11 +115,12 @@ CODE_SAMPLE
 
     private function shouldSkipNonFinalNonPrivateClassMethod(Class_ $class, ClassMethod $classMethod): bool
     {
-        if ($class->isFinal() || FeatureFlags::treatClassesAsFinal($class)) {
+        if ($class->isFinal() || $class->isAnonymous() || FeatureFlags::treatClassesAsFinal($class)) {
             return false;
         }
 
-        if ($classMethod->isMagic()) {
+        // child class can call parent::__construct()
+        if ($classMethod->isMagic() && ! $this->isName($classMethod, MethodName::CONSTRUCT)) {
             return false;
         }
 
