@@ -10,7 +10,6 @@ final class Directly
          $match = in_array($value, $items, TRUE) !== FALSE;
 
          $match = true === in_array($value, $items, TRUE);
-         $match = false !== $match;
     }
 }
 
@@ -28,7 +27,6 @@ final class Directly
          $match = in_array($value, $items, TRUE);
 
          $match = in_array($value, $items, TRUE);
-         $match = $match;
     }
 }
 
