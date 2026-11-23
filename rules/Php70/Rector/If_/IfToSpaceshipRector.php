@@ -43,7 +43,7 @@ final class IfToSpaceshipRector extends AbstractRector implements MinPhpVersionI
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 usort($languages, function ($first, $second) {
-if ($first[0] === $second[0]) {
+if ($first[0] == $second[0]) {
     return 0;
 }
 
@@ -168,6 +168,12 @@ CODE_SAMPLE
         }
 
         $binaryOp = $if->cond;
+
+        // <=> compares loosely, so a strict guard is only safe when loose and strict equality coincide
+        if ($binaryOp instanceof Identical && ! $this->areBothIntegers($binaryOp)) {
+            return null;
+        }
+
         if (count($if->stmts) !== 1) {
             return null;
         }
@@ -204,6 +210,15 @@ CODE_SAMPLE
         }
 
         return new Return_($spaceship);
+    }
+
+    private function areBothIntegers(Identical $identical): bool
+    {
+        if (! $this->getType($identical->left)->isInteger()->yes()) {
+            return false;
+        }
+
+        return $this->getType($identical->right)->isInteger()->yes();
     }
 
     private function matchElseOnlyStmtTernary(Else_ $else): Ternary|null

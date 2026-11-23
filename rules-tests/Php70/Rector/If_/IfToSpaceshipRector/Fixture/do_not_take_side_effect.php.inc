@@ -14,7 +14,7 @@ class SideEffect {
 	}
 
 	private static function rsort( $a, $b ) {
-		if ( $a['bar'] === $b['bar'] ) {
+		if ( $a['bar'] == $b['bar'] ) {
 			return 0;
 		} else {
 			return ( $a['bar'] > $b['bar'] ) ? -1 : 1;
