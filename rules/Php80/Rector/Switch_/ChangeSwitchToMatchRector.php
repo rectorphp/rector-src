@@ -7,8 +7,6 @@ namespace Rector\Php80\Rector\Switch_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Cast;
-use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
@@ -123,7 +121,7 @@ CODE_SAMPLE
             }
 
             $match = $matchResult->getMatch();
-            if ($this->hasIntArmCondOnStringCond($match)) {
+            if ($this->hasIntStringMismatchedArmCond($match)) {
                 continue;
             }
 
@@ -134,7 +132,6 @@ CODE_SAMPLE
             $assignVar = $this->resolveAssignVar($condAndExprs);
             $hasDefaultValue = $this->matchSwitchAnalyzer->hasDefaultValue($match);
 
-            $this->castMatchCond($match);
             $this->mirrorDynamicBoolExpr($match);
 
             if ($assignVar instanceof Expr) {
@@ -180,49 +177,27 @@ CODE_SAMPLE
         return PhpVersion::PHP_80;
     }
 
-    private function castMatchCond(Match_ $match): void
-    {
-        $type = $this->nodeTypeResolver->getNativeType($match->cond);
-        if (! $type->isInteger()->yes()) {
-            return;
-        }
-
-        $armCondType = [];
-        $newMatchCond = null;
-
-        foreach ($match->arms as $arm) {
-            if ($arm->conds === null) {
-                continue;
-            }
-
-            foreach ($arm->conds as $armCond) {
-                $armCondType = $this->nodeTypeResolver->getNativeType($armCond);
-                if ($armCondType->isString()->yes()) {
-                    $newMatchCond = new String_($match->cond);
-                } else {
-                    $newMatchCond = null;
-                    break;
-                }
-            }
-        }
-
-        if ($newMatchCond instanceof Cast) {
-            $match->cond = $newMatchCond;
-        }
-    }
-
     /**
-     * (int) cast would truncate e.g. "777abc" to 777, while loose switch compares such string as string
+     * Loose switch compares e.g. "777abc" with 777 and 1 with "01" differently than strict match, even with a cast
      */
-    private function hasIntArmCondOnStringCond(Match_ $match): bool
+    private function hasIntStringMismatchedArmCond(Match_ $match): bool
     {
-        if (! $this->nodeTypeResolver->getNativeType($match->cond)->isString()->yes()) {
+        $condType = $this->nodeTypeResolver->getNativeType($match->cond);
+        $isCondString = $condType->isString()->yes();
+        $isCondInt = $condType->isInteger()->yes();
+
+        if (! $isCondString && ! $isCondInt) {
             return false;
         }
 
         foreach ($match->arms as $arm) {
             foreach ($arm->conds ?? [] as $armCond) {
-                if ($this->nodeTypeResolver->getNativeType($armCond)->isInteger()->yes()) {
+                $armCondType = $this->nodeTypeResolver->getNativeType($armCond);
+                if ($isCondString && $armCondType->isInteger()->yes()) {
+                    return true;
+                }
+
+                if ($isCondInt && $armCondType->isString()->yes()) {
                     return true;
                 }
             }
