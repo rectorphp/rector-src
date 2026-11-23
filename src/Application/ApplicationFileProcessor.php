@@ -10,6 +10,7 @@ use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\Style\RectorStyle;
 use Rector\FileSystem\FilesFinder;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\CpuCoreCountProvider;
@@ -27,7 +28,6 @@ use Rector\ValueObject\FileProcessResult;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 final class ApplicationFileProcessor
@@ -40,7 +40,7 @@ final class ApplicationFileProcessor
     private array $systemErrors = [];
 
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
+        private readonly RectorStyle $rectorStyle,
         private readonly FilesFinder $filesFinder,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ScheduleFactory $scheduleFactory,
@@ -76,11 +76,11 @@ final class ApplicationFileProcessor
          */
         if ($configuration->shouldShowProgressBar()) {
             $fileCount = count($filePaths);
-            $this->symfonyStyle->progressStart($fileCount);
-            $this->symfonyStyle->progressAdvance(0);
+            $this->rectorStyle->progressStart($fileCount);
+            $this->rectorStyle->progressAdvance(0);
 
             $postFileCallback = function (int $stepCount): void {
-                $this->symfonyStyle->progressAdvance($stepCount);
+                $this->rectorStyle->progressAdvance($stepCount);
                 // running in parallel here → nothing else to do
             };
         } else {
@@ -90,7 +90,7 @@ final class ApplicationFileProcessor
 
         if ($configuration->isDebug()) {
             $preFileCallback = function (string $filePath): void {
-                $this->symfonyStyle->writeln('[file] ' . $filePath);
+                $this->rectorStyle->writeln('[file] ' . $filePath);
             };
         } else {
             $preFileCallback = null;
@@ -212,7 +212,7 @@ final class ApplicationFileProcessor
     {
         $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
 
-        if ($this->symfonyStyle->isDebug()) {
+        if ($this->rectorStyle->isDebug()) {
             $errorMessage .= PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString();
         } else {
             $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';

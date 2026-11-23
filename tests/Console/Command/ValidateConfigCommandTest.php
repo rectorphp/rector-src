@@ -10,6 +10,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Console\Command\ValidateConfigCommand;
 use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyle;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
@@ -20,7 +21,7 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Console\Command\Source\DeprecatedFixtureRule;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 final class ValidateConfigCommandTest extends AbstractLazyTestCase
@@ -46,13 +47,15 @@ final class ValidateConfigCommandTest extends AbstractLazyTestCase
             SimpleParameterProvider::setParameter($optionName, []);
         }
 
-        $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new BufferedOutput());
+        $rectorStyle = new RectorStyle(new ArrayInput([]), new BufferedOutput());
+        // RectorStyle is quiet under PHPUnit, output is asserted here
+        $rectorStyle->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
 
         $validateConfigCommand = new ValidateConfigCommand(
-            $symfonyStyle,
-            new DeprecatedRulesReporter($symfonyStyle),
+            $rectorStyle,
+            new DeprecatedRulesReporter($rectorStyle),
             new MissConfigurationReporter(
-                $symfonyStyle,
+                $rectorStyle,
                 new VendorMissAnalyseGuard(),
                 $this->make(UnusedSkipResolver::class),
                 $this->make(NeededSkipVerifier::class),
