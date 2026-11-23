@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class AddDefaultFalseToBool
 {
-    public $name;
+    private $name;
 
     public function __construct(string $name = false)
     {
@@ -20,7 +20,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class AddDefaultFalseToBool
 {
-    public function __construct(public string|false $name = false)
+    public function __construct(private string|false $name = false)
     {
     }
 }

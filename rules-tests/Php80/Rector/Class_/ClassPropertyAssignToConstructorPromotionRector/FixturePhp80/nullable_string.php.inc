@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class NullableString
 {
-    public $name;
+    private $name;
 
     public function __construct(string $name = null)
     {
@@ -20,7 +20,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class NullableString
 {
-    public function __construct(public ?string $name = null)
+    public function __construct(private ?string $name = null)
     {
     }
 }
