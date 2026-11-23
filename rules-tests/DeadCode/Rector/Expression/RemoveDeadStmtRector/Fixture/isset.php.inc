@@ -9,7 +9,7 @@ function wrapToPreventPhpStanCallingMethods ($object)
 
     isset ($b);
 
-    isset($b[func1()], $c[func2()], $d[func3()], $d[func4()]);
+    isset($b[func1()]);
 }
 ?>
 -----
@@ -23,8 +23,5 @@ function wrapToPreventPhpStanCallingMethods ($object)
     $b = isset($b, $c, $d);
 
     func1();
-    func2();
-    func3();
-    func4();
 }
 ?>

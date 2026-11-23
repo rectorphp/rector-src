@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\Expression;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Cast\Void_;
+use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitor;
@@ -70,6 +71,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isShortCircuitIssetWithSideEffect($node)) {
+            return null;
+        }
+
         $livingCode = $this->livingCodeManipulator->keepLivingCodeFromExpr($node->expr);
         if ($livingCode === []) {
             return $this->removeNodeAndKeepComments($node);
@@ -104,6 +109,27 @@ CODE_SAMPLE
          *  that can call non-defined property, that can have some special handling, eg: throw on special case
          */
         return ! $phpPropertyReflection instanceof PhpPropertyReflection;
+    }
+
+    /**
+     * isset() with more args stops on first unset one, so side effects in later args are conditional
+     */
+    private function isShortCircuitIssetWithSideEffect(Expression $expression): bool
+    {
+        if (! $expression->expr instanceof Isset_) {
+            return false;
+        }
+
+        $vars = $expression->expr->vars;
+        array_shift($vars);
+
+        foreach ($vars as $var) {
+            if ($this->livingCodeManipulator->keepLivingCodeFromExpr($var) !== []) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isVoidCastNoDiscardCall(Expression $expression): bool
