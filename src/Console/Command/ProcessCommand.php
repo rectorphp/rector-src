@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
+use Entropy\Console\Contract\CommandInterface;
+use Entropy\Console\Contract\DefaultCommandInterface;
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\ConfigurationRuleFilter;
-use Rector\Configuration\Option;
 use Rector\Console\ExitCode;
 use Rector\Console\Output\OutputFormatterCollector;
-use Rector\Console\ProcessConfigureDecorator;
 use Rector\Console\Style\RectorStyle;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Skipper\Skipper\Skipper;
@@ -25,77 +25,123 @@ use Rector\Util\MemoryLimiter;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Configuration\LevelOverflow;
 use Rector\ValueObject\ProcessResult;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
-final class ProcessCommand extends Command
+final readonly class ProcessCommand implements CommandInterface, DefaultCommandInterface
 {
     public function __construct(
-        private readonly AdditionalAutoloader $additionalAutoloader,
-        private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly ConfigInitializer $configInitializer,
-        private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private readonly OutputFormatterCollector $outputFormatterCollector,
-        private readonly RectorStyle $rectorStyle,
-        private readonly MemoryLimiter $memoryLimiter,
-        private readonly ConfigurationFactory $configurationFactory,
-        private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
-        private readonly MissConfigurationReporter $missConfigurationReporter,
-        private readonly ConfigurationRuleFilter $configurationRuleFilter,
-        private readonly Skipper $skipper,
+        private AdditionalAutoloader $additionalAutoloader,
+        private ChangedFilesDetector $changedFilesDetector,
+        private ConfigInitializer $configInitializer,
+        private ApplicationFileProcessor $applicationFileProcessor,
+        private DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
+        private OutputFormatterCollector $outputFormatterCollector,
+        private RectorStyle $rectorStyle,
+        private MemoryLimiter $memoryLimiter,
+        private ConfigurationFactory $configurationFactory,
+        private DeprecatedRulesReporter $deprecatedRulesReporter,
+        private MissConfigurationReporter $missConfigurationReporter,
+        private ConfigurationRuleFilter $configurationRuleFilter,
+        private Skipper $skipper,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function getName(): string
     {
-        $this->setName('process');
-        $this->setAliases(['p']);
-        $this->setDescription('Upgrades or refactors source code with provided Rector rules');
-        $this->setHelp(
-            <<<'EOF'
-The <info>%command.name%</info> command will run Rector main feature:
-
-  <info>vendor/bin/rector</info>
-
-To specify a folder or a file, you can run:
-
-  <info>vendor/bin/rector src/Controller</info>
-
-You can also dry run to see the changes that Rector will make with the <comment>--dry-run</comment> option:
-
-  <info>vendor/bin/rector src/Controller --dry-run</info>
-
-It's also possible to get debug via the <comment>--debug</comment> option:
-
-  <info>vendor/bin/rector src/Controller --dry-run --debug</info>
-EOF
-        );
-
-        ProcessConfigureDecorator::decorate($this);
-
-        parent::configure();
+        return 'process';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getDescription(): string
     {
+        return 'Upgrades or refactors source code with provided Rector rules';
+    }
+
+    /**
+     * @param string[] $only           Fully qualified rule class name; repeat to run several rules
+     * @param string   $config         Path to config file
+     * @param string   $autoloadFile   Path to file with extra autoload (will be included)
+     * @param string   $outputFormat   Select output format
+     * @param string   $onlySuffix     Deprecated, use "--filter" instead
+     * @param string   $filter         Keep only files matching all comma-separated patterns
+     * @param string   $memoryLimit    Memory limit for process
+     * @param string   $maxChanges     Stop after this many changes are made
+     * @param string   $port           [INTERNAL] parallel TCP port
+     * @param string   $identifier     [INTERNAL] parallel identifier
+     * @param string ...$paths         Files or directories to be upgraded
+     *
+     * @option $dryRun -n
+     * @option $only
+     * @option $config -c
+     * @option $autoloadFile -a
+     * @option $outputFormat
+     * @option $onlySuffix
+     * @option $filter
+     * @option $memoryLimit
+     * @option $maxChanges
+     * @option $port
+     * @option $identifier
+     *
+     * @api invoked via reflection by the Entropy console application
+     *
+     * @return ExitCode::*
+     */
+    public function run(
+        bool $dryRun = false,
+        bool $clearCache = false,
+        bool $noProgressBar = false,
+        bool $noDiffs = false,
+        bool $debug = false,
+        bool $composerBased = false,
+        bool $php = false,
+        bool $rulesSummary = false,
+        array $only = [],
+        string $config = '',
+        string $autoloadFile = '',
+        string $outputFormat = ConsoleOutputFormatter::NAME,
+        string $onlySuffix = '',
+        string $filter = '',
+        string $memoryLimit = '',
+        string $maxChanges = '',
+        string $port = '',
+        string $identifier = '',
+        string ...$paths,
+    ): int {
         // missing config? add it :)
         if (! $this->configInitializer->areSomeRectorsLoaded()) {
-            $this->configInitializer->createConfig(getcwd());
-            return self::SUCCESS;
+            $this->configInitializer->createConfig((string) getcwd());
+            return ExitCode::SUCCESS;
         }
 
-        $configuration = $this->configurationFactory->createFromInput($input);
+        $configuration = $this->configurationFactory->create(
+            array_values($paths),
+            $dryRun,
+            $clearCache,
+            $noProgressBar,
+            $noDiffs,
+            $outputFormat,
+            $only,
+            $composerBased,
+            $php,
+            $onlySuffix !== '' ? $onlySuffix : null,
+            $filter !== '' ? $filter : null,
+            $debug,
+            $memoryLimit !== '' ? $memoryLimit : null,
+            $port,
+            $identifier,
+            $maxChanges !== '' ? (int) $maxChanges : null,
+            $rulesSummary,
+        );
+
+        // clear cache in debug run, so nothing is skipped and errors show up clearly
+        if ($debug) {
+            $this->changedFilesDetector->clear();
+        }
 
         $this->memoryLimiter->adjust($configuration);
         $this->configurationRuleFilter->setConfiguration($configuration);
 
         // disable console output in case of json output formatter
         if ($configuration->getOutputFormat() === JsonOutputFormatter::NAME) {
-            $this->rectorStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            $this->rectorStyle->setVerbosity(RectorStyle::VERBOSITY_QUIET);
         }
 
         // "--rules-summary" is a human-only table; the JSON format carries richer per-rule data
@@ -106,7 +152,7 @@ EOF
                 );
         }
 
-        $this->additionalAutoloader->autoloadInput($input);
+        $this->additionalAutoloader->autoloadFile();
 
         $paths = $configuration->getPaths();
 
@@ -197,21 +243,6 @@ EOF
         $this->missConfigurationReporter->reportUnnecessarySkips($processResult);
 
         return $this->resolveReturnCode($processResult, $configuration);
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        $application = $this->getApplication();
-        if (! $application instanceof Application) {
-            throw new ShouldNotHappenException();
-        }
-
-        $optionDebug = (bool) $input->getOption(Option::DEBUG);
-        // clear cache
-        if ($optionDebug) {
-            $application->setCatchExceptions(false);
-            $this->changedFilesDetector->clear();
-        }
     }
 
     /**

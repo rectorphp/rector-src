@@ -53,10 +53,6 @@ final readonly class WorkerCommandLineFactory
         $workerCommandArray[] = self::OPTION_DASHES . Option::PARALLEL_IDENTIFIER;
         $workerCommandArray[] = escapeshellarg($identifier);
 
-        foreach ($configuration->getPaths() as $path) {
-            $workerCommandArray[] = escapeshellarg($path);
-        }
-
         // set json output
         $workerCommandArray[] = self::OPTION_DASHES . Option::OUTPUT_FORMAT;
         $workerCommandArray[] = escapeshellarg(JsonOutputFormatter::NAME);
@@ -72,6 +68,11 @@ final readonly class WorkerCommandLineFactory
             $workerCommandArray[] = self::OPTION_DASHES . Option::CONFIG;
             // escaped, so a path with space stays one argument
             $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
+        }
+
+        // paths last, as positional arguments
+        foreach ($configuration->getPaths() as $path) {
+            $workerCommandArray[] = escapeshellarg($path);
         }
 
         return implode(' ', $workerCommandArray);
@@ -138,7 +139,7 @@ final readonly class WorkerCommandLineFactory
 
         $memoryLimit = $configuration->getMemoryLimit();
         if ($memoryLimit !== null && $memoryLimit !== '') {
-            // "=" form, symfony/console does not accept -1 as value without assign
+            // "=" form, so a negative value like -1 is not parsed as another option
             $workerOptions[] = self::OPTION_DASHES . Option::MEMORY_LIMIT . '=' . escapeshellarg($memoryLimit);
         }
 

@@ -8,6 +8,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Console\Style\RectorStyle;
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\Reporting\MissConfigurationReporter;
@@ -20,9 +21,6 @@ use Rector\Tests\Skipper\Skipper\Source\AnotherClassToSkip;
 use Rector\Tests\Skipper\Skipper\Source\NotSkippedClass;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\ProcessResult;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 final class MissConfigurationReporterTest extends AbstractLazyTestCase
 {
@@ -32,7 +30,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
 
     private const string GLOBAL_MASK = '*/global-mask/*';
 
-    private BufferedOutput $bufferedOutput;
+    private RectorStyle $rectorStyle;
 
     private MissConfigurationReporter $missConfigurationReporter;
 
@@ -40,13 +38,11 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
     {
         parent::setUp();
 
-        $this->bufferedOutput = new BufferedOutput();
-        $rectorStyle = new RectorStyle(new ArrayInput([]), $this->bufferedOutput);
-        // RectorStyle is quiet under PHPUnit, output is asserted here
-        $rectorStyle->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
+        $this->rectorStyle = new RectorStyleFactory()->create();
+        $this->rectorStyle->startRecording();
 
         $this->missConfigurationReporter = new MissConfigurationReporter(
-            $rectorStyle,
+            $this->rectorStyle,
             new VendorMissAnalyseGuard(),
             $this->make(UnusedSkipResolver::class),
             $this->make(NeededSkipVerifier::class),
@@ -84,7 +80,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
 
         $this->missConfigurationReporter->reportSkippedNonRectorClasses();
 
-        $output = $this->bufferedOutput->fetch();
+        $output = $this->rectorStyle->getRecordedOutput();
 
         $this->assertStringContainsString('NotSkippedClass', $output);
 
@@ -100,7 +96,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
 
         $this->missConfigurationReporter->reportSkippedNonRectorClasses();
 
-        $this->assertSame('', $this->bufferedOutput->fetch());
+        $this->assertSame('', $this->rectorStyle->getRecordedOutput());
     }
 
     public function testReportsOnlyTrackableUnusedSkips(): void
@@ -113,7 +109,7 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
         ]);
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
-        $output = $this->bufferedOutput->fetch();
+        $output = $this->rectorStyle->getRecordedOutput();
 
         // unused rule-scoped path is reported as "rule => path", so both are shown
         $this->assertStringContainsString('dead-rule', $output);
@@ -137,6 +133,6 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
         $processResult = new ProcessResult([], [], 0, []);
         $this->missConfigurationReporter->reportUnusedSkips($processResult);
 
-        $this->assertSame('', $this->bufferedOutput->fetch());
+        $this->assertSame('', $this->rectorStyle->getRecordedOutput());
     }
 }
