@@ -6,7 +6,6 @@ namespace Rector\Bootstrap;
 
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Symfony\Component\Console\Input\ArgvInput;
 
 /**
  * A different extra autoload changes what PHPStan can resolve, so cached results
@@ -27,9 +26,8 @@ final class AutoloadFileParameterResolver
         // handles "--autoload-file path", "--autoload-file=path" and "-a path";
         // parallel workers receive the space-separated form, so all spellings must
         // normalize to the same value or main process and workers would disagree
-        $autoloadFile = new ArgvInput($argv)
-            ->getParameterOption(['--autoload-file', '-a'], null);
-        if (! is_string($autoloadFile) || $autoloadFile === '') {
+        $autoloadFile = CliOptionValueResolver::resolve($argv, ['--autoload-file', '-a']);
+        if ($autoloadFile === null || $autoloadFile === '') {
             return;
         }
 
