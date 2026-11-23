@@ -22,7 +22,7 @@ class Fixture
     public function run($var)
     {
         echo 'value';
-        echo $var;
+        echo sprintf($var);
     }
 }
 
