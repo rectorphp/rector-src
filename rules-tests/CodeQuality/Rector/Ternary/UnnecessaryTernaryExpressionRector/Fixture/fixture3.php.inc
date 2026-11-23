@@ -46,7 +46,7 @@ class Fixture3
     public function go(): bool
     {
         $order = $someQueryBuilder->getQuery()->getOneOrNullResult();
-        return !(bool) $order;
+        return !$order;
     }
 
     public function boolAlready(): bool
