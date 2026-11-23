@@ -141,7 +141,7 @@ CODE_SAMPLE
             return $canBeOverridden;
         }
 
-        return $classReflection->isAbstract();
+        return ! $classMethod->isFinal() && $classReflection->isAbstract();
     }
 
     private function hasExceptionOnly(ClassMethod $classMethod): bool
