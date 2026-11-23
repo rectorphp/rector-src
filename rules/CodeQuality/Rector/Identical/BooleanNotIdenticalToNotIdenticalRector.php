@@ -100,7 +100,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->getType($identical->left)->isBoolean()->yes()) {
+        if (! $this->getType($identical->left->expr)->isBoolean()->yes()) {
             return null;
         }
 
