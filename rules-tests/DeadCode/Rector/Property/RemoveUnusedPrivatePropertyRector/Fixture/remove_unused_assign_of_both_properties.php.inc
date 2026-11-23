@@ -24,6 +24,7 @@ final class RemoveUnusedAssignOfBothProperties
 {
     public function __construct(B $b)
     {
+        new C($b);
     }
 }
 

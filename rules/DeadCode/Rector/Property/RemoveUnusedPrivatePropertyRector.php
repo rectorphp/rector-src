@@ -6,7 +6,9 @@ namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -18,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
+use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -32,6 +35,7 @@ final class RemoveUnusedPrivatePropertyRector extends AbstractRector
         private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector,
     ) {
     }
 
@@ -173,7 +177,7 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable($class, function (Node $node) use (
             $class,
             $propertyName
-        ): null|int|Return_|Arg {
+        ): null|int|Return_|Arg|Expression {
             if (! $node instanceof Expression && ! $node instanceof Return_) {
                 if ($node instanceof Arg && $node->value instanceof Assign) {
                     $assign = $node->value;
@@ -196,11 +200,27 @@ CODE_SAMPLE
             }
 
             if ($node instanceof Expression) {
+                // keep the side effect of the assigned value, e.g. a "new" or a call
+                $assignedExpr = $this->cleanCastedExpr($assign->expr);
+                if ($this->sideEffectNodeDetector->detect($assignedExpr)) {
+                    $node->expr = $assignedExpr;
+                    return $node;
+                }
+
                 return NodeVisitor::REMOVE_NODE;
             }
 
             $node->expr = $node->expr->expr;
             return $node;
         });
+    }
+
+    private function cleanCastedExpr(Expr $expr): Expr
+    {
+        if (! $expr instanceof Cast) {
+            return $expr;
+        }
+
+        return $this->cleanCastedExpr($expr->expr);
     }
 }
