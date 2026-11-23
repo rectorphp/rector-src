@@ -2,8 +2,9 @@
 
 namespace Rector\Tests\Php72\Rector\While_\WhileEachToForeachRector\Fixture;
 
-function each1()
+function each1(array $callbacks)
 {
+    reset($callbacks);
     while (list($key, $callback) = each($callbacks)) {
         // comment
     }
@@ -21,8 +22,9 @@ function each1()
 
 namespace Rector\Tests\Php72\Rector\While_\WhileEachToForeachRector\Fixture;
 
-function each1()
+function each1(array $callbacks)
 {
+    reset($callbacks);
     foreach ($callbacks as $key => $callback) {
         // comment
     }
