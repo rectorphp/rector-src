@@ -8,8 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Attribute;
+use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
@@ -23,7 +25,9 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Break_;
@@ -36,10 +40,12 @@ use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
+use PhpParser\Node\UnionType;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -62,6 +68,13 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
     private array $outerLoopAndTryDepths = [];
 
     /**
+     * Whether the enclosing function-like declares a native return type not accepting a Closure
+     *
+     * @var bool[]
+     */
+    private array $returnsArrayStack = [];
+
+    /**
      * @param Node[] $nodes
      */
     public function beforeTraverse(array $nodes): null
@@ -70,6 +83,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
         $this->tryDepth = 0;
         $this->attributeDepth = 0;
         $this->outerLoopAndTryDepths = [];
+        $this->returnsArrayStack = [];
 
         return null;
     }
@@ -81,6 +95,15 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
         if ($node instanceof For_ || $node instanceof Foreach_ || $node instanceof While_ || $node instanceof Do_ || $node instanceof Switch_) {
             $this->processContextInLoop($node);
             ++$this->loopDepth;
+            return null;
+        }
+
+        if ($node instanceof FunctionLike) {
+            $this->processReturnTypeArray($node);
+        }
+
+        if ($node instanceof Return_ && $node->expr instanceof Array_ && end($this->returnsArrayStack)) {
+            $node->expr->setAttribute(AttributeKey::IS_RETURN_NOT_ACCEPTING_CLOSURE, true);
             return null;
         }
 
@@ -181,6 +204,10 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
             return null;
         }
 
+        if ($node instanceof FunctionLike) {
+            array_pop($this->returnsArrayStack);
+        }
+
         if ($node instanceof Class_ || $node instanceof FunctionLike) {
             [$this->loopDepth, $this->tryDepth] = array_pop($this->outerLoopAndTryDepths) ?? [0, 0];
         }
@@ -217,6 +244,40 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements Decorating
                 $node->setAttribute(AttributeKey::IS_CLOSURE_IN_ATTRIBUTE, true);
             }
         }
+    }
+
+    private function processReturnTypeArray(FunctionLike $functionLike): void
+    {
+        $returnsArray = $this->isArrayNotAcceptingClosureType($functionLike->getReturnType());
+        $this->returnsArrayStack[] = $returnsArray;
+
+        if ($returnsArray && $functionLike instanceof ArrowFunction && $functionLike->expr instanceof Array_) {
+            $functionLike->expr->setAttribute(AttributeKey::IS_RETURN_NOT_ACCEPTING_CLOSURE, true);
+        }
+    }
+
+    private function isArrayNotAcceptingClosureType(Identifier|Name|ComplexType|null $type): bool
+    {
+        if ($type instanceof NullableType) {
+            $type = $type->type;
+        }
+
+        $types = $type instanceof UnionType ? $type->types : [$type];
+
+        $typeNames = [];
+        foreach ($types as $singleType) {
+            if (! $singleType instanceof Identifier && ! $singleType instanceof Name) {
+                return false;
+            }
+
+            $typeNames[] = strtolower($singleType->toString());
+        }
+
+        if (array_intersect($typeNames, ['callable', 'closure', 'mixed', 'object']) !== []) {
+            return false;
+        }
+
+        return array_intersect($typeNames, ['array', 'iterable']) !== [];
     }
 
     private function processInsideArrayDimFetch(ArrayDimFetch $arrayDimFetch): void

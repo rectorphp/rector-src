@@ -4,11 +4,11 @@ namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixtu
 
 use Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Source\SomeExternalObject;
 
-final class StaticWithOtherObjectConstFetch
+final class ReturnArrayCallableUnion
 {
-    public function provideListenerPriority(): array
+    public function provideListener(): array|callable
     {
-         return [SomeExternalObject::class, 'sleepStatic'];
+        return [SomeExternalObject::class, 'sleepStatic'];
     }
 }
 
@@ -20,11 +20,11 @@ namespace Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Fixtu
 
 use Rector\Tests\Php81\Rector\Array_\ArrayToFirstClassCallableRector\Source\SomeExternalObject;
 
-final class StaticWithOtherObjectConstFetch
+final class ReturnArrayCallableUnion
 {
-    public function provideListenerPriority(): array
+    public function provideListener(): array|callable
     {
-         return SomeExternalObject::sleepStatic(...);
+        return SomeExternalObject::sleepStatic(...);
     }
 }
 
