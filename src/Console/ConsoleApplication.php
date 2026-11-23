@@ -7,6 +7,7 @@ namespace Rector\Console;
 use Rector\Application\VersionResolver;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Option;
+use Rector\Console\Style\RectorStyle;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -14,7 +15,6 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 final class ConsoleApplication extends Application
@@ -26,7 +26,7 @@ final class ConsoleApplication extends Application
      */
     public function __construct(
         array $commands,
-        private readonly SymfonyStyle $symfonyStyle
+        private readonly RectorStyle $rectorStyle
     ) {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
 
@@ -83,7 +83,7 @@ final class ConsoleApplication extends Application
             $tokens = array_merge(['process'], $tokens);
             $privatesAccessor->setPrivateProperty($input, 'tokens', $tokens);
         } elseif (! $this->has($commandName)) {
-            $this->symfonyStyle->error(
+            $this->rectorStyle->error(
                 sprintf(
                     'The following given path does not match any files or directories: %s%s',
                     "\n\n - ",

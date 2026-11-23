@@ -7,6 +7,7 @@ namespace Rector\Tests\Reporting;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
+use Rector\Console\Style\RectorStyle;
 use Rector\Php85\Rector\FuncCall\OrdSingleByteRector;
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\Reporting\MissConfigurationReporter;
@@ -21,7 +22,7 @@ use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\OutputInterface;
 
 final class MissConfigurationReporterTest extends AbstractLazyTestCase
 {
@@ -40,10 +41,12 @@ final class MissConfigurationReporterTest extends AbstractLazyTestCase
         parent::setUp();
 
         $this->bufferedOutput = new BufferedOutput();
-        $symfonyStyle = new SymfonyStyle(new ArrayInput([]), $this->bufferedOutput);
+        $rectorStyle = new RectorStyle(new ArrayInput([]), $this->bufferedOutput);
+        // RectorStyle is quiet under PHPUnit, output is asserted here
+        $rectorStyle->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
 
         $this->missConfigurationReporter = new MissConfigurationReporter(
-            $symfonyStyle,
+            $rectorStyle,
             new VendorMissAnalyseGuard(),
             $this->make(UnusedSkipResolver::class),
             $this->make(NeededSkipVerifier::class),

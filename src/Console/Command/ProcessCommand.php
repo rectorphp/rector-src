@@ -15,6 +15,7 @@ use Rector\Configuration\Option;
 use Rector\Console\ExitCode;
 use Rector\Console\Output\OutputFormatterCollector;
 use Rector\Console\ProcessConfigureDecorator;
+use Rector\Console\Style\RectorStyle;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
@@ -28,7 +29,6 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ProcessCommand extends Command
 {
@@ -39,7 +39,7 @@ final class ProcessCommand extends Command
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly OutputFormatterCollector $outputFormatterCollector,
-        private readonly SymfonyStyle $symfonyStyle,
+        private readonly RectorStyle $rectorStyle,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly ConfigurationFactory $configurationFactory,
         private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
@@ -95,12 +95,12 @@ EOF
 
         // disable console output in case of json output formatter
         if ($configuration->getOutputFormat() === JsonOutputFormatter::NAME) {
-            $this->symfonyStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            $this->rectorStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
         // "--rules-summary" is a human-only table; the JSON format carries richer per-rule data
         if ($configuration->shouldShowRulesSummary()) {
-            $this->symfonyStyle->getErrorStyle()
+            $this->rectorStyle->getErrorStyle()
                 ->warning(
                     'The "--rules-summary" option is deprecated and will be removed. Use "--output-format=json" instead, which reports every applied rule with its file and line.'
                 );
@@ -117,7 +117,7 @@ EOF
 
         // 0. warn about skipped rules that are deprecated
         if ($this->skipper->resolveDeprecatedSkippedClasses() !== []) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->rectorStyle->warning(sprintf(
                 'These rules are skipped, but are deprecated. Most likely you do not need to skip them anymore as not part of any set and remove them: %s%s',
                 "\n\n",
                 '* ' . implode("\n* ", $this->skipper->resolveDeprecatedSkippedClasses()) . "\n"
@@ -127,7 +127,7 @@ EOF
         // 1. warn about rules registered in both withRules() and sets to avoid bloated rector.php configs
         $setAndRulesDuplicatedRegistrations = $configuration->getBothSetAndRulesDuplicatedRegistrations();
         if ($setAndRulesDuplicatedRegistrations !== []) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->rectorStyle->warning(sprintf(
                 'These rules are registered in both sets and "withRules()". Remove them from "withRules()" to avoid duplications: %s* %s',
                 "\n\n",
                 implode(' * ', $setAndRulesDuplicatedRegistrations) . "\n"
@@ -139,7 +139,7 @@ EOF
         if ($this->dynamicSourceLocatorDecorator->arePathsEmpty()) {
             // read from rector.php, no paths definition needs withPaths() config
             if ($paths === []) {
-                $this->symfonyStyle->error(
+                $this->rectorStyle->error(
                     'Provide paths in Rector config. See ways: https://getrector.com/documentation/define-paths'
                 );
 
@@ -148,7 +148,7 @@ EOF
 
             // read from cli paths arguments, eg: vendor/bin/rector process A B C which A, B, and C not exists
             $isSingular = count($paths) === 1;
-            $this->symfonyStyle->error(
+            $this->rectorStyle->error(
                 sprintf(
                     'The following given path%s do%s not match any file%s or director%s: %s%s',
                     $isSingular ? '' : 's',
@@ -247,7 +247,7 @@ EOF
             $levelOverflow->getSuggestedRuleset()
         ) : sprintf('->withSets(SetList::%s)', $levelOverflow->getSuggestedSetListConstant());
 
-        $this->symfonyStyle->warning(sprintf(
+        $this->rectorStyle->warning(sprintf(
             'The "->%s()" level contains only %d rules, but you set level to %d.%sYou are using the full set now! Time to switch to more efficient "%s".',
             $levelOverflow->getConfigurationName(),
             $levelOverflow->getRuleCount(),

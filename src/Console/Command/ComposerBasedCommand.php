@@ -9,6 +9,7 @@ use Nette\Utils\Strings;
 use Rector\Composer\InstalledPackageResolver;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\Style\RectorStyle;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\Contract\ComposerPackageConstraintInterface;
 use Rector\VersionBonding\ValueObject\ComposerBoundRuleConfiguration;
@@ -18,7 +19,6 @@ use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @see \Rector\Tests\Console\Command\ComposerBasedCommandTest
@@ -29,7 +29,7 @@ final class ComposerBasedCommand extends Command
      * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
+        private readonly RectorStyle $rectorStyle,
         private readonly InstalledPackageResolver $installedPackageResolver,
         private readonly array $rectors
     ) {
@@ -48,22 +48,22 @@ final class ComposerBasedCommand extends Command
         $configurationTableRows = $this->createConfigurationTableRows();
 
         if ($tableRows === [] && $configurationTableRows === []) {
-            $this->symfonyStyle->warning('No composer package bound rule is loaded');
+            $this->rectorStyle->warning('No composer package bound rule is loaded');
 
             return Command::SUCCESS;
         }
 
         if ($tableRows !== []) {
-            $this->symfonyStyle->title('Composer package bound rules');
-            $this->symfonyStyle->table(['Rule', 'Package', 'Requires', 'Installed', 'Active'], $tableRows);
+            $this->rectorStyle->title('Composer package bound rules');
+            $this->rectorStyle->table(['Rule', 'Package', 'Requires', 'Installed', 'Active'], $tableRows);
         }
 
         if ($configurationTableRows !== []) {
-            $this->symfonyStyle->title('Composer package bound rule configuration');
+            $this->rectorStyle->title('Composer package bound rule configuration');
 
             $headers = ['Rule', 'Package', 'Requires', 'Installed', 'Active'];
 
-            $table = $this->symfonyStyle->createTable();
+            $table = $this->rectorStyle->createTable();
             $table->setHeaders($headers);
             $table->setRows($this->createConfigurationDisplayRows($configurationTableRows));
 
@@ -83,7 +83,7 @@ final class ComposerBasedCommand extends Command
         $allTableRows = [...$tableRows, ...$configurationTableRows];
         $activeCount = count(array_filter($allTableRows, static fn (array $tableRow): bool => $tableRow[4] === 'yes'));
 
-        $this->symfonyStyle->note(
+        $this->rectorStyle->note(
             sprintf('%d of %d composer package bound items are active', $activeCount, count($allTableRows))
         );
 

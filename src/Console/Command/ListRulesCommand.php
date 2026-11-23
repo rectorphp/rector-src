@@ -8,6 +8,7 @@ use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Option;
 use Rector\Console\Rule\AllRectorRulesProvider;
+use Rector\Console\Style\RectorStyle;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Skipper\Skipper\Skipper;
@@ -15,7 +16,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ListRulesCommand extends Command
 {
@@ -23,7 +23,7 @@ final class ListRulesCommand extends Command
      * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
+        private readonly RectorStyle $rectorStyle,
         private readonly Skipper $skipper,
         private readonly AllRectorRulesProvider $allRectorRulesProvider,
         private readonly array $rectors
@@ -75,16 +75,16 @@ final class ListRulesCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->symfonyStyle->title('Loaded Rector rules');
-        $this->symfonyStyle->listing($rectorClasses);
+        $this->rectorStyle->title('Loaded Rector rules');
+        $this->rectorStyle->listing($rectorClasses);
 
         if ($skippedClasses !== []) {
-            $this->symfonyStyle->title('Skipped Rector rules');
-            $this->symfonyStyle->listing($skippedClasses);
+            $this->rectorStyle->title('Skipped Rector rules');
+            $this->rectorStyle->listing($skippedClasses);
         }
 
-        $this->symfonyStyle->newLine();
-        $this->symfonyStyle->note(sprintf('Loaded %d rules', count($rectorClasses)));
+        $this->rectorStyle->newLine();
+        $this->rectorStyle->note(sprintf('Loaded %d rules', count($rectorClasses)));
 
         return Command::SUCCESS;
     }

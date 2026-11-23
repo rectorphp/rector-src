@@ -10,11 +10,12 @@ use Rector\Config\RectorConfig;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Console\Command\ComposerBasedCommand;
+use Rector\Console\Style\RectorStyle;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Console\Command\Source\ComposerBoundRector;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\OutputInterface;
 
 final class ComposerBasedCommandTest extends TestCase
 {
@@ -122,8 +123,10 @@ final class ComposerBasedCommandTest extends TestCase
      */
     private function createComposerBasedCommand(array $rectors): ComposerBasedCommand
     {
-        $symfonyStyle = new SymfonyStyle(new ArrayInput([]), $this->bufferedOutput);
+        $rectorStyle = new RectorStyle(new ArrayInput([]), $this->bufferedOutput);
+        // RectorStyle is quiet under PHPUnit, output is asserted here
+        $rectorStyle->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
 
-        return new ComposerBasedCommand($symfonyStyle, new InstalledPackageResolver(getcwd()), $rectors);
+        return new ComposerBasedCommand($rectorStyle, new InstalledPackageResolver(getcwd()), $rectors);
     }
 }

@@ -7,10 +7,10 @@ namespace Rector\Configuration;
 use Rector\Agentic\TerminalDetector;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Console\Style\RectorStyle;
 use Rector\FileSystem\FilePathFilter;
 use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 /**
@@ -19,7 +19,7 @@ use Webmozart\Assert\Assert;
 final readonly class ConfigurationFactory
 {
     public function __construct(
-        private SymfonyStyle $symfonyStyle,
+        private RectorStyle $rectorStyle,
         private OnlyRuleResolver $onlyRuleResolver,
         private FilePathFilter $filePathFilter,
     ) {
@@ -76,7 +76,7 @@ final readonly class ConfigurationFactory
 
         $onlySuffix = $input->getOption(Option::ONLY_SUFFIX);
         if ($onlySuffix !== null) {
-            $this->symfonyStyle->warning(
+            $this->rectorStyle->warning(
                 'The "--only-suffix" option is deprecated and will be removed. Use "--filter" instead, e.g. --filter="*Controller.php"'
             );
         }
@@ -179,7 +179,7 @@ final readonly class ConfigurationFactory
             return false;
         }
 
-        if ($this->symfonyStyle->isVerbose()) {
+        if ($this->rectorStyle->isVerbose()) {
             return false;
         }
 
