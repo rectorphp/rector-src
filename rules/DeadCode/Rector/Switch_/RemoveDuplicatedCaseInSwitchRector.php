@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Switch_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Continue_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
@@ -109,6 +112,8 @@ CODE_SAMPLE
         /** @var int[] $processedCasesKeys */
         $processedCasesKeys = [];
 
+        $fallThroughCasesKeys = $this->resolveFallThroughCasesKeys($switch);
+
         foreach ($switch->cases as $outerCaseKey => $outerCase) {
             if (in_array($outerCaseKey, $processedCasesKeys)) {
                 continue;
@@ -134,6 +139,12 @@ CODE_SAMPLE
 
                 if ($innerCase->stmts === []) {
                     $casesWithoutStmts[$innerCaseKey] = $innerCase;
+                    continue;
+                }
+
+                // moving a case reached by fall-through would change what the previous case runs into
+                if (in_array($innerCaseKey, $fallThroughCasesKeys, true)) {
+                    $casesWithoutStmts = [];
                     continue;
                 }
 
@@ -165,6 +176,38 @@ CODE_SAMPLE
         }
 
         $switch->cases = $result;
+    }
+
+    /**
+     * @return int[]
+     */
+    private function resolveFallThroughCasesKeys(Switch_ $switch): array
+    {
+        $fallThroughCasesKeys = [];
+        $isPreviousFallingThrough = false;
+
+        foreach ($switch->cases as $key => $case) {
+            if ($case->stmts === []) {
+                continue;
+            }
+
+            if ($isPreviousFallingThrough) {
+                $fallThroughCasesKeys[] = $key;
+            }
+
+            $isPreviousFallingThrough = ! $this->isTerminatingStmt($case->stmts[array_key_last($case->stmts)]);
+        }
+
+        return $fallThroughCasesKeys;
+    }
+
+    private function isTerminatingStmt(Stmt $stmt): bool
+    {
+        if ($stmt instanceof Break_ || $stmt instanceof Return_ || $stmt instanceof Continue_) {
+            return true;
+        }
+
+        return $stmt instanceof Expression && $stmt->expr instanceof Throw_;
     }
 
     private function areSwitchStmtsEqualsAndWithBreak(Case_ $currentCase, Case_ $nextCase): bool
