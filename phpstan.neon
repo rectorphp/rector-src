@@ -99,6 +99,11 @@ parameters:
                 - src/StaticTypeMapper/Naming/NameScopeFactory.php
                 - utils/phpstan/src/Rule/NoResolveClassReflectionInForeachRule.php
 
+        # services are instantiated by the container via reflection, which shipmonk cannot see
+        -
+            identifier: shipmonk.deadMethod
+            message: '#::__construct$#'
+
         # called magically by parent
         -
             message: '#^Unused Rector\\PhpParser\\Printer\\BetterStandardPrinter\:\:(pInterpolatedStringPart|pStmt_FileNode)$#'

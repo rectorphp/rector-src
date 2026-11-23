@@ -27,7 +27,6 @@ use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\FileProcessResult;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
-use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
 
 final class ApplicationFileProcessor
@@ -54,7 +53,7 @@ final class ApplicationFileProcessor
     ) {
     }
 
-    public function run(Configuration $configuration, InputInterface $input): ProcessResult
+    public function run(Configuration $configuration): ProcessResult
     {
         // scope the cache to this run's --only / --only-suffix selection before any cache read/write
         $this->changedFilesDetector->setActiveScope($configuration->getOnlyRules(), $configuration->getOnlySuffix(), $configuration->getFilters());
@@ -97,7 +96,7 @@ final class ApplicationFileProcessor
         }
 
         if ($configuration->isParallel()) {
-            $processResult = $this->runParallel($filePaths, $input, $postFileCallback);
+            $processResult = $this->runParallel($filePaths, $configuration, $postFileCallback);
         } else {
             $processResult = $this->processFiles($filePaths, $configuration, $preFileCallback, $postFileCallback);
         }
@@ -260,7 +259,7 @@ final class ApplicationFileProcessor
      */
     private function runParallel(
         array $filePaths,
-        InputInterface $input,
+        Configuration $configuration,
         callable $postFileCallback,
     ): ProcessResult {
         $mainScript = $this->resolveCalledRectorBinary();
@@ -277,7 +276,7 @@ final class ApplicationFileProcessor
         $schedule = $this->scheduleFactory->create($cpuCores, $jobSize, $maxNumberOfProcesses, $filePaths);
 
         // mimics see https://github.com/phpstan/phpstan-src/commit/9124c66dcc55a222e21b1717ba5f60771f7dda92#diff-387b8f04e0db7a06678eb52ce0c0d0aff73e0d7d8fc5df834d0a5fbec198e5daR139
-        return $this->parallelFileProcessor->process($schedule, $mainScript, $postFileCallback, $input);
+        return $this->parallelFileProcessor->process($schedule, $mainScript, $postFileCallback, $configuration);
     }
 
     /**

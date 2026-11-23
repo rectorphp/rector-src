@@ -7,201 +7,138 @@ namespace Rector\Tests\Parallel\Command;
 use Iterator;
 use PHPStan\Turbo\TurboExtensionSelector;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Configuration\Option;
-use Rector\Console\Command\ProcessCommand;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
+use Rector\ValueObject\Configuration;
 
 final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 {
-    private const string COMMAND = 'command';
-
     private const string DUMMY_MAIN_SCRIPT = 'main_script';
 
     private const string SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\vendor\bin\rector';
 
     private WorkerCommandLineFactory $workerCommandLineFactory;
 
-    private ProcessCommand $processCommand;
+    /**
+     * @var array<int, mixed>
+     */
+    private array $originalArgv = [];
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->workerCommandLineFactory = $this->make(WorkerCommandLineFactory::class);
-        $this->processCommand = $this->make(ProcessCommand::class);
+        $this->originalArgv = $_SERVER['argv'];
     }
 
-    /**
-     * @param array<string, mixed> $inputParameters
-     */
-    #[DataProvider('provideDataSpacedMainScript')]
-    public function testSpacedMainScript(array $inputParameters, string $expectedCommand): void
+    protected function tearDown(): void
     {
-        $inputDefinition = $this->prepareProcessCommandDefinition();
-        $arrayInput = new ArrayInput($inputParameters, $inputDefinition);
+        $_SERVER['argv'] = $this->originalArgv;
+    }
+
+    public function testSpacedMainScript(): void
+    {
+        $_SERVER['argv'] = ['bin/rector', 'process', 'src'];
 
         $workerCommandLine = $this->workerCommandLineFactory->create(
             self::SPACED_DUMMY_MAIN_SCRIPT,
-            ProcessCommand::class,
             'worker',
-            $arrayInput,
+            new Configuration(paths: ['src']),
             'identifier',
             2000
         );
 
-        $expectedCommand = $this->normalizeExpectedCommandOutput($expectedCommand);
-        $expectedCommand = $this->cleanUpEmptyQuoteExpectedCommandOutput($expectedCommand);
+        $expectedCommand = $this->normalizeExpectedCommandOutput(
+            "'" . PHP_BINARY . "' " . $this->turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi"
+        );
 
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
 
     /**
-     * @return Iterator<array<int, array<string, string|string[]|bool>>|string[]>
-     */
-    public static function provideDataSpacedMainScript(): Iterator
-    {
-        $cliInputOptions = array_slice($_SERVER['argv'], 1);
-        $cliInputOptionsAsString = implode("' '", $cliInputOptions);
-
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
-        ];
-
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
-        ];
-
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-                '--' . Option::DEBUG => true,
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
-        ];
-
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-                '--' . Option::DEBUG => true,
-                '--' . Option::XDEBUG => true,
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
-        ];
-    }
-
-    /**
-     * @param array<string, mixed> $inputParameters
+     * @param array<int, string> $argv
      */
     #[DataProvider('provideData')]
-    public function test(array $inputParameters, string $expectedCommand): void
+    public function test(array $argv, Configuration $configuration, string $expectedOptions): void
     {
-        $inputDefinition = $this->prepareProcessCommandDefinition();
-        $arrayInput = new ArrayInput($inputParameters, $inputDefinition);
+        $_SERVER['argv'] = $argv;
 
         $workerCommandLine = $this->workerCommandLineFactory->create(
             self::DUMMY_MAIN_SCRIPT,
-            ProcessCommand::class,
             'worker',
-            $arrayInput,
+            $configuration,
             'identifier',
             2000
         );
 
-        $expectedCommand = $this->normalizeExpectedCommandOutput($expectedCommand);
-        $expectedCommand = $this->cleanUpEmptyQuoteExpectedCommandOutput($expectedCommand);
+        $expectedCommand = $this->normalizeExpectedCommandOutput(
+            "'" . PHP_BINARY . "' " . $this->turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' worker " . $expectedOptions
+        );
 
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
 
     /**
-     * @return Iterator<array<int, array<string, string|string[]|bool>>|string[]>
+     * @return Iterator<array{array<int, string>, Configuration, string}>
      */
     public static function provideData(): Iterator
     {
-        $cliInputOptions = array_slice($_SERVER['argv'], 1);
-        $cliInputOptionsAsString = implode("' '", $cliInputOptions);
+        $defaultArgv = ['bin/rector', 'process', 'src'];
+        $suffix = "--port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi";
 
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        yield 'no options' => [$defaultArgv, new Configuration(paths: ['src']), $suffix];
+
+        yield 'flags' => [
+            [...$defaultArgv, '--xdebug'],
+            new Configuration(
+                isDryRun: true,
+                shouldClearCache: true,
+                paths: ['src'],
+                showDiffs: false,
+                isDebug: true,
+                isComposerBased: true,
+                isPhpOnly: true,
+            ),
+            '--dry-run --clear-cache --no-diffs --composer-based --php --debug --xdebug ' . $suffix,
         ];
 
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        yield 'autoload file' => [
+            [...$defaultArgv, '--autoload-file=some/autoload.php'],
+            new Configuration(paths: ['src']),
+            "--autoload-file 'some/autoload.php' " . $suffix,
         ];
 
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-                '--' . Option::DEBUG => true,
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        yield 'short autoload file' => [
+            [...$defaultArgv, '-a', 'some/autoload.php'],
+            new Configuration(paths: ['src']),
+            "--autoload-file 'some/autoload.php' " . $suffix,
         ];
 
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-                '--' . Option::DEBUG => true,
-                '--' . Option::XDEBUG => true,
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        yield 'value options' => [
+            $defaultArgv,
+            new Configuration(
+                paths: ['src'],
+                memoryLimit: '-1',
+                onlyRules: ['Rector\SomeRector', 'Rector\AnotherRector'],
+                onlySuffix: 'Controller.php',
+                filters: ['/Controller/', '*Repository.php'],
+                maxChanges: 5,
+            ),
+            "--only 'Rector\SomeRector' --only 'Rector\AnotherRector' --only-suffix 'Controller.php' --filter '/Controller/,*Repository.php' --memory-limit='-1' --max-changes '5' " . $suffix,
         ];
 
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-                '--' . Option::MEMORY_LIMIT => '-1',
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --memory-limit='-1' --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
-        ];
-
-        yield [
-            [
-                self::COMMAND => 'process',
-                Option::SOURCE => ['src'],
-                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-                '--' . Option::PHP => true,
-            ],
-            "'" . PHP_BINARY . "' " . self::turboExtensionArguments() . "'" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --php --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        yield 'explicit config' => [
+            [...$defaultArgv, '--config', 'some config/rector.php'],
+            new Configuration(paths: ['src']),
+            $suffix . " --config 'some config/rector.php'",
         ];
     }
 
     /**
      * The worker gets PHPStan Turbo through two -d options, when PHPStan ships a binary for this runtime
      */
-    private static function turboExtensionArguments(): string
+    private function turboExtensionArguments(): string
     {
         $extensionPath = TurboExtensionSelector::findExtensionForWorkers();
         if ($extensionPath === null) {
@@ -218,20 +155,11 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         return implode(' ', array_map(escapeshellarg(...), $arguments)) . ' ';
     }
 
-    private function cleanUpEmptyQuoteExpectedCommandOutput(string $result): string
-    {
-        if ($this->isWindows()) {
-            return str_replace(' "" ', ' ', $result);
-        }
-
-        return str_replace(" '' ", ' ', $result);
-    }
-
     private function normalizeExpectedCommandOutput(string $command): string
     {
-        if ($this->isWindows()) {
+        if (DIRECTORY_SEPARATOR === '\\') {
             // the turbo arguments are escaped by escapeshellarg() already, keep the single quotes inside them
-            $turboExtensionArguments = self::turboExtensionArguments();
+            $turboExtensionArguments = $this->turboExtensionArguments();
 
             return str_replace(
                 str_replace("'", '"', $turboExtensionArguments),
@@ -241,20 +169,5 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         }
 
         return $command;
-    }
-
-    private function prepareProcessCommandDefinition(): InputDefinition
-    {
-        // clone the object as we should not modify a object taken from the DI container
-        $inputDefinition = clone $this->processCommand->getDefinition();
-
-        // not sure why, but the 1st argument "command" is missing; this is needed for a command name
-        $arguments = $inputDefinition->getArguments();
-        $commandInputArgument = new InputArgument(self::COMMAND, InputArgument::REQUIRED);
-        $arguments = [$commandInputArgument, ...$arguments];
-
-        $inputDefinition->setArguments($arguments);
-
-        return $inputDefinition;
     }
 }
