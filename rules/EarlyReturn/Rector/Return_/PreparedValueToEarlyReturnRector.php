@@ -51,10 +51,6 @@ class SomeClass
             $var = 1;
         }
 
-        if (rand(0, 1)) {
-            $var = 2;
-        }
-
         return $var;
     }
 }
@@ -68,10 +64,6 @@ class SomeClass
     {
         if (rand(0, 1)) {
             return 1;
-        }
-
-        if (rand(0, 1)) {
-            return 2;
         }
 
         return null;
@@ -158,7 +150,8 @@ CODE_SAMPLE
 
             $matchingBareSingleAssignIfs = $this->getMatchingBareSingleAssignIfs($ifs, $node);
 
-            if ($matchingBareSingleAssignIfs === []) {
+            // several ifs: the last true one wins, early returns would make the first one win
+            if (count($matchingBareSingleAssignIfs) !== 1) {
                 return null;
             }
 
