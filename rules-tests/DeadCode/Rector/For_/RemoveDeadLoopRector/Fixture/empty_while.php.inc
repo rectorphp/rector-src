@@ -4,10 +4,10 @@ namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
 final class EmptyWhile
 {
-    public function run()
+    public function run($i)
     {
-       while (++$i < 10) {
-       }
+        while ($i < 10) {
+        }
     }
 }
 
@@ -19,7 +19,7 @@ namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
 final class EmptyWhile
 {
-    public function run()
+    public function run($i)
     {
     }
 }

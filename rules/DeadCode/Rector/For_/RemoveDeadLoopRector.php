@@ -5,13 +5,21 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\For_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp;
+use PhpParser\Node\Expr\AssignRef;
+use PhpParser\Node\Expr\PostDec;
+use PhpParser\Node\Expr\PostInc;
+use PhpParser\Node\Expr\PreDec;
+use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeVisitor;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -22,7 +30,8 @@ use Rector\RuleDoc\RuleDefinition;
 final class RemoveDeadLoopRector extends AbstractRector
 {
     public function __construct(
-        private readonly SideEffectNodeDetector $sideEffectNodeDetector
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -74,10 +83,23 @@ CODE_SAMPLE
         }
 
         if ($node instanceof Do_ || $node instanceof While_) {
+            if ($this->hasStateChange([$node->cond])) {
+                return null;
+            }
+
             $exprs = [$node->cond];
         } elseif ($node instanceof For_) {
+            if ($this->hasStateChange($node->cond)) {
+                return null;
+            }
+
             $exprs = [...$node->init, ...$node->cond, ...$node->loop];
         } else {
+            // iterating a generator or an Iterator runs its code
+            if (! $this->getType($node->expr)->isArray()->yes()) {
+                return null;
+            }
+
             $exprs = [$node->expr, $node->valueVar];
         }
 
@@ -92,5 +114,21 @@ CODE_SAMPLE
         }
 
         return NodeVisitor::REMOVE_NODE;
+    }
+
+    /**
+     * @param Expr[] $exprs
+     */
+    private function hasStateChange(array $exprs): bool
+    {
+        return $this->betterNodeFinder->hasInstancesOf($exprs, [
+            Assign::class,
+            AssignOp::class,
+            AssignRef::class,
+            PreInc::class,
+            PostInc::class,
+            PreDec::class,
+            PostDec::class,
+        ]);
     }
 }

@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
 final class EmptyForeach
 {
-    public function run($values)
+    public function run(array $values)
     {
         foreach ($values as $value) {
         }
@@ -19,7 +19,7 @@ namespace Rector\Tests\DeadCode\Rector\For_\RemoveDeadLoopRector\Fixture;
 
 final class EmptyForeach
 {
-    public function run($values)
+    public function run(array $values)
     {
     }
 }
