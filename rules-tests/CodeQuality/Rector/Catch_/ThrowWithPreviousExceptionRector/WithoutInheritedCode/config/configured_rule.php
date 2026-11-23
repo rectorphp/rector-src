@@ -1,0 +1,11 @@
+<?php
+
+declare(strict_types=1);
+
+use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
+use Rector\Config\RectorConfig;
+
+return RectorConfig::configure()
+    ->withConfiguredRule(ThrowWithPreviousExceptionRector::class, [
+        ThrowWithPreviousExceptionRector::INHERIT_CODE => false,
+    ]);
