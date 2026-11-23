@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer;
 
+use PHPStan\Reflection\Php\PhpFunctionFromParserNodeReflection;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node\Expr;
@@ -119,7 +120,7 @@ final readonly class CallTypesResolver
         }
 
         $functionReflection = $scope->getFunction();
-        if ($functionReflection === null) {
+        if (!$functionReflection instanceof PhpFunctionFromParserNodeReflection) {
             return false;
         }
 
