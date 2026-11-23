@@ -30,16 +30,13 @@ use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\ValueObject\MethodName;
 
 final readonly class LivingCodeManipulator
 {
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver,
-        private ReflectionProvider $reflectionProvider
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -56,7 +53,8 @@ final readonly class LivingCodeManipulator
             return [];
         }
 
-        if ($expr instanceof Clone_ && $this->hasCloneMagicMethod($expr)) {
+        // clone runs __clone(), possibly declared in a subclass, so it can have side effects
+        if ($expr instanceof Clone_) {
             return [$expr];
         }
 
@@ -113,25 +111,7 @@ final readonly class LivingCodeManipulator
             $expr instanceof UnaryMinus ||
             $expr instanceof UnaryPlus ||
             $expr instanceof BitwiseNot ||
-            $expr instanceof BooleanNot ||
-            $expr instanceof Clone_;
-    }
-
-    private function hasCloneMagicMethod(Clone_ $clone): bool
-    {
-        $cloneObjectType = $this->nodeTypeResolver->getType($clone->expr);
-
-        foreach ($cloneObjectType->getObjectClassNames() as $className) {
-            if (! $this->reflectionProvider->hasClass($className)) {
-                continue;
-            }
-
-            if ($this->reflectionProvider->getClass($className)->hasNativeMethod(MethodName::CLONE)) {
-                return true;
-            }
-        }
-
-        return false;
+            $expr instanceof BooleanNot;
     }
 
     private function isBinaryOpWithoutChange(Expr $expr): bool
