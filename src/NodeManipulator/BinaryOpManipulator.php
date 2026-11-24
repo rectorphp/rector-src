@@ -9,15 +9,21 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BinaryOp\Greater;
+use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
+use PhpParser\Node\Expr\BinaryOp\Smaller;
+use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\BooleanNot;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Rector\PhpParser\Node\AssignAndBinaryMap;
 
 final readonly class BinaryOpManipulator
 {
     public function __construct(
-        private AssignAndBinaryMap $assignAndBinaryMap
+        private AssignAndBinaryMap $assignAndBinaryMap,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -115,7 +121,7 @@ final readonly class BinaryOpManipulator
     public function inverseNode(Expr $expr): BinaryOp|Expr|BooleanNot
     {
         if ($expr instanceof BinaryOp) {
-            $inversedBinaryOp = $this->assignAndBinaryMap->getInversed($expr);
+            $inversedBinaryOp = $this->resolveSafeInversedClass($expr);
             if ($inversedBinaryOp !== null) {
                 return new $inversedBinaryOp($expr->left, $expr->right);
             }
@@ -126,6 +132,36 @@ final readonly class BinaryOpManipulator
         }
 
         return new BooleanNot($expr);
+    }
+
+    /**
+     * Ordering comparisons invert only on int operands - NAN, arrays and objects can be neither smaller nor greater
+     *
+     * @return class-string<BinaryOp>|null
+     */
+    public function resolveSafeInversedClass(BinaryOp $binaryOp): ?string
+    {
+        $inversedNodeClass = $this->assignAndBinaryMap->getInversed($binaryOp);
+        if ($inversedNodeClass === null) {
+            return null;
+        }
+
+        if (! $binaryOp instanceof Greater
+            && ! $binaryOp instanceof GreaterOrEqual
+            && ! $binaryOp instanceof Smaller
+            && ! $binaryOp instanceof SmallerOrEqual) {
+            return $inversedNodeClass;
+        }
+
+        if (! $this->nodeTypeResolver->getNativeType($binaryOp->left)->isInteger()->yes()) {
+            return null;
+        }
+
+        if (! $this->nodeTypeResolver->getNativeType($binaryOp->right)->isInteger()->yes()) {
+            return null;
+        }
+
+        return $inversedNodeClass;
     }
 
     /**
@@ -162,7 +198,7 @@ final readonly class BinaryOpManipulator
      */
     private function resolveInversedNodeClass(BinaryOp $binaryOp): ?string
     {
-        $inversedNodeClass = $this->assignAndBinaryMap->getInversed($binaryOp);
+        $inversedNodeClass = $this->resolveSafeInversedClass($binaryOp);
         if ($inversedNodeClass !== null) {
             return $inversedNodeClass;
         }

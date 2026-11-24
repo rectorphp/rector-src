@@ -19,7 +19,7 @@ final class Fixture
         return $return;
     }
 
-    public function unnecessaryTernaryExpressionInverted(): bool
+    public function unnecessaryTernaryExpressionInverted(int $foo, int $bar): bool
     {
         return $foo >= $bar ? false : true;
     }
@@ -65,7 +65,7 @@ final class Fixture
         return $return;
     }
 
-    public function unnecessaryTernaryExpressionInverted(): bool
+    public function unnecessaryTernaryExpressionInverted(int $foo, int $bar): bool
     {
         return $foo < $bar;
     }

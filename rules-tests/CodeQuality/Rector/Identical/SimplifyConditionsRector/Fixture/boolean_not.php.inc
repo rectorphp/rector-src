@@ -7,14 +7,14 @@ function simplifyConditions()
     } elseif (!($foo != 'bug')) {
     }
 
-    function foo($bar)
+    function foo(int $bar)
     {
         return !($bar > 0);
     }
 
     $baz = !($foo === 'baz');
 
-    function bar($foo)
+    function bar(int $foo)
     {
         return !($foo >= 0);
     }
@@ -31,14 +31,14 @@ function simplifyConditions()
     } elseif ($foo == 'bug') {
     }
 
-    function foo($bar)
+    function foo(int $bar)
     {
         return $bar <= 0;
     }
 
     $baz = $foo !== 'baz';
 
-    function bar($foo)
+    function bar(int $foo)
     {
         return $foo < 0;
     }
