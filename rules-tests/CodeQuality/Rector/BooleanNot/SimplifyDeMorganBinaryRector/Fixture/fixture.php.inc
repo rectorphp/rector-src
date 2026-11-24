@@ -29,7 +29,7 @@ function deMorgan()
     $d = !($a === null && $b < $c);
 
     $e = $a && $b === $c;
-    $f = $a <= $b && $c > $d;
+    $f = $a <= $b && !($c <= $d);
 }
 
 ?>

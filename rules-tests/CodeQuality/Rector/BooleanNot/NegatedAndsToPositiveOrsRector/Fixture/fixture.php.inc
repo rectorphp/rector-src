@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\BooleanNot\NegatedAndsToPositiveOrsRec
 
 class Fixture
 {
-    public function run($a, $b, $c)
+    public function run(int $a, int $b, int $c)
     {
         $result = !($a > 20 && $b <= 50);
         $d = !($a === null && $b < $c);
@@ -19,7 +19,7 @@ namespace Rector\Tests\CodeQuality\Rector\BooleanNot\NegatedAndsToPositiveOrsRec
 
 class Fixture
 {
-    public function run($a, $b, $c)
+    public function run(int $a, int $b, int $c)
     {
         $result = $a <= 20 || $b > 50;
         $d = $a !== null || $b >= $c;

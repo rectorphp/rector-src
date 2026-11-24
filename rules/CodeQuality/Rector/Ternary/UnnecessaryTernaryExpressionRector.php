@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Ternary;
-use Rector\PhpParser\Node\AssignAndBinaryMap;
+use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -22,7 +22,7 @@ use Rector\RuleDoc\RuleDefinition;
 final class UnnecessaryTernaryExpressionRector extends AbstractRector
 {
     public function __construct(
-        private readonly AssignAndBinaryMap $assignAndBinaryMap,
+        private readonly BinaryOpManipulator $binaryOpManipulator,
         private readonly ValueResolver $valueResolver
     ) {
     }
@@ -82,7 +82,7 @@ final class UnnecessaryTernaryExpressionRector extends AbstractRector
             return $binaryOperation;
         }
 
-        $inversedBinaryClass = $this->assignAndBinaryMap->getInversed($binaryOperation);
+        $inversedBinaryClass = $this->binaryOpManipulator->resolveSafeInversedClass($binaryOperation);
         if ($inversedBinaryClass === null) {
             return null;
         }
