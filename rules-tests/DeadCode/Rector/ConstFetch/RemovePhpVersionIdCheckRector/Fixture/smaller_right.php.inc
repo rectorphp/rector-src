@@ -6,7 +6,7 @@ class SmallerRight
 {
     public function run()
     {
-        if (80000 < PHP_VERSION_ID) {
+        if (70400 < PHP_VERSION_ID) {
             echo 'do something';
         }
     }
