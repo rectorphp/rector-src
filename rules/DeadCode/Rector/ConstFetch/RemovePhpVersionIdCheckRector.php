@@ -159,7 +159,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->phpVersionProvider->provide() < $value->value) {
+        if ($this->phpVersionProvider->provide() <= $value->value) {
             return null;
         }
 
@@ -201,7 +201,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->phpVersionProvider->provide() >= $value->value) {
+        if ($this->phpVersionProvider->provide() > $value->value) {
             return NodeVisitor::REMOVE_NODE;
         }
 
@@ -234,7 +234,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->phpVersionProvider->provide() < $value->value) {
+        if ($this->phpVersionProvider->provide() <= $value->value) {
             return null;
         }
 
