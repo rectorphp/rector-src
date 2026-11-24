@@ -14,9 +14,11 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\NodeAnalyzer\ExprAnalyzer;
@@ -27,6 +29,7 @@ use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 
 /**
@@ -39,7 +42,8 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractRector
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AstResolver $astResolver,
         private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
-        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer
+        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
+        private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -128,8 +132,12 @@ CODE_SAMPLE
         $nativeType = $phpPropertyReflection->getNativeType();
 
         if (! $nativeType instanceof MixedType) {
-            return $nativeType->isArray()
-                ->yes();
+            if (! $nativeType->isArray()->yes()) {
+                return false;
+            }
+
+            // reading an uninitialized typed property throws, while empty() returns true
+            return $this->isInitializedProperty($phpPropertyReflection, $propertyName);
         }
 
         $property = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
@@ -151,5 +159,30 @@ CODE_SAMPLE
 
         return $type->isArray()
             ->yes();
+    }
+
+    private function isInitializedProperty(PhpPropertyReflection $phpPropertyReflection, string $propertyName): bool
+    {
+        $propertyNode = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
+
+        // promoted property is assigned on construct
+        if ($propertyNode instanceof Param) {
+            return true;
+        }
+
+        if (! $propertyNode instanceof Property) {
+            return false;
+        }
+
+        if ($propertyNode->props[0]->default !== null) {
+            return true;
+        }
+
+        $classLike = $this->astResolver->resolveClassFromClassReflection($phpPropertyReflection->getDeclaringClass());
+        if ($classLike === null) {
+            return false;
+        }
+
+        return $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
     }
 }
