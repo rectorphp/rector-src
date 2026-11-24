@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodeQuality\Rector\New_\RemovePreviousExceptionCodeRector;
+namespace Rector\Tests\CodeQuality\Rector\New_\NarrowPreviousExceptionCodeArgRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RemovePreviousExceptionCodeRectorTest extends AbstractRectorTestCase
+final class NarrowPreviousExceptionCodeArgRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

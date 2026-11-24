@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\New_\RemovePreviousExceptionCodeRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\New_\NarrowPreviousExceptionCodeArgRector\Fixture;
 
 final class Positional
 {
@@ -18,7 +18,7 @@ final class Positional
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\New_\RemovePreviousExceptionCodeRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\New_\NarrowPreviousExceptionCodeArgRector\Fixture;
 
 final class Positional
 {

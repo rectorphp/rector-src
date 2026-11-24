@@ -52,8 +52,8 @@ use Rector\CodeQuality\Rector\Include_\AbsolutizeRequireAndIncludePathRector;
 use Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector;
 use Rector\CodeQuality\Rector\LogicalAnd\AndAssignsToSeparateLinesRector;
 use Rector\CodeQuality\Rector\LogicalAnd\LogicalToBooleanRector;
+use Rector\CodeQuality\Rector\New_\NarrowPreviousExceptionCodeArgRector;
 use Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector;
-use Rector\CodeQuality\Rector\New_\RemovePreviousExceptionCodeRector;
 use Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector;
 use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
 use Rector\CodeQuality\Rector\Property\FixClassCaseSensitivityVarDocblockRector;
@@ -129,7 +129,7 @@ final class CodeQualityLevel
         ArrayExplicitBoolCompareRector::class,
         ExplicitNullableObjectInstanceRector::class,
         ThrowWithPreviousExceptionRector::class,
-        RemovePreviousExceptionCodeRector::class,
+        NarrowPreviousExceptionCodeArgRector::class,
         RemoveSoleValueSprintfRector::class,
         ExplicitReturnNullRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,

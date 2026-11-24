@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\New_;
 
-use PhpParser\Node\VariadicPlaceholder;
-use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
@@ -21,9 +21,9 @@ use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodeQuality\Rector\New_\RemovePreviousExceptionCodeRector\RemovePreviousExceptionCodeRectorTest
+ * @see \Rector\Tests\CodeQuality\Rector\New_\NarrowPreviousExceptionCodeArgRector\NarrowPreviousExceptionCodeArgRectorTest
  */
-final class RemovePreviousExceptionCodeRector extends AbstractRector
+final class NarrowPreviousExceptionCodeArgRector extends AbstractRector
 {
     private const int CODE_POSITION = 1;
 
