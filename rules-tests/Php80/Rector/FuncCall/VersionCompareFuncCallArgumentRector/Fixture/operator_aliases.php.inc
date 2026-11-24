@@ -28,7 +28,7 @@ class OperatorAliases
     {
         version_compare(PHP_VERSION, '5.6', 'ge');
         version_compare(PHP_VERSION, '5.6', 'le');
-        version_compare(1, 2, '!=');
+        version_compare(1, 2, '<');
         version_compare(1, 2, '!=');
         version_compare(PHP_VERSION, '5.6', 'gt');
         version_compare(PHP_VERSION, '5.6', 'lt');

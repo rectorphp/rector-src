@@ -26,7 +26,7 @@ final class VersionCompareFuncCallArgumentRector extends AbstractRector implemen
     private const array OPERATOR_MAP = [
         'gte' => 'ge',
         'lte' => 'le',
-        '' => '!=',
+        '' => '<',
         '!' => '!=',
         'g' => 'gt',
         'l' => 'lt',
