@@ -10,7 +10,11 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\VariadicPlaceholder;
+use PHPStan\Reflection\ReflectionProvider;
+use Rector\Naming\Naming\UseImportsResolver;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\RuleDefinition;
@@ -25,6 +29,12 @@ use ReflectionNamedType;
  */
 final class FunctionFirstClassCallableRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UseImportsResolver $useImportsResolver
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         // see RFC https://wiki.php.net/rfc/first_class_callable_syntax
@@ -106,7 +116,10 @@ CODE_SAMPLE
 
             $node->args[$key] = new Arg(
                 new FuncCall(
-                    $isFullyQualified || str_contains($callableName, '\\')
+                    $isFullyQualified || str_contains($callableName, '\\') || $this->isShadowedFunction(
+                        $node,
+                        $callableName
+                    )
                         ? new FullyQualified($callableName)
                         : new Name($callableName),
                     [new VariadicPlaceholder()]
@@ -117,6 +130,35 @@ CODE_SAMPLE
         }
 
         return $hasChanged ? $node : null;
+    }
+
+    /**
+     * A string callable always resolves to the global function,
+     * while a bare name resolves to a namespaced or imported function first
+     */
+    private function isShadowedFunction(FuncCall $funcCall, string $functionName): bool
+    {
+        $namespaceName = ScopeFetcher::fetch($funcCall)->getNamespace();
+        if ($namespaceName !== null && $this->reflectionProvider->hasFunction(
+            new FullyQualified($namespaceName . '\\' . $functionName),
+            null
+        )) {
+            return true;
+        }
+
+        foreach ($this->useImportsResolver->resolve() as $use) {
+            foreach ($use->uses as $useItem) {
+                if ($use->type !== Use_::TYPE_FUNCTION && $useItem->type !== Use_::TYPE_FUNCTION) {
+                    continue;
+                }
+
+                if ($useItem->getAlias()->toLowerString() === strtolower($functionName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function provideMinPhpVersion(): int
