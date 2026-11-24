@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\New_;
 
+use PhpParser\Node\VariadicPlaceholder;
+use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
@@ -110,7 +112,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args = array_values(array_filter($node->args, fn ($arg): bool => $arg !== $codeArg));
+        $node->args = array_values(array_filter($node->args, fn (Arg|VariadicPlaceholder|ArgPlaceholder $arg): bool => $arg !== $codeArg));
         $previousArg->name = new Identifier('previous');
 
         return $node;
