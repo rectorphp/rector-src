@@ -4,9 +4,9 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class MirrorAssignComment
 {
-    public static function run()
+    public static function run(string $method)
     {
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($method) {
             case 'GET':
                 // comment
                 $response = 'get';
@@ -26,9 +26,9 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class MirrorAssignComment
 {
-    public static function run()
+    public static function run(string $method)
     {
-        $response = match ($_SERVER['REQUEST_METHOD']) {
+        $response = match ($method) {
             // comment
             'GET' => 'get',
             default => 'error',

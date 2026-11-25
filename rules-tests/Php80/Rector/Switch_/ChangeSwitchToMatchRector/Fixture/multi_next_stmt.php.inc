@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class MultiNextStmt
 {
-    public function run($value)
+    public function run(string $value)
     {
         switch ($value) {
         	case 'number':
@@ -33,7 +33,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class MultiNextStmt
 {
-    public function run($value)
+    public function run(string $value)
     {
         $sort = match ($value) {
             'number', 'percentage', 'integer', 'price', 'decimal' => SORT_NUMERIC,
