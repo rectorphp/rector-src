@@ -44,6 +44,8 @@ final class RectorConfigBuilder
 {
     private const int MAX_LEVEL_GAP = 10;
 
+    private const string PHP_POLYFILLS_SET = __DIR__ . '/../../config/set/php-polyfills.php';
+
     /**
      * Matches the deprecated per-version PHP set files, e.g. .../config/set/php82.php or .../config/set/level/up-to-php82.php
      */
@@ -199,7 +201,7 @@ final class RectorConfigBuilder
     {
         // not to miss it by accident
         if ($this->isWithPhpSetsUsed === true) {
-            $this->sets[] = SetList::PHP_POLYFILLS;
+            $this->sets[] = self::PHP_POLYFILLS_SET;
         }
 
         if ($this->isPhpSetsVersionPicked && $this->pickedPhpSetsVersion !== null) {
