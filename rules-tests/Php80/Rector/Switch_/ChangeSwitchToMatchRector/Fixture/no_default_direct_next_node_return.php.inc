@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class NoDefaultDirectNextNodeReturn
 {
-    public function run($value)
+    public function run(string $value)
     {
         switch($value) {
             case 'A':
@@ -26,7 +26,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class NoDefaultDirectNextNodeReturn
 {
-    public function run($value)
+    public function run(string $value)
     {
         return match ($value) {
             'A', 'B' => 'AB',
