@@ -17,6 +17,7 @@ use Rector\Enum\ObjectReference;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
+use Rector\RuleDoc\CodeSample\CodeSample;
 use Rector\RuleDoc\CodeSample\ConfiguredCodeSample;
 use Rector\RuleDoc\RuleDefinition;
 use Rector\ValueObject\PhpVersion;
@@ -73,6 +74,31 @@ CODE_SAMPLE
                 ,
                 ['ClassName', 'AnotherClassName'],
             ),
+            new CodeSample(
+                <<<'CODE_SAMPLE'
+namespace App;
+
+class SomeController
+{
+    public function run()
+    {
+        return 'App\SomeController::indexAction';
+    }
+}
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+namespace App;
+
+class SomeController
+{
+    public function run()
+    {
+        return self::class . '::indexAction';
+    }
+}
+CODE_SAMPLE
+            ),
         ]);
     }
 
@@ -81,14 +107,18 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [String_::class];
+        return [String_::class, Concat::class];
     }
 
     /**
-     * @param String_ $node
+     * @param String_|Concat $node
      */
     public function refactor(Node $node): ClassConstFetch|Concat|null
     {
+        if ($node instanceof Concat) {
+            return $this->refactorSelfMethodPrefix($node);
+        }
+
         if ($this->shouldSkipIsA($node)) {
             return null;
         }
@@ -176,28 +206,57 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->isSelfClassName($string, $className)) {
+            return null;
+        }
+
+        return $this->createSelfClassConcat('::' . $methodName);
+    }
+
+    /**
+     * 'App\SomeClass::' . $method inside App\SomeClass => self::class . '::' . $method
+     */
+    private function refactorSelfMethodPrefix(Concat $concat): ?Concat
+    {
+        if (! $concat->left instanceof String_) {
+            return null;
+        }
+
+        $value = ltrim($concat->left->value, '\\');
+        if (! str_ends_with($value, '::') || substr_count($value, '::') !== 1) {
+            return null;
+        }
+
+        if (! $this->isSelfClassName($concat->left, substr($value, 0, -2))) {
+            return null;
+        }
+
+        $concat->left = $this->createSelfClassConcat('::');
+        return $concat;
+    }
+
+    private function isSelfClassName(String_ $string, string $className): bool
+    {
         $classReflection = $this->reflectionResolver->resolveClassReflection($string);
         if (! $classReflection instanceof ClassReflection) {
-            return null;
+            return false;
         }
 
         // self::class inside a trait is the using class, not the trait
         if ($classReflection->isAnonymous() || $classReflection->isTrait()) {
-            return null;
+            return false;
         }
 
         if ($classReflection->getName() !== $className) {
-            return null;
+            return false;
         }
 
-        if ($this->shouldSkip($className)) {
-            return null;
-        }
+        return ! $this->shouldSkip($className);
+    }
 
-        return new Concat(
-            new ClassConstFetch(new Name(ObjectReference::SELF), 'class'),
-            new String_('::' . $methodName)
-        );
+    private function createSelfClassConcat(string $suffix): Concat
+    {
+        return new Concat(new ClassConstFetch(new Name(ObjectReference::SELF), 'class'), new String_($suffix));
     }
 
     private function shouldSkipIsA(String_ $string): bool
