@@ -6,11 +6,6 @@ namespace Rector\Set\ValueObject;
 
 final class SetList
 {
-    /**
-     * @internal
-     */
-    public const string PHP_POLYFILLS = __DIR__ . '/../../../config/set/php-polyfills.php';
-
     public const string CODE_QUALITY = __DIR__ . '/../../../config/set/code-quality.php';
 
     public const string CODING_STYLE = __DIR__ . '/../../../config/set/coding-style.php';
