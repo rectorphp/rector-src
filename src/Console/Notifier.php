@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Console;
 
+use Rector\Console\Style\RectorStyleFactory;
 use Rector\Exception\Configuration\InvalidConfigurationException;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class Notifier
 {
@@ -22,8 +20,8 @@ final class Notifier
             $calledMethod
         );
 
-        $symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
-        $symfonyStyle->warning($message);
+        $rectorStyle = new RectorStyleFactory()->create();
+        $rectorStyle->warning($message);
 
         sleep(3);
     }
@@ -36,8 +34,8 @@ final class Notifier
             $set
         );
 
-        $symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
-        $symfonyStyle->warning($message);
+        $rectorStyle = new RectorStyleFactory()->create();
+        $rectorStyle->warning($message);
     }
 
     public static function notifyDeprecatedNamingSet(): void
@@ -45,8 +43,8 @@ final class Notifier
         $message = 'The "naming" prepared set is deprecated, as it often causes conflicting variable and param names and removes context. '
             . 'Renaming to match types belongs to a coding standard tool rather than Rector.';
 
-        $symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
-        $symfonyStyle->warning($message);
+        $rectorStyle = new RectorStyleFactory()->create();
+        $rectorStyle->warning($message);
     }
 
     public static function errorWithPhpSetsNotSuitableForPHP74AndLower(): void

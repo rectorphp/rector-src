@@ -50,7 +50,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         );
 
         $expectedCommand = $this->normalizeExpectedCommandOutput(
-            "'" . PHP_BINARY . "' " . $this->turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi"
+            "'" . PHP_BINARY . "' " . $this->turboExtensionArguments() . "'" . self::SPACED_DUMMY_MAIN_SCRIPT . "' worker --port 2000 --identifier 'identifier' --output-format 'json' --no-ansi 'src'"
         );
 
         $this->assertSame($expectedCommand, $workerCommandLine);
@@ -85,7 +85,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
     public static function provideData(): Iterator
     {
         $defaultArgv = ['bin/rector', 'process', 'src'];
-        $suffix = "--port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi";
+        $suffix = "--port 2000 --identifier 'identifier' --output-format 'json' --no-ansi 'src'";
 
         yield 'no options' => [$defaultArgv, new Configuration(paths: ['src']), $suffix];
 
@@ -131,7 +131,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         yield 'explicit config' => [
             [...$defaultArgv, '--config', 'some config/rector.php'],
             new Configuration(paths: ['src']),
-            $suffix . " --config 'some config/rector.php'",
+            "--port 2000 --identifier 'identifier' --output-format 'json' --no-ansi --config 'some config/rector.php' 'src'",
         ];
     }
 

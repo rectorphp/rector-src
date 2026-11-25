@@ -13,7 +13,6 @@ use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
-use Symfony\Component\Console\Formatter\OutputFormatter;
 
 final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 {
@@ -196,7 +195,8 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
                 [(string) $absoluteFilePath, (string) $relativeFilePath, (string) $lineNumber],
                 $editorUrl,
             );
-            $filePath = '<href=' . OutputFormatter::escape($editorUrl) . '>' . $filePath . '</>';
+            // OSC-8 hyperlink keeps the path clickable without symfony/console's <href> tag
+            $filePath = sprintf("\e]8;;%s\e\\%s\e]8;;\e\\", $editorUrl, $filePath);
         }
 
         return $filePath;

@@ -6,24 +6,22 @@ use Nette\Utils\Strings;
 use Rector\Scripts\Finder\FixtureFinder;
 
 require __DIR__ . '/../vendor/autoload.php';
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Rector\Console\ExitCode;
+use Rector\Console\Style\RectorStyle;
+use Rector\Console\Style\RectorStyleFactory;
 use Symfony\Component\Finder\SplFileInfo;
 
 final readonly class SameBeforeAfterFixtureDetector
 {
-    private SymfonyStyle $symfonyStyle;
+    private RectorStyle $rectorStyle;
 
     public function __construct()
     {
-        $this->symfonyStyle = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+        $this->rectorStyle = new RectorStyleFactory()->create();
     }
 
     /**
      * @param string[] $testDirectories
-     * @return Command::SUCCESS|Command::FAILURE
      */
     public function run(array $testDirectories): int
     {
@@ -39,16 +37,16 @@ final readonly class SameBeforeAfterFixtureDetector
         }
 
         if ($invalidFixturePaths === []) {
-            $this->symfonyStyle->success(sprintf('All %d fixtures are valid', count($fixtureFiles)));
-            return Command::SUCCESS;
+            $this->rectorStyle->success(sprintf('All %d fixtures are valid', count($fixtureFiles)));
+            return ExitCode::SUCCESS;
         }
 
-        $this->symfonyStyle->error(
+        $this->rectorStyle->error(
             'The following fixtures have the same before and after content. Remove the part after "-----" to fix them'
         );
-        $this->symfonyStyle->listing($invalidFixturePaths);
+        $this->rectorStyle->listing($invalidFixturePaths);
 
-        return Command::FAILURE;
+        return ExitCode::FAILURE;
     }
 
     private function hasFileSameBeforeAndAfterPart(SplFileInfo $fixtureFile): bool

@@ -4,55 +4,56 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
+use Entropy\Console\Contract\CommandInterface;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
-use Rector\Configuration\Option;
 use Rector\Console\ExitCode;
 use Rector\Console\Style\RectorStyle;
 use Rector\Reporting\DeprecatedRulesReporter;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\ValueObject\Configuration;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @see \Rector\Tests\Console\Command\ValidateConfigCommandTest
  */
-final class ValidateConfigCommand extends Command
+final readonly class ValidateConfigCommand implements CommandInterface
 {
     public function __construct(
-        private readonly RectorStyle $rectorStyle,
-        private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
-        private readonly MissConfigurationReporter $missConfigurationReporter,
-        private readonly Skipper $skipper,
+        private RectorStyle $rectorStyle,
+        private DeprecatedRulesReporter $deprecatedRulesReporter,
+        private MissConfigurationReporter $missConfigurationReporter,
+        private Skipper $skipper,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function getName(): string
     {
-        $this->setName('validate-config');
-        $this->setDescription('Report config hygiene issues without processing any files');
-        $this->addOption(
-            Option::OUTPUT_FORMAT,
-            null,
-            InputOption::VALUE_REQUIRED,
-            sprintf('Output format: "%s" or "%s"', ConsoleOutputFormatter::NAME, JsonOutputFormatter::NAME),
-            ConsoleOutputFormatter::NAME
-        );
+        return 'validate-config';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getDescription(): string
     {
-        $isJsonOutput = $input->getOption(Option::OUTPUT_FORMAT) === JsonOutputFormatter::NAME;
+        return 'Report config hygiene issues without processing any files';
+    }
+
+    /**
+     * @param string $outputFormat Output format: "console" or "json"
+     *
+     * @option $outputFormat
+     *
+     * @api invoked via reflection by the Entropy console application
+     *
+     * @return ExitCode::*
+     */
+    public function run(string $outputFormat = ConsoleOutputFormatter::NAME): int
+    {
+        $isJsonOutput = $outputFormat === JsonOutputFormatter::NAME;
 
         // silence the human-readable warnings, so only the JSON payload lands on stdout
         if ($isJsonOutput) {
-            $this->rectorStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            $this->rectorStyle->setVerbosity(RectorStyle::VERBOSITY_QUIET);
         }
 
         $issueCount = 0;

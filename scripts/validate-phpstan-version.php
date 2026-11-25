@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Rector\Console\ExitCode;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\JsonFileSystem;
-use Symfony\Component\Console\Command\Command;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -18,7 +18,7 @@ $downgradedPHPStanVersion = $packageVersionResolver->resolve(
 
 if ($localPHPStanVersion === $downgradedPHPStanVersion) {
     echo '[OK] PHPStan version in local and downgraded composer.json are equal, good job!' . PHP_EOL;
-    exit(Command::SUCCESS);
+    exit(ExitCode::SUCCESS);
 }
 
 echo sprintf(
@@ -27,7 +27,7 @@ echo sprintf(
     $downgradedPHPStanVersion,
     PHP_EOL
 ) . PHP_EOL;
-exit(Command::FAILURE);
+exit(ExitCode::FAILURE);
 
 final class PackageVersionResolver
 {
