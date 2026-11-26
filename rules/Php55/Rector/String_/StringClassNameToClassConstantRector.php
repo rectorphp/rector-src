@@ -116,7 +116,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ClassConstFetch|Concat|null
     {
         if ($node instanceof Concat) {
-            return $this->refactorSelfMethodPrefix($node);
+            return $this->refactorMethodPrefix($node);
         }
 
         if ($this->shouldSkipIsA($node)) {
@@ -124,7 +124,7 @@ CODE_SAMPLE
         }
 
         if (str_contains($node->value, '::')) {
-            return $this->refactorSelfMethodReference($node);
+            return $this->refactorMethodReference($node);
         }
 
         $classLikeName = $node->value;
@@ -196,9 +196,9 @@ CODE_SAMPLE
     }
 
     /**
-     * 'App\SomeClass::run' inside App\SomeClass => self::class . '::run'
+     * 'App\SomeClass::run' => \App\SomeClass::class . '::run', or self::class . '::run' inside App\SomeClass
      */
-    private function refactorSelfMethodReference(String_ $string): ?Concat
+    private function refactorMethodReference(String_ $string): ?Concat
     {
         $parts = explode('::', ltrim($string->value, '\\'));
         if (count($parts) !== 2) {
@@ -210,17 +210,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isSelfClassName($string, $className)) {
-            return null;
-        }
-
-        return $this->createSelfClassConcat('::' . $methodName);
+        return $this->createClassConcat($string, $className, '::' . $methodName);
     }
 
     /**
-     * 'App\SomeClass::' . $method inside App\SomeClass => self::class . '::' . $method
+     * 'App\SomeClass::' . $method => \App\SomeClass::class . '::' . $method, or self::class inside App\SomeClass
      */
-    private function refactorSelfMethodPrefix(Concat $concat): ?Concat
+    private function refactorMethodPrefix(Concat $concat): ?Concat
     {
         if (! $concat->left instanceof String_) {
             return null;
@@ -231,11 +227,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isSelfClassName($concat->left, substr($value, 0, -2))) {
+        $classConcat = $this->createClassConcat($concat->left, substr($value, 0, -2), '::');
+        if (! $classConcat instanceof Concat) {
             return null;
         }
 
-        $concat->left = $this->createSelfClassConcat('::');
+        $concat->left = $classConcat;
         return $concat;
     }
 
@@ -251,16 +248,20 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($classReflection->getName() !== $className) {
-            return false;
-        }
-
-        return ! $this->shouldSkip($className);
+        return $classReflection->getName() === $className;
     }
 
-    private function createSelfClassConcat(string $suffix): Concat
+    private function createClassConcat(String_ $string, string $className, string $suffix): ?Concat
     {
-        return new Concat(new ClassConstFetch(new Name(ObjectReference::SELF), 'class'), new String_($suffix));
+        if ($this->shouldSkip($className)) {
+            return null;
+        }
+
+        $class = $this->isSelfClassName($string, $className)
+            ? new Name(ObjectReference::SELF)
+            : new FullyQualified($className);
+
+        return new Concat(new ClassConstFetch($class, 'class'), new String_($suffix));
     }
 
     private function shouldSkipIsA(String_ $string): bool
