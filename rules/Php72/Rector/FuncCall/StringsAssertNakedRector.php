@@ -78,7 +78,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $node->getArgs()[0];
+        $firstArg = $node->getArg('assertion', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
 
         $firstArgValue = $firstArg->value;
         if (! $firstArgValue instanceof String_) {

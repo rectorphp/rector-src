@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php73\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
@@ -217,7 +218,13 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->nodeComparator->areNodesEqual($resetOrEndFuncCall->getArgs()[0], $subNode->getArgs()[0]);
+            $resetOrEndArg = $resetOrEndFuncCall->getArg('array', 0);
+            $keyArg = $subNode->getArg('array', 0);
+            if (! $resetOrEndArg instanceof Arg || ! $keyArg instanceof Arg) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($resetOrEndArg, $keyArg);
         });
     }
 
@@ -250,12 +257,13 @@ CODE_SAMPLE
                         return true;
                     }
 
-                    return $this->nodeComparator->areNodesEqual(
-                        $subNode->getArgs()[0]
-                            ->value,
-                        $funcCall->getArgs()[0]
-                            ->value
-                    );
+                    $subNodeArg = $subNode->getArg('array', 0);
+                    $funcCallArg = $funcCall->getArg('array', 0);
+                    if (! $subNodeArg instanceof Arg || ! $funcCallArg instanceof Arg) {
+                        return true;
+                    }
+
+                    return $this->nodeComparator->areNodesEqual($subNodeArg->value, $funcCallArg->value);
                 }
             );
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php85\Rector\ArrayDimFetch;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Minus;
 use PhpParser\Node\Expr\FuncCall;
@@ -98,7 +99,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($arrayDimFetch->var, $arrayDimFetch->dim->getArgs()[0]->value)) {
+        $firstArg = $arrayDimFetch->dim->getArg('array', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($arrayDimFetch->var, $firstArg->value)) {
             return null;
         }
 
@@ -135,8 +141,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $arrayArg = $arrayDimFetch->var->getArgs()[0]
-            ->value;
+        $firstArg = $arrayDimFetch->var->getArg('array', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        $arrayArg = $firstArg->value;
 
         if ($arrayDimFetch->dim instanceof Int_ && $arrayDimFetch->dim->value === 0) {
             return $this->nodeFactory->createFuncCall('array_first', [$arrayArg]);
@@ -163,7 +173,12 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->nodeComparator->areNodesEqual($arrayArg, $arrayDimFetch->dim->left->getArgs()[0]->value)) {
+            $countArg = $arrayDimFetch->dim->left->getArg('value', 0);
+            if (! $countArg instanceof Arg) {
+                return null;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($arrayArg, $countArg->value)) {
                 return null;
             }
 

@@ -32,7 +32,7 @@ final readonly class PropertyWriteonlyAnalyzer
                 $node,
                 'get_object_vars'
             ) && ! $node->isFirstClassCallable()) {
-                $firstArg = $node->getArgs()[0] ?? null;
+                $firstArg = $node->getArg('object', 0);
                 if ($firstArg instanceof Arg && $firstArg->value instanceof Variable && $firstArg->value->name === 'this') {
                     return true;
                 }

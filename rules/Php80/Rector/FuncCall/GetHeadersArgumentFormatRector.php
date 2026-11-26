@@ -60,7 +60,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $formatArg = $node->getArgs()[1] ?? null;
+        $formatArg = $node->getArg('associative', 1);
         if (! $formatArg instanceof Arg) {
             return null;
         }

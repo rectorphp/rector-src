@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\ValueObjectFactory;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Php80\ValueObject\StrStartsWith;
 
@@ -19,10 +20,18 @@ final class StrStartsWithFactory
             return null;
         }
 
-        $haystack = $funcCall->getArgs()[0]
-            ->value;
-        $needle = $funcCall->getArgs()[1]
-            ->value;
+        $firstArg = $funcCall->getArg('string1', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        $secondArg = $funcCall->getArg('string2', 1);
+        if (! $secondArg instanceof Arg) {
+            return null;
+        }
+
+        $haystack = $firstArg->value;
+        $needle = $secondArg->value;
 
         return new StrStartsWith($funcCall, $haystack, $needle, $isPositive);
     }

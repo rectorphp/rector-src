@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Node;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
@@ -121,7 +122,12 @@ CODE_SAMPLE
                 $stmt->expr,
                 'extract'
             ) && ! $stmt->expr->isFirstClassCallable()) {
-                $appendExtractValues = $this->valueResolver->getValue($stmt->expr->getArgs()[0]->value);
+                $extractArg = $stmt->expr->getArg('array', 0);
+                if (! $extractArg instanceof Arg) {
+                    break;
+                }
+
+                $appendExtractValues = $this->valueResolver->getValue($extractArg->value);
                 if (! is_array($appendExtractValues)) {
                     // nothing can do as value is dynamic
                     break;

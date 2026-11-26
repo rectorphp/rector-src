@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\BinaryOp;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
@@ -164,7 +165,12 @@ CODE_SAMPLE
         }
 
         // the type is already narrowed by the truthy check on the left
-        $checkedType = $this->getNativeType($funcCall->getArgs()[0]->value);
+        $firstArg = $funcCall->getArg('value', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        $checkedType = $this->getNativeType($firstArg->value);
         if (! $this->isAlwaysMatchingType($funcCallName, $checkedType)) {
             return null;
         }
@@ -189,7 +195,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($expr->getArgs()[0]->value, $expectedExpr)) {
+        $firstArg = $expr->getArg('value', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($firstArg->value, $expectedExpr)) {
             return null;
         }
 

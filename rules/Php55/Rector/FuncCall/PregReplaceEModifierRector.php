@@ -91,7 +91,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgument = $node->getArgs()[0];
+        $firstArgument = $node->getArg('pattern', 0);
+        if (! $firstArgument instanceof Arg) {
+            return null;
+        }
         $firstArgumentValue = $firstArgument->value;
 
         $patternWithoutEExpr = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);
@@ -99,7 +102,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $secondArgument = $node->getArgs()[1];
+        $secondArgument = $node->getArg('replacement', 1);
+        if (! $secondArgument instanceof Arg) {
+            return null;
+        }
 
         $anonymousFunction = $this->createAnonymousFunction($secondArgument);
         if (! $anonymousFunction instanceof Closure) {
