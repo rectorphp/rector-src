@@ -12,7 +12,8 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PHPStan\Type\ArrayType;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\RuleDoc\CodeSample\CodeSample;
@@ -97,7 +98,7 @@ CODE_SAMPLE
 
             // the items type does not change per closure param, resolve it once
             $type = $this->getType($closureItems);
-            if ($type instanceof ArrayType && $type->getItemType()->isObject()->yes()) {
+            if ($this->hasMaybeObjectItems($type)) {
                 continue;
             }
 
@@ -210,5 +211,22 @@ CODE_SAMPLE
         }
 
         return $variableNames;
+    }
+
+    /**
+     * Items that can be objects, e.g. ArrayAccess, must not be typed as array
+     */
+    private function hasMaybeObjectItems(Type $type): bool
+    {
+        if (! $type->isArray()->yes()) {
+            return false;
+        }
+
+        $itemType = $type->getIterableValueType();
+        if ($itemType instanceof MixedType) {
+            return false;
+        }
+
+        return ! $itemType->isObject()->no();
     }
 }
