@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -98,7 +99,7 @@ CODE_SAMPLE
 
             // the items type does not change per closure param, resolve it once
             $type = $this->getType($closureItems);
-            if ($this->hasMaybeObjectItems($type)) {
+            if ($this->hasNonArrayItems($type)) {
                 continue;
             }
 
@@ -214,19 +215,20 @@ CODE_SAMPLE
     }
 
     /**
-     * Items that can be objects, e.g. ArrayAccess, must not be typed as array
+     * Items that are not always arrays, e.g. ArrayAccess, string or template, must not be typed as array
      */
-    private function hasMaybeObjectItems(Type $type): bool
+    private function hasNonArrayItems(Type $type): bool
     {
         if (! $type->isArray()->yes()) {
             return false;
         }
 
         $itemType = $type->getIterableValueType();
-        if ($itemType instanceof MixedType) {
+        // unknown items are typed as before, except templates that can be anything
+        if ($itemType instanceof MixedType && ! $itemType instanceof TemplateType) {
             return false;
         }
 
-        return ! $itemType->isObject()->no();
+        return ! $itemType->isArray()->yes();
     }
 }
