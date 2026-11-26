@@ -139,6 +139,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isSelfClassName($node, $classLikeName)) {
+            return new ClassConstFetch(new Name(ObjectReference::SELF), 'class');
+        }
+
         $fullyQualified = new FullyQualified($classLikeName);
         return new ClassConstFetch($fullyQualified, 'class');
     }
