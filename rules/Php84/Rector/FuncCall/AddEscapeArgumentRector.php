@@ -63,11 +63,11 @@ CODE_SAMPLE
 
             $name = $this->getName($node);
 
-            if (in_array($name, ['fputcsv', 'fgetcsv'], true) && isset($node->getArgs()[4])) {
+            if (in_array($name, ['fputcsv', 'fgetcsv'], true) && $node->getArg('escape', 4) instanceof Arg) {
                 return null;
             }
 
-            if ($name === 'str_getcsv' && isset($node->getArgs()[3])) {
+            if ($name === 'str_getcsv' && $node->getArg('escape', 3) instanceof Arg) {
                 return null;
             }
 
@@ -85,11 +85,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (in_array($name, ['setCsvControl', 'fgetcsv'], true) && isset($node->getArgs()[2])) {
+        if (in_array($name, ['setCsvControl', 'fgetcsv'], true) && $node->getArg('escape', 2) instanceof Arg) {
             return null;
         }
 
-        if ($name === 'fputcsv' && isset($node->getArgs()[3])) {
+        if ($name === 'fputcsv' && $node->getArg('escape', 3) instanceof Arg) {
             return null;
         }
 

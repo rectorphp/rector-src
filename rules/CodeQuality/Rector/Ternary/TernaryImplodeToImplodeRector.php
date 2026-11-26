@@ -97,7 +97,7 @@ CODE_SAMPLE
         }
 
         $function = $node->else;
-        $secondArg = $function->getArgs()[1] ?? null;
+        $secondArg = $function->getArg('array', 1);
 
         if (! $secondArg instanceof Arg) {
             return null;

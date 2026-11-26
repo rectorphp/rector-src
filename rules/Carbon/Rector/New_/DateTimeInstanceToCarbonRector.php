@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Carbon\Rector\New_;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
@@ -80,9 +81,9 @@ CODE_SAMPLE
         }
 
         if (count($new->getArgs()) === 1) {
-            $firstArg = $new->getArgs()[0];
+            $firstArg = $new->getArg('datetime', 0);
 
-            if ($firstArg->value instanceof String_) {
+            if ($firstArg instanceof Arg && $firstArg->value instanceof String_) {
                 return $this->carbonCallFactory->createFromDateTimeString($carbonFullyQualified, $firstArg->value);
             }
         }

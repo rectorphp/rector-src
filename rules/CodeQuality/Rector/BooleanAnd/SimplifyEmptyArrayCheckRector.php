@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\BooleanAnd;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -57,8 +58,12 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
         /** @var FuncCall $isArrayExpr */
         $isArrayExpr = $twoNodeMatch->getFirstExpr();
 
-        $firstArgValue = $isArrayExpr->getArgs()[0]
-            ->value;
+        $firstArg = $isArrayExpr->getArg('value', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        $firstArgValue = $firstArg->value;
 
         /** @var Empty_ $emptyOrNotIdenticalNode */
         $emptyOrNotIdenticalNode = $twoNodeMatch->getSecondExpr();
@@ -96,12 +101,12 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                     return false;
                 }
 
-                if (isset($node->getArgs()[0])) {
-                    return $node->getArgs()[0]
-                        ->value instanceof Variable;
+                $firstArg = $node->getArg('value', 0);
+                if (! $firstArg instanceof Arg) {
+                    return false;
                 }
 
-                return false;
+                return $firstArg->value instanceof Variable;
             },
             // empty(...)
             function (Node $node): bool {

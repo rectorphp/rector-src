@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Rector\AbstractRector;
@@ -61,10 +62,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgValue = $node->getArgs()[0]
-            ->value;
-        $secondArgValue = $node->getArgs()[1]
-            ->value;
+        $firstArg = $node->getArg('value', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        $secondArg = $node->getArg('filter', 1);
+        if (! $secondArg instanceof Arg) {
+            return null;
+        }
+
+        $firstArgValue = $firstArg->value;
+        $secondArgValue = $secondArg->value;
 
         if (! $secondArgValue instanceof ConstFetch) {
             return null;

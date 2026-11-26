@@ -67,11 +67,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if (isset($node->getArgs()[2])) {
+        if ($node->getArg('allow_string', 2) instanceof Arg) {
             return null;
         }
 
-        $firstArg = $node->getArgs()[0];
+        $firstArg = $node->getArg('object_or_class', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
 
         $firstArgumentStaticType = $this->getType($firstArg->value);
         if (! $firstArgumentStaticType->isString()->yes()) {

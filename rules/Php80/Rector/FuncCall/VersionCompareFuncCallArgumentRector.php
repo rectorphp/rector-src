@@ -74,7 +74,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $operatorArg = $node->getArgs()[2] ?? null;
+        $operatorArg = $node->getArg('operator', 2);
         if (! $operatorArg instanceof Arg) {
             return null;
         }

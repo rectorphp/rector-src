@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
@@ -56,8 +57,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $node->getArgs()[0];
-        if ($firstArg->unpack) {
+        // unpacked argument is not resolved by getArg()
+        $firstArg = $node->getArg('format', 0);
+        if (! $firstArg instanceof Arg) {
             return null;
         }
 

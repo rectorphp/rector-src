@@ -170,8 +170,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            return $expr->getArgs()[0]
-                ->value;
+            return $expr->getArg('value', 0)?->value;
         }
 
         // null === $value or $value === null

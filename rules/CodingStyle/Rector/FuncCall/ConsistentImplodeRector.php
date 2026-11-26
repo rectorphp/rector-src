@@ -77,8 +77,13 @@ CODE_SAMPLE
         }
 
         if (count($node->getArgs()) === 1) {
+            $arrayArg = $node->getArg('array', 0);
+            if (! $arrayArg instanceof Arg) {
+                return null;
+            }
+
             // complete default value ''
-            $node->args[1] = $node->getArgs()[0];
+            $node->args[1] = $arrayArg;
             $node->args[0] = new Arg(new String_(''));
 
             return $node;
@@ -88,7 +93,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $node->getArgs()[0];
+        $firstArg = $node->getArg('separator', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
         $firstArgumentValue = $firstArg->value;
 
         $firstArgumentType = $this->getType($firstArgumentValue);
@@ -96,7 +104,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $secondArg = $node->getArgs()[1];
+        $secondArg = $node->getArg('array', 1);
+        if (! $secondArg instanceof Arg) {
+            return null;
+        }
 
         if ($this->stringTypeAnalyzer->isStringOrUnionStringOnlyType($secondArg->value)) {
             $node->args = array_reverse($node->getArgs());

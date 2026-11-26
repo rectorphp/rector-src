@@ -102,10 +102,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstExpr = $node->getArgs()[0]
-            ->value;
-        $secondExpr = $node->getArgs()[1]
-            ->value;
+        $firstArg = $node->getArg('args', 0);
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        $secondArg = $node->getArg('code', 1);
+        if (! $secondArg instanceof Arg) {
+            return null;
+        }
+
+        $firstExpr = $firstArg->value;
+        $secondExpr = $secondArg->value;
 
         $params = $this->createParamsFromString($firstExpr);
         $stmts = $this->parseStringToBody($secondExpr);
