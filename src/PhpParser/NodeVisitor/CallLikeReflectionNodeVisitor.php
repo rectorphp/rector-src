@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
@@ -23,7 +24,6 @@ use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\PHPStan\ScopeFetcher;
 use Rector\Reflection\ReflectionResolver;
 
 /**
@@ -134,10 +134,16 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
             return;
         }
 
+        // e.g. args of a trait-level attribute have no scope
+        $scope = $callLike->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return;
+        }
+
         $parameterReflections = ParametersAcceptorSelectorVariantsWrapper::select(
             $functionLikeReflection,
             $callLike,
-            ScopeFetcher::fetch($callLike)
+            $scope
         )->getParameters();
 
         $closureObjectType = new ObjectType('Closure');
