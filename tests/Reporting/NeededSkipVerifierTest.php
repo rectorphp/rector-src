@@ -8,7 +8,10 @@ use Nette\Utils\FileSystem;
 use Rector\Config\RectorConfig;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
+use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\DependencyInjection\LazyContainerFactory;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Reporting\NeededSkipVerifier;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -95,6 +98,39 @@ final class NeededSkipVerifierTest extends AbstractLazyTestCase
 
         $this->assertCount(1, $unnecessarySkips);
         $this->assertStringContainsString('unnecessary_skip.php', $unnecessarySkips[0]);
+    }
+
+    /**
+     * @see https://github.com/rectorphp/rector/issues/9979
+     */
+    public function testKeepsBothSkipsWhenTwoRulesWouldMakeTheSameChange(): void
+    {
+        $filePath = $this->tempDirectory . '/shape.php';
+        FileSystem::write($filePath, FileSystem::read(__DIR__ . '/Source/sealed_shape.php'), null);
+
+        SimpleParameterProvider::setParameter(Option::REPORT_UNUSED_SKIPS, true);
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            RemoveAlwaysTrueIfConditionRector::class => [$filePath],
+            RemoveDeadInstanceOfRector::class => [$filePath],
+        ]);
+
+        $rectorConfig = new LazyContainerFactory()->create();
+        $rectorConfig->rules([RemoveDeadInstanceOfRector::class, RemoveAlwaysTrueIfConditionRector::class]);
+        $rectorConfig->boot();
+
+        // the real run registers processed files, so the sealed hierarchy is reflectable
+        $dynamicSourceLocatorProvider = $rectorConfig->make(DynamicSourceLocatorProvider::class);
+        $dynamicSourceLocatorProvider->addFiles([$filePath]);
+
+        $processResult = new ProcessResult([], [], 0, [], [
+            RemoveAlwaysTrueIfConditionRector::class => [$filePath],
+            RemoveDeadInstanceOfRector::class => [$filePath],
+        ]);
+
+        $neededSkipVerifier = $rectorConfig->make(NeededSkipVerifier::class);
+
+        // each rule alone changes the file, so neither skip is unnecessary
+        $this->assertSame([], $neededSkipVerifier->verify($processResult));
     }
 
     public function testReportsNothingWithoutCapturedSkips(): void
