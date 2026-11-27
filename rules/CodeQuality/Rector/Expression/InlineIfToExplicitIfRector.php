@@ -98,7 +98,6 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Expr $expr */
         $expr = $booleanExpr instanceof BooleanAnd
             ? $booleanExpr->left
             : $this->binaryOpManipulator->inverseNode($booleanExpr->left);
