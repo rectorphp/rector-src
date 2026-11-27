@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -28,6 +29,15 @@ final class AssignedToNodeVisitor extends NodeVisitorAbstract implements Decorat
     {
         if ($node instanceof AssignOp) {
             $this->markAssignOpVar($node->var);
+            return null;
+        }
+
+        if ($node instanceof Foreach_) {
+            $this->markForeachTarget($node->valueVar);
+            if ($node->keyVar instanceof Expr) {
+                $this->markForeachTarget($node->keyVar);
+            }
+
             return null;
         }
 
@@ -77,6 +87,27 @@ final class AssignedToNodeVisitor extends NodeVisitorAbstract implements Decorat
         while ($expr instanceof ArrayDimFetch) {
             $expr = $expr->var;
             $expr->setAttribute(AttributeKey::IS_ASSIGN_OP_VAR, true);
+        }
+    }
+
+    /**
+     * Only array dim fetch chains, foreach value variables keep their own handling
+     */
+    private function markForeachTarget(Expr $expr): void
+    {
+        if ($expr instanceof List_) {
+            foreach ($expr->items as $item) {
+                if ($item instanceof ArrayItem) {
+                    $this->markForeachTarget($item->value);
+                }
+            }
+
+            return;
+        }
+
+        while ($expr instanceof ArrayDimFetch) {
+            $expr->setAttribute(AttributeKey::IS_BEING_ASSIGNED, true);
+            $expr = $expr->var;
         }
     }
 

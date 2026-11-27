@@ -190,11 +190,6 @@ CODE_SAMPLE
 
     private function shouldSkip(ArrayDimFetch $arrayDimFetch, Node $scopeNode): bool
     {
-        $scope = ScopeFetcher::fetch($scopeNode);
-        if ($scope->isInExpressionAssign($arrayDimFetch)) {
-            return true;
-        }
-
         if ($arrayDimFetch->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
             return true;
         }
@@ -211,6 +206,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return (bool) $arrayDimFetch->getAttribute(AttributeKey::IS_UNSET_VAR);
+        if ($arrayDimFetch->getAttribute(AttributeKey::IS_UNSET_VAR) === true) {
+            return true;
+        }
+
+        $scope = ScopeFetcher::fetch($scopeNode);
+        return $scope->isInExpressionAssign($arrayDimFetch);
     }
 }
