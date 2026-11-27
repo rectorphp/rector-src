@@ -57,6 +57,7 @@ use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Label;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
@@ -82,6 +83,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
 use Rector\Contract\PhpParser\DecoratingNodeVisitorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Util\Reflection\PrivatesAccessor;
 
@@ -134,7 +136,15 @@ final readonly class PHPStanNodeScopeResolver
      */
     private function fillScope(array $stmts, MutatingScope $scope): void
     {
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback): void {
+        $stmtListsWithLabels = [];
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, &$stmtListsWithLabels): void {
+            if (NodeGroup::isStmtAwareNode($node)) {
+                $nodeStmts = $node->stmts ?? [];
+                if (array_any($nodeStmts, static fn (Stmt $stmt): bool => $stmt instanceof Label)) {
+                    $stmtListsWithLabels[] = $nodeStmts;
+                }
+            }
+
             if ($mutatingScope instanceof NodeCallbackScope) {
                 $mutatingScope = $mutatingScope->toWalkScope();
             }
@@ -320,6 +330,40 @@ final readonly class PHPStanNodeScopeResolver
         };
 
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
+
+        while ($stmtListsWithLabels !== []) {
+            $this->processStatementsAfterLabels(array_pop($stmtListsWithLabels), $nodeCallback);
+        }
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function processStatementsAfterLabels(array $stmts, callable $nodeCallback): void
+    {
+        $labelScope = null;
+        $unscopedStmts = [];
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof Label) {
+                if ($unscopedStmts !== [] && $labelScope instanceof MutatingScope) {
+                    $this->nodeScopeResolverProcessNodes($unscopedStmts, $labelScope, $nodeCallback);
+                }
+
+                $labelScope = $stmt->getAttribute(AttributeKey::SCOPE);
+                $unscopedStmts = [];
+                continue;
+            }
+
+            if ($labelScope instanceof MutatingScope && ! $stmt->getAttribute(AttributeKey::SCOPE) instanceof MutatingScope) {
+                $unscopedStmts[] = $stmt;
+            }
+        }
+
+        // PHPStan skips unreachable statements after a label without reporting an UnreachableStatementNode.
+        if ($unscopedStmts !== [] && $labelScope instanceof MutatingScope) {
+            $this->nodeScopeResolverProcessNodes($unscopedStmts, $labelScope, $nodeCallback);
+        }
     }
 
     private function processYield(Yield_ $yield, MutatingScope $mutatingScope): void
