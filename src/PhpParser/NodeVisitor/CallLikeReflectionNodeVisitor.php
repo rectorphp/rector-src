@@ -66,7 +66,7 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
 
         $this->decorateClosureWithVariadicArgs($args, $functionLikeReflection);
         $this->decorateArgNotAcceptingClosure($node, $args, $functionLikeReflection);
-        $this->decorateByRefArrayDimFetchArg($node, $args, $functionLikeReflection);
+        $this->decorateByRefArrayDimFetchArg($args, $functionLikeReflection);
 
         return null;
     }
@@ -189,7 +189,6 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
      * @param Arg[] $args
      */
     private function decorateByRefArrayDimFetchArg(
-        CallLike $callLike,
         array $args,
         MethodReflection|FunctionReflection|null $functionLikeReflection
     ): void {
@@ -201,10 +200,9 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
             return;
         }
 
-        $parameterReflections = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionLikeReflection,
-            $callLike,
-            ScopeFetcher::fetch($callLike)
+        // by-ref is declared on the parameter, combined variants avoid resolving the arg types
+        $parameterReflections = ParametersAcceptorSelector::combineAcceptors(
+            $functionLikeReflection->getVariants()
         )->getParameters();
 
         foreach ($args as $position => $arg) {
