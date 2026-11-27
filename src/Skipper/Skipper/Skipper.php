@@ -66,10 +66,11 @@ final class Skipper
     {
         // verification lifts only the verified rule's skip, other skips keep applying
         if ($this->verifiedRectorClass !== null) {
-            return $rector::class !== $this->verifiedRectorClass && $this->matchSkip(
-                $rector,
-                $filePath
-            ) instanceof SkipMatch;
+            if ($rector::class === $this->verifiedRectorClass) {
+                return false;
+            }
+
+            return $this->matchSkip($rector, $filePath) instanceof SkipMatch;
         }
 
         $skipMatch = $this->matchSkip($rector, $filePath);
