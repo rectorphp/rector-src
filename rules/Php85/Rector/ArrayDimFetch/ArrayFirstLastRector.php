@@ -203,6 +203,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($arrayDimFetch->getAttribute(AttributeKey::IS_INCREMENT_OR_DECREMENT) === true) {
+            return true;
+        }
+
         return (bool) $arrayDimFetch->getAttribute(AttributeKey::IS_UNSET_VAR);
     }
 }
