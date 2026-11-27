@@ -17,26 +17,46 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class ConfigDumperTest extends AbstractLazyTestCase
 {
+    private const array OPTION_NAMES = [
+        Option::PATHS,
+        Option::SKIP,
+        Option::REGISTERED_RECTOR_RULES,
+        Option::RULE_CONFIGURATIONS,
+    ];
+
     private RectorConfig $freshRectorConfig;
 
     private ConfigDumper $configDumper;
+
+    /**
+     * @var array<string, mixed[]>
+     */
+    private array $originalParameters = [];
 
     protected function setUp(): void
     {
         parent::setUp();
 
         // the parameter provider is static, reset it between tests
-        foreach ([
-            Option::PATHS,
-            Option::SKIP,
-            Option::REGISTERED_RECTOR_RULES,
-            Option::RULE_CONFIGURATIONS,
-        ] as $optionName) {
+        foreach (self::OPTION_NAMES as $optionName) {
+            $this->originalParameters[$optionName] = SimpleParameterProvider::hasParameter($optionName)
+                ? SimpleParameterProvider::provideArrayParameter($optionName)
+                : [];
             SimpleParameterProvider::setParameter($optionName, []);
         }
 
         $this->freshRectorConfig = new RectorConfig();
         $this->configDumper = $this->make(ConfigDumper::class);
+    }
+
+    protected function tearDown(): void
+    {
+        // restore, so the skips of this test do not leak to the next test class in the same process
+        foreach (self::OPTION_NAMES as $optionName) {
+            SimpleParameterProvider::setParameter($optionName, $this->originalParameters[$optionName] ?? []);
+        }
+
+        parent::tearDown();
     }
 
     public function testRules(): void
