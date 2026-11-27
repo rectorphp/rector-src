@@ -207,6 +207,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($arrayDimFetch->getAttribute(AttributeKey::IS_BYREF_VAR) === true) {
+            return true;
+        }
+
         return (bool) $arrayDimFetch->getAttribute(AttributeKey::IS_UNSET_VAR);
     }
 }

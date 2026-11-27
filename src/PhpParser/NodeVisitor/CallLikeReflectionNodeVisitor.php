@@ -8,9 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Reflection\FunctionReflection;
@@ -31,6 +33,7 @@ use Rector\Reflection\ReflectionResolver;
  *  - Closure/arrow-fn args passed to a variadic callable parameter (HAS_CLOSURE_WITH_VARIADIC_ARGS)
  *  - 2-item array args passed to a parameter that cannot hold a Closure, so an array callable is kept as is
  *    (IS_ARG_NOT_ACCEPTING_CLOSURE), see https://github.com/rectorphp/rector/issues/9563
+ *  - array dim fetch on a func call (e.g. $items[array_key_last($items)]) passed to a by-ref parameter (IS_BYREF_VAR)
  */
 final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements DecoratingNodeVisitorInterface
 {
@@ -54,8 +57,8 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
             return null;
         }
 
-        // only closure/arrow-fn or array callable shaped args are decorated below; skip the reflection otherwise
-        if (! $this->hasClosureArrowOrArrayCallableArg($args)) {
+        // only closure/arrow-fn, array callable or func call dim fetch shaped args are decorated below; skip the reflection otherwise
+        if (! $this->hasClosureArrowOrArrayCallableArg($args) && ! $this->hasFuncCallArrayDimFetchArg($args)) {
             return null;
         }
 
@@ -63,6 +66,7 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
 
         $this->decorateClosureWithVariadicArgs($args, $functionLikeReflection);
         $this->decorateArgNotAcceptingClosure($node, $args, $functionLikeReflection);
+        $this->decorateByRefArrayDimFetchArg($node, $args, $functionLikeReflection);
 
         return null;
     }
@@ -78,6 +82,19 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
                 || $arg->value instanceof ArrowFunction
                 || $this->isArrayCallableShape($arg->value)
         );
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function hasFuncCallArrayDimFetchArg(array $args): bool
+    {
+        return array_any($args, fn (Arg $arg): bool => $this->isFuncCallArrayDimFetchShape($arg->value));
+    }
+
+    private function isFuncCallArrayDimFetchShape(Expr $expr): bool
+    {
+        return $expr instanceof ArrayDimFetch && ($expr->dim instanceof FuncCall || $expr->var instanceof FuncCall);
     }
 
     /**
@@ -157,6 +174,46 @@ final class CallLikeReflectionNodeVisitor extends NodeVisitorAbstract implements
             }
 
             $arg->value->setAttribute(AttributeKey::IS_ARG_NOT_ACCEPTING_CLOSURE, true);
+        }
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function decorateByRefArrayDimFetchArg(
+        CallLike $callLike,
+        array $args,
+        MethodReflection|FunctionReflection|null $functionLikeReflection
+    ): void {
+        if (! $functionLikeReflection instanceof FunctionReflection && ! $functionLikeReflection instanceof MethodReflection) {
+            return;
+        }
+
+        if (! $this->hasFuncCallArrayDimFetchArg($args)) {
+            return;
+        }
+
+        $parameterReflections = ParametersAcceptorSelectorVariantsWrapper::select(
+            $functionLikeReflection,
+            $callLike,
+            ScopeFetcher::fetch($callLike)
+        )->getParameters();
+
+        foreach ($args as $position => $arg) {
+            if (! $this->isFuncCallArrayDimFetchShape($arg->value)) {
+                continue;
+            }
+
+            $parameterReflection = $this->matchParameterReflection($arg, $position, $parameterReflections);
+            if (! $parameterReflection instanceof ParameterReflection) {
+                continue;
+            }
+
+            if (! $parameterReflection->passedByReference()->yes()) {
+                continue;
+            }
+
+            $arg->value->setAttribute(AttributeKey::IS_BYREF_VAR, true);
         }
     }
 
