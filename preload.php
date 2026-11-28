@@ -376,9 +376,11 @@ require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/Type/ObjectShapeIt
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/Type/ObjectShapeNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/Type/OffsetAccessTypeNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/Type/RelativeNameNode.php';
+require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/Type/TemplateDeclarationTypeNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/Type/ThisTypeNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Ast/Type/UnionTypeNode.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/ConstExprParser.php';
+require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/IntegerLiteralNormalizer.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/ParserException.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/PhpDocParser.php';
 require_once __DIR__ . '/vendor/phpstan/phpdoc-parser/src/Parser/StringUnescaper.php';

@@ -68,11 +68,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // attribute between "new" and "class" cannot be format-preserving printed with an added readonly modifier
-        if ($node->attrGroups !== []) {
-            return null;
-        }
-
         return $this->readonlyClassManipulator->process($node);
     }
 
